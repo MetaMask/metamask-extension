@@ -12,7 +12,6 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getPerpsControllerFacade,
   getPerpsStreamingController,
-  isPerpsControllerInitializationCancelledError,
 } from './getPerpsController';
 import { getPerpsStreamManager } from './PerpsStreamManager';
 
@@ -81,28 +80,21 @@ export function PerpsControllerProvider({
     let isMounted = true;
 
     // Background controller is the single init authority.
-    // UI streaming controller is created only after background init succeeds.
+    // UI facade is created immediately after background init succeeds.
     submitRequestToBackground('perpsInit')
-      .then(() => getPerpsStreamingController(selectedAddress, store))
+      .then(() => getPerpsStreamingController(selectedAddress))
       .then((ctrl) => {
         if (!isMounted) {
           return;
         }
         setController(ctrl);
         setError(null);
-        return streamManager.init(selectedAddress);
-      })
-      .then(() => {
-        if (isMounted) {
-          streamManager.prewarm();
-        }
+        // streamManager.init is now synchronous
+        streamManager.init(selectedAddress);
+        streamManager.prewarm();
       })
       .catch((err) => {
         if (isMounted) {
-          if (isPerpsControllerInitializationCancelledError(err)) {
-            return;
-          }
-
           console.error(
             '[PerpsControllerProvider] Initialization failed:',
             err,

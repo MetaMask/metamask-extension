@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsController } from '../../../providers/perps';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { usePerpsChannel } from './usePerpsChannel';
+import type { PerpsStreamManager } from '../../../providers/perps';
 
 /**
  * Top of book data (best bid/ask)
@@ -39,13 +41,13 @@ export type UsePerpsTopOfBookReturn = {
   isInitialLoading: boolean;
 };
 
+const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
+
 /**
- * Hook for real-time top of book (best bid/ask) data via stream subscription
+ * Hook for real-time top of book (best bid/ask) data via background stream.
  *
- * Uses the PerpsController directly for WebSocket subscriptions.
- * This is a lightweight alternative to usePerpsLiveOrderBook when you only
- * need the best bid and ask prices. Internally, it subscribes to the order book
- * stream and extracts the top level.
+ * Tells the background to activate an orderBook stream for the given symbol,
+ * then reads from the shared orderBook channel in PerpsStreamManager.
  *
  * @param options - Configuration options
  * @returns Object containing top of book data and loading state
@@ -73,61 +75,56 @@ export function usePerpsTopOfBook(
   options: UsePerpsTopOfBookOptions,
 ): UsePerpsTopOfBookReturn {
   const { symbol } = options;
-  const controller = usePerpsController();
   const [topOfBook, setTopOfBook] = useState<TopOfBookData | undefined>(
     undefined,
   );
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const hasReceivedFirstUpdate = useRef(false);
+  const hasActivated = useRef(false);
 
+  const { data: orderBookData, isInitialLoading } = usePerpsChannel(
+    getOrderBookChannel,
+    null,
+  );
+
+  // Activate the background orderBook stream for this symbol
   useEffect(() => {
-    // Reset state when controller changes (account switch)
-    setTopOfBook(undefined);
-    setIsInitialLoading(true);
-    hasReceivedFirstUpdate.current = false;
-
     if (!symbol) {
+      return;
+    }
+    hasActivated.current = true;
+    submitRequestToBackground('perpsActivateStreaming', [
+      { orderBookSymbol: symbol },
+    ]).catch((err) =>
+      console.warn('[usePerpsTopOfBook] activate streaming failed:', err),
+    );
+  }, [symbol]);
+
+  // Extract top of book from the orderBook channel data
+  useEffect(() => {
+    if (!orderBookData) {
       setTopOfBook(undefined);
-      setIsInitialLoading(false);
-      return undefined;
+      return;
     }
 
-    // Subscribe to order book and extract top of book data
-    const unsubscribe = controller.subscribeToOrderBook({
-      symbol,
-      levels: 1, // Only need top level
-      nSigFigs: 5,
-      mantissa: 2,
-      callback: (orderBook) => {
-        if (!hasReceivedFirstUpdate.current) {
-          hasReceivedFirstUpdate.current = true;
-          setIsInitialLoading(false);
-        }
+    if (orderBookData.bids.length > 0 && orderBookData.asks.length > 0) {
+      const topBid = orderBookData.bids[0];
+      const topAsk = orderBookData.asks[0];
 
-        // Extract top of book from order book data
-        if (orderBook.bids.length > 0 && orderBook.asks.length > 0) {
-          const topBid = orderBook.bids[0];
-          const topAsk = orderBook.asks[0];
+      setTopOfBook({
+        bestBid: topBid.price,
+        bestBidSize: topBid.size,
+        bestAsk: topAsk.price,
+        bestAskSize: topAsk.size,
+        spread: orderBookData.spread,
+        spreadPercent: orderBookData.spreadPercentage,
+        midPrice: orderBookData.midPrice,
+      });
+    } else {
+      setTopOfBook(undefined);
+    }
+  }, [orderBookData]);
 
-          setTopOfBook({
-            bestBid: topBid.price,
-            bestBidSize: topBid.size,
-            bestAsk: topAsk.price,
-            bestAskSize: topAsk.size,
-            spread: orderBook.spread,
-            spreadPercent: orderBook.spreadPercentage,
-            midPrice: orderBook.midPrice,
-          });
-        } else {
-          setTopOfBook(undefined);
-        }
-      },
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [controller, symbol]);
-
-  return { topOfBook, isInitialLoading };
+  return {
+    topOfBook,
+    isInitialLoading: isInitialLoading || (!hasActivated.current && !symbol),
+  };
 }

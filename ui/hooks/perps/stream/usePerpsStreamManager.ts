@@ -52,54 +52,54 @@ export type UsePerpsStreamManagerReturn = {
  * ```
  */
 export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
-  const [isInitializing, setIsInitializing] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [isReady, setIsReady] = useState(false);
-
   // Get the selected account address from Redux
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address ?? null;
 
   const streamManager = getPerpsStreamManager();
 
+  // Track whether streamManager is ready for this address.
+  // Initialize synchronously in case init was already done (e.g. by PerpsControllerProvider).
+  const [isReady, setIsReady] = useState(
+    () => selectedAddress !== null && streamManager.isInitialized(selectedAddress),
+  );
+  const [error, setError] = useState<Error | null>(null);
+
   useEffect(() => {
     if (!selectedAddress) {
-      setIsInitializing(false);
-      setError(new Error('No account selected'));
       setIsReady(false);
+      setError(new Error('No account selected'));
       return;
     }
 
-    // Check if already initialized for this address
+    // Already initialized (e.g. by PerpsControllerProvider or a previous call)
     if (streamManager.isInitialized(selectedAddress)) {
-      setIsInitializing(false);
-      setError(null);
       setIsReady(true);
+      setError(null);
       return;
     }
 
-    // Background controller is the single init authority.
-    // UI streaming controller is created only after background init succeeds.
-    setIsInitializing(true);
-    setError(null);
     setIsReady(false);
+    setError(null);
+
+    // Clear stale cached data from the previous account immediately,
+    // before the async init completes, so we never briefly show wrong data.
+    streamManager.clearAllCaches();
 
     submitRequestToBackground('perpsInit')
-      .then(() => streamManager.init(selectedAddress))
       .then(() => {
-        setIsInitializing(false);
+        streamManager.init(selectedAddress);
         setIsReady(true);
       })
       .catch((err: unknown) => {
         console.error('[usePerpsStreamManager] Init failed:', err);
-        setIsInitializing(false);
         setError(err instanceof Error ? err : new Error(String(err)));
       });
   }, [selectedAddress, streamManager]);
 
   return {
     streamManager: isReady ? streamManager : null,
-    isInitializing,
+    isInitializing: !isReady && !error && selectedAddress !== null,
     error,
     selectedAddress,
   };

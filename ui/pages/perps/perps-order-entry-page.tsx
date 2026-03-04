@@ -42,9 +42,10 @@ import {
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
 import {
-  getPerpsStreamingController,
   usePerpsController,
+  getPerpsStreamManager,
 } from '../../providers/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getDisplayName,
   safeDecodeURIComponent,
@@ -201,41 +202,31 @@ const PerpsOrderEntryPage: React.FC = () => {
       setLivePrice(undefined);
       return undefined;
     }
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
-    const subscribe = async () => {
-      try {
-        const streamingController =
-          await getPerpsStreamingController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = streamingController.subscribeToPrices({
-          symbols: [decodedSymbol],
-          includeMarketData: true,
-          callback: (priceUpdates) => {
-            const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
-            if (update) {
-              const ts = (update as { timestamp?: number }).timestamp;
-              const mark = (update as { markPrice?: string }).markPrice;
-              setLivePrice({
-                symbol: update.symbol,
-                price: update.price,
-                timestamp: ts ?? Date.now(),
-                markPrice: mark ?? update.price,
-              });
-            }
-          },
-          throttleMs: 1000,
+    // Activate background price stream for this symbol
+    submitRequestToBackground('perpsActivateStreaming', [
+      { priceSymbols: [decodedSymbol] },
+    ]).catch(() => {
+      // Controller not ready
+    });
+
+    // Subscribe to price updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
+      const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
+      if (update) {
+        const ts = (update as { timestamp?: number }).timestamp;
+        const mark = (update as { markPrice?: string }).markPrice;
+        setLivePrice({
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          markPrice: mark ?? update.price,
         });
-      } catch {
-        // Controller not ready
       }
-    };
-    subscribe();
+    });
+
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 
@@ -247,40 +238,32 @@ const PerpsOrderEntryPage: React.FC = () => {
       setTopOfBook(null);
       return undefined;
     }
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
-    const subscribe = async () => {
-      try {
-        const streamingController =
-          await getPerpsStreamingController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = streamingController.subscribeToOrderBook({
-          symbol: decodedSymbol,
-          levels: 1,
-          nSigFigs: 5,
-          mantissa: 2,
-          callback: (orderBook) => {
-            if (
-              orderBook.bids.length > 0 &&
-              orderBook.asks.length > 0 &&
-              orderBook.midPrice
-            ) {
-              setTopOfBook({
-                midPrice: parseFloat(orderBook.midPrice),
-              });
-            }
-          },
-        });
-      } catch {
-        // Controller not ready
+    // Activate background orderBook stream for this symbol
+    submitRequestToBackground('perpsActivateStreaming', [
+      { orderBookSymbol: decodedSymbol },
+    ]).catch(() => {
+      // Controller not ready
+    });
+
+    // Subscribe to order book updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.orderBook.subscribe((orderBook) => {
+      if (!orderBook) {
+        return;
       }
-    };
-    subscribe();
+      if (
+        orderBook.bids.length > 0 &&
+        orderBook.asks.length > 0 &&
+        orderBook.midPrice
+      ) {
+        setTopOfBook({
+          midPrice: parseFloat(orderBook.midPrice),
+        });
+      }
+    });
+
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 

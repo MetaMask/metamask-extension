@@ -195,10 +195,7 @@ describe('PerpsControllerProvider', () => {
         );
       });
 
-      expect(mockGetPerpsStreamingController).toHaveBeenCalledWith(
-        '0xaaa',
-        store,
-      );
+      expect(mockGetPerpsStreamingController).toHaveBeenCalledWith('0xaaa');
       expect(mockStreamManagerInit).toHaveBeenCalledWith('0xaaa');
       expect(mockStreamManagerPrewarm).toHaveBeenCalled();
       expect(screen.getByTestId('child')).toBeInTheDocument();
@@ -375,13 +372,12 @@ describe('PerpsControllerProvider', () => {
       consoleSpy.mockRestore();
     });
 
-    it('ignores cancellation errors silently', async () => {
+    it('shows error UI when getPerpsStreamingController rejects', async () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
       mockGetPerpsStreamingController.mockRejectedValue(new Error('cancelled'));
-      mockIsPerpsControllerInitializationCancelledError.mockReturnValue(true);
       const store = createMockStore('0xaaa');
 
       await act(async () => {
@@ -394,8 +390,7 @@ describe('PerpsControllerProvider', () => {
         );
       });
 
-      expect(screen.queryByText(/cancelled/u)).not.toBeInTheDocument();
-      expect(consoleSpy).not.toHaveBeenCalled();
+      expect(screen.queryByText(/cancelled/u)).toBeInTheDocument();
       consoleSpy.mockRestore();
     });
   });

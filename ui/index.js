@@ -50,6 +50,7 @@ import {
   getReduxStorePromise,
   resolveReduxStore,
 } from './store/redux-store-promise';
+import { getPerpsStreamManager } from './providers/perps';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -80,6 +81,8 @@ export const connectToBackground = (
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
+    } else if (method === 'perpsStreamUpdate') {
+      getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(

@@ -48,199 +48,75 @@ describe('getFallbackBlockedRegions', () => {
   });
 });
 
-type Deferred = {
-  promise: Promise<void>;
-  resolve: () => void;
-};
-
-function createDeferred(): Deferred {
-  let resolve: () => void = () => undefined;
-  const promise = new Promise<void>((promiseResolve) => {
-    resolve = promiseResolve;
-  });
-
-  return { promise, resolve };
-}
-
-const mockInitDeferredQueue: Deferred[] = [];
-const mockCreatedControllers: {
-  init: jest.Mock<Promise<void>, []>;
-  disconnect: jest.Mock<Promise<void>, []>;
-}[] = [];
-
-const mockCreatePerpsInfrastructure = jest.fn(() => ({}));
-
-const mockGetDefaultPerpsControllerState = jest.fn(() => ({}));
-
-let getPerpsController: typeof import('./getPerpsController').getPerpsController;
-let resetPerpsController: typeof import('./getPerpsController').resetPerpsController;
-let isPerpsControllerInitializationCancelledError: typeof import('./getPerpsController').isPerpsControllerInitializationCancelledError;
-
-function createMockStore() {
-  return {
-    getState: () => ({
-      metamask: {
-        remoteFeatureFlags: {},
-        networkConfigurationsByChainId: {
-          '0xa4b1': {
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [{ networkClientId: 'arbitrum-mainnet' }],
-          },
-        },
-      },
-    }),
-    subscribe: () => () => undefined,
-  } as unknown as Parameters<typeof getPerpsController>[1];
-}
-
-describe('getPerpsController', () => {
-  beforeAll(async () => {
-    jest.resetModules();
-    jest.doMock('../../../app/scripts/controllers/perps', () => {
-      class MockPerpsController {
-        public init: jest.Mock<Promise<void>, []>;
-
-        public disconnect: jest.Mock<Promise<void>, []>;
-
-        public state = {};
-
-        constructor() {
-          const deferred = mockInitDeferredQueue.shift();
-
-          if (!deferred) {
-            throw new Error('No init deferred queued for this controller');
-          }
-
-          this.init = jest.fn(() => deferred.promise);
-          this.disconnect = jest.fn(async () => undefined);
-
-          mockCreatedControllers.push({
-            init: this.init,
-            disconnect: this.disconnect,
-          });
-        }
-      }
-
-      return {
-        PerpsController: MockPerpsController,
-        createPerpsInfrastructure: mockCreatePerpsInfrastructure,
-        getDefaultPerpsControllerState: mockGetDefaultPerpsControllerState,
-      };
-    });
-
-    // @ts-expect-error Jest resolves .ts directly; tsc wants .js extension
-    const module = await import('./getPerpsController');
-    getPerpsController = module.getPerpsController;
-    resetPerpsController = module.resetPerpsController;
-    isPerpsControllerInitializationCancelledError =
-      module.isPerpsControllerInitializationCancelledError;
-  });
+// Phase 2: getPerpsController no longer instantiates a UI PerpsController.
+// It returns a facade that delegates all calls to the background.
+describe('getPerpsStreamingController', () => {
+  let getPerpsStreamingController: typeof import('./getPerpsController').getPerpsStreamingController;
+  let resetPerpsController: typeof import('./getPerpsController').resetPerpsController;
+  let isPerpsControllerInitialized: typeof import('./getPerpsController').isPerpsControllerInitialized;
+  let markPerpsControllerInitialized: typeof import('./getPerpsController').markPerpsControllerInitialized;
+  let getPerpsControllerCurrentAddress: typeof import('./getPerpsController').getPerpsControllerCurrentAddress;
 
   beforeEach(async () => {
+    jest.resetModules();
+    // @ts-expect-error Jest resolves .ts directly; tsc wants .js extension
+    const module = await import('./getPerpsController');
+    getPerpsStreamingController = module.getPerpsStreamingController;
+    resetPerpsController = module.resetPerpsController;
+    isPerpsControllerInitialized = module.isPerpsControllerInitialized;
+    markPerpsControllerInitialized = module.markPerpsControllerInitialized;
+    getPerpsControllerCurrentAddress = module.getPerpsControllerCurrentAddress;
     await resetPerpsController();
-    jest.clearAllMocks();
-    mockInitDeferredQueue.length = 0;
-    mockCreatedControllers.length = 0;
   });
 
   afterEach(async () => {
-    for (const deferred of mockInitDeferredQueue) {
-      deferred.resolve();
-    }
-
     await resetPerpsController();
-    mockInitDeferredQueue.length = 0;
-    mockCreatedControllers.length = 0;
   });
 
-  it('reuses the same in-flight initialization for concurrent same-address requests', async () => {
-    const deferred = createDeferred();
-    mockInitDeferredQueue.push(deferred);
-    const mockStore = createMockStore();
-
-    const firstRequest = getPerpsController('0xaaa', mockStore);
-    const secondRequest = getPerpsController('0xaaa', mockStore);
-
-    expect(mockCreatePerpsInfrastructure).toHaveBeenCalledTimes(1);
-
-    deferred.resolve();
-    const [firstController, secondController] = await Promise.all([
-      firstRequest,
-      secondRequest,
-    ]);
-
-    expect(firstController).toBe(secondController);
-    expect(mockCreatedControllers).toHaveLength(1);
+  it('returns a facade for any address', async () => {
+    const facade = await getPerpsStreamingController('0xaaa');
+    expect(facade).toBeDefined();
   });
 
-  it('returns the new address controller when address changes during in-flight init', async () => {
-    const deferredA = createDeferred();
-    const deferredB = createDeferred();
-    mockInitDeferredQueue.push(deferredA, deferredB);
-    const mockStore = createMockStore();
-
-    const requestA = getPerpsController('0xaaa', mockStore);
-    const requestB = getPerpsController('0xbbb', mockStore);
-
-    deferredB.resolve();
-    const controllerB = await requestB;
-
-    deferredA.resolve();
-    const controllerA = await requestA;
-
-    expect(controllerA).toBe(controllerB);
-    expect(mockCreatePerpsInfrastructure).toHaveBeenCalledTimes(2);
-
-    const staleController = mockCreatedControllers[0];
-    expect(staleController?.disconnect).toHaveBeenCalledTimes(1);
-
-    const activeController = await getPerpsController('0xbbb', mockStore);
-    expect(activeController).toBe(controllerB);
+  it('returns the same facade instance for the same address (idempotent)', async () => {
+    const first = await getPerpsStreamingController('0xaaa');
+    const second = await getPerpsStreamingController('0xaaa');
+    expect(first).toBe(second);
   });
 
-  it('disconnects initialized controller when switching to a different address', async () => {
-    const deferredA = createDeferred();
-    mockInitDeferredQueue.push(deferredA);
-    const mockStore = createMockStore();
-
-    const controllerARequest = getPerpsController('0xaaa', mockStore);
-    deferredA.resolve();
-    const controllerA = await controllerARequest;
-
-    const createdA = mockCreatedControllers[0];
-    expect(createdA).toBeDefined();
-
-    const deferredB = createDeferred();
-    mockInitDeferredQueue.push(deferredB);
-    const controllerBRequest = getPerpsController('0xbbb', mockStore);
-
-    expect(createdA?.disconnect).toHaveBeenCalledTimes(1);
-
-    deferredB.resolve();
-    const controllerB = await controllerBRequest;
-
-    expect(controllerB).not.toBe(controllerA);
-  });
-
-  it('rejects stale initialization with a cancellation error when reset without replacement', async () => {
-    const deferred = createDeferred();
-    mockInitDeferredQueue.push(deferred);
-    const mockStore = createMockStore();
-
-    const request = getPerpsController('0xaaa', mockStore);
-
-    await resetPerpsController();
-    deferred.resolve();
-
-    let caughtError: unknown;
-    try {
-      await request;
-    } catch (error) {
-      caughtError = error;
-    }
-
-    expect(isPerpsControllerInitializationCancelledError(caughtError)).toBe(
-      true,
+  it('throws when no address is provided', async () => {
+    await expect(getPerpsStreamingController('')).rejects.toThrow(
+      'No account selected',
     );
+  });
+
+  it('tracks the current address', async () => {
+    await getPerpsStreamingController('0xaaa');
+    expect(getPerpsControllerCurrentAddress()).toBe('0xaaa');
+  });
+
+  it('clears the address when a different address is provided', async () => {
+    await getPerpsStreamingController('0xaaa');
+    await getPerpsStreamingController('0xbbb');
+    expect(getPerpsControllerCurrentAddress()).toBe('0xbbb');
+  });
+
+  it('isPerpsControllerInitialized returns false before markPerpsControllerInitialized', async () => {
+    await getPerpsStreamingController('0xaaa');
+    expect(isPerpsControllerInitialized('0xaaa')).toBe(false);
+  });
+
+  it('isPerpsControllerInitialized returns true after markPerpsControllerInitialized', async () => {
+    await getPerpsStreamingController('0xaaa');
+    markPerpsControllerInitialized('0xaaa');
+    expect(isPerpsControllerInitialized('0xaaa')).toBe(true);
+  });
+
+  it('resetPerpsController clears state', async () => {
+    await getPerpsStreamingController('0xaaa');
+    markPerpsControllerInitialized('0xaaa');
+    await resetPerpsController();
+    expect(isPerpsControllerInitialized('0xaaa')).toBe(false);
+    expect(getPerpsControllerCurrentAddress()).toBeNull();
   });
 });

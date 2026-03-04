@@ -45,10 +45,10 @@ import {
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
 import {
-  getPerpsStreamingController,
   getPerpsStreamManager,
   usePerpsController,
 } from '../../providers/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -165,7 +165,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [symbol]);
 
   // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
-  // Uses getPerpsController (module singleton) since this page is outside PerpsControllerProvider
+  // Uses background streaming via perpsActivateStreaming + PerpsStreamManager
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
@@ -175,44 +175,31 @@ const PerpsMarketDetailPage: React.FC = () => {
       return undefined;
     }
 
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
+    // Activate background price stream for this symbol
+    submitRequestToBackground('perpsActivateStreaming', [
+      { priceSymbols: [decodedSymbol] },
+    ]).catch(() => {
+      // Controller not ready yet, skip silently
+    });
 
-    const subscribe = async () => {
-      try {
-        const streamingController =
-          await getPerpsStreamingController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = streamingController.subscribeToPrices({
-          symbols: [decodedSymbol],
-          includeMarketData: true,
-          callback: (priceUpdates) => {
-            const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
-            if (update) {
-              const ts = (update as { timestamp?: number }).timestamp;
-              const mark = (update as { markPrice?: string }).markPrice;
-              setLivePrice({
-                symbol: update.symbol,
-                price: update.price,
-                timestamp: ts ?? Date.now(),
-                markPrice: mark ?? update.price,
-              });
-            }
-          },
-          throttleMs: 1000,
+    // Subscribe to price updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
+      const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
+      if (update) {
+        const ts = (update as { timestamp?: number }).timestamp;
+        const mark = (update as { markPrice?: string }).markPrice;
+        setLivePrice({
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          markPrice: mark ?? update.price,
         });
-      } catch {
-        // Controller not ready yet, skip silently
       }
-    };
-
-    subscribe();
+    });
 
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 

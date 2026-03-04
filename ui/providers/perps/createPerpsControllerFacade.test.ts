@@ -10,79 +10,47 @@ const mockSubmitRequestToBackground =
     typeof submitRequestToBackground
   >;
 
-function makeStreamingController() {
-  const subscribeToPositions = jest.fn().mockReturnValue(jest.fn());
-  const subscribeToOrders = jest.fn().mockReturnValue(jest.fn());
-  const subscribeToAccount = jest.fn().mockReturnValue(jest.fn());
-  const subscribeToPrices = jest.fn().mockReturnValue(jest.fn());
-  const subscribeToOrderBook = jest.fn().mockReturnValue(jest.fn());
-  const subscribeToOrderFills = jest.fn().mockReturnValue(jest.fn());
-  const subscribeToCandles = jest.fn().mockReturnValue(jest.fn());
-  const disconnect = jest.fn();
-  return {
-    state: { test: true },
-    messenger: {},
-    subscribeToPositions,
-    subscribeToOrders,
-    subscribeToAccount,
-    subscribeToPrices,
-    subscribeToOrderBook,
-    subscribeToOrderFills,
-    subscribeToCandles,
-    disconnect,
-  };
-}
-
 describe('createPerpsControllerFacade', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('streaming methods', () => {
-    it('forwards subscribeToPositions to the real controller', () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
-      const callback = jest.fn();
-      facade.subscribeToPositions({ callback });
-      expect(real.subscribeToPositions).toHaveBeenCalledWith({ callback });
+  describe('facade creation', () => {
+    it('creates a facade without a streaming controller (Phase 2)', () => {
+      const facade = createPerpsControllerFacade(null);
+      expect(facade).toBeDefined();
     });
 
-    it('forwards subscribeToOrders to the real controller', () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
-      const callback = jest.fn();
-      facade.subscribeToOrders({ callback });
-      expect(real.subscribeToOrders).toHaveBeenCalledWith({ callback });
-    });
-
-    it('forwards disconnect to the real controller', () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
-      facade.disconnect();
-      expect(real.disconnect).toHaveBeenCalled();
-    });
-  });
-
-  describe('state and messenger', () => {
-    it('exposes state from the real controller', () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
-      expect(facade.state).toBe(real.state);
-    });
-
-    it('exposes messenger from the real controller', () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
-      expect((facade as unknown as { messenger: unknown }).messenger).toBe(
-        real.messenger,
-      );
+    it('exposes empty state object', () => {
+      const facade = createPerpsControllerFacade(null);
+      expect(facade.state).toBeDefined();
+      expect(typeof facade.state).toBe('object');
     });
   });
 
   describe('delegate methods', () => {
+    it('init delegates to perpsInit', async () => {
+      const facade = createPerpsControllerFacade(null);
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+      await facade.init();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsInit',
+        [],
+      );
+    });
+
+    it('disconnect delegates to perpsDisconnect', async () => {
+      const facade = createPerpsControllerFacade(null);
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+      await facade.disconnect();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsDisconnect',
+        [],
+      );
+    });
+
     it('placeOrder delegates to perpsPlaceOrder with args', async () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
+      const facade = createPerpsControllerFacade(null);
       mockSubmitRequestToBackground.mockResolvedValue(undefined);
       const order = {
         symbol: 'ETH',
@@ -98,8 +66,7 @@ describe('createPerpsControllerFacade', () => {
     });
 
     it('updateMargin delegates to perpsUpdateMargin with args', async () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
+      const facade = createPerpsControllerFacade(null);
       mockSubmitRequestToBackground.mockResolvedValue(undefined);
       await facade.updateMargin({ symbol: 'ETH', amount: '100' });
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -109,8 +76,7 @@ describe('createPerpsControllerFacade', () => {
     });
 
     it('getPositions delegates to perpsGetPositions with args', async () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
+      const facade = createPerpsControllerFacade(null);
       const positions = [{ positionId: 'p1' }];
       mockSubmitRequestToBackground.mockResolvedValue(positions);
       const result = await facade.getPositions({ skipCache: true });
@@ -122,8 +88,7 @@ describe('createPerpsControllerFacade', () => {
     });
 
     it('getMarketDataWithPrices delegates to perpsGetMarketDataWithPrices', async () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
+      const facade = createPerpsControllerFacade(null);
       const markets = [{ market: 'ETH' }];
       mockSubmitRequestToBackground.mockResolvedValue(markets);
       const result = await facade.getMarketDataWithPrices();
@@ -135,8 +100,7 @@ describe('createPerpsControllerFacade', () => {
     });
 
     it('depositWithConfirmation delegates to perpsDepositWithConfirmation and returns transaction id', async () => {
-      const real = makeStreamingController();
-      const facade = createPerpsControllerFacade(real as never);
+      const facade = createPerpsControllerFacade(null);
       mockSubmitRequestToBackground.mockResolvedValue('tx-456');
       const result = await facade.depositWithConfirmation({ amount: '1.5' });
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
