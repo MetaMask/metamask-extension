@@ -31,6 +31,7 @@ enum KeyMetrics {
   PageLoadTime = 'pageLoadTime',
   DomContentLoaded = 'domContentLoaded',
   FirstContentfulPaint = 'firstContentfulPaint',
+  TotalBlockingTime = 'tbt',
 }
 
 /**
@@ -43,6 +44,7 @@ const EMOJI_RENDERING_THRESHOLDS: Record<
   [KeyMetrics.PageLoadTime]: { good: 1000, warning: 2000 },
   [KeyMetrics.DomContentLoaded]: { good: 1200, warning: 2500 },
   [KeyMetrics.FirstContentfulPaint]: { good: 800, warning: 1500 },
+  [KeyMetrics.TotalBlockingTime]: { good: 300, warning: 900 },
 };
 
 /**
@@ -52,6 +54,7 @@ const SIGNIFICANT_PERCENT_INCREASE_THRESHOLDS: Record<string, number> = {
   [KeyMetrics.PageLoadTime]: 0.25,
   [KeyMetrics.DomContentLoaded]: 0.2,
   [KeyMetrics.FirstContentfulPaint]: 1.5,
+  [KeyMetrics.TotalBlockingTime]: 0.25,
 };
 
 /**
