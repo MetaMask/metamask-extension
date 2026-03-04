@@ -326,6 +326,7 @@ import {
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
 import { PerpsControllerInit } from './controller-init/perps-controller-init';
+import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -6611,97 +6612,32 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    // Per-connection Perps streaming state.
-    // perpsSubscriberCount tracks whether any UI component is subscribed.
-    // When zero, perps stream updates are skipped for this connection.
-    let perpsSubscriberCount = 0;
-
-    // Per-connection stream unsubscribe functions (cleaned up on stream close)
-    const perpsStreamUnsubscribers = [];
-
-    const emitPerpsUpdate = (channel, data, extra) => {
-      if (perpsSubscriberCount <= 0 || !isStreamWritable(outStream)) {
-        return;
-      }
-      outStream.write({
-        jsonrpc: '2.0',
-        method: 'perpsStreamUpdate',
-        params: [{ channel, data, ...extra }],
-      });
-    };
-
-    // Wire background PerpsController subscriptions for account-scoped channels
-    // (positions, orders, account) — these don't require symbol parameters.
-    // Price/orderBook/candle streams are activated lazily via perpsActivateStreaming.
+    // Per-connection Perps streaming bridge — manages subscription lifecycle
+    // for a single UI connection. See PerpsStreamBridge for details.
     const perpsController = this.controllersByName.PerpsController;
-    if (perpsController) {
-      perpsStreamUnsubscribers.push(
-        perpsController.subscribeToPositions({
-          callback: (data) => emitPerpsUpdate('positions', data),
-        }),
-        perpsController.subscribeToOrders({
-          callback: (data) => emitPerpsUpdate('orders', data),
-        }),
-        perpsController.subscribeToAccount({
-          callback: (data) => emitPerpsUpdate('account', data),
-        }),
-      );
-    }
+    const perpsStream = perpsController
+      ? new PerpsStreamBridge(perpsController, (channel, data, extra) => {
+          if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+            return;
+          }
+          outStream.write({
+            jsonrpc: '2.0',
+            method: 'perpsStreamUpdate',
+            params: [{ channel, data, ...extra }],
+          });
+        })
+      : null;
 
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
       perpsSubscriberChange: (delta) => {
-        perpsSubscriberCount += delta;
+        perpsStream?.subscriberChange(delta);
       },
-      /**
-       * Activate symbol-specific Perps streams for this connection.
-       * Called by the UI when it needs price, orderBook, or candle updates.
-       * Each call replaces the previous activation for the given channel.
-       *
-       * @param {object} params
-       * @param {string[]} [params.priceSymbols] - Symbols for price subscription
-       * @param {string} [params.orderBookSymbol] - Symbol for order book subscription
-       * @param {object} [params.candle] - Candle subscription { symbol, interval }
-       * @returns {string} 'ok'
-       */
       perpsActivateStreaming: (params) => {
-        const pc = this.controllersByName.PerpsController;
-        if (!pc) {
-          return 'ok';
+        if (perpsController && perpsStream) {
+          perpsStream.activateStreaming(perpsController, params);
         }
-        const { priceSymbols, orderBookSymbol, candle } = params || {};
-
-        if (priceSymbols && priceSymbols.length > 0) {
-          const unsub = pc.subscribeToPrices({
-            symbols: priceSymbols,
-            callback: (data) => emitPerpsUpdate('prices', data),
-          });
-          perpsStreamUnsubscribers.push(unsub);
-        }
-
-        if (orderBookSymbol) {
-          const unsub = pc.subscribeToOrderBook({
-            symbol: orderBookSymbol,
-            callback: (data) => emitPerpsUpdate('orderBook', data),
-          });
-          perpsStreamUnsubscribers.push(unsub);
-        }
-
-        if (candle?.symbol && candle?.interval) {
-          const unsub = pc.subscribeToCandles({
-            symbol: candle.symbol,
-            interval: candle.interval,
-            duration: candle.duration,
-            callback: (data) =>
-              emitPerpsUpdate('candles', data, {
-                symbol: candle.symbol,
-                interval: candle.interval,
-              }),
-          });
-          perpsStreamUnsubscribers.push(unsub);
-        }
-
         return 'ok';
       },
       startSendingPatches: () => {
@@ -6753,15 +6689,7 @@ export default class MetamaskController extends EventEmitter {
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
-        // Clean up per-connection Perps streaming subscriptions
-        perpsStreamUnsubscribers.forEach((unsub) => {
-          try {
-            unsub();
-          } catch {
-            // Ignore cleanup errors
-          }
-        });
-        perpsStreamUnsubscribers.length = 0;
+        perpsStream?.destroy();
       }
     };
 
