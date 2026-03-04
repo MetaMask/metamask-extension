@@ -6,6 +6,7 @@ import {
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { userEvent } from '@testing-library/user-event';
+import { act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -44,6 +45,7 @@ const baseHardwareWalletConfig = {
 
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
       ensureDeviceReady: jest.fn().mockResolvedValue(true),
@@ -446,4 +448,68 @@ describe('BridgeCTAButton', () => {
       </button>
     `);
   });
+
+  // @ts-expect-error: each is a valid test function in jest
+  it.each([
+    { priceImpact: '0.253', expectedOpenModalCalls: 1 }, // error
+    { priceImpact: '0', expectedOpenModalCalls: 0 }, // neither
+    { priceImpact: '0.056', expectedOpenModalCalls: 0 }, // warning
+  ])(
+    'should open the price impact modal $expectedOpenModalCalls times when price impact is $priceImpact',
+    async ({
+      priceImpact,
+      expectedOpenModalCalls,
+    }: {
+      priceImpact: string;
+      expectedOpenModalCalls: number;
+    }) => {
+      const mockStore = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: toBridgeToken(
+            getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+          ),
+        },
+        bridgeStateOverrides: {
+          quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              priceData: { ...quote.quote.priceData, priceImpact },
+            },
+          })) as unknown as QuoteResponse[],
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      });
+      const { getByText, getByRole } = renderWithProvider(
+        <HardwareWalletProvider>
+          <BridgeCTAButton
+            onFetchNewQuotes={jest.fn()}
+            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          />
+        </HardwareWalletProvider>,
+        configureStore(mockStore),
+      );
+
+      expect(getByText(messages.swap.message)).toBeInTheDocument();
+      expect(getByRole('button')).not.toBeDisabled();
+      await act(async () => {
+        await userEvent.click(getByRole('button'));
+      });
+      expect(mockOnOpenPriceImpactWarningModal).toHaveBeenCalledTimes(
+        expectedOpenModalCalls,
+      );
+    },
+  );
 });
