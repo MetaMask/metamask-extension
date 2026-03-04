@@ -11,51 +11,35 @@ Object.defineProperty(globalThis, 'crypto', {
   },
 });
 
-const mockGetPerpsStreamingController = jest.fn<Promise<unknown>, [string]>();
 const mockGetPerpsControllerCurrentAddress = jest.fn<string | null, []>(
   () => null,
 );
 const mockIsPerpsControllerInitialized = jest.fn<boolean, [string?]>(
   () => false,
 );
-const mockIsPerpsControllerInitializationCancelledError = jest.fn<
-  boolean,
-  [unknown]
->(() => false);
+const mockMarkPerpsControllerInitialized = jest.fn<void, [string]>();
 
 jest.mock('./getPerpsController', () => ({
-  getPerpsStreamingController: (...args: [string]) =>
-    mockGetPerpsStreamingController(...args),
   getPerpsControllerCurrentAddress: () =>
     mockGetPerpsControllerCurrentAddress(),
   isPerpsControllerInitialized: (...args: [string?]) =>
     mockIsPerpsControllerInitialized(...args),
-  isPerpsControllerInitializationCancelledError: (...args: [unknown]) =>
-    mockIsPerpsControllerInitializationCancelledError(...args),
+  markPerpsControllerInitialized: (...args: [string]) =>
+    mockMarkPerpsControllerInitialized(...args),
+}));
+
+const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 jest.mock('./CandleStreamChannel', () => ({
   CandleStreamChannel: jest.fn().mockImplementation(() => ({
-    setController: jest.fn(),
     clearAll: jest.fn(),
   })),
 }));
-
-type MockController = {
-  subscribeToPositions: jest.Mock;
-  subscribeToOrders: jest.Mock;
-  subscribeToAccount: jest.Mock;
-  getMarketDataWithPrices: jest.Mock;
-};
-
-function createMockController(): MockController {
-  return {
-    subscribeToPositions: jest.fn(() => jest.fn()),
-    subscribeToOrders: jest.fn(() => jest.fn()),
-    subscribeToAccount: jest.fn(() => jest.fn()),
-    getMarketDataWithPrices: jest.fn().mockResolvedValue([]),
-  };
-}
 
 function makePosition(
   symbol: string,
@@ -80,14 +64,11 @@ function makePosition(
 
 describe('PerpsStreamManager', () => {
   let manager: PerpsStreamManager;
-  let controller: MockController;
 
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
 
-    controller = createMockController();
-    mockGetPerpsStreamingController.mockResolvedValue(controller);
     mockGetPerpsControllerCurrentAddress.mockReturnValue(null);
     mockIsPerpsControllerInitialized.mockReturnValue(false);
 
@@ -105,173 +86,195 @@ describe('PerpsStreamManager', () => {
       expect(manager.orders.getCachedData()).toEqual([]);
       expect(manager.account.getCachedData()).toBeNull();
       expect(manager.markets.getCachedData()).toEqual([]);
+      expect(manager.prices.getCachedData()).toEqual([]);
+      expect(manager.orderBook.getCachedData()).toBeNull();
     });
   });
 
   describe('init', () => {
-    it('returns early when address is empty', async () => {
+    it('returns early when address is empty', () => {
       const consoleSpy = jest
         .spyOn(console, 'warn')
         .mockImplementation(() => undefined);
 
-      await manager.init('');
+      manager.init('');
 
-      expect(mockGetPerpsStreamingController).not.toHaveBeenCalled();
+      expect(mockMarkPerpsControllerInitialized).not.toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('No address provided'),
       );
       consoleSpy.mockRestore();
     });
 
-    it('returns early when same address is already initialized', async () => {
+    it('returns early when same address is already initialized', () => {
       mockGetPerpsControllerCurrentAddress.mockReturnValue('0xaaa');
       mockIsPerpsControllerInitialized.mockReturnValue(true);
 
-      await manager.init('0xaaa');
+      manager.init('0xaaa');
 
-      expect(mockGetPerpsStreamingController).not.toHaveBeenCalled();
+      expect(mockMarkPerpsControllerInitialized).not.toHaveBeenCalled();
     });
 
-    it('calls getPerpsController with the address', async () => {
-      await manager.init('0xaaa');
+    it('calls markPerpsControllerInitialized with the address', () => {
+      manager.init('0xaaa');
 
-      expect(mockGetPerpsStreamingController).toHaveBeenCalledWith('0xaaa');
+      expect(mockMarkPerpsControllerInitialized).toHaveBeenCalledWith('0xaaa');
     });
 
-    it('wires positions channel to controller', async () => {
-      await manager.init('0xaaa');
+    it('calls perpsSubscriberChange(1) on init', () => {
+      manager.init('0xaaa');
 
-      const cb = jest.fn();
-      manager.positions.subscribe(cb);
-
-      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSubscriberChange',
+        [1],
+      );
     });
 
-    it('wires orders channel to controller', async () => {
-      await manager.init('0xaaa');
-
-      const cb = jest.fn();
-      manager.orders.subscribe(cb);
-
-      expect(controller.subscribeToOrders).toHaveBeenCalledTimes(1);
-    });
-
-    it('wires account channel to controller', async () => {
-      await manager.init('0xaaa');
-
-      const cb = jest.fn();
-      manager.account.subscribe(cb);
-
-      expect(controller.subscribeToAccount).toHaveBeenCalledTimes(1);
-    });
-
-    it('wires markets channel to fetch via controller.getMarketDataWithPrices', async () => {
-      controller.getMarketDataWithPrices.mockResolvedValue([
-        { symbol: 'BTC', price: '50000' },
-      ]);
-
-      await manager.init('0xaaa');
-
-      const cb = jest.fn();
-      manager.markets.subscribe(cb);
-
-      await jest.advanceTimersByTimeAsync(0);
-
-      expect(controller.getMarketDataWithPrices).toHaveBeenCalled();
-    });
-
-    it('clears caches and prewarm when address changes', async () => {
+    it('clears caches when address changes', () => {
       mockGetPerpsControllerCurrentAddress.mockReturnValue('0xold');
 
       const clearSpy = jest.spyOn(manager, 'clearAllCaches');
 
-      await manager.init('0xnew');
+      manager.init('0xnew');
 
       expect(clearSpy).toHaveBeenCalledTimes(1);
       clearSpy.mockRestore();
     });
 
-    it('does not clear caches when initializing from null address', async () => {
+    it('calls perpsSubscriberChange(-1) then (+1) when address changes', () => {
+      mockGetPerpsControllerCurrentAddress.mockReturnValue('0xold');
+
+      manager.init('0xnew');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSubscriberChange',
+        [-1],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSubscriberChange',
+        [1],
+      );
+    });
+
+    it('does not clear caches when initializing from null address', () => {
       mockGetPerpsControllerCurrentAddress.mockReturnValue(null);
 
       const clearSpy = jest.spyOn(manager, 'clearAllCaches');
 
-      await manager.init('0xaaa');
+      manager.init('0xaaa');
 
       expect(clearSpy).not.toHaveBeenCalled();
       clearSpy.mockRestore();
     });
+  });
 
-    it('rethrows cancellation errors', async () => {
-      const cancelError = new Error('cancelled');
-      mockGetPerpsStreamingController.mockRejectedValue(cancelError);
-      mockIsPerpsControllerInitializationCancelledError.mockReturnValue(true);
+  describe('handleBackgroundUpdate', () => {
+    it('routes positions channel to positions.pushData', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
 
-      await expect(manager.init('0xaaa')).rejects.toThrow('cancelled');
+      const positions = [makePosition('BTC')];
+      manager.handleBackgroundUpdate({ channel: 'positions', data: positions });
+
+      expect(cb).toHaveBeenCalledWith(positions);
     });
 
-    it('rethrows non-cancellation errors', async () => {
+    it('routes orders channel to orders.pushData', () => {
+      const cb = jest.fn();
+      manager.orders.subscribe(cb);
+
+      const orders = [{ id: '1' }];
+      manager.handleBackgroundUpdate({ channel: 'orders', data: orders });
+
+      expect(cb).toHaveBeenCalledWith(orders);
+    });
+
+    it('routes account channel to account.pushData', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      const account = { totalBalance: '1000' };
+      manager.handleBackgroundUpdate({ channel: 'account', data: account });
+
+      expect(cb).toHaveBeenCalledWith(account);
+    });
+
+    it('routes prices channel to prices.pushData', () => {
+      const cb = jest.fn();
+      manager.prices.subscribe(cb);
+
+      const prices = [{ symbol: 'BTC', price: '50000' }];
+      manager.handleBackgroundUpdate({ channel: 'prices', data: prices });
+
+      expect(cb).toHaveBeenCalledWith(prices);
+    });
+
+    it('routes orderBook channel to orderBook.pushData', () => {
+      const cb = jest.fn();
+      manager.orderBook.subscribe(cb);
+
+      const orderBook = { bids: [], asks: [] };
+      manager.handleBackgroundUpdate({ channel: 'orderBook', data: orderBook });
+
+      expect(cb).toHaveBeenCalledWith(orderBook);
+    });
+
+    it('routes candles channel to candles.pushFromBackground', () => {
+      const pushFromBackground = jest.fn();
+      (manager.candles as unknown as { pushFromBackground: jest.Mock }).pushFromBackground = pushFromBackground;
+
+      const candleData = { open: '100', close: '110', high: '115', low: '98', volume: '1000', timestamp: 1000 };
+      manager.handleBackgroundUpdate({
+        channel: 'candles',
+        data: candleData,
+        symbol: 'BTC',
+        interval: '1m' as import('@metamask/perps-controller').CandlePeriod,
+      });
+
+      expect(pushFromBackground).toHaveBeenCalledWith({
+        symbol: 'BTC',
+        interval: '1m',
+        data: candleData,
+      });
+    });
+
+    it('ignores candles channel without symbol or interval', () => {
+      const pushFromBackground = jest.fn();
+      (manager.candles as unknown as { pushFromBackground: jest.Mock }).pushFromBackground = pushFromBackground;
+
+      manager.handleBackgroundUpdate({ channel: 'candles', data: {} });
+
+      expect(pushFromBackground).not.toHaveBeenCalled();
+    });
+
+    it('warns on unknown channel', () => {
       const consoleSpy = jest
-        .spyOn(console, 'error')
+        .spyOn(console, 'warn')
         .mockImplementation(() => undefined);
 
-      mockGetPerpsStreamingController.mockRejectedValue(new Error('network'));
-      mockIsPerpsControllerInitializationCancelledError.mockReturnValue(false);
-
-      await expect(manager.init('0xaaa')).rejects.toThrow('network');
-      consoleSpy.mockRestore();
-    });
-
-    it('markets connectFn handles empty result gracefully', async () => {
-      controller.getMarketDataWithPrices.mockResolvedValue([]);
-
-      await manager.init('0xaaa');
-
-      const cb = jest.fn();
-      manager.markets.subscribe(cb);
-
-      await jest.advanceTimersByTimeAsync(0);
-
-      expect(cb).toHaveBeenCalledWith([]);
-    });
-
-    it('markets connectFn handles controller error gracefully', async () => {
-      const consoleSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-
-      controller.getMarketDataWithPrices.mockRejectedValue(new Error('fail'));
-
-      await manager.init('0xaaa');
-
-      const cb = jest.fn();
-      manager.markets.subscribe(cb);
-
-      await jest.advanceTimersByTimeAsync(0);
+      manager.handleBackgroundUpdate({ channel: 'unknown', data: {} });
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to fetch markets'),
-        expect.any(Error),
+        expect.stringContaining('Unknown channel'),
+        'unknown',
       );
       consoleSpy.mockRestore();
     });
   });
 
   describe('setOptimisticTPSL / applyOptimisticOverrides', () => {
-    it('overrides position TP/SL in positions stream', async () => {
-      await manager.init('0xaaa');
-
+    it('overrides position TP/SL in positions stream after block period', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
-
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
       jest.advanceTimersByTime(3100);
 
-      positionsCallback([makePosition('BTC')]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
 
       expect(cb).toHaveBeenCalledTimes(1);
       const delivered = cb.mock.calls[0][0] as Position[];
@@ -279,133 +282,109 @@ describe('PerpsStreamManager', () => {
       expect(delivered[0].stopLossPrice).toBe('80');
     });
 
-    it('blocks WebSocket pushes during WEBSOCKET_BLOCK_MS window', async () => {
-      await manager.init('0xaaa');
-
+    it('blocks WebSocket pushes during WEBSOCKET_BLOCK_MS window', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
-
       manager.setOptimisticTPSL('BTC', '120', '80');
 
-      positionsCallback([makePosition('BTC')]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
 
       expect(cb).not.toHaveBeenCalled();
     });
 
-    it('allows WebSocket pushes after WEBSOCKET_BLOCK_MS', async () => {
-      await manager.init('0xaaa');
-
+    it('allows WebSocket pushes after WEBSOCKET_BLOCK_MS', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
-
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
       jest.advanceTimersByTime(3100);
 
-      positionsCallback([makePosition('BTC')]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
 
       expect(cb).toHaveBeenCalledTimes(1);
     });
 
-    it('clears override when WebSocket data matches expected values', async () => {
-      await manager.init('0xaaa');
-
+    it('clears override when WebSocket data matches expected values', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
-
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
       jest.advanceTimersByTime(3100);
 
-      positionsCallback([
-        makePosition('BTC', {
-          takeProfitPrice: '120',
-          stopLossPrice: '80',
-        }),
-      ]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' })],
+      });
 
       cb.mockClear();
 
       jest.advanceTimersByTime(100);
-      positionsCallback([
-        makePosition('BTC', {
-          takeProfitPrice: '120',
-          stopLossPrice: '80',
-        }),
-      ]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' })],
+      });
 
       const second = cb.mock.calls[0][0] as Position[];
       expect(second[0].takeProfitPrice).toBe('120');
       expect(second[0].stopLossPrice).toBe('80');
     });
 
-    it('does not apply overrides to positions without matching symbol', async () => {
-      await manager.init('0xaaa');
-
+    it('does not apply overrides to positions without matching symbol', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
-
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
       jest.advanceTimersByTime(3100);
 
-      positionsCallback([makePosition('ETH')]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('ETH')],
+      });
 
       const delivered = cb.mock.calls[0][0] as Position[];
       expect(delivered[0].takeProfitPrice).toBeUndefined();
       expect(delivered[0].stopLossPrice).toBeUndefined();
     });
 
-    it('expires overrides after TTL (30 seconds)', async () => {
-      await manager.init('0xaaa');
-
+    it('expires overrides after TTL (30 seconds)', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
-
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
       jest.advanceTimersByTime(31000);
 
-      positionsCallback([makePosition('BTC')]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
 
       const delivered = cb.mock.calls[0][0] as Position[];
       expect(delivered[0].takeProfitPrice).toBeUndefined();
     });
 
-    it('matches values by parseFloat equivalence', async () => {
-      await manager.init('0xaaa');
-
+    it('matches values by parseFloat equivalence', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
-
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120.00', '80.00');
 
       jest.advanceTimersByTime(3100);
 
-      positionsCallback([
-        makePosition('BTC', {
-          takeProfitPrice: '120',
-          stopLossPrice: '80',
-        }),
-      ]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' })],
+      });
 
       const delivered = cb.mock.calls[0][0] as Position[];
       expect(delivered[0].takeProfitPrice).toBe('120');
@@ -414,21 +393,19 @@ describe('PerpsStreamManager', () => {
   });
 
   describe('clearOptimisticTPSL', () => {
-    it('removes the override for the given symbol', async () => {
-      await manager.init('0xaaa');
-
+    it('removes the override for the given symbol', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
-
-      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
-        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
       manager.clearOptimisticTPSL('BTC');
 
       jest.advanceTimersByTime(3100);
 
-      positionsCallback([makePosition('BTC')]);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
 
       const delivered = cb.mock.calls[0][0] as Position[];
       expect(delivered[0].takeProfitPrice).toBeUndefined();
@@ -489,9 +466,7 @@ describe('PerpsStreamManager', () => {
   });
 
   describe('prewarm / cleanupPrewarm / isPrewarming', () => {
-    it('starts prewarming all channels', async () => {
-      await manager.init('0xaaa');
-
+    it('starts prewarming all channels', () => {
       manager.prewarm();
 
       expect(manager.isPrewarming()).toBe(true);
@@ -499,20 +474,18 @@ describe('PerpsStreamManager', () => {
       expect(manager.orders.isPrewarming()).toBe(true);
       expect(manager.account.isPrewarming()).toBe(true);
       expect(manager.markets.isPrewarming()).toBe(true);
+      expect(manager.prices.isPrewarming()).toBe(true);
+      expect(manager.orderBook.isPrewarming()).toBe(true);
     });
 
-    it('is idempotent — second prewarm is a no-op', async () => {
-      await manager.init('0xaaa');
-
+    it('is idempotent — second prewarm is a no-op', () => {
       manager.prewarm();
       manager.prewarm();
 
       expect(manager.isPrewarming()).toBe(true);
     });
 
-    it('stops prewarming on cleanupPrewarm', async () => {
-      await manager.init('0xaaa');
-
+    it('stops prewarming on cleanupPrewarm', () => {
       manager.prewarm();
       manager.cleanupPrewarm();
 
@@ -525,11 +498,11 @@ describe('PerpsStreamManager', () => {
   });
 
   describe('clearAllCaches', () => {
-    it('resets all channel caches to initial values', async () => {
-      await manager.init('0xaaa');
-
+    it('resets all channel caches to initial values', () => {
       manager.positions.pushData([makePosition('BTC')]);
+      manager.prices.pushData([{ symbol: 'BTC', price: '50000' } as import('@metamask/perps-controller').PriceUpdate]);
       expect(manager.positions.getCachedData()).toHaveLength(1);
+      expect(manager.prices.getCachedData()).toHaveLength(1);
 
       manager.clearAllCaches();
 
@@ -537,13 +510,13 @@ describe('PerpsStreamManager', () => {
       expect(manager.orders.getCachedData()).toEqual([]);
       expect(manager.account.getCachedData()).toBeNull();
       expect(manager.markets.getCachedData()).toEqual([]);
+      expect(manager.prices.getCachedData()).toEqual([]);
+      expect(manager.orderBook.getCachedData()).toBeNull();
     });
   });
 
   describe('reset', () => {
-    it('clears caches, prewarm, and overrides', async () => {
-      await manager.init('0xaaa');
-
+    it('clears caches, prewarm, and overrides', () => {
       manager.prewarm();
       manager.setOptimisticTPSL('BTC', '120', '80');
       manager.positions.pushData([makePosition('BTC')]);

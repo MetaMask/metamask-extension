@@ -1,7 +1,8 @@
 /**
  * CandleStreamChannel - Multiplexer/cache for candlestick data streams
  *
- * Sits between the PerpsController and React hooks. Provides:
+ * Sits between PerpsStreamManager (which receives background notifications)
+ * and React hooks. Provides:
  * - Subscription deduplication per symbol+interval key
  * - Per-key caching with immediate delivery to new subscribers
  * - Per-subscriber throttling (first update always immediate)
@@ -12,16 +13,13 @@
  * Cache key format: "${symbol}-${interval}" (e.g., "BTC-1h")
  */
 
-import type {
-  CandleData,
-  PerpsController,
-  SubscribeCandlesParams,
-} from '@metamask/perps-controller';
+import type { CandleData } from '@metamask/perps-controller';
 import {
   type CandlePeriod,
   type TimeDuration,
   calculateCandleCount,
 } from '../../components/app/perps/constants/chartConfig';
+import { submitRequestToBackground } from '../../store/background-connection';
 
 /** Maximum total candles to keep in memory per key */
 const MAX_CANDLES_IN_MEMORY = 1000;
@@ -80,17 +78,6 @@ function parseCacheKey(key: string): {
 
 export class CandleStreamChannel {
   private readonly channels = new Map<string, ChannelEntry>();
-
-  private controller: PerpsController | null = null;
-
-  /**
-   * Set the controller reference. Called from PerpsStreamManager.init().
-   *
-   * @param controller - PerpsController instance
-   */
-  setController(controller: PerpsController): void {
-    this.controller = controller;
-  }
 
   /**
    * Subscribe to candle data for a symbol+interval pair.
@@ -154,8 +141,8 @@ export class CandleStreamChannel {
       subscriber.lastDeliveryTime = Date.now();
     }
 
-    // Connect to controller if first subscriber and not already connected
-    if (!entry.isConnected && this.controller) {
+    // Connect to background streaming if first subscriber and not already connected
+    if (!entry.isConnected) {
       this.connect(key, entry, onError);
     }
 
@@ -198,10 +185,6 @@ export class CandleStreamChannel {
     interval: CandlePeriod,
     duration: TimeDuration,
   ): Promise<void> {
-    if (!this.controller) {
-      return;
-    }
-
     const key = cacheKey(symbol, interval);
     const entry = this.channels.get(key);
 
@@ -219,12 +202,10 @@ export class CandleStreamChannel {
     const limit = Math.min(Math.max(rawLimit, LOAD_MORE_MIN), LOAD_MORE_MAX);
 
     try {
-      const olderData = await this.controller.fetchHistoricalCandles({
-        symbol,
-        interval,
-        limit,
-        endTime,
-      });
+      const olderData = await submitRequestToBackground<CandleData>(
+        'perpsFetchHistoricalCandles',
+        [{ symbol, interval, limit, endTime }],
+      );
 
       if (!olderData?.candles?.length) {
         return;
@@ -271,14 +252,44 @@ export class CandleStreamChannel {
   }
 
   /**
-   * Re-establish all active subscriptions.
+   * Push candle data from a background notification.
+   * Updates the cache for the given symbol+interval key and notifies subscribers.
+   *
+   * @param params - Background notification payload
+   * @param params.symbol - Asset symbol (e.g., "BTC")
+   * @param params.interval - Candle period (e.g., "1h")
+   * @param params.data - CandleData from the background controller
+   */
+  pushFromBackground({
+    symbol,
+    interval,
+    data,
+  }: {
+    symbol: string;
+    interval: CandlePeriod;
+    data: CandleData;
+  }): void {
+    const key = cacheKey(symbol, interval);
+    let entry = this.channels.get(key);
+    if (!entry) {
+      entry = {
+        cache: null,
+        subscribers: new Map(),
+        unsubscribeFromSource: null,
+        isConnected: false,
+        duration: undefined,
+      };
+      this.channels.set(key, entry);
+    }
+    entry.cache = data;
+    this.notifySubscribers(entry, data);
+  }
+
+  /**
+   * Re-establish all active subscriptions via background streaming.
    * Called after WebSocket reconnect to restore live data.
    */
   reconnect(): void {
-    if (!this.controller) {
-      return;
-    }
-
     for (const [key, entry] of this.channels.entries()) {
       // Only reconnect channels that have active subscribers
       if (entry.subscribers.size > 0) {
@@ -289,7 +300,7 @@ export class CandleStreamChannel {
         }
         entry.isConnected = false;
 
-        // Reconnect
+        // Re-activate background stream for this key
         this.connect(key, entry);
       }
     }
@@ -312,7 +323,6 @@ export class CandleStreamChannel {
       this.disconnect(key, entry);
     }
     this.channels.clear();
-    this.controller = null;
   }
 
   /**
@@ -325,9 +335,9 @@ export class CandleStreamChannel {
   private connect(
     key: string,
     entry: ChannelEntry,
-    onError?: (error: Error) => void,
+    _onError?: (error: Error) => void,
   ): void {
-    if (!this.controller || entry.isConnected) {
+    if (entry.isConnected) {
       return;
     }
 
@@ -335,22 +345,22 @@ export class CandleStreamChannel {
 
     entry.isConnected = true;
 
-    const subscribeParams: SubscribeCandlesParams = {
-      symbol,
-      interval,
-      duration: entry.duration,
-      callback: (data: CandleData) => {
-        // Update cache (immutable — new object triggers React re-renders)
-        entry.cache = data;
+    // Tell the background to start emitting candle updates for this key.
+    // Data arrives via perpsStreamUpdate { channel: 'candles', symbol, interval, data }
+    // which is routed to CandleStreamChannel.pushFromBackground().
+    submitRequestToBackground('perpsActivateStreaming', [
+      { candle: { symbol, interval, duration: entry.duration } },
+    ]).catch((err) => {
+      console.warn(
+        `[CandleStreamChannel] Failed to activate streaming for ${key}:`,
+        err,
+      );
+      entry.isConnected = false;
+    });
 
-        // Notify all subscribers (with per-subscriber throttling)
-        this.notifySubscribers(entry, data);
-      },
-      onError,
-    };
-
-    entry.unsubscribeFromSource =
-      this.controller.subscribeToCandles(subscribeParams);
+    // Set a no-op unsubscribe (background handles cleanup on stream close)
+    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+    entry.unsubscribeFromSource = () => {};
   }
 
   /**

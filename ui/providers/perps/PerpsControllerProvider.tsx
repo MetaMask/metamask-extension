@@ -12,7 +12,6 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getPerpsControllerFacade,
   getPerpsStreamingController,
-  isPerpsControllerInitializationCancelledError,
 } from './getPerpsController';
 import { getPerpsStreamManager } from './PerpsStreamManager';
 
@@ -37,7 +36,8 @@ export type PerpsControllerProviderProps = {
  * Provider component for PerpsController.
  *
  * Wrap your Perps UI components with this provider to enable
- * direct controller access for real-time data subscriptions.
+ * controller access for mutations (placeOrder, closePosition, etc.).
+ * For real-time data, use the stream hooks (usePerpsLivePositions, etc.).
  *
  * @param props - Component props
  * @param props.children - Child components to wrap
@@ -81,28 +81,21 @@ export function PerpsControllerProvider({
     let isMounted = true;
 
     // Background controller is the single init authority.
-    // UI streaming controller is created only after background init succeeds.
+    // UI facade is created immediately after background init succeeds.
     submitRequestToBackground('perpsInit')
-      .then(() => getPerpsStreamingController(selectedAddress, store))
+      .then(() => getPerpsStreamingController(selectedAddress))
       .then((ctrl) => {
         if (!isMounted) {
           return;
         }
         setController(ctrl);
         setError(null);
-        return streamManager.init(selectedAddress);
-      })
-      .then(() => {
-        if (isMounted) {
-          streamManager.prewarm();
-        }
+        // streamManager.init is now synchronous
+        streamManager.init(selectedAddress);
+        streamManager.prewarm();
       })
       .catch((err) => {
         if (isMounted) {
-          if (isPerpsControllerInitializationCancelledError(err)) {
-            return;
-          }
-
           console.error(
             '[PerpsControllerProvider] Initialization failed:',
             err,
@@ -151,19 +144,14 @@ export function PerpsControllerProvider({
  * and smooth navigation, prefer the stream hooks (usePerpsLivePositions,
  * usePerpsLiveOrders, etc.) which use the PerpsStreamManager.
  *
- * @returns The PerpsController instance
+ * @returns The PerpsController facade (mutations only; use stream hooks for live data)
  * @throws Error if used outside PerpsControllerProvider
  * @example
  * ```tsx
- * function AccountBalance() {
+ * function PlaceOrderButton() {
  *   const controller = usePerpsController();
- *
- *   useEffect(() => {
- *     const unsubscribe = controller.subscribeToAccount({
- *       callback: (account) => console.log('Balance:', account.totalBalance),
- *     });
- *     return unsubscribe;
- *   }, [controller]);
+ *   const handleClick = () => controller.placeOrder(orderParams);
+ *   return <button onClick={handleClick}>Place Order</button>;
  * }
  * ```
  */

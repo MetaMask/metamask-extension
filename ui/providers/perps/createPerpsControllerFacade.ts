@@ -1,35 +1,23 @@
 /**
- * Perps Controller Facade (Option B)
+ * Perps Controller Facade (Phase 2)
  *
- * Wraps the UI-side streaming PerpsController so that:
- * Streaming methods (subscribeToPositions, subscribeToPrices, etc.) are forwarded
- * to the real controller (callbacks stay UI-side).
- * All other methods (placeOrder, updateMargin, getPositions, etc.) delegate to
- * the background controller via submitRequestToBackground('perpsX', [args]).
+ * Phase 2: No streaming methods are forwarded to a UI-side controller.
+ * All streaming data flows through background notifications →
+ * PerpsStreamManager.handleBackgroundUpdate() → React hooks.
  *
- * This allows UI code to call controller.placeOrder(...) instead of
- * submitRequestToBackground('perpsPlaceOrder', [...]). State reads should still
- * use Redux selectors from ui/selectors/perps-controller.ts.
+ * This facade delegates all method calls to the background controller
+ * via submitRequestToBackground('perpsX', [args]).
+ *
+ * State reads should still use Redux selectors from ui/selectors/perps-controller.ts.
  */
 
 import type { PerpsController } from '@metamask/perps-controller';
 import { PERPS_API_METHOD_MAP } from '../../../shared/constants/perps-api';
 import { submitRequestToBackground } from '../../store/background-connection';
 
-const STREAMING_METHODS = [
-  'subscribeToPositions',
-  'subscribeToOrders',
-  'subscribeToAccount',
-  'subscribeToPrices',
-  'subscribeToOrderBook',
-  'subscribeToOrderFills',
-  'subscribeToCandles',
-] as const;
-
 /**
  * Methods that the facade handles specially rather than auto-delegating.
- * - init: wired explicitly at facade construction
- * - disconnect: forwarded to the UI streaming controller, not the background
+ * - init: wired explicitly
  * - depositWithConfirmation: custom return-value handling
  */
 const FACADE_SPECIAL_METHODS = new Set<string>([
@@ -46,29 +34,24 @@ function createDelegateMethod<TResult>(
 }
 
 /**
- * Creates a facade around the streaming PerpsController. Streaming methods are
- * forwarded to the real controller; all other methods delegate to the background
- * via submitRequestToBackground.
+ * Creates a facade for the PerpsController that delegates all calls to the
+ * background via submitRequestToBackground. No UI-side streaming controller
+ * is needed — all stream data arrives via perpsStreamUpdate notifications.
  *
- * @param streamingController - The UI-side streaming controller instance
+ * @param _streamingController - Unused in Phase 2 (pass null)
  * @returns An object compatible with PerpsController for UI use
  */
 export function createPerpsControllerFacade(
-  streamingController: PerpsController,
+  _streamingController: PerpsController | null,
 ): PerpsController {
   const facade = {
     get state() {
-      return streamingController.state;
-    },
-
-    get messenger() {
-      return (streamingController as unknown as { messenger: unknown })
-        .messenger;
+      return {} as PerpsController['state'];
     },
 
     init: createDelegateMethod<void>('perpsInit'),
 
-    disconnect: () => streamingController.disconnect(),
+    disconnect: createDelegateMethod<void>('perpsDisconnect'),
 
     depositWithConfirmation: async (...args: unknown[]) => {
       const transactionId = await submitRequestToBackground<string | null>(
@@ -78,15 +61,6 @@ export function createPerpsControllerFacade(
       return transactionId;
     },
   } as Record<string, unknown>;
-
-  for (const method of STREAMING_METHODS) {
-    const fn = (streamingController as unknown as Record<string, unknown>)[
-      method
-    ];
-    if (typeof fn === 'function') {
-      facade[method] = fn.bind(streamingController);
-    }
-  }
 
   for (const [methodName, actionName] of Object.entries(PERPS_API_METHOD_MAP)) {
     if (FACADE_SPECIAL_METHODS.has(methodName)) {

@@ -30,20 +30,25 @@ import type {
   Order,
   AccountState,
   PerpsMarketData,
+  PriceUpdate,
+  OrderBookData,
+  CandleData,
+  CandlePeriod,
 } from '@metamask/perps-controller';
 import {
-  getPerpsStreamingController,
   getPerpsControllerCurrentAddress,
   isPerpsControllerInitialized,
-  isPerpsControllerInitializationCancelledError,
+  markPerpsControllerInitialized,
 } from './getPerpsController';
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
+import { submitRequestToBackground } from '../../store/background-connection';
 
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
 const EMPTY_ORDERS: Order[] = [];
 const EMPTY_MARKETS: PerpsMarketData[] = [];
+const EMPTY_PRICES: PriceUpdate[] = [];
 
 /**
  * Placeholder noop function for channel initialization.
@@ -80,6 +85,10 @@ class PerpsStreamManager {
 
   markets: PerpsDataChannel<PerpsMarketData[]>;
 
+  prices: PerpsDataChannel<PriceUpdate[]>;
+
+  orderBook: PerpsDataChannel<OrderBookData | null>;
+
   // Candle stream channel (multiplexed by symbol+interval)
   candles: CandleStreamChannel;
 
@@ -96,30 +105,87 @@ class PerpsStreamManager {
   private lastOptimisticUpdateTime = 0;
 
   constructor() {
-    // Initialize channels with placeholder connect functions
-    // Real connect functions are set when init() is called
     this.positions = new PerpsDataChannel<Position[]>({
-      connectFn: placeholderConnectFn,
+      connectFn: (push) => {
+        submitRequestToBackground<Position[]>('perpsGetPositions', [])
+          .then((data) => {
+            push(data ?? EMPTY_POSITIONS);
+          })
+          .catch((err) => {
+            console.error('[PerpsStreamManager] Failed to fetch positions', err);
+            push(EMPTY_POSITIONS);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
+      },
       initialValue: EMPTY_POSITIONS,
       name: 'positions',
     });
 
     this.orders = new PerpsDataChannel<Order[]>({
-      connectFn: placeholderConnectFn,
+      connectFn: (push) => {
+        submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
+          .then((data) => {
+            push(data ?? EMPTY_ORDERS);
+          })
+          .catch((err) => {
+            console.error('[PerpsStreamManager] Failed to fetch orders', err);
+            push(EMPTY_ORDERS);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
+      },
       initialValue: EMPTY_ORDERS,
       name: 'orders',
     });
 
     this.account = new PerpsDataChannel<AccountState | null>({
-      connectFn: placeholderConnectFn,
+      connectFn: (push) => {
+        submitRequestToBackground<AccountState>('perpsGetAccountState', [])
+          .then((data) => {
+            console.debug('[perps:account] REST totalBalance=%s availableBalance=%s unrealizedPnl=%s', data?.totalBalance, data?.availableBalance, data?.unrealizedPnl);
+            push(data ?? null);
+          })
+          .catch((err) => {
+            console.error('[PerpsStreamManager] Failed to fetch account', err);
+            push(null);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
+      },
       initialValue: null,
       name: 'account',
     });
 
     this.markets = new PerpsDataChannel<PerpsMarketData[]>({
-      connectFn: placeholderConnectFn,
+      connectFn: (push) => {
+        submitRequestToBackground<PerpsMarketData[]>(
+          'perpsGetMarketDataWithPrices',
+          [],
+        )
+          .then((data) => {
+            push(data ?? EMPTY_MARKETS);
+          })
+          .catch((err) => {
+            console.error('[PerpsStreamManager] Failed to fetch markets', err);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
+      },
       initialValue: EMPTY_MARKETS,
       name: 'markets',
+    });
+
+    this.prices = new PerpsDataChannel<PriceUpdate[]>({
+      connectFn: placeholderConnectFn,
+      initialValue: EMPTY_PRICES,
+      name: 'prices',
+    });
+
+    this.orderBook = new PerpsDataChannel<OrderBookData | null>({
+      connectFn: placeholderConnectFn,
+      initialValue: null,
+      name: 'orderBook',
     });
 
     this.candles = new CandleStreamChannel();
@@ -236,11 +302,13 @@ class PerpsStreamManager {
 
   /**
    * Initialize the stream manager for a specific address.
-   * If address changes, reinitializes with cleared cache.
+   * In Phase 2, all stream data arrives via background notifications —
+   * no UI controller is created. This simply records the address and
+   * clears caches when the address changes.
    *
    * @param address - The selected account address
    */
-  async init(address: string): Promise<void> {
+  init(address: string): void {
     if (!address) {
       console.warn('[PerpsStreamManager] No address provided');
       return;
@@ -263,94 +331,86 @@ class PerpsStreamManager {
     ) {
       this.clearAllCaches();
       this.cleanupPrewarm();
-    }
-
-    // Wire up the channels to the controller
-    // getPerpsController handles all initialization and address-change logic
-    await this.doInit(address);
-  }
-
-  /**
-   * Internal initialization logic
-   *
-   * @param address
-   */
-  private async doInit(address: string): Promise<void> {
-    try {
-      const controller = await getPerpsStreamingController(address);
-
-      // Wire up channel connect functions to controller subscriptions
-      // Wrap positions callback to apply optimistic TP/SL overrides
-      this.positions.setConnectFn((callback) =>
-        controller.subscribeToPositions({
-          callback: (positions) => {
-            const now = Date.now();
-            const inBlockPeriod =
-              now - this.lastOptimisticUpdateTime < WEBSOCKET_BLOCK_MS;
-
-            // During block period with active overrides, ignore WebSocket pushes
-            // to prevent stale data from overwriting our optimistic update
-            if (inBlockPeriod && this.optimisticTPSLOverrides.size > 0) {
-              return;
-            }
-
-            const withOverrides = this.applyOptimisticOverrides(positions);
-            callback(withOverrides);
-          },
-        }),
-      );
-
-      this.orders.setConnectFn((callback) =>
-        controller.subscribeToOrders({ callback }),
-      );
-
-      this.account.setConnectFn((callback) =>
-        controller.subscribeToAccount({ callback }),
-      );
-
-      this.markets.setConnectFn((callback) => {
-        let isCancelled = false;
-
-        const fetchMarkets = async () => {
-          if (isCancelled) {
-            return;
-          }
-          try {
-            const data = await controller.getMarketDataWithPrices();
-            if (!isCancelled) {
-              callback(data);
-            }
-          } catch (error) {
-            console.error(
-              '[PerpsStreamManager] Failed to fetch markets:',
-              error,
-            );
-          }
-        };
-
-        fetchMarkets();
-
-        return () => {
-          isCancelled = true;
-        };
+      // Decrement old subscriber count
+      submitRequestToBackground('perpsSubscriberChange', [-1]).catch(() => {
+        // Ignore
       });
+    }
 
-      // Wire candle stream channel to controller
-      this.candles.setController(controller);
-    } catch (error) {
-      if (isPerpsControllerInitializationCancelledError(error)) {
-        throw error;
+    markPerpsControllerInitialized(address);
+
+    // Tell the background this connection is active and wants stream updates
+    submitRequestToBackground('perpsSubscriberChange', [1]).catch(() => {
+      // Background not ready yet — updates will arrive once controller is initialized
+    });
+  }
+
+  /**
+   * Handle a background stream notification for any channel.
+   * Called from ui/index.js when a perpsStreamUpdate notification arrives.
+   *
+   * @param payload - The notification payload
+   * @param payload.channel - Which channel the data is for
+   * @param payload.data - The raw data payload
+   * @param payload.symbol - For candles: the asset symbol
+   * @param payload.interval - For candles: the candle period
+   */
+  handleBackgroundUpdate(payload: {
+    channel: string;
+    data: unknown;
+    symbol?: string;
+    interval?: CandlePeriod;
+  }): void {
+    const { channel, data } = payload;
+    switch (channel) {
+      case 'positions': {
+        const positions = data as Position[];
+        const now = Date.now();
+        const inBlockPeriod =
+          now - this.lastOptimisticUpdateTime < WEBSOCKET_BLOCK_MS;
+        if (inBlockPeriod && this.optimisticTPSLOverrides.size > 0) {
+          return;
+        }
+        const withOverrides = this.applyOptimisticOverrides(positions);
+        this.positions.pushData(withOverrides);
+        break;
       }
-
-      console.error('[PerpsStreamManager] Initialization failed:', error);
-      throw error;
+      case 'orders':
+        this.orders.pushData(data as Order[]);
+        break;
+      case 'account': {
+        const acc = data as AccountState | null;
+        console.debug('[perps:account] stream totalBalance=%s availableBalance=%s unrealizedPnl=%s', acc?.totalBalance, acc?.availableBalance, acc?.unrealizedPnl);
+        this.account.pushData(acc);
+        break;
+      }
+      case 'prices':
+        this.prices.pushData(data as PriceUpdate[]);
+        break;
+      case 'orderBook':
+        this.orderBook.pushData(data as OrderBookData);
+        break;
+      case 'candles': {
+        const { symbol, interval } = payload;
+        if (symbol && interval) {
+          this.candles.pushFromBackground({
+            symbol,
+            interval,
+            data: data as CandleData,
+          });
+        }
+        break;
+      }
+      default:
+        console.warn('[PerpsStreamManager] Unknown channel:', channel);
     }
   }
 
   /**
-   * Check if initialized for a specific address
+   * Check if the stream manager has been initialized for a specific address.
+   * In Phase 2, initialized means markPerpsControllerInitialized has been called.
    *
-   * @param address
+   * @param address - Optional address to check
    */
   isInitialized(address?: string): boolean {
     return isPerpsControllerInitialized(address);
@@ -378,6 +438,8 @@ class PerpsStreamManager {
       this.orders.prewarm(),
       this.account.prewarm(),
       this.markets.prewarm(),
+      this.prices.prewarm(),
+      this.orderBook.prewarm(),
     ];
   }
 
@@ -411,6 +473,8 @@ class PerpsStreamManager {
     this.orders.clearCache();
     this.account.clearCache();
     this.markets.clearCache();
+    this.prices.clearCache();
+    this.orderBook.clearCache();
     this.candles.clearAll();
   }
 
@@ -425,6 +489,8 @@ class PerpsStreamManager {
     this.orders.reset();
     this.account.reset();
     this.markets.reset();
+    this.prices.reset();
+    this.orderBook.reset();
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
   }

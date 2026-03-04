@@ -326,6 +326,7 @@ import {
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
 import { PerpsControllerInit } from './controller-init/perps-controller-init';
+import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -6611,9 +6612,41 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
+    // Per-connection Perps streaming bridge — manages subscription lifecycle
+    // for a single UI connection. See PerpsStreamBridge for details.
+    // Static subscriptions (positions/orders/account) are NOT registered here;
+    // they are registered in perpsInit after the controller provider is ready.
+    const perpsController = this.controllersByName.PerpsController;
+    const perpsStream = perpsController
+      ? new PerpsStreamBridge((channel, data, extra) => {
+          if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+            return;
+          }
+          outStream.write({
+            jsonrpc: '2.0',
+            method: 'perpsStreamUpdate',
+            params: [{ channel, data, ...extra }],
+          });
+        })
+      : null;
+
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      perpsInit: async (...args) => {
+        const result = await this.controllerApi.perpsInit(...args);
+        perpsStream?.activate(perpsController);
+        return result;
+      },
+      perpsSubscriberChange: (delta) => {
+        perpsStream?.subscriberChange(delta);
+      },
+      perpsActivateStreaming: (params) => {
+        if (perpsController && perpsStream) {
+          perpsStream.activateStreaming(perpsController, params);
+        }
+        return 'ok';
+      },
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
@@ -6663,6 +6696,7 @@ export default class MetamaskController extends EventEmitter {
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
+        perpsStream?.destroy();
       }
     };
 

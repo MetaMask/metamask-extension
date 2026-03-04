@@ -74,7 +74,6 @@ import {
   PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import { PerpsControllerProvider } from '../../providers/perps';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -329,6 +328,12 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
+// Perps: all components are lazy so that PerpsControllerProvider and the
+// entire provider chain (PerpsStreamManager, facade, etc.) stay out of the
+// common bundle and are only loaded when a user navigates to a Perps route.
+const PerpsLayout = mmLazy(
+  (() => import('../perps/perps-layout.tsx')) as unknown as DynamicImportType,
+);
 const PerpsHomePage = mmLazy(
   (() =>
     import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
@@ -352,33 +357,6 @@ const PerpsOrderEntryPage = mmLazy(
     import(
       '../perps/perps-order-entry-page.tsx'
     )) as unknown as DynamicImportType,
-);
-
-// Perps pages wrapped with PerpsControllerProvider (init, stream manager, prewarm)
-const WrappedPerpsHomePage = () => (
-  <PerpsControllerProvider>
-    <PerpsHomePage />
-  </PerpsControllerProvider>
-);
-const WrappedPerpsMarketDetailPage = () => (
-  <PerpsControllerProvider>
-    <PerpsMarketDetailPage />
-  </PerpsControllerProvider>
-);
-const WrappedMarketListView = () => (
-  <PerpsControllerProvider>
-    <MarketListView />
-  </PerpsControllerProvider>
-);
-const WrappedPerpsActivityPage = () => (
-  <PerpsControllerProvider>
-    <PerpsActivityPage />
-  </PerpsControllerProvider>
-);
-const WrappedPerpsOrderEntryPage = () => (
-  <PerpsControllerProvider>
-    <PerpsOrderEntryPage />
-  </PerpsControllerProvider>
 );
 
 // End Lazy Routes
@@ -875,7 +853,11 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: PERPS_HOME_ROUTE,
-        component: WrappedPerpsHomePage,
+        element: (
+          <PerpsLayout>
+            <PerpsHomePage />
+          </PerpsLayout>
+        ),
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
@@ -883,7 +865,11 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-        component: WrappedPerpsMarketDetailPage,
+        element: (
+          <PerpsLayout>
+            <PerpsMarketDetailPage />
+          </PerpsLayout>
+        ),
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
@@ -891,7 +877,11 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-        component: WrappedPerpsOrderEntryPage,
+        element: (
+          <PerpsLayout>
+            <PerpsOrderEntryPage />
+          </PerpsLayout>
+        ),
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
@@ -899,7 +889,11 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: PERPS_ACTIVITY_ROUTE,
-        component: WrappedPerpsActivityPage,
+        element: (
+          <PerpsLayout>
+            <PerpsActivityPage />
+          </PerpsLayout>
+        ),
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
@@ -907,7 +901,11 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: PERPS_MARKET_LIST_ROUTE,
-        component: WrappedMarketListView,
+        element: (
+          <PerpsLayout>
+            <MarketListView />
+          </PerpsLayout>
+        ),
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
