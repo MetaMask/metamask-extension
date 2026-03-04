@@ -5,12 +5,13 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
+  type EnvironmentType,
 } from '../../../shared/constants/app';
 
 /**
  * @see {@link getEnvironmentType}
  */
-const getEnvironmentTypeMemo = memoize((url: string) => {
+const getEnvironmentTypeMemo = memoize((url: string): EnvironmentType => {
   const parsedUrl = new URL(url);
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP;
@@ -39,7 +40,7 @@ const getEnvironmentTypeMemo = memoize((url: string) => {
  */
 export const getEnvironmentType = (
   url = globalThis.self?.location?.href ?? '',
-): string => {
+): EnvironmentType => {
   if (!url) {
     return ENVIRONMENT_TYPE_BACKGROUND;
   }
