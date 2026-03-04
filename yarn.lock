@@ -8155,7 +8155,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.14.0, @metamask/transaction-controller@npm:^62.16.0, @metamask/transaction-controller@npm:^62.17.0, @metamask/transaction-controller@npm:^62.17.1, @metamask/transaction-controller@npm:^62.18.0, @metamask/transaction-controller@npm:^62.19.0, @metamask/transaction-controller@npm:^62.7.0":
+"@metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.14.0, @metamask/transaction-controller@npm:^62.16.0, @metamask/transaction-controller@npm:^62.17.0, @metamask/transaction-controller@npm:^62.17.1, @metamask/transaction-controller@npm:^62.18.0, @metamask/transaction-controller@npm:^62.19.0":
   version: 62.19.0
   resolution: "@metamask/transaction-controller@npm:62.19.0"
   dependencies:
