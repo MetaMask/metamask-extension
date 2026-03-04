@@ -15,6 +15,11 @@
         "luxon": true
       }
     },
+    "framer-motion>@emotion/is-prop-valid": {
+      "packages": {
+        "framer-motion>@emotion/is-prop-valid>@emotion/memoize": true
+      }
+    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -2547,6 +2552,60 @@
         "semver": true
       }
     },
+    "framer-motion>@motionone/dom>@motionone/animation": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "performance.now": true,
+        "requestAnimationFrame": true
+      },
+      "packages": {
+        "framer-motion>@motionone/dom>@motionone/animation>@motionone/easing": true,
+        "framer-motion>@motionone/dom>@motionone/utils": true
+      }
+    },
+    "framer-motion>@motionone/dom": {
+      "globals": {
+        "CSS": true,
+        "CustomEvent": true,
+        "Element": true,
+        "HTMLElement": true,
+        "IntersectionObserver": true,
+        "ResizeObserver": true,
+        "SVGElement": true,
+        "SVGGraphicsElement": true,
+        "__MOTION_DEV_TOOLS_RECORD": true,
+        "addEventListener": true,
+        "cancelAnimationFrame": true,
+        "document.createElement": true,
+        "document.documentElement": true,
+        "document.querySelectorAll": true,
+        "getComputedStyle": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "length": true,
+        "performance.now": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true
+      },
+      "packages": {
+        "framer-motion>@motionone/dom>@motionone/animation": true,
+        "framer-motion>@motionone/dom>@motionone/generators": true,
+        "framer-motion>@motionone/dom>@motionone/types": true,
+        "framer-motion>@motionone/dom>@motionone/utils": true,
+        "framer-motion>hey-listen": true,
+        "tslib": true
+      }
+    },
+    "framer-motion>@motionone/dom>@motionone/animation>@motionone/easing": {
+      "packages": {
+        "framer-motion>@motionone/dom>@motionone/utils": true
+      }
+    },
+    "framer-motion>@motionone/dom>@motionone/generators": {
+      "packages": {
+        "framer-motion>@motionone/dom>@motionone/utils": true
+      }
+    },
     "@ngraveio/bc-ur": {
       "packages": {
         "@ngraveio/bc-ur>@keystonehq/alias-sampling": true,
@@ -4339,6 +4398,46 @@
         "string.prototype.matchall>es-abstract>is-callable": true
       }
     },
+    "framer-motion": {
+      "globals": {
+        "Element": true,
+        "IntersectionObserver": true,
+        "MouseEvent": true,
+        "PointerEvent": true,
+        "SVGElement": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "document": true,
+        "getComputedStyle": true,
+        "matchMedia": true,
+        "onmousedown": true,
+        "onpointerdown": true,
+        "ontouchstart": true,
+        "pageYOffset": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "scrollTo": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "framer-motion>@emotion/is-prop-valid": true,
+        "framer-motion>@motionone/dom": true,
+        "framer-motion>framesync": true,
+        "framer-motion>hey-listen": true,
+        "framer-motion>popmotion": true,
+        "process": true,
+        "react": true,
+        "framer-motion>style-value-types": true,
+        "tslib": true
+      }
+    },
+    "framer-motion>framesync": {
+      "globals": {
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      }
+    },
     "fuse.js": {
       "globals": {
         "console": true,
@@ -4470,6 +4569,11 @@
     "he": {
       "globals": {
         "define": true
+      }
+    },
+    "framer-motion>hey-listen": {
+      "globals": {
+        "console": true
       }
     },
     "@toruslabs/eccrypto>elliptic>hmac-drbg": {
@@ -5092,6 +5196,14 @@
         "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
+      }
+    },
+    "framer-motion>popmotion": {
+      "packages": {
+        "framer-motion>framesync": true,
+        "framer-motion>hey-listen": true,
+        "framer-motion>style-value-types": true,
+        "tslib": true
       }
     },
     "@material-ui/core>popper.js": {
