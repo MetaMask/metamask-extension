@@ -458,8 +458,15 @@ describe('Statistics Utils', () => {
       expect(stats.samples).toBe(1);
     });
 
-    it('excludes INP values below 1ms', () => {
-      const values = [0.5, 100, 120];
+    it('includes INP values of 0ms (sub-frame interactions)', () => {
+      const values = [0, 100, 120];
+      const stats = calculateWebVitalsStatistics('inp', values);
+
+      expect(stats.samples).toBe(3);
+    });
+
+    it('excludes negative INP values', () => {
+      const values = [-1, 100, 120];
       const stats = calculateWebVitalsStatistics('inp', values);
 
       expect(stats.samples).toBe(2);

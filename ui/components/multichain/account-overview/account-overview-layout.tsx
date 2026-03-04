@@ -15,7 +15,12 @@ export const AccountOverviewLayout = ({
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
   const heroRef = useCallback((node: HTMLDivElement | null) => {
-    node?.setAttribute('elementtiming', 'hero');
+    if (node) {
+      node.setAttribute('elementtiming', 'hero');
+      requestAnimationFrame(() => {
+        performance.mark('mm-hero-painted');
+      });
+    }
   }, []);
 
   return (

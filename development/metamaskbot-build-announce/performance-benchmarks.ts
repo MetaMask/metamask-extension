@@ -158,10 +158,7 @@ const CWV_METRICS: {
   { key: 'cls', label: 'CLS', unit: '' },
 ];
 
-function formatCwvValue(
-  value: number | undefined,
-  unit: string,
-): string {
+function formatCwvValue(value: number | undefined, unit: string): string {
   if (value === undefined) {
     return '-';
   }

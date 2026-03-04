@@ -3,23 +3,27 @@
  *
  * Measurement strategy per metric:
  *
- * **INP** — PerformanceObserver (`event` type, `buffered: true`).
- * Captures `PerformanceEventTiming` entries from trusted events.
- * WebDriver actions produce untrusted events that Chrome ignores,
- * so a CDP probe (`Input.dispatchKeyEvent` Escape) generates a
- * trusted entry with `interactionId`. A 16 ms busy-wait keydown
- * handler ensures non-zero `duration`. Measured directly from
- * observer entries — no web-vitals library dependency.
+ * **INP** — Two-tier collection:
+ * 1. `stateHooks.getWebVitalsMetrics()` — the `onINP` observer from
+ *    `web-vitals/attribution` runs since page startup with
+ *    `{ reportAllChanges: true }`, capturing INP from real WebDriver
+ *    interactions throughout the benchmark. This is the primary source.
+ * 2. PerformanceObserver (`event` type, `buffered: true`) + Selenium
+ *    Actions probe — a W3C Actions click generates a trusted pointer
+ *    interaction with a 16 ms busy-wait handler ensuring non-zero
+ *    `duration`. Falls back to CDP `Input.dispatchMouseEvent` if
+ *    Actions API is unavailable.
  *
  * **FCP** — Read directly from `performance.getEntriesByType('paint')`.
  * Always available on `chrome-extension://` pages.
  *
- * **LCP** — Two-tier fallback. First, PerformanceObserver
- * (`largest-contentful-paint` type) for real LCP — Chrome does NOT
- * emit these on `chrome-extension://` pages. Second, Element Timing
- * API (`element` type) as proxy — the balance wrapper has
- * `elementtiming="hero"`, so Chrome reports when its text content
- * is first painted. Uses the latest `renderTime` as the LCP proxy.
+ * **LCP** — Two sources, then null:
+ * 1. PerformanceObserver (`largest-contentful-paint`) — not emitted
+ *    on `chrome-extension://` pages.
+ * 2. `performance.mark('mm-hero-painted')` — set by the app's
+ *    `AccountOverviewLayout` component after hero content renders.
+ *    Most reliable on extension pages; fires consistently on the
+ *    standard benchmark navigation path.
  *
  * **CLS** — PerformanceObserver (`layout-shift` type).
  * Falls back to 0 on extension pages where the observer is unsupported.
@@ -29,16 +33,19 @@ import type { Driver } from '../../webdriver/driver';
 import type { WebVitalsMetrics } from './types';
 
 /**
- * Setup script: creates PerformanceObservers, reads FCP, registers
- * a busy-wait keydown handler for the CDP probe.
+ * Setup script: creates PerformanceObservers for event timing, LCP,
+ * and CLS; reads FCP from paint entries; registers a busy-wait
+ * pointerdown handler for the INP probe.
  * Stores state on `window.__cwv` for the read script.
  */
 const SETUP_SCRIPT = `
 var w = window;
 w.__cwv = {
-  event: [], lcp: [], cls: [], element: [],
+  event: [], lcp: [], cls: [],
   observers: [],
   clsSupported: false,
+  eventObserverSupported: false,
+  probeReceived: false,
   fcp: null
 };
 
@@ -57,11 +64,13 @@ try {
     for (var i = 0; i < e.length; i++) w.__cwv.event.push(e[i]);
   });
   o1.observe({ type: 'event', buffered: true, durationThreshold: 0 });
+  w.__cwv.eventObserverSupported = true;
   w.__cwv.observers.push(o1);
 } catch(e) {}
 
 try {
-  document.addEventListener('keydown', function busyWait() {
+  document.addEventListener('pointerdown', function busyWait() {
+    w.__cwv.probeReceived = true;
     var end = performance.now() + 16;
     while (performance.now() < end) {}
   }, { once: true });
@@ -77,15 +86,6 @@ try {
 } catch(e) {}
 
 try {
-  var o3 = new PerformanceObserver(function(list) {
-    var e = list.getEntries();
-    for (var i = 0; i < e.length; i++) w.__cwv.element.push(e[i]);
-  });
-  o3.observe({ type: 'element', buffered: true });
-  w.__cwv.observers.push(o3);
-} catch(e) {}
-
-try {
   var o4 = new PerformanceObserver(function(list) {
     var e = list.getEntries();
     for (var i = 0; i < e.length; i++) w.__cwv.cls.push(e[i]);
@@ -97,15 +97,19 @@ try {
 `;
 
 /**
- * Read script: computes metrics from observer entries and paint timing.
- * INP is measured directly from event entries (no web-vitals library).
- * FCP from paint entries. LCP from `largest-contentful-paint` entries
- * first, then Element Timing (`elementtiming="hero"`) as fallback.
- * stateHooks checked for LCP/CLS only (not INP).
+ * Read script: computes metrics from observer entries, paint timing,
+ * and stateHooks (web-vitals library).
+ *
+ * INP priority: stateHooks (captures real interactions since page load)
+ * → direct PerformanceObserver entries (probe + buffered) → null.
+ * FCP from paint entries.
+ * LCP from stateHooks → PerformanceObserver → mm-hero-painted mark.
+ * CLS from stateHooks first, then observer entries as fallback.
  */
 const READ_SCRIPT = `
 var cwv = window.__cwv || {
-  event: [], lcp: [], cls: [], element: [], observers: [], clsSupported: false, fcp: null
+  event: [], lcp: [], cls: [], observers: [],
+  clsSupported: false, eventObserverSupported: false, probeReceived: false, fcp: null
 };
 var result = {
   inp: null, fcp: null, lcp: null, cls: null,
@@ -122,17 +126,25 @@ if (cwv.fcp !== null) {
   result.fcpRating = rate(cwv.fcp, 1800, 3000);
 }
 
-// Check stateHooks for LCP/CLS from web-vitals library
+// Check stateHooks for INP/LCP/CLS from web-vitals library.
+// The onINP observer has been running since page startup with
+// { reportAllChanges: true }, so it captures real benchmark interactions.
 var sh = window.stateHooks;
+var stateHooksInp = null;
 if (sh && sh.getWebVitalsMetrics) {
   var m = sh.getWebVitalsMetrics();
+  if (m.inp !== null) {
+    stateHooksInp = m.inp;
+    result.inp = m.inp;
+    result.inpRating = m.inpRating;
+  }
   if (m.lcp !== null) { result.lcp = m.lcp; result.lcpRating = m.lcpRating; }
   if (m.cls !== null) { result.cls = m.cls; result.clsRating = m.clsRating; }
   sh.resetWebVitalsMetrics && sh.resetWebVitalsMetrics();
 }
 
-// INP: directly from PerformanceObserver event entries (no web-vitals dependency)
-if (cwv.event.length > 0) {
+// INP fallback: direct PerformanceObserver event entries (probe + buffered)
+if (result.inp === null && cwv.event.length > 0) {
   var maxDur = 0;
   for (var i = 0; i < cwv.event.length; i++) {
     if (cwv.event[i].duration > maxDur) maxDur = cwv.event[i].duration;
@@ -141,10 +153,8 @@ if (cwv.event.length > 0) {
   result.inpRating = rate(maxDur, 200, 500);
 }
 
-if (result.inp === null) {
-  result.inp = 0;
-  result.inpRating = 'good';
-}
+// No fallback — null INP means no PerformanceEventTiming data was available.
+// The 0 fallback was masking missing data and getting filtered by statistics bounds.
 
 // LCP: real largest-contentful-paint entries first
 if (result.lcp === null && cwv.lcp.length > 0) {
@@ -155,17 +165,16 @@ if (result.lcp === null && cwv.lcp.length > 0) {
   }
 }
 
-// LCP fallback: Element Timing API (elementtiming="hero" on balance wrapper)
-if (result.lcp === null && cwv.element.length > 0) {
-  var maxRender = 0;
-  for (var ei = 0; ei < cwv.element.length; ei++) {
-    var rt = cwv.element[ei].renderTime || cwv.element[ei].loadTime || 0;
-    if (rt > maxRender) maxRender = rt;
-  }
-  if (maxRender > 0) {
-    result.lcp = maxRender;
-    result.lcpRating = rate(maxRender, 2500, 4000);
-  }
+// LCP fallback: performance.mark from app code (most reliable on extension pages)
+if (result.lcp === null) {
+  try {
+    var marks = performance.getEntriesByName('mm-hero-painted', 'mark');
+    if (marks.length > 0) {
+      var markTime = marks[marks.length - 1].startTime;
+      result.lcp = markTime;
+      result.lcpRating = rate(markTime, 2500, 4000);
+    }
+  } catch(e) {}
 }
 
 // CLS: from layout-shift entries
@@ -184,75 +193,118 @@ if (result.cls === null) {
 }
 
 for (var k = 0; k < cwv.observers.length; k++) cwv.observers[k].disconnect();
+
+// Diagnostic fields — logged by the runner, not included in benchmark output.
+// Remove once INP collection is confirmed working.
+result.__diagnostic = {
+  eventEntryCount: cwv.event.length,
+  eventObserverSupported: cwv.eventObserverSupported,
+  probeReceived: cwv.probeReceived,
+  stateHooksInp: stateHooksInp,
+  stateHooksAvailable: !!(sh && sh.getWebVitalsMetrics)
+};
+
 delete window.__cwv;
 
 return result;
 `;
 
-const CDP_KEY_EVENT_BASE = {
-  key: 'Escape',
-  code: 'Escape',
-  windowsVirtualKeyCode: 27,
-  nativeVirtualKeyCode: 27,
+const CDP_MOUSE_BASE = {
+  x: 100,
+  y: 100,
+  button: 'left' as const,
+  clickCount: 1,
 };
 
 /**
- * Dispatch a trusted keyboard event via Chrome DevTools Protocol.
- * CDP events are `isTrusted: true` and generate `PerformanceEventTiming`
- * entries — unlike WebDriver actions which use untrusted synthetic events.
+ * Dispatch a trusted pointer interaction to generate PerformanceEventTiming.
  *
- * Uses Escape (generates `interactionId`, minimal side effects).
- * Silently degrades when CDP is unavailable (Firefox, non-Chromium).
+ * Tries two approaches in order:
+ * 1. **Selenium Actions API** (W3C WebDriver protocol) — the same
+ *    mechanism used for all other clicks in the test suite. Goes through
+ *    ChromeDriver → Chrome input pipeline → trusted events.
+ * 2. **CDP `Input.dispatchMouseEvent`** — direct DevTools Protocol
+ *    fallback if Actions is unavailable.
  *
- * @param driver - Selenium WebDriver instance
+ * Clicks at (100,100) in the viewport, away from interactive elements.
+ * The `pointerdown` busy-wait handler in the setup script ensures
+ * non-zero `duration` on the resulting PerformanceEventTiming entry.
+ *
+ * @param driver - MetaMask Driver wrapper with Selenium driver at `.driver`
  */
-async function dispatchCDPProbe(driver: Driver): Promise<void> {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const innerDriver = (driver as any).driver;
-    if (!innerDriver?.sendDevToolsCommand) {
+async function dispatchINPProbe(driver: Driver): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const innerDriver = (driver as any).driver;
+  if (!innerDriver) {
+    return;
+  }
+
+  // Approach 1: Selenium W3C Actions API
+  if (innerDriver.actions) {
+    try {
+      await innerDriver
+        .actions({ async: true })
+        .move({ x: CDP_MOUSE_BASE.x, y: CDP_MOUSE_BASE.y })
+        .click()
+        .perform();
       return;
+    } catch {
+      // Actions failed — fall through to CDP
     }
-    await innerDriver.sendDevToolsCommand('Input.dispatchKeyEvent', {
-      type: 'keyDown',
-      ...CDP_KEY_EVENT_BASE,
-    });
-    await innerDriver.sendDevToolsCommand('Input.dispatchKeyEvent', {
-      type: 'keyUp',
-      ...CDP_KEY_EVENT_BASE,
-    });
-  } catch {
-    // CDP unavailable — fall through with whatever entries exist
+  }
+
+  // Approach 2: CDP sendDevToolsCommand (ChromeDriver-specific)
+  if (innerDriver.sendDevToolsCommand) {
+    try {
+      await innerDriver.sendDevToolsCommand('Input.dispatchMouseEvent', {
+        type: 'mousePressed',
+        ...CDP_MOUSE_BASE,
+      });
+      await innerDriver.sendDevToolsCommand('Input.dispatchMouseEvent', {
+        type: 'mouseReleased',
+        ...CDP_MOUSE_BASE,
+      });
+    } catch {
+      // CDP unavailable — fall through with whatever entries exist
+    }
   }
 }
 
 /**
  * Collect web vitals from the running extension.
  *
- * Primary measurement: PerformanceObserver for INP (`event` entries),
- * FCP (paint entries), CLS (`layout-shift` entries).
- * CDP probe dispatches a trusted Escape key to generate INP entries.
- * INP is measured directly from PerformanceObserver — no web-vitals
- * library dependency.
+ * INP: stateHooks (web-vitals `onINP`, running since page startup)
+ * is the primary source — it captures real INP from WebDriver
+ * interactions during the benchmark. A Selenium Actions probe
+ * provides a secondary signal via direct PerformanceObserver entries.
  *
- * LCP is attempted via `largest-contentful-paint` observer, with
- * Element Timing (`elementtiming="hero"`) as fallback on extension pages.
+ * FCP: paint timing entries (always available on extension pages).
+ * LCP: stateHooks → `largest-contentful-paint` observer →
+ * `mm-hero-painted` mark → null.
+ * CLS: stateHooks → `layout-shift` observer → 0 fallback.
  *
  * @param driver - Selenium WebDriver instance with access to the extension page
- * @returns Per-run web vitals snapshot
+ * @returns Per-run web vitals snapshot (with `__diagnostic` for debugging)
  */
 export async function collectWebVitals(
   driver: Driver,
 ): Promise<WebVitalsMetrics> {
-  // Set up PerformanceObservers + read FCP + register busy-wait handler
   await driver.executeScript(SETUP_SCRIPT);
 
-  // Dispatch trusted CDP keyboard event to generate PerformanceEventTiming
-  await dispatchCDPProbe(driver);
+  await dispatchINPProbe(driver);
 
-  // Let observer callbacks deliver buffered + probe entries
-  await driver.delay(200);
+  // Let observer callbacks + PerformanceEventTiming entries settle.
+  // 500ms allows the web-vitals library's rAF-deferred processing to complete.
+  await driver.delay(500);
 
-  // Read entries, compute metrics, disconnect observers
-  return (await driver.executeScript(READ_SCRIPT)) as WebVitalsMetrics;
+  const raw = (await driver.executeScript(READ_SCRIPT)) as WebVitalsMetrics & {
+    __diagnostic?: Record<string, unknown>;
+  };
+
+  if (raw.__diagnostic) {
+    console.info('[web-vitals-collector] diagnostic:', raw.__diagnostic);
+    delete raw.__diagnostic;
+  }
+
+  return raw;
 }

@@ -324,11 +324,23 @@ export function initCLSObserver(): void {
  * On `chrome-extension://` pages, only INP is expected to fire in
  * production. LCP and CLS fire during CI E2E benchmark runs where
  * data is collected via `stateHooks.getWebVitalsMetrics()`.
+ *
+ * Also registers getter/resetter on `stateHooks` if available. This
+ * must happen here (at call time) rather than at module evaluation
+ * time, because `globalThis.stateHooks` may not exist when the
+ * module is first evaluated.
  */
 export function initWebVitals(): void {
   initINPObserver();
   initLCPObserver();
   initCLSObserver();
+
+  const { env } = process;
+  if ((env.IN_TEST || env.METAMASK_DEBUG) && globalThis.stateHooks) {
+    globalThis.stateHooks.initWebVitals = initWebVitals;
+    globalThis.stateHooks.getWebVitalsMetrics = getWebVitalsMetrics;
+    globalThis.stateHooks.resetWebVitalsMetrics = resetWebVitalsMetrics;
+  }
 }
 
 /**
@@ -354,12 +366,4 @@ export function resetWebVitalsMetrics(): void {
   webVitalsMetrics.fcpRating = null;
   webVitalsMetrics.lcpRating = null;
   webVitalsMetrics.clsRating = null;
-}
-
-// Expose for E2E testing
-const { env } = process;
-if ((env.IN_TEST || env.METAMASK_DEBUG) && globalThis.stateHooks) {
-  globalThis.stateHooks.initWebVitals = initWebVitals;
-  globalThis.stateHooks.getWebVitalsMetrics = getWebVitalsMetrics;
-  globalThis.stateHooks.resetWebVitalsMetrics = resetWebVitalsMetrics;
 }

@@ -562,8 +562,8 @@ const WEB_VITALS_BOUNDS: Record<
   WebVitalsNumericKey,
   { min: number; max: number }
 > = {
-  /** INP: interaction responsiveness. Google "poor" starts at 500ms. 0ms is invalid. */
-  inp: { min: 1, max: 30_000 },
+  /** INP: interaction responsiveness. Google "poor" starts at 500ms. 0ms means sub-frame. */
+  inp: { min: 0, max: 30_000 },
   /** FCP: first content paint. Google "poor" starts at 3s. 0ms is invalid. */
   fcp: { min: 1, max: 60_000 },
   /** LCP: perceived load time. Google "poor" starts at 4s. 0ms is invalid. */

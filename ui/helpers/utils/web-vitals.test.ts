@@ -264,6 +264,26 @@ describe('web-vitals', () => {
       expect(mockOnLCP).toHaveBeenCalledTimes(1);
       expect(mockOnCLS).toHaveBeenCalledTimes(1);
     });
+
+    it('registers getter/resetter on stateHooks when available', () => {
+      const originalEnv = process.env.IN_TEST;
+      const originalStateHooks = globalThis.stateHooks;
+      process.env.IN_TEST = 'true';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).stateHooks = {};
+
+      initWebVitals();
+
+      expect(globalThis.stateHooks.getWebVitalsMetrics).toBe(
+        getWebVitalsMetrics,
+      );
+      expect(globalThis.stateHooks.resetWebVitalsMetrics).toBe(
+        resetWebVitalsMetrics,
+      );
+
+      process.env.IN_TEST = originalEnv;
+      globalThis.stateHooks = originalStateHooks;
+    });
   });
 
   describe('getWebVitalsMetrics', () => {
