@@ -566,6 +566,9 @@
     "ui/components/app/perps/perps-token-logo/perps-token-logo.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/perps-watchlist/perps-watchlist.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/position-card/position-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
