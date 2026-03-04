@@ -51,6 +51,12 @@ type HardwareWalletErrorContextType = {
    * Check if an error modal is currently displayed
    */
   isErrorModalVisible: boolean;
+
+  /**
+   * Enable/disable hardware wallet error modal display.
+   * When suppressed, both auto-shown and manually triggered modals are blocked.
+   */
+  setErrorModalSuppressed: (isSuppressed: boolean) => void;
 };
 
 const HardwareWalletErrorContext =
@@ -101,6 +107,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
 
   // Store the current error to display (independent of connection state)
   const [displayedError, setDisplayedError] = useState<unknown | null>(null);
+  const [isErrorModalSuppressed, setErrorModalSuppressed] = useState(false);
   const isModalOpenRef = useRef(false);
   const wasModalVisibleRef = useRef(isHardwareWalletErrorModalVisible);
   // Track if the modal was manually shown (vs from connection state)
@@ -202,7 +209,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       };
       dispatch(showModal(modalPayload));
     },
-    [dispatch, handleRetry, handleCancel, displayedError, isUserRejection],
+    [dispatch, displayedError, handleCancel, handleRetry, isUserRejection],
   );
 
   /**
@@ -241,6 +248,16 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   ]);
 
   useEffect(() => {
+    if (
+      isErrorModalSuppressed &&
+      isModalOpenRef.current &&
+      !isManuallyShownRef.current
+    ) {
+      resetModalState();
+    }
+  }, [isErrorModalSuppressed, resetModalState]);
+
+  useEffect(() => {
     // Don't dismiss manually shown modals based on selected account.
     // This is important for signature flows where the signing account
     // (from msgParams.from) may be a hardware wallet even if the
@@ -256,6 +273,10 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     }
 
     if (!isHardwareWalletAccount) {
+      return;
+    }
+
+    if (isErrorModalSuppressed) {
       return;
     }
 
@@ -282,7 +303,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       // OR if we haven't shown an error yet (displayedError is null)
       // Note: showErrorModalInternal will handle user rejections by dismissing the modal
       if (errorCode !== displayedErrorCode || !displayedError) {
-        setDisplayedError(error);
         showErrorModalInternal(error, false);
       }
     }
@@ -290,8 +310,8 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     connectionState,
     isHardwareWalletAccount,
     isOnErrorModalRoute,
+    isErrorModalSuppressed,
     showErrorModalInternal,
-    dispatch,
     displayedError,
     resetModalState,
   ]);
@@ -318,8 +338,14 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       showErrorModal,
       dismissErrorModal,
       isErrorModalVisible,
+      setErrorModalSuppressed,
     }),
-    [showErrorModal, dismissErrorModal, isErrorModalVisible],
+    [
+      dismissErrorModal,
+      isErrorModalVisible,
+      setErrorModalSuppressed,
+      showErrorModal,
+    ],
   );
 
   return (

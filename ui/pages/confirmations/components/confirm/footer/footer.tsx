@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
@@ -105,15 +105,18 @@ const ConfirmButton = ({
 
   const {
     alerts,
-    hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
     hasUnconfirmedFieldDangerAlerts,
+    setAlertConfirmed,
+    unconfirmedDangerAlerts,
     unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
 
   const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
+  const shouldShowDangerConfirmButton =
+    hasUnconfirmedDangerAlerts || hasDangerBlockingAlerts;
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -122,6 +125,14 @@ const ConfirmButton = ({
   const handleOpenConfirmModal = useCallback(() => {
     setConfirmModalVisible(true);
   }, []);
+
+  const handleSubmitConfirmModal = useCallback(async () => {
+    unconfirmedDangerAlerts.forEach((alert) => {
+      setAlertConfirmed(alert.key, true);
+    });
+    setConfirmModalVisible(false);
+    await onSubmit();
+  }, [onSubmit, setAlertConfirmed, unconfirmedDangerAlerts]);
 
   const { trialedProducts } = useUserSubscriptions();
   const isShieldTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
@@ -133,10 +144,10 @@ const ConfirmButton = ({
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmitConfirmModal}
         />
       )}
-      {hasDangerAlerts ? (
+      {shouldShowDangerConfirmButton ? (
         <Button
           block
           danger
@@ -221,8 +232,18 @@ const Footer = () => {
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
+  const { hasUnconfirmedDangerAlerts } = useAlerts(
+    currentConfirmation?.id ?? '',
+  );
 
-  const { dismissErrorModal } = useHardwareWalletError();
+  const { dismissErrorModal, setErrorModalSuppressed } =
+    useHardwareWalletError();
+
+  useEffect(() => {
+    return () => {
+      setErrorModalSuppressed(false);
+    };
+  }, [setErrorModalSuppressed]);
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
@@ -253,8 +274,24 @@ const Footer = () => {
     onUserRejectedHardwareWalletError,
   });
 
+  useEffect(() => {
+    const shouldSuppressHardwareWalletErrors =
+      hasUnconfirmedDangerAlerts && shouldRunHardwareWalletPreflight;
+
+    setErrorModalSuppressed(shouldSuppressHardwareWalletErrors);
+  }, [
+    hasUnconfirmedDangerAlerts,
+    setErrorModalSuppressed,
+    shouldRunHardwareWalletPreflight,
+  ]);
+
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
+
+  const shouldShowReconnectButton =
+    shouldRunHardwareWalletPreflight &&
+    !isHardwareWalletReady &&
+    !hasUnconfirmedDangerAlerts;
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
@@ -384,7 +421,7 @@ const Footer = () => {
         />
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
           <CancelButton handleFooterCancel={handleFooterCancel} />
-          {shouldRunHardwareWalletPreflight && !isHardwareWalletReady ? (
+          {shouldShowReconnectButton ? (
             <Button
               block
               data-testid="reconnect-hardware-wallet-button"

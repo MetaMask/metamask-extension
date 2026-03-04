@@ -41,6 +41,9 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../../contexts/hardware-wallets'),
   useHardwareWalletError: jest.fn(() => ({
     showErrorModal: jest.fn(),
+    dismissErrorModal: jest.fn(),
+    isErrorModalVisible: false,
+    setErrorModalSuppressed: jest.fn(),
   })),
   isHardwareWalletError: (...args: unknown[]) =>
     mockIsHardwareWalletError(...args),
@@ -159,6 +162,7 @@ describe('useTransactionConfirm', () => {
       showErrorModal: jest.fn(),
       dismissErrorModal: jest.fn(),
       isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
     });
   });
 
@@ -572,6 +576,7 @@ describe('useTransactionConfirm', () => {
       showErrorModal: showErrorModalMock,
       dismissErrorModal: jest.fn(),
       isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
     });
 
     const { onTransactionConfirm } = runHook();
@@ -593,6 +598,7 @@ describe('useTransactionConfirm', () => {
       showErrorModal: showErrorModalMock,
       dismissErrorModal: jest.fn(),
       isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
     });
 
     const { onTransactionConfirm } = runHook();
