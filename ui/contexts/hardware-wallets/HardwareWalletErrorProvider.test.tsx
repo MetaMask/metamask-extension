@@ -166,7 +166,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
     });
 
-    it('still shows manually triggered error modal when suppression is enabled', () => {
+    it('does not show manually triggered error modal when suppression is enabled', () => {
       const store = mockStore(createMockState());
       const { result } = renderHardwareWalletErrorHook(store);
 
@@ -184,16 +184,10 @@ describe('HardwareWalletErrorProvider', () => {
         result.current.showErrorModal(error);
       });
 
-      expect(mockShowModal).toHaveBeenCalledWith({
-        name: HARDWARE_WALLET_ERROR_MODAL_NAME,
-        error,
-        onRetry: expect.any(Function),
-        onCancel: expect.any(Function),
-        isOpen: true,
-      });
+      expect(mockShowModal).not.toHaveBeenCalled();
     });
 
-    it('does not hide manually triggered modal when suppression is enabled', () => {
+    it('hides manually triggered modal when suppression is enabled', () => {
       const store = mockStore(createMockState());
       const { result } = renderHardwareWalletErrorHook(store);
 
@@ -213,7 +207,7 @@ describe('HardwareWalletErrorProvider', () => {
         result.current.setErrorModalSuppressed(true);
       });
 
-      expect(mockHideModal).not.toHaveBeenCalled();
+      expect(mockHideModal).toHaveBeenCalled();
     });
 
     it('dismisses error modal when dismissErrorModal is called', () => {

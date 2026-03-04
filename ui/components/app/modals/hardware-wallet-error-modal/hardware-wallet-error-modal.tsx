@@ -119,9 +119,16 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       handleClose();
     }, [handleClose, isUserRejectedError]);
 
+    useEffect(() => {
+      if (error) {
+        return;
+      }
+
+      onClose?.();
+    }, [error, onClose]);
+
     // If no error, don't render anything
     if (!error) {
-      onClose?.();
       return null;
     }
 

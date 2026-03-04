@@ -218,10 +218,13 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
    */
   const showErrorModal = useCallback(
     (error: unknown) => {
+      if (isErrorModalSuppressed) {
+        return;
+      }
       // When called manually, we skip the filters (allow user cancellations, duplicates, etc.)
       showErrorModalInternal(error, true);
     },
-    [showErrorModalInternal],
+    [isErrorModalSuppressed, showErrorModalInternal],
   );
 
   /**
@@ -248,11 +251,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   ]);
 
   useEffect(() => {
-    if (
-      isErrorModalSuppressed &&
-      isModalOpenRef.current &&
-      !isManuallyShownRef.current
-    ) {
+    if (isErrorModalSuppressed && isModalOpenRef.current) {
       resetModalState();
     }
   }, [isErrorModalSuppressed, resetModalState]);
