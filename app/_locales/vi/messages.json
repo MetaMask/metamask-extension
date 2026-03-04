@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Kết nối tài khoản"
   },
-  "connectAccountOrCreate": {
-    "message": "Kết nối tài khoản hoặc tạo tài khoản mới"
-  },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "Mô tả từ $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Bỏ chọn tất cả"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Không tìm thấy tài khoản đủ điều kiện"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Phí gas L2"
-  },
-  "lastConnected": {
-    "message": "Đã kết nối lần cuối"
   },
   "lastSold": {
     "message": "Đã bán gần nhất"
@@ -6432,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Chọn tài khoản để kết nối"
   },
-  "selectAccounts": {
-    "message": "Chọn (các) tài khoản để sử dụng trên trang web này"
-  },
-  "selectAccountsForSnap": {
-    "message": "Chọn (các) tài khoản để sử dụng với Snap này"
-  },
   "selectAll": {
     "message": "Chọn tất cả"
   },
@@ -6476,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Đã chọn tài khoản khác"
-  },
-  "selectingAllWillAllow": {
-    "message": "Việc chọn tất cả sẽ cho phép trang này xem tất cả các tài khoản hiện tại của bạn. Đảm bảo rằng bạn tin tưởng trang web này."
   },
   "send": {
     "message": "Gửi"

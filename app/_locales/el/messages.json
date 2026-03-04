@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Σύνδεση λογαριασμού"
   },
-  "connectAccountOrCreate": {
-    "message": "Σύνδεση λογαριασμού ή δημιουργία νέου"
-  },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "Περιγραφή από $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Αποεπιλογή όλων"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Δεν βρέθηκαν επιλέξιμοι λογαριασμοί"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Τέλη συναλλαγών L2"
-  },
-  "lastConnected": {
-    "message": "Τελευταία σύνδεση"
   },
   "lastSold": {
     "message": "Τελευταία πώληση"
@@ -6432,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Επιλέξτε έναν λογαριασμό για σύνδεση"
   },
-  "selectAccounts": {
-    "message": "Επιλέξτε τον λογαριασμό (-ούς) που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο"
-  },
-  "selectAccountsForSnap": {
-    "message": "Επιλέξτε τον λογαριασμό (-ους) που θέλετε να χρησιμοποιήσετε με αυτό το snap"
-  },
   "selectAll": {
     "message": "Επιλογή όλων"
   },
@@ -6476,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Επιλογή διαφορετικού λογαριασμού"
-  },
-  "selectingAllWillAllow": {
-    "message": "Επιλέγοντας τα όλα θα επιτρέψετε σε αυτόν τον ιστότοπο να δει όλους τους τρεχούμενους λογαριασμούς σας. Βεβαιωθείτε ότι εμπιστεύεστε αυτόν τον ιστότοπο."
   },
   "send": {
     "message": "Αποστολή"
