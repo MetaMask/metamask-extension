@@ -302,9 +302,12 @@ class PerpsStreamManager {
 
   /**
    * Initialize the stream manager for a specific address.
-   * In Phase 2, all stream data arrives via background notifications —
-   * no UI controller is created. This simply records the address and
+   * All stream data arrives via background notifications —
+   * no UI controller is created. This records the address and
    * clears caches when the address changes.
+   *
+   * View activation signaling (perpsViewActive) is handled by PerpsLayout,
+   * not here.
    *
    * @param address - The selected account address
    */
@@ -331,18 +334,9 @@ class PerpsStreamManager {
     ) {
       this.clearAllCaches();
       this.cleanupPrewarm();
-      // Decrement old subscriber count
-      submitRequestToBackground('perpsSubscriberChange', [-1]).catch(() => {
-        // Ignore
-      });
     }
 
     markPerpsControllerInitialized(address);
-
-    // Tell the background this connection is active and wants stream updates
-    submitRequestToBackground('perpsSubscriberChange', [1]).catch(() => {
-      // Background not ready yet — updates will arrive once controller is initialized
-    });
   }
 
   /**

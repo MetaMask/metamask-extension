@@ -26,9 +26,14 @@ type ActivateStreamingParams = {
  *   tears down and re-registers statics (handles address changes).
  * - Dynamic (prices/orderBook/candles): replaced on each activateStreaming()
  *   call so navigating between markets doesn't leak subscriptions.
+ *
+ * Emission is gated by isActive, which requires both activate() to have been
+ * called and setViewActive(true) to be set. The UI calls setViewActive(true)
+ * when PerpsLayout mounts and setViewActive(false) when it unmounts, ensuring
+ * the background only pushes data while a Perps view is open.
  */
 export class PerpsStreamBridge {
-  #subscriberCount = 0;
+  #viewActive = false;
 
   readonly #emit: EmitFn;
 
@@ -78,8 +83,8 @@ export class PerpsStreamBridge {
     this.#dynamicUnsubs[key] = subscribe();
   }
 
-  subscriberChange(delta: number): void {
-    this.#subscriberCount += delta;
+  setViewActive(active: boolean): void {
+    this.#viewActive = active;
   }
 
   activateStreaming(
@@ -123,7 +128,7 @@ export class PerpsStreamBridge {
   }
 
   get isActive(): boolean {
-    return this.#activated && this.#subscriberCount > 0;
+    return this.#activated && this.#viewActive;
   }
 
   destroy(): void {

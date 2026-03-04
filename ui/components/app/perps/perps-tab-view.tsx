@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
   twMerge,
   Box,
@@ -13,17 +13,12 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import { isPerpsControllerInitializationCancelledError } from '../../../providers/perps/getPerpsController';
-import { getPerpsStreamManager } from '../../../providers/perps';
-import { submitRequestToBackground } from '../../../store/background-connection';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -55,42 +50,6 @@ const CARD_STYLES =
 export const PerpsTabView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-
-  // Get selected address for stream manager initialization
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
-
-  // Initialize stream manager and prewarm on mount
-  useEffect(() => {
-    if (!selectedAddress) {
-      return;
-    }
-
-    const streamManager = getPerpsStreamManager();
-
-    // Background controller is the single init authority.
-    // UI streaming controller is created only after background init succeeds.
-    submitRequestToBackground('perpsInit')
-      .then(() => streamManager.init(selectedAddress))
-      .then(() => {
-        streamManager.prewarm();
-      })
-      .catch((error: unknown) => {
-        if (isPerpsControllerInitializationCancelledError(error)) {
-          return;
-        }
-
-        console.error(
-          '[PerpsTabView] Failed to initialize Perps stream:',
-          error,
-        );
-      });
-
-    // Cleanup prewarm on unmount (cache persists!)
-    return () => {
-      streamManager.cleanupPrewarm();
-    };
-  }, [selectedAddress]);
 
   // Use stream hooks for real-time data
   const { positions, isInitialLoading: positionsLoading } =

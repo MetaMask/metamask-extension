@@ -6638,8 +6638,8 @@ export default class MetamaskController extends EventEmitter {
         perpsStream?.activate(perpsController);
         return result;
       },
-      perpsSubscriberChange: (delta) => {
-        perpsStream?.subscriberChange(delta);
+      perpsViewActive: (active) => {
+        perpsStream?.setViewActive(active);
       },
       perpsActivateStreaming: (params) => {
         if (perpsController && perpsStream) {
