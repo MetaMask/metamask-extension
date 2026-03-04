@@ -15,8 +15,6 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { AlertsName } from '../../../hooks/alerts/constants';
 
-const MUSD_MINIMUM_AMOUNT_USD = 10;
-
 type MusdConversionFooterProps = {
   onSubmit: () => void;
   isGaslessLoading: boolean;
@@ -27,22 +25,23 @@ function useMusdConversionButtonState(isGaslessLoading: boolean) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
   const { alerts } = useAlerts(transactionId);
-  const requiredTokens = useTransactionPayRequiredTokens();
   const isLoading = useIsTransactionPayLoading();
+  const requiredTokens = useTransactionPayRequiredTokens();
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
     [alerts],
   );
 
-  const totalAmountUsd = useMemo(
+  const hasAmount = useMemo(
     () =>
       (requiredTokens ?? [])
         .filter((token) => !token.skipIfBalance)
         .reduce(
-          (acc, token) => acc.plus(new BigNumber(token.amountUsd)),
+          (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
           new BigNumber(0),
-        ),
+        )
+        .gt(0),
     [requiredTokens],
   );
 
@@ -65,6 +64,14 @@ function useMusdConversionButtonState(isGaslessLoading: boolean) {
       };
     }
 
+    if (!hasAmount) {
+      return {
+        buttonText: t('musdConvert'),
+        isDisabled: true,
+        isLoading: isLoadingState,
+      };
+    }
+
     if (isLoadingState) {
       return {
         buttonText: t('musdConvert'),
@@ -73,24 +80,8 @@ function useMusdConversionButtonState(isGaslessLoading: boolean) {
       };
     }
 
-    if (totalAmountUsd.isZero()) {
-      return {
-        buttonText: t('musdConvert'),
-        isDisabled: true,
-        isLoading: false,
-      };
-    }
-
-    if (totalAmountUsd.lt(MUSD_MINIMUM_AMOUNT_USD)) {
-      return {
-        buttonText: t('musdConvertEnterMinimum', ['$10']),
-        isDisabled: true,
-        isLoading: false,
-      };
-    }
-
     return { buttonText: t('musdConvert'), isDisabled: false, isLoading: false };
-  }, [blockingAlerts, isGaslessLoading, isLoading, totalAmountUsd, t]);
+  }, [blockingAlerts, hasAmount, isGaslessLoading, isLoading, t]);
 }
 
 const MusdConversionFooter = ({

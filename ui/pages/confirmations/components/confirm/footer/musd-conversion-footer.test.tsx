@@ -61,12 +61,9 @@ describe('MusdConversionFooter', () => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
     jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([
-      {
-        address: '0x123',
-        chainId: '0x1',
-        amountUsd: '50',
-        skipIfBalance: false,
-      } as ReturnType<typeof useTransactionPayRequiredTokens>[0],
+      { amountUsd: '10.00', skipIfBalance: false } as ReturnType<
+        typeof useTransactionPayRequiredTokens
+      >[number],
     ]);
   });
 
@@ -82,29 +79,6 @@ describe('MusdConversionFooter', () => {
     fireEvent.click(getByTestId('confirm-footer-button'));
 
     expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
-  });
-
-  it('disables button when total amount is zero', () => {
-    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([]);
-
-    const { getByTestId } = render();
-
-    expect(getByTestId('confirm-footer-button')).toBeDisabled();
-  });
-
-  it('disables button when total amount is below minimum ($10)', () => {
-    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([
-      {
-        address: '0x123',
-        chainId: '0x1',
-        amountUsd: '5',
-        skipIfBalance: false,
-      } as ReturnType<typeof useTransactionPayRequiredTokens>[0],
-    ]);
-
-    const { getByTestId } = render();
-
-    expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
   it('shows loading state when gasless is loading', () => {
@@ -151,24 +125,24 @@ describe('MusdConversionFooter', () => {
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('excludes skipIfBalance tokens from total amount calculation', () => {
+  it('disables button when amount is zero', () => {
     jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([
-      {
-        address: '0x123',
-        chainId: '0x1',
-        amountUsd: '50',
-        skipIfBalance: false,
-      } as ReturnType<typeof useTransactionPayRequiredTokens>[0],
-      {
-        address: '0x456',
-        chainId: '0x1',
-        amountUsd: '100',
-        skipIfBalance: true,
-      } as ReturnType<typeof useTransactionPayRequiredTokens>[0],
+      { amountUsd: '0', skipIfBalance: false } as ReturnType<
+        typeof useTransactionPayRequiredTokens
+      >[number],
     ]);
 
     const { getByTestId } = render();
 
-    expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
+
+  it('disables button when no required tokens exist', () => {
+    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([]);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
 });

@@ -14,9 +14,9 @@ import type { ChainId } from '../../../../shared/constants/network';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   Display,
   FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -42,15 +42,19 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
 } from '../../../selectors/multichain';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { MUSD_CONVERSION_APY } from './constants';
+import { ASSET_CELL_HEIGHT } from '../assets/constants';
+import {
+  MUSD_CONVERSION_APY,
+  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+  MUSD_TOKEN_ADDRESS,
+} from './constants';
 import {
   createMusdCtaClickedEventProperties,
   MUSD_EVENTS_CONSTANTS,
   type MusdCtaClickedEventProperties,
 } from './musd-events';
-
-const MUSD_ICON_IMAGE = './images/musd-icon-no-background-2x.png';
 
 // ============================================================================
 // Types
@@ -61,8 +65,6 @@ export type MusdBuyGetCtaProps = {
   variant: BuyGetMusdCtaVariant | null;
   /** Selected chain ID (hex) */
   selectedChainId: Hex | null;
-  /** Custom className */
-  className?: string;
 };
 
 // ============================================================================
@@ -79,12 +81,10 @@ export type MusdBuyGetCtaProps = {
  * @param options0
  * @param options0.variant
  * @param options0.selectedChainId
- * @param options0.className
  */
 export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   variant,
   selectedChainId,
-  className,
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -103,6 +103,15 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   const networkIcon = selectedChainId
     ? getImageForChainId(selectedChainId)
     : null;
+
+  const musdIconUrl = useMemo(
+    () =>
+      getAssetImageUrl(
+        MUSD_TOKEN_ADDRESS,
+        selectedChainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+      ) ?? '',
+    [selectedChainId],
+  );
 
   /**
    * CTA text based on variant
@@ -178,63 +187,61 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
 
   return (
     <Box
-      data-testid="musd-buy-get-cta"
+      as="a"
+      onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e?.preventDefault();
+        handleClick();
+      }}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.center}
-      padding={4}
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyPress={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick();
-        }
-      }}
-      className={className}
-      style={{ cursor: 'pointer', minHeight: '64px' }}
+      paddingTop={2}
+      paddingBottom={2}
+      paddingLeft={4}
+      paddingRight={4}
+      width={BlockSize.Full}
+      className="hover:bg-hover cursor-pointer"
+      style={{ height: ASSET_CELL_HEIGHT }}
+      data-testid="multichain-token-list-button"
     >
-      {/* Left side: Icon and text */}
+      <BadgeWrapper
+        badge={
+          selectedChainId && networkIcon ? (
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              name={networkName}
+              src={networkIcon}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
+            />
+          ) : undefined
+        }
+        marginRight={4}
+        style={{ alignSelf: 'center' }}
+        data-testid="musd-buy-get-cta-icon"
+      >
+        <AvatarToken name="mUSD" src={musdIconUrl} />
+      </BadgeWrapper>
+
       <Box
         display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        gap={3}
+        flexDirection={FlexDirection.Column}
+        style={{ flexGrow: 1, overflow: 'hidden' }}
       >
-        {/* mUSD token icon with optional network badge */}
-        <BadgeWrapper
-          badge={
-            selectedChainId && networkIcon ? (
-              <AvatarNetwork
-                size={AvatarNetworkSize.Xs}
-                name={networkName}
-                src={networkIcon}
-                backgroundColor={BackgroundColor.backgroundDefault}
-                borderWidth={2}
-              />
-            ) : undefined
-          }
-          data-testid="musd-buy-get-cta-icon"
-        >
-          <AvatarToken name="mUSD" src={MUSD_ICON_IMAGE} />
-        </BadgeWrapper>
-
-        {/* Text content */}
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <Text variant={TextVariant.bodyMdMedium}>{ctaText}</Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {subtitleText}
-          </Text>
-        </Box>
+        <Text variant={TextVariant.bodyMdMedium}>{ctaText}</Text>
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          {subtitleText}
+        </Text>
       </Box>
 
-      {/* Right side: Action button */}
       <ButtonPrimary
         size={ButtonPrimarySize.Sm}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
+          e.preventDefault();
           handleClick();
         }}
+        style={{ flexShrink: 0 }}
       >
         {ctaText}
       </ButtonPrimary>

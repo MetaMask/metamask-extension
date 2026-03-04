@@ -149,7 +149,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const ctaElement = screen.getByTestId('musd-buy-get-cta');
+      const ctaElement = screen.getByTestId('multichain-token-list-button');
       fireEvent.click(ctaElement);
 
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
@@ -167,7 +167,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const ctaElement = screen.getByTestId('musd-buy-get-cta');
+      const ctaElement = screen.getByTestId('multichain-token-list-button');
       fireEvent.click(ctaElement);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
@@ -211,7 +211,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const ctaElement = screen.getByTestId('musd-buy-get-cta');
+      const ctaElement = screen.getByTestId('multichain-token-list-button');
       fireEvent.click(ctaElement);
 
       expect(mockOpenTab).toHaveBeenCalledWith(
@@ -289,7 +289,7 @@ describe('MusdBuyGetCta', () => {
   });
 
   describe('accessibility', () => {
-    it('is focusable and keyboard accessible', () => {
+    it('renders as a clickable anchor element with hover styling', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -299,8 +299,9 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const ctaElement = screen.getByTestId('musd-buy-get-cta');
-      expect(ctaElement).toHaveAttribute('tabIndex', '0');
+      const ctaElement = screen.getByTestId('multichain-token-list-button');
+      expect(ctaElement.tagName).toBe('A');
+      expect(ctaElement.className).toContain('hover:bg-hover');
     });
   });
 

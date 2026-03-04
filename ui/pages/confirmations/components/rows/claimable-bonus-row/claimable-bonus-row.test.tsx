@@ -5,7 +5,10 @@ import { getMockPersonalSignConfirmState } from '../../../../../../test/data/con
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { MUSD_CONVERSION_APY } from '../../../../../components/app/musd/constants';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { useIsTransactionPayLoading } from '../../../hooks/pay/useTransactionPayData';
 import { ClaimableBonusRow } from './claimable-bonus-row';
+
+jest.mock('../../../hooks/pay/useTransactionPayData');
 
 const mockStore = configureMockStore([]);
 
@@ -18,6 +21,24 @@ function render(props: { rowVariant?: ConfirmInfoRowSize } = {}) {
 }
 
 describe('ClaimableBonusRow', () => {
+  const useIsTransactionPayLoadingMock = jest.mocked(
+    useIsTransactionPayLoading,
+  );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useIsTransactionPayLoadingMock.mockReturnValue(false);
+  });
+
+  it('renders skeleton when loading', () => {
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(getByTestId('claimable-bonus-row-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+  });
+
   it('renders the claimable bonus row with APY value', () => {
     const { getByTestId } = render();
 

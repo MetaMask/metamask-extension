@@ -18,8 +18,10 @@ import {
 import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
+  ConfirmInfoRowSkeleton,
 } from '../../../../../components/app/confirm/info/row/row';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useIsTransactionPayLoading } from '../../../hooks/pay/useTransactionPayData';
 import {
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
@@ -33,6 +35,7 @@ export function ClaimableBonusRow({
   rowVariant = ConfirmInfoRowSize.Default,
 }: ClaimableBonusRowProps) {
   const t = useI18nContext();
+  const isLoading = useIsTransactionPayLoading();
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const infoButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -46,6 +49,16 @@ export function ClaimableBonusRow({
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
+
+  if (isLoading) {
+    return (
+      <ConfirmInfoRowSkeleton
+        data-testid="claimable-bonus-row-skeleton"
+        label={t('musdClaimableBonus')}
+        rowVariant={rowVariant}
+      />
+    );
+  }
 
   return (
     <ConfirmInfoRow
