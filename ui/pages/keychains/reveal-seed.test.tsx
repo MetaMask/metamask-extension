@@ -13,6 +13,7 @@ import {
 import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import RevealSeedPage from './reveal-seed';
+import { RecommendedAction } from '@metamask/phishing-controller';
 
 const mockUseParams = jest.fn().mockReturnValue({});
 
@@ -492,7 +493,7 @@ describe('Reveal Seed Page', () => {
 
     it('shows dapp scan warning and hides generic warning when site is malicious', async () => {
       mockScanUrlForPhishing.mockResolvedValue({
-        recommendedAction: 'BLOCK',
+        recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
 
@@ -516,7 +517,7 @@ describe('Reveal Seed Page', () => {
 
     it('shows acknowledgment checkbox when site is malicious', async () => {
       mockScanUrlForPhishing.mockResolvedValue({
-        recommendedAction: 'BLOCK',
+        recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
 
@@ -540,7 +541,7 @@ describe('Reveal Seed Page', () => {
 
     it('continue button is disabled until checkbox is acknowledged on malicious site', async () => {
       mockScanUrlForPhishing.mockResolvedValue({
-        recommendedAction: 'BLOCK',
+        recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
 
@@ -577,7 +578,7 @@ describe('Reveal Seed Page', () => {
 
     it('fires SrpRevealMaliciousSiteDetected metric only when site is malicious', async () => {
       mockScanUrlForPhishing.mockResolvedValue({
-        recommendedAction: 'BLOCK',
+        recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
 
