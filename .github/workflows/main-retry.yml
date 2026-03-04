@@ -1,0 +1,45 @@
+name: Main retry
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-id:
+        required: true
+        type: number
+        description: The run-id to rerun
+      pr-number:
+        required: true
+        type: number
+        description: The PR number associated with the run-id to rerun
+
+jobs:
+  main-retry:
+    name: Main retry
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_ID: ${{ inputs.run-id }}
+      PR_NUMBER: ${{ inputs.pr-number }}
+    permissions:
+      actions: write
+      pull-requests: read
+    steps:
+      # Must checkout in order to use `gh` commands
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Retry
+        run: |
+          # Wait 10 seconds to ensure that the workflow run has fully completed and is in a state where it can be rerun
+          sleep 10
+
+          # If the PR still has a retry-ci label, do not retry to avoid a possible infinite loop.
+          # The label should have been removed by the workflow that triggered this one.
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | tr '\n' ',')
+          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
+            echo "PR still has a 'retry-ci' label. Exiting to avoid a possible infinite loop."
+            exit 1
+          fi
+
+          gh run rerun "$RUN_ID" --failed
