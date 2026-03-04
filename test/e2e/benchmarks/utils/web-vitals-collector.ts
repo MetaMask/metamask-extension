@@ -187,9 +187,16 @@ for (var k = 0; k < cwv.observers.length; k++) cwv.observers[k].disconnect();
 
 // Diagnostic fields — logged by the runner, not included in benchmark output.
 // Remove once INP collection is confirmed working.
+var supportedTypes = [];
+try {
+  supportedTypes = PerformanceObserver.supportedEntryTypes || [];
+} catch(e) {}
 result.cwvDiagnostic = {
+  supportedEntryTypes: supportedTypes,
   eventEntryCount: cwv.event.length,
   eventObserverSupported: cwv.eventObserverSupported,
+  clsSupported: cwv.clsSupported,
+  clsEntryCount: cwv.cls.length,
   probeReceived: cwv.probeReceived,
   stateHooksInp: stateHooksInp,
   stateHooksAvailable: !!(sh && sh.getWebVitalsMetrics)

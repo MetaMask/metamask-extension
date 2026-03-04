@@ -344,8 +344,11 @@ describe('collectWebVitals', () => {
 
       const readScript = execScript.mock.calls[1][0] as string;
       expect(readScript).toContain('cwvDiagnostic');
+      expect(readScript).toContain('supportedEntryTypes');
       expect(readScript).toContain('eventEntryCount');
       expect(readScript).toContain('eventObserverSupported');
+      expect(readScript).toContain('clsSupported');
+      expect(readScript).toContain('clsEntryCount');
       expect(readScript).toContain('probeReceived');
       expect(readScript).toContain('stateHooksInp');
       expect(readScript).toContain('stateHooksAvailable');
@@ -357,8 +360,11 @@ describe('collectWebVitals', () => {
       const metricsWithDiag = {
         ...fullMetrics,
         cwvDiagnostic: {
+          supportedEntryTypes: ['event', 'layout-shift'],
           eventEntryCount: 3,
           eventObserverSupported: true,
+          clsSupported: true,
+          clsEntryCount: 0,
           probeReceived: true,
           stateHooksInp: 120,
           stateHooksAvailable: true,
@@ -379,8 +385,11 @@ describe('collectWebVitals', () => {
 
     it('logs diagnostic info via console.info', async () => {
       const diagnostic = {
+        supportedEntryTypes: [],
         eventEntryCount: 0,
         eventObserverSupported: false,
+        clsSupported: false,
+        clsEntryCount: 0,
         probeReceived: false,
         stateHooksInp: null,
         stateHooksAvailable: true,

@@ -335,9 +335,10 @@ export function initWebVitals(): void {
   initLCPObserver();
   initCLSObserver();
 
-  const { env } = process;
-  if ((env.IN_TEST || env.METAMASK_DEBUG) && globalThis.stateHooks) {
-    globalThis.stateHooks.initWebVitals = initWebVitals;
+  if (
+    (process.env.IN_TEST || process.env.METAMASK_DEBUG) &&
+    globalThis.stateHooks
+  ) {
     globalThis.stateHooks.getWebVitalsMetrics = getWebVitalsMetrics;
     globalThis.stateHooks.resetWebVitalsMetrics = resetWebVitalsMetrics;
   }
