@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "खाता कनेक्ट करें"
   },
-  "connectAccountOrCreate": {
-    "message": "अकाउंट कनेक्ट करें या नया बनाएं"
-  },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "$1 से जानकारी",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "सभी को अचयनित करें"
   },
   "destinationAccountPickerNoEligible": {
     "message": "कोई योग्य अकाउंट नहीं मिला"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 गैस फीस"
-  },
-  "lastConnected": {
-    "message": "अंतिम बार जुड़ा"
   },
   "lastSold": {
     "message": "पिछली बार बेचा गया"
@@ -6426,12 +6417,6 @@
   "selectAccountToConnect": {
     "message": "कनेक्ट करने के लिए एक अकाउंट चुनें"
   },
-  "selectAccounts": {
-    "message": "इस साइट पर इस्तेमाल करने के लिए अकाउंट (एकाउंट्स) को चुनें"
-  },
-  "selectAccountsForSnap": {
-    "message": "इस Snap के साथ इस्तेमाल करने के लिए अकाउंट(एकाउंट्स) को चुनने की"
-  },
   "selectAll": {
     "message": "सभी को चुनें"
   },
@@ -6470,9 +6455,6 @@
   },
   "selectedAccountMismatch": {
     "message": "अलग खाता चुना गया"
-  },
-  "selectingAllWillAllow": {
-    "message": "सभी को चुनने से यह साइट आपके सभी चालू एकाउंट्स को देखने की अनुमति देगी। पक्का करें कि आप इस साइट पर भरोसा करते हैं।"
   },
   "send": {
     "message": "भेजें"

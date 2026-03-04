@@ -91,7 +91,8 @@ export function getAvailableTokens({
   return tokens
     .filter((token) => {
       if (
-        token.standard !== AssetStandard.ERC20 ||
+        (token.standard !== AssetStandard.ERC20 &&
+          token.standard !== AssetStandard.Native) ||
         !token.accountType?.includes('eip155')
       ) {
         return false;
