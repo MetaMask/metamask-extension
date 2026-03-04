@@ -187,12 +187,12 @@ async function setupMocking(
   // Mocks below this line can be overridden by test-specific mocks
 
   // remote feature flags — production-accurate defaults from the registry
+  // FF will apply to all environments: rc, prod and dev
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .withQuery({
       client: 'extension',
       distribution: 'main',
-      environment: 'dev',
     })
     .thenCallback(() => {
       return {
@@ -233,38 +233,6 @@ async function setupMocking(
             cohorts: [],
             assignedCohort: null,
             hasAssignedCohortExpired: null,
-          },
-        ],
-      };
-    });
-
-  await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          subscriptions: [],
-          trialedProducts: [],
-        },
-      };
-    });
-
-  await server
-    .forGet(
-      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            canSubscribe: false,
-            canViewEntryModal: false,
-            minBalanceUSD: 1000,
-            product: 'shield',
-            modalType: 'A',
-            cohorts: [],
           },
         ],
       };
@@ -1228,6 +1196,77 @@ async function setupMocking(
       /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
     )
     .thenForwardTo('ws://localhost:8088');
+
+  /**
+   * Hyperliquid Perps Websocket
+   * Redirect Hyperliquid API WebSocket calls to local mock server for E2E tests.
+   * Used when PerpsController makes real Hyperliquid calls (e.g. from background).
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) => /^wss:\/\/api\.hyperliquid\.xyz\/ws/u.test(req.url))
+    .thenForwardTo('ws://localhost:8088');
+
+  /**
+   * Hyperliquid REST API mocks for Perps E2E tests.
+   * When PerpsController makes REST calls to api.hyperliquid.xyz, return mock data.
+   * Reads request body via mockttp's req.body.getJson()/getText() and parses safely.
+   */
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/info$/u)
+    .thenCallback(async (req) => {
+      let type;
+      const { body } = req;
+      if (body) {
+        let parsed = null;
+        const json = await body.getJson().catch(() => undefined);
+        if (json !== undefined && json !== null && typeof json === 'object') {
+          parsed = json;
+        }
+        if (parsed === null) {
+          const raw = await body.getText().catch(() => '');
+          if (raw && typeof raw === 'string' && raw.trim() !== '') {
+            try {
+              parsed = JSON.parse(raw);
+            } catch {
+              parsed = null;
+            }
+          }
+        }
+        if (parsed !== null && typeof parsed === 'object') {
+          const { type: parsedType, method: parsedMethod } = parsed;
+          type = parsedType ?? parsedMethod;
+        }
+      }
+      if (type === 'meta') {
+        return {
+          statusCode: 200,
+          json: {
+            universe: [
+              {
+                name: 'BTC',
+                szDecimals: 5,
+                maxLeverage: 50,
+              },
+            ],
+          },
+        };
+      }
+      if (type === 'allMids') {
+        return {
+          statusCode: 200,
+          json: { mids: { BTC: '50000', ETH: '3000' } },
+        };
+      }
+      return { statusCode: 200, json: {} };
+    });
+
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { status: 'ok', response: { type: 'order', data: {} } },
+    }));
 
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);

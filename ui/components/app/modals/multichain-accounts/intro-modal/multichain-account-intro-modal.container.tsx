@@ -16,6 +16,7 @@ import {
   alignMultichainWallets,
 } from '../../../../../store/actions';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
   MultichainAccountIntroModal,
   MultichainAccountIntroModalProps,
@@ -34,8 +35,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const isClosingRef = useRef(false);
 
   const MINIMUM_LOADING_TIME_MS = 2000;
-  const SUPPORT_URL =
-    'https://support.metamask.io/configure/accounts/multichain-accounts/';
+  const SUPPORT_URL = ZENDESK_URLS.MULTICHAIN_ACCOUNTS;
 
   // Create alignment promise - always defined, no conditionals needed
   const alignmentPromise = useMemo(

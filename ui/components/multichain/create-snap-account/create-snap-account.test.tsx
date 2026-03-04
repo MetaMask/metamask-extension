@@ -1,8 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { CaipChainId } from '@metamask/utils';
 import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
-import { fireEvent, waitFor } from '../../../../test/jest';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

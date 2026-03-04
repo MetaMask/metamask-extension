@@ -1,8 +1,13 @@
 import { connect } from 'react-redux';
+import {
+  getTokensControllerAllTokens,
+  getMultiChainAssetsControllerAccountsAssets,
+} from '../../../../../shared/modules/selectors/assets-migration';
 import TokenList from './token-list.component';
 
 const mapStateToProps = (state) => {
-  const { allTokens, accountsAssets } = state.metamask;
+  const allTokens = getTokensControllerAllTokens(state);
+  const accountsAssets = getMultiChainAssetsControllerAccountsAssets(state);
   return {
     allTokens,
     accountsAssets,

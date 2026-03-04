@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Belum ada apa pun. Swap token pertama Anda hari ini."
   },
-  "activityLog": {
-    "message": "Log aktivitas"
-  },
   "add": {
     "message": "Tambah"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Tambahkan gateway IPFS pilihan Anda"
-  },
-  "addImportAccount": {
-    "message": "Tambahkan akun atau dompet perangkat keras"
   },
   "addMemo": {
     "message": "Tambahkan memo"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Izinkan notifikasi"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Izinkan $1 untuk menarik dan menggunakan hingga jumlah berikut:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Jumlah"
@@ -1912,9 +1902,6 @@
   "customSlippage": {
     "message": "Kustom"
   },
-  "customSpendLimit": {
-    "message": "Batas penggunaan khusus"
-  },
   "customToken": {
     "message": "Token kustom"
   },
@@ -2484,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
   },
-  "editPermission": {
-    "message": "Edit izin"
-  },
   "editPermissions": {
     "message": "Edit izin"
   },
@@ -2570,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Masukkan ID Chain"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Masukkan batas penggunaan maksimum"
   },
   "enterNetworkName": {
     "message": "Masukkan nama jaringan"
@@ -3365,9 +3346,6 @@
     "message": "MetaMask tidak dapat terhubung ke host blockchain. Tinjau alasan yang mungkin $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Transaksi awal Anda dikonfirmasikan oleh jaringan. Klik Oke untuk kembali."
-  },
   "insights": {
     "message": "Wawasan"
   },
@@ -3786,13 +3764,6 @@
   },
   "makeAnotherSwap": {
     "message": "Buat swap baru"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Pastikan tidak ada yang melihat layar Anda",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Kelola"
   },
   "manageDefaultSettings": {
     "message": "Kelola pengaturan default"
@@ -5242,9 +5213,6 @@
   "perpsAddToFavorites": {
     "message": "Tambahkan ke favorit"
   },
-  "perpsAsk": {
-    "message": "Permintaan"
-  },
   "perpsAutoClose": {
     "message": "Tutup otomatis"
   },
@@ -5255,14 +5223,8 @@
   "perpsAvailableBalance": {
     "message": "Saldo tersedia"
   },
-  "perpsBid": {
-    "message": "Penawaran"
-  },
   "perpsCancelAllOrders": {
     "message": "Batalkan semua"
-  },
-  "perpsClose": {
-    "message": "Tutup"
   },
   "perpsCloseAll": {
     "message": "Tutup semua"
@@ -5380,9 +5342,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Harga likuidasi"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Estimasi Harga Likuidasi"
   },
   "perpsLong": {
     "message": "Long"
@@ -5717,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Pengumuman produk"
   },
-  "proposedApprovalLimit": {
-    "message": "Batas persetujuan yang diusulkan"
-  },
   "provide": {
     "message": "Berikan"
   },
@@ -5940,18 +5896,6 @@
   "rejectAll": {
     "message": "Tolak semua"
   },
-  "rejectRequestsDescription": {
-    "message": "Anda akan menolak permintaan $1 secara bertahap."
-  },
-  "rejectRequestsN": {
-    "message": "Tolak permintaan $1"
-  },
-  "rejectTxsDescription": {
-    "message": "Anda akan menolak $1 transaksi secara bertahap."
-  },
-  "rejectTxsN": {
-    "message": "Tolak $1 transaksi"
-  },
   "rejected": {
     "message": "Ditolak"
   },
@@ -6125,17 +6069,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 memberikan $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask merupakan $1. Artinya, Anda adalah pemilik SRP Anda sendiri.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "akses penuh ke dompet dan dana Anda.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "dompet dengan kendali penuh."
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6149,10 +6083,6 @@
   "revealSeedWordsWarning": {
     "message": "Pastikan tidak ada yang melihat layar Anda. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Dukungan MetaMask tidak akan pernah memintanya.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Tampilkan konten sensitif"
@@ -7363,21 +7293,6 @@
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Toleransi selip"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Atur selisih yang paling sesuai untuk perubahan saldo. Transaksi tidak akan diproses jika selisihnya lebih tinggi."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Terapkan perubahan saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Untuk menjaga keamanan uang Anda, transaksi ini tidak akan dilakukan jika saldo berubah atau toleransi selip tidak terpenuhi."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Pengaturan transaksi"
-  },
   "simulationsSettingDescription": {
     "message": "Aktifkan untuk mengestimasikan perubahan saldo transaksi dan tanda tangan sebelum Anda mengonfirmasikannya. Ini tidak menjamin hasil akhirnya. $1"
   },
@@ -7703,25 +7618,6 @@
   },
   "speedUpTooltipText": {
     "message": "Biaya gas baru"
-  },
-  "speedUpTransaction": {
-    "message": "Percepat transaksi ini"
-  },
-  "spendLimitInsufficient": {
-    "message": "Batas penggunaan tidak mencukupi"
-  },
-  "spendLimitInvalid": {
-    "message": "Batas penggunaan tidak valid; harus berupa bilangan positif"
-  },
-  "spendLimitPermission": {
-    "message": "Izin batas penggunaan"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Batas penggunaan diminta oleh $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Batas penggunaan terlalu besar"
   },
   "spender": {
     "message": "Spender"
@@ -8557,18 +8453,6 @@
   "transaction": {
     "message": "transaksi"
   },
-  "transactionCancelAttempted": {
-    "message": "Pembatalan transaksi diupayakan dengan biaya gas sebesar $1 pada $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksi berhasil dibatalkan pada $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaksi dikonfirmasi pada $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksi dibuat dengan nilai sebesar $1 pada $2."
-  },
   "transactionDataFunction": {
     "message": "Fungsi"
   },
@@ -8578,17 +8462,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Jumlah + biaya"
   },
-  "transactionDropped": {
-    "message": "Transaksi terputus pada $2."
-  },
   "transactionError": {
     "message": "Kesalahan transaksi. Pengecualian diberikan dalam kode kontrak."
   },
   "transactionErrorNoContract": {
     "message": "Mencoba memanggil fungsi pada alamat nonkontrak."
-  },
-  "transactionErrored": {
-    "message": "Transaksi mengalami kesalahan."
   },
   "transactionFee": {
     "message": "Biaya transaksi"
@@ -8624,24 +8502,15 @@
   "transactionIncludesTypes": {
     "message": "Transaksi ini termasuk: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
-  },
   "transactionSettings": {
     "message": "Pengaturan transaksi"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Transaksi dikirim dengan estimasi biaya gas sebesar $1 pada $2."
-  },
   "transactionTotalGasFee": {
     "message": "Total biaya gas",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaksi diperbarui pada $2."
   },
   "transactions": {
     "message": "Transaksi"
@@ -9127,9 +8996,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Frasa Pemulihan Rahasia Anda"
   },
   "yourTransactionConfirmed": {
     "message": "Transaksi telah dikonfirmasi"

@@ -309,6 +309,70 @@ describe('useMerklRewards', () => {
     abortSpy.mockRestore();
   });
 
+  it('returns false for sub-cent unclaimed amounts', async () => {
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '5', // 0.000005 MUSD = $0.000005
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const { result } = renderHook(() =>
+      useMerklRewards({
+        tokenAddress: MUSD_TOKEN_ADDRESS,
+        chainId: '0x1' as `0x${string}`,
+        showMerklBadge: true,
+      }),
+    );
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.hasClaimableReward).toBe(false);
+  });
+
+  it('returns true for exactly 1 cent unclaimed amount', async () => {
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10000', // 0.01 MUSD = $0.01
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useMerklRewards({
+        tokenAddress: MUSD_TOKEN_ADDRESS,
+        chainId: '0x1' as `0x${string}`,
+        showMerklBadge: true,
+      }),
+    );
+
+    await act(async () => {
+      await waitForNextUpdate();
+    });
+
+    expect(result.current.hasClaimableReward).toBe(true);
+  });
+
   it('falls back to API claimed value when getClaimedAmountFromContract returns null', async () => {
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
