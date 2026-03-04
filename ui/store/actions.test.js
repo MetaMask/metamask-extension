@@ -613,9 +613,7 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.resolves({
-        addedAccountAddress: '0x123',
-      });
+      const addNewAccount = background.addNewAccount.resolves('0x123');
 
       setBackgroundConnection(background);
 
@@ -648,9 +646,7 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.resolves({
-        addedAccountAddress: '0x123',
-      });
+      const addNewAccount = background.addNewAccount.resolves('0x123');
 
       setBackgroundConnection(background);
 
@@ -663,9 +659,7 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.resolves({
-        addedAccountAddress: '0x123',
-      });
+      const addNewAccount = background.addNewAccount.resolves('0x123');
 
       setBackgroundConnection(background);
 
