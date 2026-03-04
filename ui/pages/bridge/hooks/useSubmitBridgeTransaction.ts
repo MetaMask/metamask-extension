@@ -110,13 +110,7 @@ export default function useSubmitBridgeTransaction() {
       if (intentData) {
         await dispatch(
           submitBridgeIntent({
-            quoteResponse: {
-              ...quoteResponse,
-              quote: {
-                ...quoteResponse.quote,
-                intent: intentData as QuoteResponse['quote']['intent'],
-              },
-            },
+            quoteResponse,
             accountAddress: fromAccount.address,
           }),
         );

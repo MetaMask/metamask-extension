@@ -215,10 +215,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
     it('submits intent quotes via submitBridgeIntent', async () => {
       const store = makeMockStore();
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
-      submitIntentSpy.mockResolvedValueOnce((async () => undefined) as never);
 
       const quoteWithIntent = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
@@ -237,13 +237,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       expect(submitIntentSpy).toHaveBeenCalledWith({
-        quoteResponse: {
-          ...quoteWithIntent,
-          quote: {
-            ...quoteWithIntent.quote,
-            intent: quoteWithIntent.quote.intent,
-          },
-        },
+        quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
@@ -257,11 +251,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
     it('does not navigate to awaiting signatures for hardware-wallet intent quotes', async () => {
       const store = makeMockStore();
+      isHardwareWalletSpy.mockImplementation(() => true);
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
-      isHardwareWalletSpy.mockImplementation(() => true);
-      submitIntentSpy.mockResolvedValueOnce((async () => undefined) as never);
 
       const quoteWithIntent = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
