@@ -5751,7 +5751,6 @@
   "priceImpactErrorDescription": {
     "message": "You'll lose approximately $1 of your token's value on this swap. Try lowering the amount or choosing a more liquid route."
   },
-
   "priceImpactWarningAriaLabel": {
     "message": "Read price impact warning details"
   },
@@ -5811,6 +5810,9 @@
   },
   "privateNetwork": {
     "message": "Private network"
+  },
+  "proceed": {
+    "message": "Proceed"
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
