@@ -435,7 +435,7 @@ export const PerpsTabView: React.FC = () => {
       )}
 
       {/* Recent Activity Section - only shown when user has positions */}
-      {hasPositions && <PerpsRecentActivity />}
+      {hasPositions && <PerpsRecentActivity transactions={[]} />}
     </Box>
   );
 };

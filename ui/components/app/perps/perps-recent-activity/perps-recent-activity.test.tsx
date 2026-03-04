@@ -6,6 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PerpsRecentActivity } from './perps-recent-activity';
+import type { PerpsTransaction } from '../types';
 
 const mockNavigate = jest.fn();
 
@@ -14,77 +15,74 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock the mockTransactions to control test data
-jest.mock('../mocks', () => ({
-  mockTransactions: [
-    {
-      id: 'tx-001',
-      type: 'trade',
-      symbol: 'ETH',
-      title: 'Opened long',
-      subtitle: '2.5 ETH @ $2,850.00',
-      timestamp: Date.now() - 1000,
-      status: 'confirmed',
-      fill: { size: '2.5', price: '2850.00', fee: '7.13', side: 'buy' },
+const mockTransactions: PerpsTransaction[] = [
+  {
+    id: 'tx-001',
+    type: 'trade',
+    symbol: 'ETH',
+    title: 'Opened long',
+    subtitle: '2.5 ETH @ $2,850.00',
+    timestamp: Date.now() - 1000,
+    status: 'confirmed',
+    fill: { size: '2.5', price: '2850.00', fee: '7.13', side: 'buy' },
+  },
+  {
+    id: 'tx-002',
+    type: 'trade',
+    symbol: 'BTC',
+    title: 'Closed short',
+    subtitle: '0.5 BTC @ $45,250.00',
+    timestamp: Date.now() - 2000,
+    status: 'confirmed',
+    fill: {
+      size: '0.5',
+      price: '45250.00',
+      fee: '22.63',
+      side: 'buy',
+      realizedPnl: '+125.00',
     },
-    {
-      id: 'tx-002',
-      type: 'trade',
-      symbol: 'BTC',
-      title: 'Closed short',
-      subtitle: '0.5 BTC @ $45,250.00',
-      timestamp: Date.now() - 2000,
-      status: 'confirmed',
-      fill: {
-        size: '0.5',
-        price: '45250.00',
-        fee: '22.63',
-        side: 'buy',
-        realizedPnl: '+125.00',
-      },
-    },
-    {
-      id: 'tx-003',
-      type: 'funding',
-      symbol: 'ETH',
-      title: 'Received funding fee',
-      subtitle: 'ETH',
-      timestamp: Date.now() - 3000,
-      status: 'confirmed',
-      funding: { amount: '8.30', rate: '0.0001' },
-    },
-    {
-      id: 'tx-004',
-      type: 'order',
-      symbol: 'SOL',
-      title: 'Limit long',
-      subtitle: '25 SOL @ $95.00',
-      timestamp: Date.now() - 4000,
-      status: 'pending',
-      order: { orderId: 'order-003', orderType: 'limit', status: 'open' },
-    },
-    {
-      id: 'tx-005',
-      type: 'deposit',
-      symbol: 'USDC',
-      title: 'Deposited 5000 USDC',
-      subtitle: 'Completed',
-      timestamp: Date.now() - 5000,
-      status: 'confirmed',
-      depositWithdrawal: { amount: '5000.00', txHash: '0x123...' },
-    },
-    {
-      id: 'tx-006',
-      type: 'trade',
-      symbol: 'ARB',
-      title: 'Opened long',
-      subtitle: '1000 ARB @ $1.20',
-      timestamp: Date.now() - 6000,
-      status: 'confirmed',
-      fill: { size: '1000', price: '1.20', fee: '1.20', side: 'buy' },
-    },
-  ],
-}));
+  },
+  {
+    id: 'tx-003',
+    type: 'funding',
+    symbol: 'ETH',
+    title: 'Received funding fee',
+    subtitle: 'ETH',
+    timestamp: Date.now() - 3000,
+    status: 'confirmed',
+    funding: { amount: '8.30', rate: '0.0001' },
+  },
+  {
+    id: 'tx-004',
+    type: 'order',
+    symbol: 'SOL',
+    title: 'Limit long',
+    subtitle: '25 SOL @ $95.00',
+    timestamp: Date.now() - 4000,
+    status: 'pending',
+    order: { orderId: 'order-003', orderType: 'limit', status: 'open' },
+  },
+  {
+    id: 'tx-005',
+    type: 'deposit',
+    symbol: 'USDC',
+    title: 'Deposited 5000 USDC',
+    subtitle: 'Completed',
+    timestamp: Date.now() - 5000,
+    status: 'confirmed',
+    depositWithdrawal: { amount: '5000.00', txHash: '0x123...' },
+  },
+  {
+    id: 'tx-006',
+    type: 'trade',
+    symbol: 'ARB',
+    title: 'Opened long',
+    subtitle: '1000 ARB @ $1.20',
+    timestamp: Date.now() - 6000,
+    status: 'confirmed',
+    fill: { size: '1000', price: '1.20', fee: '1.20', side: 'buy' },
+  },
+];
 
 const mockStore = configureStore({
   metamask: {
@@ -98,13 +96,19 @@ describe('PerpsRecentActivity', () => {
   });
 
   it('renders with correct data-testid', () => {
-    renderWithProvider(<PerpsRecentActivity />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
 
     expect(screen.getByTestId('perps-recent-activity')).toBeInTheDocument();
   });
 
   it('shows "Recent Activity" header', () => {
-    renderWithProvider(<PerpsRecentActivity />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
 
     expect(
       screen.getByText(messages.perpsRecentActivity.message),
@@ -112,13 +116,19 @@ describe('PerpsRecentActivity', () => {
   });
 
   it('shows "See All" button', () => {
-    renderWithProvider(<PerpsRecentActivity />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
 
     expect(screen.getByText(messages.perpsSeeAll.message)).toBeInTheDocument();
   });
 
   it('limits displayed transactions to maxTransactions', () => {
-    renderWithProvider(<PerpsRecentActivity maxTransactions={3} />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} maxTransactions={3} />,
+      mockStore,
+    );
 
     // Should show only 3 transactions (tx-001, tx-002, tx-003 based on timestamp)
     expect(screen.getByTestId('transaction-card-tx-001')).toBeInTheDocument();
@@ -130,7 +140,10 @@ describe('PerpsRecentActivity', () => {
   });
 
   it('defaults to showing 5 transactions when maxTransactions is not provided', () => {
-    renderWithProvider(<PerpsRecentActivity />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
 
     // Should show 5 transactions by default
     expect(screen.getByTestId('transaction-card-tx-001')).toBeInTheDocument();
@@ -145,7 +158,10 @@ describe('PerpsRecentActivity', () => {
   });
 
   it('sorts transactions by timestamp with newest first', () => {
-    renderWithProvider(<PerpsRecentActivity maxTransactions={3} />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} maxTransactions={3} />,
+      mockStore,
+    );
 
     const cards = screen.getAllByTestId(/^transaction-card-/u);
 
@@ -158,7 +174,10 @@ describe('PerpsRecentActivity', () => {
   });
 
   it('"See All" navigates to PERPS_ACTIVITY_ROUTE', () => {
-    renderWithProvider(<PerpsRecentActivity />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
 
     const seeAllButton = screen.getByText(messages.perpsSeeAll.message);
     fireEvent.click(seeAllButton);
@@ -169,7 +188,10 @@ describe('PerpsRecentActivity', () => {
   it('calls onTransactionClick when a transaction is clicked', () => {
     const handleClick = jest.fn();
     renderWithProvider(
-      <PerpsRecentActivity onTransactionClick={handleClick} />,
+      <PerpsRecentActivity
+        transactions={mockTransactions}
+        onTransactionClick={handleClick}
+      />,
       mockStore,
     );
 
@@ -183,7 +205,10 @@ describe('PerpsRecentActivity', () => {
   });
 
   it('renders transaction cards without onClick when onTransactionClick is not provided', () => {
-    renderWithProvider(<PerpsRecentActivity />, mockStore);
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
 
     const card = screen.getByTestId('transaction-card-tx-001');
     // Without onClick, the card should not have cursor-pointer class
@@ -192,26 +217,14 @@ describe('PerpsRecentActivity', () => {
 });
 
 describe('PerpsRecentActivity - Empty State', () => {
-  beforeEach(() => {
-    // Override the mock to return empty transactions
-    jest.doMock('../mocks', () => ({
-      mockTransactions: [],
-    }));
-  });
+  it('shows empty state when no transactions', () => {
+    renderWithProvider(
+      <PerpsRecentActivity transactions={[]} />,
+      mockStore,
+    );
 
-  afterEach(() => {
-    jest.resetModules();
-  });
-
-  it('shows empty state when no transactions', async () => {
-    // Re-import with empty mock
-    jest.isolateModules(() => {
-      jest.doMock('../mocks', () => ({
-        mockTransactions: [],
-      }));
-
-      // Since we need to test empty state, we'll test the empty testid exists
-      // when there are no transactions to display
-    });
+    expect(
+      screen.getByTestId('perps-recent-activity-empty'),
+    ).toBeInTheDocument();
   });
 });
