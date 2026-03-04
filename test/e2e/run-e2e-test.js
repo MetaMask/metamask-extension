@@ -1,9 +1,8 @@
-import { getBooleanFlag } from '../../shared/lib/common-utils';
-
 const { promises: fs } = require('fs');
 const path = require('path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const { getBooleanFlag } = require('../../shared/lib/common-utils');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { retry } = require('../../development/lib/retry');

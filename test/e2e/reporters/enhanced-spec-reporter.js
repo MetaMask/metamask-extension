@@ -1,8 +1,7 @@
-import { getBooleanFlag } from '../../../shared/lib/common-utils';
-
 // test/e2e/reporters/enhanced-spec-reporter.js
 const { inherits } = require('util');
 const Spec = require('mocha/lib/reporters/spec');
+const { getBooleanFlag } = require('../../../shared/lib/common-utils');
 
 // Enhance stack traces to include more frames and better test file detection
 // Increase stack trace limit to capture more frames (default is 10)

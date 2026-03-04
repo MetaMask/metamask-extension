@@ -1,5 +1,3 @@
-import { getBooleanFlag } from '../../shared/lib/common-utils';
-
 const path = require('path');
 const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
@@ -7,6 +5,7 @@ const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const WebSocket = require('ws');
+const { getBooleanFlag } = require('../../shared/lib/common-utils');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
