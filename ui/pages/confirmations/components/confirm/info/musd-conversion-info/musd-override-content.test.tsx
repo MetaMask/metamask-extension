@@ -3,9 +3,9 @@ import { render, screen } from '@testing-library/react';
 
 import { useCustomAmount } from '../../../../../../hooks/musd/useCustomAmount';
 import { useTransactionPayAvailableTokens } from '../../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useTransactionPayToken } from '../../../../hooks/pay/useTransactionPayToken';
 import { MusdOverrideContent } from './musd-override-content';
 
-// Mock dependencies
 jest.mock('../../../../../../hooks/musd/useCustomAmount', () => ({
   useCustomAmount: jest.fn(),
 }));
@@ -14,8 +14,15 @@ jest.mock('../../../../hooks/pay/useTransactionPayAvailableTokens', () => ({
   useTransactionPayAvailableTokens: jest.fn(),
 }));
 
+jest.mock('../../../../hooks/pay/useTransactionPayToken', () => ({
+  useTransactionPayToken: jest.fn(),
+}));
+
 jest.mock('../../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row">PayWithRow</div>,
+  PayWithRowSkeleton: () => (
+    <div data-testid="pay-with-row-skeleton">PayWithRowSkeleton</div>
+  ),
 }));
 
 const mockUseCustomAmount = useCustomAmount as jest.MockedFunction<
@@ -25,10 +32,18 @@ const mockUseTransactionPayAvailableTokens =
   useTransactionPayAvailableTokens as jest.MockedFunction<
     typeof useTransactionPayAvailableTokens
   >;
+const mockUseTransactionPayToken =
+  useTransactionPayToken as jest.MockedFunction<typeof useTransactionPayToken>;
 
 describe('MusdOverrideContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseTransactionPayToken.mockReturnValue({
+      payToken: { address: '0xabc', chainId: '0x1' } as ReturnType<
+        typeof useTransactionPayToken
+      >['payToken'],
+      setPayToken: jest.fn(),
+    });
   });
 
   describe('when mUSD conversion is enabled and tokens available', () => {
@@ -72,10 +87,11 @@ describe('MusdOverrideContent', () => {
       expect(screen.getByText('100.50 mUSD')).toBeInTheDocument();
     });
 
-    it('should not render PayWithRow', () => {
+    it('should render PayWithRowSkeleton instead of PayWithRow', () => {
       render(<MusdOverrideContent amountHuman="100.50" />);
 
       expect(screen.queryByTestId('pay-with-row')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
     });
   });
 

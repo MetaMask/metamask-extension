@@ -1394,9 +1394,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 2,
-      "error: [MUSD Geo] Geolocation error: Geolocation": 1,
-      "error: [MUSD Geo] Geolocation error: Network": 2
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/hooks/perps/usePerpsOrderForm.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -2326,11 +2324,6 @@
     "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
-      "Reselect: Identity function warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx": {
