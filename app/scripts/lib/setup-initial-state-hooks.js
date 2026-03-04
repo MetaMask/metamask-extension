@@ -1,19 +1,53 @@
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import { memoize } from 'lodash';
+import {
+  ENVIRONMENT_TYPE_BACKGROUND,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
-import { getEnvironmentType } from './get-environment-type';
 import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
 const platform = new ExtensionPlatform();
 
+// TODO: This logic is duplicated from app/scripts/lib/util.ts getEnvironmentType.
+// It should be extracted to a shared get-environment-type.ts module, but that
+// causes a LavaMoat + Webpack harmony re-export error in the UI bundle. See:
+// https://github.com/LavaMoat/LavaMoat/issues/1893
+const getEnvironmentTypeMemo = memoize((url) => {
+  const parsedUrl = new URL(url);
+  if (parsedUrl.pathname === '/popup.html') {
+    return ENVIRONMENT_TYPE_POPUP;
+  } else if (['/home.html'].includes(parsedUrl.pathname)) {
+    return ENVIRONMENT_TYPE_FULLSCREEN;
+  } else if (parsedUrl.pathname === '/notification.html') {
+    return ENVIRONMENT_TYPE_NOTIFICATION;
+  } else if (parsedUrl.pathname === '/sidepanel.html') {
+    return ENVIRONMENT_TYPE_SIDEPANEL;
+  }
+  return ENVIRONMENT_TYPE_BACKGROUND;
+});
+
+const getEnvironmentTypeForHooks = (
+  url = globalThis.self?.location?.href ?? '',
+) => {
+  if (!url) {
+    return ENVIRONMENT_TYPE_BACKGROUND;
+  }
+  return getEnvironmentTypeMemo(url);
+};
+
 const useFixtureStore =
   process.env.IN_TEST &&
   getManifestFlags().testing?.forceExtensionStore !== true;
-const isBackground = getEnvironmentType() === ENVIRONMENT_TYPE_BACKGROUND;
+const isBackground =
+  getEnvironmentTypeForHooks() === ENVIRONMENT_TYPE_BACKGROUND;
 const localStore = useFixtureStore
   ? new FixtureExtensionStore({ initialize: isBackground })
   : new ExtensionStore();

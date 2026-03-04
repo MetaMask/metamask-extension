@@ -9,8 +9,14 @@ import type { Provider } from '@metamask/network-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
+import { memoize } from 'lodash';
 import {
   DEVICE_TYPE,
+  ENVIRONMENT_TYPE_BACKGROUND,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   OS,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
@@ -49,9 +55,38 @@ import {
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
 
-// Re-export from dedicated module to avoid circular dependencies
-// and keep setup-initial-state-hooks lightweight
-export { getEnvironmentType } from './get-environment-type';
+/**
+ * @see {@link getEnvironmentType}
+ */
+const getEnvironmentTypeMemo = memoize((url: string) => {
+  const parsedUrl = new URL(url);
+  if (parsedUrl.pathname === '/popup.html') {
+    return ENVIRONMENT_TYPE_POPUP;
+  } else if (['/home.html'].includes(parsedUrl.pathname)) {
+    return ENVIRONMENT_TYPE_FULLSCREEN;
+  } else if (parsedUrl.pathname === '/notification.html') {
+    return ENVIRONMENT_TYPE_NOTIFICATION;
+  } else if (parsedUrl.pathname === '/sidepanel.html') {
+    return ENVIRONMENT_TYPE_SIDEPANEL;
+  }
+  return ENVIRONMENT_TYPE_BACKGROUND;
+});
+
+/**
+ * Returns the window type for the application
+ *
+ * - `popup` refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
+ * - `fullscreen` refers to the main browser window
+ * - `notification` refers to the popup that appears in its own window when taking action outside of metamask
+ * - `background` refers to the background page
+ *
+ * NOTE: This should only be called on internal URLs.
+ *
+ * @param [url] - the URL of the window
+ * @returns the environment ENUM
+ */
+export const getEnvironmentType = (url = window.location.href) =>
+  getEnvironmentTypeMemo(url);
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
