@@ -61,7 +61,14 @@ describe('CandleStreamChannel', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivateStreaming',
-        [expect.objectContaining({ candle: expect.objectContaining({ symbol: 'BTC', interval: CandlePeriod.OneHour }) })],
+        [
+          expect.objectContaining({
+            candle: expect.objectContaining({
+              symbol: 'BTC',
+              interval: CandlePeriod.OneHour,
+            }),
+          }),
+        ],
       );
     });
 
@@ -104,7 +111,11 @@ describe('CandleStreamChannel', () => {
       });
 
       const data = makeCandleData([100, 200]);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data,
+      });
 
       const cb2 = jest.fn();
       channel.subscribe({
@@ -137,7 +148,11 @@ describe('CandleStreamChannel', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivateStreaming',
-        [expect.objectContaining({ candle: expect.objectContaining({ duration: TimeDuration.OneDay }) })],
+        [
+          expect.objectContaining({
+            candle: expect.objectContaining({ duration: TimeDuration.OneDay }),
+          }),
+        ],
       );
     });
   });
@@ -204,11 +219,19 @@ describe('CandleStreamChannel', () => {
         throttleMs: 5000,
       });
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
       expect(cb).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(1000);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
 
       unsubscribe();
 
@@ -227,7 +250,11 @@ describe('CandleStreamChannel', () => {
       });
 
       const data = makeCandleData([100, 200]);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data,
+      });
 
       expect(cb).toHaveBeenCalledWith(data);
     });
@@ -240,14 +267,22 @@ describe('CandleStreamChannel', () => {
         callback: cb,
       });
 
-      channel.pushFromBackground({ symbol: 'ETH', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
+      channel.pushFromBackground({
+        symbol: 'ETH',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
 
       expect(cb).not.toHaveBeenCalled();
     });
 
     it('creates a channel entry for an unknown key (for cache)', () => {
       const data = makeCandleData([100, 200]);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data,
+      });
 
       // Subscribe after push — should get cached data
       const cb = jest.fn();
@@ -271,9 +306,21 @@ describe('CandleStreamChannel', () => {
         throttleMs: 0,
       });
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200]) });
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200, 300]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200, 300]),
+      });
 
       expect(cb).toHaveBeenCalledTimes(3);
     });
@@ -287,11 +334,19 @@ describe('CandleStreamChannel', () => {
         throttleMs: 2000,
       });
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
       expect(cb).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(500);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
       expect(cb).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(1500);
@@ -307,15 +362,27 @@ describe('CandleStreamChannel', () => {
         throttleMs: 2000,
       });
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
       expect(cb).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(500);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
 
       jest.advanceTimersByTime(200);
       const latestData = makeCandleData([100, 200, 300]);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: latestData });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: latestData,
+      });
 
       jest.advanceTimersByTime(1300);
       expect(cb).toHaveBeenCalledTimes(2);
@@ -331,12 +398,28 @@ describe('CandleStreamChannel', () => {
         throttleMs: 2000,
       });
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
       jest.advanceTimersByTime(500);
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200]) });
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200, 300]) });
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200, 300, 400]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200, 300]),
+      });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200, 300, 400]),
+      });
 
       jest.advanceTimersByTime(1500);
       expect(cb).toHaveBeenCalledTimes(2);
@@ -351,12 +434,20 @@ describe('CandleStreamChannel', () => {
         throttleMs: 1000,
       });
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
       expect(cb).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(1100);
       const data2 = makeCandleData([100, 200]);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: data2 });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: data2,
+      });
       expect(cb).toHaveBeenCalledTimes(2);
       expect(cb).toHaveBeenLastCalledWith(data2);
     });
@@ -418,7 +509,9 @@ describe('CandleStreamChannel', () => {
       });
       cb.mockClear();
 
-      mockSubmitRequestToBackground.mockResolvedValueOnce(makeCandleData([200, 300, 400]));
+      mockSubmitRequestToBackground.mockResolvedValueOnce(
+        makeCandleData([200, 300, 400]),
+      );
 
       await channel.fetchHistoricalCandles(
         'BTC',
@@ -428,12 +521,20 @@ describe('CandleStreamChannel', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsFetchHistoricalCandles',
-        [expect.objectContaining({ symbol: 'BTC', interval: CandlePeriod.OneHour, endTime: 499 })],
+        [
+          expect.objectContaining({
+            symbol: 'BTC',
+            interval: CandlePeriod.OneHour,
+            endTime: 499,
+          }),
+        ],
       );
 
       expect(cb).toHaveBeenCalledTimes(1);
       const merged = cb.mock.calls[0][0] as CandleData;
-      expect(merged.candles.map((c) => c.time)).toEqual([200, 300, 400, 500, 600, 700]);
+      expect(merged.candles.map((c) => c.time)).toEqual([
+        200, 300, 400, 500, 600, 700,
+      ]);
     });
 
     it('deduplicates candles by timestamp', async () => {
@@ -452,7 +553,9 @@ describe('CandleStreamChannel', () => {
       });
       cb.mockClear();
 
-      mockSubmitRequestToBackground.mockResolvedValueOnce(makeCandleData([200, 300, 400]));
+      mockSubmitRequestToBackground.mockResolvedValueOnce(
+        makeCandleData([200, 300, 400]),
+      );
 
       await channel.fetchHistoricalCandles(
         'BTC',
@@ -482,7 +585,9 @@ describe('CandleStreamChannel', () => {
       cb.mockClear();
 
       const olderTimes = Array.from({ length: 400 }, (_, i) => 500 + i);
-      mockSubmitRequestToBackground.mockResolvedValueOnce(makeCandleData(olderTimes));
+      mockSubmitRequestToBackground.mockResolvedValueOnce(
+        makeCandleData(olderTimes),
+      );
 
       await channel.fetchHistoricalCandles(
         'BTC',
@@ -688,10 +793,18 @@ describe('CandleStreamChannel', () => {
         throttleMs: 5000,
       });
 
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100]),
+      });
 
       jest.advanceTimersByTime(1000);
-      channel.pushFromBackground({ symbol: 'BTC', interval: CandlePeriod.OneHour, data: makeCandleData([100, 200]) });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
 
       channel.clearAll();
 

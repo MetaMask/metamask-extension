@@ -27,6 +27,7 @@ export type PerpsRecentActivityProps = {
  * in the Perps tab with a "See All" button to view full history
  *
  * @param options0 - Component props
+ * @param options0.transactions - Array of transactions to display
  * @param options0.maxTransactions - Maximum number of transactions to show (default: 5)
  * @param options0.onTransactionClick - Optional click handler for transactions
  */

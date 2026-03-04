@@ -330,7 +330,7 @@ export class CandleStreamChannel {
    *
    * @param key - Cache key
    * @param entry - Channel entry
-   * @param onError - Optional error callback
+   * @param _onError - Optional error callback
    */
   private connect(
     key: string,

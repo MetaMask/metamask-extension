@@ -1,6 +1,6 @@
 import type { OrderBookData } from '@metamask/perps-controller';
-import { usePerpsChannel } from './usePerpsChannel';
 import type { PerpsStreamManager } from '../../../providers/perps';
+import { usePerpsChannel } from './usePerpsChannel';
 
 /**
  * Options for usePerpsLiveOrderBook hook

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { usePerpsChannel } from './usePerpsChannel';
 import type { PerpsStreamManager } from '../../../providers/perps';
+import { usePerpsChannel } from './usePerpsChannel';
 
 /**
  * Top of book data (best bid/ask)

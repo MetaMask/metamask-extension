@@ -121,15 +121,6 @@ describe('PerpsStreamManager', () => {
       expect(mockMarkPerpsControllerInitialized).toHaveBeenCalledWith('0xaaa');
     });
 
-    it('calls perpsSubscriberChange(1) on init', () => {
-      manager.init('0xaaa');
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSubscriberChange',
-        [1],
-      );
-    });
-
     it('clears caches when address changes', () => {
       mockGetPerpsControllerCurrentAddress.mockReturnValue('0xold');
 
@@ -139,21 +130,6 @@ describe('PerpsStreamManager', () => {
 
       expect(clearSpy).toHaveBeenCalledTimes(1);
       clearSpy.mockRestore();
-    });
-
-    it('calls perpsSubscriberChange(-1) then (+1) when address changes', () => {
-      mockGetPerpsControllerCurrentAddress.mockReturnValue('0xold');
-
-      manager.init('0xnew');
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSubscriberChange',
-        [-1],
-      );
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSubscriberChange',
-        [1],
-      );
     });
 
     it('does not clear caches when initializing from null address', () => {
@@ -221,9 +197,18 @@ describe('PerpsStreamManager', () => {
 
     it('routes candles channel to candles.pushFromBackground', () => {
       const pushFromBackground = jest.fn();
-      (manager.candles as unknown as { pushFromBackground: jest.Mock }).pushFromBackground = pushFromBackground;
+      (
+        manager.candles as unknown as { pushFromBackground: jest.Mock }
+      ).pushFromBackground = pushFromBackground;
 
-      const candleData = { open: '100', close: '110', high: '115', low: '98', volume: '1000', timestamp: 1000 };
+      const candleData = {
+        open: '100',
+        close: '110',
+        high: '115',
+        low: '98',
+        volume: '1000',
+        timestamp: 1000,
+      };
       manager.handleBackgroundUpdate({
         channel: 'candles',
         data: candleData,
@@ -240,7 +225,9 @@ describe('PerpsStreamManager', () => {
 
     it('ignores candles channel without symbol or interval', () => {
       const pushFromBackground = jest.fn();
-      (manager.candles as unknown as { pushFromBackground: jest.Mock }).pushFromBackground = pushFromBackground;
+      (
+        manager.candles as unknown as { pushFromBackground: jest.Mock }
+      ).pushFromBackground = pushFromBackground;
 
       manager.handleBackgroundUpdate({ channel: 'candles', data: {} });
 
@@ -322,7 +309,9 @@ describe('PerpsStreamManager', () => {
 
       manager.handleBackgroundUpdate({
         channel: 'positions',
-        data: [makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' })],
+        data: [
+          makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' }),
+        ],
       });
 
       cb.mockClear();
@@ -330,7 +319,9 @@ describe('PerpsStreamManager', () => {
       jest.advanceTimersByTime(100);
       manager.handleBackgroundUpdate({
         channel: 'positions',
-        data: [makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' })],
+        data: [
+          makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' }),
+        ],
       });
 
       const second = cb.mock.calls[0][0] as Position[];
@@ -383,7 +374,9 @@ describe('PerpsStreamManager', () => {
 
       manager.handleBackgroundUpdate({
         channel: 'positions',
-        data: [makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' })],
+        data: [
+          makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' }),
+        ],
       });
 
       const delivered = cb.mock.calls[0][0] as Position[];
@@ -500,7 +493,12 @@ describe('PerpsStreamManager', () => {
   describe('clearAllCaches', () => {
     it('resets all channel caches to initial values', () => {
       manager.positions.pushData([makePosition('BTC')]);
-      manager.prices.pushData([{ symbol: 'BTC', price: '50000' } as import('@metamask/perps-controller').PriceUpdate]);
+      manager.prices.pushData([
+        {
+          symbol: 'BTC',
+          price: '50000',
+        } as import('@metamask/perps-controller').PriceUpdate,
+      ]);
       expect(manager.positions.getCachedData()).toHaveLength(1);
       expect(manager.prices.getCachedData()).toHaveLength(1);
 

@@ -5,8 +5,8 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { PerpsRecentActivity } from './perps-recent-activity';
 import type { PerpsTransaction } from '../types';
+import { PerpsRecentActivity } from './perps-recent-activity';
 
 const mockNavigate = jest.fn();
 
@@ -126,7 +126,10 @@ describe('PerpsRecentActivity', () => {
 
   it('limits displayed transactions to maxTransactions', () => {
     renderWithProvider(
-      <PerpsRecentActivity transactions={mockTransactions} maxTransactions={3} />,
+      <PerpsRecentActivity
+        transactions={mockTransactions}
+        maxTransactions={3}
+      />,
       mockStore,
     );
 
@@ -159,7 +162,10 @@ describe('PerpsRecentActivity', () => {
 
   it('sorts transactions by timestamp with newest first', () => {
     renderWithProvider(
-      <PerpsRecentActivity transactions={mockTransactions} maxTransactions={3} />,
+      <PerpsRecentActivity
+        transactions={mockTransactions}
+        maxTransactions={3}
+      />,
       mockStore,
     );
 
@@ -218,10 +224,7 @@ describe('PerpsRecentActivity', () => {
 
 describe('PerpsRecentActivity - Empty State', () => {
   it('shows empty state when no transactions', () => {
-    renderWithProvider(
-      <PerpsRecentActivity transactions={[]} />,
-      mockStore,
-    );
+    renderWithProvider(<PerpsRecentActivity transactions={[]} />, mockStore);
 
     expect(
       screen.getByTestId('perps-recent-activity-empty'),

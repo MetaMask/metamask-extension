@@ -11,8 +11,8 @@
  * State reads should use Redux selectors from ui/selectors/perps-controller.ts.
  */
 
-import { createPerpsControllerFacade } from './createPerpsControllerFacade';
 import type { PerpsController } from '@metamask/perps-controller';
+import { createPerpsControllerFacade } from './createPerpsControllerFacade';
 
 export class PerpsControllerInitializationCancelledError extends Error {
   constructor() {
@@ -73,25 +73,25 @@ export function markPerpsControllerInitialized(address: string): void {
  * All methods delegate to the background controller via submitRequestToBackground.
  * No UI-side WebSocket is created.
  *
- * @param selectedAddress - The currently selected account address
+ * @param address - The currently selected account address
  * @returns The PerpsController facade
  */
 export async function getPerpsStreamingController(
-  selectedAddress: string,
+  address: string,
 ): Promise<PerpsController> {
-  if (!selectedAddress) {
+  if (!address) {
     throw new Error(
       'No account selected. Please select an account before using Perps.',
     );
   }
 
-  if (currentAddress !== null && currentAddress !== selectedAddress) {
+  if (currentAddress !== null && currentAddress !== address) {
     // Address changed — clear cached address; PerpsStreamManager handles cache clearing
     currentAddress = null;
     initializedAddress = null;
   }
 
-  currentAddress = selectedAddress;
+  currentAddress = address;
   return getOrCreateFacade();
 }
 

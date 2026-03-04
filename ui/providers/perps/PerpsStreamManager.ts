@@ -35,6 +35,7 @@ import type {
   CandleData,
   CandlePeriod,
 } from '@metamask/perps-controller';
+import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getPerpsControllerCurrentAddress,
   isPerpsControllerInitialized,
@@ -42,7 +43,6 @@ import {
 } from './getPerpsController';
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
-import { submitRequestToBackground } from '../../store/background-connection';
 
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
@@ -112,7 +112,10 @@ class PerpsStreamManager {
             push(data ?? EMPTY_POSITIONS);
           })
           .catch((err) => {
-            console.error('[PerpsStreamManager] Failed to fetch positions', err);
+            console.error(
+              '[PerpsStreamManager] Failed to fetch positions',
+              err,
+            );
             push(EMPTY_POSITIONS);
           });
         // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
@@ -143,7 +146,6 @@ class PerpsStreamManager {
       connectFn: (push) => {
         submitRequestToBackground<AccountState>('perpsGetAccountState', [])
           .then((data) => {
-            console.debug('[perps:account] REST totalBalance=%s availableBalance=%s unrealizedPnl=%s', data?.totalBalance, data?.availableBalance, data?.unrealizedPnl);
             push(data ?? null);
           })
           .catch((err) => {
@@ -374,7 +376,6 @@ class PerpsStreamManager {
         break;
       case 'account': {
         const acc = data as AccountState | null;
-        console.debug('[perps:account] stream totalBalance=%s availableBalance=%s unrealizedPnl=%s', acc?.totalBalance, acc?.availableBalance, acc?.unrealizedPnl);
         this.account.pushData(acc);
         break;
       }

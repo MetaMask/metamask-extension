@@ -21,11 +21,22 @@ type ActivateStreamingParams = {
  * subscriptions and a single UI outStream.
  *
  * Manages two categories of subscriptions:
+/**
+ * Per-connection bridge between the background PerpsController's WebSocket
+ * subscriptions and a single UI outStream.
+ *
+ * Manages two categories of subscriptions:
  * - Static (positions/orders/account): registered once via activate() after
- *   perpsInit resolves and the provider is ready. Calling activate() again
- *   tears down and re-registers statics (handles address changes).
+ * perpsInit resolves and the provider is ready. Calling activate() again
+ * tears down and re-registers statics (handles address changes).
  * - Dynamic (prices/orderBook/candles): replaced on each activateStreaming()
- *   call so navigating between markets doesn't leak subscriptions.
+ * call so navigating between markets doesn't leak subscriptions.
+ *
+ * Emission is gated by isActive, which requires both activate() to have been
+ * called and setViewActive(true) to be set. The UI calls setViewActive(true)
+ * when PerpsLayout mounts and setViewActive(false) when it unmounts, ensuring
+ * the background only pushes data while a Perps view is open.
+ */
  *
  * Emission is gated by isActive, which requires both activate() to have been
  * called and setViewActive(true) to be set. The UI calls setViewActive(true)
@@ -52,6 +63,8 @@ export class PerpsStreamBridge {
    * controller provider is guaranteed to be ready. Idempotent — subsequent
    * calls tear down existing statics and re-subscribe so an address change
    * is handled cleanly.
+   *
+   * @param controller - The initialized PerpsController instance
    */
   activate(controller: PerpsController): void {
     // Tear down any previous static subscriptions (handles re-activation)

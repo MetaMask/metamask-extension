@@ -90,6 +90,20 @@ jest.mock('../../providers/perps', () => ({
   PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
   usePerpsController: () => mockPerpsController,
+  getPerpsStreamManager: () => ({
+    positions: { getCachedData: () => [], pushData: jest.fn(), subscribe: jest.fn(() => jest.fn()) },
+    orders: { getCachedData: () => [], pushData: jest.fn() },
+    account: { getCachedData: () => null, pushData: jest.fn() },
+    markets: { getCachedData: () => [], pushData: jest.fn() },
+    prices: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => [] },
+    setOptimisticTPSL: jest.fn(),
+    clearOptimisticTPSL: jest.fn(),
+    pushPositionsWithOverrides: jest.fn(),
+    prewarm: jest.fn(),
+    cleanupPrewarm: jest.fn(),
+    isInitialized: () => true,
+    init: jest.fn(),
+  }),
 }));
 
 jest.mock('../../hooks/perps', () => ({
@@ -98,22 +112,6 @@ jest.mock('../../hooks/perps', () => ({
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
-}));
-
-jest.mock('../../providers/perps/PerpsStreamManager', () => ({
-  getPerpsStreamManager: () => ({
-    positions: { getCachedData: () => [], pushData: jest.fn() },
-    orders: { getCachedData: () => [], pushData: jest.fn() },
-    account: { getCachedData: () => null, pushData: jest.fn() },
-    markets: { getCachedData: () => [], pushData: jest.fn() },
-    setOptimisticTPSL: jest.fn(),
-    clearOptimisticTPSL: jest.fn(),
-    pushPositionsWithOverrides: jest.fn(),
-    prewarm: jest.fn(),
-    cleanupPrewarm: jest.fn(),
-    isInitialized: () => true,
-    init: jest.fn().mockResolvedValue(undefined),
-  }),
 }));
 
 // Mock the perps stream hooks

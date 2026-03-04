@@ -61,7 +61,8 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   // Track whether streamManager is ready for this address.
   // Initialize synchronously in case init was already done (e.g. by PerpsControllerProvider).
   const [isReady, setIsReady] = useState(
-    () => selectedAddress !== null && streamManager.isInitialized(selectedAddress),
+    () =>
+      selectedAddress !== null && streamManager.isInitialized(selectedAddress),
   );
   const [error, setError] = useState<Error | null>(null);
 
