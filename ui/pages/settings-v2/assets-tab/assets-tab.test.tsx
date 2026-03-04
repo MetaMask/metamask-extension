@@ -4,7 +4,38 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import Assets from './assets-tab';
+
+const mockSetShowNativeTokenAsMainBalancePreference = jest.fn();
+const mockSetHideZeroBalanceTokens = jest.fn();
+const mockSetOpenSeaEnabled = jest.fn();
+const mockSetUseNftDetection = jest.fn();
+const mockSetUseTokenDetection = jest.fn();
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  setShowNativeTokenAsMainBalancePreference: (val: boolean) => {
+    mockSetShowNativeTokenAsMainBalancePreference(val);
+    return { type: 'MOCK_ACTION' };
+  },
+  setHideZeroBalanceTokens: (val: boolean) => {
+    mockSetHideZeroBalanceTokens(val);
+    return { type: 'MOCK_ACTION' };
+  },
+  setOpenSeaEnabled: (val: boolean) => {
+    mockSetOpenSeaEnabled(val);
+    return { type: 'MOCK_ACTION' };
+  },
+  setUseNftDetection: (val: boolean) => {
+    mockSetUseNftDetection(val);
+    return { type: 'MOCK_ACTION' };
+  },
+  setUseTokenDetection: (val: boolean) => {
+    mockSetUseTokenDetection(val);
+    return { type: 'MOCK_ACTION' };
+  },
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -13,37 +44,21 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => ({ pathname: '/settings-v2/assets' }),
 }));
 
+// Mock background connection to prevent "Background connection not initialized" warnings
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
+
 describe('Assets Tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     jest.clearAllMocks();
+    setBackgroundConnection(backgroundConnectionMock as never);
   });
-
-  function toggleCheckbox(
-    testId: string,
-    initialState: boolean,
-    skipRender = false,
-    store = mockStore,
-  ) {
-    if (!skipRender) {
-      renderWithProvider(<Assets />, store);
-    }
-
-    const checkbox = screen.getByTestId(testId);
-
-    expect(checkbox).toHaveAttribute('value', initialState ? 'true' : 'false');
-
-    fireEvent.click(checkbox);
-
-    fireEvent.change(checkbox, {
-      target: { value: !initialState },
-    });
-
-    expect(checkbox).toHaveAttribute('value', initialState ? 'false' : 'true');
-
-    return true;
-  }
 
   it('renders all setting items', () => {
     renderWithProvider(<Assets />, mockStore);
@@ -64,29 +79,49 @@ describe('Assets Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('toggles show native token as main balance', () => {
-    // mockState.metamask.preferences.showNativeTokenAsMainBalance = true
-    expect(toggleCheckbox('show-native-token-as-main-balance', true)).toBe(
-      true,
+  it('calls setShowNativeTokenAsMainBalancePreference when toggling show native token', () => {
+    renderWithProvider(<Assets />, mockStore);
+
+    const toggle = screen.getByTestId('show-native-token-as-main-balance');
+    fireEvent.click(toggle);
+
+    // Initial state is true, so toggling should call with false
+    expect(mockSetShowNativeTokenAsMainBalancePreference).toHaveBeenCalledWith(
+      false,
     );
   });
 
-  it('toggles hide zero balance tokens', () => {
-    // mockState.metamask.preferences.hideZeroBalanceTokens = false
-    expect(toggleCheckbox('toggle-zero-balance-button', false)).toBe(true);
+  it('calls setHideZeroBalanceTokens when toggling hide zero balance', () => {
+    renderWithProvider(<Assets />, mockStore);
+
+    const toggle = screen.getByTestId('toggle-zero-balance-button');
+    fireEvent.click(toggle);
+
+    // Initial state is false, so toggling should call with true
+    expect(mockSetHideZeroBalanceTokens).toHaveBeenCalledWith(true);
   });
 
-  it('toggles display NFT media', () => {
-    // mockState.metamask.openSeaEnabled = true
-    expect(toggleCheckbox('display-nft-media', true)).toBe(true);
+  it('calls setOpenSeaEnabled when toggling display NFT media', () => {
+    renderWithProvider(<Assets />, mockStore);
+
+    const toggle = screen.getByTestId('display-nft-media');
+    fireEvent.click(toggle);
+
+    // Initial state is true, so toggling should call with false
+    expect(mockSetOpenSeaEnabled).toHaveBeenCalledWith(false);
   });
 
-  it('toggles NFT detection', () => {
-    // mockState.metamask.useNftDetection = true
-    expect(toggleCheckbox('use-nft-detection', true)).toBe(true);
+  it('calls setUseNftDetection when toggling NFT detection', () => {
+    renderWithProvider(<Assets />, mockStore);
+
+    const toggle = screen.getByTestId('use-nft-detection');
+    fireEvent.click(toggle);
+
+    // Initial state is true, so toggling should call with false
+    expect(mockSetUseNftDetection).toHaveBeenCalledWith(false);
   });
 
-  it('toggles NFT detection from disabled state', () => {
+  it('enables openSea when enabling NFT detection while openSea is disabled', () => {
     const modifiedState = {
       ...mockState,
       metamask: {
@@ -98,12 +133,22 @@ describe('Assets Tab', () => {
     const localMockStore = configureMockStore([thunk])(modifiedState);
     renderWithProvider(<Assets />, localMockStore);
 
-    expect(toggleCheckbox('use-nft-detection', false, true)).toBe(true);
+    const toggle = screen.getByTestId('use-nft-detection');
+    fireEvent.click(toggle);
+
+    // When enabling NFT detection while openSea is disabled, both should be enabled
+    expect(mockSetOpenSeaEnabled).toHaveBeenCalledWith(true);
+    expect(mockSetUseNftDetection).toHaveBeenCalledWith(true);
   });
 
-  it('toggles token detection', () => {
-    // mockState.metamask.useTokenDetection = true
-    expect(toggleCheckbox('autodetect-tokens', true)).toBe(true);
+  it('calls setUseTokenDetection when toggling token detection', () => {
+    renderWithProvider(<Assets />, mockStore);
+
+    const toggle = screen.getByTestId('autodetect-tokens');
+    fireEvent.click(toggle);
+
+    // Initial state is true, so toggling should call with false
+    expect(mockSetUseTokenDetection).toHaveBeenCalledWith(false);
   });
 
   it('navigates to currency page when clicking local currency', () => {
@@ -114,6 +159,8 @@ describe('Assets Tab', () => {
     });
     fireEvent.click(currencyButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith('/settings-v2/assets/currency');
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/settings-v2/assets/currency',
+    );
   });
 });
