@@ -1989,7 +1989,7 @@
     "message": "Malicious website detected!"
   },
   "dappScanMaliciousWarning": {
-    "message": "The website you are currently visiting has been flagged as malicious by real-time dapp scanning. Revealing your Secret Recovery Phrase on this website could result in loss of funds."
+    "message": "This website is flagged as potentially dangerous. If you reveal your Secret Recovery Phrase, you could put your funds at risk."
   },
   "dappSuggested": {
     "message": "Site suggested"
