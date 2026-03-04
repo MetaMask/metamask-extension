@@ -171,7 +171,7 @@ class FixtureBuilderV2 {
             {
               networkClientId: secondNodeClientId,
               type: RpcEndpointType.Custom,
-              url: 'http://127.0.0.1:8546',
+              url: 'http://localhost:8546',
             },
           ],
         },
