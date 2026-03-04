@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -30,7 +31,8 @@ type AllowedActions =
   | BridgeControllerAction<BridgeBackgroundAction.STOP_POLLING_FOR_QUOTES>
   | GetGasFeeState
   | AccountsControllerGetAccountByAddressAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | KeyringControllerSignTypedMessageAction;
 
 type AllowedEvents =
   | MultichainTransactionsControllerTransactionConfirmedEvent
@@ -67,8 +69,7 @@ export function getBridgeStatusControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
-      // Cast keeps extension compatible while bridge-status-controller package types catch up.
-      'KeyringController:signTypedMessage' as never,
+      'KeyringController:signTypedMessage',
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',
