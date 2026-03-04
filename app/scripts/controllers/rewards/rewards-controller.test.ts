@@ -4267,10 +4267,8 @@ describe('Additional RewardsController edge cases', () => {
               }
               return Promise.resolve(MOCK_SEASON_STATE);
             }
-            if (
-              actionType === 'AccountsController:getSelectedMultichainAccount'
-            ) {
-              return MOCK_INTERNAL_ACCOUNT;
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
             }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
@@ -4337,10 +4335,8 @@ describe('Additional RewardsController edge cases', () => {
             if (actionType === 'RewardsDataService:getSeasonStatus') {
               throw new AuthorizationFailedError('Auth failed');
             }
-            if (
-              actionType === 'AccountsController:getSelectedMultichainAccount'
-            ) {
-              return MOCK_INTERNAL_ACCOUNT;
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
             }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.reject(new Error('Reauth failed'));
@@ -4449,6 +4445,101 @@ describe('Additional RewardsController edge cases', () => {
           );
 
           expect(result).toBeDefined();
+        },
+      );
+    });
+
+    it('should reauth using the rewards active account even when a different wallet account is currently selected', async () => {
+      // Regression test: if the user switches the wallet-UI to a different
+      // account, #performReauthForSubscription must still authenticate the
+      // account tied to the subscription in rewards state, not whichever
+      // account happens to be selected in the AccountsController.
+      const differentlySelectedAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'different-selected-account',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
+      };
+
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT, // rewards active = MOCK_INTERNAL_ACCOUNT
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let callCount = 0;
+          let reauthAccountAddress: string | undefined;
+
+          mockMessengerCall.mockImplementation((actionType, ...args) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              callCount += 1;
+              if (callCount === 1) {
+                throw new AuthorizationFailedError('Auth failed');
+              }
+              return Promise.resolve(MOCK_SEASON_STATE);
+            }
+            // The wallet UI currently has differentlySelectedAccount selected,
+            // but reauth must NOT use it.
+            if (
+              actionType === 'AccountsController:getSelectedMultichainAccount'
+            ) {
+              return differentlySelectedAccount;
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              // Both accounts are available; MOCK_INTERNAL_ACCOUNT owns the subscription.
+              return [MOCK_INTERNAL_ACCOUNT, differentlySelectedAccount];
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              // Capture which account address was used to sign.
+              reauthAccountAddress = args[0]?.from;
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(callCount).toBe(2);
+          // Reauth must have signed with the rewards-active account, not the
+          // differently-selected wallet account.
+          expect(reauthAccountAddress).toBe(MOCK_ACCOUNT_ADDRESS);
         },
       );
     });
@@ -6379,10 +6470,8 @@ describe('Hardware Wallet Support for Rewards', () => {
               }
               return Promise.resolve(MOCK_SEASON_STATE);
             }
-            if (
-              actionType === 'AccountsController:getSelectedMultichainAccount'
-            ) {
-              return MOCK_INTERNAL_ACCOUNT; // Return software wallet for reauth
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
             }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');

@@ -256,11 +256,25 @@ export class RewardsController extends BaseController<
   async #performReauthForSubscription(subscriptionId: string): Promise<void> {
     this.#removeSubscriptionToken(subscriptionId);
 
+    // Fetch all accounts once; used by both the active-account fast-path and
+    // the linked-accounts fallback below.
+    const allAccounts = await this.messenger.call(
+      'AccountsController:listMultichainAccounts',
+    );
+
+    // Fast path: if the rewards active account owns this subscription, try it
+    // first.  We look it up by its stored CAIP account ID rather than by
+    // getSelectedMultichainAccount so that a wallet-UI account switch cannot
+    // cause us to authenticate the wrong account.
     if (this.state.rewardsActiveAccount?.subscriptionId === subscriptionId) {
-      const activeAccount = await this.messenger.call(
-        'AccountsController:getSelectedMultichainAccount',
-      );
-      if (!isHardwareAccount(activeAccount as InternalAccount)) {
+      const rewardsActiveAccountCaipId =
+        this.state.rewardsActiveAccount.account;
+      const activeAccount = allAccounts.find((acc: InternalAccount) => {
+        const accCaipId = this.convertInternalAccountToCaipAccountId(acc);
+        return accCaipId === rewardsActiveAccountCaipId;
+      }) as InternalAccount | undefined;
+
+      if (activeAccount && !isHardwareAccount(activeAccount)) {
         log.debug(
           'RewardsController: Attempting reauth with active account after 403',
         );
@@ -276,6 +290,8 @@ export class RewardsController extends BaseController<
         }
         return;
       }
+      // Fall through: the rewards active account is a hardware wallet or was
+      // not found in the accounts list — try all linked accounts below.
     }
 
     // Active account can't sign (e.g. hardware wallet) or doesn't match —
@@ -285,9 +301,6 @@ export class RewardsController extends BaseController<
     );
 
     if (allLinkedAccounts.length > 0) {
-      const allAccounts = await this.messenger.call(
-        'AccountsController:listMultichainAccounts',
-      );
       for (const linkedAccount of allLinkedAccounts) {
         const intAccount = allAccounts.find((acc: InternalAccount) => {
           const accCaipId = this.convertInternalAccountToCaipAccountId(acc);
