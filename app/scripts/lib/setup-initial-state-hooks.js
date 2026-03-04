@@ -1,36 +1,19 @@
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
+import { getEnvironmentType } from './get-environment-type';
 import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
 const platform = new ExtensionPlatform();
 
-/**
- * True when running in the extension background (Chrome MV3 or Firefox MV2).
- * Used so FixtureExtensionStore(initialize: true) only runs in the background for E2E fixtures.
- *
- * @returns {boolean}
- */
-function isBackgroundContext() {
-  try {
-    const href = globalThis.self?.location?.href ?? '';
-    return (
-      href.includes('app-init') || // browserify MV3 (app-init.js)
-      href.includes('service-worker') || // webpack MV3 (service-worker.js)
-      href.includes('background') // MV2 (background.html)
-    );
-  } catch {
-    return false;
-  }
-}
-
 const useFixtureStore =
   process.env.IN_TEST &&
   getManifestFlags().testing?.forceExtensionStore !== true;
-const isBackground = isBackgroundContext();
+const isBackground = getEnvironmentType() === ENVIRONMENT_TYPE_BACKGROUND;
 const localStore = useFixtureStore
   ? new FixtureExtensionStore({ initialize: isBackground })
   : new ExtensionStore();
