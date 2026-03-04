@@ -36,6 +36,7 @@ import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/getSwcLoader';
 import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
+import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
@@ -240,18 +241,31 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const reactCompilerLoader = getReactCompilerLoader({
-  target: '17',
-  verbose: args.reactCompilerVerbose,
-  debug: args.reactCompilerDebug,
-  threadLoader:
+const threadLoaderConfig = getThreadLoader({
+  preset:
     args.generatePolicy || args.reactCompilerVerbose
       ? 'off'
       : args.threadLoader,
-  threadLoaderWorkers: args.threadLoaderWorkers,
-  threadLoaderJobs: args.threadLoaderJobs,
+  workers: args.threadLoaderWorkers,
+  jobs: args.threadLoaderJobs,
   watch: args.watch,
 });
+const reactCompilerConfig = getReactCompilerLoader({
+  target: '17',
+  verbose: args.reactCompilerVerbose,
+  debug: args.reactCompilerDebug,
+  threadLoaderEnabled: threadLoaderConfig !== null,
+});
+
+const UI_COMPONENT_RE =
+  /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u;
+
+const threadLoaderRule = threadLoaderConfig
+  ? [{ test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [threadLoaderConfig] }]
+  : [];
+const reactCompilerRule = [
+  { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [reactCompilerConfig] },
+];
 
 const envValidationLoader = args.validateEnv
   ? {
@@ -380,12 +394,10 @@ const config = {
         enforce: 'pre',
         use: [envValidationLoader, codeFenceLoader].filter(Boolean),
       },
-      // React Compiler (includes thread-loader for UI files)
-      {
-        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
-        include: UI_DIR_RE,
-        use: reactCompilerLoader,
-      },
+      // thread-loader pool for UI component files
+      ...threadLoaderRule,
+      // React Compiler for UI component files
+      ...reactCompilerRule,
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
