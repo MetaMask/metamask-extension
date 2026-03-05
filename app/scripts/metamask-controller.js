@@ -880,7 +880,7 @@ export default class MetamaskController extends EventEmitter {
         'TokenBalancesController:getState',
         'MultichainBalancesController:getState',
         'RemoteFeatureFlagController:getState',
-        ...(shouldInitAssetsController ? ['AssetsController:getState'] : []),
+        'AssetsController:getState',
       ],
     });
 
