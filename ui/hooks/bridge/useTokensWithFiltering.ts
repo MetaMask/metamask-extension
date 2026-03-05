@@ -41,6 +41,7 @@ import {
   isTronEnergyOrBandwidthResource,
   getNativeAssetForChainIdSafe,
 } from '../../ducks/bridge/utils';
+import { getBearerToken } from '../../store/actions';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -162,6 +163,10 @@ export const useTokensWithFiltering = (
   }, [chainId, cachedTokens]);
   const isTokenListCached = Boolean(cachedTokenList);
 
+  const { value: jwt } = useAsyncResult(async () => {
+    return await getBearerToken();
+  }, []);
+
   const { value: fetchedTokenList, pending: isTokenListLoading } =
     useAsyncResult<Record<string, BridgeAsset> | TokenListMap>(async () => {
       if (isTokenListCached || !chainId) {
@@ -171,7 +176,7 @@ export const useTokensWithFiltering = (
       return await fetchBridgeTokens(
         chainId,
         BridgeClientId.EXTENSION,
-        undefined,
+        jwt,
         async (url, options) => {
           const { headers, ...requestOptions } = options ?? {};
           return await fetchWithCache({
@@ -187,7 +192,7 @@ export const useTokensWithFiltering = (
         BRIDGE_API_BASE_URL,
         process.env.METAMASK_VERSION,
       );
-    }, [chainId, isTokenListCached]);
+    }, [chainId, isTokenListCached, jwt]);
 
   const tokenList = useMemo(() => {
     return cachedTokenList ?? fetchedTokenList;

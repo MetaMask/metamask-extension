@@ -88,6 +88,14 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
   };
 });
 
+jest.mock('../../../../shared/modules/selectors', () => {
+  const original = jest.requireActual('../../../../shared/modules/selectors');
+  return {
+    ...original,
+    isHardwareWallet: jest.fn(() => false),
+  };
+});
+
 jest.mock('../../../selectors', () => {
   const original = jest.requireActual('../../../selectors');
   return {
@@ -95,14 +103,6 @@ jest.mock('../../../selectors', () => {
     getIsBridgeEnabled: () => true,
     getIsBridgeChain: () => true,
     checkNetworkAndAccountSupports1559: () => true,
-  };
-});
-
-jest.mock('../../../../shared/modules/selectors', () => {
-  const original = jest.requireActual('../../../../shared/modules/selectors');
-  return {
-    ...original,
-    isHardwareWallet: jest.fn(() => false),
   };
 });
 
@@ -208,8 +208,32 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
         {
+          replace: true,
           state: { stayOnHomePage: true },
         },
+      );
+    });
+
+    it('routes to awaiting signatures with requestId for hardware wallets', async () => {
+      (sharedSelectors.isHardwareWallet as jest.Mock).mockReturnValue(true);
+      const store = makeMockStore();
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+      // Execute
+      await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+      );
+
+      const {
+        quote: { requestId },
+      } = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
+          requestId,
+        )}`,
       );
     });
 
@@ -274,7 +298,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       expect(mockUseNavigate).not.toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        expect.stringContaining(
+          `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        ),
       );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
