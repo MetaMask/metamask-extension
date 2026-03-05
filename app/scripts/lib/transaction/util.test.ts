@@ -8,6 +8,7 @@ import {
 } from '@metamask/transaction-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
+import { Hex } from '@metamask/utils';
 import {
   generateSecurityAlertId,
   validateRequestWithPPOM,
@@ -35,6 +36,7 @@ import {
   addTransaction,
   stripSingleLeadingZero,
 } from './util';
+import { checkIsValidTempoTransaction } from './tempo-tx-utils';
 
 jest.mock('../ppom/ppom-util');
 jest.mock('../trust-signals/security-alerts-api');
@@ -48,7 +50,14 @@ jest.mock('uuid', () => {
   };
 });
 
+jest.mock('./tempo-tx-utils', () => ({
+  ...jest.requireActual('./tempo-tx-utils'),
+  checkIsValidTempoTransaction: jest.fn(),
+}));
+
 const SECURITY_ALERT_ID_MOCK = '123';
+const BATCHID_MOCK = '0xmockBatchId' as Hex;
+const FROM_FIELD_MOCK = '0x1';
 
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 const INTERNAL_ACCOUNT = createMockInternalAccount({
@@ -56,7 +65,7 @@ const INTERNAL_ACCOUNT = createMockInternalAccount({
 });
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
-  from: '0x1',
+  from: FROM_FIELD_MOCK,
 };
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
@@ -66,6 +75,46 @@ const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   origin: 'mockOrigin',
   requireApproval: false,
   type: TransactionType.simpleSend,
+};
+
+const TEMPO_VALID_CALLS_FIELD_MOCK = [
+  {
+    data: '0xa9059cbb0000000000000000000000002367e6eca6e1fcc2d112133c896e3bddad375aff000000000000000000000000000000000000000000000000002386f26fc10000',
+    to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+    value: '0x',
+  },
+  {
+    data: '0xa9059cbb0000000000000000000000001e3abc74428056924ceee2f45f060879c3f063ed000000000000000000000000000000000000000000000000002386f26fc10000',
+    to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+    value: '0x',
+  },
+];
+
+const TEMPO_EXPECTED_TRANSACTIONS_FOR_VALID_CALLS_FIELD = [
+  {
+    params: {
+      data: '0xa9059cbb0000000000000000000000002367e6eca6e1fcc2d112133c896e3bddad375aff000000000000000000000000000000000000000000000000002386f26fc10000',
+      to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+      value: '0x0',
+    },
+  },
+  {
+    params: {
+      data: '0xa9059cbb0000000000000000000000001e3abc74428056924ceee2f45f060879c3f063ed000000000000000000000000000000000000000000000000002386f26fc10000',
+      to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+      value: '0x0',
+    },
+  },
+];
+
+const TEMPO_FEE_TOKEN_MOCK = '0xtempoFeeToken';
+
+const TEMPO_TRANSACTION_PARAMS_MOCK = {
+  type: '0x76' as const,
+  chainId: '0xa5bf' as const, // Tempo Moderato Testnet, whitelisted as Tempo network
+  from: FROM_FIELD_MOCK,
+  feeToken: TEMPO_FEE_TOKEN_MOCK,
+  calls: TEMPO_VALID_CALLS_FIELD_MOCK,
 };
 
 const makeDappRequest = () => ({
@@ -86,6 +135,12 @@ const TRANSACTION_META_MOCK: TransactionMeta = {
   hash: 'testHash',
 } as TransactionMeta;
 
+const BATCH_TRANSACTION_META_MOCK: TransactionMeta = {
+  id: 'batchTestId',
+  hash: 'batchTestHash',
+  batchId: BATCHID_MOCK,
+} as TransactionMeta;
+
 const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   networkClientId: 'mockNetworkClientId',
   selectedAccount: {
@@ -100,6 +155,7 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
 function createTransactionControllerMock() {
   return {
     addTransaction: jest.fn(),
+    addTransactionBatch: jest.fn(),
     state: { transactions: [] },
   } as unknown as jest.Mocked<TransactionController>;
 }
@@ -144,6 +200,15 @@ describe('Transaction Utils', () => {
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),
       transactionMeta: TRANSACTION_META_MOCK,
+    });
+
+    transactionController.addTransactionBatch.mockImplementation(async () => {
+      transactionController.state.transactions.push(
+        BATCH_TRANSACTION_META_MOCK,
+      );
+      return {
+        batchId: BATCHID_MOCK,
+      };
     });
 
     transactionController.state.transactions.push(TRANSACTION_META_MOCK);
@@ -738,6 +803,69 @@ describe('Transaction Utils', () => {
         await expect(addDappTransaction(dappRequest)).rejects.toThrow(
           'Test Error',
         );
+      });
+    });
+
+    describe('if transacton is Tempo Transaction', () => {
+      it('calls addTransactionBatch with converted Tempo tx params', async () => {
+        const tempoDappRequest = {
+          ...dappRequest,
+          transactionOptions: undefined,
+          securityAlertsEnabled: true,
+          networkClientId: 'mockNetworkClientId',
+          transactionParams: TEMPO_TRANSACTION_PARAMS_MOCK,
+          dappRequest: {
+            ...dappRequest.dappRequest,
+            params: [TEMPO_TRANSACTION_PARAMS_MOCK],
+          },
+        };
+        const result = await addDappTransaction(tempoDappRequest);
+
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            actionId: TRANSACTION_OPTIONS_MOCK.actionId,
+            networkClientId: TRANSACTION_OPTIONS_MOCK.networkClientId,
+            origin: TRANSACTION_OPTIONS_MOCK.origin,
+            requestId: TRANSACTION_OPTIONS_MOCK.requestId,
+            requireApproval: true,
+            traceContext: undefined,
+            from: FROM_FIELD_MOCK,
+            gasFeeToken: TEMPO_FEE_TOKEN_MOCK,
+            excludeNativeTokenForFee: true,
+            securityAlertResponse: { test: 'value' },
+            transactions: TEMPO_EXPECTED_TRANSACTIONS_FOR_VALID_CALLS_FIELD,
+          }),
+        );
+        expect(result).toEqual(BATCH_TRANSACTION_META_MOCK.hash);
+      });
+
+      it('does not call addTransactionBatch if checkIsValidTempoTransaction throws', async () => {
+        const tempoDappRequest = {
+          ...dappRequest,
+          transactionOptions: undefined,
+          securityAlertsEnabled: true,
+          networkClientId: 'mockNetworkClientId',
+          transactionParams: TEMPO_TRANSACTION_PARAMS_MOCK,
+          dappRequest: {
+            ...dappRequest.dappRequest,
+            params: [TEMPO_TRANSACTION_PARAMS_MOCK],
+          },
+        };
+        (checkIsValidTempoTransaction as jest.Mock).mockImplementation(() => {
+          throw new Error('Tempo Transaction: Mock error');
+        });
+
+        await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
+          `Tempo Transaction: Mock error`,
+        );
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).not.toHaveBeenCalled();
       });
     });
   });

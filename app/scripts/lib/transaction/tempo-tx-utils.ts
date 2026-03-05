@@ -1,24 +1,36 @@
 import { TransactionParams } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { FinalAddTransactionRequest } from './util';
 
 // Seem to be set by dApps only for batch calls.
 // For single-txs, this type doesn't appear.
 const TEMPO_TRANSACTION_TYPE: Hex = '0x76';
 
-// This could be in a flag/env var or other mechanism that allows per-chain enable/disable.
-// Could also have one default fee token per chain. Keeping it simple for the PoC.
-const ENABLED_TEMPO_CHAIN_IDS_HEX = [
-  '0xa5bd', // Tempo older Testnet
-  '0xa5bf', // Tempo Moderato Testnet
-  '0x89', // Polygon Mainnet for testing
-];
+type TempoConfig = {
+  perChainConfig: {
+    [key: Hex]: {
+      enabled: boolean;
+      defaultFeeToken: Hex;
+    };
+  };
+};
 
-// If we want to impose a default fee token,
-// (for example when not a 0x76 transaction),
-// we'll fallback to this fee token.
-const DEFAULT_FEE_TOKEN_ADDRESS: Hex =
-  '0x20c0000000000000000000000000000000000000';
+const TEMPO_CONFIG: TempoConfig = {
+  perChainConfig: {
+    '0x1079': {
+      enabled: true,
+      defaultFeeToken: '0x20c0000000000000000000000000000000000000',
+    },
+    '0xa5bf': {
+      enabled: true,
+      defaultFeeToken: '0x20c0000000000000000000000000000000000000',
+    },
+    '0x89': {
+      // Polygon PoS. TODO: Remove once Tempo is 7702-ready.
+      enabled: true,
+      defaultFeeToken: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', // USDC (PoS)
+    },
+  },
+} as const;
 
 type TempoCall = {
   to: Hex;
@@ -36,7 +48,11 @@ type TempoTransactionParams = {
   feeToken?: Hex;
 };
 
-function buildBatchTransactionsFromTempoTransactionCalls(
+export function getTempoConfig() {
+  return TEMPO_CONFIG;
+}
+
+export function buildBatchTransactionsFromTempoTransactionCalls(
   params: TempoTransactionParams,
 ) {
   return params.calls.map(({ data, to }) => {
@@ -52,35 +68,29 @@ function buildBatchTransactionsFromTempoTransactionCalls(
   });
 }
 
-export function getTempoTransactionBatchRequestParams(
-  params: TempoTransactionParams,
-) {
-  return {
-    from: params.from as Hex,
-    transactions: buildBatchTransactionsFromTempoTransactionCalls(params),
-    // If no token is provided, we force a default one so we don't fall in
-    // fee preference algo: https://docs.tempo.xyz/protocol/fees/spec-fee#fee-token-preferences
-    gasFeeToken: params.feeToken || DEFAULT_FEE_TOKEN_ADDRESS,
-    excludeNativeTokenForFee: true,
-  };
+export function isTempoTransactionType(params: TransactionParams) {
+  return params.type === TEMPO_TRANSACTION_TYPE;
 }
 
-export function isTempoTransactionParams(
+export function checkIsValidTempoTransaction(
   params: TransactionParams,
-): params is TempoTransactionParams {
-  return (
-    params !== null &&
-    typeof params === 'object' &&
-    !Array.isArray(params) &&
-    'type' in params &&
-    params.type === TEMPO_TRANSACTION_TYPE
-  );
-}
-
-export function isTempoSupportEnabledForChainId(chainId: Hex): boolean {
-  return chainId && ENABLED_TEMPO_CHAIN_IDS_HEX.includes(chainId);
-}
-
-export function isTempoTransactionRequest(request: FinalAddTransactionRequest) {
-  return request.transactionParams.type === TEMPO_TRANSACTION_TYPE;
+): asserts params is TempoTransactionParams {
+  if (!isTempoTransactionType(params)) {
+    throw new Error(
+      `Tempo Transaction: Transaction doesn't have Tempo transaction type (0x76)`,
+    );
+  }
+  if (typeof params.from !== 'string' || !params.from.startsWith('0x')) {
+    throw new Error(`Tempo Transaction: Missing or invalid field 'from'`);
+  }
+  if (typeof params.chainId !== 'string' || !params.chainId.startsWith('0x')) {
+    throw new Error(`Tempo Transaction: Missing or invalid field 'chainId'`);
+  }
+  if (
+    !('calls' in params) ||
+    !Array.isArray(params.calls) ||
+    params.calls.length === 0
+  ) {
+    throw new Error(`Tempo Transaction: Missing or invalid field 'calls'`);
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
@@ -51,8 +51,18 @@ export function SelectedGasFeeToken() {
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
 
+  const nonNativeGasFeeTokensLength = useMemo(() => {
+    return (
+      gasFeeTokens?.filter(
+        (token) =>
+          token.tokenAddress && token.tokenAddress !== NATIVE_TOKEN_ADDRESS,
+      ) ?? []
+    ).length;
+  }, [gasFeeTokens]);
+  // If we decide the exclude the native token, check that gasFeeTokens has at least two items.
+  // Otherwise the native token is always an extra item.
   const hasMoreThanOneGasFeeTokenToChooseFrom = excludeNativeTokenForFee
-    ? (gasFeeTokens?.length ?? 0) > 1
+    ? hasGasFeeTokens && nonNativeGasFeeTokensLength > 1
     : hasGasFeeTokens;
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
