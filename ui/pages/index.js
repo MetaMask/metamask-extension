@@ -16,21 +16,29 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import { DATA_SERVICES } from '../../shared/constants/data-services';
-import { submitRequestToBackground, background as backgroundConnection } from '../store/background-connection';
+import {
+  submitRequestToBackground,
+  background as backgroundConnection,
+  subscribeToMessengerEvent,
+} from '../store/background-connection';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
 
+const subscriptions = new Map();
+
 const adapter = {
-  call: (method, ...params) => submitRequestToBackground(method, params),
-  subscribe: (method, callback) => {
-    backgroundConnection.onNotification((data) => {
-      if (data.method === method) {
-        callback(data.params);
-      }
-    });
+  call: (method, ...params) =>
+    submitRequestToBackground('messengerCall', [method, params]),
+  subscribe: async (method, callback) => {
+    const unsubscribe = await subscribeToMessengerEvent(method, callback);
+    subscriptions.set(callback, unsubscribe);
+  },
+  unsubscribe: (_method, callback) => {
+    const unsubscribe = subscriptions.get(callback);
+    unsubscribe?.().catch(console.error);
   },
 };
 
