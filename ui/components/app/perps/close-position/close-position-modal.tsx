@@ -107,12 +107,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       const params: {
         symbol: string;
         orderType: 'market';
-        currentPrice: number;
         size?: string;
       } = {
         symbol: position.symbol,
         orderType: 'market',
-        currentPrice,
       };
 
       if (closePercent < 100) {
@@ -135,7 +133,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     isSubmitDisabled,
     selectedAddress,
     position.symbol,
-    currentPrice,
     closePercent,
     closeSize,
     onClose,
@@ -189,7 +186,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               <Box
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.FlexStart}
+                alignItems={BoxAlignItems.Start}
               >
                 <Text
                   variant={TextVariant.BodySm}
@@ -199,19 +196,19 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 </Text>
                 <Box
                   flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.FlexEnd}
+                  alignItems={BoxAlignItems.End}
                 >
                   <Text
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
-                    textAlign={TextAlign.End}
+                    textAlign={TextAlign.Right}
                   >
                     {formatCurrencyWithMinThreshold(margin, 'USD')}
                   </Text>
                   <Text
                     variant={TextVariant.BodyXs}
                     color={TextColor.TextAlternative}
-                    textAlign={TextAlign.End}
+                    textAlign={TextAlign.Right}
                   >
                     {t('perpsIncludesPnl', [
                       formatCurrencyWithMinThreshold(

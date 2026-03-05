@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -39,6 +39,12 @@ export type EditMarginModalContentProps = {
   /** When used in modal: 'add' or 'remove' for single-purpose modal. No in-content toggle. */
   mode: 'add' | 'remove';
   onClose: () => void;
+  /** When true, the built-in save button is hidden (modal footer handles save). */
+  externalSave?: boolean;
+  /** Ref that will be set to the save handler so the parent can invoke it. */
+  onSaveRef?: React.MutableRefObject<(() => void) | null>;
+  /** Called whenever the save button's enabled state changes. */
+  onSaveEnabledChange?: (enabled: boolean) => void;
 };
 
 /**
@@ -59,6 +65,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   selectedAddress,
   mode: marginMode,
   onClose,
+  externalSave = false,
+  onSaveRef,
+  onSaveEnabledChange,
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
@@ -177,6 +186,13 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 
   const confirmDisabled =
     !isEligible || !isValid || isSaving || parseFloat(marginAmount) <= 0;
+
+  useEffect(() => {
+    if (onSaveRef) {
+      onSaveRef.current = confirmDisabled ? null : handleSaveMargin;
+    }
+    onSaveEnabledChange?.(!confirmDisabled);
+  }, [confirmDisabled, handleSaveMargin, onSaveRef, onSaveEnabledChange]);
 
   const getConfirmButtonLabel = () => {
     if (isSaving) {
@@ -343,6 +359,19 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             {marginError}
           </Text>
         </Box>
+      )}
+
+      {!externalSave && (
+        <Button
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          isFullWidth
+          onClick={handleSaveMargin}
+          disabled={confirmDisabled}
+          data-testid="perps-edit-margin-confirm"
+        >
+          {getConfirmButtonLabel()}
+        </Button>
       )}
     </Box>
   );

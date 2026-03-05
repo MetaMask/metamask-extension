@@ -79,7 +79,6 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       const closeResult = await controller.closePosition({
         symbol: position.symbol,
         orderType: 'market',
-        currentPrice,
       });
       if (!closeResult.success) {
         throw new Error(closeResult.error || 'Failed to close position');
