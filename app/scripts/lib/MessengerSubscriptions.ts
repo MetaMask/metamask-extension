@@ -17,6 +17,10 @@ export class MessengerSubscriptions {
   }
 
   subscribe(event: NamespacedName) {
+    if (this.#subscriptions.has(event)) {
+      return;
+    }
+
     const listener = (...payload: unknown[]) => {
       this.#stream.write({
         jsonrpc: '2.0',
