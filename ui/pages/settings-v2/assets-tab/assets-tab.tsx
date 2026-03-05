@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box } from '@metamask/design-system-react';
 import { SettingItemConfig } from '../types';
-import { Divider } from '../shared';
+import { SettingsTab } from '../shared';
 import { LocalCurrencyItem } from './local-currency-item';
 import { ShowNetworkTokenToggleItem } from './show-network-token-item';
 import { HideZeroBalanceTokensToggleItem } from './hide-zero-balance-tokens-item';
@@ -27,19 +26,6 @@ const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'autodetect-tokens', component: AutodetectTokensToggleItem },
 ];
 
-export const Assets = ({ children }: { children: SettingItemConfig[] }) => {
-  return (
-    <Box paddingHorizontal={4} paddingBottom={4}>
-      {children.map(({ id, component: Component, hasDividerBefore }) => (
-        <React.Fragment key={id}>
-          {hasDividerBefore && <Divider />}
-          <Component />
-        </React.Fragment>
-      ))}
-    </Box>
-  );
-};
+const AssetsTab = () => <SettingsTab items={ASSET_SETTING_ITEMS} />;
 
-const AssetsWithList = () => <Assets>{ASSET_SETTING_ITEMS}</Assets>;
-
-export default AssetsWithList;
+export default AssetsTab;

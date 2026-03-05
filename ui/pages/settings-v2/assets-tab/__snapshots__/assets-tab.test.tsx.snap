@@ -3,7 +3,7 @@
 exports[`Assets Tab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class=""
+    class="pb-4 px-4"
   >
     <div
       class="flex flex-row items-center justify-between py-3"
@@ -86,6 +86,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
+      class="bg-muted my-2 h-px w-full"
+    />
+    <div
       class="flex flex-col gap-1 py-3"
     >
       <div
@@ -134,6 +137,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="bg-muted my-2 h-px w-full"
+    />
     <div
       class="flex flex-col gap-1 py-3"
     >
