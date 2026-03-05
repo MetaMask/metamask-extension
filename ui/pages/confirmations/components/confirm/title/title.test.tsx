@@ -69,7 +69,7 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(container.querySelector('.mm-skeleton')).not.toBeInTheDocument();
+    expect(container.firstChild).toBeNull();
   });
 
   it('should render the title and description for a personal signature', () => {

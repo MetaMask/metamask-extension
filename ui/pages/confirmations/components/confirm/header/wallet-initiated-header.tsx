@@ -25,15 +25,9 @@ import {
 import { SHIELD_PLAN_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { AdvancedDetailsButton } from './advanced-details-button';
-
-const SEND_TRANSACTION_TYPES = [
-  TransactionType.simpleSend,
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-];
 
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();

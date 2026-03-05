@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -15,14 +12,8 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { AdvancedDetailsButton } from './advanced-details-button';
-
-const SEND_TRANSACTION_TYPES = [
-  TransactionType.simpleSend,
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-];
 
 export const DAppInitiatedHeader = () => {
   const t = useI18nContext();
