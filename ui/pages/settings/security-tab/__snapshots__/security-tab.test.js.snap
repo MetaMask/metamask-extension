@@ -1039,7 +1039,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="autoDetectTokens"
+          data-testid="autodetect-tokens"
         >
           <label
             class="toggle-button toggle-button--on"
@@ -1172,7 +1172,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="displayNftMedia"
+          data-testid="display-nft-media"
         >
           <label
             class="toggle-button toggle-button--on"
@@ -1238,7 +1238,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="useNftDetection"
+          data-testid="use-nft-detection"
         >
           <label
             class="toggle-button toggle-button--on"
