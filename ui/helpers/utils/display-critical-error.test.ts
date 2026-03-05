@@ -494,6 +494,7 @@ describe('restore accounts link', () => {
         error,
         'en',
         mockPort,
+        CriticalErrorType.BackgroundInitTimeout,
       ),
     ).rejects.toThrow(error);
 
@@ -509,7 +510,12 @@ describe('restore accounts link', () => {
     expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
     expect(mockPort.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ method: CRITICAL_ERROR_SCREEN_VIEWED }),
+        data: expect.objectContaining({
+          method: CRITICAL_ERROR_SCREEN_VIEWED,
+          params: expect.objectContaining({
+            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+          }),
+        }),
       }),
     );
   });
