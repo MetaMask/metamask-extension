@@ -10,7 +10,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TabsProps, TabChild } from './tabs.types';
 
-function startTransition(
+async function startTransition(
   direction: 'forward' | 'backward',
   update: () => void,
 ) {
@@ -19,9 +19,11 @@ function startTransition(
 
     const transition = document.startViewTransition(update);
 
-    transition.finished.then(() => {
+    try {
+      await transition.finished;
+    } finally {
       delete document.documentElement.dataset.tabTransitionDirection;
-    });
+    }
   } else {
     update();
   }
