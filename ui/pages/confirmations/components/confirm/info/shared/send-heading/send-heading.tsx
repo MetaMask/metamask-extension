@@ -76,12 +76,20 @@ const SendHeading = () => {
 
   const TokenValue =
     pending || displayTransferValue === decodedTransferValue ? (
-      <Text variant={TextVariant.headingLg} color={TextColor.inherit}>
+      <Text
+        variant={TextVariant.headingLg}
+        color={TextColor.inherit}
+        paddingBottom={1}
+      >
         {TokenValueContent}
       </Text>
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
-        <Text variant={TextVariant.headingLg} color={TextColor.inherit}>
+        <Text
+          variant={TextVariant.headingLg}
+          color={TextColor.inherit}
+          paddingBottom={1}
+        >
           {TokenValueContent}
         </Text>
       </Tooltip>
@@ -108,24 +116,30 @@ const SendHeading = () => {
   return (
     <Box
       display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
-      padding={4}
+      flexDirection={FlexDirection.Column}
+      paddingBottom={3}
+      paddingInline={0}
       marginBottom={2}
     >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          marginBottom={1}
-        >
-          {t('confirmTitleSending')}
-        </Text>
-        {TokenValue}
-        {TokenFiatValue}
+      <Text
+        variant={TextVariant.bodyMd}
+        color={TextColor.textAlternative}
+        marginBottom={1}
+      >
+        {t('confirmTitleSending')}
+      </Text>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+      >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          {TokenValue}
+          {TokenFiatValue}
+        </Box>
+        {TokenImage}
       </Box>
-      {TokenImage}
     </Box>
   );
 };

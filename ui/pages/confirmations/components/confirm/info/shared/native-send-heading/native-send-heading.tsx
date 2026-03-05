@@ -99,12 +99,20 @@ const NativeSendHeading = () => {
 
   const NativeAssetAmount =
     roundedTransferValue === transferValue ? (
-      <Text variant={TextVariant.headingLg} color={TextColor.inherit}>
+      <Text
+        variant={TextVariant.headingLg}
+        color={TextColor.inherit}
+        paddingBottom={1}
+      >
         {`${roundedTransferValue} ${nativeCurrency}`}
       </Text>
     ) : (
       <Tooltip title={transferValue} position="right">
-        <Text variant={TextVariant.headingLg} color={TextColor.inherit}>
+        <Text
+          variant={TextVariant.headingLg}
+          color={TextColor.inherit}
+          paddingBottom={1}
+        >
           {`${roundedTransferValue} ${nativeCurrency}`}
         </Text>
       </Tooltip>
@@ -122,23 +130,29 @@ const NativeSendHeading = () => {
   return (
     <Box
       display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
-      padding={4}
+      flexDirection={FlexDirection.Column}
+      paddingBottom={3}
+      paddingInline={0}
     >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          marginBottom={1}
-        >
-          {t('confirmTitleSending')}
-        </Text>
-        {NativeAssetAmount}
-        {NativeAssetFiatConversion}
+      <Text
+        variant={TextVariant.bodyMd}
+        color={TextColor.textAlternative}
+        marginBottom={1}
+      >
+        {t('confirmTitleSending')}
+      </Text>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+      >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          {NativeAssetAmount}
+          {NativeAssetFiatConversion}
+        </Box>
+        {NetworkImage}
       </Box>
-      {NetworkImage}
     </Box>
   );
 };

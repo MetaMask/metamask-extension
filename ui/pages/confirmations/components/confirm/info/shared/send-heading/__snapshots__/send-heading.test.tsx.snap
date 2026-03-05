@@ -3,17 +3,19 @@
 exports[`<SendHeading /> renders component 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-2 mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-flex-start"
+    class="mm-box mm-box--margin-bottom-2 mm-box--padding-bottom-3 mm-box--padding-inline-0 mm-box--display-flex mm-box--flex-direction-column"
   >
-    <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-1 mm-box--color-text-alternative"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-1 mm-box--color-text-alternative"
+      Sending
+    </p>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
       >
-        Sending
-      </p>
-      <div>
         <div
           aria-describedby="tippy-tooltip-1"
           class=""
@@ -23,17 +25,17 @@ exports[`<SendHeading /> renders component 1`] = `
           tabindex="0"
         >
           <h2
-            class="mm-box mm-text mm-text--heading-lg mm-box--color-inherit"
+            class="mm-box mm-text mm-text--heading-lg mm-box--color-inherit mm-box--padding-bottom-1"
           >
             &lt;0.000001 Unknown
           </h2>
         </div>
       </div>
-    </div>
-    <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
-    >
-      ?
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+      >
+        ?
+      </div>
     </div>
   </div>
 </div>
