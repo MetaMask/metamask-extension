@@ -8,7 +8,11 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
-import type { NetworkState } from '@metamask/network-controller';
+import {
+  type NetworkState,
+  NetworkStatus,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import {
   type TransactionControllerState,
   type TransactionMeta,
@@ -24,14 +28,14 @@ import type {
 } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
+  DAPP_ONE_URL,
+  DAPP_TWO_URL,
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
   NETWORK_CLIENT_ID,
-  SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import defaultFixtureJson from './default-fixture.json';
@@ -131,6 +135,27 @@ class FixtureBuilderV2 {
     },
   ): this {
     merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  withTransactionController(data: TransactionControllerFixtureInput): this {
+    const transactionController = this.fixture.data.TransactionController ?? {};
+    merge(this.fixture.data, { TransactionController: transactionController });
+    const target = this.fixture.data
+      .TransactionController as Partial<TransactionControllerState>;
+
+    const { transactions, ...rest } = data;
+    // Always merge non-transaction state first (lastFetchedBlockNumbers, methodData, etc.)
+    merge(target, rest);
+    if (transactions !== undefined) {
+      const existing = Array.isArray(target.transactions)
+        ? target.transactions
+        : [];
+      const combined: TransactionMeta[] = [...existing, ...transactions].sort(
+        (a, b) => (b.time ?? 0) - (a.time ?? 0),
+      );
+      target.transactions = combined;
+    }
     return this;
   }
 
@@ -240,6 +265,143 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNetworkControllerDoubleNode(): this {
+    const secondNodeChainId = '0x53a';
+    const secondNodeClientId = '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
+
+    return this.withNetworkController({
+      networkConfigurationsByChainId: {
+        [secondNodeChainId]: {
+          blockExplorerUrls: [],
+          chainId: secondNodeChainId,
+          defaultRpcEndpointIndex: 0,
+          name: 'Localhost 8546',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              networkClientId: secondNodeClientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://localhost:8546',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [secondNodeClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerTripleNode(): this {
+    const thirdNodeChainId = '0x3e8';
+    const thirdNodeClientId = 'a3460c52-12ee-4267-9be6-1503095a587e';
+
+    return this.withNetworkControllerDoubleNode().withNetworkController({
+      networkConfigurationsByChainId: {
+        [thirdNodeChainId]: {
+          blockExplorerUrls: [],
+          chainId: thirdNodeChainId,
+          defaultRpcEndpointIndex: 0,
+          name: 'Localhost 7777',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              networkClientId: thirdNodeClientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://localhost:7777',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [thirdNodeClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
+  withPermissionControllerConnectedToTestDapp({
+    account = '',
+    useLocalhostHostname = false,
+    numberOfDapps = 1,
+    chainIds = [1337],
+  }: {
+    account?: string;
+    useLocalhostHostname?: boolean;
+    numberOfDapps?: number;
+    chainIds?: number[];
+  } = {}): this {
+    const MAX_DAPPS = 3;
+    if (numberOfDapps < 1 || numberOfDapps > MAX_DAPPS) {
+      throw new Error(
+        `numberOfDapps must be between 1 and ${MAX_DAPPS}, got ${numberOfDapps}`,
+      );
+    }
+
+    const selectedAccount = account
+      ? account.toLowerCase()
+      : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+
+    const dappUrls = [
+      useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
+      DAPP_ONE_URL,
+      DAPP_TWO_URL,
+    ].slice(0, numberOfDapps);
+
+    // Build optionalScopes from the provided chainIds (default: localhost 1337)
+    const optionalScopes: Record<string, { accounts: string[] }> = {};
+    for (const chainId of chainIds) {
+      const scopeKey = `eip155:${chainId}`;
+      optionalScopes[scopeKey] = {
+        accounts: [`${scopeKey}:${selectedAccount}`],
+      };
+    }
+    optionalScopes['wallet:eip155'] = {
+      accounts: [`wallet:eip155:${selectedAccount}`],
+    };
+
+    // Unique random IDs for each dapp subject's permission
+    const permissionIds = [
+      'SFqk8nFLekiqC5O1cYCjT',
+      'Aqk7nGLdkiqC5O1cYCjU',
+      'Brl8oHMeliqC5O1cYCjV',
+    ];
+    const subjects: PermissionControllerState<PermissionConstraint>['subjects'] =
+      {};
+    for (let i = 0; i < dappUrls.length; i++) {
+      const dappUrl = dappUrls[i];
+      subjects[dappUrl] = {
+        origin: dappUrl,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  isMultichainOrigin: true,
+                  optionalScopes,
+                  requiredScopes: {},
+                  sessionProperties: {},
+                },
+              },
+            ],
+            date: 1770296204693,
+            id: permissionIds[i],
+            invoker: dappUrl,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      };
+    }
+
+    return this.withPermissionController({ subjects });
+  }
+
   withSelectedNetwork(
     networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
   ): this {
@@ -248,89 +410,28 @@ class FixtureBuilderV2 {
     });
   }
 
-  withPermissionControllerConnectedToTestDapp({
-    account = '',
-    useLocalhostHostname = false,
-  }: {
-    account?: string;
-    useLocalhostHostname?: boolean;
-  } = {}): this {
-    const selectedAccount = account
-      ? account.toLowerCase()
-      : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-    const dappUrl = useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL;
-
-    // Derive optionalScopes from the EVM networks in state
-    const optionalScopes: Record<string, { accounts: string[] }> = {};
-
-    const networkConfigs =
-      this.fixture.data.NetworkController?.networkConfigurationsByChainId || {};
-    Object.entries(networkConfigs).forEach(([chainIdHex]) => {
-      // Convert hex chainId (0x1) to decimal for CAIP-2 format (eip155:1)
-      const chainId = parseInt(chainIdHex, 16);
-      const scopeKey = `eip155:${chainId}`;
-      optionalScopes[scopeKey] = {
-        accounts: [`${scopeKey}:${selectedAccount}`],
-      };
-    });
-
-    // Add Solana Mainnet scope
-    optionalScopes[SOLANA_MAINNET_SCOPE] = {
-      accounts: [`${SOLANA_MAINNET_SCOPE}:${DEFAULT_FIXTURE_SOLANA_ACCOUNT}`],
-    };
-
-    // Add wallet:eip155 scope
-    optionalScopes['wallet:eip155'] = {
-      accounts: [],
-    };
-
-    return this.withPermissionController({
-      subjects: {
-        [dappUrl]: {
-          origin: dappUrl,
-          permissions: {
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'authorizedScopes',
-                  value: {
-                    isMultichainOrigin: true,
-                    optionalScopes,
-                    requiredScopes: {},
-                    sessionProperties: {},
-                  },
-                },
-              ],
-              date: 1770296204693,
-              id: 'SFqk8nFLekiqC5O1cYCjT',
-              invoker: dappUrl,
-              parentCapability: 'endowment:caip25',
-            },
-          },
-        },
+  withShowNativeTokenAsMainBalanceDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
       },
     });
   }
 
-  withTransactionController(data: TransactionControllerFixtureInput): this {
-    const transactionController = this.fixture.data.TransactionController ?? {};
-    merge(this.fixture.data, { TransactionController: transactionController });
-    const target = this.fixture.data
-      .TransactionController as Partial<TransactionControllerState>;
+  withShowNativeTokenAsMainBalanceEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: true,
+      },
+    });
+  }
 
-    const { transactions, ...rest } = data;
-    // Always merge non-transaction state first (lastFetchedBlockNumbers, methodData, etc.)
-    merge(target, rest);
-    if (transactions !== undefined) {
-      const existing = Array.isArray(target.transactions)
-        ? target.transactions
-        : [];
-      const combined: TransactionMeta[] = [...existing, ...transactions].sort(
-        (a, b) => (b.time ?? 0) - (a.time ?? 0),
-      );
-      target.transactions = combined;
-    }
-    return this;
+  withSmartTransactionsOptedOut(): this {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
+      },
+    });
   }
 
   withTransactionControllerApprovedTransaction(): this {
@@ -412,30 +513,6 @@ class FixtureBuilderV2 {
       type: TransactionType.incoming,
     };
     return this.withTransactionController({ transactions: [incomingTx] });
-  }
-
-  withShowNativeTokenAsMainBalanceDisabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        showNativeTokenAsMainBalance: false,
-      },
-    });
-  }
-
-  withShowNativeTokenAsMainBalanceEnabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        showNativeTokenAsMainBalance: true,
-      },
-    });
-  }
-
-  withSmartTransactionsOptedOut(): this {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: false,
-      },
-    });
   }
 
   build() {
