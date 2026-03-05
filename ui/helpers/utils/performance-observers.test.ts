@@ -7,6 +7,7 @@ import {
   setupLongTaskObserver,
   disconnectLongTaskObserver,
   reportLongTaskMetricsToSentry,
+  setupLongTaskSentryReporting,
   exposeLongTaskMetricsForTesting,
 } from './performance-observers';
 
@@ -406,6 +407,102 @@ describe('performance-observers', () => {
     it('bucketizes count 50 as "26-50"', () => expectBucket(50, '26-50'));
     it('bucketizes count 51 as "50+"', () => expectBucket(51, '50+'));
     it('bucketizes count 100 as "50+"', () => expectBucket(100, '50+'));
+  });
+
+  describe('setupLongTaskSentryReporting', () => {
+    const originalSentry = globalThis.sentry;
+
+    afterEach(() => {
+      globalThis.sentry = originalSentry;
+    });
+
+    it('returns a cleanup function', () => {
+      const cleanup = setupLongTaskSentryReporting();
+      expect(typeof cleanup).toBe('function');
+      cleanup();
+    });
+
+    it('reports to Sentry when document becomes hidden', () => {
+      const mockSentry = {
+        setMeasurement: jest.fn(),
+        setTag: jest.fn(),
+        addBreadcrumb: jest.fn(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).sentry = mockSentry;
+
+      const cleanup = setupLongTaskSentryReporting();
+
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'hidden',
+        writable: true,
+        configurable: true,
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
+        'tbt',
+        expect.any(Number),
+        'millisecond',
+      );
+
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        writable: true,
+        configurable: true,
+      });
+      cleanup();
+    });
+
+    it('does not report when document becomes visible', () => {
+      const mockSentry = {
+        setMeasurement: jest.fn(),
+        setTag: jest.fn(),
+        addBreadcrumb: jest.fn(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).sentry = mockSentry;
+
+      const cleanup = setupLongTaskSentryReporting();
+
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        writable: true,
+        configurable: true,
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(mockSentry.setMeasurement).not.toHaveBeenCalled();
+      cleanup();
+    });
+
+    it('cleanup removes the visibilitychange listener', () => {
+      const mockSentry = {
+        setMeasurement: jest.fn(),
+        setTag: jest.fn(),
+        addBreadcrumb: jest.fn(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).sentry = mockSentry;
+
+      const cleanup = setupLongTaskSentryReporting();
+      cleanup();
+
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'hidden',
+        writable: true,
+        configurable: true,
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(mockSentry.setMeasurement).not.toHaveBeenCalled();
+
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        writable: true,
+        configurable: true,
+      });
+    });
   });
 
   describe('exposeLongTaskMetricsForTesting', () => {

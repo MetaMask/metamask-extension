@@ -28,6 +28,7 @@ import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import {
   setupLongTaskObserver,
+  setupLongTaskSentryReporting,
   exposeLongTaskMetricsForTesting,
 } from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
@@ -408,9 +409,20 @@ function setupStateHooks(store) {
     return logsArray;
   };
 
-  // Long Task observer for benchmark instrumentation (100% sample rate in test/debug builds)
+  // Long Task observer: 100% in test/debug, 10% sampled in production
+  const longTaskSampleRate =
+    process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;
+  setupLongTaskObserver(longTaskSampleRate);
+
+  // Report TBT to Sentry when popup becomes hidden (production + debug).
+  // Sentry's browserTracingIntegration already creates per-task ui.long-task
+  // spans; this adds aggregate TBT as a custom measurement alongside them.
+  if (!process.env.IN_TEST) {
+    setupLongTaskSentryReporting();
+  }
+
+  // Expose metrics APIs for E2E benchmark harness
   if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
-    setupLongTaskObserver(1);
     exposeLongTaskMetricsForTesting();
   }
 }

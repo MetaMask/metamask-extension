@@ -77,6 +77,9 @@ function getClientOptions() {
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
+        // Creates ui.long-animation-frame spans (falls back to ui.long-task).
+        // Pairs with TBT aggregate measurements from performance-observers.ts.
+        enableLongAnimationFrame: true,
         shouldCreateSpanForRequest: (url) => {
           // Do not create spans for outgoing requests to a 'sentry.io' domain.
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
