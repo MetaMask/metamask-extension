@@ -1738,7 +1738,7 @@ describe('Bridge selectors', () => {
     });
 
     // @ts-expect-error: each is a valid test function in jest
-    it.only.each([
+    it.each([
       {
         priceImpact: '-0.05',
         isPriceImpactWarning: false,
@@ -1763,6 +1763,11 @@ describe('Bridge selectors', () => {
         priceImpact: '0.9',
         isPriceImpactWarning: false,
         isPriceImpactError: true,
+      },
+      {
+        priceImpact: '0.07',
+        isPriceImpactWarning: true,
+        isPriceImpactError: false,
       },
       {
         priceImpact: undefined,
