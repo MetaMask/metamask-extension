@@ -132,7 +132,6 @@ export default function useSubmitBridgeTransaction() {
         : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
       navigate(awaitingUrl);
       setIsSubmitting(false);
-      return;
     }
 
     // Execute transaction(s)

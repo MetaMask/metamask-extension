@@ -374,6 +374,62 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         </Row>
 
+        {/* Price Impact */}
+        {formattedPriceImpact && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row gap={2}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('bridgePriceImpact')}
+              </Text>
+              <Tooltip
+                title={
+                  isPriceImpactWarning
+                    ? t('bridgePriceImpactWarningTitle')
+                    : t('bridgePriceImpactTooltipTitle')
+                }
+                position={PopoverPosition.TopStart}
+                offset={[-16, 16]}
+              >
+                {t('bridgePriceImpactNormalDescription')}
+              </Tooltip>
+            </Row>
+            <Row gap={1}>
+              {(isPriceImpactWarning || isPriceImpactError) && (
+                <ButtonIcon
+                  iconName={
+                    isPriceImpactWarning ? IconName.Warning : IconName.Danger
+                  }
+                  size={ButtonIconSize.Sm}
+                  color={
+                    isPriceImpactWarning
+                      ? IconColor.warningDefault
+                      : IconColor.errorDefault
+                  }
+                  onClick={onOpenPriceImpactWarningModal}
+                  ariaLabel={t('bridgePriceImpactWarningAriaLabel')}
+                  data-testid="price-impact-warning-button"
+                />
+              )}
+              <Text
+                variant={TextVariant.bodySm}
+                color={
+                  // eslint-disable-next-line no-nested-ternary
+                  isPriceImpactWarning
+                    ? TextColor.warningDefault
+                    : isPriceImpactError
+                      ? TextColor.errorDefault
+                      : TextColor.textAlternative
+                }
+              >
+                {formattedPriceImpact}
+              </Text>
+            </Row>
+          </Row>
+        )}
+
         {/* Minimum Received */}
         {activeQuote.minToTokenAmount.amount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
@@ -404,62 +460,6 @@ export const MultichainBridgeQuoteCard = ({
                 activeQuote.quote.destAsset.symbol,
               )}
             </Text>
-          </Row>
-        )}
-
-        {/* Price Impact */}
-        {formattedPriceImpact && (
-          <Row justifyContent={JustifyContent.spaceBetween}>
-            <Row gap={2}>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('bridgePriceImpact')}
-              </Text>
-              <Tooltip
-                title={
-                  isPriceImpactWarning
-                    ? t('bridgePriceImpactWarningTitle')
-                    : t('bridgePriceImpactTooltipTitle')
-                }
-                position={PopoverPosition.TopStart}
-                offset={[-16, 16]}
-              >
-                {t('bridgePriceImpactNormalWarning')}
-              </Tooltip>
-            </Row>
-            <Row gap={1}>
-              {(isPriceImpactWarning || isPriceImpactError) && (
-                <ButtonIcon
-                  iconName={
-                    isPriceImpactWarning ? IconName.Warning : IconName.Danger
-                  }
-                  size={ButtonIconSize.Sm}
-                  color={
-                    isPriceImpactWarning
-                      ? IconColor.warningDefault
-                      : IconColor.errorDefault
-                  }
-                  onClick={onOpenPriceImpactWarningModal}
-                  ariaLabel={t('priceImpactWarningAriaLabel')}
-                  data-testid="price-impact-warning-button"
-                />
-              )}
-              <Text
-                variant={TextVariant.bodySm}
-                color={
-                  // eslint-disable-next-line no-nested-ternary
-                  isPriceImpactWarning
-                    ? TextColor.warningDefault
-                    : isPriceImpactError
-                      ? TextColor.errorDefault
-                      : TextColor.textAlternative
-                }
-              >
-                {formattedPriceImpact}
-              </Text>
-            </Row>
           </Row>
         )}
 

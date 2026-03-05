@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "プライスインパクト"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "価格への影響には、スワップが市場価格に与える影響が反映されています。ガス代が不足している場合、一部のトークンが手数料の支払いに充てられるため、価格への影響が大きくなります。MetaMaskはこの影響に対して設定や管理を行っていません。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "プライスインパクト"
   },

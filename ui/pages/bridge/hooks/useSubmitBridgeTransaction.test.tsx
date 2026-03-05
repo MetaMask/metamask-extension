@@ -267,7 +267,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         )}`,
       );
       expect(result.current.isSubmitting).toBe(false);
-      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(submitTxSpy).toHaveBeenCalledTimes(1);
     });
 
     it('returns early if hardware device is not ready', async () => {

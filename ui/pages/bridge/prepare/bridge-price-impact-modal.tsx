@@ -85,15 +85,19 @@ export const BridgePriceImpactWarningModal = ({
                   : IconColor.WarningDefault
               }
             />
-            {t(isPriceImpactError ? 'priceImpactError' : 'bridgePriceImpact')}
+            {t(
+              isPriceImpactError
+                ? 'bridgePriceImpactVeryHigh'
+                : 'bridgePriceImpactHigh',
+            )}
           </Column>
         </ModalHeader>
         <Column gap={3} paddingInline={4} paddingBottom={4}>
           <Text variant={TextVariant.BodySm}>
             {t(
               isPriceImpactError
-                ? 'priceImpactErrorDescription'
-                : 'priceImpactWarningDescription',
+                ? 'bridgePriceImpactVeryHighDescription'
+                : 'bridgePriceImpactHighDescription',
               [formattedPriceImpact ?? ''],
             )}
           </Text>
