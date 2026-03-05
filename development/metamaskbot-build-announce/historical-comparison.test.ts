@@ -7,8 +7,10 @@ import {
 /**
  * Builds a HistoricalPerformanceFile from untyped data so tests can include
  * deliberately invalid values (null, string metrics) to exercise runtime guards.
+ *
+ * @param entries - Raw object entries to cast as HistoricalPerformanceFile.
  */
-const mockFile = (
+const asHistoricalFile = (
   entries: Record<string, unknown>,
 ): HistoricalPerformanceFile => entries as HistoricalPerformanceFile;
 
@@ -69,7 +71,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('uses the latest commit even when earlier commits have bad presets', () => {
-    const data = mockFile({
+    const data = asHistoricalFile({
       bad1: { timestamp: 1, presets: {} },
       bad2: { timestamp: 2, presets: null },
       good: makeCommit(),
@@ -81,7 +83,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('skips benchmark entries where mean is null or missing', () => {
-    const data = mockFile({
+    const data = asHistoricalFile({
       c1: {
         timestamp: 1,
         presets: {
@@ -100,7 +102,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('skips NaN metric values', () => {
-    const data = mockFile({
+    const data = asHistoricalFile({
       c1: {
         timestamp: 1,
         presets: {
@@ -118,7 +120,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('parses string-encoded metric values', () => {
-    const data = mockFile({
+    const data = asHistoricalFile({
       c1: {
         timestamp: 1,
         presets: {
