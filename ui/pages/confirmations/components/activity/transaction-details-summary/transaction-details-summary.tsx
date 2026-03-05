@@ -55,23 +55,6 @@ export function TransactionDetailsSummary() {
     return [...requiredTransactions, transactionMeta];
   }, [requiredTransactions, transactionMeta]);
 
-  // For atomic mUSD conversions (relay + receive share the same hash),
-  // only show the relayDeposit line. Non-atomic shows both relay and receive.
-  const transactionsToShow = useMemo(() => {
-    if (
-      transactionMeta.type === TransactionType.musdConversion &&
-      requiredTransactions.length > 0
-    ) {
-      return [
-        ...requiredTransactions.filter(
-          (tx) => tx.type !== TransactionType.tokenMethodApprove,
-        ),
-        transactionMeta,
-      ];
-    }
-    return transactions;
-  }, [transactions, transactionMeta, requiredTransactions]);
-
   const payTokenAddress = metamaskPay?.tokenAddress as Hex | undefined;
   const payTokenChainId = metamaskPay?.chainId as Hex | undefined;
 
@@ -88,13 +71,13 @@ export function TransactionDetailsSummary() {
         flexDirection={FlexDirection.Column}
         paddingLeft={2}
       >
-        {transactionsToShow.map((tx, index) => (
+        {transactions.map((tx, index) => (
           <TransactionSummaryLine
             key={tx.id}
             transactionMeta={tx}
             payTokenAddress={payTokenAddress}
             payTokenChainId={payTokenChainId}
-            isLast={index === transactionsToShow.length - 1}
+            isLast={index === transactions.length - 1}
           />
         ))}
       </Box>
