@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
@@ -242,21 +242,9 @@ const mapDispatchToProps = (dispatch) => {
 // eslint-disable-next-line react/prop-types
 const HomeWithRouter = ({ match: _match, ...props }) => {
   const { evaluateCohortEligibility } = useShieldSubscriptionContext();
-  const [controlBarPlacement, setControlBarPlacement] = useState('top');
-
-  const handleTogglePlacement = useCallback(() => {
-    setControlBarPlacement((prev) => (prev === 'top' ? 'bottom' : 'top'));
-  }, []);
 
   return (
     <>
-      {controlBarPlacement === 'top' && (
-        <DappConnectionControlBar
-          placement="top"
-          onTogglePlacement={handleTogglePlacement}
-        />
-      )}
-
       <AppHeader />
 
       <div className="flex flex-col flex-1 min-h-0">
@@ -264,12 +252,7 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
           {...props}
           evaluateCohortEligibility={evaluateCohortEligibility}
         />
-        {controlBarPlacement === 'bottom' && (
-          <DappConnectionControlBar
-            placement="bottom"
-            onTogglePlacement={handleTogglePlacement}
-          />
-        )}
+        <DappConnectionControlBar />
       </div>
     </>
   );

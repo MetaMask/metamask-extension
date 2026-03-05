@@ -1,6 +1,5 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import type { ComponentProps } from 'react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -138,31 +137,20 @@ const disconnectedMockState = {
   },
 };
 
-const defaultProps: ComponentProps<typeof DappConnectionControlBar> = {
-  placement: 'top',
-  onTogglePlacement: jest.fn(),
-};
-
 describe('DappConnectionControlBar', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('when connected to a dapp', () => {
-    const renderConnected = (props = defaultProps) => {
+    const renderConnected = () => {
       const store = configureStore(connectedMockState);
-      return renderWithProvider(<DappConnectionControlBar {...props} />, store);
+      return renderWithProvider(<DappConnectionControlBar />, store);
     };
 
     it('renders the control bar', () => {
       const { getByTestId } = renderConnected();
       expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
-    });
-
-    it('renders as a single row', () => {
-      const { getByTestId } = renderConnected();
-      const bar = getByTestId('dapp-connection-control-bar');
-      expect(bar.className).toContain('dapp-connection-control-bar--top');
     });
 
     it('displays the site origin', () => {
@@ -215,34 +203,13 @@ describe('DappConnectionControlBar', () => {
       );
       expect(getByTestId('disconnect-all-modal')).toBeInTheDocument();
     });
-
-    it('calls onTogglePlacement when favicon is clicked', () => {
-      const onToggle = jest.fn();
-      const { getByTestId } = renderConnected({
-        ...defaultProps,
-        onTogglePlacement: onToggle,
-      });
-      fireEvent.click(
-        getByTestId('dapp-connection-control-bar__favicon-toggle'),
-      );
-      expect(onToggle).toHaveBeenCalledTimes(1);
-    });
-
-    it('applies bottom modifier class when placement is bottom', () => {
-      const { getByTestId } = renderConnected({
-        ...defaultProps,
-        placement: 'bottom',
-      });
-      const bar = getByTestId('dapp-connection-control-bar');
-      expect(bar.className).toContain('dapp-connection-control-bar--bottom');
-    });
   });
 
   describe('when not connected to a dapp', () => {
     it('does not render the control bar', () => {
       const store = configureStore(disconnectedMockState);
       const { queryByTestId } = renderWithProvider(
-        <DappConnectionControlBar {...defaultProps} />,
+        <DappConnectionControlBar />,
         store,
       );
       expect(

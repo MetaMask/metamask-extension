@@ -49,25 +49,14 @@ import {
   DisconnectType,
 } from '../disconnect-all-modal/disconnect-all-modal';
 
-type DappConnectionControlBarProps = {
-  placement: 'top' | 'bottom';
-  onTogglePlacement: () => void;
-};
-
 /**
  * DappConnectionControlBar - A contextual bar shown only during active dapp
- * connections. Supports top (above header) or bottom (below content) placement.
+ * connections. Rendered at the bottom of the wallet screen.
  *
  * Layout (single row):
  * [Favicon+dot] [Origin / Account] ... [Network ↓] [Settings | Disconnect]
- *
- * @param options0
- * @param options0.placement
- * @param options0.onTogglePlacement
  */
-export const DappConnectionControlBar: React.FC<
-  DappConnectionControlBarProps
-> = ({ placement, onTogglePlacement }) => {
+export const DappConnectionControlBar: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -182,15 +171,10 @@ export const DappConnectionControlBar: React.FC<
     return null;
   }
 
-  const placementClass =
-    placement === 'top'
-      ? 'dapp-connection-control-bar--top'
-      : 'dapp-connection-control-bar--bottom';
-
   return (
     <>
       <Box
-        className={`dapp-connection-control-bar ${placementClass}`}
+        className="dapp-connection-control-bar"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
@@ -203,14 +187,10 @@ export const DappConnectionControlBar: React.FC<
       >
         {/* Left side: Favicon with green dot + Identity */}
         <Box
-          as="button"
           display={Display.Flex}
           alignItems={AlignItems.center}
           gap={2}
           className="dapp-connection-control-bar__left-group"
-          onClick={onTogglePlacement}
-          data-testid="dapp-connection-control-bar__favicon-toggle"
-          aria-label="Toggle control bar position"
         >
           {/* Favicon with connection dot overlay */}
           <Box className="dapp-connection-control-bar__favicon-wrapper">
