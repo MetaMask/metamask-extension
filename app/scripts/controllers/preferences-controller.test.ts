@@ -746,6 +746,7 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
           },
@@ -829,6 +830,7 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
           },
@@ -912,6 +914,7 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
           },
@@ -1049,6 +1052,7 @@ describe('preferences controller', () => {
                 [testAccount2]: ReferralStatus.Declined,
               },
               [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1072,6 +1076,7 @@ describe('preferences controller', () => {
                 [testAccount1]: ReferralStatus.Declined,
               },
               [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1112,6 +1117,7 @@ describe('preferences controller', () => {
                 [existingAccount]: ReferralStatus.Declined,
               },
               [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1134,6 +1140,7 @@ describe('preferences controller', () => {
                 [existingAccount]: ReferralStatus.Approved,
               },
               [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1154,6 +1161,9 @@ describe('preferences controller', () => {
         ).toStrictEqual({});
         expect(
           controller.state.referrals[DefiReferralPartner.GMX],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.AsterDEX],
         ).toStrictEqual({});
       });
 

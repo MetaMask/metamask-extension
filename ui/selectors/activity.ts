@@ -49,12 +49,15 @@ export const selectLocalTransactions = createSelector(
     const selectedAddress = selectedAccount.address.toLowerCase();
 
     const filtered = (transactions ?? []).filter((tx) => {
-      const passesSenderAndTypeGate = isFromSelectedAccount(
-        tx,
-        selectedAddress,
-      );
+      const hasNonce = tx.txParams?.nonce !== undefined;
 
-      if (!passesSenderAndTypeGate) {
+      // Ensure any externally signed transactions are always included.
+      // Such as EIP-7702 gas station and MetaMask Pay.
+      if (!hasNonce) {
+        return true;
+      }
+
+      if (!isFromSelectedAccount(tx, selectedAddress)) {
         return false;
       }
 

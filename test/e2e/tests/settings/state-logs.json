@@ -789,6 +789,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "participateInMetaMetrics": "boolean",
+    "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
@@ -863,6 +864,7 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "asterdex": {},
       "gmx": {},
       "hyperliquid": {}
     },
@@ -874,6 +876,24 @@
         "value": "string"
       }
     },
+    "rawRemoteFeatureFlags": {
+      "feature1": "boolean",
+      "feature2": "boolean",
+      "feature3": [
+        {
+          "name": "string",
+          "value": "string",
+          "scope": {
+            "type": "string",
+            "value": "number"
+          }
+        }
+      ]
+    },
+    "thresholdCache": {
+      "*": "number"
+    },
+    "localOverrides": {},
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
     "rewardsPointsEstimateHistory": [],
@@ -1020,34 +1040,6 @@
     "subscriptionAccountsSeen": ["string"],
     "subscriptions": [],
     "surveyLinkLastClickedOrClosed": "null",
-    "swapsState": {
-      "approveTxId": "null",
-      "customApproveTxData": "string",
-      "customGasPrice": "null",
-      "customMaxFeePerGas": "null",
-      "customMaxGas": "string",
-      "customMaxPriorityFeePerGas": "null",
-      "errorKey": "string",
-      "fetchParams": "null",
-      "quotes": {},
-      "quotesLastFetched": "null",
-      "quotesPollingLimitEnabled": "boolean",
-      "routeState": "string",
-      "saveFetchedQuotes": "boolean",
-      "selectedAggId": "null",
-      "swapsFeatureFlags": {},
-      "swapsFeatureIsLive": "boolean",
-      "swapsQuotePrefetchingRefreshTime": "number",
-      "swapsQuoteRefreshTime": "number",
-      "swapsStxBatchStatusRefreshTime": "number",
-      "swapsStxGetTransactionsRefreshTime": "number",
-      "swapsStxMaxFeeMultiplier": "number",
-      "swapsStxStatusDeadline": "number",
-      "swapsUserFeeLevel": "string",
-      "tokens": "null",
-      "topAggId": "null",
-      "tradeTxId": "null"
-    },
     "termsOfUseLastAgreed": "number",
     "theme": "string",
     "throttledOrigins": {},

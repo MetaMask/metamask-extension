@@ -11,8 +11,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '../../../../../components/component-library';
+import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
 import { useConfirmContext } from '../../../context/confirm';
+import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
 
 const MUSD_ICON_SRC = './images/musd-icon-no-background-2x.png';
@@ -25,12 +31,27 @@ const MusdClaimHeading = () => {
   const { displayClaimAmount, fiatDisplayValue, pending } =
     useMerklClaimAmount(transactionMeta);
 
+  const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
+
   const TokenImage = (
-    <AvatarToken
-      src={MUSD_ICON_SRC}
-      name={MUSD_SYMBOL}
-      size={AvatarTokenSize.Xl}
-    />
+    <div style={{ position: 'relative', display: 'inline-flex' }}>
+      <AvatarToken
+        src={MUSD_ICON_SRC}
+        name={MUSD_SYMBOL}
+        size={AvatarTokenSize.Xl}
+      />
+      <AvatarNetwork
+        src={networkImageUrl}
+        name={networkDisplayName}
+        size={AvatarNetworkSize.Xs}
+        backgroundColor={getAvatarNetworkColor(networkDisplayName)}
+        style={{
+          position: 'absolute',
+          right: -2,
+          bottom: -2,
+        }}
+      />
+    </div>
   );
 
   const TokenValueSkeleton = (

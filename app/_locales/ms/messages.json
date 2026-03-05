@@ -292,9 +292,6 @@
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Transaksi awal anda telah disahkan oleh rangkaian. Klik OK untuk kembali."
-  },
   "insufficientBalance": {
     "message": "Baki tidak mencukupi."
   },
@@ -467,12 +464,6 @@
   },
   "rejectAll": {
     "message": "Tolak Semua"
-  },
-  "rejectTxsDescription": {
-    "message": "Anda akan menolak secara kelompok $1 transaksi."
-  },
-  "rejectTxsN": {
-    "message": "Tolak transaksi $1"
   },
   "rejected": {
     "message": "Ditolak"
@@ -663,8 +654,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ungkapan benih peribadi anda"
   }
 }

@@ -12,7 +12,6 @@
 documentation_files: &documentation_files
   - '**/*.{md,mdx,txt}'
   - 'docs/**/*'
-  - 'test/manual-scenarios/**/*'
   - 'LICENSE'
 
 # LOW LEVEL TEST FILES

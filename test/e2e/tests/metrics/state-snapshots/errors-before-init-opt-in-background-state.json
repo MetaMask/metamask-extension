@@ -34,6 +34,7 @@
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDropdownState": {},
       "notificationGasPollTokens": "object",
+      "pendingRedirectRoute": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",

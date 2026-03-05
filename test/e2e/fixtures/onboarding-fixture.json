@@ -59,6 +59,8 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": [],
+      "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "nftsDetectionNoticeDismissed": false,
@@ -83,9 +85,7 @@
       "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null,
-      "musdConversionEducationSeen": false,
-      "musdConversionDismissedCtaKeys": []
+      "updateModalLastDismissedAt": null
     },
     "AuthenticationController": {
       "isSignedIn": false
@@ -1939,6 +1939,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "asterdex": {},
         "gmx": {},
         "hyperliquid": {}
       },
@@ -1966,6 +1967,8 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
+      "localOverrides": {},
+      "rawRemoteFeatureFlags": {},
       "remoteFeatureFlags": {}
     },
     "RewardsController": {
