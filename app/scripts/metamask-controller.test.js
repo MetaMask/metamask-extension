@@ -3,6 +3,7 @@
  */
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
+import { Duplex } from 'stream';
 import { obj as createThroughStream } from 'through2';
 import {
   ListNames,
@@ -2781,14 +2782,23 @@ describe('MetaMaskController', () => {
 
       it('invokes removeCriticalErrorListeners when the UI calls startSendingPatches', async () => {
         const removeCriticalErrorListeners = jest.fn();
-        const stream = createThroughStream((chunk, _, cb) => cb(null, chunk));
+        // Use a Duplex that does NOT echo controller writes back: otherwise the handler
+        // would see its own response/sendUpdate and re-invoke (methodNotFound, etc.),
+        // causing a write loop and OOM. In the real UI, controller writes go to the UI only.
+        const stream = new Duplex({
+          objectMode: true,
+          read() {},
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+        });
 
         metamaskController.setupControllerConnection(
           stream,
           removeCriticalErrorListeners,
         );
 
-        stream.write({
+        stream.push({
           method: 'startSendingPatches',
           params: [],
           id: 1,
