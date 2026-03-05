@@ -5540,6 +5540,9 @@
   "perpsPosition": {
     "message": "Position"
   },
+  "perpsPositionClosedReverseOrderFailed": {
+    "message": "Your position was closed but the reverse order failed. You may need to manually open a new position"
+  },
   "perpsPositionSize": {
     "message": "Position Size"
   },
@@ -5569,9 +5572,6 @@
   },
   "perpsReversePosition": {
     "message": "Reverse position"
-  },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Your position was closed but the reverse order failed. You may need to manually open a new position"
   },
   "perpsReversePositionDescriptionLong": {
     "message": "Flip your long position to a short"

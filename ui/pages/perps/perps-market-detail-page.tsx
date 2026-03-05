@@ -119,6 +119,49 @@ function useFundingCountdown(): string {
   return countdown;
 }
 
+type PopoverMenuItemProps = {
+  icon: IconName;
+  label: string;
+  description: string;
+  onClick: () => void;
+  className?: string;
+  'data-testid'?: string;
+};
+
+const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
+  icon,
+  label,
+  description,
+  onClick,
+  className = '',
+  'data-testid': testId,
+}) => (
+  <Box
+    className={`w-full text-left px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer ${className}`}
+    onClick={onClick}
+    data-testid={testId}
+  >
+    <Icon
+      name={icon}
+      size={IconSize.Sm}
+      color={IconColor.IconDefault}
+      className="shrink-0 mt-0.5"
+    />
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={0}
+      className="min-w-0 flex-1"
+    >
+      <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        {label}
+      </Text>
+      <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+        {description}
+      </Text>
+    </Box>
+  </Box>
+);
+
 /**
  * PerpsMarketDetailPage component
  * Displays detailed market information for a specific perps market
@@ -936,66 +979,22 @@ const PerpsMarketDetailPage: React.FC = () => {
                     data-testid="perps-margin-menu"
                   >
                     <Box flexDirection={BoxFlexDirection.Column}>
-                      <Box
-                        className="w-full text-left rounded-t-lg px-4 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
+                      <PopoverMenuItem
+                        icon={IconName.Add}
+                        label={t('perpsAddMargin')}
+                        description={t('perpsAddMarginDescription')}
                         onClick={handleOpenAddMarginModal}
+                        className="rounded-t-lg py-3"
                         data-testid="perps-margin-menu-add"
-                      >
-                        <Icon
-                          name={IconName.Add}
-                          size={IconSize.Sm}
-                          color={IconColor.IconDefault}
-                          className="shrink-0 mt-0.5"
-                        />
-                        <Box
-                          flexDirection={BoxFlexDirection.Column}
-                          gap={0}
-                          className="min-w-0 flex-1"
-                        >
-                          <Text
-                            variant={TextVariant.BodySm}
-                            fontWeight={FontWeight.Medium}
-                          >
-                            {t('perpsAddMargin')}
-                          </Text>
-                          <Text
-                            variant={TextVariant.BodyXs}
-                            color={TextColor.TextAlternative}
-                          >
-                            {t('perpsAddMarginDescription')}
-                          </Text>
-                        </Box>
-                      </Box>
-                      <Box
-                        className="w-full text-left rounded-b-lg px-4 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
+                      />
+                      <PopoverMenuItem
+                        icon={IconName.Minus}
+                        label={t('perpsRemoveMargin')}
+                        description={t('perpsRemoveMarginDescription')}
                         onClick={handleOpenDecreaseMarginModal}
+                        className="rounded-b-lg py-3"
                         data-testid="perps-margin-menu-remove"
-                      >
-                        <Icon
-                          name={IconName.Minus}
-                          size={IconSize.Sm}
-                          color={IconColor.IconDefault}
-                          className="shrink-0 mt-0.5"
-                        />
-                        <Box
-                          flexDirection={BoxFlexDirection.Column}
-                          gap={0}
-                          className="min-w-0 flex-1"
-                        >
-                          <Text
-                            variant={TextVariant.BodySm}
-                            fontWeight={FontWeight.Medium}
-                          >
-                            {t('perpsRemoveMargin')}
-                          </Text>
-                          <Text
-                            variant={TextVariant.BodyXs}
-                            color={TextColor.TextAlternative}
-                          >
-                            {t('perpsRemoveMarginDescription')}
-                          </Text>
-                        </Box>
-                      </Box>
+                      />
                     </Box>
                   </Popover>
                 </Box>
@@ -1364,122 +1363,65 @@ const PerpsMarketDetailPage: React.FC = () => {
             flexDirection={BoxFlexDirection.Column}
             className="overflow-hidden rounded-xl"
           >
-            {/* Activity Item 1 - Opened long */}
-            <Box
-              className="w-full bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={3}
-            >
-              <PerpsTokenLogo
-                symbol={market.symbol}
-                size={AvatarTokenSize.Md}
-              />
+            {[
+              {
+                label: t('perpsOpenedLong'),
+                amount: '2.50000',
+                pnl: '+$125.00',
+                pnlColor: TextColor.SuccessDefault,
+              },
+              {
+                label: t('perpsIncreasedPosition'),
+                amount: '0.50000',
+                pnl: '+$45.20',
+                pnlColor: TextColor.SuccessDefault,
+              },
+              {
+                label: t('perpsClosedShort'),
+                amount: '1.25000',
+                pnl: '-$32.50',
+                pnlColor: TextColor.ErrorDefault,
+              },
+            ].map((item) => (
               <Box
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Start}
-                className="min-w-0 flex-1"
-                gap={1}
+                key={item.label}
+                className="w-full bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={3}
               >
+                <PerpsTokenLogo
+                  symbol={market.symbol}
+                  size={AvatarTokenSize.Md}
+                />
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.Start}
+                  className="min-w-0 flex-1"
+                  gap={1}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {item.label}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodyXs}
+                    color={TextColor.TextAlternative}
+                  >
+                    {item.amount} {displayName}
+                  </Text>
+                </Box>
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  color={item.pnlColor}
                 >
-                  {t('perpsOpenedLong')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                >
-                  2.50000 {displayName}
+                  {item.pnl}
                 </Text>
               </Box>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.SuccessDefault}
-              >
-                +$125.00
-              </Text>
-            </Box>
-
-            {/* Activity Item 2 - Increased position */}
-            <Box
-              className="w-full bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={3}
-            >
-              <PerpsTokenLogo
-                symbol={market.symbol}
-                size={AvatarTokenSize.Md}
-              />
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Start}
-                className="min-w-0 flex-1"
-                gap={1}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('perpsIncreasedPosition')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                >
-                  0.50000 {displayName}
-                </Text>
-              </Box>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.SuccessDefault}
-              >
-                +$45.20
-              </Text>
-            </Box>
-
-            {/* Activity Item 3 - Closed short */}
-            <Box
-              className="w-full bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={3}
-            >
-              <PerpsTokenLogo
-                symbol={market.symbol}
-                size={AvatarTokenSize.Md}
-              />
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Start}
-                className="min-w-0 flex-1"
-                gap={1}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('perpsClosedShort')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                >
-                  1.25000 {displayName}
-                </Text>
-              </Box>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.ErrorDefault}
-              >
-                -$32.50
-              </Text>
-            </Box>
+            ))}
           </Box>
 
           {/* Learn Section */}
@@ -1561,102 +1503,41 @@ const PerpsMarketDetailPage: React.FC = () => {
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
-                  <Box
-                    className="w-full text-left rounded-t-lg px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
+                  <PopoverMenuItem
+                    icon={IconName.Add}
+                    label={t('perpsAddExposure')}
+                    description={
+                      parseFloat(position.size) >= 0
+                        ? t('perpsAddExposureDescriptionLong')
+                        : t('perpsAddExposureDescriptionShort')
+                    }
                     onClick={handleAddExposure}
+                    className="rounded-t-lg"
                     data-testid="perps-modify-menu-add-exposure"
-                  >
-                    <Icon
-                      name={IconName.Add}
-                      size={IconSize.Sm}
-                      color={IconColor.IconDefault}
-                      className="shrink-0 mt-0.5"
-                    />
-                    <Box
-                      flexDirection={BoxFlexDirection.Column}
-                      gap={0}
-                      className="min-w-0 flex-1"
-                    >
-                      <Text
-                        variant={TextVariant.BodySm}
-                        fontWeight={FontWeight.Medium}
-                      >
-                        {t('perpsAddExposure')}
-                      </Text>
-                      <Text
-                        variant={TextVariant.BodyXs}
-                        color={TextColor.TextAlternative}
-                      >
-                        {parseFloat(position.size) >= 0
-                          ? t('perpsAddExposureDescriptionLong')
-                          : t('perpsAddExposureDescriptionShort')}
-                      </Text>
-                    </Box>
-                  </Box>
-                  <Box
-                    className="w-full text-left px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
+                  />
+                  <PopoverMenuItem
+                    icon={IconName.Minus}
+                    label={t('perpsReduceExposure')}
+                    description={
+                      parseFloat(position.size) >= 0
+                        ? t('perpsReduceExposureDescriptionLong')
+                        : t('perpsReduceExposureDescriptionShort')
+                    }
                     onClick={handleReduceExposure}
                     data-testid="perps-modify-menu-reduce-exposure"
-                  >
-                    <Icon
-                      name={IconName.Minus}
-                      size={IconSize.Sm}
-                      color={IconColor.IconDefault}
-                      className="shrink-0 mt-0.5"
-                    />
-                    <Box
-                      flexDirection={BoxFlexDirection.Column}
-                      gap={0}
-                      className="min-w-0 flex-1"
-                    >
-                      <Text
-                        variant={TextVariant.BodySm}
-                        fontWeight={FontWeight.Medium}
-                      >
-                        {t('perpsReduceExposure')}
-                      </Text>
-                      <Text
-                        variant={TextVariant.BodyXs}
-                        color={TextColor.TextAlternative}
-                      >
-                        {parseFloat(position.size) >= 0
-                          ? t('perpsReduceExposureDescriptionLong')
-                          : t('perpsReduceExposureDescriptionShort')}
-                      </Text>
-                    </Box>
-                  </Box>
-                  <Box
-                    className="w-full text-left rounded-b-lg px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
+                  />
+                  <PopoverMenuItem
+                    icon={IconName.SwapHorizontal}
+                    label={t('perpsReversePosition')}
+                    description={
+                      parseFloat(position.size) >= 0
+                        ? t('perpsReversePositionDescriptionLong')
+                        : t('perpsReversePositionDescriptionShort')
+                    }
                     onClick={handleOpenReverseModal}
+                    className="rounded-b-lg"
                     data-testid="perps-modify-menu-reverse-position"
-                  >
-                    <Icon
-                      name={IconName.SwapHorizontal}
-                      size={IconSize.Sm}
-                      color={IconColor.IconDefault}
-                      className="shrink-0 mt-0.5"
-                    />
-                    <Box
-                      flexDirection={BoxFlexDirection.Column}
-                      gap={0}
-                      className="min-w-0 flex-1"
-                    >
-                      <Text
-                        variant={TextVariant.BodySm}
-                        fontWeight={FontWeight.Medium}
-                      >
-                        {t('perpsReversePosition')}
-                      </Text>
-                      <Text
-                        variant={TextVariant.BodyXs}
-                        color={TextColor.TextAlternative}
-                      >
-                        {parseFloat(position.size) >= 0
-                          ? t('perpsReversePositionDescriptionLong')
-                          : t('perpsReversePositionDescriptionShort')}
-                      </Text>
-                    </Box>
-                  </Box>
+                  />
                 </Box>
               </Popover>
             </Box>

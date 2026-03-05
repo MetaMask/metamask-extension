@@ -1,15 +1,10 @@
 import React, { useCallback } from 'react';
 import {
-  twMerge,
   Box,
   BoxFlexDirection,
-  BoxAlignItems,
   ButtonBase,
   Text,
-  TextVariant,
-  TextColor,
   FontWeight,
-  AvatarTokenSize,
   Icon,
   IconName,
   IconSize,
@@ -21,12 +16,8 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName } from '../utils';
+import { PerpsMarketCard } from '../perps-market-card';
 import type { PerpsMarketData } from '../types';
-
-const CARD_STYLES =
-  'justify-start rounded-none min-w-0 h-[62px] gap-4 text-left cursor-pointer bg-default pt-2 pb-2 px-4 hover:bg-hover active:bg-pressed';
 
 export type PerpsExploreMarketsProps = {
   cryptoMarkets: PerpsMarketData[];
@@ -70,120 +61,28 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
         />
       </ButtonBase>
       <Box flexDirection={BoxFlexDirection.Column}>
-        {cryptoMarkets.map((market) => {
-          const isPositiveChange = market.change24hPercent.startsWith('+');
-          return (
-            <ButtonBase
-              key={market.symbol}
-              className={twMerge(CARD_STYLES)}
-              isFullWidth
-              onClick={() => handleMarketClick(market.symbol)}
-              data-testid={`explore-crypto-${market.symbol}`}
-            >
-              <PerpsTokenLogo
-                symbol={market.symbol}
-                size={AvatarTokenSize.Md}
-                className="shrink-0"
-              />
-              <Box
-                className="min-w-0 flex-1"
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Start}
-                gap={1}
-              >
-                <Text fontWeight={FontWeight.Medium}>{market.name}</Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {getDisplayName(market.symbol)}-USD
-                </Text>
-              </Box>
-              <Box
-                className="shrink-0"
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.End}
-                gap={1}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {market.price}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={
-                    isPositiveChange
-                      ? TextColor.SuccessDefault
-                      : TextColor.ErrorDefault
-                  }
-                >
-                  {market.change24hPercent}
-                </Text>
-              </Box>
-            </ButtonBase>
-          );
-        })}
-        {hip3Markets.map((market) => {
-          const isPositiveChange = market.change24hPercent.startsWith('+');
-          const displaySymbol = getDisplayName(market.symbol);
-          const displayName = market.name
-            ? getDisplayName(market.name)
-            : displaySymbol;
-          return (
-            <ButtonBase
-              key={market.symbol}
-              className={twMerge(CARD_STYLES)}
-              isFullWidth
-              onClick={() => handleMarketClick(market.symbol)}
-              data-testid={`explore-hip3-${market.symbol.replace(/:/gu, '-')}`}
-            >
-              <PerpsTokenLogo
-                symbol={market.symbol}
-                size={AvatarTokenSize.Md}
-                className="shrink-0"
-              />
-              <Box
-                className="min-w-0 flex-1"
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Start}
-                gap={1}
-              >
-                <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {displaySymbol}-USD
-                </Text>
-              </Box>
-              <Box
-                className="shrink-0"
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.End}
-                gap={1}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {market.price}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={
-                    isPositiveChange
-                      ? TextColor.SuccessDefault
-                      : TextColor.ErrorDefault
-                  }
-                >
-                  {market.change24hPercent}
-                </Text>
-              </Box>
-            </ButtonBase>
-          );
-        })}
+        {cryptoMarkets.map((market) => (
+          <PerpsMarketCard
+            key={market.symbol}
+            symbol={market.symbol}
+            name={market.name}
+            price={market.price}
+            change24hPercent={market.change24hPercent}
+            onClick={handleMarketClick}
+            data-testid={`explore-crypto-${market.symbol}`}
+          />
+        ))}
+        {hip3Markets.map((market) => (
+          <PerpsMarketCard
+            key={market.symbol}
+            symbol={market.symbol}
+            name={market.name}
+            price={market.price}
+            change24hPercent={market.change24hPercent}
+            onClick={handleMarketClick}
+            data-testid={`explore-hip3-${market.symbol.replace(/:/gu, '-')}`}
+          />
+        ))}
       </Box>
     </Box>
   );
