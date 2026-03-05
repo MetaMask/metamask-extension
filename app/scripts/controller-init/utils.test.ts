@@ -191,6 +191,37 @@ describe('Controller Init Utils', () => {
       });
     });
 
+    it('tags API functions with _controllerName', () => {
+      const requestMock = buildControllerInitRequestMock();
+      const initMock = buildControllerFunctionMock();
+      const init2Mock = buildControllerFunctionMock();
+
+      initMock.mockReturnValue(
+        buildControllerInitResultMock({
+          api: { test1: jest.fn(), test2: jest.fn() },
+        }),
+      );
+
+      init2Mock.mockReturnValue(
+        buildControllerInitResultMock({ api: { test3: jest.fn() } }),
+      );
+
+      const { controllerApi } = initControllers({
+        baseControllerMessenger: buildControllerMessenger(),
+        initFunctions: {
+          [CONTROLLER_NAME_MOCK]: initMock,
+          [CONTROLLER_NAME_2_MOCK]: init2Mock,
+        },
+        initRequest: requestMock,
+      });
+
+      expect(controllerApi.test1._controllerName).toBe(CONTROLLER_NAME_MOCK);
+      expect(controllerApi.test2._controllerName).toBe(CONTROLLER_NAME_MOCK);
+      expect(controllerApi.test3._controllerName).toBe(
+        CONTROLLER_NAME_2_MOCK,
+      );
+    });
+
     it('returns all persisted state entries', () => {
       const requestMock = buildControllerInitRequestMock();
       const initMock = buildControllerFunctionMock();

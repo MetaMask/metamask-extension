@@ -153,6 +153,31 @@ describe('createMetaRPCHandler', () => {
       expect(api.foo).toHaveBeenCalledWith('bar');
     });
 
+    it('includes controller name in span when _controllerName is set', async () => {
+      const fn = jest.fn().mockReturnValue('result');
+      fn._controllerName = 'PreferencesController';
+      const api = { foo: fn };
+      const streamTest = createThoughStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+
+      await handler({
+        id: 1,
+        method: 'foo',
+        params: [
+          'bar',
+          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
+        ],
+      });
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Background RPC: PreferencesController.foo',
+          data: { method: 'foo', controller: 'PreferencesController' },
+        }),
+        expect.any(Function),
+      );
+    });
+
     it('does not wrap in trace when no trace context present', async () => {
       const api = {
         foo: jest.fn().mockReturnValue('result'),
