@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
+// Ocap Kernel dev tools panel
 import browser from 'webextension-polyfill';
 
 browser.devtools.panels.create(
@@ -6,4 +6,3 @@ browser.devtools.panels.create(
   'images/icon-16.png',
   'devtools/ocap-kernel/kernel-panel.html',
 );
-///: END:ONLY_INCLUDE_IF(ocap-kernel)

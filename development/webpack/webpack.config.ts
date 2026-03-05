@@ -53,7 +53,27 @@ const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
 const manifest: Manifest = require(manifestPath);
-const { entry, canBeChunked } = collectEntries(manifest, context);
+const { entry, canBeChunked: canBeChunkedBase } = collectEntries(
+  manifest,
+  context,
+);
+// Ocap Kernel devtools panel: add JS entries as self-contained bundles (no
+// chunk splitting) and copy the HTML files as static assets. We can't use
+// HtmlBundlerPlugin for these because they live in subdirectories and the
+// root-relative shared chunk paths would be wrong.
+const devtoolsEntries = new Set<string>();
+for (const name of ['devtools/devtools', 'devtools/ocap-kernel/kernel-panel']) {
+  devtoolsEntries.add(name);
+  entry[name] = {
+    chunkLoading: false,
+    filename: `${name}.js`,
+    import: join(context, `${name}.ts`),
+  };
+}
+const canBeChunked = (chunk: { name?: string | null }): boolean =>
+  chunk.name && devtoolsEntries.has(chunk.name)
+    ? false
+    : canBeChunkedBase(chunk);
 const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -202,6 +222,33 @@ const plugins: WebpackPluginInstance[] = [
             },
           ]
         : []),
+      // Ocap Kernel runtime: static files (kernel worker, vat iframe, wasm, etc.)
+      // loaded at runtime via `new Worker('ocap-kernel/kernel-worker/index.js')`
+      // and iframe src="ocap-kernel/vat/iframe.html".
+      {
+        from: join(
+          nodeModules,
+          '@metamask/kernel-browser-runtime/dist/static/',
+        ),
+        to: 'ocap-kernel/',
+      },
+      // Ocap Kernel devtools panel: copy HTML files as static assets
+      {
+        from: join(context, 'devtools/devtools.html'),
+        to: 'devtools/devtools.html',
+      },
+      {
+        from: join(context, 'devtools/ocap-kernel/kernel-panel.html'),
+        to: 'devtools/ocap-kernel/kernel-panel.html',
+      },
+      // Ocap Kernel devtools panel CSS
+      {
+        from: join(
+          nodeModules,
+          '@metamask/kernel-ui/dist/styles.css',
+        ),
+        to: 'devtools/ocap-kernel/kernel-panel.css',
+      },
     ],
   }),
 ];
@@ -312,6 +359,14 @@ const config = {
       '@metamask/perps-controller': join(
         context,
         '../ui/__mocks__/perps/perps-controller',
+      ),
+      // WORKAROUND: @libp2p/interface@2.11.0 has a broken `exports` field
+      // mapping "." to "./dist/src/index.min.js", which does not exist on
+      // disk. The correct ESM entry point is "./dist/src/index.js".
+      // This can be removed when the package fixes its exports map.
+      '@libp2p/interface': join(
+        nodeModules,
+        '@libp2p/interface/dist/src/index.js',
       ),
     },
     // use `fallback` to redirect module requests when normal resolving fails,

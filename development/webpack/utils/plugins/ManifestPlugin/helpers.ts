@@ -97,6 +97,30 @@ export function transformManifest(
     transforms.push(addManifestKey);
   }
 
+  function applyOcapKernelChanges(
+    browserManifest: chrome.runtime.Manifest,
+  ): void {
+    const mv3Manifest = browserManifest as chrome.runtime.ManifestV3;
+    if (!Array.isArray(mv3Manifest.sandbox?.pages)) {
+      merge(mv3Manifest, { sandbox: { pages: [] } });
+    }
+    (mv3Manifest.sandbox as { pages: string[] }).pages.push(
+      'ocap-kernel/vat/iframe.html',
+    );
+    mv3Manifest.devtools_page = 'devtools/devtools.html';
+    if (mv3Manifest.content_security_policy?.extension_pages) {
+      mv3Manifest.content_security_policy.extension_pages =
+        mv3Manifest.content_security_policy.extension_pages.replace(
+          "frame-ancestors 'none';",
+          "frame-ancestors 'self' devtools://*;",
+        );
+    }
+  }
+
+  if (args.manifest_version === 3) {
+    transforms.push(applyOcapKernelChanges);
+  }
+
   return transforms.length
     ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
         const manifestClone = structuredClone(browserManifest);

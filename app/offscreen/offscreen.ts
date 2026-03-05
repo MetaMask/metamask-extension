@@ -1,3 +1,7 @@
+// MUST be the first import: SES sets up globalThis.assert, which @endo/errors
+// (a transitive dependency of @metamask/ocap-kernel) requires at import time.
+import '@metamask/kernel-shims/endoify-node';
+
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
 import { isObject } from '@metamask/utils';
@@ -6,9 +10,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
 import { runKernel } from './ocap-kernel';
-///: END:ONLY_INCLUDE_IF(ocap-kernel)
 
 import initLedger from './ledger';
 import initTrezor from './trezor';
@@ -38,11 +40,10 @@ async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
-  ///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
+  // Run the Ocap Kernel
   runKernel().catch((error) => {
     console.error('Ocap Kernel fatal error:', error);
   });
-  ///: END:ONLY_INCLUDE_IF(ocap-kernel)
 
   try {
     const ledgerInitTimeout = new Promise((_, reject) => {
