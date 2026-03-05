@@ -444,6 +444,128 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
+    it('navigates to order entry in modify mode when Add exposure is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-add-exposure'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('/perps/trade/ETH'),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('mode=modify'),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('direction=long'),
+      );
+    });
+
+    it('navigates to order entry in close mode when Reduce exposure is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-reduce-exposure'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('/perps/trade/ETH'),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('mode=close'),
+      );
+    });
+
+    it('opens Reverse position modal when Reverse position is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-reverse-position'));
+
+      expect(
+        screen.getByTestId('perps-reverse-position-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('opens Add margin modal from Margin menu', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-margin-card'));
+      fireEvent.click(screen.getByTestId('perps-margin-menu-add'));
+
+      expect(screen.getByTestId('perps-add-margin-modal')).toBeInTheDocument();
+    });
+
+    it('opens Remove margin modal from Margin menu', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-margin-card'));
+      fireEvent.click(screen.getByTestId('perps-margin-menu-remove'));
+
+      expect(
+        screen.getByTestId('perps-decrease-margin-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Close Long button text for long position', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.getByText(messages.perpsCloseLong.message),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Close Short button text for short position', () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.getByText(messages.perpsCloseShort.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows short-specific descriptions in Modify menu for short position', () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+
+      expect(
+        screen.getByText(messages.perpsAddExposureDescriptionShort.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReduceExposureDescriptionShort.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReversePositionDescriptionShort.message),
+      ).toBeInTheDocument();
+    });
+
+    it('displays disclaimer text', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.getByText(messages.perpsDisclaimer.message),
+      ).toBeInTheDocument();
+    });
+
     it('opens TP/SL modal when Auto Close row is clicked', () => {
       const store = mockStore(createMockState(true));
 
@@ -518,6 +640,68 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(presetButton as HTMLElement);
 
       expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+    });
+  });
+
+  describe('when user has no position on the viewed market', () => {
+    it('shows Long and Short trade buttons instead of Modify/Close', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(screen.getByTestId('perps-trade-cta-buttons')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-long-cta-button')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-short-cta-button')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-modify-cta-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-close-cta-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('navigates to order entry when Long button is clicked', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-long-cta-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/direction=long/u),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/mode=new/u),
+      );
+    });
+
+    it('navigates to order entry when Short button is clicked', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-short-cta-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/direction=short/u),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/mode=new/u),
+      );
+    });
+
+    it('does not render position section', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.queryByText(messages.perpsPosition.message),
+      ).not.toBeInTheDocument();
     });
   });
 
