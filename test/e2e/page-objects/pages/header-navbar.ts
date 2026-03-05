@@ -112,6 +112,13 @@ class HeaderNavbar {
 
   async openGlobalMenu(): Promise<void> {
     console.log('Open account options menu');
+    // Sometimes the notification counter briefly appears and disappears overlapping the menu icon
+    await this.driver.assertElementNotPresent(
+      this.notificationCounterMenuIcon,
+      {
+        waitAtLeastGuard: regularDelayMs,
+      },
+    );
     await this.driver.waitForSelector(this.globalMenuButton, {
       state: 'enabled',
     });
@@ -168,13 +175,6 @@ class HeaderNavbar {
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    // Sometimes the notification counter briefly appears and disappears overlapping the menu icon
-    await this.driver.assertElementNotPresent(
-      this.notificationCounterMenuIcon,
-      {
-        waitAtLeastGuard: regularDelayMs,
-      },
-    );
     await this.openGlobalMenu();
     await this.driver.clickElement(this.settingsButton);
   }
