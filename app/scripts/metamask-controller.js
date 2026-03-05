@@ -6685,7 +6685,7 @@ export default class MetamaskController extends EventEmitter {
       : null;
 
     const api = {
-      ...this.getApi(outStream),
+      ...this.getApi(),
       ...this.controllerApi,
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
