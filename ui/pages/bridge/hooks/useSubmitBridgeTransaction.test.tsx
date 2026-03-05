@@ -168,6 +168,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
     });
 
     it('executes bridge transaction with no approval', async () => {
@@ -201,13 +215,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: { stayOnHomePage: true },
-        },
-      );
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
     });
 
     it('routes to awaiting signatures with requestId for hardware wallets', async () => {
@@ -224,14 +245,31 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
 
-      const {
-        quote: { requestId },
-      } = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
-          requestId,
-        )}`,
-      );
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            {
+              "pathname": "/cross-chain/swaps/awaiting-signatures",
+              "search": "requestId=0cd5caf6-9844-465b-89ad-9c89b639f432",
+            },
+            {
+              "state": {
+                "token": null,
+              },
+            },
+          ],
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
     });
   });
 });

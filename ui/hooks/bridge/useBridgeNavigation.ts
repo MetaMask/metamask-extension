@@ -144,12 +144,14 @@ export const useBridgeNavigation = () => {
    */
   const navigateToHwSigningPage = useCallback(
     (requestId?: string) => {
+      const searchParams = new URLSearchParams('');
+      if (requestId) {
+        searchParams.set('requestId', requestId);
+      }
       navigate(
         {
           pathname: `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-          search: requestId
-            ? new URLSearchParams({ requestId }).toString()
-            : undefined,
+          search: searchParams.toString(),
         },
         {
           state,
