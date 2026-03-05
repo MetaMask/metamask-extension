@@ -1384,9 +1384,6 @@
   "connectAccount": {
     "message": "Ceangail cuntas"
   },
-  "connectAccountOrCreate": {
-    "message": "Ceangail cuntas nó cruthaigh ceann nua"
-  },
   "connectAccounts": {
     "message": "Ceangail cuntais"
   },
@@ -1898,9 +1895,6 @@
   "descriptionFromSnap": {
     "message": "Cur síos ó $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Díroghnaigh gach rud"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Ní bhfuarthas aon chuntais incháilithe"
@@ -3035,9 +3029,6 @@
   },
   "l2FeeTooltip": {
     "message": "Táille gáis L2"
-  },
-  "lastConnected": {
-    "message": "Ceangailte go deireanach"
   },
   "lastSold": {
     "message": "Díolta go deireanach"
@@ -5186,12 +5177,6 @@
   "selectAccountToConnect": {
     "message": "Roghnaigh cuntas le ceangal"
   },
-  "selectAccounts": {
-    "message": "Roghnaigh an cuntas/na cuntais le húsáid ar an suíomh seo"
-  },
-  "selectAccountsForSnap": {
-    "message": "Roghnaigh an cuntas/na cuntais le húsáid leis an snap seo"
-  },
   "selectAll": {
     "message": "Roghnaigh gach rud"
   },
@@ -5230,9 +5215,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Cuntas difriúil roghnaithe"
-  },
-  "selectingAllWillAllow": {
-    "message": "Trí gach ceann a roghnú, beidh an suíomh seo in ann do chuntais reatha go léir a fheiceáil. Déan cinnte go bhfuil muinín agat as an suíomh seo."
   },
   "send": {
     "message": "Seol"
@@ -7039,9 +7021,6 @@
   },
   "viewDetails": {
     "message": "Féach sonraí"
-  },
-  "viewMore": {
-    "message": "Féach níos mó"
   },
   "viewOnBlockExplorer": {
     "message": "Féach ar an iniúchóir bloc"

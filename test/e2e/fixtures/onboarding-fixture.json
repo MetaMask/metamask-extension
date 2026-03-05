@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 197,
+      "currentMigrationVersion": 198,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -1903,13 +1903,11 @@
       "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": {},
       "ipfsGateway": "dweb.link",
       "isIpfsGatewayEnabled": true,
       "isMultiAccountBalancesEnabled": true,
       "knownMethodData": {},
       "ledgerTransportType": "webhid",
-      "lostIdentities": {},
       "manageInstitutionalWallets": false,
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
@@ -1941,11 +1939,11 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "asterdex": {},
         "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
-      "selectedAddress": "",
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
@@ -2155,6 +2153,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 197
+    "version": 198
   }
 }
