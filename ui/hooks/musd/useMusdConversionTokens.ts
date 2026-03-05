@@ -20,7 +20,6 @@ import {
   AssetStandard,
 } from '../../pages/confirmations/types/send';
 import {
-  getIsMultichainAccountsState2Enabled,
   getSelectedAccount,
 } from '../../selectors';
 import {
@@ -139,9 +138,6 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
 
   // Get account tokens
   const selectedAccount = useSelector(getSelectedAccount);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   // Get tokens using the appropriate selector
   const evmBalances = useSelector((state) =>
@@ -151,34 +147,30 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
 
   // Get all account tokens
   const allTokens = useMemo((): TokenWithFiatAmount[] => {
-    if (isMultichainAccountsState2Enabled) {
-      // Flatten account group assets; only include assets with address (EVM tokens)
-      // so the result satisfies TokenWithFiatAmount (BaseToken requires address)
-      const flattened = Object.entries(accountGroupAssets).flatMap(
-        ([chainId, assets]) =>
-          (assets ?? [])
-            .filter(
-              (a) =>
-                'address' in a &&
-                typeof (a as { address: unknown }).address === 'string',
-            )
-            .map((a) => {
-              const asset = a as typeof a & { address: string };
-              return {
-                ...asset,
-                address: asset.address as Hex,
-                secondary: 0,
-                title: asset.name ?? asset.symbol ?? '',
-                chainId: chainId as Hex,
-                tokenFiatAmount: asset.fiat?.balance ?? 0,
-              };
-            }),
-      );
-      return flattened as TokenWithFiatAmount[];
-    }
-    // Use EVM balances for legacy mode
-    return evmBalances ?? [];
-  }, [isMultichainAccountsState2Enabled, accountGroupAssets, evmBalances]);
+    // Flatten account group assets; only include assets with address (EVM tokens)
+    // so the result satisfies TokenWithFiatAmount (BaseToken requires address)
+    const flattened = Object.entries(accountGroupAssets).flatMap(
+      ([chainId, assets]) =>
+        (assets ?? [])
+          .filter(
+            (a) =>
+              'address' in a &&
+              typeof (a as { address: unknown }).address === 'string',
+          )
+          .map((a) => {
+            const asset = a as typeof a & { address: string };
+            return {
+              ...asset,
+              address: asset.address as Hex,
+              secondary: 0,
+              title: asset.name ?? asset.symbol ?? '',
+              chainId: chainId as Hex,
+              tokenFiatAmount: asset.fiat?.balance ?? 0,
+            };
+          }),
+    );
+    return flattened as TokenWithFiatAmount[];
+  }, [accountGroupAssets, evmBalances]);
 
   /**
    * Filter tokens with minimum balance requirement

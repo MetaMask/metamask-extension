@@ -17,7 +17,6 @@ import {
 } from '../../selectors/assets';
 import {
   getSelectedAccount,
-  getIsMultichainAccountsState2Enabled,
 } from '../../selectors';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
@@ -43,7 +42,6 @@ jest.mock('../../selectors/assets', () => ({
 
 jest.mock('../../selectors', () => ({
   getSelectedAccount: jest.fn(),
-  getIsMultichainAccountsState2Enabled: jest.fn(),
 }));
 
 const mockSelectMusdConvertibleTokensAllowlist = jest.mocked(
@@ -60,9 +58,6 @@ const mockGetAssetsBySelectedAccountGroup = jest.mocked(
   getAssetsBySelectedAccountGroup,
 );
 const mockGetSelectedAccount = jest.mocked(getSelectedAccount);
-const mockGetIsMultichainAccountsState2Enabled = jest.mocked(
-  getIsMultichainAccountsState2Enabled,
-);
 
 // Test data
 const mockUsdcMainnet: TokenWithFiatAmount = {
@@ -152,7 +147,6 @@ describe('useMusdConversionTokens', () => {
     mockSelectMusdConvertibleTokensBlocklist.mockReturnValue(mockBlocklist);
     mockSelectMusdMinAssetBalanceRequired.mockReturnValue(0.01);
     mockGetSelectedAccount.mockReturnValue({ address: '0x123' });
-    mockGetIsMultichainAccountsState2Enabled.mockReturnValue(false);
     mockGetTokenBalancesEvm.mockReturnValue([]);
     mockGetAssetsBySelectedAccountGroup.mockReturnValue({});
   });

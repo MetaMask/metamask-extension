@@ -14,10 +14,6 @@ jest.mock('../../selectors', () => ({
   getSelectedAccount: jest.fn(),
 }));
 
-jest.mock('../../selectors/multichain-accounts/feature-flags', () => ({
-  getIsMultichainAccountsState2Enabled: jest.fn(),
-}));
-
 jest.mock('../../components/app/musd/constants', () => ({
   MUSD_TOKEN_ADDRESS: '0xMusdAddr',
   isMusdToken: jest.fn((addr: string) => addr.toLowerCase() === '0xmusdaddr'),
