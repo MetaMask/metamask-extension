@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import {
   sources,
@@ -106,7 +106,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   private manifestSources: Map<Browser, sources.RawSource> = new Map();
 
-  private manifestFiles: string[] = [];
+  private watchedFiles: string[] = [];
 
   private addedScripts: Set<string> = new Set();
 
@@ -150,10 +150,10 @@ export class ManifestPlugin<Z extends boolean> {
     // Hook into the compilation to resolve entrypoints, move/zip assets
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
 
-    // Watch manifest files so that manifest changes trigger a rebuild
+    // Watch files so that changes to them trigger a rebuild
     compiler.hooks.afterCompile.tap(NAME, (compilation) => {
-      for (const manifestFile of this.manifestFiles) {
-        compilation.fileDependencies.add(manifestFile);
+      for (const watchedFile of this.watchedFiles) {
+        compilation.fileDependencies.add(watchedFile);
       }
     });
   }
@@ -304,7 +304,7 @@ export class ManifestPlugin<Z extends boolean> {
    */
   private readManifest(filePath: string): Manifest {
     const manifest = JSON.parse(readFileSync(filePath, 'utf-8'));
-    this.manifestFiles.push(filePath);
+    this.watchedFiles.push(filePath);
     return manifest;
   }
 
@@ -323,7 +323,24 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private prepareManifests(compiler: Compiler): void {
-    this.manifestFiles = [];
+    this.watchedFiles = [];
+
+    const root = path.join(compiler.context, '../');
+    const manifestOverridesPath = path.join(root, '.manifest-overrides.json');
+    if (existsSync(manifestOverridesPath)) {
+      this.watchedFiles.push(manifestOverridesPath);
+    }
+
+    const metamaskrcPath = path.join(root, '.metamaskrc');
+    if (existsSync(metamaskrcPath)) {
+      this.watchedFiles.push(metamaskrcPath);
+    }
+
+    const metamaskprodrcPath = path.join(root, '.metamaskprodrc');
+    if (existsSync(metamaskprodrcPath)) {
+      this.watchedFiles.push(metamaskprodrcPath);
+    }
+
     const manifestPath = path.join(
       compiler.context,
       `manifest/v${this.options.manifest_version}`,
@@ -528,14 +545,14 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private resolveEntrypoints(compilation: Compilation): void {
-    // Re-read manifests from disk only if a manifest file was modified.
+    // Re-read manifests from disk only if a watched file was modified.
     // `compiler.modifiedFiles` is undefined on the first compilation, and
     // populated on subsequent watch-mode rebuilds. Entrypoint changes still
     // require a restart as they are only collected once in `entryOption`.
     const { modifiedFiles } = compilation.compiler;
     if (
       modifiedFiles &&
-      this.manifestFiles.some((manifestFile) => modifiedFiles.has(manifestFile))
+      this.watchedFiles.some((watchedFile) => modifiedFiles.has(watchedFile))
     ) {
       this.prepareManifests(compilation.compiler);
     }
