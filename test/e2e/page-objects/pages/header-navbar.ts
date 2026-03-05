@@ -110,25 +110,26 @@ class HeaderNavbar {
     await this.driver.clickElement(this.globalNetworksMenu);
   }
 
-  async openGlobalMenu(): Promise<void> {
+  async openGlobalMenu({
+    withNotificationCounter = false,
+  } = {}): Promise<void> {
     console.log('Open account options menu');
-    // Sometimes the notification counter briefly appears and disappears overlapping the menu icon
-    await this.driver.assertElementNotPresent(
-      this.notificationCounterMenuIcon,
-      {
-        waitAtLeastGuard: regularDelayMs,
-      },
-    );
-    await this.driver.waitForSelector(this.globalMenuButton, {
-      state: 'enabled',
-    });
-    await this.driver.clickElement(this.globalMenuButton);
-    await this.driver.waitForElementToStopMoving(this.drawerBackButton);
-  }
-
-  async mouseClickOnThreeDotMenu(): Promise<void> {
-    console.log('Clicking three dot menu using mouse move');
-    await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
+    if (withNotificationCounter) {
+      // To avoid ElementIntercept error because of the notification overlap
+      await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
+    } else {
+      // Sometimes the notification counter briefly appears and disappears overlapping the menu icon
+      await this.driver.assertElementNotPresent(
+        this.notificationCounterMenuIcon,
+        {
+          waitAtLeastGuard: regularDelayMs,
+        },
+      );
+      await this.driver.waitForSelector(this.globalMenuButton, {
+        state: 'enabled',
+      });
+      await this.driver.clickElement(this.globalMenuButton);
+    }
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
@@ -193,12 +194,12 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.mouseClickOnThreeDotMenu();
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.clickElement(this.notificationsButton);
   }
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.mouseClickOnThreeDotMenu();
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),
