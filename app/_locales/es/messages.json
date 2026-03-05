@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Aún no hay nada que ver. Canjea tu primer token hoy."
   },
-  "activityLog": {
-    "message": "Registro de actividad"
-  },
   "add": {
     "message": "Añadir"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Agregue su puerta de enlace de IPFS preferida"
-  },
-  "addImportAccount": {
-    "message": "Añadir una cuenta o un monedero físico"
   },
   "addMemo": {
     "message": "Añadir memo"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Permitir notificaciones"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Cantidad"
@@ -1616,9 +1606,6 @@
   "connectAccount": {
     "message": "Conectar cuenta"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar cuenta o crear nueva"
-  },
   "connectAccounts": {
     "message": "Conectar cuentas"
   },
@@ -1912,9 +1899,6 @@
   "customSlippage": {
     "message": "Personalizado"
   },
-  "customSpendLimit": {
-    "message": "Límite de gastos personalizado"
-  },
   "customToken": {
     "message": "Token personalizado"
   },
@@ -2202,9 +2186,6 @@
     "message": "Descripción de $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Deseleccionar todo"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "No se encontraron cuentas elegibles"
   },
@@ -2484,9 +2465,6 @@
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
   },
-  "editPermission": {
-    "message": "Editar permiso"
-  },
   "editPermissions": {
     "message": "Editar permisos"
   },
@@ -2570,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "Ingrese el ID de cadena"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Escribir límite máximo de gastos"
   },
   "enterNetworkName": {
     "message": "Ingrese el nombre de la red"
@@ -3365,9 +3340,6 @@
     "message": "MetaMask no se pudo conectar al host de la cadena de bloques. Revise las razones posibles $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "La red confirmó la transacción inicial. Haga clic en Aceptar para volver."
-  },
   "insights": {
     "message": "Perspectivas"
   },
@@ -3550,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Tarifa de gas L2"
-  },
-  "lastConnected": {
-    "message": "Última conexión"
   },
   "lastSold": {
     "message": "Última venta"
@@ -3786,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "Crear un nuevo swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Asegúrese de que nadie esté mirando",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Gestionar"
   },
   "manageDefaultSettings": {
     "message": "Gestionar la configuración por defecto"
@@ -5705,9 +5667,6 @@
   "productAnnouncements": {
     "message": "Anuncios de producto"
   },
-  "proposedApprovalLimit": {
-    "message": "Límite de aprobación propuesto"
-  },
   "provide": {
     "message": "Proporcionar"
   },
@@ -5928,18 +5887,6 @@
   "rejectAll": {
     "message": "Rechazar todo"
   },
-  "rejectRequestsDescription": {
-    "message": "Está a punto de rechazar $1 solicitudes en lote."
-  },
-  "rejectRequestsN": {
-    "message": "Rechazar $1 solicitudes"
-  },
-  "rejectTxsDescription": {
-    "message": "Está a punto de rechazar $1 transacciones en lote."
-  },
-  "rejectTxsN": {
-    "message": "Rechazar $1 transacciones"
-  },
   "rejected": {
     "message": "Rechazada"
   },
@@ -6113,17 +6060,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "La $1 proporciona la $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask es un $1. Eso significa que usted es el propietario de su SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "acceso completo a su monedero y fondos.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "monedero no custodiado"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6137,10 +6074,6 @@
   "revealSeedWordsWarning": {
     "message": "Asegúrese de que nadie esté mirando su pantalla. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "El soporte técnico de MetaMask nunca se lo solicitará.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Revelar contenido sensible"
@@ -6490,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Seleccione una cuenta para conectarse"
   },
-  "selectAccounts": {
-    "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
-  },
-  "selectAccountsForSnap": {
-    "message": "Seleccione la(s) cuenta(s) para usar con este snap"
-  },
   "selectAll": {
     "message": "Seleccionar todo"
   },
@@ -6534,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Se seleccionó una cuenta distinta"
-  },
-  "selectingAllWillAllow": {
-    "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
   },
   "send": {
     "message": "Enviar"
@@ -7351,21 +7275,6 @@
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Tolerancia de deslizamiento"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Establece una diferencia con la que te sientas cómodo para los cambios de saldo. Las transacciones no se procesarán si la diferencia es mayor."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Aplicar los cambios de saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para mantener tu dinero seguro, esta transacción no se realizará si el saldo cambia o no se cumple la tolerancia de deslizamiento."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Configuración de la transacción"
-  },
   "simulationsSettingDescription": {
     "message": "Active esta opción para calcular los cambios de saldo de las transacciones y firmas antes de confirmarlas. Esto no garantiza su resultado final. $1"
   },
@@ -7691,25 +7600,6 @@
   },
   "speedUpTooltipText": {
     "message": "Nueva tarifa de gas"
-  },
-  "speedUpTransaction": {
-    "message": "Acelerar esta transacción"
-  },
-  "spendLimitInsufficient": {
-    "message": "Límite de gastos insuficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "El límite de gastos no es válido, debe ser un número positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Permiso de límite de gastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Límite de gastos solicitado por $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "El límite de gastos es demasiado alto"
   },
   "spender": {
     "message": "Gastador"
@@ -8545,18 +8435,6 @@
   "transaction": {
     "message": "transacción"
   },
-  "transactionCancelAttempted": {
-    "message": "Se intentó cancelar la transacción con una tarifa de gas de $1 en $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "La transacción se canceló correctamente en $2"
-  },
-  "transactionConfirmed": {
-    "message": "La transacción se confirmó en $2."
-  },
-  "transactionCreated": {
-    "message": "La transacción se creó con un valor de $1 en $2."
-  },
   "transactionDataFunction": {
     "message": "Función"
   },
@@ -8566,17 +8444,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Monto + cargos"
   },
-  "transactionDropped": {
-    "message": "La transacción se abandonó en $2."
-  },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
   "transactionErrorNoContract": {
     "message": "Intentando llamar a una función en una dirección sin contrato."
-  },
-  "transactionErrored": {
-    "message": "La transacción encontró un error."
   },
   "transactionFee": {
     "message": "Tarifa de transacción"
@@ -8612,24 +8484,15 @@
   "transactionIncludesTypes": {
     "message": "Esta transacción incluye: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
-  },
   "transactionSettings": {
     "message": "Configuración de la transacción"
   },
   "transactionShield": {
     "message": "Protección de transacciones"
   },
-  "transactionSubmitted": {
-    "message": "Transacción enviada con una tarifa de gas de $1 en $2."
-  },
   "transactionTotalGasFee": {
     "message": "Tarifa de gas total",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "La transacción se actualizó en $2."
   },
   "transactions": {
     "message": "Transacciones"
@@ -8947,9 +8810,6 @@
   "viewDetails": {
     "message": "Ver detalles"
   },
-  "viewMore": {
-    "message": "Ver más"
-  },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"
   },
@@ -9115,9 +8975,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Su frase secreta de recuperación"
   },
   "yourTransactionConfirmed": {
     "message": "Transacción ya confirmada"

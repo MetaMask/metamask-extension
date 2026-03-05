@@ -60,6 +60,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
@@ -100,10 +101,6 @@ export type AppStateControllerState = {
   currentExtensionPopupId: number;
   currentPopupId?: number;
   defaultHomeActiveTabName: AccountOverviewTabKey | null;
-  enableEnforcedSimulations: boolean;
-  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
-  enforcedSimulationsSlippage: number;
-  enforcedSimulationsSlippageForTransactions: Record<string, number>;
   fullScreenGasPollTokens: string[];
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
@@ -154,6 +151,11 @@ export type AppStateControllerState = {
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
+  /**
+   * The pending redirect route to be applied after the default page is loaded.
+   * If this is set, next time default page is loaded, the redirect will be applied.
+   */
+  pendingRedirectRoute: PendingRedirectRoute | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -211,6 +213,11 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
+export type AppStateControllerSetPendingRedirectRouteAction = {
+  type: 'AppStateController:setPendingRedirectRoute';
+  handler: AppStateController['setPendingRedirectRoute'];
+};
+
 export type AppStateControllerSetShieldSubscriptionErrorAction = {
   type: 'AppStateController:setShieldSubscriptionError';
   handler: AppStateController['setShieldSubscriptionError'];
@@ -225,6 +232,7 @@ export type AppStateControllerActions =
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetShieldSubscriptionErrorAction;
 
 /**
@@ -300,10 +308,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
-  enableEnforcedSimulations: true,
-  enableEnforcedSimulationsForTransactions: {},
-  enforcedSimulationsSlippage: 10,
-  enforcedSimulationsSlippageForTransactions: {},
   fullScreenGasPollTokens: [],
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -345,6 +349,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
+  pendingRedirectRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
@@ -418,30 +423,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   defaultHomeActiveTabName: {
     includeInStateLogs: true,
     persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulations: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulationsForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippage: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippageForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -717,6 +698,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  pendingRedirectRoute: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   pendingShieldCohort: {
     includeInStateLogs: true,
     persist: true,
@@ -850,6 +837,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setPendingShieldCohort',
       this.setPendingShieldCohort.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setPendingRedirectRoute',
+      this.setPendingRedirectRoute.bind(this),
     );
 
     this.messenger.registerActionHandler(
@@ -1688,36 +1680,6 @@ export class AppStateController extends BaseController<
     return deferredPromise.promise;
   }
 
-  setEnableEnforcedSimulations(enabled: boolean): void {
-    this.update((state) => {
-      state.enableEnforcedSimulations = enabled;
-    });
-  }
-
-  setEnableEnforcedSimulationsForTransaction(
-    transactionId: string,
-    enabled: boolean,
-  ): void {
-    this.update((state) => {
-      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
-    });
-  }
-
-  setEnforcedSimulationsSlippage(value: number): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippage = value;
-    });
-  }
-
-  setEnforcedSimulationsSlippageForTransaction(
-    transactionId: string,
-    value: number,
-  ): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
-    });
-  }
-
   /**
    * Sets the active tab information
    *
@@ -1751,6 +1713,17 @@ export class AppStateController extends BaseController<
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  /**
+   * Sets the pending redirect route to be applied after the default page is loaded.
+   *
+   * @param route - The pending redirect route.
+   */
+  setPendingRedirectRoute(route: PendingRedirectRoute | null): void {
+    this.update((state) => {
+      state.pendingRedirectRoute = route;
     });
   }
 
