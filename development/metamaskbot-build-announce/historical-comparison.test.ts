@@ -4,6 +4,14 @@ import {
   type HistoricalPerformanceFile,
 } from './historical-comparison';
 
+/**
+ * Builds a HistoricalPerformanceFile from untyped data so tests can include
+ * deliberately invalid values (null, string metrics) to exercise runtime guards.
+ */
+const mockFile = (
+  entries: Record<string, unknown>,
+): HistoricalPerformanceFile => entries as HistoricalPerformanceFile;
+
 const makeCommit = (
   overrides: Partial<HistoricalPerformanceFile[string]> = {},
 ): HistoricalPerformanceFile[string] => ({
@@ -61,11 +69,11 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('uses the latest commit even when earlier commits have bad presets', () => {
-    const data: HistoricalPerformanceFile = {
+    const data = mockFile({
       bad1: { timestamp: 1, presets: {} },
       bad2: { timestamp: 2, presets: null },
       good: makeCommit(),
-    };
+    });
 
     const result = aggregateHistoricalData(data);
 
@@ -73,7 +81,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('skips benchmark entries where mean is null or missing', () => {
-    const data: HistoricalPerformanceFile = {
+    const data = mockFile({
       c1: {
         timestamp: 1,
         presets: {
@@ -83,7 +91,7 @@ describe('aggregateHistoricalData', () => {
           },
         },
       },
-    };
+    });
 
     const result = aggregateHistoricalData(data);
 
@@ -92,7 +100,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('skips NaN metric values', () => {
-    const data: HistoricalPerformanceFile = {
+    const data = mockFile({
       c1: {
         timestamp: 1,
         presets: {
@@ -101,7 +109,7 @@ describe('aggregateHistoricalData', () => {
           },
         },
       },
-    };
+    });
 
     const result = aggregateHistoricalData(data);
 
@@ -110,7 +118,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('parses string-encoded metric values', () => {
-    const data: HistoricalPerformanceFile = {
+    const data = mockFile({
       c1: {
         timestamp: 1,
         presets: {
@@ -119,7 +127,7 @@ describe('aggregateHistoricalData', () => {
           },
         },
       },
-    };
+    });
 
     const result = aggregateHistoricalData(data);
 
