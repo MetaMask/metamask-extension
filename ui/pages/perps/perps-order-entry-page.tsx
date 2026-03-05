@@ -328,7 +328,25 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
-  const availableBalance = account ? parseFloat(account.availableBalance) : 0;
+  const availableBalance = account
+    ? parseFloat(account.availableBalance) || 0
+    : 0;
+  const parsedAmount = parseFloat(
+    orderFormState?.amount?.replace(/,/gu, '') ?? '',
+  );
+  const requiredMargin = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+  const isOrderPlacementMode = orderMode !== 'close' && orderMode !== 'modify';
+  const isPositionRequiredMode =
+    orderMode === 'close' || orderMode === 'modify';
+  const isPositionMissing = isPositionRequiredMode && !position;
+  const isInsufficientBalance =
+    isOrderPlacementMode && requiredMargin > availableBalance;
+  const insufficientBalanceError = isInsufficientBalance
+    ? t('perpsOrderValidationInsufficientBalance', [
+        requiredMargin.toFixed(2),
+        availableBalance.toFixed(2),
+      ])
+    : null;
 
   const isLimitPriceUnfavorable = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -364,7 +382,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     isLimitPriceInvalid ||
     isLimitPriceUnfavorable ||
     isNearLiquidation ||
-    currentPrice <= 0;
+    currentPrice <= 0 ||
+    isPositionMissing ||
+    isInsufficientBalance;
 
   const maxLeverage = useMemo(() => {
     if (!market) {
@@ -435,7 +455,9 @@ const PerpsOrderEntryPage: React.FC = () => {
       !isEligible ||
       !orderFormState ||
       !selectedAddress ||
-      currentPrice <= 0
+      currentPrice <= 0 ||
+      isPositionMissing ||
+      isInsufficientBalance
     ) {
       return;
     }
@@ -444,7 +466,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     setSubmitError(null);
 
     try {
-      if (orderMode === 'close' && position) {
+      if (orderMode === 'close') {
         const closeParams = {
           symbol: orderFormState.asset,
           orderType: 'market' as const,
@@ -556,6 +578,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderMode,
     position,
     currentPrice,
+    isPositionMissing,
+    isInsufficientBalance,
     handleBackClick,
   ]);
 
@@ -761,7 +785,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             liquidationPrice={orderCalculations.liquidationPrice}
           />
         )}
-        {submitError && (
+        {(insufficientBalanceError || submitError) && (
           <Box
             className="bg-error-muted rounded-lg"
             padding={3}
@@ -775,7 +799,7 @@ const PerpsOrderEntryPage: React.FC = () => {
               color={IconColor.ErrorDefault}
             />
             <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-              {submitError}
+              {insufficientBalanceError ?? submitError}
             </Text>
           </Box>
         )}
