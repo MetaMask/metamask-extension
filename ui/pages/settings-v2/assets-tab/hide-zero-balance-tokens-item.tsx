@@ -14,7 +14,7 @@ export const HideZeroBalanceTokensToggleItem = () => {
     <SettingsToggleItem
       title={t('hideZeroBalanceTokens')}
       value={hideZeroBalanceTokens}
-      onToggle={(value) => dispatch(setHideZeroBalanceTokens(!value))} // TODO: add event?
+      onToggle={(value) => dispatch(setHideZeroBalanceTokens(!value))}
       containerDataTestId="hide-zero-balance-tokens"
       dataTestId="toggle-zero-balance-button"
     />

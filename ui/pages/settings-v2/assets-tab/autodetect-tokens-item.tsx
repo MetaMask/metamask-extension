@@ -15,7 +15,7 @@ export const AutodetectTokensToggleItem = () => {
       title={t('autoDetectTokens')}
       description={t('autoDetectTokensDescriptionV2')}
       value={useTokenDetection}
-      onToggle={(value) => dispatch(setUseTokenDetection(!value))} // TODO: add event?
+      onToggle={(value) => dispatch(setUseTokenDetection(!value))}
       dataTestId="autodetect-tokens"
     />
   );
