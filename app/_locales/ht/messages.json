@@ -202,9 +202,6 @@
     "message": "Pòte",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Premye tranzaksyon ou konfime sou rezo a. Klike sou OK pou tounen."
-  },
   "insufficientFunds": {
     "message": "Lajan ensifizan."
   },
@@ -344,12 +341,6 @@
   },
   "rejectAll": {
     "message": "Rejte Tout"
-  },
-  "rejectTxsDescription": {
-    "message": "Ou se sou rejte $1 yon anpil nan tranzaksyon yo."
-  },
-  "rejectTxsN": {
-    "message": "Rejete $1 tranzaksyon"
   },
   "rejected": {
     "message": "Rejete"
@@ -498,8 +489,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Seed fraz prive ou a"
   }
 }
