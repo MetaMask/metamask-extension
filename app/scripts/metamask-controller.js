@@ -196,7 +196,6 @@ import {
   TraceName,
   TraceOperation,
 } from '../../shared/lib/trace';
-import { DATA_SERVICES } from '../../shared/constants/data-services';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -437,7 +436,7 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { QueryService } from './queries/QueryService';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ActivityDataService } from './queries/ActivityDataService';
 import { AssetDataService } from './queries/AssetDataService';
 
@@ -2525,7 +2524,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {object} Object containing API functions.
    */
-  getApi(outStream) {
+  getApi() {
     const {
       accountsController,
       addressBookController,
@@ -2565,56 +2564,7 @@ export default class MetamaskController extends EventEmitter {
       assetsController,
     } = this;
 
-    // TODO: Consider moving data service API setup somewhere else
-    const dataServiceApi = DATA_SERVICES.reduce((accumulator, dataService) => {
-      // TODO: Consider if this can be tied into the messenger more.
-      const querySubscription = (payload) => {
-        outStream.write({
-          jsonrpc: '2.0',
-          method: `${dataService}:cacheUpdate`,
-          params: [payload],
-        });
-      };
-
-      // TODO: Figure out how data actions can be dynamically bound
-      accumulator[`${dataService}:getActivity`] = (...params) =>
-        this.controllerMessenger.call(
-          `${dataService}:getActivity`,
-          ...params,
-        );
-
-      accumulator[`${dataService}:getAssets`] = (...params) =>
-        this.controllerMessenger.call(
-          `${dataService}:getAssets`,
-          ...params,
-        );
-
-      accumulator[`${dataService}:subscribe`] = (queryKey) =>
-        this.controllerMessenger.call(
-          `${dataService}:subscribe`,
-          queryKey,
-          querySubscription,
-        );
-
-      accumulator[`${dataService}:unsubscribe`] = (queryKey) =>
-        this.controllerMessenger.call(
-          `${dataService}:unsubscribe`,
-          queryKey,
-          querySubscription,
-        );
-
-      accumulator[`${dataService}:invalidateQueries`] = (filters, queries) =>
-        this.controllerMessenger.call(
-          `${dataService}:invalidateQueries`,
-          filters,
-          queries,
-        );
-
-      return accumulator;
-    }, {});
-
     return {
-      ...dataServiceApi,
       // etc
       setCurrentCurrency: (currencyCode) => {
         currencyRateController.setCurrentCurrency(currencyCode);
