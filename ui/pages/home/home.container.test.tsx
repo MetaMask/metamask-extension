@@ -37,7 +37,7 @@ const renderHome = () => {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
   const HomeContainer = require('./home.container').default;
   return renderWithProvider(<HomeContainer />, store);
 };
