@@ -66,18 +66,6 @@ module.exports = {
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
-  // Transform ESM packages that Jest can't parse natively
-  // These packages use ES module syntax (import/export) and need to be transpiled
-  // Packages from @metamask/perps-controller dependency tree that are ESM-only:
-  // - @nktkas/hyperliquid, @nktkas/rews
-  // - @noble/hashes, @noble/curves
-  // - @scure/base (nested in micro-packed)
-  // - valibot, micro-eth-signer, micro-packed
-  // - lodash-es, wretch (transitive via @myx-trade/sdk)
-  // - @myx-trade/sdk (ESM .mjs with CJS sub-imports)
-  transformIgnorePatterns: [
-    'node_modules/(?!(@nktkas|@noble|@scure|@myx-trade|valibot|micro-eth-signer|micro-packed|lodash-es|wretch)/)',
-  ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
