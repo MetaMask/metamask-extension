@@ -45,6 +45,8 @@ export type EditMarginModalContentProps = {
   onSaveRef?: React.MutableRefObject<(() => void) | null>;
   /** Called whenever the save button's enabled state changes. */
   onSaveEnabledChange?: (enabled: boolean) => void;
+  /** Called when the saving state changes (true = save in progress, false = done). */
+  onSavingChange?: (saving: boolean) => void;
 };
 
 /**
@@ -60,6 +62,7 @@ export type EditMarginModalContentProps = {
  * @param options0.externalSave
  * @param options0.onSaveRef
  * @param options0.onSaveEnabledChange
+ * @param options0.onSavingChange
  */
 export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   position,
@@ -71,6 +74,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   externalSave = false,
   onSaveRef,
   onSaveEnabledChange,
+  onSavingChange,
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
@@ -136,6 +140,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     }
 
     setIsSaving(true);
+    onSavingChange?.(true);
     setMarginError(null);
 
     try {
@@ -166,6 +171,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       setMarginError(errorMessage);
     } finally {
       setIsSaving(false);
+      onSavingChange?.(false);
     }
   }, [
     isEligible,
@@ -175,6 +181,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     isValid,
     position.symbol,
     onClose,
+    onSavingChange,
   ]);
 
   const currentLiqPrice = position.liquidationPrice

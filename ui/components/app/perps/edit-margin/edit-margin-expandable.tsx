@@ -43,10 +43,21 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
 }) => {
   const t = useI18nContext();
   const [marginMode, setMarginMode] = useState<'add' | 'remove'>('add');
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleClose = useCallback(() => {
     onToggle();
   }, [onToggle]);
+
+  const handleSetMode = useCallback(
+    (mode: 'add' | 'remove') => {
+      if (isSaving) {
+        return;
+      }
+      setMarginMode(mode);
+    },
+    [isSaving],
+  );
 
   return (
     <Box
@@ -76,9 +87,12 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
               className="w-full bg-background-default rounded-xl p-1 gap-1"
             >
               <Box
-                onClick={() => setMarginMode('add')}
+                onClick={() => handleSetMode('add')}
                 className={twMerge(
-                  'flex-1 py-2 rounded-lg text-center cursor-pointer transition-colors',
+                  'flex-1 py-2 rounded-lg text-center transition-colors',
+                  isSaving
+                    ? 'cursor-not-allowed pointer-events-none opacity-50'
+                    : 'cursor-pointer',
                   marginMode === 'add'
                     ? 'bg-primary-default'
                     : 'hover:bg-muted-hover active:bg-muted-pressed',
@@ -97,9 +111,12 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                 </Text>
               </Box>
               <Box
-                onClick={() => setMarginMode('remove')}
+                onClick={() => handleSetMode('remove')}
                 className={twMerge(
-                  'flex-1 py-2 rounded-lg text-center cursor-pointer transition-colors',
+                  'flex-1 py-2 rounded-lg text-center transition-colors',
+                  isSaving
+                    ? 'cursor-not-allowed pointer-events-none opacity-50'
+                    : 'cursor-pointer',
                   marginMode === 'remove'
                     ? 'bg-primary-default'
                     : 'hover:bg-muted-hover active:bg-muted-pressed',
@@ -119,13 +136,19 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
               </Box>
             </Box>
 
+            {/*
+             * key={marginMode} unmounts and remounts EditMarginModalContent on mode
+             * switch, which resets all internal state (amount, error) to defaults.
+             */}
             <EditMarginModalContent
+              key={marginMode}
               position={position}
               account={account}
               currentPrice={currentPrice}
               selectedAddress={selectedAddress}
               mode={marginMode}
               onClose={handleClose}
+              onSavingChange={setIsSaving}
             />
           </Box>
         </Box>
