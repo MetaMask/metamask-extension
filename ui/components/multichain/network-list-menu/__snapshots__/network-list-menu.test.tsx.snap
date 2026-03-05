@@ -885,7 +885,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                   tabindex="0"
                 >
                   <div
-                    style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                    style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
                   >
                     <div
                       style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
@@ -2112,7 +2112,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   tabindex="0"
                 >
                   <div
-                    style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                    style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
                   >
                     <div
                       style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
