@@ -113,8 +113,7 @@ export default function useSubmitBridgeTransaction() {
           formatChainIdToCaip(quoteResponse.quote.destChainId),
         );
       }
-    } catch (e) {
-      captureException(e);
+    } catch {
       setIsSubmitting(false);
       return;
     }
