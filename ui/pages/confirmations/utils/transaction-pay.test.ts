@@ -264,10 +264,14 @@ describe('transaction-pay utils', () => {
   });
 
   describe('getAvailableTokens', () => {
-    it('filters out non-ERC20 tokens', () => {
+    it('filters out NFT tokens but keeps native and ERC20', () => {
       const tokens = [
-        createMockAsset({ standard: AssetStandard.Native }),
+        createMockAsset({
+          standard: AssetStandard.Native,
+          address: '0xnative',
+        }),
         createMockAsset({ standard: AssetStandard.ERC721 }),
+        createMockAsset({ standard: AssetStandard.ERC1155 }),
         createMockAsset({
           standard: AssetStandard.ERC20,
           address: TOKEN_ADDRESS_MOCK,
@@ -276,8 +280,11 @@ describe('transaction-pay utils', () => {
 
       const result = getAvailableTokens({ tokens });
 
-      expect(result).toHaveLength(1);
-      expect(result[0].address).toBe(TOKEN_ADDRESS_MOCK);
+      expect(result).toHaveLength(2);
+      expect(result.map((t) => t.address)).toStrictEqual([
+        '0xnative',
+        TOKEN_ADDRESS_MOCK,
+      ]);
     });
 
     it('filters out tokens without eip155 account type', () => {

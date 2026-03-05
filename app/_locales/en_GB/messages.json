@@ -734,6 +734,10 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Get 4% back on trades with a MetaMask referral code.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
@@ -1658,9 +1662,6 @@
   "connectAccount": {
     "message": "Connect account"
   },
-  "connectAccountOrCreate": {
-    "message": "Connect account or create new"
-  },
   "connectAccounts": {
     "message": "Connect accounts"
   },
@@ -2252,9 +2253,6 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Deselect all"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
@@ -3599,9 +3597,6 @@
   "l2FeeTooltip": {
     "message": "L2 gas fee"
   },
-  "lastConnected": {
-    "message": "Last connected"
-  },
   "lastSold": {
     "message": "Last sold"
   },
@@ -4083,10 +4078,6 @@
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
-  "musdClaimDescription": {
-    "message": "Bonus payout will be on Linea network.",
-    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
   },
   "musdClaimTitle": {
     "message": "Claim bonus",
@@ -6587,12 +6578,6 @@
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
-  "selectAccounts": {
-    "message": "Select the account(s) to use on this site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Select the account(s) to use with this snap"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -6631,9 +6616,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
   },
   "send": {
     "message": "Send"
@@ -8994,9 +8976,6 @@
   },
   "viewDetails": {
     "message": "View details"
-  },
-  "viewMore": {
-    "message": "View more"
   },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"

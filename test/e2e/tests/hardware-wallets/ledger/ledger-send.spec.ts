@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -13,7 +13,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('send ETH using an EIP1559 transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
         localNodeOptions: {
           hardfork: 'london',
         },
@@ -43,7 +43,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('send ETH using a legacy transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
         localNodeOptions: {
           hardfork: 'muirGlacier',
         },
