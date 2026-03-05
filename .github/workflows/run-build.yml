@@ -14,11 +14,7 @@ on:
       validate-source-maps:
         type: boolean
         default: true
-        description: Whether to validate source maps (browserify build)
-      validate-source-maps-webpack:
-        type: boolean
-        default: false
-        description: Whether to validate source maps (webpack build)
+        description: Whether to validate source maps
       mozilla-lint:
         type: boolean
         default: false
@@ -108,11 +104,7 @@ jobs:
 
       - name: Validate source maps
         if: ${{ inputs.validate-source-maps }}
-        run: yarn validate-source-maps
-
-      - name: Validate source maps (webpack)
-        if: ${{ inputs.validate-source-maps-webpack }}
-        run: yarn validate-source-maps:webpack
+        run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
 
       - name: Run mozilla-lint
         if: ${{ inputs.mozilla-lint }}

@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "允许通知"
   },
-  "allowWithdrawAndSpend": {
-    "message": "允许 $1 提取和消费最高以下金额：",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "金额"
   },
@@ -1610,9 +1606,6 @@
   "connectAccount": {
     "message": "连接账户"
   },
-  "connectAccountOrCreate": {
-    "message": "连接账户或创建新账户"
-  },
   "connectAccounts": {
     "message": "连接账户"
   },
@@ -1906,9 +1899,6 @@
   "customSlippage": {
     "message": "自定义"
   },
-  "customSpendLimit": {
-    "message": "自定义支付限额"
-  },
   "customToken": {
     "message": "自定义代币"
   },
@@ -2196,9 +2186,6 @@
     "message": "来自 $1 的描述",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "全部取消选择"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "未找到符合条件的账户"
   },
@@ -2478,9 +2465,6 @@
   "editNonceMessage": {
     "message": "这是高级功能，请谨慎使用。"
   },
-  "editPermission": {
-    "message": "编辑权限"
-  },
   "editPermissions": {
     "message": "编辑许可"
   },
@@ -2564,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "输入链 ID"
-  },
-  "enterMaxSpendLimit": {
-    "message": "输入最大消费限额"
   },
   "enterNetworkName": {
     "message": "输入网络名称"
@@ -3359,9 +3340,6 @@
     "message": "MetaMask 无法连接到区块链主机。请检查可能的原因 $1。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "您的初始交易已被网络确认。请点击“确定”返回。"
-  },
   "insights": {
     "message": "洞察"
   },
@@ -3544,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 燃料费"
-  },
-  "lastConnected": {
-    "message": "最后连接"
   },
   "lastSold": {
     "message": "最后售出"
@@ -5686,9 +5661,6 @@
   "productAnnouncements": {
     "message": "产品公告"
   },
-  "proposedApprovalLimit": {
-    "message": "建议批准限额"
-  },
   "provide": {
     "message": "提供"
   },
@@ -5908,18 +5880,6 @@
   },
   "rejectAll": {
     "message": "拒绝全部"
-  },
-  "rejectRequestsDescription": {
-    "message": "您即将批量拒绝 $1 请求。"
-  },
-  "rejectRequestsN": {
-    "message": "拒绝 $1 请求"
-  },
-  "rejectTxsDescription": {
-    "message": "您将批量拒绝 $1 笔交易。"
-  },
-  "rejectTxsN": {
-    "message": "拒绝 $1 笔交易"
   },
   "rejected": {
     "message": "已拒绝"
@@ -6457,12 +6417,6 @@
   "selectAccountToConnect": {
     "message": "选择要连接的账户"
   },
-  "selectAccounts": {
-    "message": "选择要在此网站上使用的账户"
-  },
-  "selectAccountsForSnap": {
-    "message": "选择使用此 Snap 的账户"
-  },
   "selectAll": {
     "message": "全部选择"
   },
@@ -6501,9 +6455,6 @@
   },
   "selectedAccountMismatch": {
     "message": "已选择不同账户"
-  },
-  "selectingAllWillAllow": {
-    "message": "选择全部将允许本网站查看您当前的所有账户。确保您信任这个网站。"
   },
   "send": {
     "message": "发送"
@@ -7643,22 +7594,6 @@
   },
   "speedUpTooltipText": {
     "message": "新燃料费用"
-  },
-  "spendLimitInsufficient": {
-    "message": "消费限额不足"
-  },
-  "spendLimitInvalid": {
-    "message": "消费限额无效；必须是正数"
-  },
-  "spendLimitPermission": {
-    "message": "消费限额权限"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 请求的消费限额",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "消费限额过大"
   },
   "spender": {
     "message": "支出者"
@@ -8868,9 +8803,6 @@
   },
   "viewDetails": {
     "message": "查看详情"
-  },
-  "viewMore": {
-    "message": "查看更多"
   },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"

@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Allow notifications"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Allow $1 to withdraw and spend up to the following amount:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Amount"
   },
@@ -737,6 +733,10 @@
   },
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
+  },
+  "asterdexReferralSubtitle": {
+    "message": "Get 4% back on trades with a MetaMask referral code.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -1662,9 +1662,6 @@
   "connectAccount": {
     "message": "Connect account"
   },
-  "connectAccountOrCreate": {
-    "message": "Connect account or create new"
-  },
   "connectAccounts": {
     "message": "Connect accounts"
   },
@@ -1967,9 +1964,6 @@
   "customSlippage": {
     "message": "Custom"
   },
-  "customSpendLimit": {
-    "message": "Custom spend limit"
-  },
   "customToken": {
     "message": "Custom token"
   },
@@ -2260,9 +2254,6 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Deselect all"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
   },
@@ -2542,9 +2533,6 @@
   "editNonceMessage": {
     "message": "This is an advanced feature, use cautiously."
   },
-  "editPermission": {
-    "message": "Edit permission"
-  },
   "editPermissions": {
     "message": "Edit permissions"
   },
@@ -2628,9 +2616,6 @@
   },
   "enterChainId": {
     "message": "Enter Chain ID"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Enter max spend limit"
   },
   "enterNetworkName": {
     "message": "Enter network name"
@@ -3429,9 +3414,6 @@
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Your initial transaction was confirmed by the network. Click OK to go back."
-  },
   "insights": {
     "message": "Insights"
   },
@@ -3614,9 +3596,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 gas fee"
-  },
-  "lastConnected": {
-    "message": "Last connected"
   },
   "lastSold": {
     "message": "Last sold"
@@ -4099,10 +4078,6 @@
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
-  "musdClaimDescription": {
-    "message": "Bonus payout will be on Linea network.",
-    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
   },
   "musdClaimTitle": {
     "message": "Claim bonus",
@@ -5830,9 +5805,6 @@
   "productAnnouncements": {
     "message": "Product announcements"
   },
-  "proposedApprovalLimit": {
-    "message": "Proposed approval limit"
-  },
   "provide": {
     "message": "Provide"
   },
@@ -6055,18 +6027,6 @@
   },
   "rejectAll": {
     "message": "Reject all"
-  },
-  "rejectRequestsDescription": {
-    "message": "You are about to batch reject $1 requests."
-  },
-  "rejectRequestsN": {
-    "message": "Reject $1 requests"
-  },
-  "rejectTxsDescription": {
-    "message": "You are about to batch reject $1 transactions."
-  },
-  "rejectTxsN": {
-    "message": "Reject $1 transactions"
   },
   "rejected": {
     "message": "Rejected"
@@ -6618,12 +6578,6 @@
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
-  "selectAccounts": {
-    "message": "Select the account(s) to use on this site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Select the account(s) to use with this snap"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -6662,9 +6616,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
   },
   "send": {
     "message": "Send"
@@ -7816,22 +7767,6 @@
   },
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
-  },
-  "spendLimitInsufficient": {
-    "message": "Spend limit insufficient"
-  },
-  "spendLimitInvalid": {
-    "message": "Spend limit invalid; must be a positive number"
-  },
-  "spendLimitPermission": {
-    "message": "Spend limit permission"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Spend limit requested by $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Spend limit too large"
   },
   "spender": {
     "message": "Spender"
@@ -9041,9 +8976,6 @@
   },
   "viewDetails": {
     "message": "View details"
-  },
-  "viewMore": {
-    "message": "View more"
   },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
