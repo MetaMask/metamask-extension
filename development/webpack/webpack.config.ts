@@ -126,6 +126,14 @@ const manifestPlugin = new ManifestPlugin({
   setBuildId: args.test,
 });
 
+const devtoolsEntryNames = new Set([
+  'devtools/devtools',
+  'devtools/ocap-kernel/kernel-panel',
+]);
+const baseCanBeChunked = manifestPlugin.canBeChunked.bind(manifestPlugin);
+manifestPlugin.canBeChunked = ({ name }: { name?: string | null }): boolean =>
+  !devtoolsEntryNames.has(name ?? '') && baseCanBeChunked({ name });
+
 const plugins: WebpackPluginInstance[] = [
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
@@ -204,6 +212,30 @@ const plugins: WebpackPluginInstance[] = [
             },
           ]
         : []),
+      // Ocap Kernel runtime: static files (kernel worker, vat iframe, wasm, etc.)
+      // loaded at runtime via `new Worker('ocap-kernel/kernel-worker/index.js')`
+      // and iframe src="ocap-kernel/vat/iframe.html".
+      {
+        from: join(
+          nodeModules,
+          '@metamask/kernel-browser-runtime/dist/static/',
+        ),
+        to: 'ocap-kernel/',
+      },
+      // Ocap Kernel devtools panel: copy HTML files as static assets
+      {
+        from: join(context, 'devtools/devtools.html'),
+        to: 'devtools/devtools.html',
+      },
+      {
+        from: join(context, 'devtools/ocap-kernel/kernel-panel.html'),
+        to: 'devtools/ocap-kernel/kernel-panel.html',
+      },
+      // Ocap Kernel devtools panel CSS
+      {
+        from: join(nodeModules, '@metamask/kernel-ui/dist/styles.css'),
+        to: 'devtools/ocap-kernel/kernel-panel.css',
+      },
     ],
   }),
 ];
@@ -259,9 +291,18 @@ const reactCompiler = getReactCompilerLoader({
 });
 
 const config = {
-  // All entries are added dynamically by ManifestPlugin
-  // an empty entry object prevents webpack's default entry.
-  entry: {},
+  entry: {
+    'devtools/devtools': {
+      chunkLoading: false,
+      filename: 'devtools/devtools.js',
+      import: [join(context, 'devtools/devtools.ts')],
+    },
+    'devtools/ocap-kernel/kernel-panel': {
+      chunkLoading: false,
+      filename: 'devtools/ocap-kernel/kernel-panel.js',
+      import: [join(context, 'devtools/ocap-kernel/kernel-panel.ts')],
+    },
+  },
   cache,
   plugins,
   context,
@@ -326,6 +367,14 @@ const config = {
     alias: {
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
+      // WORKAROUND: @libp2p/interface@2.11.0 has a broken `exports` field
+      // mapping "." to "./dist/src/index.min.js", which does not exist on
+      // disk. The correct ESM entry point is "./dist/src/index.js".
+      // This can be removed when the package fixes its exports map.
+      '@libp2p/interface': join(
+        nodeModules,
+        '@libp2p/interface/dist/src/index.js',
+      ),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in

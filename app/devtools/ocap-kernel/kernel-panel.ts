@@ -1,3 +1,4 @@
+import '@metamask/kernel-shims/endoify';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from '@metamask/kernel-ui';
