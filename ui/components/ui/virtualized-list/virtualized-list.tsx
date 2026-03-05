@@ -1,6 +1,18 @@
 import React, { type ReactNode } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import {
+  useVirtualizer,
+  type VirtualizerOptions,
+} from '@tanstack/react-virtual';
 import { useScrollContainer } from '../../../contexts/scroll-container';
+
+type ScrollToFn = VirtualizerOptions<HTMLDivElement, Element>['scrollToFn'];
+
+export const noAdjustmentsScroll: ScrollToFn = (offset, options, instance) => {
+  instance.scrollElement?.scrollTo?.({
+    top: offset,
+    behavior: options.behavior,
+  });
+};
 
 type Props<TItem> = {
   data: TItem[];
@@ -10,6 +22,7 @@ type Props<TItem> = {
   listFooterComponent?: ReactNode;
   overscan?: number;
   renderItem: (info: { item: TItem; index: number }) => ReactNode;
+  scrollToFn?: ScrollToFn;
 };
 
 export const VirtualizedList = <TItem,>({
@@ -20,6 +33,7 @@ export const VirtualizedList = <TItem,>({
   listFooterComponent,
   overscan = 5,
   renderItem,
+  scrollToFn,
 }: Props<TItem>) => {
   const scrollContainerRef = useScrollContainer();
   const disabled = process.env.IN_TEST;
@@ -33,6 +47,7 @@ export const VirtualizedList = <TItem,>({
       keyExtractor ? keyExtractor(data[index], index) : index,
     overscan,
     initialOffset: scrollContainerRef?.current?.scrollTop,
+    ...(scrollToFn ? { scrollToFn } : {}),
   });
 
   if (data.length === 0) {

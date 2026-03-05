@@ -22,7 +22,10 @@ import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDeta
 // eslint-disable-next-line import/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import PulseLoader from '../../../../ui/pulse-loader';
-import { VirtualizedList } from '../../../../ui/virtualized-list/virtualized-list';
+import {
+  VirtualizedList,
+  noAdjustmentsScroll,
+} from '../../../../ui/virtualized-list/virtualized-list';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -74,6 +77,15 @@ const NFTGridItem = (props: {
 
 // Container width threshold for switching between 3 and 4 columns
 const CONTAINER_WIDTH_THRESHOLD = 640;
+const ESTIMATED_ROW_SIZE = 172;
+
+function extractRowKey(row: NFT[], index: number) {
+  return (
+    row
+      .map((nft) => `${nft.chainId}-${nft.address}-${nft.tokenId}`)
+      .join('|') || String(index)
+  );
+}
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -146,8 +158,10 @@ export default function NftGrid({
     <Box ref={containerRef} style={{ margin: 16 }}>
       <VirtualizedList
         data={nftRows}
-        estimatedItemSize={200}
+        estimatedItemSize={ESTIMATED_ROW_SIZE}
+        scrollToFn={noAdjustmentsScroll}
         listFooterComponent={loadingFooter}
+        keyExtractor={extractRowKey}
         renderItem={({ item, index: rowIndex }) => (
           <Box className={`grid gap-4 pb-4 ${gridClassName}`}>
             {item.map((nft, index) => (
