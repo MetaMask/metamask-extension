@@ -102,7 +102,10 @@ describe('ManifestPlugin', () => {
         manifestPlugin.apply(compiler);
         await promise;
 
-        assert.deepStrictEqual(Object.keys(compilation.assets), expectedAssets);
+        assert.deepStrictEqual(
+          new Set(Object.keys(compilation.assets)),
+          new Set(expectedAssets),
+        );
         validateManifest(compilation as unknown as Compilation);
       });
     }
@@ -252,13 +255,16 @@ describe('ManifestPlugin', () => {
       manifestPlugin.apply(compiler);
       await promise;
 
-      assert.deepStrictEqual(Object.keys(compilation.assets), [
-        'chrome/manifest.json',
-        'chrome/filename.js',
-        'firefox/manifest.json',
-        'firefox/filename.js',
-        'sourcemaps/filename.js.map',
-      ]);
+      assert.deepStrictEqual(
+        new Set(Object.keys(compilation.assets)),
+        new Set([
+          'chrome/manifest.json',
+          'chrome/filename.js',
+          'firefox/manifest.json',
+          'firefox/filename.js',
+          'sourcemaps/filename.js.map',
+        ]),
+      );
     });
   });
 

@@ -33,93 +33,6 @@ export function mockWebpack(
   maps: (string | null)[],
   devtool: 'source-map' | 'hidden-source-map' | false = 'source-map',
 ) {
-  const initialFileOrder = new Map(files.map((file, index) => [file, index]));
-
-  function splitAssetPath(name: string) {
-    const separatorIndex = name.indexOf('/');
-    if (separatorIndex === -1) {
-      return { root: '', path: name };
-    }
-    return {
-      root: name.slice(0, separatorIndex),
-      path: name.slice(separatorIndex + 1),
-    };
-  }
-
-  function compareAssetNames(
-    x: string,
-    y: string,
-    browserOrder: string[],
-  ): number {
-    const xParts = splitAssetPath(x);
-    const yParts = splitAssetPath(y);
-    const xBrowserIndex = browserOrder.indexOf(xParts.root);
-    const yBrowserIndex = browserOrder.indexOf(yParts.root);
-
-    const getPathRank = (
-      assetPath: { root: string; path: string },
-      browserIndex: number,
-    ) => {
-      if (browserIndex !== -1) {
-        if (assetPath.path === 'manifest.json') {
-          return 0;
-        }
-        return 1;
-      }
-      return 0;
-    };
-
-    const getAssetGroupRank = (
-      assetPath: { root: string; path: string },
-      browserIndex: number,
-    ) => {
-      if (browserIndex !== -1) {
-        if (assetPath.path.endsWith('.zip')) {
-          return 0;
-        }
-        return 1;
-      }
-      if (assetPath.root === 'sourcemaps') {
-        return 2;
-      }
-      return 3;
-    };
-
-    const xGroupRank = getAssetGroupRank(xParts, xBrowserIndex);
-    const yGroupRank = getAssetGroupRank(yParts, yBrowserIndex);
-    if (xGroupRank !== yGroupRank) {
-      return xGroupRank - yGroupRank;
-    }
-
-    if (xBrowserIndex !== yBrowserIndex) {
-      if (xBrowserIndex !== -1 && yBrowserIndex !== -1) {
-        return xBrowserIndex - yBrowserIndex;
-      }
-      if (xBrowserIndex !== -1) {
-        return -1;
-      }
-      if (yBrowserIndex !== -1) {
-        return 1;
-      }
-    }
-
-    const xPathRank = getPathRank(xParts, xBrowserIndex);
-    const yPathRank = getPathRank(yParts, yBrowserIndex);
-    if (xPathRank !== yPathRank) {
-      return xPathRank - yPathRank;
-    }
-
-    const xFileIndex =
-      initialFileOrder.get(xParts.path) ?? Number.MAX_SAFE_INTEGER;
-    const yFileIndex =
-      initialFileOrder.get(yParts.path) ?? Number.MAX_SAFE_INTEGER;
-    if (xFileIndex !== yFileIndex) {
-      return xFileIndex - yFileIndex;
-    }
-
-    return x.localeCompare(y);
-  }
-
   const assets = files.reduce(
     (acc, name, i) => {
       const source = contents[i];
@@ -144,24 +57,8 @@ export function mockWebpack(
   });
   const compilation = {
     get assets() {
-      const assetNames = Object.keys(assets);
-      const browserOrder: string[] = [];
-      for (const name of assetNames) {
-        const { root, path } = splitAssetPath(name);
-        if (
-          root &&
-          (path === 'manifest.json' || path.endsWith('.zip')) &&
-          !browserOrder.includes(root)
-        ) {
-          browserOrder.push(root);
-        }
-      }
-
-      const orderedEntries = Object.entries(assets).sort(([x], [y]) =>
-        compareAssetNames(x, y, browserOrder),
-      );
       return Object.fromEntries(
-        orderedEntries.map(([name, asset]) => [name, asset.source]),
+        Object.entries(assets).map(([name, asset]) => [name, asset.source]),
       );
     },
     emitAsset: mock.fn((name, source, info) => {

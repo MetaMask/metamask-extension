@@ -25,7 +25,6 @@ type Assets = Compilation['assets'];
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
-const SOURCEMAP_FILENAME_RE = /\.map$/u;
 
 /**
  * Adds the given asset to the zip file
@@ -236,7 +235,7 @@ export class ManifestPlugin<Z extends boolean> {
       // move the assets to their final browser-relative locations
       const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
       const isSourceMapAsset =
-        moveSourceMapsToDedicatedDirectory && SOURCEMAP_FILENAME_RE.test(name);
+        moveSourceMapsToDedicatedDirectory && name.endsWith('.map');
 
       if (isSourceMapAsset) {
         compilation.emitAsset(
