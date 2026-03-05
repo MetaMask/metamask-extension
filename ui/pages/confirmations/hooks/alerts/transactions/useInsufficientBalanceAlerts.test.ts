@@ -9,11 +9,16 @@ import { getMockConfirmState } from '../../../../../../test/data/confirmations/h
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
+import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 jest.mock('../../gas/useIsGaslessSupported');
+jest.mock('../../pay/useTransactionPayHasSourceAmount');
 
 const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
+const useTransactionPayHasSourceAmountMock = jest.mocked(
+  useTransactionPayHasSourceAmount,
+);
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
@@ -109,6 +114,7 @@ describe('useInsufficientBalanceAlerts', () => {
       isSupported: false,
       pending: false,
     });
+    useTransactionPayHasSourceAmountMock.mockReturnValue(false);
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -132,6 +138,18 @@ describe('useInsufficientBalanceAlerts', () => {
         ...TRANSACTION_MOCK,
         isGasFeeSponsored: true,
       },
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns no alerts if pay quote is being used', () => {
+    useTransactionPayHasSourceAmountMock.mockReturnValue(true);
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
     });
 
     expect(alerts).toEqual([]);

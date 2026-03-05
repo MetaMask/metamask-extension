@@ -1,11 +1,23 @@
 import type { Transaction } from '@metamask/keyring-api';
+import type { CaipChainId } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import type {
   Token,
   TokenAmount,
   TransactionGroup,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { formatUnits } from '../../../../shared/lib/unit';
+
+export type AssetScope =
+  | { kind: 'native'; caipAssetType?: string }
+  | { kind: 'token'; tokenAddress: string };
+
+export type ActivityListFilter = {
+  chainId: CaipChainId;
+  assetScope: AssetScope;
+};
 
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
@@ -160,6 +172,97 @@ export function groupAndFlattenMergedTransactions(
   return flattened;
 }
 
+/**
+ * Returns true if the API transaction matches the given asset scope.
+ *
+ * @param tx - The API transaction view model.
+ * @param scope - The asset scope to filter by.
+ * @returns Whether the transaction involves the scoped asset.
+ */
+export function matchesApiTransaction(
+  tx: TransactionViewModel,
+  scope: AssetScope,
+): boolean {
+  const addr =
+    scope.kind === 'native'
+      ? NATIVE_TOKEN_ADDRESS
+      : scope.tokenAddress.toLowerCase();
+
+  if (tx.amounts?.from?.token.address?.toLowerCase() === addr) {
+    return true;
+  }
+  if (tx.amounts?.to?.token.address?.toLowerCase() === addr) {
+    return true;
+  }
+  return (
+    tx.valueTransfers?.some(
+      (vt) => vt.contractAddress?.toLowerCase() === addr,
+    ) ?? false
+  );
+}
+
+/**
+ * Returns true if the local transaction group matches the given asset scope.
+ * For native assets, matches by transaction type (simpleSend/incoming).
+ * For tokens, matches by txParams.to (the token contract address).
+ *
+ * @param group - The local transaction group.
+ * @param scope - The asset scope to filter by.
+ * @returns Whether the transaction group matches the scoped asset.
+ */
+export function matchesLocalTransaction(
+  group: TransactionGroup,
+  scope: AssetScope,
+): boolean {
+  if (scope.kind === 'native') {
+    const txType = group.primaryTransaction?.type;
+    if (!txType) {
+      return true;
+    }
+    return (
+      txType === TransactionType.simpleSend ||
+      txType === TransactionType.incoming
+    );
+  }
+  return (
+    group.initialTransaction.txParams?.to?.toLowerCase() ===
+    scope.tokenAddress.toLowerCase()
+  );
+}
+
+/**
+ * Returns true if the non-EVM transaction involves the given asset scope
+ * by checking the CAIP asset type in from/to asset entries.
+ *
+ * @param tx - The non-EVM transaction to check.
+ * @param scope - The asset scope to filter by.
+ * @returns Whether the transaction involves the scoped asset.
+ */
+export function matchesNonEvmTransaction(
+  tx: Transaction,
+  scope: AssetScope,
+): boolean {
+  const addr =
+    scope.kind === 'native'
+      ? scope.caipAssetType?.toLowerCase()
+      : scope.tokenAddress.toLowerCase();
+
+  if (!addr) {
+    return false;
+  }
+
+  const assetEntries = [...(tx.from ?? []), ...(tx.to ?? [])];
+  return assetEntries.some((entry) => {
+    if (!entry.asset) {
+      return false;
+    }
+    if (entry.asset.fungible) {
+      return entry.asset.type?.toLowerCase() === addr;
+    }
+    return 'id' in entry.asset && entry.asset.id.toLowerCase().includes(addr);
+  });
+}
+
 export function calculateFiatFromMarketRates(
   amount: string | undefined,
   token: Token | undefined,
@@ -172,4 +275,52 @@ export function calculateFiatFromMarketRates(
   const parsed = parseFloat(amount);
   const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
   return rate === undefined ? undefined : parsed * rate;
+}
+
+// Map API transactionCategory to TransactionType for legacy modal
+export function resolveTransactionType(
+  tx: TransactionViewModel,
+): TransactionType {
+  const { transactionCategory, transactionType } = tx;
+
+  if (transactionCategory === 'APPROVE') {
+    return TransactionType.tokenMethodApprove;
+  }
+  if (
+    transactionCategory === 'BRIDGE_OUT' ||
+    transactionCategory === 'BRIDGE_IN'
+  ) {
+    return TransactionType.bridge;
+  }
+
+  if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
+    return TransactionType.swap;
+  }
+
+  // Specifics from transactionType
+  if (transactionType === 'DEPLOY_CONTRACT') {
+    return TransactionType.deployContract;
+  }
+
+  if (transactionType === 'ERC_20_TRANSFER') {
+    return TransactionType.tokenMethodTransfer;
+  }
+
+  if (
+    transactionType === 'ERC_721_TRANSFER' ||
+    transactionType === 'ERC_1155_TRANSFER'
+  ) {
+    return TransactionType.tokenMethodTransferFrom;
+  }
+
+  if (transactionCategory === 'TRANSFER') {
+    if (tx.amounts?.to && !tx.amounts?.from) {
+      return TransactionType.incoming;
+    }
+    if (tx.amounts?.from) {
+      return TransactionType.simpleSend;
+    }
+  }
+
+  return TransactionType.contractInteraction;
 }

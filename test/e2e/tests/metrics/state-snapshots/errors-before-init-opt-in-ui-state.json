@@ -204,13 +204,11 @@
       "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": "object",
       "ipfsGateway": "string",
       "isIpfsGatewayEnabled": "boolean",
       "isMultiAccountBalancesEnabled": "boolean",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
-      "lostIdentities": "object",
       "manageInstitutionalWallets": "boolean",
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
@@ -238,7 +236,6 @@
       },
       "referrals": "object",
       "securityAlertsEnabled": "boolean",
-      "selectedAddress": "string",
       "snapRegistryList": "object",
       "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "light",
@@ -259,11 +256,14 @@
     "ProfileMetricsController": "object",
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
+      "localOverrides": "object",
+      "rawRemoteFeatureFlags": "object",
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" }
-      }
+        "feature3": { "name": "groupA", "value": "valueA" }
+      },
+      "thresholdCache": "object"
     },
     "RewardsController": {
       "rewardsAccounts": "object",
@@ -295,7 +295,6 @@
     "StaticAssetsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
-    "SwapsController": {},
     "TokenBalancesController": { "tokenBalances": "object" },
     "TokenListController": {},
     "TokenRatesController": { "marketData": "object" },
@@ -320,5 +319,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 197 }
+  "meta": { "version": 198 }
 }

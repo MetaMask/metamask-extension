@@ -1,31 +1,35 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import type { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
   Token,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
-import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
+import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { queries } from '../../../helpers/queries';
-import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { calculateFiatFromMarketRates } from './helpers';
+import type { ActivityListFilter } from './helpers';
 
-function useTransactionParams() {
+function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
-  const evmNetworks = useMemo(
-    () => enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
-    [enabledNetworks],
-  );
+  const evmNetworks = useMemo(() => {
+    if (caipChainId) {
+      return caipChainId.startsWith('eip155:') ? [caipChainId] : [];
+    }
+    return enabledNetworks.filter((id: string) => id.startsWith('eip155:'));
+  }, [enabledNetworks, caipChainId]);
 
   const accountAddresses = useMemo(
     () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
@@ -42,9 +46,11 @@ function useTransactionParams() {
   );
 }
 
-export function useTransactionsQuery() {
+export function useTransactionsQuery(filter?: ActivityListFilter) {
   const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, networks } = useTransactionParams();
+  const { evmAddress, accountAddresses, networks } = useTransactionParams(
+    filter?.chainId,
+  );
   const internalTxHashes = useSelector(selectRequiredTransactionHashes);
 
   const selectFn = useMemo(
@@ -60,7 +66,10 @@ export function useTransactionsQuery() {
     () =>
       queries.transactions(
         { accountAddresses, evmAddress, networks },
-        { enabled: Boolean(useExternalServices), keepPreviousData: true },
+        {
+          enabled: Boolean(useExternalServices) && networks.length > 0,
+          keepPreviousData: true,
+        },
       ),
     [evmAddress, accountAddresses, networks, useExternalServices],
   );
@@ -138,6 +147,11 @@ function classifyNft(
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
+
+  const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
+    transaction,
+  });
+
   const { transactionCategory, transactionType, transactionProtocol } =
     transaction;
 
@@ -178,6 +192,12 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'APPROVE') {
+    if (sourceTokenSymbol) {
+      return t(isBridgeTx ? 'bridgeApproval' : 'swapApproval', [
+        sourceTokenSymbol,
+      ]);
+    }
+
     const data = transaction.txParams?.data;
     const selectorFromData =
       typeof data === 'string' ? data.slice(0, 10) : undefined;
@@ -231,11 +251,10 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'BRIDGE_OUT') {
-    const chainName =
-      NETWORK_TO_NAME_MAP[
-        transaction.chainId as keyof typeof NETWORK_TO_NAME_MAP
-      ];
-    return chainName ? t('bridgedToChain', [chainName]) : t('bridged');
+    if (!destNetwork?.name || !isBridgeTx) {
+      return t('bridged');
+    }
+    return t('bridgedToChain', [destNetwork.name]);
   }
 
   if (transactionCategory === 'BRIDGE_IN') {
