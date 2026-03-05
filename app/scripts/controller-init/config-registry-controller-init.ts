@@ -5,10 +5,10 @@ import {
 } from '@metamask/config-registry-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { ControllerInitFunction } from './types';
-import {
+import type {
   ConfigRegistryControllerMessenger,
   ConfigRegistryControllerInitMessenger,
-} from './messengers';
+} from './messengers/config-registry-controller-messenger';
 
 const log = createProjectLogger('config-registry-controller-init');
 

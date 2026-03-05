@@ -3,7 +3,6 @@ import {
   ConfigRegistryApiService,
   type ConfigRegistryControllerState,
 } from '@metamask/config-registry-controller';
-import { getDefaultConfigRegistryControllerState } from '../../../shared/modules/config-registry-utils';
 import { getRootMessenger } from '../lib/messenger';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -18,6 +17,13 @@ import type {
 import type { ControllerInitRequest } from './types';
 
 jest.mock('@metamask/config-registry-controller');
+
+const defaultConfigRegistryControllerState: ConfigRegistryControllerState = {
+  configs: { networks: {} },
+  version: null,
+  lastFetched: null,
+  etag: null,
+};
 
 const mockConfigRegistryController = jest.mocked(ConfigRegistryController);
 const mockConfigRegistryApiService = jest.mocked(ConfigRegistryApiService);
@@ -69,7 +75,7 @@ describe('ConfigRegistryControllerInit', () => {
     mockControllerInstance = {
       startPolling: jest.fn(),
       stopAllPolling: jest.fn(),
-      state: getDefaultConfigRegistryControllerState(),
+      state: defaultConfigRegistryControllerState,
     } as unknown as jest.Mocked<ConfigRegistryController>;
 
     mockConfigRegistryController.mockImplementation(() => {
@@ -105,7 +111,11 @@ describe('ConfigRegistryControllerInit', () => {
         lastFetched: Date.now(),
         etag: null,
       };
-      requestMock.persistedState.ConfigRegistryController = mockPersistedState;
+      const persistedState = requestMock.persistedState as Partial<{
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        ConfigRegistryController: ConfigRegistryControllerState;
+      }>;
+      persistedState.ConfigRegistryController = mockPersistedState;
 
       ConfigRegistryControllerInit(requestMock);
 
