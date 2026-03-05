@@ -139,7 +139,6 @@ async function start() {
       windowType,
       traceContext,
       initialState,
-      extensionPort,
     );
 
     if (isManifestV3) {
@@ -243,7 +242,6 @@ async function initializeUiWithTab(
   windowType,
   traceContext,
   initialState,
-  extensionPort,
 ) {
   try {
     const store = await launchMetamaskUi({
@@ -267,12 +265,14 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
+    // No port: by the time launchMetamaskUi throws, startSendingPatches may have already
+    // run and removed the repair listener, so a restore link would be non-functional.
     await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
       undefined,
-      extensionPort,
+      undefined,
       CriticalErrorType.TroubleStarting,
     );
   }
