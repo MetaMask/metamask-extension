@@ -5458,6 +5458,7 @@ export function approvePermissionsRequest(
       await submitRequestToBackground('approvePermissionsRequest', [request]);
     } catch (err) {
       dispatch(displayWarning(err));
+      throw err;
     }
     await forceUpdateMetamaskState(dispatch);
   };

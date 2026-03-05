@@ -3,6 +3,10 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
 import * as Util from '../../util';
 import requestEthereumAccounts from './request-accounts';
 
@@ -50,7 +54,7 @@ const createMockedHandler = () => {
   const getCaip25PermissionFromLegacyPermissionsForOrigin = jest
     .fn()
     .mockResolvedValue({});
-  const requestPermissionsForOrigin = jest.fn().mockReturnValue({});
+  const requestPermissionsForOrigin = jest.fn().mockResolvedValue([{}]);
   const response: PendingJsonRpcResponse<string[]> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -148,6 +152,123 @@ describe('requestEthereumAccountsHandler', () => {
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
       expect(getAccounts).toHaveBeenCalledTimes(2);
+    });
+
+    it('briefly retries account lookup if approval result has not propagated yet', async () => {
+      const { handler, getAccounts, response } = createMockedHandler();
+      getAccounts
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['0xdead']);
+
+      await handler(baseRequest);
+
+      expect(response.result).toStrictEqual(['0xdead']);
+      expect(getAccounts).toHaveBeenCalledTimes(3);
+    });
+
+    it('falls back to granted CAIP-25 accounts when account lookup remains empty', async () => {
+      const { handler, getAccounts, response, requestPermissionsForOrigin } =
+        createMockedHandler();
+
+      getAccounts.mockReturnValue([]);
+      requestPermissionsForOrigin.mockResolvedValue([
+        {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  isMultichainOrigin: true,
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: ['eip155:1:0xdead'],
+                    },
+                  },
+                  sessionProperties: {},
+                },
+              },
+            ],
+          },
+        },
+      ]);
+
+      await handler(baseRequest);
+
+      expect(response.result).toStrictEqual(['0xdead']);
+    });
+
+    it('shares the same in-flight request for concurrent requests from the same origin', async () => {
+      const {
+        next,
+        getAccounts,
+        sendMetrics,
+        metamaskState,
+        getCaip25PermissionFromLegacyPermissionsForOrigin,
+        requestPermissionsForOrigin,
+      } = createMockedHandler();
+
+      let resolveApprovalRequest: (() => void) | undefined;
+      const approvalRequestPromise = new Promise<void>((resolve) => {
+        resolveApprovalRequest = resolve;
+      });
+      requestPermissionsForOrigin.mockImplementation(async () => {
+        await approvalRequestPromise;
+        return [{}];
+      });
+      getAccounts.mockReturnValueOnce([]).mockReturnValueOnce(['0xdead']);
+
+      const firstResponse: PendingJsonRpcResponse<string[]> = {
+        jsonrpc: '2.0',
+        id: 1,
+        result: undefined,
+      };
+      const secondResponse: PendingJsonRpcResponse<string[]> = {
+        jsonrpc: '2.0',
+        id: 2,
+        result: undefined,
+      };
+      const firstEnd = jest.fn();
+      const secondEnd = jest.fn();
+
+      const firstRequestPromise = requestEthereumAccounts.implementation(
+        { ...baseRequest, id: 1 },
+        firstResponse,
+        next,
+        firstEnd,
+        {
+          getAccounts,
+          sendMetrics,
+          metamaskState,
+          getCaip25PermissionFromLegacyPermissionsForOrigin,
+          requestPermissionsForOrigin,
+        },
+      );
+      const secondRequestPromise = requestEthereumAccounts.implementation(
+        { ...baseRequest, id: 2 },
+        secondResponse,
+        next,
+        secondEnd,
+        {
+          getAccounts,
+          sendMetrics,
+          metamaskState,
+          getCaip25PermissionFromLegacyPermissionsForOrigin,
+          requestPermissionsForOrigin,
+        },
+      );
+
+      expect(requestPermissionsForOrigin).toHaveBeenCalledTimes(1);
+
+      resolveApprovalRequest?.();
+      await Promise.all([firstRequestPromise, secondRequestPromise]);
+
+      expect(firstResponse.result).toStrictEqual(['0xdead']);
+      expect(secondResponse.result).toStrictEqual(['0xdead']);
+      expect(getAccounts).toHaveBeenCalledTimes(2);
+      expect(firstEnd).toHaveBeenCalled();
+      expect(secondEnd).toHaveBeenCalled();
     });
 
     it('emits the dapp viewed metrics event when shouldEmitDappViewedEvent returns true', async () => {

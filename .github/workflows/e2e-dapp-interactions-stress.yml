@@ -1,0 +1,90 @@
+name: E2E Dapp Interactions Stress
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/e2e-dapp-interactions-stress.yml'
+      - 'test/e2e/tests/dapp-interactions/dapp-interactions.spec.ts'
+      - 'test/e2e/run-e2e-test.js'
+  workflow_dispatch:
+    inputs:
+      attempts:
+        description: Number of repeated attempts for this spec
+        required: false
+        default: '30'
+
+jobs:
+  test-e2e-dapp-interactions-stress:
+    name: test-e2e-dapp-interactions-stress
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      FORCE_COLOR: '1'
+      ATTEMPTS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.attempts || '30' }}
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v5
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
+        run: yarn mm-foundryup
+
+      - name: Build test artifacts
+        run: yarn build:test
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Run dapp interactions stress test
+        env:
+          PROPERTIES: JOB_NAME:test-e2e-dapp-interactions-stress,RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! [[ "${ATTEMPTS}" =~ ^[0-9]+$ ]] || [ "${ATTEMPTS}" -lt 1 ]; then
+            echo "Invalid ATTEMPTS value: ${ATTEMPTS}"
+            exit 1
+          fi
+
+          RETRIES=$((ATTEMPTS - 1))
+
+          echo "Running test/e2e/tests/dapp-interactions/dapp-interactions.spec.ts ${ATTEMPTS} times"
+
+          yarn test:e2e:single \
+            test/e2e/tests/dapp-interactions/dapp-interactions.spec.ts \
+            --browser chrome \
+            --stop-after-one-failure \
+            --retries "${RETRIES}" \
+            --debug=false
+
+      - name: Upload test artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-e2e-dapp-interactions-stress
+          path: |
+            ./test-artifacts
+            ./test/test-results/e2e

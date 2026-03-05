@@ -105,7 +105,9 @@ export type MultichainConnectPageProps = {
   request: MultichainAccountsConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
-  approveConnection: (request: MultichainAccountsConnectPageRequest) => void;
+  approveConnection: (
+    request: MultichainAccountsConnectPageRequest,
+  ) => Promise<void> | void;
   targetSubjectMetadata: {
     extensionId: string | null;
     iconUrl: string | null;
@@ -335,6 +337,8 @@ export const MultichainAccountsConnectPage: React.FC<
     testNetworkConfigurations,
     requestedCaipChainIds,
     isEip1193Request,
+    isSolanaWalletStandardRequest,
+    isTronWalletAdapterRequest,
     currentlySelectedNetwork.chainId,
     requestedNamespaces,
     requestedNamespacesWithoutWallet,
@@ -374,9 +378,9 @@ export const MultichainAccountsConnectPage: React.FC<
   const { suggestedAccountGroups, suggestedCaipAccountIds } = useMemo(() => {
     if (connectedAccountGroups.length > 0) {
       return {
-        suggestedAccountGroups: connectedAccountGroupWithRequested,
+        suggestedAccountGroups: connectedAccountGroupWithRequested ?? [],
         suggestedCaipAccountIds:
-          caipAccountIdsOfConnectedAndRequestedAccountGroups,
+          caipAccountIdsOfConnectedAndRequestedAccountGroups ?? [],
       };
     }
 
@@ -400,9 +404,9 @@ export const MultichainAccountsConnectPage: React.FC<
     }
 
     return {
-      suggestedAccountGroups: selectedAndRequestedAccountGroups,
+      suggestedAccountGroups: selectedAndRequestedAccountGroups ?? [],
       suggestedCaipAccountIds: getCaip25AccountIdsFromAccountGroupAndScope(
-        selectedAndRequestedAccountGroups,
+        selectedAndRequestedAccountGroups ?? [],
         requestedAndAlreadyConnectedCaipChainIdsOrDefault,
       ),
     };
@@ -417,12 +421,12 @@ export const MultichainAccountsConnectPage: React.FC<
   ]);
 
   const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(
-    suggestedAccountGroups.map((group) => group.id),
+    (suggestedAccountGroups ?? []).map((group) => group.id),
   );
 
   const [selectedCaipAccountIds, setSelectedCaipAccountIds] = useState<
     CaipAccountId[]
-  >(suggestedCaipAccountIds);
+  >(suggestedCaipAccountIds ?? []);
 
   const handleAccountGroupIdsSelected = useCallback(
     (
@@ -432,29 +436,73 @@ export const MultichainAccountsConnectPage: React.FC<
       if (isUserModified) {
         setUserHasModifiedSelection(true);
       }
-      const updatedSelectedChains = [...selectedChainIds];
-
-      // Create lookup sets for selected account group IDs
-      const selectedGroupIds = new Set(accountGroupIds);
-
-      // Filter to only selected account groups
-      const selectedAccountGroups = supportedAccountGroups.filter(
-        (group: AccountGroupWithInternalAccounts) =>
-          selectedGroupIds.has(group.id),
-      );
-
-      const caip25AccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
-        selectedAccountGroups,
-        updatedSelectedChains,
-      );
-
-      handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
-      setSelectedCaipAccountIds(caip25AccountIds);
       setPageMode(MultichainAccountsConnectPageMode.Summary);
     },
-    [selectedChainIds, supportedAccountGroups, handleChainIdsSelected],
+    [],
   );
+
+  // Keep selected chains in sync with defaults until the user explicitly edits.
+  useEffect(() => {
+    if (
+      !userHasModifiedSelection &&
+      !isEqual(
+        requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+        selectedChainIds,
+      )
+    ) {
+      handleChainIdsSelected(
+        requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+        {
+          isUserModified: false,
+        },
+      );
+    }
+  }, [
+    userHasModifiedSelection,
+    requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+    selectedChainIds,
+    handleChainIdsSelected,
+  ]);
+
+  // Keep CAIP account IDs derived from the current selected groups and chains.
+  useEffect(() => {
+    if (typeof getCaip25AccountIdsFromAccountGroupAndScope !== 'function') {
+      return;
+    }
+
+    const selectedGroupIds = new Set(selectedAccountGroupIds);
+    const selectedAccountGroups = supportedAccountGroups.filter(
+      (group: AccountGroupWithInternalAccounts) =>
+        selectedGroupIds.has(group.id),
+    );
+
+    const nextSelectedCaipAccountIds =
+      getCaip25AccountIdsFromAccountGroupAndScope(
+        selectedAccountGroups,
+        selectedChainIds,
+      );
+
+    // During initial hydration, preserve a precomputed non-empty selection
+    // instead of replacing it with a transient empty derivation.
+    if (
+      !userHasModifiedSelection &&
+      nextSelectedCaipAccountIds.length === 0 &&
+      selectedCaipAccountIds.length > 0
+    ) {
+      return;
+    }
+
+    if (!isEqual(nextSelectedCaipAccountIds, selectedCaipAccountIds)) {
+      setSelectedCaipAccountIds(nextSelectedCaipAccountIds);
+    }
+  }, [
+    selectedAccountGroupIds,
+    supportedAccountGroups,
+    selectedChainIds,
+    selectedCaipAccountIds,
+    userHasModifiedSelection,
+  ]);
 
   // Ensures the selected account state is kept in sync with the default selected account value
   // until the user makes modifications to the selected account/network values.
@@ -493,25 +541,67 @@ export const MultichainAccountsConnectPage: React.FC<
     rejectPermissionsRequest(permissionsRequestId);
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
-  const onConfirm = useCallback(() => {
-    const _request = {
+  const onConfirm = useCallback(async () => {
+    const requestMetadata = request.metadata;
+    const nextRequestMetadata: NonNullable<
+      MultichainAccountsConnectPageRequest['metadata']
+    > = {
+      id: requestMetadata?.id ?? permissionsRequestId,
+      origin: targetSubjectMetadata.origin ?? requestMetadata?.origin,
+    };
+    if (requestMetadata?.isEip1193Request !== undefined) {
+      nextRequestMetadata.isEip1193Request = requestMetadata.isEip1193Request;
+    }
+
+    const selectedGroupIds = new Set(selectedAccountGroupIds);
+    const selectedAccountGroups = supportedAccountGroups.filter(
+      (group: AccountGroupWithInternalAccounts) =>
+        selectedGroupIds.has(group.id),
+    );
+
+    const selectedCaipAccountIdsForRequest =
+      getCaip25AccountIdsFromAccountGroupAndScope(
+        selectedAccountGroups,
+        selectedChainIds,
+      );
+
+    // Compute submit payload from source selections at confirm time so we do
+    // not depend on asynchronously derived local state.
+    const finalSelectedCaipAccountIds =
+      selectedCaipAccountIdsForRequest.length > 0
+        ? selectedCaipAccountIdsForRequest
+        : selectedCaipAccountIds;
+
+    if (
+      finalSelectedCaipAccountIds.length === 0 ||
+      selectedChainIds.length === 0
+    ) {
+      return;
+    }
+
+    const _request: MultichainAccountsConnectPageRequest = {
       ...request,
+      metadata: nextRequestMetadata,
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
-          selectedCaipAccountIds,
+          finalSelectedCaipAccountIds,
           selectedChainIds,
         ),
       },
     };
-    approveConnection(_request);
+    await approveConnection(_request);
   }, [
     request,
+    permissionsRequestId,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountIds,
     selectedChainIds,
+    selectedAccountGroupIds,
+    supportedAccountGroups,
     approveConnection,
+    targetSubjectMetadata.origin,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
@@ -728,7 +818,8 @@ export const MultichainAccountsConnectPage: React.FC<
               onClick={onConfirm}
               disabled={
                 selectedAccountGroupIds.length === 0 ||
-                selectedChainIds.length === 0
+                selectedChainIds.length === 0 ||
+                selectedCaipAccountIds.length === 0
               }
             >
               {t('connect')}

@@ -110,7 +110,7 @@ export type ConnectPageProps = {
   request: ConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
-  approveConnection: (request: ConnectPageRequest) => void;
+  approveConnection: (request: ConnectPageRequest) => Promise<void> | void;
   activeTabOrigin: string;
   targetSubjectMetadata: {
     extensionId: string | null;
@@ -428,9 +428,23 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     rejectPermissionsRequest(permissionsRequestId);
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
-  const onConfirm = useCallback(() => {
-    const _request = {
+  const onConfirm = useCallback(async () => {
+    const requestMetadata = request.metadata;
+    const nextRequestMetadata: NonNullable<ConnectPageRequest['metadata']> = {
+      id: requestMetadata?.id ?? permissionsRequestId,
+      origin: targetSubjectMetadata.origin ?? requestMetadata?.origin,
+    };
+    if (requestMetadata?.isEip1193Request !== undefined) {
+      nextRequestMetadata.isEip1193Request = requestMetadata.isEip1193Request;
+    }
+    if (requestMetadata?.promptToCreateSolanaAccount !== undefined) {
+      nextRequestMetadata.promptToCreateSolanaAccount =
+        requestMetadata.promptToCreateSolanaAccount;
+    }
+
+    const _request: ConnectPageRequest = {
       ...request,
+      metadata: nextRequestMetadata,
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
@@ -440,13 +454,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ),
       },
     };
-    approveConnection(_request);
+    await approveConnection(_request);
   }, [
     request,
+    permissionsRequestId,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountAddresses,
     selectedChainIds,
     approveConnection,
+    targetSubjectMetadata.origin,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
