@@ -88,9 +88,10 @@ describe('Dapp interactions', function () {
         await testDapp.checkPageIsLoaded();
         try {
           await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
-        } catch {
+        } catch (firstAttemptError) {
           console.log(
-            'Second dapp was not connected after first confirmation, retrying connect flow',
+            'Second dapp was not connected after first confirmation, retrying connect flow. Original error:',
+            firstAttemptError,
           );
           await testDapp.clickConnectAccountButton();
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
