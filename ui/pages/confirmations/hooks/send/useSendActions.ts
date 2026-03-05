@@ -62,9 +62,12 @@ export const useSendActions = () => {
           value: value as string,
         }),
       );
-      const route = maxValueMode
-        ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
-        : CONFIRM_TRANSACTION_ROUTE;
+      const params = new URLSearchParams();
+      if (maxValueMode) {
+        params.set('maxValueMode', String(maxValueMode));
+      }
+      params.set('loader', 'send');
+      const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
     } else {
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);

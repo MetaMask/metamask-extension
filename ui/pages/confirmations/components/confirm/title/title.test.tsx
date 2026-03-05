@@ -54,7 +54,7 @@ jest.mock('../../../../../store/actions', () => ({
 }));
 
 describe('ConfirmTitle', () => {
-  it('should render nothing when there is no current confirmation', () => {
+  it('should render a skeleton loader when there is no current confirmation', () => {
     const mockStateWithNoConfirmation = {
       ...getMockPersonalSignConfirmState(),
       metamask: {
@@ -67,6 +67,25 @@ describe('ConfirmTitle', () => {
     const { container } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
+    );
+
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+  });
+
+  it('should not render title skeleton when loader is send', () => {
+    const mockStateWithNoConfirmation = {
+      ...getMockPersonalSignConfirmState(),
+      metamask: {
+        ...getMockPersonalSignConfirmState().metamask,
+        pendingApprovals: {},
+        unapprovedPersonalMsgs: {},
+      },
+    };
+    const mockStore = configureMockStore([])(mockStateWithNoConfirmation);
+    const { container } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+      '/confirm-transaction?loader=send',
     );
 
     expect(container.querySelector('.mm-skeleton')).not.toBeInTheDocument();

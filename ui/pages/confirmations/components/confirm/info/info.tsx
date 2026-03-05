@@ -55,6 +55,7 @@ const DefaultHeadingSkeleton = () => (
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const SendHeadingSkeleton = () => (
   <div
+    data-testid="confirmation__send_info_skeleton"
     style={{
       display: 'flex',
       flexDirection: 'row',
@@ -162,7 +163,11 @@ const Info = () => {
       return <CustomAmountInfoSkeleton />;
     }
 
-    return <InfoSkeleton />;
+    return (
+      <InfoSkeleton
+        variant={loader === ConfirmationLoader.Send ? 'send' : undefined}
+      />
+    );
   }
 
   const InfoComponent =
