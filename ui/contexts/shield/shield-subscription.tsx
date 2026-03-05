@@ -270,26 +270,14 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   };
 
   /**
-   * Evaluates cohort eligibility at a specific entrypoint.
-   * Follows the flowchart logic for cohort assignment and modal display.
-   *
-   * Shield entry modal will be shown if:
-   * - MetaMask Shield feature is enabled
-   * - Basic functionality is enabled
-   * - Subscription is not active
-   * - User is signed in and unlocked
-   * - User has not shown the shield entry modal before
-   * - User's balance meets the minimum fiat balance threshold
-   * - User meets cohort-specific eligibility criteria
-   *
-   * This callback remains stable across renders using the ref pattern,
-   * preventing unnecessary re-renders of consuming components.
+   * Stable callback wrapper that delegates to the ref.
+   * Safe to pass as a dependency or context value without causing re-renders.
    */
   const evaluateCohortEligibility = useCallback(
     async (entrypointCohort: string): Promise<void> => {
       await evaluateCohortEligibilityRef.current?.(entrypointCohort);
     },
-    [], // Empty deps = always stable!
+    [],
   );
 
   useEffect(() => {
