@@ -10,6 +10,7 @@ import {
   createMockNotificationEthReceived,
 } from '@metamask/notification-services-controller/notification-services/mocks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { ASSETS_UNIFY_STATE_VERSION_1 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import {
   WalletFundsObtainedMonitor,
   WalletFundsObtainedMonitorMessenger,
@@ -30,7 +31,7 @@ describe('WalletFundsObtainedMonitor', () => {
   beforeEach(() => {
     messenger = createMessengerMock();
 
-    // Setup default mock implementations
+    // Setup default mock implementations (feature flag off: use Token/Multichain balances)
     messenger.call.mockImplementation(((action: string) => {
       if (action === 'OnboardingController:getState') {
         return {
@@ -41,6 +42,9 @@ describe('WalletFundsObtainedMonitor', () => {
       }
       if (action === 'NotificationServicesController:getState') {
         return { isNotificationServicesEnabled: true };
+      }
+      if (action === 'RemoteFeatureFlagController:getState') {
+        return { remoteFeatureFlags: {} };
       }
       if (action === 'TokenBalancesController:getState') {
         return { tokenBalances: {} };
@@ -154,6 +158,102 @@ describe('WalletFundsObtainedMonitor', () => {
 
       // Should only subscribe once
       expect(messenger.subscribe).toHaveBeenCalledTimes(1);
+    });
+
+    it('when assets unify feature flag is enabled and AssetsController has no existing funds, should subscribe to notifications', () => {
+      messenger.call.mockImplementation(((action: string) => {
+        if (action === 'OnboardingController:getState') {
+          return {
+            seedPhraseBackedUp: false,
+            firstTimeFlowType: FirstTimeFlowType.create,
+            completedOnboarding: true,
+          };
+        }
+        if (action === 'NotificationServicesController:getState') {
+          return { isNotificationServicesEnabled: true };
+        }
+        if (action === 'RemoteFeatureFlagController:getState') {
+          return {
+            remoteFeatureFlags: {
+              assetsUnifyState: {
+                enabled: true,
+                featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+                minimumVersion: null,
+              },
+            },
+          };
+        }
+        if (action === 'AssetsController:getState') {
+          return { assetsBalance: {} };
+        }
+        return undefined;
+      }) as any);
+
+      walletFundsObtainedMonitor.setupMonitoring();
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:getState',
+      );
+      expect(messenger.call).toHaveBeenCalledWith('AssetsController:getState');
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'TokenBalancesController:getState',
+      );
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'AppStateController:setCanTrackWalletFundsObtained',
+        false,
+      );
+      expect(messenger.subscribe).toHaveBeenCalledWith(
+        'NotificationServicesController:notificationsListUpdated',
+        expect.any(Function),
+      );
+    });
+
+    it('when assets unify feature flag is enabled and AssetsController has existing funds, should set canTrackWalletFundsObtained to false and not subscribe', () => {
+      messenger.call.mockImplementation(((action: string) => {
+        if (action === 'OnboardingController:getState') {
+          return {
+            seedPhraseBackedUp: false,
+            firstTimeFlowType: FirstTimeFlowType.create,
+            completedOnboarding: true,
+          };
+        }
+        if (action === 'NotificationServicesController:getState') {
+          return { isNotificationServicesEnabled: true };
+        }
+        if (action === 'RemoteFeatureFlagController:getState') {
+          return {
+            remoteFeatureFlags: {
+              assetsUnifyState: {
+                enabled: true,
+                featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+                minimumVersion: null,
+              },
+            },
+          };
+        }
+        if (action === 'AssetsController:getState') {
+          return {
+            assetsBalance: {
+              'account-1': {
+                'eip155:1:0xabc': { amount: '100' },
+              },
+            },
+          };
+        }
+        return undefined;
+      }) as any);
+
+      walletFundsObtainedMonitor.setupMonitoring();
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:getState',
+      );
+      expect(messenger.call).toHaveBeenCalledWith('AssetsController:getState');
+      expect(messenger.call).toHaveBeenCalledWith(
+        'AppStateController:setCanTrackWalletFundsObtained',
+        false,
+      );
+      expect(messenger.subscribe).not.toHaveBeenCalled();
     });
   });
 
