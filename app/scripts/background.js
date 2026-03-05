@@ -642,8 +642,13 @@ const corruptionHandler = new CorruptionHandler();
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
+  const { isMetaMaskUIPort } = parsePortInfo(port);
   if (inTest) {
-    await restoreTestRestoreFlowFromSession();
+    // Only read/clear the restore-flow session flag for UI ports so a content-script
+    // connection cannot consume it before the UI connects.
+    if (isMetaMaskUIPort) {
+      await restoreTestRestoreFlowFromSession();
+    }
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
     if (simulatedDelay === true) {
@@ -680,7 +685,6 @@ const handleOnConnect = async (port) => {
   // reach the normal flow (e.g. init hang) or the catch block (e.g. state sync hang).
   // We keep it for the lifetime of the port so "Restore accounts" still works if a
   // critical error screen is shown later.
-  const { isMetaMaskUIPort } = parsePortInfo(port);
   const repairListener = async (message) => {
     if (message?.data?.method === METHOD_REPAIR_DATABASE_TIMEOUT) {
       port.onMessage.removeListener(repairListener);
