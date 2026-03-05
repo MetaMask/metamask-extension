@@ -234,6 +234,11 @@ class HeaderNavbar {
    */
   async openDappNetworkMenu(): Promise<void> {
     console.log('Opening dapp network menu from control bar');
+    // Dismiss any toast that may overlap the bottom control bar
+    await this.driver.clickElementSafe(
+      '.toasts-container__banner-base button[aria-label="Close"]',
+      3000,
+    );
     await this.driver.clickElement(this.dappNetworkButton);
   }
 
