@@ -82,7 +82,7 @@ describe('Dapp interactions', function () {
         );
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
         // Login to homepage
