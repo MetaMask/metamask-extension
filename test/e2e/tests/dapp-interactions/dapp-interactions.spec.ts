@@ -81,6 +81,7 @@ describe('Dapp interactions', function () {
           driver,
         );
         await connectAccountConfirmation.checkPageIsLoaded();
+        await driver.delay(5000);
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
