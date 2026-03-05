@@ -105,7 +105,6 @@ const NetworkStatistics = ({ useRedesigned }) => {
 
 NetworkStatistics.propTypes = {
   useRedesigned: PropTypes.bool,
-  networkClientId: PropTypes.string,
 };
 
 export default NetworkStatistics;
