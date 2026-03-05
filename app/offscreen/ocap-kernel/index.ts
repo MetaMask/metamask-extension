@@ -1,18 +1,25 @@
-import type { JsonRpcCall } from '@metamask/kernel-utils';
+// @ts-expect-error - Practically baseless ESM / CJS incompatibility complaint
+import { E } from '@endo/eventual-send';
 import {
+  makeBackgroundCapTP,
+  makeCapTPNotification,
+  isCapTPNotification,
+  getCapTPMessage,
+  isConsoleForwardMessage,
+  handleConsoleForwardMessage,
   makeIframeVatWorker,
   PlatformServicesServer,
 } from '@metamask/kernel-browser-runtime';
+import type { CapTPMessage } from '@metamask/kernel-browser-runtime';
+import { isJsonRpcMessage, stringify } from '@metamask/kernel-utils';
+import type { JsonRpcMessage } from '@metamask/kernel-utils';
 import { Logger } from '@metamask/logger';
 import type { DuplexStream } from '@metamask/streams';
 import {
   initializeMessageChannel,
-  // ChromeRuntimeDuplexStream,
   MessagePortDuplexStream,
 } from '@metamask/streams/browser';
 import type { PostMessageTarget } from '@metamask/streams/browser';
-import type { JsonRpcResponse } from '@metamask/utils';
-import { isJsonRpcResponse } from '@metamask/utils';
 
 const logger = new Logger('offscreen');
 
@@ -20,33 +27,49 @@ const logger = new Logger('offscreen');
  * Main function to run the kernel. Under normal operation the returned promise
  * never settles.
  */
-export async function runKernel(): Promise<void> {
-  // TODO: Connect to background script, probably by setting up an entirely new
-  // stream over chrome.runtime.
-  // // Create stream for messages from the background script
-  // const backgroundStream = await ChromeRuntimeDuplexStream.make<
-  //   JsonRpcCall,
-  //   JsonRpcResponse
-  // >(chrome.runtime, 'offscreen', 'background', isJsonRpcCall);
-
+export async function runKernel(): Promise<never> {
   console.log('~~~ Initializing kernel... ~~~');
 
   const kernelStream = await makeKernelWorker();
 
-  // Handle messages from the background script / kernel
-  await Promise.all([
-    kernelStream.write({
-      jsonrpc: '2.0',
-      id: '1',
-      method: 'ping',
-      params: [],
-    }),
-    kernelStream.next().then((result) => {
-      console.log('~~~ Hello from the kernel ~~~', result);
-    }),
-    // kernelStream.pipe(backgroundStream),
-    // backgroundStream.pipe(kernelStream),
-  ]);
+  const backgroundCapTP = makeBackgroundCapTP({
+    send: (captpMessage: CapTPMessage) => {
+      const notification = makeCapTPNotification(captpMessage);
+      kernelStream.write(notification).catch((error) => {
+        logger.error('Failed to send CapTP message:', error);
+      });
+    },
+  });
+
+  const kernelP = backgroundCapTP.getKernel();
+
+  const drainPromise = kernelStream.drain((message) => {
+    if (isConsoleForwardMessage(message)) {
+      handleConsoleForwardMessage(message);
+    } else if (isCapTPNotification(message)) {
+      const captpMessage = getCapTPMessage(message);
+      backgroundCapTP.dispatch(captpMessage);
+    } else {
+      throw new Error(`Unexpected message: ${stringify(message)}`);
+    }
+  });
+  drainPromise.catch(logger.error);
+
+  try {
+    const pingResult = await E(kernelP).ping();
+    console.log(`~~~ Kernel says: ${pingResult} ~~~`);
+  } catch (error) {
+    kernelStream.throw(error as Error).catch(logger.error);
+  }
+
+  const error = new Error('Kernel connection closed unexpectedly');
+  try {
+    await drainPromise;
+  } catch (cause) {
+    error.cause = cause;
+  }
+  backgroundCapTP.abort(error);
+  throw error;
 }
 
 /**
@@ -55,7 +78,7 @@ export async function runKernel(): Promise<void> {
  * @returns The message port stream for worker communication
  */
 async function makeKernelWorker(): Promise<
-  DuplexStream<JsonRpcResponse, JsonRpcCall>
+  DuplexStream<JsonRpcMessage, JsonRpcMessage>
 > {
   const worker = new Worker('ocap-kernel/kernel-worker/index.js', {
     type: 'module',
@@ -66,9 +89,9 @@ async function makeKernelWorker(): Promise<
   );
 
   const kernelStream = await MessagePortDuplexStream.make<
-    JsonRpcResponse,
-    JsonRpcCall
-  >(port, isJsonRpcResponse);
+    JsonRpcMessage,
+    JsonRpcMessage
+  >(port, isJsonRpcMessage);
 
   await PlatformServicesServer.make(worker as PostMessageTarget, (vatId) =>
     makeIframeVatWorker({
