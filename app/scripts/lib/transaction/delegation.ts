@@ -29,10 +29,6 @@ import {
 import { limitedCalls } from '../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
 import { exactExecutionBatch } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBatchBuilder';
 import { exactExecution } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
-import {
-  findAtomicBatchSupportForChain,
-  checkEip7702Support,
-} from '../../../../shared/lib/eip7702-support-utils';
 import { stripSingleLeadingZero } from './util';
 
 const log = createProjectLogger('transaction-delegation');
@@ -50,26 +46,19 @@ export type DelegationMessenger = Messenger<
   never
 >;
 
-type AuthorizationRequest =
-  | {
-      /**
-       * Resolve upgrade support automatically via isAtomicBatchSupported.
-       * Used when the caller has not already checked upgrade status.
-       */
-      isAtomicBatchSupported: (
-        request: IsAtomicBatchSupportedRequest,
-      ) => Promise<IsAtomicBatchSupportedResult>;
-      upgradeContractAddress?: never;
-    }
-  | {
-      /**
-       * Pre-resolved upgrade contract address.
-       * Used when the caller has already determined the account needs upgrading.
-       * Pass undefined to skip authorization (account already upgraded).
-       */
-      isAtomicBatchSupported?: never;
-      upgradeContractAddress: Hex | undefined;
-    };
+type AuthorizationRequest = {
+  isAtomicBatchSupported?: (
+    request: IsAtomicBatchSupportedRequest,
+  ) => Promise<IsAtomicBatchSupportedResult>;
+
+  upgradeContractAddress?: Hex;
+
+  /**
+   * When false, throws if the account is already upgraded to a
+   * different delegation address. Defaults to true.
+   */
+  upgradeExistingDelegation?: boolean;
+};
 
 type ConvertTransactionToRedeemDelegationsRequest = {
   transaction: TransactionMeta;
@@ -148,14 +137,15 @@ export async function convertTransactionToRedeemDelegations(
   const { chainId } = transaction;
   const environment = getDeleGatorEnvironment(parseInt(chainId, 16));
 
-  const baseExecutions = buildDefaultExecutions(transaction);
+  const defaultExecutions = getDefaultTransactionExecutions(transaction);
+
   const additionalExecutions = request.additionalExecutions ?? [];
   const executions: ExecutionStruct[][] = [
-    [...baseExecutions[0], ...additionalExecutions],
+    [...defaultExecutions, ...additionalExecutions],
   ];
 
   const caveats =
-    request.caveats ?? buildDefaultCaveats(environment, transaction);
+    request.caveats ?? buildDefaultCaveats(environment, defaultExecutions);
 
   const modes: ExecutionMode[] = [
     executions[0].length > 1 ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
@@ -241,71 +231,54 @@ function hasExecutableNestedTransactions(
   return Boolean(nestedTransactions?.length && nestedTransactions[0].to);
 }
 
-function buildDefaultExecutions(
+function getDefaultTransactionExecutions(
   transactionMeta: TransactionMeta,
-): ExecutionStruct[][] {
+): ExecutionStruct[] {
   const { nestedTransactions, txParams } = transactionMeta;
 
   if (
     nestedTransactions?.length &&
     hasExecutableNestedTransactions(transactionMeta)
   ) {
-    return [
-      nestedTransactions.map((tx) => ({
-        target: tx.to as Hex,
-        value: BigInt(tx.value ?? '0x0'),
-        callData: tx.data as Hex,
-      })),
-    ];
+    return nestedTransactions.map((tx) => ({
+      target: tx.to as Hex,
+      value: BigInt(tx.value ?? '0x0'),
+      callData: tx.data as Hex,
+    }));
   }
 
   return [
-    [
-      {
-        target: txParams.to as Hex,
-        value: BigInt((txParams.value as Hex) ?? '0x0'),
-        callData: normalizeCallData(txParams.data),
-      },
-    ],
+    {
+      target: txParams.to as Hex,
+      value: BigInt((txParams.value as Hex) ?? '0x0'),
+      callData: normalizeCallData(txParams.data),
+    },
   ];
 }
 
 function buildDefaultCaveats(
   environment: ReturnType<typeof getDeleGatorEnvironment>,
-  transaction: TransactionMeta,
+  executions: ExecutionStruct[],
 ): Caveat[] {
   const caveatBuilder = createCaveatBuilder(environment);
-  const { nestedTransactions, txParams } = transaction;
-
-  let executions;
-
-  if (
-    nestedTransactions?.length &&
-    hasExecutableNestedTransactions(transaction)
-  ) {
-    executions = nestedTransactions.map((tx) => ({
-      to: tx.to as string,
-      value: tx.value ?? '0x0',
-      data: tx.data as string | undefined,
-    }));
-  } else {
-    executions = [
-      {
-        to: txParams.to as string,
-        value: (txParams.value as string) ?? '0x0',
-        data: txParams.data as string | undefined,
-      },
-    ];
-  }
 
   if (executions.length > 1) {
-    caveatBuilder.addCaveat(exactExecutionBatch, executions);
+    caveatBuilder.addCaveat(
+      exactExecutionBatch,
+      executions.map((e) => ({
+        to: e.target as string,
+        value: `0x${e.value.toString(16)}`,
+        data: e.callData as string | undefined,
+      })),
+    );
   } else {
+    const execution = executions[0];
+
     caveatBuilder.addCaveat(
       exactExecution,
-      executions[0].to,
-      executions[0].value,
-      executions[0].data,
+      execution.target as string,
+      `0x${execution.value.toString(16)}`,
+      execution.callData as string | undefined,
     );
   }
 
@@ -378,45 +351,52 @@ function decodeAuthorizationSignature(signature: Hex) {
 async function resolveUpgradeContractAddress(
   transaction: TransactionMeta,
   authorization: AuthorizationRequest,
-): Promise<{ upgradeContractAddress: Hex | undefined; skipAuth: boolean }> {
-  if (authorization.upgradeContractAddress !== undefined) {
-    return {
-      upgradeContractAddress: authorization.upgradeContractAddress,
-      skipAuth: false,
-    };
+): Promise<Hex | undefined> {
+  if (authorization.upgradeContractAddress) {
+    return authorization.upgradeContractAddress;
   }
 
   if (!authorization.isAtomicBatchSupported) {
-    return { upgradeContractAddress: undefined, skipAuth: true };
+    return undefined;
   }
 
   const { chainId, txParams } = transaction;
+
   const atomicBatchResult = await authorization.isAtomicBatchSupported({
     address: txParams.from as Hex,
     chainIds: [chainId],
   });
 
-  const chainResult = findAtomicBatchSupportForChain(
-    atomicBatchResult,
-    chainId,
+  const chainResult = atomicBatchResult.find(
+    (r) => r.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
-  const { isSupported, delegationAddress, upgradeContractAddress } =
-    checkEip7702Support(chainResult);
-
-  if (!isSupported) {
+  if (!chainResult) {
     throw new Error('Chain does not support EIP-7702');
   }
 
-  if (delegationAddress) {
+  const { delegationAddress, isSupported, upgradeContractAddress } =
+    chainResult;
+
+  if (isSupported) {
     log('Skipping authorization as already upgraded');
-    return { upgradeContractAddress: undefined, skipAuth: true };
+    return undefined;
   }
 
-  return {
-    upgradeContractAddress: upgradeContractAddress ?? undefined,
-    skipAuth: false,
-  };
+  if (delegationAddress && authorization.upgradeExistingDelegation === false) {
+    throw new Error(
+      `Account is already upgraded to a different delegation address: ${delegationAddress}`,
+    );
+  }
+
+  if (delegationAddress) {
+    log('Overwriting existing delegation', {
+      current: delegationAddress,
+      new: upgradeContractAddress,
+    });
+  }
+
+  return upgradeContractAddress;
 }
 
 async function buildAuthorizationList(
@@ -424,10 +404,12 @@ async function buildAuthorizationList(
   messenger: DelegationMessenger,
   authorization: AuthorizationRequest,
 ): Promise<AuthorizationList | undefined> {
-  const { upgradeContractAddress, skipAuth } =
-    await resolveUpgradeContractAddress(transaction, authorization);
+  const upgradeContractAddress = await resolveUpgradeContractAddress(
+    transaction,
+    authorization,
+  );
 
-  if (skipAuth || !upgradeContractAddress) {
+  if (!upgradeContractAddress) {
     return undefined;
   }
 
