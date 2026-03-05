@@ -231,7 +231,6 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         hasMusdBalance = false,
         isEmptyWallet = false,
         selectedChainId = null,
-        isPopularNetworksFilterActive: _isPopularNetworksFilterActive = false,
       } = options;
 
       // Master feature flag check

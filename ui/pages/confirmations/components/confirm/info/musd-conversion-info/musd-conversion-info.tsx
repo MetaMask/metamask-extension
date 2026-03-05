@@ -23,6 +23,31 @@ import { ClaimableBonusRow } from '../../../rows/claimable-bonus-row/claimable-b
 import { TotalRow } from '../../../rows/total-row/total-row';
 import { MusdOverrideContent } from './musd-override-content';
 
+const MusdBottomContent = () => {
+  const quotes = useTransactionPayQuotes();
+  const isQuotesLoading = useIsTransactionPayLoading();
+  const { hideResults } = useTransactionCustomAmountAlerts();
+
+  const isResultReady = isQuotesLoading || Boolean(quotes?.length);
+
+  if (!isResultReady || hideResults) {
+    return null;
+  }
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      gap={2}
+      paddingBottom={4}
+    >
+      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
+      <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
+      <TotalRow variant={ConfirmInfoRowSize.Small} />
+    </Box>
+  );
+};
+
 /**
  * MusdConversionInfo Component
  *
@@ -63,30 +88,5 @@ export const MusdConversionInfo = () => {
       overrideCenterContent={renderOverrideContent}
       overrideBottomContent={<MusdBottomContent />}
     />
-  );
-};
-
-const MusdBottomContent = () => {
-  const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
-  const { hideResults } = useTransactionCustomAmountAlerts();
-
-  const isResultReady = isQuotesLoading || Boolean(quotes?.length);
-
-  if (!isResultReady || hideResults) {
-    return null;
-  }
-
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      gap={2}
-      paddingBottom={4}
-    >
-      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
-      <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
-      <TotalRow variant={ConfirmInfoRowSize.Small} />
-    </Box>
   );
 };
