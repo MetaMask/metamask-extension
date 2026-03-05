@@ -55,8 +55,8 @@ export const TREZOR_ACCOUNT_ID = '221ecb67-0d29-4c04-83b2-dff07c263634';
 export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
 /** Trezor hardware wallet address (checksum form) */
-export const TREZOR_ADDRESS_CHECKSUM =
-  '0xF68464152d7289D7eA9a2bEC2E0035c45188223c';
+// export const TREZOR_ADDRESS_CHECKSUM =
+//   '0xF68464152d7289D7eA9a2bEC2E0035c45188223c';
 
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
