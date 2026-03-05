@@ -1,5 +1,4 @@
 import {
-  AccountsControllerChangeEvent,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetAccountNameAction,
 } from '@metamask/accounts-controller';
@@ -66,15 +65,10 @@ export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction;
 
-/**
- * Events that this controller is allowed to subscribe.
- */
-export type AllowedEvents = AccountsControllerChangeEvent;
-
 export type PreferencesControllerMessenger = Messenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
-  PreferencesControllerEvents | AllowedEvents
+  PreferencesControllerEvents
 >;
 
 type PreferencesControllerOptions = {

@@ -1,8 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import {
-  AllowedActions,
-  AllowedEvents,
-} from '../../controllers/preferences-controller';
+import { AllowedActions } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 export type PreferencesControllerMessenger = ReturnType<
@@ -17,12 +14,12 @@ export type PreferencesControllerMessenger = ReturnType<
  * @returns The controller messenger.
  */
 export function getPreferencesControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions>,
 ) {
   const preferencesControllerMessenger = new Messenger<
     'PreferencesController',
     AllowedActions,
-    AllowedEvents,
+    never,
     typeof messenger
   >({
     namespace: 'PreferencesController',
