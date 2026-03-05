@@ -238,38 +238,6 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          subscriptions: [],
-          trialedProducts: [],
-        },
-      };
-    });
-
-  await server
-    .forGet(
-      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            canSubscribe: false,
-            canViewEntryModal: false,
-            minBalanceUSD: 1000,
-            product: 'shield',
-            modalType: 'A',
-            cohorts: [],
-          },
-        ],
-      };
-    });
-
   // User Profile Lineage
   await server
     .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')

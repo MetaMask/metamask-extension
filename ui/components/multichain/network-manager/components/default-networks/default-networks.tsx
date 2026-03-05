@@ -102,21 +102,13 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
   );
 
-  let btcAccountGroup = null;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  btcAccountGroup = useSelector((state) =>
+  const btcAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
   );
-  ///: END:ONLY_INCLUDE_IF
 
-  let trxAccountGroup = null;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  trxAccountGroup = useSelector((state) =>
+  const trxAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(

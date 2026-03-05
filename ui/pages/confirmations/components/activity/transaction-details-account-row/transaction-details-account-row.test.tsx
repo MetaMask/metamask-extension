@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsAccountRow } from './transaction-details-account-row';
 
@@ -58,6 +59,6 @@ describe('TransactionDetailsAccountRow', () => {
 
   it('renders Account label', () => {
     const { getByText } = render();
-    expect(getByText('Account')).toBeInTheDocument();
+    expect(getByText(messages.account.message)).toBeInTheDocument();
   });
 });
