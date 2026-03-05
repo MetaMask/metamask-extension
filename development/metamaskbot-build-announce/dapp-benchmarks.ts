@@ -157,6 +157,9 @@ async function fetchLatestMainBenchmarkData(
     const response = await fetch(url);
 
     if (!response.ok) {
+      console.warn(
+        `Failed to fetch historical benchmark data: ${response.statusText}`,
+      );
       return null;
     }
 
@@ -166,6 +169,7 @@ async function fetchLatestMainBenchmarkData(
       .sort((a, b) => data[b].timestamp - data[a].timestamp);
 
     if (commitHashes.length === 0) {
+      console.warn('No benchmark data found');
       return null;
     }
 
@@ -173,7 +177,8 @@ async function fetchLatestMainBenchmarkData(
     const latestCommits = commitHashes.slice(0, n);
 
     return aggregateHistoricalBenchmarkData(latestCommits, data, n);
-  } catch {
+  } catch (error) {
+    console.warn('Error fetching historical benchmark data:', error);
     return null;
   }
 }
@@ -531,6 +536,7 @@ export async function getDappBenchmarkComment(): Promise<string | null> {
   }
 
   if (!benchmarkData) {
+    console.warn('No benchmark results found, skipping comment');
     return null;
   }
 
