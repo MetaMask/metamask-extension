@@ -54,6 +54,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.midPrice
  * @param props.onOrderTypeChange
  * @param props.onCalculationsChange
+ * @param props.onAddFunds
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,

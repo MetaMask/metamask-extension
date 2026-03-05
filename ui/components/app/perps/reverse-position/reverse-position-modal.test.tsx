@@ -384,7 +384,7 @@ describe('ReversePositionModal', () => {
   });
 
   describe('leverage fallback', () => {
-    it('uses leverage value 1 when leverage is not an object', () => {
+    it('uses numeric leverage value when leverage is a plain number', async () => {
       const placeOrder = jest.fn().mockResolvedValue({ success: true });
       mockGetPerpsController.mockResolvedValue({
         closePosition: jest.fn().mockResolvedValue({ success: true }),
@@ -407,10 +407,10 @@ describe('ReversePositionModal', () => {
 
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
-      waitFor(() => {
+      await waitFor(() => {
         expect(placeOrder).toHaveBeenCalledWith(
           expect.objectContaining({
-            leverage: 1, // falls back to 1 when leverage is not an object
+            leverage: 5,
           }),
         );
       });

@@ -63,10 +63,12 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const sizeNum = Math.abs(parseFloat(position.size));
   const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
 
-  const leverageValue =
-    typeof position.leverage === 'object' && position.leverage !== null
-      ? ((position.leverage as { value?: number }).value ?? 1)
-      : 1;
+  let leverageValue = 1;
+  if (typeof position.leverage === 'object' && position.leverage !== null) {
+    leverageValue = (position.leverage as { value?: number }).value ?? 1;
+  } else if (typeof position.leverage === 'number') {
+    leverageValue = position.leverage;
+  }
 
   const handleSave = useCallback(async () => {
     if (!selectedAddress) {

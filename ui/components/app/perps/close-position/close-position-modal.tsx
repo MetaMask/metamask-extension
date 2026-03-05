@@ -213,10 +213,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     textAlign={TextAlign.Right}
                   >
                     {t('perpsIncludesPnl', [
-                      formatCurrencyWithMinThreshold(
+                      `${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
                         Math.abs(unrealizedPnl),
                         'USD',
-                      ),
+                      )}`,
                     ])}
                   </Text>
                 </Box>

@@ -57,6 +57,9 @@ export type EditMarginModalContentProps = {
  * @param options0.selectedAddress
  * @param options0.mode
  * @param options0.onClose
+ * @param options0.externalSave
+ * @param options0.onSaveRef
+ * @param options0.onSaveEnabledChange
  */
 export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   position,
