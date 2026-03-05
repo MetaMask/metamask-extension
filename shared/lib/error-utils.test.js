@@ -108,7 +108,7 @@ describe('Error utils Tests', function () {
           restartMetamask: { message: 'Restart MetaMask' },
           stillGettingMessage: { message: 'Still getting this message?' },
           errorPageContactSupport: { message: 'Contact support' },
-          criticalErrorFooter: { message: '$1 or $2' },
+          criticalErrorFooter: { message: '$1 $2 or $3' },
           stateCorruptionRestoreAccountsFromBackup: {
             message: 'Restore accounts from backup',
           },
