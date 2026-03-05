@@ -25,6 +25,7 @@ import type {
   BenchmarkType,
   Metrics,
   Persona,
+  StatisticalResult,
   ThresholdConfig,
   TimerResult,
   TimerStatistics,
@@ -175,6 +176,50 @@ export async function runBenchmarkWithIterations(
     thresholdViolations: thresholdResult.violations,
     thresholdsPassed: thresholdResult.passed,
     benchmarkType,
+  };
+}
+
+/**
+ * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
+ * for consistent output with send-to-sentry.ts
+ *
+ * @param summary
+ * @param testTitle
+ * @param persona
+ * @param benchmarkType
+ */
+export function convertSummaryToResults(
+  summary: BenchmarkSummary,
+  testTitle: string,
+  persona: Persona = 'standard',
+  benchmarkType?: BenchmarkType,
+): BenchmarkResults {
+  const mean: StatisticalResult = {};
+  const min: StatisticalResult = {};
+  const max: StatisticalResult = {};
+  const stdDev: StatisticalResult = {};
+  const p75: StatisticalResult = {};
+  const p95: StatisticalResult = {};
+
+  for (const timer of summary.timers) {
+    mean[timer.id] = timer.mean;
+    min[timer.id] = timer.min;
+    max[timer.id] = timer.max;
+    stdDev[timer.id] = timer.stdDev;
+    p75[timer.id] = timer.p75;
+    p95[timer.id] = timer.p95;
+  }
+
+  return {
+    testTitle,
+    persona,
+    benchmarkType,
+    mean,
+    min,
+    max,
+    stdDev,
+    p75,
+    p95,
   };
 }
 

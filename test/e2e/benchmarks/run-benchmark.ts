@@ -14,64 +14,18 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
-import { runBenchmarkWithIterations } from './utils';
+import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
   THRESHOLD_REGISTRY,
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
 } from './utils/constants';
-import type {
-  BenchmarkResults,
-  BenchmarkSummary,
-  BenchmarkType,
-  Persona,
-  StatisticalResult,
-} from './utils/types';
-
-/**
- * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
- * for consistent output with send-to-sentry.ts
- *
- * @param summary
- * @param testTitle
- * @param persona
- * @param benchmarkType
- */
-function convertSummaryToResults(
-  summary: BenchmarkSummary,
-  testTitle: string,
-  persona: Persona = 'standard',
-  benchmarkType?: BenchmarkType,
-): BenchmarkResults {
-  const mean: StatisticalResult = {};
-  const min: StatisticalResult = {};
-  const max: StatisticalResult = {};
-  const stdDev: StatisticalResult = {};
-  const p75: StatisticalResult = {};
-  const p95: StatisticalResult = {};
-
-  for (const timer of summary.timers) {
-    mean[timer.id] = timer.mean;
-    min[timer.id] = timer.min;
-    max[timer.id] = timer.max;
-    stdDev[timer.id] = timer.stdDev;
-    p75[timer.id] = timer.p75;
-    p95[timer.id] = timer.p95;
-  }
-
-  return {
-    testTitle,
-    persona,
-    benchmarkType,
-    mean,
-    min,
-    max,
-    stdDev,
-    p75,
-    p95,
-  };
-}
+import {
+  validateResultThresholds,
+  logThresholdResult,
+} from './utils/statistics';
+import type { BenchmarkResults, ThresholdViolation } from './utils/types';
 
 /**
  * Startup benchmarks handle their own iteration internally (browserLoads x pageLoads).
@@ -156,8 +110,11 @@ async function runBenchmarkFile(
   }
 
   const { run: runFn } = benchmark;
+  const thresholdConfig = THRESHOLD_REGISTRY[fileName];
 
-  // For benchmarks that support iterations, use runBenchmarkWithIterations to run multiple times
+  let result: BenchmarkResults;
+  let violations: ThresholdViolation[] = [];
+
   if (supportsIterations(filePath) && options.iterations > 0) {
     const testTitle = benchmark.testTitle || fileName;
     const { persona } = benchmark;
@@ -171,35 +128,31 @@ async function runBenchmarkFile(
       runFn,
       options.iterations,
       options.retries,
-      THRESHOLD_REGISTRY[fileName],
+      thresholdConfig,
     );
 
     console.log(
       `Completed: ${summary.successfulRuns}/${summary.iterations} successful runs`,
     );
 
-    if (summary.thresholdViolations.length > 0) {
-      console.log('\n⚠️  Threshold Violations:');
-      summary.thresholdViolations.forEach((v) => {
-        const icon = v.severity === 'fail' ? '❌' : '⚠️';
-        console.log(
-          `  ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
-        );
-      });
-    } else {
-      console.log('✅ All thresholds passed');
-    }
-
-    return convertSummaryToResults(
+    violations = summary.thresholdViolations;
+    result = convertSummaryToResults(
       summary,
       testTitle,
       persona,
       summary.benchmarkType,
     );
+  } else {
+    result = (await runFn(options)) as BenchmarkResults;
+
+    if (thresholdConfig) {
+      violations = validateResultThresholds(result, thresholdConfig).violations;
+    }
   }
 
-  // For other benchmarks (page-load), run once with options
-  return runFn(options);
+  logThresholdResult(violations);
+
+  return result;
 }
 
 /**
