@@ -15,6 +15,7 @@ import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
+import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -39,9 +40,9 @@ import {
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/modules/transaction.utils';
+import { getMergedFeatureFlagsWithController } from '../../../../shared/lib/flags-utils';
 import {
-  getTempoTransactionBatchRequestParams,
-  isTempoSupportEnabledForChainId,
+  buildBatchTransactionsFromTempoTransactionCalls,
   isTempoTransactionParams,
   isTempoTransactionRequest,
 } from './tempo-tx-utils';
@@ -60,6 +61,7 @@ type BaseAddTransactionRequest = {
   transactionController: TransactionController;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
+  remoteFeatureFlagController: RemoteFeatureFlagController;
   internalAccounts: InternalAccount[];
   getSecurityAlertResponse: GetAddressSecurityAlertResponse;
   addSecurityAlertResponse: AddAddressSecurityAlertResponse;
@@ -135,12 +137,39 @@ export async function addDappTransaction(
   return hash;
 }
 
+type TempoConfig = {
+  perChainConfig: {
+    [key: Hex]: {
+      enabled: boolean;
+      defaultFeeToken: Hex;
+    };
+  };
+};
+
+function getTempoConfig(
+  remoteFeatureFlagController: RemoteFeatureFlagController,
+): TempoConfig | undefined {
+  const mergedFlagsRuntime = getMergedFeatureFlagsWithController(
+    remoteFeatureFlagController,
+  );
+  return mergedFlagsRuntime.tempoConfig as TempoConfig;
+}
+
 async function addTempoTransaction(
   request: FinalAddTransactionRequest,
 ): AddTransactionResult {
-  if (!isTempoSupportEnabledForChainId(request.chainId)) {
+  const tempoConfig = getTempoConfig(request.remoteFeatureFlagController);
+  const tempoConfigForChain = tempoConfig?.perChainConfig[request.chainId];
+
+  if (!tempoConfigForChain) {
     throw new Error(
       `Tempo transactions are not supported for chain: ${request.chainId}`,
+    );
+  }
+
+  if (!tempoConfigForChain.enabled) {
+    throw new Error(
+      `Tempo transactions are disabled for chain: ${request.chainId}`,
     );
   }
 
@@ -151,9 +180,18 @@ async function addTempoTransaction(
 
   const { networkClientId, transactionController } = request;
 
-  const tempoBatchRequestParams = getTempoTransactionBatchRequestParams(
-    request.transactionParams,
-  );
+  const tempoBatchRequestParams = {
+    from: request.transactionParams.from as Hex,
+    transactions: buildBatchTransactionsFromTempoTransactionCalls(
+      request.transactionParams,
+    ),
+    // If no token is provided, we force a default one so we don't fall in
+    // fee preference algo: https://docs.tempo.xyz/protocol/fees/spec-fee#fee-token-preferences
+    gasFeeToken:
+      request.transactionParams.feeToken || tempoConfigForChain.defaultFeeToken,
+    excludeNativeTokenForFee: true,
+  };
+
   const result = await transactionController.addTransactionBatch({
     ...tempoBatchRequestParams,
     ...request.transactionOptions,
@@ -218,6 +256,10 @@ async function addTransactionOrUserOperation(
   const { selectedAccount } = request;
 
   const isTempoFlow = isTempoTransactionRequest(request);
+  console.warn('EXT::utils addTransactionOrUserOperation', {
+    isTempoFlow,
+    request,
+  });
   if (isTempoFlow) {
     return addTempoTransaction(request);
   }

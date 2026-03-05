@@ -6266,6 +6266,7 @@ export default class MetamaskController extends EventEmitter {
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
+      remoteFeatureFlagController: this.remoteFeatureFlagController,
       chainId,
       ppomController: this.ppomController,
       securityAlertsEnabled:

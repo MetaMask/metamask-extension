@@ -903,6 +903,26 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     ],
     status: FeatureFlagStatus.Active,
   },
+  tempoConfig: {
+    name: 'tempoConfig',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      perChainConfig: {
+        '0x1079': {
+          // Tempo Mainnet
+          enabled: true,
+          defaultFeeToken: '0x20c0000000000000000000000000000000000000',
+        },
+        '0xa5bf': {
+          // Tempo Testnet Moderato
+          enabled: true,
+          defaultFeeToken: '0x20c0000000000000000000000000000000000000',
+        },
+      },
+    },
+    status: FeatureFlagStatus.Active,
+  },
 };
 
 // ============================================================================
