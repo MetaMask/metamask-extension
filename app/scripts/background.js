@@ -864,6 +864,12 @@ async function loadPreinstalledSnaps() {
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
     const response = await fetchWithTimeout(url);
 
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch preinstalled Snap from ${url}: HTTP ${response.status} ${response.statusText}`,
+      );
+    }
+
     // If the Snap is compressed, decompress it
     if (url.pathname.endsWith('.json.gz')) {
       const ds = new DecompressionStream('gzip');
