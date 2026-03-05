@@ -16,7 +16,10 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import { DATA_SERVICES } from '../../shared/constants/data-services';
-import { submitRequestToBackground, background as backgroundConnection } from '../store/background-connection';
+import {
+  submitRequestToBackground,
+  background as backgroundConnection,
+} from '../store/background-connection';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
@@ -24,13 +27,20 @@ import ErrorPage from './error-page/error-page.component';
 import Routes from './routes';
 
 const adapter = {
-  call: (method, ...params) => submitRequestToBackground(method, params),
+  call: (method, ...params) =>
+    submitRequestToBackground('messengerCall', [method, params]),
   subscribe: (method, callback) => {
-    backgroundConnection.onNotification((data) => {
-      if (data.method === method) {
-        callback(data.params);
-      }
+    submitRequestToBackground('messengerSubscribe', [method]).then(() => {
+      backgroundConnection.onNotification((data) => {
+        if (data.method === method) {
+          callback(data.params);
+        }
+      });
     });
+  },
+  unsubscribe: (method, _callback) => {
+    submitRequestToBackground('messengerUnsubscribe', [method]);
+    // TODO: Remove onNotification handler
   },
 };
 

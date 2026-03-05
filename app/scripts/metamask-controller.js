@@ -188,7 +188,6 @@ import {
   TraceName,
   TraceOperation,
 } from '../../shared/lib/trace';
-import { DATA_SERVICES } from '../../shared/constants/data-services';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -426,6 +425,7 @@ import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { ActivityDataService } from './queries/ActivityDataService';
 import { AssetDataService } from './queries/AssetDataService';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2437,7 +2437,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {object} Object containing API functions.
    */
-  getApi(outStream) {
+  getApi() {
     const {
       accountsController,
       addressBookController,
@@ -2476,56 +2476,7 @@ export default class MetamaskController extends EventEmitter {
       staticAssetsController,
     } = this;
 
-    // TODO: Consider moving data service API setup somewhere else
-    const dataServiceApi = DATA_SERVICES.reduce((accumulator, dataService) => {
-      // TODO: Consider if this can be tied into the messenger more.
-      const querySubscription = (payload) => {
-        outStream.write({
-          jsonrpc: '2.0',
-          method: `${dataService}:cacheUpdate`,
-          params: [payload],
-        });
-      };
-
-      // TODO: Figure out how data actions can be dynamically bound
-      accumulator[`${dataService}:getActivity`] = (...params) =>
-        this.controllerMessenger.call(
-          `${dataService}:getActivity`,
-          ...params,
-        );
-
-      accumulator[`${dataService}:getAssets`] = (...params) =>
-        this.controllerMessenger.call(
-          `${dataService}:getAssets`,
-          ...params,
-        );
-
-      accumulator[`${dataService}:subscribe`] = (queryKey) =>
-        this.controllerMessenger.call(
-          `${dataService}:subscribe`,
-          queryKey,
-          querySubscription,
-        );
-
-      accumulator[`${dataService}:unsubscribe`] = (queryKey) =>
-        this.controllerMessenger.call(
-          `${dataService}:unsubscribe`,
-          queryKey,
-          querySubscription,
-        );
-
-      accumulator[`${dataService}:invalidateQueries`] = (filters, queries) =>
-        this.controllerMessenger.call(
-          `${dataService}:invalidateQueries`,
-          filters,
-          queries,
-        );
-
-      return accumulator;
-    }, {});
-
     return {
-      ...dataServiceApi,
       // etc
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
@@ -6657,6 +6608,11 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
+    const messengerSubscriptions = new MessengerSubscriptions(
+      this.controllerMessenger,
+      outStream,
+    );
+
     const api = {
       ...this.getApi(outStream),
       ...this.controllerApi,
@@ -6665,6 +6621,14 @@ export default class MetamaskController extends EventEmitter {
         handleUpdate();
       },
       getStatePatches: () => patchStore.flushPendingPatches(),
+      messengerSubscribe: messengerSubscriptions.subscribe.bind(
+        messengerSubscriptions,
+      ),
+      messengerUnsubscribe: messengerSubscriptions.unsubscribe.bind(
+        messengerSubscriptions,
+      ),
+      messengerCall: (method, params) =>
+        this.controllerMessenger.call(method, ...params),
     };
 
     this.on('update', handleUpdate);
