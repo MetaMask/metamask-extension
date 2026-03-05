@@ -105,10 +105,19 @@ describe('useMerklRewards', () => {
       typeof merklClient.getClaimedAmountFromContract
     >;
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     setupSelectorMock();
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: false,
+      userCountry: 'US',
+      isLoading: false,
+    });
   });
 
   it('returns false for ineligible token', () => {
@@ -299,7 +308,6 @@ describe('useMerklRewards', () => {
 
     expect(consoleSpy).toHaveBeenCalled();
     expect(result.current.hasClaimableReward).toBe(false);
-    consoleSpy.mockRestore();
   });
 
   it('aborts fetch on unmount', () => {
@@ -317,7 +325,6 @@ describe('useMerklRewards', () => {
     unmount();
 
     expect(abortSpy).toHaveBeenCalled();
-    abortSpy.mockRestore();
   });
 
   it('returns false for sub-cent unclaimed amounts', async () => {
@@ -405,13 +412,6 @@ describe('useMerklRewards', () => {
 
     expect(result.current.hasClaimableReward).toBe(false);
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
-
-    // Reset for other tests
-    useMusdGeoBlocking.mockReturnValue({
-      isBlocked: false,
-      userCountry: 'US',
-      isLoading: false,
-    });
   });
 
   it('falls back to API claimed value when getClaimedAmountFromContract returns null', async () => {
