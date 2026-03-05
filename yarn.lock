@@ -20205,16 +20205,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"builtins@npm:^5.0.0":
-  version: 5.0.1
-  resolution: "builtins@npm:5.0.1"
-  dependencies:
-    semver: "npm:^7.0.0"
-  checksum: 10/90136fa0ba98b7a3aea33190b1262a5297164731efb6a323b0231acf60cc2ea0b2b1075dbf107038266b8b77d6045fa9631d1c3f90efc1c594ba61218fbfbb4c
-  languageName: node
-  linkType: hard
-
-"builtins@npm:^5.0.1":
+"builtins@npm:^5.0.0, builtins@npm:^5.0.1":
   version: 5.1.0
   resolution: "builtins@npm:5.1.0"
   dependencies:
