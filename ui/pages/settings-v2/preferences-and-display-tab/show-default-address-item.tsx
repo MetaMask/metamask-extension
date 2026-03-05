@@ -1,16 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  Text,
-  TextVariant,
-  TextColor,
-  FontWeight,
-} from '@metamask/design-system-react';
-import ToggleButton from '../../../components/ui/toggle-button';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -31,6 +21,7 @@ import {
   DEFAULT_ADDRESS_OPTIONS,
   type DefaultAddressScope,
 } from '../../../../shared/constants/default-address';
+import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 
 export const ShowDefaultAddressItem = () => {
   const t = useI18nContext();
@@ -84,28 +75,14 @@ export const ShowDefaultAddressItem = () => {
   }
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={1} paddingVertical={3}>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {t('showDefaultAddress')}
-        </Text>
-        <ToggleButton
-          value={showDefaultAddress}
-          onToggle={handleToggle}
-          dataTestId="show-default-address-toggle"
-        />
-      </Box>
-      <Text
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextAlternative}
-        className="mb-3"
-      >
-        {t('showDefaultAddressDescription')}
-      </Text>
+    <Box flexDirection={BoxFlexDirection.Column} gap={1} marginBottom={3}>
+      <SettingsToggleItem
+        title={t('showDefaultAddress')}
+        description={t('showDefaultAddressDescription')}
+        value={showDefaultAddress}
+        onToggle={handleToggle}
+        dataTestId="show-default-address-toggle"
+      />
       <Dropdown
         options={defaultAddressDropdownOptions}
         selectedOption={defaultAddressScope}
