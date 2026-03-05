@@ -9,7 +9,7 @@ export class MessengerSubscriptions {
 
   #stream: Duplex;
 
-  #subscriptions = new Map<NamespacedName, Listener>();
+  #subscriptions = new Map<NamespacedName, { listener: Listener, count: number }>();
 
   constructor(messenger: BaseControllerMessenger, stream: Duplex) {
     this.#messenger = messenger;
@@ -17,7 +17,9 @@ export class MessengerSubscriptions {
   }
 
   subscribe(event: NamespacedName) {
-    if (this.#subscriptions.has(event)) {
+    const subscription = this.#subscriptions.get(event);
+    if (subscription) {
+      subscription.count += 1;
       return;
     }
 
@@ -28,19 +30,24 @@ export class MessengerSubscriptions {
         params: [payload],
       });
     };
-    this.#subscriptions.set(event, listener);
+    this.#subscriptions.set(event, { listener, count: 1 });
 
     this.#messenger.subscribe(event, listener);
   }
 
   unsubscribe(event: NamespacedName) {
-    const listener = this.#subscriptions.get(event);
+    const subscription = this.#subscriptions.get(event);
 
-    if (!listener) {
+    if (!subscription) {
       return;
     }
 
-    this.#messenger.unsubscribe(event, listener);
+    if (subscription.count > 2) {
+      subscription.count -= 1;
+      return;
+    }
+
+    this.#messenger.unsubscribe(event, subscription.listener);
     this.#subscriptions.delete(event);
   }
 }
