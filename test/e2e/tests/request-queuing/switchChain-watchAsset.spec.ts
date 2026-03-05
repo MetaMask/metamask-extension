@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -16,7 +16,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
