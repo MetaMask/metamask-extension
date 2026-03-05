@@ -12,7 +12,7 @@ import { getConfig } from './helpers';
  *
  * Positions and orders come from mock PerpsStreamManager (ui/providers/perps/PerpsStreamManager/index.mock.ts).
  * The mock controller's placeOrder pushes the new position to the stream so the UI shows Modify/Close immediately.
- * When real PerpsController is integrated, WebSocket/HTTP mocks can be used (websocket-perps-mocks, mock-e2e).
+ * When real PerpsController is integrated, WebSocket/HTTP mocks can be used (websocket/perps-mocks, mock-e2e).
  */
 describe('Perps', function (this: Suite) {
   this.timeout(120000);

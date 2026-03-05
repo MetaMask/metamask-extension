@@ -8,6 +8,7 @@ import {
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../../selectors/identity/backup-and-sync';
 import { BACKUPANDSYNC_ROUTE } from '../../../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
   Box,
   Modal,
@@ -135,7 +136,7 @@ export function TurnOnBackupAndSyncModal() {
               <Text
                 as="a"
                 variant={TextVariant.bodySm}
-                href="https://support.metamask.io/privacy-and-security/profile-privacy"
+                href={ZENDESK_URLS.PROFILE_PRIVACY}
                 target="_blank"
                 rel="noopener noreferrer"
                 key="privacy-link"
