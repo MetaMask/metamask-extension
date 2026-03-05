@@ -1107,6 +1107,9 @@
     "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceImpact": {
+    "message": "Price impact"
+  },
   "bridgePriceImpactHigh": {
     "message": "High price impact"
   },
