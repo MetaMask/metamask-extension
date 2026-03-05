@@ -28,11 +28,22 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
+const SEND_TRANSACTION_TYPES = [
+  TransactionType.simpleSend,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
+
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();
   const { onCancel } = useConfirmActions();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const navigate = useNavigate();
+
+  const isSendTransaction =
+    currentConfirmation?.type &&
+    SEND_TRANSACTION_TYPES.includes(currentConfirmation.type);
 
   const handleBackButtonClick = useCallback(() => {
     if (
@@ -64,6 +75,20 @@ export const WalletInitiatedHeader = () => {
     }
   }, [currentConfirmation, navigate, onCancel]);
 
+  const getHeaderTitle = () => {
+    if (isSendTransaction) {
+      return null;
+    }
+    if (
+      currentConfirmation.type === TransactionType.shieldSubscriptionApprove
+    ) {
+      return t('shieldConfirmMembership');
+    }
+    return t('review');
+  };
+
+  const headerTitle = getHeaderTitle();
+
   return (
     <Box
       alignItems={AlignItems.center}
@@ -86,11 +111,11 @@ export const WalletInitiatedHeader = () => {
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}
       />
-      <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
-        {currentConfirmation.type === TransactionType.shieldSubscriptionApprove
-          ? t('shieldConfirmMembership')
-          : t('review')}
-      </Text>
+      {headerTitle && (
+        <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
+          {headerTitle}
+        </Text>
+      )}
       <AdvancedDetailsButton />
     </Box>
   );

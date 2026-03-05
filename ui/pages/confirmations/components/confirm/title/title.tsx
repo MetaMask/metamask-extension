@@ -8,14 +8,10 @@ import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
@@ -255,17 +251,7 @@ const getDescription = (
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TitleSkeleton() {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      paddingTop={4}
-      paddingBottom={4}
-    >
-      <Skeleton height="24px" width="200px" />
-    </Box>
-  );
+  return null;
 }
 
 const ConfirmTitle: React.FC = memo(() => {

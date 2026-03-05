@@ -26,6 +26,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   getPreferences,
   selectConversionRateByChainId,
@@ -35,6 +36,7 @@ import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 
 const NativeSendHeading = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -97,20 +99,12 @@ const NativeSendHeading = () => {
 
   const NativeAssetAmount =
     roundedTransferValue === transferValue ? (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        marginTop={3}
-      >
+      <Text variant={TextVariant.headingLg} color={TextColor.inherit}>
         {`${roundedTransferValue} ${nativeCurrency}`}
       </Text>
     ) : (
       <Tooltip title={transferValue} position="right">
-        <Text
-          variant={TextVariant.headingLg}
-          color={TextColor.inherit}
-          marginTop={3}
-        >
+        <Text variant={TextVariant.headingLg} color={TextColor.inherit}>
           {`${roundedTransferValue} ${nativeCurrency}`}
         </Text>
       </Tooltip>
@@ -128,14 +122,23 @@ const NativeSendHeading = () => {
   return (
     <Box
       display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.flexStart}
       padding={4}
     >
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          marginBottom={1}
+        >
+          {t('confirmTitleSending')}
+        </Text>
+        {NativeAssetAmount}
+        {NativeAssetFiatConversion}
+      </Box>
       {NetworkImage}
-      {NativeAssetAmount}
-      {NativeAssetFiatConversion}
     </Box>
   );
 };

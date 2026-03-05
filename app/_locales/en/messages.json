@@ -1632,6 +1632,9 @@
   "confirmTitleSignature": {
     "message": "Signature request"
   },
+  "confirmTitleSending": {
+    "message": "Sending"
+  },
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },

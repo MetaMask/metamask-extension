@@ -16,11 +16,6 @@ exports[`<WalletInitiatedHeader /> should match snapshot 1`] = `
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
     </button>
-    <h4
-      class="mm-box mm-text mm-text--heading-sm mm-box--color-inherit"
-    >
-      Review
-    </h4>
     <div
       class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
     >
