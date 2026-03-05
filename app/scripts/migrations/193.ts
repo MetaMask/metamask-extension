@@ -39,9 +39,7 @@ export async function migrate(
  */
 async function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'SnapController')) {
-    captureException(
-      new Error(`Migration ${version}: SnapController not found.`),
-    );
+    console.warn(`Migration ${version}: SnapController not found.`);
     return false;
   }
 

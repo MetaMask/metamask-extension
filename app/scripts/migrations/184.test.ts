@@ -39,7 +39,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newStorage.meta).toStrictEqual({ version: VERSION });
   });
 
-  const invalidStates = [
+  const notFoundStates = [
     {
       state: {
         meta: { version: VERSION },
@@ -47,6 +47,21 @@ describe(`migration #${VERSION}`, () => {
       },
       scenario: 'NetworkController not found',
     },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {},
+            selectedNetworkClientId: 'megaeth-testnet',
+          },
+        },
+      },
+      scenario: 'missing NetworkEnablementController',
+    },
+  ];
+
+  const invalidStates = [
     {
       state: {
         meta: { version: VERSION },
@@ -75,18 +90,6 @@ describe(`migration #${VERSION}`, () => {
         },
       },
       scenario: 'invalid networkConfigurationsByChainId state',
-    },
-    {
-      state: {
-        meta: { version: VERSION },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: {},
-            selectedNetworkClientId: 'megaeth-testnet',
-          },
-        },
-      },
-      scenario: 'missing NetworkEnablementController',
     },
     {
       state: {
@@ -149,6 +152,26 @@ describe(`migration #${VERSION}`, () => {
       scenario: 'invalid enabledNetworkMap[eip155] state',
     },
   ];
+
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each(notFoundStates)(
+    'should warn if $scenario',
+    async ({ state }: { state: VersionedData }) => {
+      const orgState = cloneDeep(state);
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      const migratedState = await migrate(state);
+
+      // State should be unchanged
+      expect(migratedState).toStrictEqual(orgState);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('not found'),
+      );
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+
+      consoleWarnSpy.mockRestore();
+    },
+  );
 
   // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidStates)(

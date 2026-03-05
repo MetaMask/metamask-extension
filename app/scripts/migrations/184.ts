@@ -69,9 +69,7 @@ export async function migrate(originalVersionedData: VersionedData) {
 
 function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'NetworkController')) {
-    captureException(
-      new Error(`Migration ${version}: NetworkController not found.`),
-    );
+    console.warn(`Migration ${version}: NetworkController not found.`);
     return state;
   }
 
@@ -105,8 +103,8 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(state, 'NetworkEnablementController')) {
-    captureException(
-      new Error(`Migration ${version}: NetworkEnablementController not found.`),
+    console.warn(
+      `Migration ${version}: NetworkEnablementController not found.`,
     );
     return state;
   }

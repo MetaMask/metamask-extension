@@ -36,13 +36,13 @@
       "error: Error: Migration 184: NetworkController missing": 1,
       "error: Error: Migration 186: Invalid NetworkController": 1,
       "error: Error: Migration 189: Invalid NetworkController": 1,
-      "error: Error: Migration 193: SnapController not": 1,
       "error: Error: Migration 196: NetworkEnablementController not": 1,
       "error: Error: Migration 197: Invalid NetworkController": 1,
       "error: Error: No INFURA_PROJECT_ID set!": 1,
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
       "warn: Migration 183.1: currencyRates not found": 1,
       "warn: Migration 186: Missing or invalid": 1,
+      "warn: Migration 193: SnapController not found.": 1,
       "warn: newState.NftController must be present": 1
     },
     "app/scripts/lib/snap-keyring/snap-keyring.test.ts": {
@@ -153,11 +153,10 @@
     "app/scripts/migrations/184.test.ts": {
       "error: Error: Migration 184: NetworkController is": 1,
       "error: Error: Migration 184: NetworkController missing": 1,
-      "error: Error: Migration 184: NetworkController not": 1,
       "error: Error: Migration 184: NetworkController.networkConfiguration...": 1,
       "error: Error: Migration 184: NetworkEnablementController is": 1,
-      "error: Error: Migration 184: NetworkEnablementController not": 2,
-      "error: Error: Migration 184: NetworkEnablementController.enabledNet...": 3
+      "error: Error: Migration 184: NetworkEnablementController.enabledNet...": 3,
+      "warn: Migration 184: NetworkEnablementController not found.": 1
     },
     "app/scripts/migrations/185.test.ts": {
       "warn: Migration #185: Could not access": 2
@@ -174,7 +173,6 @@
     "app/scripts/migrations/193.test.ts": {
       "error: Error: Migration 193: SnapController is": 1,
       "error: Error: Migration 193: SnapController missing": 1,
-      "error: Error: Migration 193: SnapController not": 1,
       "error: Error: Migration 193: SnapController.snaps is": 1
     },
     "app/scripts/migrations/196.test.ts": {

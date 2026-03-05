@@ -38,13 +38,16 @@ describe(`migration #${VERSION}`, () => {
     };
 
     const originalData = structuredClone(oldState.data);
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
     await migrate(oldState, new Set());
 
-    expect(mockedCaptureException).toHaveBeenCalledWith(
-      new Error(`Migration ${version}: SnapController not found.`),
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      `Migration ${version}: SnapController not found.`,
     );
     expect(oldState.data).toEqual(originalData);
+
+    consoleWarnSpy.mockRestore();
   });
 
   it('skips migration if SnapController is not an object', async () => {
