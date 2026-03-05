@@ -26,7 +26,6 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
-  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LEDGER_FIXTURE_VAULT,
@@ -35,7 +34,6 @@ import {
   SOLANA_MAINNET_SCOPE,
   TREZOR_ACCOUNT_ID,
   TREZOR_ADDRESS,
-  TREZOR_ADDRESS_CHECKSUM,
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
@@ -93,11 +91,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withAccountTracker(data: Record<string, unknown>): this {
-    merge(this.fixture.data.AccountTracker, data);
-    return this;
-  }
-
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
@@ -115,11 +108,6 @@ class FixtureBuilderV2 {
 
   withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
     merge(this.fixture.data.MetaMetricsController, data);
-    return this;
-  }
-
-  withNameController(data: Record<string, unknown>): this {
-    merge(this.fixture.data.NameController, data);
     return this;
   }
 
@@ -422,104 +410,70 @@ class FixtureBuilderV2 {
   }
 
   withTrezorAccount(): this {
-    return this.withAccountTracker({
-      accountsByChainId: {
-        '0x539': {
-          [DEFAULT_FIXTURE_ACCOUNT]: {
-            balance: '0x15af1d78b58c40000',
-          },
-          [TREZOR_ADDRESS_CHECKSUM]: {
-            balance: '0x100000000000000000000',
-          },
-        },
-      },
-    })
-      .withAccountsController({
-        internalAccounts: {
-          accounts: {
-            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-              options: {
-                entropySource: '01KGHAX3WXGMX9H76THHSSV553',
+    return this.withAccountsController({
+      internalAccounts: {
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01KGHAX3WXGMX9H76THHSSV553',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHAX3WXGMX9H76THHSSV553',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01KGHAX3WXGMX9H76THHSSV553',
-                  derivationPath: "m/44'/60'/0'/0/0",
-                  groupIndex: 0,
-                },
-              },
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Account 1',
-                importTime: 1724486724986,
-                lastSelected: 1665507600000,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
               },
             },
-            [TREZOR_ACCOUNT_ID]: {
-              id: TREZOR_ACCOUNT_ID,
-              address: TREZOR_ADDRESS,
-              options: {},
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Trezor 1',
-                importTime: 1724486729079,
-                keyring: {
-                  type: 'Trezor Hardware',
-                },
-                lastSelected: 1724486729083,
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
               },
             },
           },
-          selectedAccount: TREZOR_ACCOUNT_ID,
+          [TREZOR_ACCOUNT_ID]: {
+            id: TREZOR_ACCOUNT_ID,
+            address: TREZOR_ADDRESS,
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Trezor 1',
+              importTime: 1724486729079,
+              keyring: {
+                type: 'Trezor Hardware',
+              },
+              lastSelected: 1724486729083,
+            },
+          },
         },
-      })
+        selectedAccount: TREZOR_ACCOUNT_ID,
+      },
+    })
       .withKeyringController({ vault: TREZOR_VAULT })
-      .withNameController({
-        names: {
-          ethereumAddress: {
-            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-              '*': {
-                name: 'Account 1',
-                sourceId: null,
-                proposedNames: {},
-                origin: 'account-identity',
-              },
-            },
-            [TREZOR_ADDRESS]: {
-              '*': {
-                proposedNames: {},
-                name: 'Trezor 1',
-                sourceId: null,
-                origin: 'account-identity',
-              },
-            },
-          },
-        },
-      })
       .withPreferencesController({
         identities: {
           [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
