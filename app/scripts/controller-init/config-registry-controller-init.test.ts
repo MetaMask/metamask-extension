@@ -66,7 +66,10 @@ function buildInitRequestMock(
   };
 }
 
-/** Returns a spy on controllerMessenger.call for tests that assert fetchConfig usage. */
+/**
+ * Returns a spy on controllerMessenger.call for tests that assert fetchConfig usage.
+ * @param request - Controller init request mock containing controllerMessenger.
+ */
 function spyOnControllerMessengerCall(
   request: jest.Mocked<
     ControllerInitRequest<

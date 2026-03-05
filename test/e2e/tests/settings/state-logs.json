@@ -345,6 +345,9 @@
       "validSubmissionWindowDays": "number"
     },
     "completedOnboarding": "boolean",
+    "configs": {
+      "networks": "object"
+    },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
     "conversionRates": {},
@@ -480,6 +483,7 @@
     },
     "ensResolutionsByAddress": {},
     "estimatedGasFeeTimeBounds": {},
+    "etag": "null",
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -673,6 +677,7 @@
     ],
     "knownMethodData": {},
     "lastFetchedBlockNumbers": {},
+    "lastFetched": "null",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
     "lastUpdatedFromVersion": "null",
@@ -1154,6 +1159,7 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
+    "version": "null",
     "versionInfo": [],
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": {},

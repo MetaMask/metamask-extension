@@ -148,6 +148,12 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   ConnectivityController: {
     connectivityStatus: true,
   },
+  ConfigRegistryController: {
+    configs: false,
+    etag: true,
+    lastFetched: true,
+    version: true,
+  },
   CronjobController: {
     events: false,
   },
