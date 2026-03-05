@@ -2787,8 +2787,10 @@ describe('MetaMaskController', () => {
         // causing a write loop and OOM. In the real UI, controller writes go to the UI only.
         const stream = new Duplex({
           objectMode: true,
-          // Intentional no-op: we only push the request once, no ongoing read
-          read(_size) {},
+          // Signal EOF after the single request; we only push once via stream.push()
+          read(_size) {
+            this.push(null);
+          },
           write(_chunk, _enc, cb) {
             cb();
           },
