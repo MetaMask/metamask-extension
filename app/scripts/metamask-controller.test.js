@@ -2032,7 +2032,7 @@ describe('MetaMaskController', () => {
                 ]);
               });
 
-              it('should call accountsController.setSelectedAddress', async () => {
+              it('should call accountsController.setSelectedAccount', async () => {
                 jest.spyOn(
                   metamaskController.accountsController,
                   'setSelectedAccount',
