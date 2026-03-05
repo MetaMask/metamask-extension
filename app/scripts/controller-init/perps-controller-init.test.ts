@@ -241,6 +241,23 @@ describe('PerpsControllerInit', () => {
 
       expect(controller.init).toHaveBeenCalledTimes(2);
     });
+
+    it('re-initializes when initializationState is reset after a successful init', async () => {
+      const request = getInitRequestMock();
+      const { api, controller } = initWithApi(request);
+
+      await api.perpsInit();
+      expect(controller.init).toHaveBeenCalledTimes(1);
+
+      // Simulate a lifecycle event (e.g. toggleTestnet / disconnect) that
+      // resets initialization state back to uninitialized.
+      (
+        controller.state as unknown as Record<string, string>
+      ).initializationState = 'uninitialized';
+
+      await api.perpsInit();
+      expect(controller.init).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('trading mutation api methods', () => {

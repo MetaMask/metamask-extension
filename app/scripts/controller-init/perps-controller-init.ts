@@ -73,10 +73,15 @@ export const PerpsControllerInit: ControllerInitFunction<
       return;
     }
     if (initPromise === null) {
-      initPromise = controller.init().catch((error) => {
-        initPromise = null;
-        throw error;
-      });
+      initPromise = controller
+        .init()
+        .then(() => {
+          initPromise = null;
+        })
+        .catch((error) => {
+          initPromise = null;
+          throw error;
+        });
     }
     return initPromise;
   };
