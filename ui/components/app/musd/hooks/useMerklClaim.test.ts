@@ -66,6 +66,10 @@ const mockRewardData = {
 };
 
 describe('useMerklClaim', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -225,7 +229,6 @@ describe('useMerklClaim', () => {
     });
 
     expect(abortSpy).toHaveBeenCalled();
-    abortSpy.mockRestore();
   });
 
   it('does not dispatch transaction when user is geoblocked', async () => {
