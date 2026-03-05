@@ -1941,6 +1941,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "asterdex": {},
         "gmx": {},
         "hyperliquid": {}
       },
