@@ -213,9 +213,7 @@ const SettingsV2 = () => {
         path={toRelativeRoutePath(CURRENCY_ROUTE, SETTINGS_V2_ROUTE)}
         element={
           <SettingsV2Layout>
-            <Suspense fallback={null}>
-              <CurrencySubPage />
-            </Suspense>
+            <CurrencySubPage />
           </SettingsV2Layout>
         }
       />
