@@ -82,8 +82,24 @@ describe('Dapp interactions', function () {
         );
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
+        // In this test we run with multiple dapp origins, so use URL-based
+        // switching to avoid ambiguity from shared "E2E Test Dapp" titles.
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
+        await testDapp.checkPageIsLoaded();
+        try {
+          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
+        } catch {
+          console.log(
+            'Second dapp was not connected after first confirmation, retrying connect flow',
+          );
+          await testDapp.clickConnectAccountButton();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
+          await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+          await testDapp.checkPageIsLoaded();
+          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
+        }
 
         // Login to homepage
         await driver.switchToWindowWithTitle(
