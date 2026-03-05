@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Benachrichtigungen erlauben"
   },
-  "allowWithdrawAndSpend": {
-    "message": "$1 erlauben, bis zu dem folgenden Betrag abzuheben und auszugeben:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Betrag"
   },
@@ -1610,9 +1606,6 @@
   "connectAccount": {
     "message": "Konto verbinden"
   },
-  "connectAccountOrCreate": {
-    "message": "Konto verbinden oder neues erstellen"
-  },
   "connectAccounts": {
     "message": "Konten verbinden"
   },
@@ -1906,9 +1899,6 @@
   "customSlippage": {
     "message": "Benutzerdefiniert"
   },
-  "customSpendLimit": {
-    "message": "Benutzerdefiniertes Ausgabenlimit"
-  },
   "customToken": {
     "message": "Benutzerdefiniertes Token"
   },
@@ -2196,9 +2186,6 @@
     "message": "Beschreibung von $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Alle abwählen"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "Keine berechtigten Konten gefunden"
   },
@@ -2478,9 +2465,6 @@
   "editNonceMessage": {
     "message": "Dies ist eine erweiterte Funktion, verwenden Sie diese vorsichtig."
   },
-  "editPermission": {
-    "message": "Genehmigung bearbeiten"
-  },
   "editPermissions": {
     "message": "Genehmigungen bearbeiten"
   },
@@ -2564,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "Chain-ID eingeben"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Max. Ausgabenlimit eingeben"
   },
   "enterNetworkName": {
     "message": "Netzwerkname eingeben"
@@ -3359,9 +3340,6 @@
     "message": "MetaMask kann sich nicht mit dem Blockchain Host verbinden. Überprüfen Sie mögliche Gründe $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Ihre erste Transaktion wurde vom Netzwerk bestätigt. Klicken Sie auf „OK“, um zurückzukehren."
-  },
   "insights": {
     "message": "Einblicke"
   },
@@ -3544,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2-Gas-Gebühr"
-  },
-  "lastConnected": {
-    "message": "Zuletzt verbunden"
   },
   "lastSold": {
     "message": "Zuletzt verkauft"
@@ -5692,9 +5667,6 @@
   "productAnnouncements": {
     "message": "Produktankündigungen"
   },
-  "proposedApprovalLimit": {
-    "message": "Vorgeschlagene Genehmigungslimit"
-  },
   "provide": {
     "message": "Bereitstellen"
   },
@@ -5914,18 +5886,6 @@
   },
   "rejectAll": {
     "message": "Alle ablehnen"
-  },
-  "rejectRequestsDescription": {
-    "message": "Sie sind im Begriff, $1 Anfragen geschlossen abzulehnen."
-  },
-  "rejectRequestsN": {
-    "message": "$1 Anfragen ablehnen"
-  },
-  "rejectTxsDescription": {
-    "message": "Sie sind im Begriff, $1 Transaktionen geschlossen abzulehnen."
-  },
-  "rejectTxsN": {
-    "message": "$1 Transaktionen ablehnen"
   },
   "rejected": {
     "message": "Abgelehnt"
@@ -6463,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Ein zu verbindendes Konto auswählen"
   },
-  "selectAccounts": {
-    "message": "Wähle das/die Konto/Konten aus, die auf dieser Seite verwenden werden sollen"
-  },
-  "selectAccountsForSnap": {
-    "message": "Wählen Sie das Konto/die Konten, das/die mit diesem Snap verwendet werden soll(en)."
-  },
   "selectAll": {
     "message": "Alle auswählen"
   },
@@ -6507,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Anderes Konto ausgewählt"
-  },
-  "selectingAllWillAllow": {
-    "message": "Wenn Sie alle auswählen, erlauben Sie dieser Seite, alle Ihre aktuellen Konten anzusehen. Stellen Sie sicher, dass Sie dieser Site vertrauen."
   },
   "send": {
     "message": "Senden"
@@ -7649,22 +7600,6 @@
   },
   "speedUpTooltipText": {
     "message": "Neue Gas-Gebühr"
-  },
-  "spendLimitInsufficient": {
-    "message": "Ausgabenlimit unzureichend"
-  },
-  "spendLimitInvalid": {
-    "message": "Ausgabenlimit ungültig; muss eine positive Zahl sein"
-  },
-  "spendLimitPermission": {
-    "message": "Limit der Ausgabenberechtigung"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Ausgabenlimit von $1 angefordert",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Ausgabenlimit zu groß"
   },
   "spender": {
     "message": "Spender"
@@ -8874,9 +8809,6 @@
   },
   "viewDetails": {
     "message": "Details anzeigen"
-  },
-  "viewMore": {
-    "message": "Mehr anzeigen"
   },
   "viewOnBlockExplorer": {
     "message": "Im Block-Explorer anzeigen"

@@ -28,6 +28,7 @@ import {
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
+  getPendingRedirectRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -49,6 +50,7 @@ import {
   setEditedNetwork,
   lookupSelectedNetworks,
   setPendingShieldCohort,
+  setPendingRedirectRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
@@ -56,7 +58,6 @@ import {
   getIsSeedlessPasswordOutdated,
   getWeb3ShimUsageAlertEnabledness,
 } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
@@ -81,6 +82,7 @@ import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi
 import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
+  setRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
 import { AppHeader } from '../../components/multichain/app-header';
 import Home from './home.component';
@@ -99,7 +101,6 @@ const mapStateToProps = (state) => {
   const selectedAccount = getSelectedInternalAccount(state);
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureIsLive(state);
   const redirectAfterDefaultPage = getRedirectAfterDefaultPage(state);
 
   const envType = getEnvironmentType();
@@ -127,8 +128,8 @@ const mapStateToProps = (state) => {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
-    swapsEnabled,
     shouldShowSeedPhraseReminder,
+    envType,
     isPopup,
     isNotification,
     dataCollectionForMarketing,
@@ -173,6 +174,7 @@ const mapStateToProps = (state) => {
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
+    pendingRedirectRoute: getPendingRedirectRoute(state),
   };
 };
 
@@ -223,11 +225,14 @@ const mapDispatchToProps = (dispatch) => {
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
+    setRedirectAfterDefaultPage: (redirectAfterDefaultPage) =>
+      dispatch(setRedirectAfterDefaultPage(redirectAfterDefaultPage)),
     clearRedirectAfterDefaultPage: () =>
       dispatch(clearRedirectAfterDefaultPage()),
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
+    clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
   };
 };
 
