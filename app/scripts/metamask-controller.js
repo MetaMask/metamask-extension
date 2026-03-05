@@ -439,6 +439,7 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { getTempoExtraOptionsForChain } from './lib/transaction/tempo-tx-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1015,6 +1016,26 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
+        /**
+         * Gets chain-specific parameters that need to be injected in addTransaction/addTransactionBatch.
+         * Done initially for Tempo.
+         * Done gracefully - silencing errors - so it doesn't impact previous behavior.
+         */
+        let addTransactionExtraOptions = {};
+        try {
+          const { chainId: currentRequestChainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              req.networkClientId,
+            );
+          addTransactionExtraOptions = getTempoExtraOptionsForChain(
+            currentRequestChainId,
+          );
+        } catch (err) {
+          console.warn(
+            'wallet_sendCalls: Error while getting addTransaction extra options',
+            err,
+          );
+        }
         return await walletSendCalls(req, res, {
           getAccounts,
           getPermittedAccountsForOrigin: async () => {
@@ -1023,12 +1044,18 @@ export default class MetamaskController extends EventEmitter {
           processSendCalls: processSendCalls.bind(
             null,
             {
-              addTransaction: this.txController.addTransaction.bind(
-                this.txController,
-              ),
-              addTransactionBatch: this.txController.addTransactionBatch.bind(
-                this.txController,
-              ),
+              addTransaction: async (txParams, options) =>
+                this.txController.addTransaction(txParams, {
+                  ...options,
+                  ...addTransactionExtraOptions,
+                }),
+              addTransactionBatch: async (request) =>
+                this.txController.addTransactionBatch({
+                  // Adding actionId for batches, otherwise tx is missing from Activity tab.
+                  actionId: String(req.id),
+                  ...request,
+                  ...addTransactionExtraOptions,
+                }),
               getDismissSmartAccountSuggestionEnabled: () =>
                 this.preferencesController.state.preferences
                   .dismissSmartAccountSuggestionEnabled,

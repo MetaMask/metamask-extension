@@ -833,8 +833,9 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.test.ts": {
-      "MetaMask: Background connection not initialized": 84,
-      "Reselect: Identity function warnings": 3
+      "MetaMask: Background connection not initialized": 96,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useIsUpgradeTransaction.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -906,8 +907,9 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 126,
-      "Reselect: Identity function warnings": 4
+      "MetaMask: Background connection not initialized": 138,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 12,
@@ -938,8 +940,9 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
-      "MetaMask: Background connection not initialized": 66,
-      "Reselect: Identity function warnings": 4
+      "MetaMask: Background connection not initialized": 78,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/send-heading/send-heading.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,

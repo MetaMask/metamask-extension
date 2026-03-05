@@ -31,8 +31,8 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
 
   const locale = useSelector(getIntlLocale);
   const nativeFeeToken = useNativeGasFeeToken();
-  const { gasFeeTokens, chainId } = transactionMeta ?? {};
-
+  const { gasFeeTokens, chainId, excludeNativeTokenForFee } =
+    transactionMeta ?? {};
   let gasFeeToken = gasFeeTokens?.find(
     (token) => token.tokenAddress.toLowerCase() === tokenAddress?.toLowerCase(),
   );
@@ -40,8 +40,15 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
   // This is just a legacy fallback for if `useGasFeeToken` were to be called
   // with no `tokenAddress`. Even if it's `NATIVE_TOKEN_ADDRESS` we don't rely
   // on `useNativeGasFeeToken`.
+  // This is now also necesary when `tokenAddress` corresponds to an unsupported
+  // gas fee token.
+  // If `excludeNativeTokenForFee` is set to true, we select any available fee token
+  // if available instead of the native token.
   if (!gasFeeToken) {
-    gasFeeToken = nativeFeeToken;
+    gasFeeToken =
+      excludeNativeTokenForFee && gasFeeTokens && gasFeeTokens.length > 0
+        ? gasFeeTokens[0]
+        : nativeFeeToken;
   }
 
   const { amount, decimals } = gasFeeToken ?? { amount: '0x0', decimals: 0 };

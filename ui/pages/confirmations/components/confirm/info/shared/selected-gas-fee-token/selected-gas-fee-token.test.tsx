@@ -24,11 +24,17 @@ jest.mock(
 function getStore({
   gasFeeTokens,
   noSelectedGasFeeToken,
-}: { gasFeeTokens?: GasFeeToken[]; noSelectedGasFeeToken?: boolean } = {}) {
+  excludeNativeTokenForFee,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  noSelectedGasFeeToken?: boolean;
+  excludeNativeTokenForFee?: boolean;
+} = {}) {
   return configureStore(
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
         gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
+        excludeNativeTokenForFee,
         selectedGasFeeToken: noSelectedGasFeeToken
           ? undefined
           : GAS_FEE_TOKEN_MOCK.tokenAddress,
@@ -105,6 +111,32 @@ describe('SelectedGasFeeToken', () => {
     );
 
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if only one gas fee token and `excludeNativeTokenForFee` is set', () => {
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        excludeNativeTokenForFee: true,
+      }),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('still renders arrow icon if two non-native gas fee token and `excludeNativeTokenForFee` is set', () => {
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_MOCK],
+        excludeNativeTokenForFee: true,
+      }),
+    );
+
+    expect(
+      result.getByTestId('selected-gas-fee-token-arrow'),
+    ).toBeInTheDocument();
   });
 
   it('does not render arrow icon if gasless not supported', () => {
