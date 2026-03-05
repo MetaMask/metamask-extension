@@ -446,8 +446,13 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('uses funds-returned fallback description when order failure is generic', async () => {
-      mockSubmitRequestToBackground.mockResolvedValueOnce({
-        success: false,
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+          });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -463,16 +468,23 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'Your funds have been returned to you',
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastOrderFailed',
+          description: 'Your funds have been returned to you',
+        });
       });
     });
 
     it('uses funds-returned fallback description for non-user-facing technical errors', async () => {
-      mockSubmitRequestToBackground.mockResolvedValueOnce({
-        success: false,
-        error: 'Unexpected internal provider exception: code 0xdeadbeef',
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Unexpected internal provider exception: code 0xdeadbeef',
+          });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -488,9 +500,11 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'Your funds have been returned to you',
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastOrderFailed',
+          description: 'Your funds have been returned to you',
+        });
       });
     });
 

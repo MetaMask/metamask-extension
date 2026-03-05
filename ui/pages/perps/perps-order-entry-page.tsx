@@ -626,7 +626,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     currentPrice,
     getTradeActionToastDescription,
     getCloseSuccessToastDescription,
-    controller,
     handleBackClick,
     replacePerpsToastByKey,
     t,
