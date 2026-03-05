@@ -1638,6 +1638,10 @@ describe('Bridge selectors', () => {
         getBridgeQuotes(state as never).activeQuote?.toTokenAmount
           .valueInCurrency,
       ).toBe('14.90773022');
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.adjustedReturn
+          .valueInCurrency,
+      ).toBe('12.38319584302370988');
       expect(result.isEstimatedReturnLow).toBe(true);
     });
 
@@ -1707,6 +1711,10 @@ describe('Bridge selectors', () => {
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
           .valueInCurrency,
       ).toBe('2.52453437697629012');
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.adjustedReturn
+          .valueInCurrency,
+      ).toBe('20.69242252302370988');
       expect(result.isEstimatedReturnLow).toBe(false);
     });
 
