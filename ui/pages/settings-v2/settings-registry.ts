@@ -2,6 +2,7 @@
 /* eslint-disable import/extensions */
 import { type ComponentType } from 'react';
 import {
+  ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
   LANGUAGE_ROUTE,
@@ -54,6 +55,10 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
   },
   [LANGUAGE_ROUTE]: {
     labelKey: 'language',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+  },
+  [ACCOUNT_IDENTICON_ROUTE]: {
+    labelKey: 'accountIdenticon',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
   },
 };

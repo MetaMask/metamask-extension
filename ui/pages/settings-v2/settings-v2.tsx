@@ -11,6 +11,7 @@ import classnames from 'clsx';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
+  ACCOUNT_IDENTICON_ROUTE,
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
   LANGUAGE_ROUTE,
@@ -66,6 +67,13 @@ const LanguageSubPage = mmLazy(
   (() =>
     import(
       './preferences-and-display-tab/language-sub-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+
+const AccountIdenticonSubPage = mmLazy(
+  (() =>
+    import(
+      './preferences-and-display-tab/account-identicon-sub-page.tsx'
     )) as unknown as DynamicImportType,
 );
 
@@ -251,6 +259,17 @@ const SettingsV2 = () => {
           <SettingsV2Layout>
             <Suspense fallback={null}>
               <LanguageSubPage />
+            </Suspense>
+          </SettingsV2Layout>
+        }
+      />
+      {/* Account identicon sub-page */}
+      <Route
+        path={toRelativeRoutePath(ACCOUNT_IDENTICON_ROUTE, SETTINGS_V2_ROUTE)}
+        element={
+          <SettingsV2Layout>
+            <Suspense fallback={null}>
+              <AccountIdenticonSubPage />
             </Suspense>
           </SettingsV2Layout>
         }

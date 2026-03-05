@@ -15,6 +15,12 @@ export const SETTINGS_ROUTE = '/settings';
 export const SETTINGS_V2_ROUTE = '/settings-v2';
 export const ASSETS_ROUTE = '/settings-v2/assets';
 export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
+export const PREFERENCES_AND_DISPLAY_ROUTE =
+  '/settings-v2/preferences-and-display';
+export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
+export const LANGUAGE_ROUTE = '/settings-v2/preferences-and-display/language';
+export const ACCOUNT_IDENTICON_ROUTE =
+  '/settings-v2/preferences-and-display/account-identicon';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -224,6 +230,26 @@ export const ROUTES = [
   {
     path: CURRENCY_ROUTE,
     label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: PREFERENCES_AND_DISPLAY_ROUTE,
+    label: 'Preferences And Display Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: THEME_ROUTE,
+    label: 'Theme Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: LANGUAGE_ROUTE,
+    label: 'Language Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: ACCOUNT_IDENTICON_ROUTE,
+    label: 'Account Identicon Settings Page',
     trackInAnalytics: true,
   },
   {
