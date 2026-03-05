@@ -108,12 +108,12 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
                 >
-                  $0.16
+                  $0.00
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  $14.00 total cost
+                  $0.00 total cost
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
@@ -146,12 +146,12 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
                 >
-                  $0.34
+                  $0.00
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  $14.00 total cost
+                  $0.00 total cost
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
