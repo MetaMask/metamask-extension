@@ -26,6 +26,7 @@ const makeCommit = (
 const mockFile: HistoricalPerformanceFile = {
   abc123: makeCommit(),
   def456: makeCommit({
+    timestamp: 1_700_000_001,
     presets: {
       pageLoad: {
         standardHome: {
