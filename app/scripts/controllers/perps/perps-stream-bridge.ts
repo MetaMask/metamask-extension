@@ -108,17 +108,15 @@ export class PerpsStreamBridge {
     }
 
     if (candle?.symbol && candle?.interval) {
-      this.#replaceSubscription(
-        `candles:${candle.symbol}:${candle.interval}`,
-        () =>
-          controller.subscribeToCandles({
-            ...candle,
-            callback: (data: unknown) =>
-              this.#emit('candles', data, {
-                symbol: candle.symbol,
-                interval: candle.interval,
-              }),
-          }),
+      this.#replaceSubscription('candles', () =>
+        controller.subscribeToCandles({
+          ...candle,
+          callback: (data: unknown) =>
+            this.#emit('candles', data, {
+              symbol: candle.symbol,
+              interval: candle.interval,
+            }),
+        }),
       );
     }
   }

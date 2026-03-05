@@ -353,7 +353,7 @@ describe('PerpsStreamBridge', () => {
         });
       });
 
-      it('uses a unique subscription key per symbol+interval pair', () => {
+      it('replaces the previous candle subscription when navigating to a different market', () => {
         const controller = createMockController();
         const unsubETH1h = jest.fn();
         const unsubBTC1h = jest.fn();
@@ -368,8 +368,23 @@ describe('PerpsStreamBridge', () => {
           candle: { symbol: 'BTC', interval: '1h' as never },
         });
 
-        // Different symbol+interval key, so previous ETH:1h unsub is NOT called
-        expect(unsubETH1h).not.toHaveBeenCalled();
+        expect(unsubETH1h).toHaveBeenCalledTimes(1);
+        expect(unsubBTC1h).not.toHaveBeenCalled();
+      });
+
+      it('replaces the previous candle subscription when switching to a different interval', () => {
+        const controller = createMockController();
+        const unsub1h = jest.fn();
+        controller.subscribeToCandles.mockReturnValueOnce(unsub1h);
+
+        bridge.activateStreaming(controller as unknown as PerpsController, {
+          candle: { symbol: 'ETH', interval: '1h' as never },
+        });
+        bridge.activateStreaming(controller as unknown as PerpsController, {
+          candle: { symbol: 'ETH', interval: '4h' as never },
+        });
+
+        expect(unsub1h).toHaveBeenCalledTimes(1);
       });
 
       it('replaces subscription for the same symbol+interval pair', () => {
