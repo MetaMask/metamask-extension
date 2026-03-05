@@ -342,11 +342,7 @@ const ConfirmTitle: React.FC = memo(() => {
   );
 
   if (!currentConfirmation) {
-    if (loader && loader !== ConfirmationLoader.Default) {
-      return null;
-    }
-
-    return <TitleSkeleton />;
+    return null;
   }
 
   // Show skeleton only if title is pending AND the type is handled by getTitle

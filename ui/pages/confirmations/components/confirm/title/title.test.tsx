@@ -54,7 +54,8 @@ jest.mock('../../../../../store/actions', () => ({
 }));
 
 describe('ConfirmTitle', () => {
-  it('should render a skeleton loader when there is no current confirmation', () => {    const mockStateWithNoConfirmation = {
+  it('should render nothing when there is no current confirmation', () => {
+    const mockStateWithNoConfirmation = {
       ...getMockPersonalSignConfirmState(),
       metamask: {
         ...getMockPersonalSignConfirmState().metamask,
@@ -68,7 +69,7 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+    expect(container.querySelector('.mm-skeleton')).not.toBeInTheDocument();
   });
 
   it('should render the title and description for a personal signature', () => {
