@@ -1030,6 +1030,19 @@
         "@metamask/base-controller": true
       }
     },
+    "@metamask/config-registry-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/polling-controller": true,
+        "@metamask/profile-sync-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true

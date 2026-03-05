@@ -2,10 +2,8 @@ import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_RPCS,
-} from '../../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
+import { getFeaturedNetworksForAdditionalList } from '../../../../../selectors/config-registry/config-registry';
 import {
   convertCaipToHexChainId,
   getFilteredFeaturedNetworks,
@@ -162,10 +160,15 @@ const DefaultNetworks = memo(() => {
     selectedNonEvmChainId,
   ]);
 
+  // Get the base featured list (dynamic from config registry when flag on, else static)
+  const featuredNetworksBaseList = useSelector(
+    getFeaturedNetworksForAdditionalList,
+  );
+
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled
-    const availableNetworks = FEATURED_RPCS.filter(
+    const availableNetworks = featuredNetworksBaseList.filter(
       ({ chainId }) => !evmNetworks[chainId],
     );
 
@@ -184,7 +187,12 @@ const DefaultNetworks = memo(() => {
 
     // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
-  }, [evmNetworks, blacklistedChainIds, useExternalServices]);
+  }, [
+    featuredNetworksBaseList,
+    evmNetworks,
+    blacklistedChainIds,
+    useExternalServices,
+  ]);
 
   const isAllPopularNetworksSelected = useMemo(
     () => allEnabledNetworksForAllNamespaces.length > 1,
