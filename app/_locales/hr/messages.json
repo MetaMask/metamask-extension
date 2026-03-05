@@ -299,9 +299,6 @@
     "message": "Uvezeno",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Vašu je početnu transakciju potvrdila mreža. Kliknite na U REDU za natrag."
-  },
   "insufficientBalance": {
     "message": "Nedovoljno raspoloživo stanje."
   },
@@ -480,12 +477,6 @@
   },
   "rejectAll": {
     "message": "Odbaci sve"
-  },
-  "rejectTxsDescription": {
-    "message": "Upravo ćete odbaciti skup transakcija $1."
-  },
-  "rejectTxsN": {
-    "message": "Odbaci transakcije: $1"
   },
   "rejected": {
     "message": "Odbačeno"
@@ -676,8 +667,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebate dopustiti pristupanje kameri za korištenje ovom funkcijom."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša privatna početna rečenica"
   }
 }

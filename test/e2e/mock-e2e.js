@@ -13,6 +13,11 @@ const {
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
+const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
+const {
+  ACCOUNT_ACTIVITY_WS_PORT,
+} = require('./websocket/account-activity-mocks');
+const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
@@ -1195,7 +1200,89 @@ async function setupMocking(
     .matching((req) =>
       /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
     )
-    .thenForwardTo('ws://localhost:8088');
+    .thenForwardTo(`ws://localhost:${SOLANA_WS_PORT}`);
+
+  /**
+   * Backend WebSocket (AccountActivity, etc.)
+   * Forward gateway WebSocket connections to local mock server
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) =>
+      /^wss:\/\/gateway\.api\.cx\.metamask\.io\//u.test(req.url),
+    )
+    .thenForwardTo(`ws://localhost:${ACCOUNT_ACTIVITY_WS_PORT}`);
+
+  /**
+   * Hyperliquid Perps Websocket
+   * Redirect Hyperliquid API WebSocket calls to local mock server for E2E tests.
+   * Used when PerpsController makes real Hyperliquid calls (e.g. from background).
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) => /^wss:\/\/api\.hyperliquid\.xyz\/ws/u.test(req.url))
+    .thenForwardTo(`ws://localhost:${PERPS_WS_PORT}`);
+
+  /**
+   * Hyperliquid REST API mocks for Perps E2E tests.
+   * When PerpsController makes REST calls to api.hyperliquid.xyz, return mock data.
+   * Reads request body via mockttp's req.body.getJson()/getText() and parses safely.
+   */
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/info$/u)
+    .thenCallback(async (req) => {
+      let type;
+      const { body } = req;
+      if (body) {
+        let parsed = null;
+        const json = await body.getJson().catch(() => undefined);
+        if (json !== undefined && json !== null && typeof json === 'object') {
+          parsed = json;
+        }
+        if (parsed === null) {
+          const raw = await body.getText().catch(() => '');
+          if (raw && typeof raw === 'string' && raw.trim() !== '') {
+            try {
+              parsed = JSON.parse(raw);
+            } catch {
+              parsed = null;
+            }
+          }
+        }
+        if (parsed !== null && typeof parsed === 'object') {
+          const { type: parsedType, method: parsedMethod } = parsed;
+          type = parsedType ?? parsedMethod;
+        }
+      }
+      if (type === 'meta') {
+        return {
+          statusCode: 200,
+          json: {
+            universe: [
+              {
+                name: 'BTC',
+                szDecimals: 5,
+                maxLeverage: 50,
+              },
+            ],
+          },
+        };
+      }
+      if (type === 'allMids') {
+        return {
+          statusCode: 200,
+          json: { mids: { BTC: '50000', ETH: '3000' } },
+        };
+      }
+      return { statusCode: 200, json: {} };
+    });
+
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { status: 'ok', response: { type: 'order', data: {} } },
+    }));
 
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);

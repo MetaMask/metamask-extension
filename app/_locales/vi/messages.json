@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Cho phép thông báo"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Cho phép $1 rút và chi tiêu tối đa số tiền sau đây:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Số lượng"
   },
@@ -1610,9 +1606,6 @@
   "connectAccount": {
     "message": "Kết nối tài khoản"
   },
-  "connectAccountOrCreate": {
-    "message": "Kết nối tài khoản hoặc tạo tài khoản mới"
-  },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
   },
@@ -1906,9 +1899,6 @@
   "customSlippage": {
     "message": "Tùy chỉnh"
   },
-  "customSpendLimit": {
-    "message": "Hạn mức chi tiêu tùy chỉnh"
-  },
   "customToken": {
     "message": "Token tùy chỉnh"
   },
@@ -2196,9 +2186,6 @@
     "message": "Mô tả từ $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Bỏ chọn tất cả"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "Không tìm thấy tài khoản đủ điều kiện"
   },
@@ -2478,9 +2465,6 @@
   "editNonceMessage": {
     "message": "Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
   },
-  "editPermission": {
-    "message": "Sửa quyền"
-  },
   "editPermissions": {
     "message": "Chỉnh sửa quyền"
   },
@@ -2564,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "Nhập ID chuỗi"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Nhập hạn mức chi tiêu tối đa"
   },
   "enterNetworkName": {
     "message": "Nhập tên mạng"
@@ -3359,9 +3340,6 @@
     "message": "MetaMask không thể kết nối với máy chủ chuỗi khối. Hãy xem xét các lý do tiềm ẩn $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Mạng đã xác nhận giao dịch ban đầu của bạn. Nhấp OK để quay lại."
-  },
   "insights": {
     "message": "Thông tin chi tiết"
   },
@@ -3544,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Phí gas L2"
-  },
-  "lastConnected": {
-    "message": "Đã kết nối lần cuối"
   },
   "lastSold": {
     "message": "Đã bán gần nhất"
@@ -3780,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "Tạo một giao dịch hoán đổi mới"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Đảm bảo không có ai đang nhìn",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Quản lý"
   },
   "manageDefaultSettings": {
     "message": "Quản lý cài đặt mặc định"
@@ -5699,9 +5667,6 @@
   "productAnnouncements": {
     "message": "Thông báo về sản phẩm"
   },
-  "proposedApprovalLimit": {
-    "message": "Hạn mức chấp thuận được đề xuất"
-  },
   "provide": {
     "message": "Cung cấp"
   },
@@ -5922,18 +5887,6 @@
   "rejectAll": {
     "message": "Từ chối tất cả"
   },
-  "rejectRequestsDescription": {
-    "message": "Bạn chuẩn bị từ chối hàng loạt $1 yêu cầu."
-  },
-  "rejectRequestsN": {
-    "message": "Từ chối $1 yêu cầu"
-  },
-  "rejectTxsDescription": {
-    "message": "Bạn chuẩn bị từ chối hàng loạt $1 giao dịch."
-  },
-  "rejectTxsN": {
-    "message": "Từ chối $1 giao dịch"
-  },
   "rejected": {
     "message": "Bị từ chối"
   },
@@ -6107,17 +6060,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 cung cấp $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask là một $1. Có nghĩa bạn là người sở hữu Cụm từ khôi phục bí mật của bạn.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "toàn quyền truy cập vào ví và tiền của bạn.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "ví không lưu ký"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6131,10 +6074,6 @@
   "revealSeedWordsWarning": {
     "message": "Đảm bảo không có ai đang nhìn vào màn hình của bạn. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Bộ phận Hỗ trợ MetaMask sẽ không bao giờ yêu cầu điều này.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Hiển thị nội dung nhạy cảm"
@@ -6484,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Chọn tài khoản để kết nối"
   },
-  "selectAccounts": {
-    "message": "Chọn (các) tài khoản để sử dụng trên trang web này"
-  },
-  "selectAccountsForSnap": {
-    "message": "Chọn (các) tài khoản để sử dụng với Snap này"
-  },
   "selectAll": {
     "message": "Chọn tất cả"
   },
@@ -6528,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Đã chọn tài khoản khác"
-  },
-  "selectingAllWillAllow": {
-    "message": "Việc chọn tất cả sẽ cho phép trang này xem tất cả các tài khoản hiện tại của bạn. Đảm bảo rằng bạn tin tưởng trang web này."
   },
   "send": {
     "message": "Gửi"
@@ -7670,22 +7600,6 @@
   },
   "speedUpTooltipText": {
     "message": "Phí gas mới"
-  },
-  "spendLimitInsufficient": {
-    "message": "Hạn mức chi tiêu không đủ"
-  },
-  "spendLimitInvalid": {
-    "message": "Hạn mức chi tiêu không hợp lệ; giá trị này phải là số dương."
-  },
-  "spendLimitPermission": {
-    "message": "Quyền đối với hạn mức chi tiêu"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Bên yêu cầu hạn mức chi tiêu: $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Hạn mức chi tiêu quá lớn"
   },
   "spender": {
     "message": "Người chi tiêu"
@@ -8896,9 +8810,6 @@
   "viewDetails": {
     "message": "Xem chi tiết"
   },
-  "viewMore": {
-    "message": "Xem thêm"
-  },
   "viewOnBlockExplorer": {
     "message": "Xem trên trình khám phá khối"
   },
@@ -9064,9 +8975,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Cụm từ khôi phục bí mật của bạn"
   },
   "yourTransactionConfirmed": {
     "message": "Giao dịch đã được xác nhận"

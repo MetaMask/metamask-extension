@@ -270,7 +270,6 @@ jobs:
     with:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
-      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -282,7 +281,6 @@ jobs:
     with:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
-      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -624,7 +622,7 @@ jobs:
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment: release-branch
+    environment: release-ci
     steps:
       - name: Trigger regression validation in external repo
         env:

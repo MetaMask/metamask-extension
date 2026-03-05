@@ -140,10 +140,6 @@
   "alerts": {
     "message": "Alertas"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Importe"
   },
@@ -320,9 +316,6 @@
   "connect": {
     "message": "Conectar"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar cuenta o crear nueva"
-  },
   "connectManually": {
     "message": "Conectarse manualmente al sitio actual"
   },
@@ -433,9 +426,6 @@
   },
   "custom": {
     "message": "Avanzado"
-  },
-  "customSpendLimit": {
-    "message": "Límite de gastos personalizado"
   },
   "customToken": {
     "message": "Token personalizado"
@@ -623,9 +613,6 @@
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
   },
-  "editPermission": {
-    "message": "Editar permiso"
-  },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar la tarifa de aceleración de gas"
   },
@@ -652,9 +639,6 @@
   },
   "ensUnknownError": {
     "message": "Error al buscar ENS."
-  },
-  "enterMaxSpendLimit": {
-    "message": "Escribir límite máximo de gastos"
   },
   "enterPasswordContinue": {
     "message": "Escribir contraseña para continuar"
@@ -869,9 +853,6 @@
     "message": "MetaMask no se pudo conectar al host de la cadena de bloques. Revise las razones posibles $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "La red confirmó la transacción inicial. Haga clic en Aceptar para volver."
-  },
   "insufficientBalance": {
     "message": "Saldo insuficiente."
   },
@@ -937,9 +918,6 @@
   },
   "knownTokenWarning": {
     "message": "Esta acción editará tokens que ya estén enumerados en la cartera y que se pueden usar para engañarlo. Apruebe solo si está seguro de que quiere cambiar lo que representan estos tokens."
-  },
-  "lastConnected": {
-    "message": "Última conexión"
   },
   "learnMore": {
     "message": "más información"
@@ -1024,10 +1002,6 @@
   },
   "makeAnotherSwap": {
     "message": "Crear un nuevo swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Asegúrese de que nadie está viendo su pantalla",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "max": {
     "message": "Máx."
@@ -1288,9 +1262,6 @@
   "proceedWithTransaction": {
     "message": "Quiero continuar de todos modos"
   },
-  "proposedApprovalLimit": {
-    "message": "Límite de aprobación propuesto"
-  },
   "provide": {
     "message": "Proporcionar"
   },
@@ -1326,12 +1297,6 @@
   },
   "rejectAll": {
     "message": "Rechazar todo"
-  },
-  "rejectTxsDescription": {
-    "message": "Está a punto de rechazar $1 transacciones en lote."
-  },
-  "rejectTxsN": {
-    "message": "Rechazar $1 transacciones"
   },
   "rejected": {
     "message": "Rechazado"
@@ -1406,9 +1371,6 @@
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
-  "selectAccounts": {
-    "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
-  },
   "selectAll": {
     "message": "Seleccionar todo"
   },
@@ -1429,9 +1391,6 @@
   },
   "selectType": {
     "message": "Seleccionar tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
   },
   "send": {
     "message": "Enviar"
@@ -1499,22 +1458,6 @@
   },
   "speedUpTooltipText": {
     "message": "Nueva tarifa de gas"
-  },
-  "spendLimitInsufficient": {
-    "message": "Límite de gastos insuficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "El límite de gastos no es válido, debe ser un número positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Permiso de límite de gastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Límite de gastos solicitado por $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "El límite de gastos es demasiado alto"
   },
   "stable": {
     "message": "Estable"
@@ -1923,9 +1866,6 @@
   "viewContact": {
     "message": "Ver contacto"
   },
-  "viewMore": {
-    "message": "Ver más"
-  },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"
   },
@@ -1966,8 +1906,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Su frase secreta de recuperación privada"
   }
 }
