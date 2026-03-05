@@ -1,20 +1,33 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`NativeTransferInfo renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    class="mm-box mm-box--padding-bottom-3 mm-box--padding-inline-0 mm-box--display-flex mm-box--flex-direction-column"
   >
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-1 mm-box--color-text-alternative"
+    >
+      Sending
+    </p>
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
     >
-      E
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+      >
+        <h2
+          class="mm-box mm-text mm-text--heading-lg mm-box--padding-bottom-1 mm-box--color-inherit"
+        >
+          0 ETH
+        </h2>
+      </div>
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+      >
+        E
+      </div>
     </div>
-    <h2
-      class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
-    >
-      0 ETH
-    </h2>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
