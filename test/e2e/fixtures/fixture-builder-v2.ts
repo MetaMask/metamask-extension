@@ -36,11 +36,9 @@ import {
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
   NETWORK_CLIENT_ID,
-  SOLANA_MAINNET_SCOPE,
   TREZOR_ACCOUNT_ID,
   TREZOR_ADDRESS,
   TREZOR_VAULT,
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import defaultFixtureJson from './default-fixture.json';
@@ -366,10 +364,6 @@ class FixtureBuilderV2 {
         accounts: [`${scopeKey}:${selectedAccount}`],
       };
     }
-    // Add Solana Mainnet scope
-    optionalScopes[SOLANA_MAINNET_SCOPE] = {
-      accounts: [`${SOLANA_MAINNET_SCOPE}:${DEFAULT_FIXTURE_SOLANA_ACCOUNT}`],
-    };
     optionalScopes['wallet:eip155'] = {
       accounts: [`wallet:eip155:${selectedAccount}`],
     };
