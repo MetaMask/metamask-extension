@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -26,28 +26,23 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getPerpsController } from '../../../../providers/perps';
-import { getPositionDirection, getDisplayName } from '../utils';
+import { getDisplayName } from '../utils';
+import { PERPS_MARKET_ORDER_FEE_RATE } from '../constants';
 import { CloseAmountSection } from '../order-entry';
-import type { Position, AccountState } from '../types';
+import type { Position } from '../types';
 
 export type ClosePositionModalProps = {
   isOpen: boolean;
   onClose: () => void;
   position: Position;
-  account: AccountState | null;
   currentPrice: number;
   selectedAddress: string;
 };
 
-/**
- * Modal for closing a position (partial or full).
- * Shows amount input, slider, margin/P&L summary, fees, and receive estimate.
- */
 export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   isOpen,
   onClose,
   position,
-  account,
   currentPrice,
   selectedAddress,
 }) => {
@@ -59,7 +54,14 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const direction = getPositionDirection(position.size);
+  useEffect(() => {
+    if (isOpen) {
+      setClosePercent(100);
+      setIsSubmitting(false);
+      setError(null);
+    }
+  }, [isOpen]);
+
   const displayName = getDisplayName(position.symbol);
 
   const positionSize = useMemo(
@@ -82,10 +84,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     return (pnl * closePercent) / 100;
   }, [position.unrealizedPnl, closePercent]);
 
-  const estimatedFees = useMemo(() => {
-    const feeRate = 0.0001;
-    return closeSize * currentPrice * feeRate;
-  }, [closeSize, currentPrice]);
+  const estimatedFees = useMemo(
+    () => closeSize * currentPrice * PERPS_MARKET_ORDER_FEE_RATE,
+    [closeSize, currentPrice],
+  );
 
   const youWillReceive = useMemo(
     () => margin + unrealizedPnl - estimatedFees,

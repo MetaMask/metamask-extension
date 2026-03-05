@@ -74,6 +74,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     }
     setIsSubmitting(true);
     setError(null);
+    let positionClosed = false;
     try {
       const controller = await getPerpsController(selectedAddress);
       const closeResult = await controller.closePosition({
@@ -83,6 +84,8 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       if (!closeResult.success) {
         throw new Error(closeResult.error || 'Failed to close position');
       }
+      positionClosed = true;
+
       const usdAmount = (sizeNum * currentPrice).toFixed(2);
       const orderResult = await controller.placeOrder({
         symbol: position.symbol,
@@ -94,15 +97,18 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         leverage: leverageValue,
       });
       if (!orderResult.success) {
-        throw new Error(orderResult.error || 'Failed to place order');
+        throw new Error(orderResult.error || 'Failed to place reverse order');
       }
       const streamManager = getPerpsStreamManager();
       const freshPositions = await controller.getPositions({ skipCache: true });
       streamManager.pushPositionsWithOverrides(freshPositions);
       onClose();
     } catch (err) {
-      const message =
+      const raw =
         err instanceof Error ? err.message : 'An unknown error occurred';
+      const message = positionClosed
+        ? `${t('perpsPositionClosedReverseOrderFailed')}: ${raw}`
+        : raw;
       setError(message);
     } finally {
       setIsSubmitting(false);
@@ -115,6 +121,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     oppositeDirection,
     leverageValue,
     onClose,
+    t,
   ]);
 
   return (

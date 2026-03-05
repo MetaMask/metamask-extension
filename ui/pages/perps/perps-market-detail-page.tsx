@@ -1757,7 +1757,6 @@ const PerpsMarketDetailPage: React.FC = () => {
           isOpen={isCloseModalOpen}
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
-          account={account}
           currentPrice={currentPrice}
           selectedAddress={selectedAddress}
         />

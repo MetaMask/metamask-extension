@@ -11,7 +11,6 @@ import {
   IconName,
   IconSize,
   IconColor,
-  ButtonSize,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
@@ -23,7 +22,6 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { AmountInputProps } from '../../order-entry.types';
 import { calculatePositionSize } from '../../order-entry.mocks';
-import IconButton from '../../../../../ui/icon-button';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -39,6 +37,7 @@ import IconButton from '../../../../../ui/icon-button';
  * @param options0.leverage
  * @param options0.asset
  * @param options0.currentPrice
+ * @param options0.onAddFunds
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,
