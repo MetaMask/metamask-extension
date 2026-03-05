@@ -18,7 +18,7 @@ function initializeWorkflowContext(): WorkflowContext {
 
 async function main() {
   const partialContext = initializeWorkflowContext();
-  metaMaskSessionManager.setWorkflowContext(partialContext as WorkflowContext);
+  metaMaskSessionManager.setWorkflowContext(partialContext);
 
   setKnowledgeStore(createKnowledgeStore());
   setSessionManager(metaMaskSessionManager);
