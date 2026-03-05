@@ -24,7 +24,11 @@ jest.mock('@metamask/perps-controller', () => ({
     lastDepositTransactionId: null,
     lastWithdrawResult: null,
     withdrawalRequests: [],
-    withdrawalProgress: { progress: 0, lastUpdated: 0, activeWithdrawalId: null },
+    withdrawalProgress: {
+      progress: 0,
+      lastUpdated: 0,
+      activeWithdrawalId: null,
+    },
     depositRequests: [],
     lastError: null,
     lastUpdateTimestamp: 0,
