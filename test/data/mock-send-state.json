@@ -317,24 +317,6 @@
         }
       }
     ],
-    "identities": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-        "name": "Test Account"
-      },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
-        "name": "Test Account 2"
-      },
-      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "name": "Test Ledger 1"
-      },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-        "name": "Test Account 3",
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
-      }
-    },
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "bip122:000000000019d6689c085ae165831e93",
@@ -388,7 +370,6 @@
         "message": "Hello, http://localhost:8086!"
       }
     },
-    "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "tokens": [
       {
         "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
