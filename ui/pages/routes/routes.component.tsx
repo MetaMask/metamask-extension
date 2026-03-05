@@ -72,6 +72,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  CONTACTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -186,6 +187,9 @@ const NotificationDetails = mmLazy(
 );
 const Notifications = mmLazy(
   (() => import('../notifications/index.js')) as unknown as DynamicImportType,
+);
+const Contacts = mmLazy(
+  (() => import('../contacts/index.ts')) as unknown as DynamicImportType,
 );
 const SnapList = mmLazy(
   (() =>
@@ -623,6 +627,13 @@ export default function Routes() {
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openNotificationsPage',
+      }),
+      createRouteWithLayout({
+        path: `${CONTACTS_ROUTE}/*`,
+        component: Contacts,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: SNAPS_ROUTE,
