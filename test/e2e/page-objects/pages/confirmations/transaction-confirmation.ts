@@ -34,9 +34,6 @@ class TransactionConfirmation extends Confirmation {
   private readonly customNonceInput: RawLocator =
     '[data-testid="custom-nonce-input"]';
 
-  private readonly customSpendingCapInput: RawLocator =
-    '[data-testid="custom-spending-cap-input"]';
-
   private readonly dappInitiatedHeadingTitle: RawLocator = {
     css: 'h4',
     text: tEn('transferRequest'),
@@ -47,9 +44,6 @@ class TransactionConfirmation extends Confirmation {
 
   private readonly editGasFeeItemCustom: RawLocator =
     '[data-testid="edit-gas-fee-item-custom"]';
-
-  private readonly editSpendingCapIcon: RawLocator =
-    '[data-testid="edit-spending-cap-icon"]';
 
   private readonly gasFeeCloseToastMessage: RawLocator =
     '.toasts-container__banner-base button[aria-label="Close"]';
@@ -419,21 +413,6 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.saveButton);
     await this.driver.waitForSelector(this.advancedGasSet);
     console.log('Gas fee values updated successfully');
-  }
-
-  /**
-   * Edits the spending cap value on the confirmation dialog.
-   *
-   * @param newSpendingCap - The new spending cap value to set.
-   */
-  async editSpendingCap(newSpendingCap: string): Promise<void> {
-    console.log(`Editing spending cap to ${newSpendingCap}`);
-    await this.driver.clickElement(this.editSpendingCapIcon);
-    await this.driver.fill(this.customSpendingCapInput, newSpendingCap);
-    await this.driver.clickElement(this.saveButton);
-    await this.driver.waitForSelector(this.customSpendingCapInput, {
-      state: 'detached',
-    });
   }
 
   async fillCustomNonce(nonce: string) {
