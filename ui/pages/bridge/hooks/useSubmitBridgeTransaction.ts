@@ -157,6 +157,7 @@ export default function useSubmitBridgeTransaction() {
         navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
           replace: true,
         });
+        return;
       }
     } finally {
       setIsSubmitting(false);
