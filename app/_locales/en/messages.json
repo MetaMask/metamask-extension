@@ -5318,6 +5318,10 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsOrderValidationInsufficientBalance": {
+    "message": "Insufficient balance: need $1, have $2",
+    "description": "$1 is the required margin amount and $2 is the available balance amount"
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
@@ -5603,6 +5607,10 @@
   },
   "perpsStatusFilled": {
     "message": "Filled"
+  },
+  "perpsToastOrderFilled": {
+    "message": "Order filled",
+    "description": "Toast title shown when an order is filled"
   },
   "perpsStatusOpen": {
     "message": "Open"

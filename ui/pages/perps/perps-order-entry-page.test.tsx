@@ -21,17 +21,23 @@ jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
-const mockGetPerpsStreamingController = jest.fn();
-jest.mock('../../providers/perps/getPerpsController', () => ({
-  getPerpsStreamingController: (...args: unknown[]) =>
-    mockGetPerpsStreamingController(...args),
-}));
-
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
 }));
+
+let priceSubscriptionCallback: ((updates: unknown[]) => void) | undefined;
+let orderBookSubscriptionCallback: ((book: unknown) => void) | undefined;
+
+const setBackgroundRequestDefaults = () => {
+  mockSubmitRequestToBackground.mockImplementation((method: string) => {
+    if (method === 'perpsActivateStreaming') {
+      return Promise.resolve(undefined);
+    }
+    return Promise.resolve({ success: true });
+  });
+};
 
 // Mock controller for usePerpsController() - delegates to submitRequestToBackground so test assertions pass
 const mockPerpsController = {
@@ -63,24 +69,22 @@ jest.mock('../../providers/perps', () => {
     PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
       children,
     usePerpsController: () => mockPerpsController,
+    getPerpsStreamManager: () => ({
+      prices: {
+        subscribe: (callback: (updates: unknown[]) => void) => {
+          priceSubscriptionCallback = callback;
+          return jest.fn();
+        },
+      },
+      orderBook: {
+        subscribe: (callback: (book: unknown) => void) => {
+          orderBookSubscriptionCallback = callback;
+          return jest.fn();
+        },
+      },
+    }),
   };
 });
-
-jest.mock('../../providers/perps/PerpsStreamManager', () => ({
-  getPerpsStreamManager: () => ({
-    positions: { getCachedData: () => [], pushData: jest.fn() },
-    orders: { getCachedData: () => [], pushData: jest.fn() },
-    account: { getCachedData: () => null, pushData: jest.fn() },
-    markets: { getCachedData: () => [], pushData: jest.fn() },
-    setOptimisticTPSL: jest.fn(),
-    clearOptimisticTPSL: jest.fn(),
-    pushPositionsWithOverrides: jest.fn(),
-    prewarm: jest.fn(),
-    cleanupPrewarm: jest.fn(),
-    isInitialized: () => true,
-    init: jest.fn().mockResolvedValue(undefined),
-  }),
-}));
 
 const mockLivePositions = jest.fn<
   { positions: Position[]; isInitialLoading: boolean },
@@ -168,6 +172,9 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    setBackgroundRequestDefaults();
+    priceSubscriptionCallback = undefined;
+    orderBookSubscriptionCallback = undefined;
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -350,15 +357,67 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
+
+    it('disables submit and shows validation message when amount exceeds available balance', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(
+        screen.getByText('Insufficient balance: need 20.00, have 3.06'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not disable submit when amount equals available balance', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '3.06' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+    });
+
+    it('disables submit in close mode when position is missing', () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
   });
 
   describe('order submission', () => {
     beforeEach(() => {
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
-      mockGetPerpsStreamingController.mockResolvedValue({
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      setBackgroundRequestDefaults();
     });
 
     it('calls placeOrder on submit for new market order', async () => {
@@ -387,10 +446,46 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('does not call placeOrder when amount exceeds available balance', async () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const hasPlaceOrderCall = mockSubmitRequestToBackground.mock.calls.some(
+        (call) => call[0] === 'perpsPlaceOrder',
+      );
+      expect(hasPlaceOrderCall).toBe(false);
+    });
+
     it('shows error when order fails', async () => {
-      mockSubmitRequestToBackground.mockResolvedValueOnce({
-        success: false,
-        error: 'Insufficient margin',
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Insufficient margin',
+          });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -406,13 +501,21 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      });
     });
 
     it('shows error when controller throws', async () => {
-      mockSubmitRequestToBackground.mockRejectedValueOnce(
-        new Error('Network error'),
-      );
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsPlaceOrder') {
+          return Promise.reject(new Error('Network error'));
+        }
+        return Promise.resolve({ success: true });
+      });
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -427,7 +530,9 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Network error')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Network error')).toBeInTheDocument();
+      });
     });
 
     it('calls closePosition when in close mode', async () => {
@@ -495,7 +600,34 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+    });
+
+    it('does not fall back to placeOrder in close mode when position is missing', async () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePosition',
+        expect.anything(),
+      );
     });
   });
 
@@ -506,11 +638,7 @@ describe('PerpsOrderEntryPage', () => {
         positions: mockPositions,
         isInitialLoading: false,
       });
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
-      mockGetPerpsStreamingController.mockResolvedValue({
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      setBackgroundRequestDefaults();
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -561,36 +689,16 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('price subscriptions', () => {
-    let priceCallback: (updates: unknown[]) => void;
-    let orderBookCallback: (book: unknown) => void;
-
-    beforeEach(() => {
-      mockGetPerpsStreamingController.mockResolvedValue({
-        subscribeToPrices: jest.fn(
-          (opts: { callback: (u: unknown[]) => void }) => {
-            priceCallback = opts.callback;
-            return jest.fn();
-          },
-        ),
-        subscribeToOrderBook: jest.fn(
-          (opts: { callback: (b: unknown) => void }) => {
-            orderBookCallback = opts.callback;
-            return jest.fn();
-          },
-        ),
-      });
-    });
-
     it('processes price updates from subscribeToPrices callback', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof priceCallback).toBe('function');
+        expect(typeof priceSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        priceCallback([
+        priceSubscriptionCallback?.([
           {
             symbol: 'ETH',
             price: '3200.50',
@@ -608,11 +716,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof priceCallback).toBe('function');
+        expect(typeof priceSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        priceCallback([
+        priceSubscriptionCallback?.([
           {
             symbol: 'ETH',
             price: '3100.00',
@@ -628,11 +736,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof priceCallback).toBe('function');
+        expect(typeof priceSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        priceCallback([
+        priceSubscriptionCallback?.([
           { symbol: 'BTC', price: '50000.00', markPrice: '50001.00' },
         ]);
       });
@@ -645,11 +753,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof orderBookCallback).toBe('function');
+        expect(typeof orderBookSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        orderBookCallback({
+        orderBookSubscriptionCallback?.({
           bids: [{ price: '3199', size: '10' }],
           asks: [{ price: '3201', size: '10' }],
           midPrice: '3200.00',
@@ -664,11 +772,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof orderBookCallback).toBe('function');
+        expect(typeof orderBookSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        orderBookCallback({
+        orderBookSubscriptionCallback?.({
           bids: [],
           asks: [],
           midPrice: null,
@@ -681,11 +789,7 @@ describe('PerpsOrderEntryPage', () => {
 
   describe('order submission error paths', () => {
     beforeEach(() => {
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
-      mockGetPerpsStreamingController.mockResolvedValue({
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      setBackgroundRequestDefaults();
     });
 
     it('shows error when closePosition fails', async () => {
@@ -694,9 +798,17 @@ describe('PerpsOrderEntryPage', () => {
         positions: mockPositions,
         isInitialLoading: false,
       });
-      mockSubmitRequestToBackground.mockResolvedValueOnce({
-        success: false,
-        error: 'Close failed',
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsClosePosition') {
+          return Promise.resolve({
+            success: false,
+            error: 'Close failed',
+          });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -706,7 +818,9 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Close failed')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Close failed')).toBeInTheDocument();
+      });
     });
 
     it('shows error when updatePositionTPSL fails', async () => {
@@ -715,9 +829,17 @@ describe('PerpsOrderEntryPage', () => {
         positions: mockPositions,
         isInitialLoading: false,
       });
-      mockSubmitRequestToBackground.mockResolvedValueOnce({
-        success: false,
-        error: 'TPSL update failed',
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TPSL update failed',
+          });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -727,11 +849,22 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      });
     });
 
     it('shows generic error for non-Error throws', async () => {
-      mockSubmitRequestToBackground.mockRejectedValueOnce('string error');
+      const nonErrorReason: unknown = 'string error';
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsPlaceOrder') {
+          return Promise.reject(nonErrorReason);
+        }
+        return Promise.resolve({ success: true });
+      });
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -746,7 +879,11 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(
+          screen.getByText('An unknown error occurred'),
+        ).toBeInTheDocument();
+      });
     });
 
     it('navigates back after successful limit order', async () => {
@@ -787,11 +924,7 @@ describe('PerpsOrderEntryPage', () => {
   describe('pending order effects', () => {
     beforeEach(() => {
       jest.useFakeTimers();
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
-      mockGetPerpsStreamingController.mockResolvedValue({
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      setBackgroundRequestDefaults();
     });
 
     afterEach(() => {
