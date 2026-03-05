@@ -16,7 +16,7 @@ import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, TokenPayload } from './types';
 
-const initialState: BridgeState = {
+export const initialState: BridgeState = {
   fromToken: null,
   toToken: null,
   fromTokenInputValue: null,
