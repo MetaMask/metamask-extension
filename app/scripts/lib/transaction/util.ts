@@ -39,11 +39,11 @@ import {
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/modules/transaction.utils';
+
 import {
-  getTempoTransactionBatchRequestParams,
-  isTempoSupportEnabledForChainId,
-  isTempoTransactionParams,
-  isTempoTransactionRequest,
+  buildBatchTransactionsFromTempoTransactionCalls,
+  getTempoConfig,
+  isTempoTransactionType,
 } from './tempo-tx-utils';
 
 export type AddTransactionOptions = NonNullable<
@@ -138,22 +138,39 @@ export async function addDappTransaction(
 async function addTempoTransaction(
   request: FinalAddTransactionRequest,
 ): AddTransactionResult {
-  if (!isTempoSupportEnabledForChainId(request.chainId)) {
+  // Checks and infer Tempo Transaction format for supported fields.
+  if (!isTempoTransactionType(request.transactionParams)) {
+    throw new Error('Invalid Tempo Transaction Params');
+  }
+  const tempoConfig = getTempoConfig();
+  const tempoConfigForChain = tempoConfig.perChainConfig[request.chainId];
+
+  if (!tempoConfigForChain) {
     throw new Error(
       `Tempo transactions are not supported for chain: ${request.chainId}`,
     );
   }
 
-  // Checks and infer Tempo Transaction format for supported fields.
-  if (!isTempoTransactionParams(request.transactionParams)) {
-    throw new Error('Invalid Tempo Transaction Params');
+  if (!tempoConfigForChain.enabled) {
+    throw new Error(
+      `Tempo transactions are disabled for chain: ${request.chainId}`,
+    );
   }
 
   const { networkClientId, transactionController } = request;
 
-  const tempoBatchRequestParams = getTempoTransactionBatchRequestParams(
-    request.transactionParams,
-  );
+  const tempoBatchRequestParams = {
+    from: request.transactionParams.from as Hex,
+    transactions: buildBatchTransactionsFromTempoTransactionCalls(
+      request.transactionParams,
+    ),
+    // If no token is provided, we force a default one so we don't fall in
+    // fee preference algo: https://docs.tempo.xyz/protocol/fees/spec-fee#fee-token-preferences
+    gasFeeToken:
+      request.transactionParams.feeToken || tempoConfigForChain.defaultFeeToken,
+    excludeNativeTokenForFee: true,
+  };
+
   const result = await transactionController.addTransactionBatch({
     ...tempoBatchRequestParams,
     ...request.transactionOptions,
@@ -217,7 +234,7 @@ async function addTransactionOrUserOperation(
 ) {
   const { selectedAccount } = request;
 
-  const isTempoFlow = isTempoTransactionRequest(request);
+  const isTempoFlow = isTempoTransactionType(request.transactionParams);
   if (isTempoFlow) {
     return addTempoTransaction(request);
   }
