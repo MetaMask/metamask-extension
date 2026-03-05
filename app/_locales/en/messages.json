@@ -5324,6 +5324,9 @@
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
+  "perpsAvailableToClose": {
+    "message": "Available to close"
+  },
   "perpsCloseAll": {
     "message": "Close all"
   },
@@ -5332,6 +5335,9 @@
   },
   "perpsCloseLong": {
     "message": "Close Long"
+  },
+  "perpsClosePosition": {
+    "message": "Close position"
   },
   "perpsCloseShort": {
     "message": "Close Short"
@@ -5419,6 +5425,9 @@
   },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
+  },
+  "perpsIncludesPnl": {
+    "message": "includes P&L $1"
   },
   "perpsIncreasedPosition": {
     "message": "Increased position"
@@ -5714,6 +5723,9 @@
   },
   "perpsWatchlist": {
     "message": "Watchlist"
+  },
+  "perpsYouWillReceive": {
+    "message": "You'll receive"
   },
   "perpsWithdraw": {
     "message": "Withdraw"

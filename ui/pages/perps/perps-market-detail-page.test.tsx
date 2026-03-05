@@ -77,6 +77,12 @@ jest.mock('loglevel', () => ({
 jest.mock('../../providers/perps', () => ({
   PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
+  getPerpsController: jest.fn().mockResolvedValue({
+    closePosition: jest.fn().mockResolvedValue({ success: true }),
+    placeOrder: jest.fn().mockResolvedValue({ success: true }),
+    updateMargin: jest.fn().mockResolvedValue({ success: true }),
+    updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
+  }),
 }));
 
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
@@ -421,6 +427,20 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsRemoveMargin.message),
+      ).toBeInTheDocument();
+    });
+
+    it('opens Close position modal when Close button is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-close-cta-button'));
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableToClose.message),
       ).toBeInTheDocument();
     });
 

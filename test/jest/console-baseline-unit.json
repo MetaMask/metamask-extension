@@ -3161,6 +3161,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/perps/perps-order-entry-page.test.tsx": {

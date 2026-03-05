@@ -71,6 +71,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   orderType = 'market',
   midPrice,
   onOrderTypeChange,
+  onAddFunds,
 }) => {
   const t = useI18nContext();
 
@@ -260,6 +261,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
+            onAddFunds={onAddFunds}
           />
         )}
 

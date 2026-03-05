@@ -7,6 +7,11 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+  ButtonSize,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
@@ -18,6 +23,7 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { AmountInputProps } from '../../order-entry.types';
 import { calculatePositionSize } from '../../order-entry.mocks';
+import IconButton from '../../../../../ui/icon-button';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -43,6 +49,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   leverage,
   asset,
   currentPrice,
+  onAddFunds,
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
@@ -243,9 +250,27 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
             {t('perpsAvailableToTrade')}
           </Text>
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
-          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
+            </Text>
+            <Icon
+              name={IconName.AddCircle}
+              size={IconSize.Sm}
+              color={IconColor.IconMuted}
+              aria-label="Add Funds"
+              onClick={onAddFunds}
+              className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
+              data-testid="amount-input-add-funds"
+            />
+          </Box>
         </Box>
       </Box>
 

@@ -34,6 +34,10 @@ export type {
   EditMarginModalContentProps,
 } from './edit-margin';
 
+// Close Position
+export { ClosePositionModal } from './close-position';
+export type { ClosePositionModalProps } from './close-position';
+
 // Reverse Position
 export { ReversePositionModal } from './reverse-position';
 export type { ReversePositionModalProps } from './reverse-position';

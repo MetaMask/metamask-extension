@@ -68,9 +68,10 @@ import { useFormatters } from '../../hooks/useFormatters';
 import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
+import { ClosePositionModal } from '../../components/app/perps/close-position';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
-import type { CandleStick, PriceUpdate } from '@metamask/perps-controller';
+import type { PriceUpdate } from '@metamask/perps-controller';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -288,7 +289,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   });
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
-  const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
+  // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
 
   const [isModifyMenuOpen, setIsModifyMenuOpen] = useState(false);
   const [isMarginMenuOpen, setIsMarginMenuOpen] = useState(false);
@@ -297,6 +298,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   >(null);
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false);
+  const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const modifyMenuRef = useRef<HTMLDivElement>(null);
   const marginMenuRef = useRef<HTMLDivElement>(null);
 
@@ -472,12 +474,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
 
   const handleClosePosition = useCallback(() => {
-    if (!isEligible || !position || !decodedSymbol) {
+    if (!isEligible || !position) {
       return;
     }
-    const isLong = parseFloat(position.size) >= 0;
-    navigate(buildOrderEntryUrl(isLong ? 'long' : 'short', 'close'));
-  }, [isEligible, position, decodedSymbol, navigate, buildOrderEntryUrl]);
+    setIsCloseModalOpen(true);
+  }, [isEligible, position]);
 
   const handleOpenAddMarginModal = useCallback(() => {
     setIsModifyMenuOpen(false);
@@ -654,7 +655,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         candleData={candleData}
         priceLines={chartPriceLines}
         onNeedMoreHistory={fetchMoreHistory}
-        onCrosshairMove={setHoveredCandle}
+        // onCrosshairMove={setHoveredCandle}
       />
     );
   };
@@ -736,7 +737,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         </Box>
       </Box>
 
-      {/* OHLCV Bar — shown when crosshair hovers a candle */}
+      {/* OHLCV Bar — commented out for now
       {hoveredCandle && (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -784,6 +785,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Box>
         </Box>
       )}
+      */}
 
       {/* Candlestick Chart */}
       <Box
@@ -1744,6 +1746,18 @@ const PerpsMarketDetailPage: React.FC = () => {
           isOpen={isTPSLModalOpen}
           onClose={handleCloseTPSLModal}
           position={position}
+          currentPrice={currentPrice}
+          selectedAddress={selectedAddress}
+        />
+      )}
+
+      {/* Close position modal */}
+      {position && selectedAddress && isCloseModalOpen && (
+        <ClosePositionModal
+          isOpen={isCloseModalOpen}
+          onClose={() => setIsCloseModalOpen(false)}
+          position={position}
+          account={account}
           currentPrice={currentPrice}
           selectedAddress={selectedAddress}
         />

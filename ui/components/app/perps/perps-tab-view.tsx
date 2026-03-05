@@ -30,6 +30,7 @@ import {
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
+import { usePerpsDeposit } from '../../../hooks/perps';
 import { setTutorialModalOpen } from '../../../ducks/perps';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
@@ -62,6 +63,7 @@ export const PerpsTabView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { triggerDeposit } = usePerpsDeposit();
 
   // Get selected address for stream manager initialization
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -159,9 +161,7 @@ export const PerpsTabView: React.FC = () => {
       {/* Balance header with Add funds / Withdraw dropdown */}
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
-        onAddFunds={() => {
-          // TODO: Navigate to add funds flow
-        }}
+        onAddFunds={triggerDeposit}
         onWithdraw={() => {
           // TODO: Navigate to withdraw flow
         }}
