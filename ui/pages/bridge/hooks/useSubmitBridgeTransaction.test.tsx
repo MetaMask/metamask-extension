@@ -10,11 +10,6 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import {
-  AWAITING_SIGNATURES_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import * as sharedSelectors from '../../../../shared/modules/selectors';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
