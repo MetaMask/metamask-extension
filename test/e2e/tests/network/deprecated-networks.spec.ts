@@ -40,9 +40,7 @@ describe('Deprecated networks', function (this: Suite) {
           .window()
           .setRect({ width: 400, height: 600 });
 
-        await driver.clickElement(
-          '[data-testid="dapp-connection-control-bar__network-button"]',
-        );
+        await driver.openDappNetworkMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
