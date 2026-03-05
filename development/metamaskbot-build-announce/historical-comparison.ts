@@ -77,9 +77,13 @@ async function fetchPerformanceFile(
  */
 async function listReleaseBranchesByVersion(): Promise<string[]> {
   try {
-    const response = await fetch(STATS_REPO_API, {
-      headers: { Accept: 'application/vnd.github.v3+json' },
-    });
+    const headers: Record<string, string> = {
+      Accept: 'application/vnd.github.v3+json',
+    };
+    if (process.env.GITHUB_TOKEN) {
+      headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
+    }
+    const response = await fetch(STATS_REPO_API, { headers });
     if (!response.ok) {
       return [];
     }
@@ -211,8 +215,12 @@ export function aggregateHistoricalData(
 ): HistoricalMeanReference {
   // Each benchmark run already samples 5–100 times and computes its own mean/stdDev,
   // so a single commit's data is statistically sufficient as a baseline.
-  const commitHashes = Object.keys(data).reverse();
-  const latestCommits = commitHashes.slice(0, 1);
+  // Sort by timestamp descending so we always pick the most recent entry,
+  // regardless of JSON key order.
+  const latestCommits = Object.keys(data)
+    .filter((hash) => data[hash]?.timestamp)
+    .sort((a, b) => data[b].timestamp - data[a].timestamp)
+    .slice(0, 1);
 
   const collected: Record<string, Record<string, number[]>> = {};
 

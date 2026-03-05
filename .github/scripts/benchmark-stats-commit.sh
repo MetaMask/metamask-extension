@@ -38,7 +38,7 @@ SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
 # Assemble the commit data based on mode
 assemble_dapp_page_load_data() {
-    local benchmark_file="${BENCHMARK_FILE:-../test-artifacts/benchmarks/dapp-page-load-benchmark-results.json}"
+    local benchmark_file="${BENCHMARK_FILE:-test-artifacts/benchmarks/dapp-page-load-benchmark-results.json}"
 
     jq . "${benchmark_file}" > /dev/null || {
         echo "Error: Benchmark JSON is invalid: ${benchmark_file}" >&2
@@ -150,7 +150,7 @@ case "${DATA_TYPE}" in
         STATS_FILE="stats/${SAFE_BRANCH}/page_load_data.json"
         COMMIT_MESSAGE="Adding dapp page-load benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
         echo "Mode: dapp-page-load (branch: ${RAW_BRANCH})"
-        # Assemble after cloning since the benchmark file path is relative
+        COMMIT_DATA=$(assemble_dapp_page_load_data)
         ;;
     performance)
         STATS_FILE="stats/${SAFE_BRANCH}/performance_data.json"
@@ -182,11 +182,6 @@ git clone --depth 1 https://github.com/MetaMask/extension_benchmark_stats.git "$
 cd "${CLONE_DIR}"
 git fetch origin main:main
 git checkout main
-
-# For dapp-page-load mode, assemble after cd so relative paths work
-if [[ "${DATA_TYPE}" == "dapp-page-load" ]]; then
-    COMMIT_DATA=$(assemble_dapp_page_load_data)
-fi
 
 # --- Ensure the stats file exists ---
 

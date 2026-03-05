@@ -446,7 +446,7 @@ jobs:
         run: .github/scripts/benchmark-stats-commit.sh
         env:
           BENCHMARK_DATA_TYPE: dapp-page-load
-          BENCHMARK_FILE: ../test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
+          BENCHMARK_FILE: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
 
   prep-e2e:
     needs:
