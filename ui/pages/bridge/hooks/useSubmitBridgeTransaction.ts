@@ -88,13 +88,12 @@ export default function useSubmitBridgeTransaction() {
     // Set submitting state before async checks to prevent duplicate submissions.
     setIsSubmitting(true);
 
-    // Verify wallet and network before submitting
+    // Verify HW wallet and network before submitting
     try {
-      // Verify hardware wallet device is ready before submitting.
       if (isHardwareWalletAccount) {
         const isDeviceReady = await ensureDeviceReady();
         if (!isDeviceReady) {
-          return;
+          throw new Error('Hardware wallet device is not ready');
         }
       }
 
@@ -117,11 +116,11 @@ export default function useSubmitBridgeTransaction() {
       }
     } catch (e) {
       captureException(e);
-      return;
-    } finally {
       setIsSubmitting(false);
+      return;
     }
 
+    // Navigate to HW signing page
     if (hardwareWalletUsed) {
       const {
         quote: { requestId },
@@ -133,6 +132,7 @@ export default function useSubmitBridgeTransaction() {
           )}`
         : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
       navigate(awaitingUrl);
+      setIsSubmitting(false);
       return;
     }
 
