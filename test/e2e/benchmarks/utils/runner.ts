@@ -71,7 +71,7 @@ export async function runBenchmarkWithIterations(
   benchmarkFn: BenchmarkFunction,
   iterations: number,
   retries: number,
-  thresholdConfig?: ThresholdConfig,
+  thresholdConfig: ThresholdConfig,
 ): Promise<BenchmarkSummary> {
   const allResults: BenchmarkRunResult[] = [];
   let successfulRuns = 0;
@@ -157,10 +157,7 @@ export async function runBenchmarkWithIterations(
     MAX_EXCLUSION_RATE,
   );
 
-  // Validate thresholds if configured
-  const thresholdResult = thresholdConfig
-    ? validateThresholds(timerStats, thresholdConfig)
-    : undefined;
+  const thresholdResult = validateThresholds(timerStats, thresholdConfig);
 
   // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
@@ -175,10 +172,8 @@ export async function runBenchmarkWithIterations(
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
     exclusionRate: overallExclusionCheck.rate,
-    ...(thresholdResult && {
-      thresholdViolations: thresholdResult.violations,
-      thresholdsPassed: thresholdResult.passed,
-    }),
+    thresholdViolations: thresholdResult.violations,
+    thresholdsPassed: thresholdResult.passed,
     benchmarkType,
   };
 }
