@@ -109,6 +109,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/notifications&auth/notifications-activation.test.tsx": {
+      "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 9,
       "warn: ⚠️ React Router Future Flag": 2

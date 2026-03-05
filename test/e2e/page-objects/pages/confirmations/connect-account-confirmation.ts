@@ -35,6 +35,13 @@ class ConnectAccountConfirmation {
 
   private readonly editPermissionsButton = '[data-testid="edit"]';
 
+  private readonly originHeader = (origin: string) => {
+    return {
+      tag: 'h2',
+      text: origin,
+    };
+  };
+
   private readonly permissionsTab = {
     testId: 'permissions-tab',
   };
@@ -43,11 +50,14 @@ class ConnectAccountConfirmation {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded({
+    origin = '127.0.0.1',
+  }: { origin?: string } = {}): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.connectAccountConfirmationTitle,
         this.connectAccountConfirmationButton,
+        this.originHeader(origin),
       ]);
     } catch (e) {
       console.log(

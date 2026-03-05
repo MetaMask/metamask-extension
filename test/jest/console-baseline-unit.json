@@ -339,6 +339,9 @@
     "ui/components/app/configure-snap-popup/configure-snap-popup.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/confirm/info/row/address-display.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/confirm/info/row/address.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2,
@@ -3178,6 +3181,43 @@
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 4,
       "warn: Could not find asset type": 9,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/autodetect-nfts-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/autodetect-tokens-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/currency-sub-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/display-nft-media-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/hide-zero-balance-tokens-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/local-currency-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/show-network-token-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/settings-v2.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/settings-tab.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/advanced-tab/advanced-tab.component.test.js": {
