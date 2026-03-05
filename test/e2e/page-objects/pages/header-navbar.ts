@@ -5,33 +5,43 @@ import { regularDelayMs } from '../../helpers';
 class HeaderNavbar {
   protected driver: Driver;
 
-  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 
   private readonly accountListPage = '.account-list-page';
+
+  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
+
+  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
+  private readonly connectedSitePopoverNetworkButton =
+    '[data-testid="connected-site-popover-network-button"]';
+
+  private readonly connectionMenu = '[data-testid="connection-menu"]';
+
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
-  private readonly threeDotMenuButton =
+  private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
+
+  private readonly firstTimeTurnOnNotificationsButton =
+    '[data-testid="turn-on-notifications-button"]';
+
+  private readonly globalMenuButton =
     '[data-testid="account-options-menu-button"]';
 
-  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
+  private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private readonly openAccountDetailsButton =
-    '[data-testid="account-list-menu-details"]';
+  private readonly networkAddressesLink =
+    '[data-testid="networks-subtitle-test-id"]';
 
-  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
-
-  private readonly settingsButton = '[data-testid="global-menu-settings"]';
+  private readonly networkOption = (networkId: string) =>
+    `[data-testid="${networkId}"]`;
 
   private readonly networkPicker = '.mm-picker-network';
-
-  private readonly notificationsButton =
-    '[data-testid="notifications-menu-item"]';
 
   private readonly notificationCounterMenuIcon = {
     testId: 'notifications-tag-counter__unread-dot',
@@ -40,23 +50,13 @@ class HeaderNavbar {
   private readonly notificationCountOption =
     '[data-testid="global-menu-notification-count"]';
 
-  private readonly firstTimeTurnOnNotificationsButton =
-    '[data-testid="turn-on-notifications-button"]';
+  private readonly notificationsButton =
+    '[data-testid="notifications-menu-item"]';
 
-  private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
+  private readonly openAccountDetailsButton =
+    '[data-testid="account-list-menu-details"]';
 
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
-
-  private readonly networkAddressesLink =
-    '[data-testid="networks-subtitle-test-id"]';
-
-  private readonly networkOption = (networkId: string) =>
-    `[data-testid="${networkId}"]`;
-
-  private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
+  private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -66,7 +66,7 @@ class HeaderNavbar {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
-        this.threeDotMenuButton,
+        this.globalMenuButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for header navbar to be loaded', e);
@@ -112,16 +112,16 @@ class HeaderNavbar {
 
   async openGlobalMenu(): Promise<void> {
     console.log('Open account options menu');
-    await this.driver.waitForSelector(this.threeDotMenuButton, {
+    await this.driver.waitForSelector(this.globalMenuButton, {
       state: 'enabled',
     });
-    await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.clickElement(this.globalMenuButton);
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
   async mouseClickOnThreeDotMenu(): Promise<void> {
     console.log('Clicking three dot menu using mouse move');
-    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
