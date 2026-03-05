@@ -339,6 +339,9 @@
     "ui/components/app/configure-snap-popup/configure-snap-popup.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/confirm/info/row/address-display.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/confirm/info/row/address.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2,
@@ -685,12 +688,6 @@
     "ui/components/app/transaction-list-item/transaction-list-item.component.unified-swap-bridge.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "error: Error: Insufficient number of substitutions": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/transaction-list/transaction-list.test.js": {
-      "MetaMask: Background connection not initialized": 36,
-      "Reselect: Identity function warnings": 5,
-      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/update-modal/update-modal.test.tsx": {
