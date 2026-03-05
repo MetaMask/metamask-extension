@@ -703,7 +703,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -777,7 +776,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -842,7 +840,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome', 'firefox'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -874,7 +871,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -909,7 +905,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -936,7 +931,6 @@ describe('ManifestPlugin', () => {
       it('should return false for default self-contained scripts', () => {
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -965,7 +959,6 @@ describe('ManifestPlugin', () => {
       it('should return true when name is null or undefined', () => {
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -1017,7 +1010,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -1083,7 +1075,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -1125,10 +1116,8 @@ describe('ManifestPlugin', () => {
         compiler.context = entrypointsContext;
 
         // Do NOT set any entrypoints - all should fall back to original paths
-
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -1178,7 +1167,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
@@ -1213,7 +1201,6 @@ describe('ManifestPlugin', () => {
 
       const plugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -1261,7 +1248,6 @@ describe('ManifestPlugin', () => {
 
       const plugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
