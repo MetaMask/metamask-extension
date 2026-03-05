@@ -141,7 +141,10 @@ export async function fetchHistoricalPerformanceData(
   // 1. Try the target branch first
   const currentData = await fetchPerformanceFile(safeBranch);
   if (currentData && Object.keys(currentData).length > 0) {
-    return aggregateHistoricalData(currentData);
+    const result = aggregateHistoricalData(currentData);
+    if (Object.keys(result).length > 0) {
+      return result;
+    }
   }
 
   // 2. No data on this branch yet — find the latest release branch with data
@@ -153,7 +156,10 @@ export async function fetchHistoricalPerformanceData(
     }
     const data = await fetchPerformanceFile(branch);
     if (data && Object.keys(data).length > 0) {
-      return aggregateHistoricalData(data);
+      const result = aggregateHistoricalData(data);
+      if (Object.keys(result).length > 0) {
+        return result;
+      }
     }
   }
 

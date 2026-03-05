@@ -381,4 +381,53 @@ describe('fetchHistoricalPerformanceData', () => {
     // Only 2 fetch calls — target + listing; release-12.5.0 not re-fetched
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
+
+  it('falls back to release branch when target has entries but aggregation is empty', async () => {
+    const invalidData = asHistoricalFile({
+      commit1: {
+        timestamp: 0,
+        presets: {
+          pageLoad: {
+            entry: { mean: null },
+          },
+        },
+      },
+    });
+
+    const releaseDirs = [{ name: 'release-12.5.0', type: 'dir' }];
+
+    mockFetch
+      .mockReturnValueOnce(makeOkResponse(invalidData))
+      .mockReturnValueOnce(makeOkResponse(releaseDirs))
+      .mockReturnValueOnce(makeOkResponse(mockFile));
+
+    const result = await fetchHistoricalPerformanceData('main');
+
+    expect(result).not.toBeNull();
+    expect(result?.['pageLoad/standardHome']?.uiStartup).toBe(2000);
+  });
+
+  it('returns null when all branches produce empty aggregation', async () => {
+    const invalidData = asHistoricalFile({
+      commit1: {
+        timestamp: 0,
+        presets: {
+          pageLoad: {
+            entry: { mean: null },
+          },
+        },
+      },
+    });
+
+    const releaseDirs = [{ name: 'release-12.5.0', type: 'dir' }];
+
+    mockFetch
+      .mockReturnValueOnce(makeOkResponse(invalidData))
+      .mockReturnValueOnce(makeOkResponse(releaseDirs))
+      .mockReturnValueOnce(makeOkResponse(invalidData));
+
+    const result = await fetchHistoricalPerformanceData('main');
+
+    expect(result).toBeNull();
+  });
 });
