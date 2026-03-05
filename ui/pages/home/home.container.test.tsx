@@ -7,14 +7,9 @@ jest.mock('../../components/multichain/app-header', () => ({
   AppHeader: () => <div data-testid="mock-app-header" />,
 }));
 
-jest.mock(
-  '../../components/multichain/dapp-connection-control-bar',
-  () => ({
-    DappConnectionControlBar: () => (
-      <div data-testid="dapp-control-bar-bottom" />
-    ),
-  }),
-);
+jest.mock('../../components/multichain/dapp-connection-control-bar', () => ({
+  DappConnectionControlBar: () => <div data-testid="dapp-control-bar-bottom" />,
+}));
 
 jest.mock('./home.component', () => {
   const HomeComponent = () => <div data-testid="mock-home" />;
@@ -58,8 +53,7 @@ describe('HomeWithRouter', () => {
     const { getByTestId } = renderHome();
     const home = getByTestId('mock-home');
     const bar = getByTestId('dapp-control-bar-bottom');
-    expect(
-      home.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+    const position = home.compareDocumentPosition(bar);
+    expect(position).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 });
