@@ -859,13 +859,15 @@ async function initialize(backup) {
  * Loads the preinstalled snaps from urls and returns them as an array.
  * It fails if any Snap fails to load in the expected time range.
  * Supports .json.gz files using gzip decompression.
+ * Uses batched loading to avoid N+1 API call patterns during initialization.
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
-  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
+  const BATCH_SIZE = 3;
+
+  const fetchSnapMetadata = async (url) => {
     const response = await fetchWithTimeout(url);
 
-    // If the Snap is compressed, decompress it
     if (url.pathname.endsWith('.json.gz')) {
       const ds = new DecompressionStream('gzip');
       const decompressedStream = response.body.pipeThrough(ds);
@@ -873,9 +875,16 @@ async function loadPreinstalledSnaps() {
     }
 
     return await response.json();
-  });
+  };
 
-  return Promise.all(promises);
+  const results = [];
+  for (let i = 0; i < PREINSTALLED_SNAPS_URLS.length; i += BATCH_SIZE) {
+    const batch = PREINSTALLED_SNAPS_URLS.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(fetchSnapMetadata));
+    results.push(...batchResults);
+  }
+
+  return results;
 }
 
 /**
