@@ -299,6 +299,38 @@ function bucketizeCount(count: number): string {
 }
 
 /**
+ * Wire `visibilitychange` to report TBT + long task aggregates to Sentry.
+ *
+ * Extension popups fire `visibilitychange → hidden` when the user clicks
+ * away. This is the most reliable "end of session" signal for
+ * `chrome-extension://` pages and is typically the last moment an active
+ * span still exists (Sentry's `browserTracingIntegration` creates one
+ * `ui.long-task` child span per task; our aggregate measurements attach
+ * to the root pageload/navigation span).
+ *
+ * @returns Cleanup function to remove the listener
+ */
+export function setupLongTaskSentryReporting(): () => void {
+  if (typeof document === 'undefined') {
+    return () => {
+      // No-op in non-browser environments
+    };
+  }
+
+  const onVisibilityChange = (): void => {
+    if (document.visibilityState === 'hidden') {
+      reportLongTaskMetricsToSentry();
+    }
+  };
+
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
+  return () => {
+    document.removeEventListener('visibilitychange', onVisibilityChange);
+  };
+}
+
+/**
  * Expose Long Task metrics on stateHooks for E2E testing.
  * Call this from ui/index.js after stateHooks is initialized.
  */
