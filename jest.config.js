@@ -66,6 +66,9 @@ module.exports = {
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
+  transformIgnorePatterns: [
+    'node_modules/(?!@nktkas/hyperliquid/node_modules/@noble/)',
+  ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
