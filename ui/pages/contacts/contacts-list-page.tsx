@@ -8,13 +8,7 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
-  Icon,
   IconName,
-  IconSize,
-  IconColor,
-  Text,
-  TextVariant,
-  TextAlign,
   ButtonIcon,
   ButtonIconSize,
 } from '@metamask/design-system-react';
@@ -24,6 +18,7 @@ import { CONTACTS_ADD_ROUTE, CONTACTS_VIEW_ROUTE } from '../../helpers/constants
 import { getCompleteAddressBook } from '../../selectors';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { ContactListItem } from './components/contact-list-item';
+import { ContactsEmptyState } from './components/contacts-empty-state';
 
 export function ContactsListPage() {
   const t = useI18nContext();
@@ -43,6 +38,10 @@ export function ContactsListPage() {
     navigate(DEFAULT_ROUTE);
   };
 
+  const handleClose = () => {
+    navigate(DEFAULT_ROUTE);
+  };
+
   return (
     <Page data-testid="contacts-page">
       <Header
@@ -53,6 +52,15 @@ export function ContactsListPage() {
             size={ButtonIconSize.Md}
             onClick={handleBack}
             data-testid="contacts-back-button"
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            ariaLabel={t('close')}
+            iconName={IconName.Close}
+            size={ButtonIconSize.Md}
+            onClick={handleClose}
+            data-testid="contacts-close-button"
           />
         }
         marginBottom={0}
@@ -96,35 +104,13 @@ export function ContactsListPage() {
               )}
             </Box>
           ) : (
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              padding={6}
-              className="flex flex-col items-center"
-            >
-              <Icon
-                name={IconName.Book}
-                color={IconColor.IconMuted}
-                size={IconSize.Xl}
-              />
-              <Text
-                variant={TextVariant.HeadingMd}
-                className="mt-4 mb-2"
-              >
-                {t('buildContactList')}
-              </Text>
-              <Text
-                variant={TextVariant.BodyMd}
-                textAlign={TextAlign.Center}
-                className="mb-4"
-              >
-                {t('addFriendsAndAddresses')}
-              </Text>
-            </Box>
+            <ContactsEmptyState />
           )}
         </Box>
         <Box
           padding={4}
           paddingTop={0}
+          marginTop={6}
           className="shrink-0 bg-background-default"
         >
           <Button

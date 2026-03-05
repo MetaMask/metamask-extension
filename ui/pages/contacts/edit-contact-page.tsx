@@ -7,13 +7,9 @@ import { Box, ButtonIcon, ButtonIconSize } from '../../components/component-libr
 import { IconName } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../helpers/constants/design-system';
-import {
   CONTACTS_ROUTE,
   CONTACTS_VIEW_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { EditContactForm } from './components/edit-contact-form';
 import {
@@ -36,6 +32,10 @@ export function EditContactPage() {
 
   const handleBack = () => {
     navigate(CONTACTS_ROUTE);
+  };
+
+  const handleClose = () => {
+    navigate(DEFAULT_ROUTE);
   };
 
   if (!address) {
@@ -63,17 +63,21 @@ export function EditContactPage() {
             data-testid="edit-contact-back-button"
           />
         }
+        endAccessory={
+          <ButtonIcon
+            ariaLabel={t('close')}
+            iconName={IconName.Close}
+            size={ButtonIconSize.Md}
+            onClick={handleClose}
+            data-testid="edit-contact-close-button"
+          />
+        }
         marginBottom={0}
       >
         {t('editContact')}
       </Header>
       <Content padding={0}>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-          style={{ flex: 1, minHeight: 0 }}
-        >
+        <Box className="flex min-h-0 w-full flex-1 flex-col gap-6">
           <EditContactForm
           address={address}
           initialName={name}

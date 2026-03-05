@@ -2,24 +2,42 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarIcon,
+  AvatarIconSize,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
   Box,
-  BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
+  IconName,
+  IconColor,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
+  FormTextFieldSize,
   SelectButton,
   SelectButtonSize,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Label,
 } from '../../../components/component-library';
+import {
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
+} from '../../../helpers/constants/design-system';
 import { ContactNetworks } from '../../settings/contact-list-tab/contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { addToAddressBook, removeFromAddressBook } from '../../../store/actions';
+import {
+  addToAddressBook,
+  removeFromAddressBook,
+} from '../../../store/actions';
 import { getAddressBook, getInternalAccounts } from '../../../selectors';
 import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
@@ -71,10 +89,15 @@ export function EditContactForm({
     setContactName(nameValue);
   };
 
+  const selectedNetwork =
+    networks && selectedChainId
+      ? (networks as Record<string, { name?: string }>)[selectedChainId]
+      : undefined;
   const selectedNetworkName =
-    (networks && selectedChainId
-      ? (networks as Record<string, { name?: string }>)[selectedChainId]?.name
-      : undefined) ?? t('network');
+    selectedNetwork?.name ??
+    (selectedChainId
+      ? `${t('unknownNetworkForGatorPermissions')} (${selectedChainId})`
+      : t('network'));
   const isUnchanged =
     contactName === initialName &&
     newAddress === address &&
@@ -132,118 +155,164 @@ export function EditContactForm({
   };
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      padding={4}
-      gap={4}
-      className="flex flex-col"
-    >
+    <Box className="flex min-h-0 w-full flex-1 flex-col justify-between">
       <Box
-        marginBottom={2}
-        className="flex justify-end"
+        className="flex min-h-0 w-full flex-col overflow-auto px-4 pt-4 gap-6"
+        style={{ scrollbarColor: 'var(--color-icon-muted) transparent' }}
       >
-        <Button
-          variant={ButtonVariant.Tertiary}
-          onClick={handleDelete}
-          className="text-error-default"
-          data-testid="delete-contact-button"
-        >
-          {t('deleteContact')}
-        </Button>
-      </Box>
-
-      <FormTextField
-        id="edit-contact-nickname"
-        label={t('nickname')}
-        placeholder={t('addAlias')}
-        value={contactName}
-        onChange={handleNameChange}
-        error={Boolean(nameError)}
-        helpText={nameError || undefined}
-        data-testid="address-book-edit-contact-name"
-      />
-
-      <FormTextField
-        id="edit-contact-address"
-        label={t('publicAddress')}
-        value={newAddress}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setNewAddress(e.target.value);
-          setAddressError('');
-        }}
-        error={Boolean(addressError)}
-        helpText={addressError || undefined}
-        data-testid="address-book-edit-contact-address"
-      />
-
-      <FormTextField
-        id="edit-contact-memo"
-        label={t('memo')}
-        placeholder={initialMemo}
-        value={newMemo}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setNewMemo(e.target.value)
-        }
-        data-testid="address-book-edit-contact-memo"
-      />
-
-      <Box>
-        <Label marginBottom={1}>{t('network')}</Label>
-        <SelectButton
-          size={SelectButtonSize.Md}
-          isBlock
-          startAccessory={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-src={
-              selectedChainId
-                ? getImageForChainId(selectedChainId) || undefined
-                : undefined
+        {/* Avatar */}
+        <Box className="flex flex-col items-center">
+          <BadgeWrapper
+            badge={
+              <AvatarIcon
+                className="rounded-md border-2 border-background-default bg-primary-default"
+                size={AvatarIconSize.Sm}
+                iconName={IconName.Edit}
+                iconProps={{ color: IconColor.PrimaryInverse }}
+              />
             }
-            name={selectedNetworkName}
+          >
+            <AvatarAccount address={address} size={AvatarAccountSize.Xl} />
+          </BadgeWrapper>
+        </Box>
+
+        {/* Form fields */}
+        <Box className="flex w-full flex-col gap-6">
+          <Box className="flex w-full justify-end">
+            <Button
+              variant={ButtonVariant.Tertiary}
+              onClick={handleDelete}
+              className="text-error-default"
+              data-testid="delete-contact-button"
+            >
+              {t('deleteContact')}
+            </Button>
+          </Box>
+
+          <FormTextField
+            id="edit-contact-nickname"
+            label={t('nickname')}
+            placeholder={t('addAlias')}
+            value={contactName}
+            onChange={handleNameChange}
+            error={Boolean(nameError)}
+            helpText={nameError || undefined}
+            size={FormTextFieldSize.Lg}
+            labelProps={{ marginBottom: 1 }}
+            textFieldProps={{
+              backgroundColor: BackgroundColor.backgroundMuted,
+              borderColor: BorderColor.borderDefault,
+              borderRadius: BorderRadius.XL,
+            }}
+            data-testid="address-book-edit-contact-name"
+          />
+
+          <FormTextField
+            id="edit-contact-address"
+            label={t('publicAddress')}
+            value={newAddress}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setNewAddress(e.target.value);
+              setAddressError('');
+            }}
+            error={Boolean(addressError)}
+            helpText={addressError || undefined}
+            size={FormTextFieldSize.Lg}
+            labelProps={{ marginBottom: 1 }}
+            textFieldProps={{
+              backgroundColor: BackgroundColor.backgroundMuted,
+              borderColor: BorderColor.borderDefault,
+              borderRadius: BorderRadius.XL,
+            }}
+            data-testid="address-book-edit-contact-address"
+          />
+
+          <FormTextField
+            id="edit-contact-memo"
+            label={t('memo')}
+            placeholder={initialMemo}
+            value={newMemo}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setNewMemo(e.target.value)
+            }
+            size={FormTextFieldSize.Lg}
+            labelProps={{ marginBottom: 1 }}
+            textFieldProps={{
+              backgroundColor: BackgroundColor.backgroundMuted,
+              borderColor: BorderColor.borderDefault,
+              borderRadius: BorderRadius.XL,
+            }}
+            data-testid="address-book-edit-contact-memo"
+          />
+
+          <Box className="w-full">
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
+              className="mb-1"
+            >
+              {t('network')}
+            </Text>
+            <SelectButton
+              size={SelectButtonSize.Lg}
+              isBlock
+              backgroundColor={BackgroundColor.backgroundMuted}
+              borderColor={BorderColor.borderDefault}
+              borderRadius={BorderRadius.XL}
+              startAccessory={
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Xs}
+                  src={
+                    selectedChainId
+                      ? getImageForChainId(selectedChainId) || undefined
+                      : undefined
+                  }
+                  name={selectedNetworkName}
+                />
+              }
+              onClick={() => setShowNetworkModal(true)}
+              data-testid="network-selector"
+              className="rounded-xl"
+            >
+              {selectedNetworkName}
+            </SelectButton>
+          </Box>
+
+          {showNetworkModal && (
+            <ContactNetworks
+              isOpen
+              onClose={() => setShowNetworkModal(false)}
+              selectedChainId={selectedChainId}
+              onSelect={(chainId: string) => setSelectedChainId(chainId)}
             />
-          }
-          onClick={() => setShowNetworkModal(true)}
-          data-testid="network-selector"
-        >
-          {selectedNetworkName}
-        </SelectButton>
+          )}
+        </Box>
       </Box>
 
-      {showNetworkModal && (
-        <ContactNetworks
-          isOpen
-          onClose={() => setShowNetworkModal(false)}
-          selectedChainId={selectedChainId}
-          onSelect={(chainId: string) => setSelectedChainId(chainId)}
-        />
-      )}
-
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={2}
-        marginTop={4}
-        className="flex"
-      >
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          onClick={onCancel}
-          className="flex-1"
-          data-testid="page-container-footer-cancel"
-        >
-          {t('cancel')}
-        </Button>
-        <Button
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          isDisabled={isSaveDisabled}
-          onClick={handleSubmit}
-          className="flex-1"
-          data-testid="page-container-footer-next"
-        >
-          {t('save')}
-        </Button>
+      {/* Footer */}
+      <Box className="mb-6 shrink-0 bg-background-default px-4 pb-6 pt-0">
+        <Box className="flex gap-4">
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            onClick={onCancel}
+            className="flex-1 rounded-xl border border-border-default"
+            data-testid="page-container-footer-cancel"
+          >
+            {t('cancel')}
+          </Button>
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            isDisabled={isSaveDisabled}
+            onClick={handleSubmit}
+            className="flex-1 rounded-xl"
+            data-testid="page-container-footer-next"
+          >
+            {t('save')}
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

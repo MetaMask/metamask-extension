@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, ButtonIcon, ButtonIconSize, IconName } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { CONTACTS_ROUTE } from '../../helpers/constants/routes';
+import { CONTACTS_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { AddContactForm } from './components/add-contact-form';
 
 export function AddContactPage() {
@@ -12,6 +12,10 @@ export function AddContactPage() {
 
   const handleBack = () => {
     navigate(CONTACTS_ROUTE);
+  };
+
+  const handleClose = () => {
+    navigate(DEFAULT_ROUTE);
   };
 
   return (
@@ -24,6 +28,15 @@ export function AddContactPage() {
             size={ButtonIconSize.Md}
             onClick={handleBack}
             data-testid="add-contact-back-button"
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            ariaLabel={t('close')}
+            iconName={IconName.Close}
+            size={ButtonIconSize.Md}
+            onClick={handleClose}
+            data-testid="add-contact-close-button"
           />
         }
         marginBottom={0}
