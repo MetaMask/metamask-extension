@@ -83,12 +83,30 @@ For new test code, use `FixtureBuilderV2` by default.
 `FixtureBuilderV2` currently supports:
 
 - `withAddressBookController`
+- `withAccountsController`
+- `withAppStateController`
 - `withCurrencyController`
+- `withKeyringController`
+- `withMetaMetricsController`
+- `withNetworkController`
+- `withOnboardingController`
 - `withPermissionController`
 - `withPreferencesController`
+- `withTransactionController`
 - `withConversionRateDisabled`
 - `withEnabledNetworks`
+- `withLedgerAccount`
+- `withNetworkControllerDoubleNode`
+- `withNetworkControllerTripleNode`
 - `withPermissionControllerConnectedToTestDapp`
+- `withSelectedNetwork`
+- `withShowNativeTokenAsMainBalanceDisabled`
+- `withShowNativeTokenAsMainBalanceEnabled`
+- `withSmartTransactionsOptedOut`
+- `withTransactionControllerApprovedTransaction`
+- `withTransactionControllerCompletedAndIncomingTransaction`
+- `withTransactionControllerCompletedTransaction`
+- `withTransactionControllerIncomingTransaction`
 
 If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 

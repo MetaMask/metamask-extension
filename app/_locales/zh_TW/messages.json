@@ -1099,9 +1099,6 @@
   "viewContact": {
     "message": "觀看聯絡資訊"
   },
-  "viewMore": {
-    "message": "檢視更多"
-  },
   "viewOnCustomBlockExplorer": {
     "message": "在 $1 瀏覽",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"

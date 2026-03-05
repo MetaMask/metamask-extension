@@ -8804,9 +8804,6 @@
   "viewDetails": {
     "message": "查看详情"
   },
-  "viewMore": {
-    "message": "查看更多"
-  },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"
   },
