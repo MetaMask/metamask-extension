@@ -88,9 +88,17 @@ const SectionSkeletons = () => (
   </>
 );
 
-export const InfoSkeleton = ({ variant }: { variant?: 'send' }) => (
+export const InfoSkeleton = ({
+  variant,
+}: {
+  variant?: ConfirmationLoader.Send;
+}) => (
   <>
-    {variant === 'send' ? <SendHeadingSkeleton /> : <DefaultHeadingSkeleton />}
+    {variant === ConfirmationLoader.Send ? (
+      <SendHeadingSkeleton />
+    ) : (
+      <DefaultHeadingSkeleton />
+    )}
     <SectionSkeletons />
   </>
 );
@@ -98,7 +106,6 @@ export const InfoSkeleton = ({ variant }: { variant?: 'send' }) => (
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
   const { loader } = useConfirmationNavigationOptions();
-
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
 
@@ -165,7 +172,11 @@ const Info = () => {
 
     return (
       <InfoSkeleton
-        variant={loader === ConfirmationLoader.Send ? 'send' : undefined}
+        variant={
+          loader === ConfirmationLoader.Send
+            ? ConfirmationLoader.Send
+            : undefined
+        }
       />
     );
   }
