@@ -58,7 +58,7 @@ describe('Error utils Tests', function () {
             message: 'Contact support',
           },
           criticalErrorFooter: {
-            message: '$1 or $2',
+            message: '$1 $2 or $3',
           },
           stateCorruptionRestoreAccountsFromBackup: {
             message: 'Restore accounts from backup',

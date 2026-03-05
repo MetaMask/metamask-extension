@@ -126,33 +126,34 @@ export function getErrorHtml(
     <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
 `;
 
-  const supportPart = supportLink
-    ? `
-        <span>${lodashEscape(t('stillGettingMessage'))}</span>
-        <a
+  const supportPromptPart = supportLink
+    ? `<span>${lodashEscape(t('stillGettingMessage'))}</span>`
+    : '';
+  const supportLinkPart = supportLink
+    ? `<a
           href="${lodashEscape(supportLink)}"
           class="critical-error__link"
           target="_blank"
-          rel="noopener noreferrer">
-            ${lodashEscape(t('errorPageContactSupport'))}
-        </a>
-      `
+          rel="noopener noreferrer">${lodashEscape(t('errorPageContactSupport'))}</a>`
+    : '';
+  const supportPart = supportLink
+    ? `${supportPromptPart} ${supportLinkPart}`.trim()
     : '';
 
   const restorePart = hasBackup
-    ? `
-        <a
+    ? `<a
           id="critical-error-restore-link"
           class="critical-error__link"
-          href="#">
-            ${lodashEscape(t('stateCorruptionRestoreAccountsFromBackup'))}
-        </a>
-      `
+          href="#">${lodashEscape(t('stateCorruptionRestoreAccountsFromBackup'))}</a>`
     : '';
 
   let footerContent;
   if (supportPart && restorePart) {
-    const footerSubstitutions = [supportPart.trim(), restorePart.trim()];
+    const footerSubstitutions = [
+      supportPromptPart.trim(),
+      supportLinkPart.trim(),
+      restorePart.trim(),
+    ];
     const withSubstitutions =
       getMessage(
         preferredLocale,
@@ -166,9 +167,9 @@ export function getErrorHtml(
         'criticalErrorFooter',
         footerSubstitutions,
       );
-    // Avoid fallback that would show raw "$1 or $2" or key "criticalErrorFooter"; use link HTML we already have.
     footerContent =
-      withSubstitutions ?? `${footerSubstitutions[0]} or ${footerSubstitutions[1]}`;
+      withSubstitutions ??
+      `${footerSubstitutions[0]} ${footerSubstitutions[1]} or ${footerSubstitutions[2]}`;
   } else {
     footerContent = (supportPart || restorePart || '').trim();
   }
