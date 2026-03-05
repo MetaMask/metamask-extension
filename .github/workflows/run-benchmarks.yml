@@ -139,7 +139,7 @@ jobs:
 
       - name: Upload benchmark result as artifact
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
