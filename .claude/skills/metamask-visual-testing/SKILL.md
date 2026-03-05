@@ -647,12 +647,12 @@ Error responses:
 
 ## Key Files
 
-| File                                                     | Purpose                  |
-| -------------------------------------------------------- | ------------------------ |
-| `test/e2e/playwright/llm-workflow/mcp-server/README.md`  | MCP server documentation |
-| `test/e2e/playwright/llm-workflow/mcp-server/server.ts`  | MCP server entrypoint    |
-| `test/e2e/playwright/llm-workflow/extension-launcher.ts` | Core launcher class      |
-| `test/e2e/playwright/llm-workflow/docs/SPEC-*.md`        | Full specification       |
+| File                                                     | Purpose                    |
+| -------------------------------------------------------- | -------------------------- |
+| `test/e2e/playwright/llm-workflow/README.md`             | LLM Workflow documentation |
+| `test/e2e/playwright/llm-workflow/mcp-server/README.md`  | MCP server documentation   |
+| `test/e2e/playwright/llm-workflow/mcp-server/server.ts`  | MCP server entrypoint      |
+| `test/e2e/playwright/llm-workflow/extension-launcher.ts` | Core launcher class        |
 
 ## Visual Testing Decision Rules
 
