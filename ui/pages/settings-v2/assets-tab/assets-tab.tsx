@@ -29,7 +29,7 @@ const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
 
 export const Assets = ({ children }: { children: SettingItemConfig[] }) => {
   return (
-    <Box>
+    <Box paddingHorizontal={4} paddingBottom={4}>
       {children.map(({ id, component: Component, hasDividerBefore }) => (
         <React.Fragment key={id}>
           {hasDividerBefore && <Divider />}

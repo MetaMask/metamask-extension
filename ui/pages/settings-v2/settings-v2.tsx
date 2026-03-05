@@ -185,9 +185,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
             </LegacyBox>
           )}
           <Suspense fallback={null}>
-            <Box paddingHorizontal={4} paddingBottom={4}>
-              {children}
-            </Box>
+            <Box>{children}</Box>
           </Suspense>
         </div>
       </div>
