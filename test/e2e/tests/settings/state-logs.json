@@ -558,18 +558,6 @@
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
     "historicalPrices": {},
-    "identities": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      }
-    },
     "ignoredNfts": [],
     "initialEnqueueCompleted": "boolean",
     "insights": {},
@@ -685,18 +673,6 @@
     "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
-    "lostIdentities": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      }
-    },
     "manageInstitutionalWallets": "boolean",
     "marketData": {
       "0x539": {}
@@ -780,16 +756,7 @@
     "musdConversionEducationSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
-      "ethereumAddress": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "*": {
-            "name": "string",
-            "origin": "string",
-            "proposedNames": {},
-            "sourceId": "null"
-          }
-        }
-      }
+      "ethereumAddress": {}
     },
     "nameSources": {},
     "networkConfigurations": {},
@@ -942,7 +909,6 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "boolean",
     "segmentApiCalls": {},
-    "selectedAddress": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
