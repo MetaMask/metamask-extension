@@ -166,7 +166,9 @@ export function getErrorHtml(
         'criticalErrorFooter',
         footerSubstitutions,
       );
-    footerContent = withSubstitutions ?? t('criticalErrorFooter');
+    // Avoid fallback that would show raw "$1 or $2" or key "criticalErrorFooter"; use link HTML we already have.
+    footerContent =
+      withSubstitutions ?? `${footerSubstitutions[0]} or ${footerSubstitutions[1]}`;
   } else {
     footerContent = (supportPart || restorePart || '').trim();
   }
