@@ -5,6 +5,7 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import * as useSubmitBridgeTransactionModule from '../hooks/useSubmitBridgeTransaction';
@@ -75,11 +76,17 @@ describe('BridgePriceImpactModal', () => {
         'Proceed',
         'Cancel',
       ]);
-      expect(getByRole('button', { name: 'Proceed' })).toBeEnabled();
-      expect(getByRole('button', { name: 'Cancel' })).toBeEnabled();
+      expect(
+        getByRole('button', { name: messages.proceed.message }),
+      ).toBeEnabled();
+      expect(
+        getByRole('button', { name: messages.cancel.message }),
+      ).toBeEnabled();
 
       await act(async () => {
-        await userEvent.click(getByRole('button', { name: 'Proceed' }));
+        await userEvent.click(
+          getByRole('button', { name: messages.proceed.message }),
+        );
       });
       expect(mockOnClose).toHaveBeenCalledTimes(1);
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
@@ -118,7 +125,9 @@ describe('BridgePriceImpactModal', () => {
         'Cancel',
       ]);
       expect(getByRole('button', { name: 'Proceed Loading' })).toBeDisabled();
-      expect(getByRole('button', { name: 'Cancel' })).toBeDisabled();
+      expect(
+        getByRole('button', { name: messages.cancel.message }),
+      ).toBeDisabled();
     });
   });
 
@@ -149,10 +158,18 @@ describe('BridgePriceImpactModal', () => {
           '',
           'Got it',
         ]);
-        expect(getByRole('button', { name: 'Got it' })).toBeEnabled();
+        expect(
+          getByRole('button', {
+            name: messages.deprecatedNetworkButtonMsg.message,
+          }),
+        ).toBeEnabled();
 
         await act(async () => {
-          await userEvent.click(getByRole('button', { name: 'Got it' }));
+          await userEvent.click(
+            getByRole('button', {
+              name: messages.deprecatedNetworkButtonMsg.message,
+            }),
+          );
         });
 
         expect(mockOnClose).toHaveBeenCalledTimes(1);

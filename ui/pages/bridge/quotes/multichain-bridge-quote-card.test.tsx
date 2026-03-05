@@ -408,7 +408,7 @@ describe('MultichainBridgeQuoteCard', () => {
         configureStore(mockStore),
       );
 
-      const priceImpactText = getByText('Price impact');
+      const priceImpactText = getByText(messages.bridgePriceImpact.message);
       expect(priceImpactText).toBeInTheDocument();
       expect(priceImpactText.parentNode?.nextSibling).toMatchSnapshot();
       expect(getByTestId('price-impact-warning-button')).toBeInTheDocument();
