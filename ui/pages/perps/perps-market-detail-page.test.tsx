@@ -390,22 +390,37 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(screen.getByTestId('perps-modify-menu')).toBeInTheDocument();
       expect(
-        screen.getByTestId('perps-modify-menu-add-margin'),
+        screen.getByTestId('perps-modify-menu-add-exposure'),
       ).toBeInTheDocument();
       expect(
-        screen.getByTestId('perps-modify-menu-decrease-margin'),
+        screen.getByTestId('perps-modify-menu-reduce-exposure'),
       ).toBeInTheDocument();
       expect(
         screen.getByTestId('perps-modify-menu-reverse-position'),
       ).toBeInTheDocument();
       expect(
+        screen.getByText(messages.perpsAddExposure.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReduceExposure.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReversePosition.message),
+      ).toBeInTheDocument();
+    });
+
+    it('opens Margin menu with Add margin and Remove margin when Margin card is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-margin-card'));
+      expect(screen.getByTestId('perps-margin-menu')).toBeInTheDocument();
+      expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsRemoveMargin.message),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsReversePosition.message),
       ).toBeInTheDocument();
     });
 

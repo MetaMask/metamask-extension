@@ -64,6 +64,7 @@ import {
 } from '../../components/app/perps/utils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
+import { Popover, PopoverPosition } from '../../components/component-library';
 import { useFormatters } from '../../hooks/useFormatters';
 import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
@@ -291,12 +292,14 @@ const PerpsMarketDetailPage: React.FC = () => {
   const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
 
   const [isModifyMenuOpen, setIsModifyMenuOpen] = useState(false);
+  const [isMarginMenuOpen, setIsMarginMenuOpen] = useState(false);
   const [marginModalMode, setMarginModalMode] = useState<
     'add' | 'remove' | null
   >(null);
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false);
   const modifyMenuRef = useRef<HTMLDivElement>(null);
+  const marginMenuRef = useRef<HTMLDivElement>(null);
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -477,36 +480,44 @@ const PerpsMarketDetailPage: React.FC = () => {
     navigate(buildOrderEntryUrl(isLong ? 'long' : 'short', 'close'));
   }, [isEligible, position, decodedSymbol, navigate, buildOrderEntryUrl]);
 
-  // Close modify menu when clicking outside
-  useEffect(() => {
-    if (!isModifyMenuOpen) {
-      return undefined;
-    }
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        modifyMenuRef.current &&
-        !modifyMenuRef.current.contains(e.target as Node)
-      ) {
-        setIsModifyMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isModifyMenuOpen]);
-
   const handleOpenAddMarginModal = useCallback(() => {
     setIsModifyMenuOpen(false);
+    setIsMarginMenuOpen(false);
     setMarginModalMode('add');
   }, []);
 
   const handleOpenDecreaseMarginModal = useCallback(() => {
     setIsModifyMenuOpen(false);
+    setIsMarginMenuOpen(false);
     setMarginModalMode('remove');
   }, []);
 
   const handleOpenReverseModal = useCallback(() => {
     setIsModifyMenuOpen(false);
     setIsReverseModalOpen(true);
+  }, []);
+
+  const handleAddExposure = useCallback(() => {
+    if (!position || !decodedSymbol) {
+      return;
+    }
+    setIsModifyMenuOpen(false);
+    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
+    navigate(buildOrderEntryUrl(direction, 'modify'));
+  }, [position, decodedSymbol, navigate, buildOrderEntryUrl]);
+
+  const handleReduceExposure = useCallback(() => {
+    if (!position || !decodedSymbol) {
+      return;
+    }
+    setIsModifyMenuOpen(false);
+    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
+    navigate(buildOrderEntryUrl(direction, 'close'));
+  }, [position, decodedSymbol, navigate, buildOrderEntryUrl]);
+
+  const handleOpenMarginMenu = useCallback(() => {
+    setIsModifyMenuOpen(false);
+    setIsMarginMenuOpen((prev) => !prev);
   }, []);
 
   const handleCloseMarginModal = useCallback(() => {
@@ -887,10 +898,13 @@ const PerpsMarketDetailPage: React.FC = () => {
                   </Text>
                 </Box>
 
-                {/* Margin Card - display only; add/remove margin via Modify menu */}
+                {/* Margin Card - click to open Add/Remove margin popover */}
                 <Box
-                  className="flex-1 rounded-xl bg-muted px-4 py-3"
+                  ref={marginMenuRef}
+                  className="relative flex-1 rounded-xl bg-muted px-4 py-3 cursor-pointer hover:bg-muted-hover active:bg-muted-pressed transition-colors"
                   flexDirection={BoxFlexDirection.Column}
+                  onClick={handleOpenMarginMenu}
+                  data-testid="perps-margin-card"
                 >
                   <Box paddingBottom={1}>
                     <Text
@@ -909,6 +923,84 @@ const PerpsMarketDetailPage: React.FC = () => {
                       'USD',
                     )}
                   </Text>
+                  <Popover
+                    referenceElement={marginMenuRef.current}
+                    isOpen={isMarginMenuOpen}
+                    onClickOutside={() => setIsMarginMenuOpen(false)}
+                    onPressEscKey={() => setIsMarginMenuOpen(false)}
+                    position={PopoverPosition.Top}
+                    offset={[0, 8]}
+                    padding={0}
+                    className="min-w-[220px] rounded-lg overflow-hidden"
+                    data-testid="perps-margin-menu"
+                  >
+                    <Box flexDirection={BoxFlexDirection.Column}>
+                      <ButtonBase
+                        className="w-full text-left rounded-t-lg px-3 py-2.5 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                        onClick={handleOpenAddMarginModal}
+                        data-testid="perps-margin-menu-add"
+                      >
+                        <Icon
+                          name={IconName.Add}
+                          size={IconSize.Sm}
+                          color={IconColor.IconDefault}
+                          className="shrink-0 mt-0.5"
+                        />
+                        <Box
+                          flexDirection={BoxFlexDirection.Column}
+                          gap={0}
+                          className="min-w-0 flex-1"
+                        >
+                          <Text
+                            variant={TextVariant.BodySm}
+                            fontWeight={FontWeight.Medium}
+                            className="break-words"
+                          >
+                            {t('perpsAddMargin')}
+                          </Text>
+                          <Text
+                            variant={TextVariant.BodyXs}
+                            color={TextColor.TextAlternative}
+                            className="break-words"
+                          >
+                            {t('perpsAddMarginDescription')}
+                          </Text>
+                        </Box>
+                      </ButtonBase>
+                      <ButtonBase
+                        className="w-full text-left rounded-b-lg px-3 py-2.5 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                        onClick={handleOpenDecreaseMarginModal}
+                        data-testid="perps-margin-menu-remove"
+                      >
+                        <Icon
+                          name={IconName.Minus}
+                          size={IconSize.Sm}
+                          color={IconColor.IconDefault}
+                          className="shrink-0 mt-0.5"
+                        />
+                        <Box
+                          flexDirection={BoxFlexDirection.Column}
+                          gap={0}
+                          className="min-w-0 flex-1"
+                        >
+                          <Text
+                            variant={TextVariant.BodySm}
+                            fontWeight={FontWeight.Medium}
+                            className="break-words"
+                          >
+                            {t('perpsRemoveMargin')}
+                          </Text>
+                          <Text
+                            variant={TextVariant.BodyXs}
+                            color={TextColor.TextAlternative}
+                            className="break-words"
+                          >
+                            {t('perpsRemoveMarginDescription')}
+                          </Text>
+                        </Box>
+                      </ButtonBase>
+                    </Box>
+                  </Popover>
                 </Box>
               </Box>
 
@@ -1460,41 +1552,123 @@ const PerpsMarketDetailPage: React.FC = () => {
                   color={IconColor.IconDefault}
                 />
               </Button>
-              {isModifyMenuOpen && (
-                <Box
-                  className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg"
-                  flexDirection={BoxFlexDirection.Column}
-                  data-testid="perps-modify-menu"
-                >
+              <Popover
+                referenceElement={modifyMenuRef.current}
+                isOpen={isModifyMenuOpen}
+                onClickOutside={() => setIsModifyMenuOpen(false)}
+                onPressEscKey={() => setIsModifyMenuOpen(false)}
+                position={PopoverPosition.Top}
+                matchWidth
+                offset={[0, 8]}
+                padding={0}
+                className="rounded-lg overflow-hidden"
+                data-testid="perps-modify-menu"
+              >
+                <Box flexDirection={BoxFlexDirection.Column}>
                   <ButtonBase
-                    className="w-full text-left rounded-none px-3 py-2 bg-transparent hover:bg-hover active:bg-pressed"
-                    onClick={handleOpenAddMarginModal}
-                    data-testid="perps-modify-menu-add-margin"
+                    className="w-full text-left rounded-t-lg px-3 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                    onClick={handleAddExposure}
+                    data-testid="perps-modify-menu-add-exposure"
                   >
-                    <Text variant={TextVariant.BodySm}>
-                      {t('perpsAddMargin')}
-                    </Text>
+                    <Icon
+                      name={IconName.Add}
+                      size={IconSize.Sm}
+                      color={IconColor.IconDefault}
+                      className="shrink-0 mt-0.5"
+                    />
+                    <Box
+                      flexDirection={BoxFlexDirection.Column}
+                      gap={0}
+                      className="min-w-0 flex-1"
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                        className="break-words"
+                      >
+                        {t('perpsAddExposure')}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                        className="break-words"
+                      >
+                        {parseFloat(position.size) >= 0
+                          ? t('perpsAddExposureDescriptionLong')
+                          : t('perpsAddExposureDescriptionShort')}
+                      </Text>
+                    </Box>
                   </ButtonBase>
                   <ButtonBase
-                    className="w-full text-left rounded-none px-3 py-2 bg-transparent hover:bg-hover active:bg-pressed"
-                    onClick={handleOpenDecreaseMarginModal}
-                    data-testid="perps-modify-menu-decrease-margin"
+                    className="w-full text-left rounded-none px-3 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                    onClick={handleReduceExposure}
+                    data-testid="perps-modify-menu-reduce-exposure"
                   >
-                    <Text variant={TextVariant.BodySm}>
-                      {t('perpsRemoveMargin')}
-                    </Text>
+                    <Icon
+                      name={IconName.Minus}
+                      size={IconSize.Sm}
+                      color={IconColor.IconDefault}
+                      className="shrink-0 mt-0.5"
+                    />
+                    <Box
+                      flexDirection={BoxFlexDirection.Column}
+                      gap={0}
+                      className="min-w-0 flex-1"
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                        className="break-words"
+                      >
+                        {t('perpsReduceExposure')}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                        className="break-words"
+                      >
+                        {parseFloat(position.size) >= 0
+                          ? t('perpsReduceExposureDescriptionLong')
+                          : t('perpsReduceExposureDescriptionShort')}
+                      </Text>
+                    </Box>
                   </ButtonBase>
                   <ButtonBase
-                    className="w-full text-left rounded-none px-3 py-2 bg-transparent hover:bg-hover active:bg-pressed"
+                    className="w-full text-left rounded-b-lg px-3 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
                     onClick={handleOpenReverseModal}
                     data-testid="perps-modify-menu-reverse-position"
                   >
-                    <Text variant={TextVariant.BodySm}>
-                      {t('perpsReversePosition')}
-                    </Text>
+                    <Icon
+                      name={IconName.SwapHorizontal}
+                      size={IconSize.Sm}
+                      color={IconColor.IconDefault}
+                      className="shrink-0 mt-0.5"
+                    />
+                    <Box
+                      flexDirection={BoxFlexDirection.Column}
+                      gap={0}
+                      className="min-w-0 flex-1"
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                        className="break-words"
+                      >
+                        {t('perpsReversePosition')}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                        className="break-words"
+                      >
+                        {parseFloat(position.size) >= 0
+                          ? t('perpsReversePositionDescriptionLong')
+                          : t('perpsReversePositionDescriptionShort')}
+                      </Text>
+                    </Box>
                   </ButtonBase>
                 </Box>
-              )}
+              </Popover>
             </Box>
 
             {/* Close Button - White / Primary style */}

@@ -5289,8 +5289,20 @@
   "perpsAddFundsDescription": {
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
+  "perpsAddExposure": {
+    "message": "Add exposure"
+  },
+  "perpsAddExposureDescriptionLong": {
+    "message": "Increase the size of your long position"
+  },
+  "perpsAddExposureDescriptionShort": {
+    "message": "Increase the size of your short position"
+  },
   "perpsAddMargin": {
-    "message": "Add Margin"
+    "message": "Add margin"
+  },
+  "perpsAddMarginDescription": {
+    "message": "Increase margin to reduce liquidation risk"
   },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
@@ -5525,11 +5537,29 @@
   "perpsRecentActivity": {
     "message": "Recent Activity"
   },
+  "perpsReduceExposure": {
+    "message": "Reduce exposure"
+  },
+  "perpsReduceExposureDescriptionLong": {
+    "message": "Decrease the size of your long position"
+  },
+  "perpsReduceExposureDescriptionShort": {
+    "message": "Decrease the size of your short position"
+  },
   "perpsRemoveMargin": {
-    "message": "Remove Margin"
+    "message": "Remove margin"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Withdraw excess margin from position"
   },
   "perpsReversePosition": {
     "message": "Reverse position"
+  },
+  "perpsReversePositionDescriptionLong": {
+    "message": "Flip your long position to a short"
+  },
+  "perpsReversePositionDescriptionShort": {
+    "message": "Flip your short position to a long"
   },
   "perpsEstSize": {
     "message": "Est. size"
