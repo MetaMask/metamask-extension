@@ -9,20 +9,17 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
-} from '../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  IconColor,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllPermittedAccountsForCurrentTab,
@@ -174,21 +171,19 @@ export const DappConnectionControlBar: React.FC = () => {
   return (
     <>
       <Box
-        className="dapp-connection-control-bar"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        className="dapp-connection-control-bar w-full"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         padding={3}
         paddingLeft={4}
         paddingRight={4}
         gap={2}
-        width={BlockSize.Full}
         data-testid="dapp-connection-control-bar"
       >
         {/* Left side: Favicon with green dot + Identity */}
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={2}
           className="dapp-connection-control-bar__left-group"
         >
@@ -208,21 +203,21 @@ export const DappConnectionControlBar: React.FC = () => {
 
           {/* Origin + Account stacked */}
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            flexDirection={BoxFlexDirection.Column}
             className="dapp-connection-control-bar__identity"
           >
             <Text
-              variant={TextVariant.bodySmMedium}
-              color={TextColor.textDefault}
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
               ellipsis
             >
               {siteName}
             </Text>
             {selectedAccountLabel && (
               <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textAlternative}
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
                 ellipsis
                 data-testid="dapp-connection-control-bar__account-name"
               >
@@ -234,21 +229,18 @@ export const DappConnectionControlBar: React.FC = () => {
 
         {/* Right side: Network selector + Combined action icons */}
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={2}
-          style={{ marginLeft: 'auto' }}
+          className="ml-auto"
         >
           {/* Network selector (icon-only, same size as action icons) */}
           {dappActiveNetwork && (
-            <Box
-              as="button"
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              gap={1}
-              className="dapp-connection-control-bar__network-button"
+            <button
+              className="dapp-connection-control-bar__network-button flex items-center gap-1"
               onClick={handleNetworkClick}
               data-testid="dapp-connection-control-bar__network-button"
+              type="button"
             >
               <AvatarNetwork
                 size={AvatarNetworkSize.Sm}
@@ -258,58 +250,53 @@ export const DappConnectionControlBar: React.FC = () => {
                   ''
                 }
                 src={networkImageSrc}
-                borderWidth={0}
               />
               <Icon
                 name={IconName.ArrowDown}
                 size={IconSize.Xs}
-                color={IconColor.iconDefault}
+                color={IconColor.IconDefault}
               />
-            </Box>
+            </button>
           )}
 
           {/* Combined settings + disconnect container */}
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
             className="dapp-connection-control-bar__combined-actions"
           >
             {/* Permissions button */}
-            <Box
-              as="button"
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              className="dapp-connection-control-bar__action-button"
+            <button
+              className="dapp-connection-control-bar__action-button flex items-center"
               onClick={handlePermissionsClick}
               data-testid="dapp-connection-control-bar__permissions-button"
               aria-label={t('managePermissions')}
+              type="button"
             >
               <Icon
                 name={IconName.Setting}
                 size={IconSize.Sm}
-                color={IconColor.iconDefault}
+                color={IconColor.IconDefault}
               />
-            </Box>
+            </button>
 
             {/* Vertical divider */}
             <Box className="dapp-connection-control-bar__divider" />
 
             {/* Disconnect button */}
-            <Box
-              as="button"
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              className="dapp-connection-control-bar__action-button"
+            <button
+              className="dapp-connection-control-bar__action-button flex items-center"
               onClick={handleDisconnectClick}
               data-testid="dapp-connection-control-bar__disconnect-button"
               aria-label={t('disconnect')}
+              type="button"
             >
               <Icon
                 name={IconName.Logout}
                 size={IconSize.Sm}
-                color={IconColor.errorDefault}
+                color={IconColor.ErrorDefault}
               />
-            </Box>
+            </button>
           </Box>
         </Box>
       </Box>
