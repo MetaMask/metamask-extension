@@ -6,6 +6,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { BuyGetMusdCtaVariant } from '../../../hooks/musd/useMusdCtaVisibility';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MusdBuyGetCta } from './musd-buy-get-cta';
 
 // Mock useI18nContext
@@ -135,7 +136,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText('Get mUSD');
+      const elements = screen.getAllByText(messages.musdGetMusd.message);
       expect(elements.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -197,7 +198,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText('Buy mUSD');
+      const elements = screen.getAllByText(messages.musdBuyMusd.message);
       expect(elements.length).toBeGreaterThanOrEqual(1);
     });
 
