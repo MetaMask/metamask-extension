@@ -48,6 +48,10 @@ jest.mock('../../../../shared/constants/network', () => ({
   },
 }));
 
+jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
+
 jest.mock('../../../hooks/useMultiPolling', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
