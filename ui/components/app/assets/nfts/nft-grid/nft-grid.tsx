@@ -1,19 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
 import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
-import {
-  getIpfsGateway,
-  getNftIsStillFetchingIndication,
-} from '../../../../../selectors';
+import { getIpfsGateway } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
@@ -21,7 +13,6 @@ import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDeta
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
-import PulseLoader from '../../../../ui/pulse-loader';
 import {
   VirtualizedList,
   noAdjustmentsScroll,
@@ -100,10 +91,6 @@ export default function NftGrid({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const nftsStillFetchingIndication = useSelector(
-    getNftIsStillFetchingIndication,
-  );
-
   // Detect container width for virtualization grouping only
   const [itemsPerRow, setItemsPerRow] = useState(3);
 
@@ -129,20 +116,6 @@ export default function NftGrid({
     return () => resizeObserver.disconnect();
   }, []);
 
-  const loadingFooter = nftsStillFetchingIndication ? (
-    <Box
-      className="nfts-tab__fetching"
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      display={Display.Flex}
-      marginTop={4}
-    >
-      <Box marginTop={4} marginBottom={4}>
-        <PulseLoader />
-      </Box>
-    </Box>
-  ) : null;
-
   // Group NFTs into rows for virtualization
   const nftRows = useMemo(() => {
     const rows: NFT[][] = [];
@@ -160,7 +133,6 @@ export default function NftGrid({
         data={nftRows}
         estimatedItemSize={ESTIMATED_ROW_SIZE}
         scrollToFn={noAdjustmentsScroll}
-        listFooterComponent={loadingFooter}
         keyExtractor={extractRowKey}
         renderItem={({ item, index: rowIndex }) => (
           <Box className={`grid gap-4 pb-4 ${gridClassName}`}>
