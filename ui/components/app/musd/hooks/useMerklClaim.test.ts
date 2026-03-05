@@ -27,7 +27,18 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('../merkl-client');
 
+jest.mock('../../../../hooks/musd/useMusdGeoBlocking', () => ({
+  useMusdGeoBlocking: jest.fn(() => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+  })),
+}));
+
 const { useSelector } = jest.requireMock('react-redux');
+const { useMusdGeoBlocking } = jest.requireMock(
+  '../../../../hooks/musd/useMusdGeoBlocking',
+);
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TOKEN_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
@@ -66,6 +77,12 @@ describe('useMerklClaim', () => {
     (merklClient.fetchMerklRewardsForAsset as jest.Mock).mockResolvedValue(
       mockRewardData,
     );
+
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: false,
+      userCountry: 'US',
+      isLoading: false,
+    });
   });
 
   it('initializes with correct default state', () => {
@@ -209,6 +226,28 @@ describe('useMerklClaim', () => {
 
     expect(abortSpy).toHaveBeenCalled();
     abortSpy.mockRestore();
+  });
+
+  it('does not dispatch transaction when user is geoblocked', async () => {
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: true,
+      userCountry: 'GB',
+      isLoading: false,
+    });
+
+    const { result } = renderHook(() =>
+      useMerklClaim({
+        tokenAddress: MOCK_TOKEN_ADDRESS,
+        chainId: '0x1' as `0x${string}`,
+      }),
+    );
+
+    await act(async () => {
+      await result.current.claimRewards();
+    });
+
+    expect(merklClient.fetchMerklRewardsForAsset).not.toHaveBeenCalled();
+    expect(mockAddTransaction).not.toHaveBeenCalled();
   });
 
   it('uses correct network client for Linea', async () => {
