@@ -160,6 +160,25 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // TODO: automatically bundle build-type specific images
+      ...(args.type === 'flask'
+        ? [
+            {
+              from: join(context, 'build-types', 'flask', 'images'),
+              to: 'images',
+              force: true,
+            },
+          ]
+        : []),
+      ...(args.type === 'beta'
+        ? [
+            {
+              from: join(context, 'build-types', 'beta', 'images'),
+              to: 'images',
+              force: true,
+            },
+          ]
+        : []),
       // snaps MV3 needs the offscreen document
       ...(MANIFEST_VERSION === 3
         ? [

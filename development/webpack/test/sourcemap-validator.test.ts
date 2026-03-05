@@ -375,7 +375,7 @@ describe('sourcemap-validator', () => {
       );
     });
 
-    it('returns false and logs when result.source is null for a code line (missing source for position)', async () => {
+    it('skips unmapped code positions (minification coverage gaps) instead of failing', async () => {
       const bundle = 'line1\n  throw new Error("x");\nline3';
       const gen = new SourceMapGenerator({ file: 'out.js' });
       gen.setSourceContent('src.ts', '  throw new Error("x");');
@@ -389,7 +389,10 @@ describe('sourcemap-validator', () => {
       const mapPath = join(tmpDir, 'missing-source.js.map');
       await writeFile(jsPath, bundle);
       await writeFile(mapPath, mapJson);
-      mock.method(console, 'log', noop);
+      const logs: string[] = [];
+      mock.method(console, 'log', (...args: unknown[]) => {
+        logs.push(args.map((a) => String(a)).join(' '));
+      });
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
       const ok = await validateBundle({
@@ -397,7 +400,11 @@ describe('sourcemap-validator', () => {
         mapPath,
         label: 'missing-source.js',
       });
-      assert.strictEqual(ok, false);
+      assert.strictEqual(ok, true);
+      assert.ok(
+        logs.some((l) => l.includes('skipped') && l.includes('unmapped')),
+        'should log that unmapped positions were skipped',
+      );
     });
 
     it('skips comment lines when result.source is null (no false failure)', async () => {

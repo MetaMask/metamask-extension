@@ -315,35 +315,16 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": true,
-      "eventsBeforeMetricsOptIn": [
-        {
-          "actionId": 1770282498299.5574,
-          "category": "Onboarding",
-          "environmentType": "fullscreen",
-          "event": "App Installed"
-        },
-        {
-          "actionId": 1770282498307.1377,
-          "category": "Onboarding",
-          "environmentType": "fullscreen",
-          "event": "Analytics Preference Selected",
-          "properties": {
-            "has_marketing_consent": true,
-            "is_metrics_opted_in": true,
-            "location": "onboarding_metametrics"
-          }
-        }
-      ],
+      "dataCollectionForMarketing": false,
+      "eventsBeforeMetricsOptIn": [],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 1770282513102,
+      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
-      "metaMetricsId": "0xdcdfa503c38c1c26ed172c5492794aff1bda22e703fb8271c7ff0587762a5304",
-      "participateInMetaMetrics": true,
+      "metaMetricsId": null,
+      "participateInMetaMetrics": false,
       "segmentApiCalls": {},
-      "traits": {
-        "storage_kind": "split"
-      }
+      "tracesBeforeMetricsOptIn": [],
+      "traits": {}
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -580,7 +561,7 @@
             {
               "networkClientId": "3a5eb6f2-cb62-428d-897c-b7ded577d7c2",
               "type": "custom",
-              "url": "http://127.0.0.1:8545"
+              "url": "http://localhost:8545"
             }
           ]
         },
@@ -938,6 +919,7 @@
         "useSidePanelAsDefault": true
       },
       "referrals": {
+        "asterdex": {},
         "gmx": {},
         "hyperliquid": {}
       },
