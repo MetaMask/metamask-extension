@@ -48,11 +48,7 @@ export const InfoSkeleton = () => (
         <Skeleton height="32px" width="200px" />
         <Skeleton height="20px" width="80px" />
       </div>
-      <Skeleton
-        height="40px"
-        width="40px"
-        style={{ borderRadius: '50%' }}
-      />
+      <Skeleton height="40px" width="40px" style={{ borderRadius: '50%' }} />
     </div>
     <Skeleton
       height="72px"

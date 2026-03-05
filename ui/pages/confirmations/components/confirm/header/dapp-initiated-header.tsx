@@ -1,4 +1,7 @@
-import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -39,7 +42,11 @@ export const DAppInitiatedHeader = () => {
       paddingInline={3}
       paddingTop={4}
       paddingBottom={4}
-      style={{ zIndex: 2, position: 'relative', minHeight: isSendTransaction ? '64px' : 'auto' }}
+      style={{
+        zIndex: 2,
+        position: 'relative',
+        minHeight: isSendTransaction ? '64px' : 'auto',
+      }}
     >
       {!isSendTransaction && (
         <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
