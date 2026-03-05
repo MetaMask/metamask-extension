@@ -16,10 +16,6 @@ const trackStyle = {
   justifyContent: 'center',
 };
 
-const containerStyle = {
-  width: 40,
-};
-
 const offTrackStyle = {
   ...trackStyle,
   border: 'none',
@@ -78,6 +74,7 @@ const ToggleButton = (props) => {
     disabled,
     className,
     dataTestId,
+    containerClassName,
   } = props;
 
   const modifier = value ? 'on' : 'off';
@@ -104,7 +101,7 @@ const ToggleButton = (props) => {
       <ReactToggleButton
         value={value}
         onToggle={disabled ? undefined : onToggle}
-        containerStyle={containerStyle}
+        containerStyle={containerClassName}
         activeLabel=""
         inactiveLabel=""
         trackStyle={value ? trackStyle : offTrackStyle}
@@ -154,6 +151,10 @@ ToggleButton.propTypes = {
    * A test id for the toggle button
    */
   dataTestId: PropTypes.string,
+  /**
+   * Optional className to add to the container
+   */
+  containerClassName: React.CSSProperties,
 };
 
 export default ToggleButton;
