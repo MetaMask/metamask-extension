@@ -1,5 +1,34 @@
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import { isStreamWritable } from './stream-utils';
+
+/**
+ * Extract trace context appended by submitRequestToBackground from RPC params.
+ * Returns the clean params (without trace context) and the trace context if present.
+ *
+ * @param {Array} params - RPC call parameters.
+ * @returns {{ cleanParams: Array, traceContext: object | undefined }}
+ */
+function extractTraceContext(params) {
+  if (!Array.isArray(params) || params.length === 0) {
+    return { cleanParams: params ?? [], traceContext: undefined };
+  }
+
+  const lastParam = params[params.length - 1];
+  if (
+    lastParam &&
+    typeof lastParam === 'object' &&
+    lastParam._traceContext &&
+    typeof lastParam._traceContext === 'object'
+  ) {
+    return {
+      cleanParams: params.slice(0, -1),
+      traceContext: lastParam._traceContext,
+    };
+  }
+
+  return { cleanParams: params, traceContext: undefined };
+}
 
 const createMetaRPCHandler = (api, outStream) => {
   return async (data) => {
@@ -17,10 +46,29 @@ const createMetaRPCHandler = (api, outStream) => {
       return;
     }
 
+    const { cleanParams, traceContext } = extractTraceContext(data.params);
+    const handler = api[data.method];
+    const controller = handler._controllerName;
+    const spanName = controller
+      ? `${TraceName.BackgroundRpc}: ${controller}.${data.method}`
+      : `${TraceName.BackgroundRpc}: ${data.method}`;
+
     let result;
     let error;
     try {
-      result = await api[data.method](...data.params);
+      if (traceContext) {
+        result = await trace(
+          {
+            name: spanName,
+            parentContext: traceContext,
+            op: 'rpc.handler',
+            data: { method: data.method, ...(controller && { controller }) },
+          },
+          () => handler(...cleanParams),
+        );
+      } else {
+        result = await handler(...cleanParams);
+      }
     } catch (err) {
       error = err;
     }
