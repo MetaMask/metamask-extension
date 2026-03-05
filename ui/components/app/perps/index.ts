@@ -38,6 +38,13 @@ export type {
 export { ReversePositionModal } from './reverse-position';
 export type { ReversePositionModalProps } from './reverse-position';
 
+// Update TP/SL
+export { UpdateTPSLModal, UpdateTPSLModalContent } from './update-tpsl';
+export type {
+  UpdateTPSLModalProps,
+  UpdateTPSLModalContentProps,
+} from './update-tpsl';
+
 // Order Entry components
 export { OrderEntry } from './order-entry';
 export type {

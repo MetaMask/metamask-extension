@@ -409,12 +409,12 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('shows TP/SL content when auto close section is opened', () => {
+    it('opens TP/SL modal when Auto Close row is clicked', () => {
       const store = mockStore(createMockState(true));
 
       renderWithProvider(<PerpsMarketDetailPage />, store);
 
-      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+      fireEvent.click(screen.getByTestId('perps-auto-close-row'));
       expect(
         screen.getByText(messages.perpsTakeProfit.message),
       ).toBeInTheDocument();
