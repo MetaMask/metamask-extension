@@ -32,10 +32,6 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { getPermissionDescription } from '../info/typed-sign/typed-sign-permission/typed-sign-permission-util';
-import {
-  ConfirmationLoader,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
@@ -272,7 +268,6 @@ const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
-  const { loader } = useConfirmationNavigationOptions();
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
   const { primaryType, tokenStandard } = useTypedSignSignatureInfo(
