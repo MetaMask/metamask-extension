@@ -1132,7 +1132,7 @@ describe('Bridge selectors', () => {
             srcChainId: CHAIN_IDS.MAINNET,
             destChainId: ChainId.SOLANA,
             srcTokenAddress: zeroAddress(),
-            walletAddress: '0x1234',
+            walletAddress: zeroAddress(),
             destTokenAddress: zeroAddress(),
           },
           quotes: [],

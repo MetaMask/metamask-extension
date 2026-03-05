@@ -15,7 +15,10 @@ import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
+import {
+  submitBridgeIntent,
+  submitBridgeTx,
+} from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -83,6 +86,8 @@ export default function useSubmitBridgeTransaction() {
       );
     }
 
+    const intentData = quoteResponse.quote.intent;
+
     // If bridging, enable All Networks view so the user can see their bridging activity
     if (
       isCrossChain(
@@ -95,7 +100,7 @@ export default function useSubmitBridgeTransaction() {
       );
     }
 
-    if (hardwareWalletUsed) {
+    if (hardwareWalletUsed && !intentData) {
       const {
         quote: { requestId },
       } = quoteResponse;
@@ -110,13 +115,28 @@ export default function useSubmitBridgeTransaction() {
 
     // Execute transaction(s)
     try {
+      // Intent quotes are submitted via the dedicated intent flow.
+      if (intentData) {
+        await dispatch(
+          submitBridgeIntent({
+            quoteResponse,
+            accountAddress: fromAccount.address,
+          }),
+        );
+        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          replace: true,
+          state: { stayOnHomePage: true },
+        });
+        return;
+      }
+
       // Handle non-EVM source chains (Solana, Bitcoin, Tron)
       const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
 
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
         await dispatch(
-          await submitBridgeTx(
+          submitBridgeTx(
             fromAccount.address,
             quoteResponse,
             false,
@@ -137,7 +157,7 @@ export default function useSubmitBridgeTransaction() {
       }
 
       await dispatch(
-        await submitBridgeTx(
+        submitBridgeTx(
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,

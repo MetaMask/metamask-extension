@@ -15,8 +15,8 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import * as sharedSelectors from '../../../../shared/modules/selectors';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
@@ -92,7 +92,7 @@ jest.mock('../../../../shared/modules/selectors', () => {
   const original = jest.requireActual('../../../../shared/modules/selectors');
   return {
     ...original,
-    isHardwareWallet: jest.fn(),
+    isHardwareWallet: jest.fn(() => false),
   };
 });
 
@@ -140,9 +140,12 @@ const makeWrapper =
   };
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
+const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
+const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
 
 setBackgroundConnection({
   submitTx: submitTxSpy,
+  submitIntent: submitIntentSpy,
   getStatePatches: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
 } as never);
@@ -151,6 +154,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      isHardwareWalletSpy.mockImplementation(() => false);
     });
 
     it('executes bridge transaction', async () => {
@@ -216,7 +220,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
-
       // Execute
       await result.current.submitBridgeTransaction(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -231,6 +234,81 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
           requestId,
         )}`,
+      );
+    });
+
+    it('submits intent quotes via submitBridgeIntent', async () => {
+      const store = makeMockStore();
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          },
+        },
+      };
+
+      await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        quoteWithIntent as any,
+      );
+
+      expect(submitIntentSpy).toHaveBeenCalledWith({
+        quoteResponse: quoteWithIntent,
+        accountAddress: expect.any(String),
+      });
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: { stayOnHomePage: true },
+        },
+      );
+    });
+
+    it('does not navigate to awaiting signatures for hardware-wallet intent quotes', async () => {
+      const store = makeMockStore();
+      isHardwareWalletSpy.mockImplementation(() => true);
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          },
+        },
+      };
+
+      await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        quoteWithIntent as any,
+      );
+
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        expect.stringContaining(
+          `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        ),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: { stayOnHomePage: true },
+        },
       );
     });
   });
