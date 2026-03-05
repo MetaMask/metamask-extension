@@ -38,7 +38,8 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
 }) => {
   const displaySymbol = getDisplayName(symbol);
   const displayName = name ? getDisplayName(name) : displaySymbol;
-  const isPositiveChange = change24hPercent.startsWith('+');
+  const isPositiveChange =
+    change24hPercent.startsWith('+') || change24hPercent === '0.00%';
 
   return (
     <ButtonBase
