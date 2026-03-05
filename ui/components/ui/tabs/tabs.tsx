@@ -6,13 +6,15 @@ import {
   BoxJustifyContent,
   twMerge,
 } from '@metamask/design-system-react';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TabsProps, TabChild } from './tabs.types';
 
 function startTransition(
   direction: 'forward' | 'backward',
   update: () => void,
 ) {
-  if (document.startViewTransition) {
+  if (document.startViewTransition && getBrowserName() !== PLATFORM_FIREFOX) {
     document.documentElement.dataset.tabTransitionDirection = direction;
 
     const transition = document.startViewTransition(update);
