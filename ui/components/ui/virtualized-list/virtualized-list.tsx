@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useEffect } from 'react';
 import {
   useVirtualizer,
   type VirtualizerOptions,
@@ -49,6 +49,12 @@ export const VirtualizedList = <TItem,>({
     initialOffset: scrollContainerRef?.current?.scrollTop,
     ...(scrollToFn ? { scrollToFn } : {}),
   });
+
+  useEffect(() => {
+    if (scrollContainerRef?.current) {
+      virtualizer.measure();
+    }
+  }, [scrollContainerRef, virtualizer]);
 
   if (data.length === 0) {
     return (
