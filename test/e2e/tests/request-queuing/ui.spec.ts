@@ -8,6 +8,7 @@ import {
   DAPP_TWO_URL,
   DAPP_URL,
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import NetworkManager, {
@@ -196,7 +197,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -403,7 +404,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
@@ -510,7 +511,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
             eip155: {
@@ -590,9 +591,9 @@ describe('Request-queue UI changes', function () {
         dappOptions: { numberOfTestDapps: 2 },
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withNetworkControllerOnMainnet()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
