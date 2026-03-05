@@ -5391,9 +5391,6 @@
   "perpsOraclePriceTooltip": {
     "message": "Der Median der von den Validatoren gemeldeten externen Preise, der zur Berechnung des Finanzierungssatzes verwendet wird"
   },
-  "perpsOrderAmount": {
-    "message": "Order-Betrag"
-  },
   "perpsOrders": {
     "message": "Orders"
   },

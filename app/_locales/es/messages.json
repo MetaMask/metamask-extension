@@ -5391,9 +5391,6 @@
   "perpsOraclePriceTooltip": {
     "message": "La mediana de los precios externos informados por los validadores, utilizada para calcular la tasa de financiación"
   },
-  "perpsOrderAmount": {
-    "message": "Monto de la orden"
-  },
   "perpsOrders": {
     "message": "Órdenes"
   },

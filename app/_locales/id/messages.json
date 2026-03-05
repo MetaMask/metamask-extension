@@ -5391,9 +5391,6 @@
   "perpsOraclePriceTooltip": {
     "message": "Nilai median dari harga eksternal yang dilaporkan oleh validator, digunakan untuk menghitung tingkat pendanaan"
   },
-  "perpsOrderAmount": {
-    "message": "Jumlah Order"
-  },
   "perpsOrders": {
     "message": "Order"
   },

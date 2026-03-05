@@ -5385,9 +5385,6 @@
   "perpsOpenedLong": {
     "message": "已开设多头仓位"
   },
-  "perpsOrderAmount": {
-    "message": "订单金额"
-  },
   "perpsOrders": {
     "message": "订单"
   },

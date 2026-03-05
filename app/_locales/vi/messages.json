@@ -5391,9 +5391,6 @@
   "perpsOraclePriceTooltip": {
     "message": "Giá trung vị từ các nguồn bên ngoài do người xác thực báo cáo, được dùng để tính tỷ lệ tài trợ"
   },
-  "perpsOrderAmount": {
-    "message": "Số lượng lệnh"
-  },
   "perpsOrders": {
     "message": "Lệnh"
   },

@@ -5391,9 +5391,6 @@
   "perpsOraclePriceTooltip": {
     "message": "Медианное значение внешних цен, сообщенных валидаторами, используется для расчета ставки финансирования"
   },
-  "perpsOrderAmount": {
-    "message": "Сумма ордера"
-  },
   "perpsOrders": {
     "message": "Ордеры"
   },

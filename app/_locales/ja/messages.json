@@ -5385,9 +5385,6 @@
   "perpsOpenedLong": {
     "message": "ロングをオープンしました"
   },
-  "perpsOrderAmount": {
-    "message": "注文金額"
-  },
   "perpsOrders": {
     "message": "注文"
   },

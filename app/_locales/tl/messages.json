@@ -5391,9 +5391,6 @@
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
   },
-  "perpsOrderAmount": {
-    "message": "Halaga ng Order"
-  },
   "perpsOrders": {
     "message": "Mga Order"
   },

@@ -5391,9 +5391,6 @@
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
   },
-  "perpsOrderAmount": {
-    "message": "Emir Miktarı"
-  },
   "perpsOrders": {
     "message": "Emirler"
   },

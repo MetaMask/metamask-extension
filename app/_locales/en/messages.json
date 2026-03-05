@@ -5528,9 +5528,6 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
-  "perpsOrderAmount": {
-    "message": "Order Amount"
-  },
   "perpsOrders": {
     "message": "Orders"
   },

@@ -318,7 +318,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               value={editingTpPrice}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const { value } = e.target;
-                if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
+                if (value === '' || /^[\d,]*(?:\.\d*)?$/u.test(value)) {
                   setEditingTpPrice(value);
                 }
               }}
@@ -403,7 +403,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               value={editingSlPrice}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const { value } = e.target;
-                if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
+                if (value === '' || /^[\d,]*(?:\.\d*)?$/u.test(value)) {
                   setEditingSlPrice(value);
                 }
               }}
