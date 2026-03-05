@@ -106,6 +106,7 @@ export const BridgePriceImpactWarningModal = ({
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Secondary}
                 disabled={isSubmitting}
+                isLoading={isSubmitting}
                 onClick={async () => {
                   if (activeQuote) {
                     await submitBridgeTransaction(activeQuote);
@@ -120,6 +121,7 @@ export const BridgePriceImpactWarningModal = ({
               isFullWidth
               size={ButtonSize.Lg}
               variant={ButtonVariant.Primary}
+              disabled={isSubmitting}
               onClick={() => {
                 onClose();
               }}

@@ -21,6 +21,7 @@ import {
   HardwareWalletProvider,
   HardwareWalletType,
 } from '../../../contexts/hardware-wallets';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 const mockUseHardwareWalletConfig = jest.fn();
@@ -42,6 +43,12 @@ const baseHardwareWalletConfig = {
   isWebHidAvailable: false,
   isWebUsbAvailable: false,
 };
+
+setBackgroundConnection({
+  submitTx: jest.fn(),
+  setEnabledAllPopularNetworks: jest.fn(),
+  getStatePatches: jest.fn(),
+} as never);
 
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
