@@ -125,9 +125,6 @@ class HeaderNavbar {
           waitAtLeastGuard: regularDelayMs,
         },
       );
-      await this.driver.waitForSelector(this.globalMenuButton, {
-        state: 'enabled',
-      });
       await this.driver.clickElement(this.globalMenuButton);
     }
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
