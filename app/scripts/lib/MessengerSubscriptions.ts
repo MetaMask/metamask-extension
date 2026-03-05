@@ -2,7 +2,7 @@ import { Duplex } from 'readable-stream';
 import { NamespacedName } from '@metamask/messenger';
 import { BaseControllerMessenger } from '../controller-init/types';
 
-type Listener = () => void;
+type Listener = (...payload: unknown[]) => void;
 
 export class MessengerSubscriptions {
   #messenger: BaseControllerMessenger;
