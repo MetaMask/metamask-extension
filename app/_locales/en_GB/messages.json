@@ -5283,12 +5283,6 @@
   "perpsActivity": {
     "message": "Activity"
   },
-  "perpsAddFunds": {
-    "message": "Add funds"
-  },
-  "perpsAddFundsDescription": {
-    "message": "Add funds to start trading perpetual contracts with leverage"
-  },
   "perpsAddExposure": {
     "message": "Add exposure"
   },
@@ -5297,6 +5291,12 @@
   },
   "perpsAddExposureDescriptionShort": {
     "message": "Increase the size of your short position"
+  },
+  "perpsAddFunds": {
+    "message": "Add funds"
+  },
+  "perpsAddFundsDescription": {
+    "message": "Add funds to start trading perpetual contracts with leverage"
   },
   "perpsAddMargin": {
     "message": "Add margin"
@@ -5317,15 +5317,15 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
+  "perpsAvailableToClose": {
+    "message": "Available to close"
+  },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
-  },
-  "perpsAvailableToClose": {
-    "message": "Available to close"
   },
   "perpsCloseAll": {
     "message": "Close all"
@@ -5383,6 +5383,9 @@
   },
   "perpsEntryPrice": {
     "message": "Entry price"
+  },
+  "perpsEstSize": {
+    "message": "Est. size"
   },
   "perpsExploreMarkets": {
     "message": "Explore markets"
@@ -5561,6 +5564,9 @@
   "perpsRemoveMarginDescription": {
     "message": "Withdraw excess margin from position"
   },
+  "perpsReturn": {
+    "message": "Return"
+  },
   "perpsReversePosition": {
     "message": "Reverse position"
   },
@@ -5569,12 +5575,6 @@
   },
   "perpsReversePositionDescriptionShort": {
     "message": "Flip your short position to a long"
-  },
-  "perpsEstSize": {
-    "message": "Est. size"
-  },
-  "perpsReturn": {
-    "message": "Return"
   },
   "perpsSaveChanges": {
     "message": "Save Changes",
@@ -5724,11 +5724,11 @@
   "perpsWatchlist": {
     "message": "Watchlist"
   },
-  "perpsYouWillReceive": {
-    "message": "You'll receive"
-  },
   "perpsWithdraw": {
     "message": "Withdraw"
+  },
+  "perpsYouWillReceive": {
+    "message": "You'll receive"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
