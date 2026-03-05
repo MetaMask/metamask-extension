@@ -5,7 +5,6 @@ import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
-  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
@@ -138,41 +137,20 @@ export default function useSubmitBridgeTransaction() {
 
     // Execute transaction(s)
     try {
-      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
-      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
-
-      if (isNonEvmSource) {
-        // Submit the transaction first, THEN navigate
-        await dispatch(
-          await submitBridgeTx(
-            fromAccount.address,
+      await dispatch(
+        await submitBridgeTx(
+          fromAccount.address,
+          quoteResponse,
+          smartTransactionsEnabled,
+          getQuotesReceivedProperties(
             quoteResponse,
-            false,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-            ),
+            warnings,
+            true,
+            recommendedQuote,
+            fromTokenBalanceInUsd,
           ),
-        );
-      } else {
-        await dispatch(
-          await submitBridgeTx(
-            fromAccount.address,
-            quoteResponse,
-            smartTransactionsEnabled,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-            ),
-          ),
-        );
-      }
+        ),
+      );
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
@@ -180,13 +158,7 @@ export default function useSubmitBridgeTransaction() {
         navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
           replace: true,
         });
-      } else {
-        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          replace: true,
-          state: { stayOnHomePage: true },
-        });
       }
-      return;
     } finally {
       setIsSubmitting(false);
     }
