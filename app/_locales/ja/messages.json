@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "アカウントの接続"
   },
-  "connectAccountOrCreate": {
-    "message": "アカウントを接続するか、または新規に作成します"
-  },
   "connectAccounts": {
     "message": "アカウントの接続"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "$1からの説明",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "すべての選択を解除"
   },
   "destinationAccountPickerNoEligible": {
     "message": "対象のアカウントが見つかりませんでした"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2ガス代"
-  },
-  "lastConnected": {
-    "message": "前回の接続"
   },
   "lastSold": {
     "message": "前回の売却"
@@ -6426,12 +6417,6 @@
   "selectAccountToConnect": {
     "message": "接続するアカウントを選択します"
   },
-  "selectAccounts": {
-    "message": "このサイトに使用するアカウントを選択してください"
-  },
-  "selectAccountsForSnap": {
-    "message": "このsnapで使用するアカウントを選択してください"
-  },
   "selectAll": {
     "message": "すべて選択"
   },
@@ -6470,9 +6455,6 @@
   },
   "selectedAccountMismatch": {
     "message": "別のアカウントが選択されました"
-  },
-  "selectingAllWillAllow": {
-    "message": "すべてを選択すると、このサイトに現在のすべてのアカウントが表示されます。このサイトが信頼できることを確認してください。"
   },
   "send": {
     "message": "送金"
@@ -8820,9 +8802,6 @@
     "message": "連絡先を表示"
   },
   "viewDetails": {
-    "message": "詳細を表示"
-  },
-  "viewMore": {
     "message": "詳細を表示"
   },
   "viewOnBlockExplorer": {
