@@ -4,6 +4,7 @@ import { ThemeItem } from './theme-item';
 import { LanguageItem } from './language-item';
 import { AccountIdenticonItem } from './account-identicon-item';
 import { ShowExtensionItem } from './show-extension-item';
+import { ManageInstitutionalWalletItem } from './manage-institutional-wallet-item';
 
 /** Registry of setting items for the Preferences and Display page. Add new items here */
 const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: {
@@ -14,6 +15,10 @@ const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: {
   { id: 'language', component: LanguageItem },
   { id: 'account-identicon', component: AccountIdenticonItem },
   { id: 'show-extension', component: ShowExtensionItem },
+  {
+    id: 'manage-institutional-wallet',
+    component: ManageInstitutionalWalletItem,
+  },
 ];
 
 const PreferencesAndDisplay = () => {
