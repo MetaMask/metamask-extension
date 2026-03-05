@@ -76,7 +76,10 @@ export const DappConnectionControlBar: React.FC<
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
-  const subjects = useSelector(getPermissionSubjects);
+  const subjects = useSelector(getPermissionSubjects) as Record<
+    string,
+    { permissions: Record<string, { parentCapability: string }> }
+  >;
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
@@ -154,9 +157,8 @@ export const DappConnectionControlBar: React.FC<
     const subject = subjects[activeTabOrigin];
     if (subject) {
       const permissionMethodNames = Object.values(subject.permissions).map(
-        (permission: { parentCapability: string }) =>
-          permission.parentCapability,
-      ) as string[];
+        (permission) => permission.parentCapability,
+      );
       if (permissionMethodNames.length > 0) {
         const permissionsRecord = {
           [activeTabOrigin]: permissionMethodNames as NonEmptyArray<string>,
