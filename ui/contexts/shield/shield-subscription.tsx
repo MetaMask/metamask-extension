@@ -53,6 +53,18 @@ export const useShieldSubscriptionContext = () => {
   return context;
 };
 
+/**
+ * Orchestrates Shield subscription eligibility evaluation and cohort assignment.
+ *
+ * Full eligibility requires (checked across the provider and its dependencies):
+ * 1. Shield feature flag enabled
+ * 2. Basic functionality enabled
+ * 3. User signed in and unlocked
+ * 4. No active Shield subscription
+ * 5. Entry modal not already shown this session
+ * 6. Server-side eligibility (balance category, cohort criteria) via `useSubscriptionEligibility`
+ * 7. Cohort assignment and modal display per flowchart (MetaMask-planning#6638)
+ */
 export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isBasicFunctionalityEnabled = Boolean(
