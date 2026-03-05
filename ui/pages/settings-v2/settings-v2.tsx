@@ -13,7 +13,9 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
+  LANGUAGE_ROUTE,
   SETTINGS_V2_ROUTE,
+  THEME_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   Box as LegacyBox,
@@ -50,6 +52,20 @@ const CurrencySubPage = mmLazy(
   (() =>
     import(
       './assets-tab/currency-sub-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+
+const ThemeSubPage = mmLazy(
+  (() =>
+    import(
+      './preferences-and-display-tab/theme-sub-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+
+const LanguageSubPage = mmLazy(
+  (() =>
+    import(
+      './preferences-and-display-tab/language-sub-page.tsx'
     )) as unknown as DynamicImportType,
 );
 
@@ -214,6 +230,28 @@ const SettingsV2 = () => {
         element={
           <SettingsV2Layout>
             <CurrencySubPage />
+          </SettingsV2Layout>
+        }
+      />
+      {/* Theme sub-page */}
+      <Route
+        path={toRelativeRoutePath(THEME_ROUTE, SETTINGS_V2_ROUTE)}
+        element={
+          <SettingsV2Layout>
+            <Suspense fallback={null}>
+              <ThemeSubPage />
+            </Suspense>
+          </SettingsV2Layout>
+        }
+      />
+      {/* Language sub-page */}
+      <Route
+        path={toRelativeRoutePath(LANGUAGE_ROUTE, SETTINGS_V2_ROUTE)}
+        element={
+          <SettingsV2Layout>
+            <Suspense fallback={null}>
+              <LanguageSubPage />
+            </Suspense>
           </SettingsV2Layout>
         }
       />

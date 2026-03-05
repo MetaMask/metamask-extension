@@ -4,7 +4,10 @@ import { type ComponentType } from 'react';
 import {
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
+  LANGUAGE_ROUTE,
+  PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
+  THEME_ROUTE,
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
 import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
@@ -41,6 +44,18 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'localCurrency',
     parentPath: ASSETS_ROUTE,
   },
+  [PREFERENCES_AND_DISPLAY_ROUTE]: {
+    labelKey: 'preferencesAndDisplay',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
+  [THEME_ROUTE]: {
+    labelKey: 'theme',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+  },
+  [LANGUAGE_ROUTE]: {
+    labelKey: 'language',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+  },
 };
 
 /**
@@ -62,6 +77,18 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     iconName: IconName.Dollar,
     component: mmLazy(
       (() => import('./assets-tab/index.ts')) as unknown as DynamicImportType,
+    ),
+  },
+  {
+    id: 'preferences-and-display',
+    path: PREFERENCES_AND_DISPLAY_ROUTE,
+    labelKey: 'preferencesAndDisplay',
+    iconName: IconName.Setting,
+    component: mmLazy(
+      (() =>
+        import(
+          './preferences-and-display-tab/index.ts'
+        )) as unknown as DynamicImportType,
     ),
   },
 ];
