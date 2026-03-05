@@ -111,9 +111,14 @@ async function runBenchmarkFile(
 
   const { run: runFn } = benchmark;
   const thresholdConfig = THRESHOLD_REGISTRY[fileName];
+  if (!thresholdConfig) {
+    throw new Error(
+      `No threshold config for "${fileName}". Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
+    );
+  }
 
   let result: BenchmarkResults;
-  let violations: ThresholdViolation[] = [];
+  let violations: ThresholdViolation[];
 
   if (supportsIterations(filePath) && options.iterations > 0) {
     const testTitle = benchmark.testTitle || fileName;
@@ -144,10 +149,7 @@ async function runBenchmarkFile(
     );
   } else {
     result = (await runFn(options)) as BenchmarkResults;
-
-    if (thresholdConfig) {
-      violations = validateResultThresholds(result, thresholdConfig).violations;
-    }
+    violations = validateResultThresholds(result, thresholdConfig).violations;
   }
 
   logThresholdResult(violations);
