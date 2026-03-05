@@ -24,7 +24,6 @@ import {
   Header,
   Page,
 } from '../../components/multichain/pages/page';
-import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
@@ -46,8 +45,6 @@ const CrossChainSwap = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
-  // Load swaps feature flags so that we can use smart transactions
-  useSwapsFeatureFlags();
   useBridging();
 
   const { navigateToDefaultRoute } = useBridgeNavigation();
