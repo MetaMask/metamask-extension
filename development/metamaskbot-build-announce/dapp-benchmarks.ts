@@ -161,7 +161,9 @@ async function fetchLatestMainBenchmarkData(
     }
 
     const data: HistoricalBenchmarkData = await response.json();
-    const commitHashes = Object.keys(data).reverse(); // Sort by commit hash, newest first
+    const commitHashes = Object.keys(data)
+      .filter((hash) => data[hash]?.timestamp)
+      .sort((a, b) => data[b].timestamp - data[a].timestamp);
 
     if (commitHashes.length === 0) {
       return null;

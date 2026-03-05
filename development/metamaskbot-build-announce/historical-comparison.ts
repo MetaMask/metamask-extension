@@ -230,12 +230,15 @@ export function aggregateHistoricalData(
       continue;
     }
 
-    for (const presetEntry of Object.values(commitData.presets)) {
+    for (const [presetName, presetEntry] of Object.entries(
+      commitData.presets,
+    )) {
       if (!presetEntry || typeof presetEntry !== 'object') {
         continue;
       }
       for (const [benchmarkName, result] of Object.entries(presetEntry)) {
-        collectMetrics(benchmarkName, result, collected);
+        const key = `${presetName}/${benchmarkName}`;
+        collectMetrics(key, result, collected);
       }
     }
   }

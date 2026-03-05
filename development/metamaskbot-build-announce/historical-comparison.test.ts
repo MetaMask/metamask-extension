@@ -49,8 +49,8 @@ describe('aggregateHistoricalData', () => {
     // def456 is the last key → most recent when reversed
     const result = aggregateHistoricalData(mockFile);
 
-    expect(result.standardHome?.uiStartup).toBe(2000);
-    expect(result.standardHome?.load).toBe(600);
+    expect(result['pageLoad/standardHome']?.uiStartup).toBe(2000);
+    expect(result['pageLoad/standardHome']?.load).toBe(600);
   });
 
   it('returns empty object when data has no commits', () => {
@@ -62,14 +62,13 @@ describe('aggregateHistoricalData', () => {
   it('uses the latest commit even when earlier commits have bad presets', () => {
     const data: HistoricalPerformanceFile = {
       bad1: { timestamp: 1, presets: {} },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      bad2: { timestamp: 2, presets: null as any },
+      bad2: { timestamp: 2, presets: null },
       good: makeCommit(),
     };
 
     const result = aggregateHistoricalData(data);
 
-    expect(result.standardHome?.uiStartup).toBe(1000);
+    expect(result['pageLoad/standardHome']?.uiStartup).toBe(1000);
   });
 
   it('skips benchmark entries where mean is null or missing', () => {
@@ -78,8 +77,7 @@ describe('aggregateHistoricalData', () => {
         timestamp: 1,
         presets: {
           pageLoad: {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            badEntry: { mean: null as any },
+            badEntry: { mean: null },
             goodEntry: { mean: { uiStartup: 800 } },
           },
         },
@@ -88,8 +86,8 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result.badEntry).toBeUndefined();
-    expect(result.goodEntry?.uiStartup).toBe(800);
+    expect(result['pageLoad/badEntry']).toBeUndefined();
+    expect(result['pageLoad/goodEntry']?.uiStartup).toBe(800);
   });
 
   it('skips NaN metric values', () => {
@@ -106,8 +104,8 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result.entry?.good).toBe(500);
-    expect(result.entry?.bad).toBeUndefined();
+    expect(result['pageLoad/entry']?.good).toBe(500);
+    expect(result['pageLoad/entry']?.bad).toBeUndefined();
   });
 
   it('parses string-encoded metric values', () => {
@@ -116,8 +114,7 @@ describe('aggregateHistoricalData', () => {
         timestamp: 1,
         presets: {
           pageLoad: {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            entry: { mean: { uiStartup: '1234.5' as any } },
+            entry: { mean: { uiStartup: '1234.5' } },
           },
         },
       },
@@ -125,7 +122,7 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result.entry?.uiStartup).toBe(1234.5);
+    expect(result['pageLoad/entry']?.uiStartup).toBe(1234.5);
   });
 });
 
@@ -157,7 +154,7 @@ describe('fetchHistoricalPerformanceData', () => {
     const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
-    expect(result?.standardHome?.uiStartup).toBe(2000);
+    expect(result?.['pageLoad/standardHome']?.uiStartup).toBe(2000);
     // Should fetch the target branch file directly
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining('main/performance_data.json'),
