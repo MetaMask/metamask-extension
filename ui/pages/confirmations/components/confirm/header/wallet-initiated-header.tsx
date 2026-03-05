@@ -80,7 +80,7 @@ export const WalletInitiatedHeader = () => {
       return null;
     }
     if (
-      currentConfirmation.type === TransactionType.shieldSubscriptionApprove
+      currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
     ) {
       return t('shieldConfirmMembership');
     }

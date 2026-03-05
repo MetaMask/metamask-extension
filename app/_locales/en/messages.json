@@ -1626,14 +1626,14 @@
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
   },
+  "confirmTitleSending": {
+    "message": "Sending"
+  },
   "confirmTitleSetApprovalForAllRevokeTransaction": {
     "message": "Remove permission"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
-  },
-  "confirmTitleSending": {
-    "message": "Sending"
   },
   "confirmTitleTransaction": {
     "message": "Transaction request"
