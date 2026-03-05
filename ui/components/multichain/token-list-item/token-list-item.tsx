@@ -152,7 +152,8 @@ export const TokenListItemComponent = ({
   const multiChainMarketData = useSelector(getMarketData);
 
   const tokenPercentageChange = address
-    ? multiChainMarketData?.[chainId]?.[address]?.pricePercentChange1d
+    ? multiChainMarketData?.[chainId as Hex]?.[address as Hex]
+        ?.pricePercentChange1d
     : null;
 
   const tokenTitle = getTokenTitle();
@@ -331,7 +332,7 @@ export const TokenListItemComponent = ({
               <PercentageChange
                 value={
                   isNativeCurrency
-                    ? multiChainMarketData?.[chainId]?.[
+                    ? multiChainMarketData?.[chainId as Hex]?.[
                         getNativeTokenAddress(chainId as Hex)
                       ]?.pricePercentChange1d
                     : tokenPercentageChange

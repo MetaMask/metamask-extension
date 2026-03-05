@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Tercih ettiğiniz IPFS ağ geçidini ekleyin"
   },
-  "addImportAccount": {
-    "message": "Hesap veya donanım cüzdanı ekleyin"
-  },
   "addMemo": {
     "message": "Not ekleyin"
   },
@@ -650,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Bildirimlere izin ver"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Tutar"
@@ -1613,9 +1606,6 @@
   "connectAccount": {
     "message": "Hesabı bağla"
   },
-  "connectAccountOrCreate": {
-    "message": "Hesabı bağla ya da yeni hesap oluştur"
-  },
   "connectAccounts": {
     "message": "Hesapları bağla"
   },
@@ -1909,9 +1899,6 @@
   "customSlippage": {
     "message": "Özel"
   },
-  "customSpendLimit": {
-    "message": "Kişisel harcama limiti"
-  },
   "customToken": {
     "message": "Özel Token"
   },
@@ -2199,9 +2186,6 @@
     "message": "$1 açıklaması",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Tümünün seçimini kaldır"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "Uygun hesap bulunamadı"
   },
@@ -2481,9 +2465,6 @@
   "editNonceMessage": {
     "message": "Bu gelişmiş bir özelliktir, dikkatli kullanın."
   },
-  "editPermission": {
-    "message": "İzni düzenle"
-  },
   "editPermissions": {
     "message": "İzinleri düzenle"
   },
@@ -2567,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "Zincir kimliği girin"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Maks. harcama limiti gir"
   },
   "enterNetworkName": {
     "message": "Ağ adını girin"
@@ -3362,9 +3340,6 @@
     "message": "MetaMask blokzinciri ana bilgisayarına bağlanamıyor. $1 olası nedenleri inceleyin.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "İlk işleminiz ağ tarafından onaylanmıştır. Geri gitmek için Tamam düğmesine tıklayın."
-  },
   "insights": {
     "message": "İçgörüler"
   },
@@ -3547,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 gaz ücreti"
-  },
-  "lastConnected": {
-    "message": "Son bağlanma"
   },
   "lastSold": {
     "message": "Son satış"
@@ -3783,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "Yeni bir swap oluştur"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Hiç kimsenin bakmadığından emin olun",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Yönet"
   },
   "manageDefaultSettings": {
     "message": "Varsayılan ayarları yönet"
@@ -5702,9 +5667,6 @@
   "productAnnouncements": {
     "message": "Ürün duyuruları"
   },
-  "proposedApprovalLimit": {
-    "message": "Önerilen onay limiti"
-  },
   "provide": {
     "message": "Sun"
   },
@@ -5925,18 +5887,6 @@
   "rejectAll": {
     "message": "Tümünü reddet"
   },
-  "rejectRequestsDescription": {
-    "message": "$1 talebi toplu olarak reddetmek üzeresiniz."
-  },
-  "rejectRequestsN": {
-    "message": "$1 taleplerini reddet"
-  },
-  "rejectTxsDescription": {
-    "message": "$1 işlemi toplu olarak reddetmek üzeresiniz."
-  },
-  "rejectTxsN": {
-    "message": "$1 işlemi reddet"
-  },
   "rejected": {
     "message": "Reddedildi"
   },
@@ -6110,17 +6060,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask $1. Yani GKİ'niz size aittir.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "cüzdanınıza ve paranıza tam erişim sağlar.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "emanete dayalı olmayan bir cüzdandır"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6134,10 +6074,6 @@
   "revealSeedWordsWarning": {
     "message": "Ekranınıza hiç kimsenin bakmadığından emin olun. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask Destek bölümü bunu asla talep etmez.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Hassas içeriği göster"
@@ -6487,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Bağlamak için bir hesap seç"
   },
-  "selectAccounts": {
-    "message": "Bu sitede kullanılacak hesap veya hesapları seçin"
-  },
-  "selectAccountsForSnap": {
-    "message": "Bu snap ile kullanılacak hesabı/hesapları seçin"
-  },
   "selectAll": {
     "message": "Tümünü seç"
   },
@@ -6531,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Farklı hesap seçildi"
-  },
-  "selectingAllWillAllow": {
-    "message": "Tümü seçimi bu sitenin mevcut tüm hesaplarınızı görüntülemesine izin verecektir. Bu siteye güvendiğinizden emin olun."
   },
   "send": {
     "message": "Gönder"
@@ -7673,22 +7600,6 @@
   },
   "speedUpTooltipText": {
     "message": "Yeni gaz ücreti"
-  },
-  "spendLimitInsufficient": {
-    "message": "Harcama limiti yetersiz"
-  },
-  "spendLimitInvalid": {
-    "message": "Harcama limiti geçersiz; pozitif bir sayı olmalıdır"
-  },
-  "spendLimitPermission": {
-    "message": "Harcama limiti izni"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 tarafından talep edilen harcama limiti",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Harcama limiti çok büyük"
   },
   "spender": {
     "message": "Harcayan"
@@ -8899,9 +8810,6 @@
   "viewDetails": {
     "message": "Ayrıntıları görüntüle"
   },
-  "viewMore": {
-    "message": "Daha fazlasını görüntüle"
-  },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"
   },
@@ -9067,9 +8975,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Gizli Kurtarma İfadeniz"
   },
   "yourTransactionConfirmed": {
     "message": "İşlem zaten onaylandı"

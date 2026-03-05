@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "優先IPFSゲートウェイを追加"
   },
-  "addImportAccount": {
-    "message": "アカウントまたはハードウェアウォレットを追加"
-  },
   "addMemo": {
     "message": "メモを追加"
   },
@@ -650,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "通知を許可する"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "$1に以下の額までの引き出しと使用を許可します。",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "金額"
@@ -1613,9 +1606,6 @@
   "connectAccount": {
     "message": "アカウントの接続"
   },
-  "connectAccountOrCreate": {
-    "message": "アカウントを接続するか、または新規に作成します"
-  },
   "connectAccounts": {
     "message": "アカウントの接続"
   },
@@ -1909,9 +1899,6 @@
   "customSlippage": {
     "message": "カスタム"
   },
-  "customSpendLimit": {
-    "message": "カスタム使用限度額"
-  },
   "customToken": {
     "message": "カスタムトークン"
   },
@@ -2199,9 +2186,6 @@
     "message": "$1からの説明",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "すべての選択を解除"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "対象のアカウントが見つかりませんでした"
   },
@@ -2481,9 +2465,6 @@
   "editNonceMessage": {
     "message": "これは高度な機能であり、慎重に使用してください。"
   },
-  "editPermission": {
-    "message": "許可の編集"
-  },
   "editPermissions": {
     "message": "アクセス許可を編集"
   },
@@ -2567,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "チェーンIDを入力してください"
-  },
-  "enterMaxSpendLimit": {
-    "message": "使用限度額の最大値を入力してください"
   },
   "enterNetworkName": {
     "message": "ネットワーク名を入力してください"
@@ -3362,9 +3340,6 @@
     "message": "MetaMaskがブロックチェーンのホストに接続できません。考えられる理由$1を確認してください。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "最初のトランザクションはネットワークによって承認されました。戻るには「OK」をクリックします。"
-  },
   "insights": {
     "message": "インサイト"
   },
@@ -3547,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2ガス代"
-  },
-  "lastConnected": {
-    "message": "前回の接続"
   },
   "lastSold": {
     "message": "前回の売却"
@@ -3783,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "新しいスワップの作成"
-  },
-  "makeSureNoOneWatching": {
-    "message": "誰にも見られていないことを確認してください",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "管理"
   },
   "manageDefaultSettings": {
     "message": "デフォルトのプライバシー設定の管理"
@@ -5696,9 +5661,6 @@
   "productAnnouncements": {
     "message": "製品に関するお知らせ"
   },
-  "proposedApprovalLimit": {
-    "message": "提案された承認限度"
-  },
   "provide": {
     "message": "提供"
   },
@@ -5919,18 +5881,6 @@
   "rejectAll": {
     "message": "すべて拒否"
   },
-  "rejectRequestsDescription": {
-    "message": "$1件のリクエストを一括で拒否しようとしています。"
-  },
-  "rejectRequestsN": {
-    "message": "$1件のリクエストを拒否"
-  },
-  "rejectTxsDescription": {
-    "message": "$1件のトランザクションを一括拒否しようとしています。"
-  },
-  "rejectTxsN": {
-    "message": "$1件のトランザクションを拒否"
-  },
   "rejected": {
     "message": "拒否済"
   },
@@ -6104,17 +6054,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1は$2を提供します。",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMaskは$1です。つまり、ユーザーがSRPの所有者となります。",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "ウォレットと資金への完全アクセス"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "ノンカストディアルウォレットです"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6128,10 +6068,6 @@
   "revealSeedWordsWarning": {
     "message": "誰にも画面を見られていないことを確認してください。$1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMaskサポートがこれを求めることはありません。",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "機密コンテンツを確認"
@@ -6481,12 +6417,6 @@
   "selectAccountToConnect": {
     "message": "接続するアカウントを選択します"
   },
-  "selectAccounts": {
-    "message": "このサイトに使用するアカウントを選択してください"
-  },
-  "selectAccountsForSnap": {
-    "message": "このsnapで使用するアカウントを選択してください"
-  },
   "selectAll": {
     "message": "すべて選択"
   },
@@ -6525,9 +6455,6 @@
   },
   "selectedAccountMismatch": {
     "message": "別のアカウントが選択されました"
-  },
-  "selectingAllWillAllow": {
-    "message": "すべてを選択すると、このサイトに現在のすべてのアカウントが表示されます。このサイトが信頼できることを確認してください。"
   },
   "send": {
     "message": "送金"
@@ -7667,22 +7594,6 @@
   },
   "speedUpTooltipText": {
     "message": "新しいガス代"
-  },
-  "spendLimitInsufficient": {
-    "message": "使用限度額が十分ではありません"
-  },
-  "spendLimitInvalid": {
-    "message": "使用限度額が無効です。正の数値を使用する必要があります"
-  },
-  "spendLimitPermission": {
-    "message": "使用上限の許可"
-  },
-  "spendLimitRequestedBy": {
-    "message": "使用限度額が$1によりリクエストされました",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "使用限度額が大きすぎます"
   },
   "spender": {
     "message": "使用者"
@@ -8893,9 +8804,6 @@
   "viewDetails": {
     "message": "詳細を表示"
   },
-  "viewMore": {
-    "message": "詳細を表示"
-  },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"
   },
@@ -9061,9 +8969,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "シークレットリカバリーフレーズ"
   },
   "yourTransactionConfirmed": {
     "message": "トランザクションはすでに確定済みです"

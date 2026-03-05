@@ -1,17 +1,23 @@
 import { merge, cloneDeep } from 'lodash';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
-import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { NetworkState } from '@metamask/network-controller';
 import {
   type TransactionControllerState,
   type TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
+import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
+import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type {
   Preferences,
   PreferencesControllerState,
@@ -22,9 +28,12 @@ import {
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
+  NETWORK_CLIENT_ID,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
@@ -37,6 +46,9 @@ function onboardingFixture() {
 }
 
 type FixtureType = typeof defaultFixtureJson | typeof onboardingFixtureJson;
+
+type NetworkClientIdValue =
+  (typeof NETWORK_CLIENT_ID)[keyof typeof NETWORK_CLIENT_ID];
 
 type TransactionControllerFixtureInput = Partial<
   Omit<TransactionControllerState, 'transactions'>
@@ -71,8 +83,38 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountsController(data: Partial<AccountsControllerState>): this {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
+  withAppStateController(data: Partial<AppStateControllerState>): this {
+    merge(this.fixture.data.AppStateController, data);
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
+    return this;
+  }
+
+  withKeyringController(data: Partial<KeyringControllerState>): this {
+    merge(this.fixture.data.KeyringController, data);
+    return this;
+  }
+
+  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
+    merge(this.fixture.data.MetaMetricsController, data);
+    return this;
+  }
+
+  withNetworkController(data: Partial<NetworkState>): this {
+    merge(this.fixture.data.NetworkController, data);
+    return this;
+  }
+
+  withOnboardingController(data: Partial<OnboardingControllerState>): this {
+    merge(this.fixture.data.OnboardingController, data);
     return this;
   }
 
@@ -108,6 +150,102 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
+  }
+
+  withLedgerAccount(): this {
+    const ledgerAddressLower =
+      KNOWN_PUBLIC_KEY_ADDRESSES[0].address.toLowerCase();
+
+    this.withKeyringController({
+      vault: LEDGER_FIXTURE_VAULT,
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '221ecb67-0d29-4c04-83b2-dff07c263634': {
+              id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+              address: ledgerAddressLower,
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+        },
+      })
+      .withPreferencesController({
+        identities: {
+          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          [ledgerAddressLower]: {
+            address: ledgerAddressLower,
+            lastSelected: 1665507800000,
+            name: 'Ledger 1',
+          },
+        } as unknown as PreferencesControllerState['identities'],
+        selectedAddress: ledgerAddressLower,
+      });
+    return this;
+  }
+
+  withSelectedNetwork(
+    networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
+  ): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: networkClientId,
+    });
   }
 
   withPermissionControllerConnectedToTestDapp({
@@ -280,6 +418,22 @@ class FixtureBuilderV2 {
     return this.withPreferencesController({
       preferences: {
         showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
+  withShowNativeTokenAsMainBalanceEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: true,
+      },
+    });
+  }
+
+  withSmartTransactionsOptedOut(): this {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
       },
     });
   }

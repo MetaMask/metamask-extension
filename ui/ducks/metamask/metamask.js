@@ -6,6 +6,12 @@ import {
   GasEstimateTypes,
   NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
+import {
+  getTokensControllerAllTokens,
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
+  getTokenBalancesControllerTokenBalances,
+} from '../../../shared/modules/selectors/assets-migration';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -25,7 +31,6 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { getTokensControllerAllTokens } from '../../../shared/modules/selectors/assets-migration';
 
 const initialState = {
   isInitialized: false,
@@ -314,17 +319,18 @@ export function getNativeCurrency(state) {
 }
 
 export function getConversionRate(state) {
-  return state.metamask.currencyRates[getProviderConfig(state).ticker]
-    ?.conversionRate;
+  return (
+    getCurrencyRateControllerCurrencyRates(state)[
+      getProviderConfig(state).ticker
+    ]?.conversionRate ?? undefined
+  );
 }
 
 export function getConversionRateByTicker(state, ticker) {
-  return state.metamask.currencyRates[ticker]?.conversionRate;
+  return getCurrencyRateControllerCurrencyRates(state)[ticker]?.conversionRate;
 }
 
-export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
-}
+export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
 
 export function getSendHexDataFeatureFlagState(state) {
   return state.metamask.featureFlags.sendHexData;
@@ -429,7 +435,7 @@ export const getGasEstimateTypeByChainId = createSelector(
  * @param {*} state
  * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
  */
-export { getTokenBalancesControllerTokenBalances as getTokenBalances } from '../../../shared/modules/selectors/assets-migration';
+export { getTokenBalancesControllerTokenBalances as getTokenBalances };
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
@@ -628,15 +634,7 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
-/**
- * Select the current fiat currency code (ISO 4217 like 'USD').
- *
- * @param {object} state - Redux state
- * @returns {string} The current fiat currency code
- */
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
-}
+export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 
 /**
  * Returns a boolean indicating whether the user opened the extension with the sidepanel.
