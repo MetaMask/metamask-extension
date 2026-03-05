@@ -426,6 +426,7 @@ jobs:
 
       - name: Commit performance stats to extension_benchmark_stats
         if: steps.download-perf-benchmark.outcome == 'success'
+        continue-on-error: true
         run: .github/scripts/benchmark-stats-commit.sh
         env:
           BENCHMARK_DATA_TYPE: performance
