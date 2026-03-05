@@ -1204,6 +1204,120 @@ describe('ManifestPlugin', () => {
     });
   });
 
+  describe('watch mode re-read', () => {
+    const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+
+    it('should not re-read manifests when modifiedFiles does not include a watched file', async () => {
+      const { compiler, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const manifestBefore = plugin.manifests.get('chrome');
+      assert.ok(
+        manifestBefore,
+        'should have chrome manifest after first build',
+      );
+
+      // Simulate a watch rebuild where no watched files were modified
+      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
+        '/some/unrelated/file.ts',
+      ]);
+
+      // Trigger a second compilation so resolveEntrypoints runs again
+      const { compilation: compilation2, promise: promise2 } = mockWebpack(
+        [],
+        [],
+        [],
+      );
+      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      // eslint-disable-next-line dot-notation
+      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      await promise2;
+
+      // Manifest reference should be the same since prepareManifests was NOT called
+      assert.strictEqual(
+        plugin.manifests.get('chrome'),
+        manifestBefore,
+        'manifest reference should not change when no watched file was modified',
+      );
+    });
+
+    it('should re-read manifests when modifiedFiles includes a watched manifest file', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      // Get the watched files from fileDependencies
+      const deps = [...compilation.fileDependencies];
+      const baseManifestDep = deps.find((d) =>
+        d.endsWith('manifest/v3/_base.json'),
+      );
+      assert.ok(baseManifestDep, 'should have base manifest in dependencies');
+
+      // Capture the manifests before re-read
+      const manifestBefore = plugin.manifests.get('chrome');
+      assert.ok(manifestBefore, 'should have chrome manifest before re-read');
+
+      // Simulate a watch rebuild where the base manifest was modified.
+      // resolveEntrypoints checks compiler.modifiedFiles.
+      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
+        baseManifestDep,
+      ]);
+
+      // Run apply again to trigger a new compilation with modifiedFiles set
+      const { compilation: compilation2, promise: promise2 } = mockWebpack(
+        [],
+        [],
+        [],
+      );
+      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      // hookIntoPipelines registers processAssets which calls resolveEntrypoints
+      // eslint-disable-next-line dot-notation
+      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      await promise2;
+
+      // Should still produce valid output (manifests were re-read from disk)
+      const manifest2 = compilation2.assets['chrome/manifest.json'];
+      assert.ok(manifest2, 'should produce manifest after re-read');
+      const json2 = JSON.parse(manifest2.source().toString()) as Manifest;
+      assert.strictEqual(json2.description, 'MV3 test manifest');
+
+      // Manifest object should have been recreated (structuredClone in prepareManifests)
+      const manifestAfter = plugin.manifests.get('chrome');
+      assert.notStrictEqual(
+        manifestBefore,
+        manifestAfter,
+        'manifest reference should change after re-read',
+      );
+    });
+  });
+
   describe('file dependencies (watch mode)', () => {
     it('should add manifest files to compilation.fileDependencies', async () => {
       const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
@@ -1243,6 +1357,43 @@ describe('ManifestPlugin', () => {
       assert.ok(
         deps.some((d) => d.endsWith('beta/manifest/chrome.json')),
         'should watch the build type browser-specific manifest file',
+      );
+    });
+
+    it('should add config files to fileDependencies when they exist', async () => {
+      // The entrypoints fixture has a .metamaskrc in its parent (fixtures/ManifestPlugin/)
+      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const deps = [...compilation.fileDependencies];
+      // .metamaskrc exists in the parent of compiler.context
+      assert.ok(
+        deps.some((d) => d.endsWith('.metamaskrc')),
+        'should watch .metamaskrc when it exists',
+      );
+      // .metamaskprodrc does not exist, should not be watched
+      assert.ok(
+        !deps.some((d) => d.endsWith('.metamaskprodrc')),
+        'should not watch .metamaskprodrc when it does not exist',
+      );
+      // .manifest-overrides.json does not exist, should not be watched
+      assert.ok(
+        !deps.some((d) => d.endsWith('.manifest-overrides.json')),
+        'should not watch .manifest-overrides.json when it does not exist',
       );
     });
 
