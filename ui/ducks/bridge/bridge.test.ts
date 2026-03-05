@@ -11,7 +11,7 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
-import bridgeReducer from './bridge';
+import bridgeReducer, { initialState } from './bridge';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -135,22 +135,7 @@ describe('Ducks - Bridge', () => {
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState).toStrictEqual({
-        isDestAssetPickerOpen: false,
-        isSrcAssetPickerOpen: false,
-        selectedQuote: null,
-        fromToken: null,
-        toToken: null,
-        slippage: SlippageValue.BridgeDefault,
-        fromTokenInputValue: null,
-        sortOrder: 'cost_ascending',
-        fromTokenExchangeRate: null,
-        wasTxDeclined: false,
-        txAlert: null,
-        txAlertStatus: RequestStatus.FETCHED,
-        fromTokenBalance: null,
-        fromNativeBalance: null,
-      });
+      expect(newState).toStrictEqual(initialState);
     });
   });
 

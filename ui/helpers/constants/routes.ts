@@ -132,11 +132,8 @@ export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
-///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
 
@@ -564,7 +561,6 @@ export const ROUTES = [
     label: 'Swaps Awaiting Signatures',
     trackInAnalytics: false,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   {
     path: INITIALIZE_EXPERIMENTAL_AREA,
     label: 'Initialize Experimental Area',
@@ -575,7 +571,6 @@ export const ROUTES = [
     label: 'Onboarding Experimental Area',
     trackInAnalytics: false,
   },
-  ///: END:ONLY_INCLUDE_IF
   {
     path: SHIELD_PLAN_ROUTE,
     label: 'Shield Plan',

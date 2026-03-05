@@ -219,12 +219,26 @@ export const useBridgeNavigation = () => {
 
   /**
    * Navigates to the hw transaction signing page.
+   * @param requestId - The requestId to preserve for the QR wallet flow.
    */
-  const navigateToHwSigningPage = useCallback(() => {
-    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`, {
-      state,
-    });
-  }, [state]);
+  const navigateToHwSigningPage = useCallback(
+    (requestId?: string) => {
+      const searchParams = new URLSearchParams('');
+      if (requestId) {
+        searchParams.set('requestId', requestId);
+      }
+      navigate(
+        {
+          pathname: `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+          search: searchParams.toString(),
+        },
+        {
+          state,
+        },
+      );
+    },
+    [state],
+  );
 
   /**
    * Navigates to the activity page and clears the navigation state.
@@ -237,6 +251,7 @@ export const useBridgeNavigation = () => {
         token: null,
         stayOnHomePage: true,
       },
+      replace: true,
     });
   }, [state]);
 

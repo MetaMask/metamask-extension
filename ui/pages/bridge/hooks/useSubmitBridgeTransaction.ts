@@ -94,7 +94,11 @@ export default function useSubmitBridgeTransaction() {
     }
 
     if (hardwareWalletUsed) {
-      navigateToHwSigningPage();
+      const {
+        quote: { requestId },
+      } = quoteResponse;
+      // Preserve requestId across popup -> fullscreen transitions (QR flow).
+      navigateToHwSigningPage(requestId);
     }
 
     // Execute transaction(s)

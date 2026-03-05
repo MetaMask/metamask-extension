@@ -10,8 +10,8 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import * as sharedSelectors from '../../../../shared/modules/selectors';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
@@ -80,6 +80,14 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
         ],
       },
     })),
+  };
+});
+
+jest.mock('../../../../shared/modules/selectors', () => {
+  const original = jest.requireActual('../../../../shared/modules/selectors');
+  return {
+    ...original,
+    isHardwareWallet: jest.fn(),
   };
 });
 
@@ -155,6 +163,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
     });
 
     it('executes bridge transaction with no approval', async () => {
@@ -188,12 +210,61 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          state: { stayOnHomePage: true, token: null, bridgeState: null },
-        },
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
+    });
+
+    it('routes to awaiting signatures with requestId for hardware wallets', async () => {
+      (sharedSelectors.isHardwareWallet as jest.Mock).mockReturnValue(true);
+      const store = makeMockStore();
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      // Execute
+      await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
+
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            {
+              "pathname": "/cross-chain/swaps/awaiting-signatures",
+              "search": "requestId=0cd5caf6-9844-465b-89ad-9c89b639f432",
+            },
+            {
+              "state": {
+                "token": null,
+              },
+            },
+          ],
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
     });
   });
 });

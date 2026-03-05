@@ -1,5 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { isExperimental, isFlask } from '../../../shared/lib/build-types';
 import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
@@ -572,15 +573,14 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     iconName: IconName.CodeCircle,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('watchEthereumAccountsToggle'),
     descriptionMessage: (t) => t('watchEthereumAccountsDescription'),
     route: `${EXPERIMENTAL_ROUTE}#watch-only`,
     icon: 'fas fa-flask',
+    hidden: !isFlask() && !isExperimental(),
   },
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 export default SETTINGS_CONSTANTS;
