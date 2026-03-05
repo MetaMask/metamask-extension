@@ -26,6 +26,16 @@ import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
 
+jest.mock('./controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
 jest.mock('../../ui/contexts/hardware-wallets', () => ({
   toHardwareWalletError: (...args) => mockToHardwareWalletError(...args),
 }));

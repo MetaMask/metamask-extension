@@ -81,6 +81,16 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
+jest.mock('./controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
