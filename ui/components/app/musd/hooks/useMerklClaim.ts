@@ -131,7 +131,14 @@ export const useMerklClaim = ({
       setError(err.message);
       setIsClaiming(false);
     }
-  }, [isGeoBlocked, selectedAddress, tokenAddress, chainId, claimChainId, dispatch]);
+  }, [
+    isGeoBlocked,
+    selectedAddress,
+    tokenAddress,
+    chainId,
+    claimChainId,
+    dispatch,
+  ]);
 
   return {
     claimRewards,
