@@ -386,7 +386,7 @@ export const MultichainBridgeQuoteCard = ({
               </Text>
               <Tooltip
                 title={
-                  isPriceImpactWarning
+                  isPriceImpactWarning || isPriceImpactError
                     ? t('bridgePriceImpactWarningTitle')
                     : t('bridgePriceImpactTooltipTitle')
                 }
