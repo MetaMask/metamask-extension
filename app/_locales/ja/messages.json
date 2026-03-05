@@ -8804,9 +8804,6 @@
   "viewDetails": {
     "message": "詳細を表示"
   },
-  "viewMore": {
-    "message": "詳細を表示"
-  },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"
   },

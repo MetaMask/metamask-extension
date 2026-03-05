@@ -8810,9 +8810,6 @@
   "viewDetails": {
     "message": "Details anzeigen"
   },
-  "viewMore": {
-    "message": "Mehr anzeigen"
-  },
   "viewOnBlockExplorer": {
     "message": "Im Block-Explorer anzeigen"
   },
