@@ -167,7 +167,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleTpPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*\.?\d*$/u.test(value)) {
+      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           setEditingTpPrice('');
@@ -183,7 +183,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*\.?\d*$/u.test(value)) {
+      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           setEditingSlPrice('');
