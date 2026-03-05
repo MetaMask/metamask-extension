@@ -4704,4 +4704,53 @@ describe('Actions', () => {
       expect(background.removeDeferredDeepLink.callCount).toStrictEqual(1);
     });
   });
+
+  describe('#setPendingRedirectRoute', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background setPendingRedirectRoute with a route', async () => {
+      const store = mockStore();
+      background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection(background);
+
+      const route = { path: '/shield-plan' };
+      await store.dispatch(actions.setPendingRedirectRoute(route));
+      expect(background.setPendingRedirectRoute.callCount).toStrictEqual(1);
+      expect(background.setPendingRedirectRoute.getCall(0).args).toStrictEqual([
+        route,
+      ]);
+    });
+
+    it('calls background setPendingRedirectRoute with null', async () => {
+      const store = mockStore();
+      background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setPendingRedirectRoute(null));
+      expect(background.setPendingRedirectRoute.callCount).toStrictEqual(1);
+      expect(background.setPendingRedirectRoute.getCall(0).args).toStrictEqual([
+        null,
+      ]);
+    });
+
+    it('dispatches displayWarning on error', async () => {
+      const store = mockStore();
+      background.setPendingRedirectRoute = sinon
+        .stub()
+        .rejects(new Error('error'));
+      background.getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection(background);
+
+      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
+
+      await expect(
+        store.dispatch(actions.setPendingRedirectRoute({ path: '/test' })),
+      ).rejects.toThrow('error');
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
 });

@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Allow notifications"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Allow $1 to withdraw and spend up to the following amount:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Amount"
   },
@@ -737,6 +733,10 @@
   },
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
+  },
+  "asterdexReferralSubtitle": {
+    "message": "Get 4% back on trades with a MetaMask referral code.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -1662,9 +1662,6 @@
   "connectAccount": {
     "message": "Connect account"
   },
-  "connectAccountOrCreate": {
-    "message": "Connect account or create new"
-  },
   "connectAccounts": {
     "message": "Connect accounts"
   },
@@ -1824,6 +1821,9 @@
   "copiedExclamation": {
     "message": "Copied."
   },
+  "copiedToClipboard": {
+    "message": "Copied to clipboard"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -1838,6 +1838,9 @@
   },
   "copyTransactionId": {
     "message": "Copy transaction ID"
+  },
+  "correct": {
+    "message": "Correct"
   },
   "create": {
     "message": "Create"
@@ -1930,6 +1933,9 @@
     "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
+  "currentQuestion": {
+    "message": "Question $1 of 2"
+  },
   "currentTitle": {
     "message": "Current:"
   },
@@ -1957,9 +1963,6 @@
   },
   "customSlippage": {
     "message": "Custom"
-  },
-  "customSpendLimit": {
-    "message": "Custom spend limit"
   },
   "customToken": {
     "message": "Custom token"
@@ -2251,9 +2254,6 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Deselect all"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
   },
@@ -2533,9 +2533,6 @@
   "editNonceMessage": {
     "message": "This is an advanced feature, use cautiously."
   },
-  "editPermission": {
-    "message": "Edit permission"
-  },
   "editPermissions": {
     "message": "Edit permissions"
   },
@@ -2619,9 +2616,6 @@
   },
   "enterChainId": {
     "message": "Enter Chain ID"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Enter max spend limit"
   },
   "enterNetworkName": {
     "message": "Enter network name"
@@ -3413,12 +3407,12 @@
   "includesXTransactions": {
     "message": "Includes $1 transactions"
   },
+  "incorrect": {
+    "message": "Incorrect"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
   "insights": {
     "message": "Insights"
@@ -3602,9 +3596,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 gas fee"
-  },
-  "lastConnected": {
-    "message": "Last connected"
   },
   "lastSold": {
     "message": "Last sold"
@@ -3838,10 +3829,6 @@
   },
   "makeAnotherSwap": {
     "message": "Create a new swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Make sure nobody is looking",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manage": {
     "message": "Manage"
@@ -4091,10 +4078,6 @@
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
-  "musdClaimDescription": {
-    "message": "Bonus payout will be on Linea network.",
-    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
   },
   "musdClaimTitle": {
     "message": "Claim bonus",
@@ -5822,9 +5805,6 @@
   "productAnnouncements": {
     "message": "Product announcements"
   },
-  "proposedApprovalLimit": {
-    "message": "Proposed approval limit"
-  },
   "provide": {
     "message": "Provide"
   },
@@ -5981,6 +5961,9 @@
   "queued": {
     "message": "Queued"
   },
+  "quizIntroduction": {
+    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
@@ -6044,18 +6027,6 @@
   },
   "rejectAll": {
     "message": "Reject all"
-  },
-  "rejectRequestsDescription": {
-    "message": "You are about to batch reject $1 requests."
-  },
-  "rejectRequestsN": {
-    "message": "Reject $1 requests"
-  },
-  "rejectTxsDescription": {
-    "message": "You are about to batch reject $1 transactions."
-  },
-  "rejectTxsN": {
-    "message": "Reject $1 transactions"
   },
   "rejected": {
     "message": "Rejected"
@@ -6225,39 +6196,27 @@
   "revealSecretRecoveryPhrase": {
     "message": "Back up Secret Recovery Phrase"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWordsDescription1": {
-    "message": "The $1 provides $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask is a $1. That means you're the owner of your SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "full access to your wallet and funds.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial wallet"
+    "message": "Your $1 gives full access to your wallet, funds, and accounts.",
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Secret Recovery Phrase (SRP)"
+    "message": "Secret Recovery Phrase"
   },
   "revealSeedWordsText": {
     "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "Make sure no one is looking at your screen. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask Support will never request this.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
+    "message": "Make sure nobody is looking at your screen. MetaMask Support will never ask for this."
   },
   "revealSensitiveContent": {
     "message": "Reveal sensitive content"
@@ -6619,12 +6578,6 @@
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
-  "selectAccounts": {
-    "message": "Select the account(s) to use on this site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Select the account(s) to use with this snap"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -6663,9 +6616,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
   },
   "send": {
     "message": "Send"
@@ -7817,22 +7767,6 @@
   },
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
-  },
-  "spendLimitInsufficient": {
-    "message": "Spend limit insufficient"
-  },
-  "spendLimitInvalid": {
-    "message": "Spend limit invalid; must be a positive number"
-  },
-  "spendLimitPermission": {
-    "message": "Spend limit permission"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Spend limit requested by $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Spend limit too large"
   },
   "spender": {
     "message": "Spender"
@@ -9043,9 +8977,6 @@
   "viewDetails": {
     "message": "View details"
   },
-  "viewMore": {
-    "message": "View more"
-  },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
   },
@@ -9211,9 +9142,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Your Secret Recovery Phrase"
   },
   "yourTransactionConfirmed": {
     "message": "Transaction already confirmed"
