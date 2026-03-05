@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box } from '@metamask/design-system-react';
+import { SettingItemConfig } from '../types';
 import { LocalCurrencyItem } from './local-currency-item';
 import { ShowNetworkTokenToggleItem } from './show-network-token-item';
 import { HideZeroBalanceTokensToggleItem } from './hide-zero-balance-tokens-item';
@@ -20,14 +21,16 @@ const ASSET_SETTING_ITEMS: { id: string; component: React.FC }[] = [
   { id: 'autodetect-tokens', component: AutodetectTokensToggleItem },
 ];
 
-const Assets = () => {
+export const Assets = ({ children }: { children: SettingItemConfig[] }) => {
   return (
     <Box>
-      {ASSET_SETTING_ITEMS.map(({ id, component: Component }) => (
+      {children.map(({ id, component: Component }) => (
         <Component key={id} />
       ))}
     </Box>
   );
 };
 
-export default Assets;
+const AssetsWithList = () => <Assets>{ASSET_SETTING_ITEMS}</Assets>;
+
+export default AssetsWithList;
