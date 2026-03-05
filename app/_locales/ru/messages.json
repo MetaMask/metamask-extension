@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Подключить счет"
   },
-  "connectAccountOrCreate": {
-    "message": "Подключите счет или создайте новый"
-  },
   "connectAccounts": {
     "message": "Подключить счета"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "Описание из $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Отменить выбор всего"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Удовлетворяющие требованиям счета не найдены"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Плата за газ L2"
-  },
-  "lastConnected": {
-    "message": "Последнее подключение"
   },
   "lastSold": {
     "message": "Последняя продажа"
@@ -6432,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Выберите счет для подключения"
   },
-  "selectAccounts": {
-    "message": "Выберите счета(-а) для использования на этом сайте"
-  },
-  "selectAccountsForSnap": {
-    "message": "Выберите счет(-а) для использования с этим snap"
-  },
   "selectAll": {
     "message": "Выбрать все"
   },
@@ -6476,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Выбран другой счет"
-  },
-  "selectingAllWillAllow": {
-    "message": "Выбор всех позволит этому сайту просматривать все ваши текущие счета. Убедитесь, что вы доверяете этому сайту."
   },
   "send": {
     "message": "Отправить"
@@ -8827,9 +8809,6 @@
   },
   "viewDetails": {
     "message": "Просмотр сведений"
-  },
-  "viewMore": {
-    "message": "Больше"
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"
