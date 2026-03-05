@@ -47,7 +47,7 @@ describe('wrapMessengerWithTracing', () => {
     expect(traceMock).toHaveBeenCalledTimes(1);
     expect(traceMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: TraceName.MessengerCall,
+        name: `${TraceName.MessengerCall}: Test:getState`,
         op: 'messenger.call',
         data: { action: 'Test:getState' },
       }),

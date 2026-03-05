@@ -27,7 +27,7 @@ export function wrapMessengerWithTracing<
   (messenger as any).call = (actionType: string, ...args: unknown[]) => {
     return trace(
       {
-        name: TraceName.MessengerCall,
+        name: `${TraceName.MessengerCall}: ${actionType}`,
         op: 'messenger.call',
         data: { action: actionType },
       },
