@@ -225,7 +225,7 @@ describe('PerpsStreamBridge', () => {
         expect(emit).toHaveBeenCalledWith('prices', priceData);
       });
 
-      it('unsubscribes previous prices subscription when called again', () => {
+      it('tears down previous prices subscription when called again', () => {
         const controller = createMockController();
         const unsub = jest.fn();
         controller.subscribeToPrices.mockReturnValue(unsub);
@@ -279,7 +279,7 @@ describe('PerpsStreamBridge', () => {
         expect(emit).toHaveBeenCalledWith('orderBook', bookData);
       });
 
-      it('unsubscribes previous order book subscription when called again', () => {
+      it('tears down previous order book subscription when called again', () => {
         const controller = createMockController();
         const unsub = jest.fn();
         controller.subscribeToOrderBook.mockReturnValue(unsub);
@@ -427,6 +427,48 @@ describe('PerpsStreamBridge', () => {
         expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
         expect(controller.subscribeToCandles).not.toHaveBeenCalled();
       });
+
+      it('tears down omitted channels when navigating to a simpler view', () => {
+        const controller = createMockController();
+        const orderBookUnsub = jest.fn();
+        const candleUnsub = jest.fn();
+        controller.subscribeToOrderBook.mockReturnValue(orderBookUnsub);
+        controller.subscribeToCandles.mockReturnValue(candleUnsub);
+
+        bridge.activateStreaming(controller as unknown as PerpsController, {
+          priceSymbols: ['ETH'],
+          orderBookSymbol: 'ETH',
+          candle: { symbol: 'ETH', interval: '1h' as never },
+        });
+
+        expect(orderBookUnsub).not.toHaveBeenCalled();
+        expect(candleUnsub).not.toHaveBeenCalled();
+
+        bridge.activateStreaming(controller as unknown as PerpsController, {
+          priceSymbols: ['BTC'],
+        });
+
+        expect(orderBookUnsub).toHaveBeenCalledTimes(1);
+        expect(candleUnsub).toHaveBeenCalledTimes(1);
+      });
+
+      it('tears down all dynamic subs when called with empty params', () => {
+        const controller = createMockController();
+        const priceUnsub = jest.fn();
+        const orderBookUnsub = jest.fn();
+        controller.subscribeToPrices.mockReturnValue(priceUnsub);
+        controller.subscribeToOrderBook.mockReturnValue(orderBookUnsub);
+
+        bridge.activateStreaming(controller as unknown as PerpsController, {
+          priceSymbols: ['ETH'],
+          orderBookSymbol: 'ETH',
+        });
+
+        bridge.activateStreaming(controller as unknown as PerpsController, {});
+
+        expect(priceUnsub).toHaveBeenCalledTimes(1);
+        expect(orderBookUnsub).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
@@ -514,6 +556,21 @@ describe('PerpsStreamBridge', () => {
 
       bridge.destroy();
       expect(bridge.isActive).toBe(false);
+    });
+
+    it('resets viewActive so re-activation requires explicit setViewActive(true)', () => {
+      const controller = createMockController();
+      bridge.activate(controller as unknown as PerpsController);
+      bridge.setViewActive(true);
+      expect(bridge.isActive).toBe(true);
+
+      bridge.destroy();
+
+      bridge.activate(controller as unknown as PerpsController);
+      expect(bridge.isActive).toBe(false);
+
+      bridge.setViewActive(true);
+      expect(bridge.isActive).toBe(true);
     });
 
     it('does not double-call static unsubs when activate() is called after destroy()', () => {

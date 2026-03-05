@@ -89,8 +89,13 @@ export class PerpsStreamBridge {
   ): void {
     const { priceSymbols, orderBookSymbol, candle } = params;
 
+    // Tear down ALL existing dynamic subs first so channels omitted from
+    // params don't leak (e.g. navigating from a detailed view to a simpler
+    // one that no longer needs orderBook or candles).
+    this.#tearDownAllDynamic();
+
     if (priceSymbols?.length) {
-      this.#replaceSubscription('prices', () =>
+      this.#addDynamicSubscription('prices', () =>
         controller.subscribeToPrices({
           symbols: priceSymbols,
           callback: (data: unknown) => this.#emit('prices', data),
@@ -99,7 +104,7 @@ export class PerpsStreamBridge {
     }
 
     if (orderBookSymbol) {
-      this.#replaceSubscription('orderBook', () =>
+      this.#addDynamicSubscription('orderBook', () =>
         controller.subscribeToOrderBook({
           symbol: orderBookSymbol,
           callback: (data: unknown) => this.#emit('orderBook', data),
@@ -108,7 +113,7 @@ export class PerpsStreamBridge {
     }
 
     if (candle?.symbol && candle?.interval) {
-      this.#replaceSubscription('candles', () =>
+      this.#addDynamicSubscription('candles', () =>
         controller.subscribeToCandles({
           ...candle,
           callback: (data: unknown) =>
@@ -133,11 +138,16 @@ export class PerpsStreamBridge {
     }
   }
 
-  #replaceSubscription(key: string, subscribe: () => () => void): void {
-    const existing = this.#dynamicUnsubs[key];
-    if (existing) {
-      this.#callAndClearUnsub(existing);
+  #tearDownAllDynamic(): void {
+    for (const unsub of Object.values(this.#dynamicUnsubs)) {
+      this.#callAndClearUnsub(unsub);
     }
+    for (const key of Object.keys(this.#dynamicUnsubs)) {
+      delete this.#dynamicUnsubs[key];
+    }
+  }
+
+  #addDynamicSubscription(key: string, subscribe: () => () => void): void {
     this.#dynamicUnsubs[key] = subscribe();
   }
 
@@ -147,13 +157,9 @@ export class PerpsStreamBridge {
     }
     this.#staticUnsubs.length = 0;
 
-    for (const unsub of Object.values(this.#dynamicUnsubs)) {
-      this.#callAndClearUnsub(unsub);
-    }
-    for (const key of Object.keys(this.#dynamicUnsubs)) {
-      delete this.#dynamicUnsubs[key];
-    }
+    this.#tearDownAllDynamic();
 
     this.#activated = false;
+    this.#viewActive = false;
   }
 }
