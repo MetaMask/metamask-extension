@@ -733,16 +733,19 @@ const handleOnConnect = async (port) => {
       { restore_accounts_enabled: canTriggerRestore },
     );
   };
-  const removeRepairListener = () => {
-    metamaskUIPorts.delete(port);
+  const removeCriticalErrorListeners = () => {
     port.onMessage.removeListener(repairListener);
     port.onMessage.removeListener(criticalErrorScreenViewedListener);
+  };
+  const deletePortAndDisconnectListeners = () => {
+    metamaskUIPorts.delete(port);
+    removeCriticalErrorListeners();
   };
   if (isMetaMaskUIPort) {
     metamaskUIPorts.add(port);
     port.onMessage.addListener(repairListener);
     port.onMessage.addListener(criticalErrorScreenViewedListener);
-    port.onDisconnect.addListener(removeRepairListener);
+    port.onDisconnect.addListener(deletePortAndDisconnectListeners);
   }
 
   // Queue up connection attempts here, waiting until after initialization
@@ -781,7 +784,10 @@ const handleOnConnect = async (port) => {
     }
 
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(port);
+    connectWindowPostMessage(
+      port,
+      isMetaMaskUIPort ? removeCriticalErrorListeners : undefined,
+    );
   } catch (error) {
     sentry?.captureException(error);
 
@@ -1779,7 +1785,7 @@ export function setupController(
     }
   };
 
-  connectWindowPostMessage = (remotePort) => {
+  connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
@@ -1818,7 +1824,11 @@ export function setupController(
 
       // communication with popup
       controller.isClientOpen = true;
-      controller.setupTrustedCommunication(portStream, remotePort.sender);
+      controller.setupTrustedCommunication(
+        portStream,
+        remotePort.sender,
+        removeCriticalErrorListeners,
+      );
       trackAppOpened(processName);
 
       // lazily update the remote feature flags every time the UI is opened.

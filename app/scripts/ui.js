@@ -44,6 +44,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
+import { CriticalErrorType } from '../../shared/constants/state-corruption';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
@@ -138,6 +139,7 @@ async function start() {
       windowType,
       traceContext,
       initialState,
+      extensionPort,
     );
 
     if (isManifestV3) {
@@ -241,6 +243,7 @@ async function initializeUiWithTab(
   windowType,
   traceContext,
   initialState,
+  extensionPort,
 ) {
   try {
     const store = await launchMetamaskUi({
@@ -268,6 +271,9 @@ async function initializeUiWithTab(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
+      undefined,
+      extensionPort,
+      CriticalErrorType.TroubleStarting,
     );
   }
 }

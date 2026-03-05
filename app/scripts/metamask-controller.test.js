@@ -2625,7 +2625,29 @@ describe('MetaMaskController', () => {
             _name: 'controller',
             _parent: expect.any(ObjectMultiplex),
           }),
+          undefined,
         );
+      });
+
+      it('invokes removeCriticalErrorListeners when the UI calls startSendingPatches', async () => {
+        const removeCriticalErrorListeners = jest.fn();
+        const stream = createThroughStream((chunk, _, cb) => cb(null, chunk));
+
+        metamaskController.setupControllerConnection(
+          stream,
+          removeCriticalErrorListeners,
+        );
+
+        stream.write({
+          method: 'startSendingPatches',
+          params: [],
+          id: 1,
+        });
+
+        await flushPromises();
+
+        expect(removeCriticalErrorListeners).toHaveBeenCalledTimes(1);
+        stream.end();
       });
 
       const createTestStream = () => {

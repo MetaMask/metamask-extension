@@ -113,9 +113,20 @@ function mockIndexedDBNoBackup(): () => void {
   };
 }
 
+/** Minimal mock port for tests that pass port when possible (no backup in these tests). */
+const createMockPort = () =>
+  ({
+    postMessage: jest.fn(),
+    onMessage: { addListener: jest.fn(), removeListener: jest.fn() },
+    onDisconnect: { addListener: jest.fn(), removeListener: jest.fn() },
+    name: 'popup',
+    disconnect: jest.fn(),
+  }) as unknown as browser.Runtime.Port;
+
 describe('displayCriticalError', () => {
   let rootContainer: HTMLElement;
   let container: HTMLElement;
+  let restoreIndexedDB: () => void;
   const MOCK_ERROR_MESSAGE = 'test error';
   const EXPECTED_ENVELOPE_URL = extractEnvelopeUrlFromDsn(MOCK_SENTRY_DSN_DEV);
 
@@ -131,6 +142,9 @@ describe('displayCriticalError', () => {
     // yet.
     rootContainer = document.createElement('div');
     rootContainer.appendChild(container);
+
+    // Mock IndexedDB (no backup) so passing port does not throw; hasBackup stays false.
+    restoreIndexedDB = mockIndexedDBNoBackup();
 
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
@@ -149,11 +163,13 @@ describe('displayCriticalError', () => {
   });
 
   afterEach(() => {
+    restoreIndexedDB?.();
     jest.clearAllMocks();
   });
 
   it('renders critical error html into parent of container', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
+    const mockPort = createMockPort();
 
     await expect(
       displayCriticalErrorMessage(
@@ -161,6 +177,8 @@ describe('displayCriticalError', () => {
         CriticalErrorTranslationKey.TroubleStarting,
         error,
         'en',
+        mockPort,
+        CriticalErrorType.Other,
       ),
     ).rejects.toThrow(error);
 
@@ -183,6 +201,7 @@ describe('displayCriticalError', () => {
 
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
+    const mockPort = createMockPort();
 
     await expect(
       displayCriticalErrorMessage(
@@ -190,6 +209,8 @@ describe('displayCriticalError', () => {
         CriticalErrorTranslationKey.TroubleStarting,
         error,
         'en',
+        mockPort,
+        CriticalErrorType.Other,
       ),
     ).rejects.toThrow(error);
 
@@ -287,6 +308,7 @@ describe('displayCriticalError', () => {
 
   it('does not send to Sentry if checkbox is unchecked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
+    const mockPort = createMockPort();
 
     await expect(
       displayCriticalErrorMessage(
@@ -294,6 +316,8 @@ describe('displayCriticalError', () => {
         CriticalErrorTranslationKey.SomethingIsWrong,
         error,
         'en',
+        mockPort,
+        CriticalErrorType.Other,
       ),
     ).rejects.toThrow(error);
 

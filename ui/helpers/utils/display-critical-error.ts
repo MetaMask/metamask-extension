@@ -241,7 +241,7 @@ export async function displayCriticalErrorMessage(
   error: ErrorLike,
   currentLocale?: string,
   port?: browser.Runtime.Port,
-  criticalErrorType: CriticalErrorType = CriticalErrorType.Other,
+  criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
   const canTriggerRestore = Boolean(port) && (await checkVaultBackupExists());
 

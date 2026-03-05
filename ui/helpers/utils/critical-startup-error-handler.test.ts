@@ -292,6 +292,30 @@ describe('CriticalStartupErrorHandler', () => {
       // No error should have been displayed at any point.
       expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
     });
+
+    it('completes successfully when ALIVE and BACKGROUND_INITIALIZED arrive before phase methods run', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      // Simulate race: both messages arrive back-to-back before we have entered
+      // #startInitializationCheck (callbacks are pre-registered at install so both resolve).
+      port.simulateMessage({
+        data: { method: BACKGROUND_LIVENESS_METHOD },
+      });
+      port.simulateMessage({
+        data: { method: BACKGROUND_INITIALIZED_METHOD },
+      });
+      await flushMicrotasks();
+
+      // Let the async phase chain run (liveness completes, then init check awaits already-resolved promise).
+      await advanceTimersAndFlush(100);
+
+      handler.startUiSyncReceived();
+      await advanceTimersAndFlush(100);
+
+      // Should not show UnreachableInitializationCheck or any error.
+      expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
+    });
   });
 
   describe('uninstall', () => {
@@ -384,6 +408,7 @@ describe('CriticalStartupErrorHandler', () => {
         { message: 'startup error', name: 'Error', stack: '' },
         'en',
         port,
+        CriticalErrorType.GeneralStartupError,
       );
 
       handler.uninstall();

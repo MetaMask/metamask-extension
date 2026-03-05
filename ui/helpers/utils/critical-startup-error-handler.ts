@@ -48,15 +48,21 @@ export class CriticalStartupErrorHandler {
 
   #livenessCheckTimeoutId?: NodeJS.Timeout;
 
+  #livenessPromise!: Promise<void>;
+
   #onLivenessCheckCompleted?: () => void;
 
   #initializationCheckTimeoutId?: NodeJS.Timeout;
+
+  #initializationPromise!: Promise<void>;
 
   #onInitializationCheckCompleted?: () => void;
 
   #initializationCompleted = false;
 
   #startUiSyncTimeoutId?: NodeJS.Timeout;
+
+  #stateSyncPromise!: Promise<void>;
 
   #onStartUiSyncCompleted?: () => void;
 
@@ -131,21 +137,18 @@ export class CriticalStartupErrorHandler {
    * Waits for the ALIVE message from the background.
    */
   async #startLivenessCheck() {
-    const { promise: livenessCheck, resolve: onLivenessCheckCompleted } =
-      createDeferredPromise();
-    // This is called later in `#handler` when the ALIVE message is received.
-    this.#onLivenessCheckCompleted = onLivenessCheckCompleted;
-
-    const livenessCheckTimeoutPromise = new Promise((_resolve, reject) => {
-      this.#livenessCheckTimeoutId = setTimeout(
-        () => reject(new Error('Background connection unresponsive')),
-        BACKGROUND_CONNECTION_TIMEOUT,
-      );
-    });
+    const livenessCheckTimeoutPromise = new Promise<void>(
+      (_resolve, reject) => {
+        this.#livenessCheckTimeoutId = setTimeout(
+          () => reject(new Error('Background connection unresponsive')),
+          BACKGROUND_CONNECTION_TIMEOUT,
+        );
+      },
+    );
 
     let livenessError: Error | null = null;
     try {
-      await Promise.race([livenessCheck, livenessCheckTimeoutPromise]);
+      await Promise.race([this.#livenessPromise, livenessCheckTimeoutPromise]);
     } catch (error) {
       livenessError = error as Error;
     }
@@ -178,23 +181,21 @@ export class CriticalStartupErrorHandler {
    * Waits for the BACKGROUND_INITIALIZED message from the background.
    */
   async #startInitializationCheck() {
-    const {
-      promise: initializationCheck,
-      resolve: onInitializationCheckCompleted,
-    } = createDeferredPromise();
-    // This is called later in `#handler` when the BACKGROUND_INITIALIZED message is received.
-    this.#onInitializationCheckCompleted = onInitializationCheckCompleted;
-
-    const initializationTimeoutPromise = new Promise((_resolve, reject) => {
-      this.#initializationCheckTimeoutId = setTimeout(
-        () => reject(new Error('Background initialization timeout')),
-        BACKGROUND_INITIALIZATION_TIMEOUT,
-      );
-    });
+    const initializationTimeoutPromise = new Promise<void>(
+      (_resolve, reject) => {
+        this.#initializationCheckTimeoutId = setTimeout(
+          () => reject(new Error('Background initialization timeout')),
+          BACKGROUND_INITIALIZATION_TIMEOUT,
+        );
+      },
+    );
 
     let initError: Error | null = null;
     try {
-      await Promise.race([initializationCheck, initializationTimeoutPromise]);
+      await Promise.race([
+        this.#initializationPromise,
+        initializationTimeoutPromise,
+      ]);
     } catch (error) {
       initError = error as Error;
     }
@@ -223,12 +224,7 @@ export class CriticalStartupErrorHandler {
    * Waits for the START_UI_SYNC message from the background.
    */
   async #startStateSyncCheck() {
-    const { promise: stateSyncCheck, resolve: onStateSyncCompleted } =
-      createDeferredPromise();
-    // This is called later via `startUiSyncReceived()` when the START_UI_SYNC message is received.
-    this.#onStartUiSyncCompleted = onStateSyncCompleted;
-
-    const stateSyncTimeoutPromise = new Promise((_resolve, reject) => {
+    const stateSyncTimeoutPromise = new Promise<void>((_resolve, reject) => {
       this.#startUiSyncTimeoutId = setTimeout(
         () => reject(new Error('Background state sync timeout')),
         STATE_SYNC_TIMEOUT,
@@ -237,7 +233,7 @@ export class CriticalStartupErrorHandler {
 
     let stateSyncError: Error | null = null;
     try {
-      await Promise.race([stateSyncCheck, stateSyncTimeoutPromise]);
+      await Promise.race([this.#stateSyncPromise, stateSyncTimeoutPromise]);
     } catch (error) {
       stateSyncError = error as Error;
     }
@@ -286,18 +282,30 @@ export class CriticalStartupErrorHandler {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else {
+        // Unreachable in normal flow (ALIVE received but liveness check not initialized).
         await displayCriticalErrorMessage(
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, liveness check not initialized'),
           undefined,
           this.#port,
+          CriticalErrorType.UnreachableLivenessCheck,
         );
       }
     } else if (method === BACKGROUND_INITIALIZED_METHOD) {
       this.#initializationCompleted = true;
       if (this.#onInitializationCheckCompleted) {
         this.#onInitializationCheckCompleted();
+      } else {
+        // Unreachable in normal flow (BACKGROUND_INITIALIZED received but init check not initialized).
+        await displayCriticalErrorMessage(
+          this.#container,
+          CriticalErrorTranslationKey.TroubleStarting,
+          new Error('Unreachable error, initialization check not initialized'),
+          undefined,
+          this.#port,
+          CriticalErrorType.UnreachableInitializationCheck,
+        );
       }
     } else if (method === RELOAD_WINDOW) {
       // This is a special case where we want to reload the page
@@ -342,6 +350,7 @@ export class CriticalStartupErrorHandler {
         error as ErrorLike,
         currentLocale,
         this.#port,
+        CriticalErrorType.GeneralStartupError,
       );
     }
   };
@@ -362,6 +371,25 @@ export class CriticalStartupErrorHandler {
    */
   install() {
     this.#port.onMessage.addListener(this.#handler);
+
+    // Pre-register all phase completion callbacks so messages can arrive before we enter
+    // the corresponding phase (avoids race where BACKGROUND_INITIALIZED or START_UI_SYNC
+    // arrives before we've set the callback).
+    const { promise: livenessPromise, resolve: onLivenessCheckCompleted } =
+      createDeferredPromise<void>();
+    const {
+      promise: initializationPromise,
+      resolve: onInitializationCheckCompleted,
+    } = createDeferredPromise<void>();
+    const { promise: stateSyncPromise, resolve: onStateSyncCompleted } =
+      createDeferredPromise<void>();
+
+    this.#livenessPromise = livenessPromise;
+    this.#initializationPromise = initializationPromise;
+    this.#stateSyncPromise = stateSyncPromise;
+    this.#onLivenessCheckCompleted = onLivenessCheckCompleted;
+    this.#onInitializationCheckCompleted = onInitializationCheckCompleted;
+    this.#onStartUiSyncCompleted = onStateSyncCompleted;
 
     // Called without `await` intentionally to ensure listeners for other messages are added as
     // quickly as possible.
