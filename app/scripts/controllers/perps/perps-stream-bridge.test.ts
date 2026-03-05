@@ -490,5 +490,60 @@ describe('PerpsStreamBridge', () => {
     it('does not throw when called with no active subscriptions', () => {
       expect(() => bridge.destroy()).not.toThrow();
     });
+
+    it('resets isActive to false after destruction', () => {
+      const controller = createMockController();
+      bridge.activate(controller as unknown as PerpsController);
+      bridge.setViewActive(true);
+      expect(bridge.isActive).toBe(true);
+
+      bridge.destroy();
+      expect(bridge.isActive).toBe(false);
+    });
+
+    it('does not double-call static unsubs when activate() is called after destroy()', () => {
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToPositions.mockReturnValue(unsub);
+
+      bridge.activate(controller as unknown as PerpsController);
+      bridge.destroy();
+      expect(unsub).toHaveBeenCalledTimes(1);
+
+      const controller2 = createMockController();
+      bridge.activate(controller2 as unknown as PerpsController);
+      expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not double-call dynamic unsubs when activateStreaming() is called after destroy()', () => {
+      const controller = createMockController();
+      const priceUnsub = jest.fn();
+      controller.subscribeToPrices.mockReturnValue(priceUnsub);
+
+      bridge.activateStreaming(controller as unknown as PerpsController, {
+        priceSymbols: ['ETH'],
+      });
+      bridge.destroy();
+      expect(priceUnsub).toHaveBeenCalledTimes(1);
+
+      const controller2 = createMockController();
+      bridge.activateStreaming(controller2 as unknown as PerpsController, {
+        priceSymbols: ['BTC'],
+      });
+      expect(priceUnsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not throw when called twice (idempotent)', () => {
+      const controller = createMockController();
+      bridge.activate(controller as unknown as PerpsController);
+      bridge.activateStreaming(controller as unknown as PerpsController, {
+        priceSymbols: ['ETH'],
+      });
+
+      expect(() => {
+        bridge.destroy();
+        bridge.destroy();
+      }).not.toThrow();
+    });
   });
 });

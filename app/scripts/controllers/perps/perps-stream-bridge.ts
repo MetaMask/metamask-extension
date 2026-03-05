@@ -58,11 +58,7 @@ export class PerpsStreamBridge {
   activate(controller: PerpsController): void {
     // Tear down any previous static subscriptions (handles re-activation)
     for (const unsub of this.#staticUnsubs) {
-      try {
-        unsub();
-      } catch (error) {
-        console.debug('[PerpsStreamBridge] cleanup error', error);
-      }
+      this.#callAndClearUnsub(unsub);
     }
     this.#staticUnsubs.length = 0;
 
@@ -81,11 +77,6 @@ export class PerpsStreamBridge {
       }),
     );
     this.#activated = true;
-  }
-
-  #replaceSubscription(key: string, subscribe: () => () => void): void {
-    this.#dynamicUnsubs[key]?.();
-    this.#dynamicUnsubs[key] = subscribe();
   }
 
   setViewActive(active: boolean): void {
@@ -136,17 +127,35 @@ export class PerpsStreamBridge {
     return this.#activated && this.#viewActive;
   }
 
-  destroy(): void {
-    const allUnsubs = [
-      ...this.#staticUnsubs,
-      ...Object.values(this.#dynamicUnsubs),
-    ];
-    for (const unsub of allUnsubs) {
-      try {
-        unsub();
-      } catch (error) {
-        console.debug('[PerpsStreamBridge] cleanup error', error);
-      }
+  #callAndClearUnsub(unsub: () => void): void {
+    try {
+      unsub();
+    } catch (error) {
+      console.debug('[PerpsStreamBridge] cleanup error', error);
     }
+  }
+
+  #replaceSubscription(key: string, subscribe: () => () => void): void {
+    const existing = this.#dynamicUnsubs[key];
+    if (existing) {
+      this.#callAndClearUnsub(existing);
+    }
+    this.#dynamicUnsubs[key] = subscribe();
+  }
+
+  destroy(): void {
+    for (const unsub of this.#staticUnsubs) {
+      this.#callAndClearUnsub(unsub);
+    }
+    this.#staticUnsubs.length = 0;
+
+    for (const unsub of Object.values(this.#dynamicUnsubs)) {
+      this.#callAndClearUnsub(unsub);
+    }
+    for (const key of Object.keys(this.#dynamicUnsubs)) {
+      delete this.#dynamicUnsubs[key];
+    }
+
+    this.#activated = false;
   }
 }
