@@ -74,7 +74,7 @@ const ToggleButton = (props) => {
     disabled,
     className,
     dataTestId,
-    containerClassName,
+    containerStyle,
   } = props;
 
   const modifier = value ? 'on' : 'off';
@@ -101,7 +101,7 @@ const ToggleButton = (props) => {
       <ReactToggleButton
         value={value}
         onToggle={disabled ? undefined : onToggle}
-        containerStyle={containerClassName}
+        containerStyle={containerStyle}
         activeLabel=""
         inactiveLabel=""
         trackStyle={value ? trackStyle : offTrackStyle}
@@ -152,9 +152,9 @@ ToggleButton.propTypes = {
    */
   dataTestId: PropTypes.string,
   /**
-   * Optional className to add to the container
+   * Optional inline styles for the container
    */
-  containerClassName: React.CSSProperties,
+  containerStyle: PropTypes.object,
 };
 
 export default ToggleButton;

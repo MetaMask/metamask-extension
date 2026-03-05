@@ -49,7 +49,7 @@ export const SettingsToggleItem = ({
           value={value}
           onToggle={onToggle}
           dataTestId={dataTestId}
-          containerClassName={{ width: '40px' }}
+          containerStyle={{ width: '40px' }}
         />
       </div>
     </Box>
