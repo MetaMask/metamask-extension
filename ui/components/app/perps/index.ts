@@ -22,9 +22,21 @@ export {
   isCryptoMarket,
 } from './utils';
 
-// Edit Margin expandable
-export { EditMarginExpandable } from './edit-margin';
-export type { EditMarginExpandableProps } from './edit-margin';
+// Edit Margin
+export {
+  EditMarginExpandable,
+  EditMarginModal,
+  EditMarginModalContent,
+} from './edit-margin';
+export type {
+  EditMarginExpandableProps,
+  EditMarginModalProps,
+  EditMarginModalContentProps,
+} from './edit-margin';
+
+// Reverse Position
+export { ReversePositionModal } from './reverse-position';
+export type { ReversePositionModalProps } from './reverse-position';
 
 // Order Entry components
 export { OrderEntry } from './order-entry';

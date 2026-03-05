@@ -1,0 +1,363 @@
+import React, { useState, useCallback } from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TextField, TextFieldSize } from '../../../component-library';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../helpers/constants/design-system';
+import { getPerpsController } from '../../../../providers/perps';
+import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { usePerpsEligibility } from '../../../../hooks/perps';
+import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
+import type { Position, AccountState } from '../types';
+
+const MARGIN_PRESETS = [25, 50, 100] as const;
+
+export type EditMarginModalContentProps = {
+  position: Position;
+  account: AccountState | null;
+  currentPrice: number;
+  selectedAddress: string;
+  /** When used in modal: 'add' or 'remove' for single-purpose modal. No in-content toggle. */
+  mode: 'add' | 'remove';
+  onClose: () => void;
+};
+
+/**
+ * Shared margin form content: amount input, presets, liquidation info, risk warning, save.
+ * Used inside EditMarginModal (and optionally EditMarginExpandable) with a fixed mode.
+ * @param options0
+ * @param options0.position
+ * @param options0.account
+ * @param options0.currentPrice
+ * @param options0.selectedAddress
+ * @param options0.mode
+ * @param options0.onClose
+ */
+export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
+  position,
+  account,
+  currentPrice,
+  selectedAddress,
+  mode: marginMode,
+  onClose,
+}) => {
+  const t = useI18nContext();
+  const { formatNumber } = useFormatters();
+  const { isEligible } = usePerpsEligibility();
+
+  const [marginAmount, setMarginAmount] = useState<string>('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [marginError, setMarginError] = useState<string | null>(null);
+
+  const calculations = usePerpsMarginCalculations({
+    position,
+    currentPrice,
+    account,
+    mode: marginMode,
+    amount: marginAmount,
+  });
+
+  const {
+    maxAmount,
+    newLiquidationPrice,
+    currentLiquidationDistance,
+    newLiquidationDistance,
+    riskAssessment,
+    isValid,
+  } = calculations;
+
+  const handleAmountChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      if (value === '' || /^[\d,]*\.?\d{0,2}$/u.test(value)) {
+        let cleaned = value.replace(/,/gu, '');
+        if (marginMode === 'remove' && maxAmount > 0) {
+          const num = parseFloat(cleaned) || 0;
+          if (num > maxAmount) {
+            cleaned = maxAmount.toFixed(2);
+          }
+        }
+        setMarginAmount(cleaned);
+      }
+    },
+    [marginMode, maxAmount],
+  );
+
+  const handlePresetClick = useCallback(
+    (percent: number) => {
+      if (maxAmount <= 0) {
+        return;
+      }
+      const value = (maxAmount * percent) / 100;
+      setMarginAmount(value.toFixed(2));
+    },
+    [maxAmount],
+  );
+
+  const handleSaveMargin = useCallback(async () => {
+    if (!isEligible || !selectedAddress || !isValid) {
+      return;
+    }
+
+    const amountNum = parseFloat(marginAmount) || 0;
+    if (amountNum <= 0) {
+      return;
+    }
+
+    setIsSaving(true);
+    setMarginError(null);
+
+    try {
+      const controller = await getPerpsController(selectedAddress);
+      const signedAmount =
+        marginMode === 'add' ? marginAmount : `-${marginAmount}`;
+
+      const result = await controller.updateMargin({
+        symbol: position.symbol,
+        amount: signedAmount,
+      });
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to update margin');
+      }
+
+      const streamManager = getPerpsStreamManager();
+      const freshPositions = await controller.getPositions({
+        skipCache: true,
+      });
+      streamManager.pushPositionsWithOverrides(freshPositions);
+
+      setMarginAmount('');
+      onClose();
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      setMarginError(errorMessage);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [
+    isEligible,
+    selectedAddress,
+    marginMode,
+    marginAmount,
+    isValid,
+    position.symbol,
+    onClose,
+  ]);
+
+  const currentLiqPrice = position.liquidationPrice
+    ? parseFloat(position.liquidationPrice)
+    : null;
+
+  const showRiskWarning =
+    marginMode === 'remove' &&
+    riskAssessment &&
+    (riskAssessment.riskLevel === 'warning' ||
+      riskAssessment.riskLevel === 'danger');
+
+  const confirmDisabled =
+    !isEligible || !isValid || isSaving || parseFloat(marginAmount) <= 0;
+
+  const getConfirmButtonLabel = () => {
+    if (isSaving) {
+      return t('perpsSubmitting');
+    }
+    return marginMode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
+  };
+
+  const availableLabel =
+    marginMode === 'add' ? t('perpsAvailableBalance') : t('perpsMaxRemovable');
+
+  return (
+    <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+      {/* Amount input */}
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          fontWeight={FontWeight.Medium}
+        >
+          {t('perpsMargin')}
+        </Text>
+        <TextField
+          size={TextFieldSize.Md}
+          value={marginAmount}
+          onChange={handleAmountChange}
+          placeholder="0.00"
+          borderRadius={BorderRadius.MD}
+          borderWidth={0}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          className="w-full"
+          disabled={isSaving}
+          startAccessory={
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              $
+            </Text>
+          }
+        />
+      </Box>
+
+      {/* Preset buttons: 25%, 50%, Max */}
+      <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+        {MARGIN_PRESETS.map((preset) => (
+          <Box
+            key={`margin-preset-${preset}`}
+            onClick={isSaving ? undefined : () => handlePresetClick(preset)}
+            className={`flex-1 py-1.5 rounded-lg bg-background-default cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150${
+              isSaving
+                ? ' opacity-50 cursor-not-allowed pointer-events-none'
+                : ''
+            }`}
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {preset === 100 ? t('perpsMax') : `${preset}%`}
+            </Text>
+          </Box>
+        ))}
+      </Box>
+
+      {/* Info rows */}
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {availableLabel}
+          </Text>
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            $
+            {formatNumber(maxAmount, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </Text>
+        </Box>
+
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsLiquidationPrice')}
+          </Text>
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            {currentLiqPrice === null
+              ? '-'
+              : `$${formatNumber(currentLiqPrice, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}`}
+            {newLiquidationPrice !== null &&
+              ` → $${formatNumber(newLiquidationPrice, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`}
+          </Text>
+        </Box>
+
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsLiquidationDistance')}
+          </Text>
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            {formatNumber(currentLiquidationDistance, {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 1,
+            })}
+            %
+            {newLiquidationDistance !== null &&
+              ` → ${formatNumber(newLiquidationDistance, {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+              })}%`}
+          </Text>
+        </Box>
+      </Box>
+
+      {/* Risk warning (remove mode) */}
+      {showRiskWarning && (
+        <Box
+          className="bg-warning-muted rounded-lg px-3 py-2"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Icon
+            name={IconName.Warning}
+            size={IconSize.Sm}
+            color={IconColor.WarningDefault}
+          />
+          <Text variant={TextVariant.BodySm} color={TextColor.WarningDefault}>
+            {t('perpsMarginRiskWarning')}
+          </Text>
+        </Box>
+      )}
+
+      {/* Error message */}
+      {marginError && (
+        <Box
+          className="bg-error-muted rounded-lg px-3 py-2"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Icon
+            name={IconName.Warning}
+            size={IconSize.Sm}
+            color={IconColor.ErrorDefault}
+          />
+          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+            {marginError}
+          </Text>
+        </Box>
+      )}
+
+      {/* Save button */}
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Md}
+        onClick={handleSaveMargin}
+        disabled={confirmDisabled}
+        title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+        className={
+          confirmDisabled ? 'w-full opacity-70 cursor-not-allowed' : 'w-full'
+        }
+      >
+        {getConfirmButtonLabel()}
+      </Button>
+    </Box>
+  );
+};

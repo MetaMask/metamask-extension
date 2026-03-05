@@ -5528,6 +5528,12 @@
   "perpsRemoveMargin": {
     "message": "Remove Margin"
   },
+  "perpsReversePosition": {
+    "message": "Reverse position"
+  },
+  "perpsEstSize": {
+    "message": "Est. size"
+  },
   "perpsReturn": {
     "message": "Return"
   },

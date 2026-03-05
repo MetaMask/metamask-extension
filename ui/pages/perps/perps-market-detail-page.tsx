@@ -25,6 +25,7 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
@@ -65,7 +66,8 @@ import {
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
 import { useFormatters } from '../../hooks/useFormatters';
-import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
+import { EditMarginModal } from '../../components/app/perps/edit-margin';
+import { ReversePositionModal } from '../../components/app/perps/reverse-position';
 import { TextField, TextFieldSize } from '../../components/component-library';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import {
@@ -298,7 +300,12 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Auto close card expansion state
   const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
-  const [isMarginExpanded, setIsMarginExpanded] = useState(false);
+  const [isModifyMenuOpen, setIsModifyMenuOpen] = useState(false);
+  const [marginModalMode, setMarginModalMode] = useState<
+    'add' | 'remove' | null
+  >(null);
+  const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
+  const modifyMenuRef = useRef<HTMLDivElement>(null);
   const [editingTpPrice, setEditingTpPrice] = useState<string>('');
   const [editingSlPrice, setEditingSlPrice] = useState<string>('');
   const [isSavingTPSL, setIsSavingTPSL] = useState(false);
@@ -648,14 +655,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     [isEligible, decodedSymbol, navigate, buildOrderEntryUrl],
   );
 
-  const handleModifyPosition = useCallback(() => {
-    if (!isEligible || !position || !decodedSymbol) {
-      return;
-    }
-    const isLong = parseFloat(position.size) >= 0;
-    navigate(buildOrderEntryUrl(isLong ? 'long' : 'short', 'modify'));
-  }, [isEligible, position, decodedSymbol, navigate, buildOrderEntryUrl]);
-
   const handleClosePosition = useCallback(() => {
     if (!isEligible || !position || !decodedSymbol) {
       return;
@@ -688,14 +687,47 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Handle auto close card toggle
   const handleAutoCloseToggle = useCallback(() => {
     setIsAutoCloseExpanded((prev) => !prev);
-    setIsMarginExpanded(false);
     setTpslError(null);
   }, []);
 
-  // Handle margin card toggle (expand/collapse edit margin section)
-  const handleMarginToggle = useCallback(() => {
-    setIsMarginExpanded((prev) => !prev);
-    setIsAutoCloseExpanded(false);
+  // Close modify menu when clicking outside
+  useEffect(() => {
+    if (!isModifyMenuOpen) {
+      return undefined;
+    }
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        modifyMenuRef.current &&
+        !modifyMenuRef.current.contains(e.target as Node)
+      ) {
+        setIsModifyMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isModifyMenuOpen]);
+
+  const handleOpenAddMarginModal = useCallback(() => {
+    setIsModifyMenuOpen(false);
+    setMarginModalMode('add');
+  }, []);
+
+  const handleOpenDecreaseMarginModal = useCallback(() => {
+    setIsModifyMenuOpen(false);
+    setMarginModalMode('remove');
+  }, []);
+
+  const handleOpenReverseModal = useCallback(() => {
+    setIsModifyMenuOpen(false);
+    setIsReverseModalOpen(true);
+  }, []);
+
+  const handleCloseMarginModal = useCallback(() => {
+    setMarginModalMode(null);
+  }, []);
+
+  const handleCloseReverseModal = useCallback(() => {
+    setIsReverseModalOpen(false);
   }, []);
 
   // Handle saving TP/SL changes
@@ -1143,11 +1175,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                   </Text>
                 </Box>
 
-                {/* Margin Card */}
+                {/* Margin Card - display only; add/remove margin via Modify menu */}
                 <Box
-                  className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+                  className="flex-1 rounded-xl bg-muted px-4 py-3"
                   flexDirection={BoxFlexDirection.Column}
-                  onClick={handleMarginToggle}
                 >
                   <Box paddingBottom={1}>
                     <Text
@@ -1168,18 +1199,6 @@ const PerpsMarketDetailPage: React.FC = () => {
                   </Text>
                 </Box>
               </Box>
-
-              {/* Edit Margin - Expandable (full width) */}
-              {position && selectedAddress && (
-                <EditMarginExpandable
-                  position={position}
-                  account={account}
-                  currentPrice={currentPrice}
-                  selectedAddress={selectedAddress}
-                  isExpanded={isMarginExpanded}
-                  onToggle={handleMarginToggle}
-                />
-              )}
 
               {/* Third Row: Auto Close (Full Width) - Expandable */}
               <Box
@@ -1986,25 +2005,69 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingTop={3}
         paddingBottom={4}
       >
-        {/* With Position: Show Modify and Close buttons */}
+        {/* With Position: Show Modify dropdown and Close button */}
         {position && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
             data-testid="perps-position-cta-buttons"
           >
-            {/* Modify Button - Dark neutral style */}
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              onClick={handleModifyPosition}
-              disabled={!isEligible}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-              className="flex-1"
-              data-testid="perps-modify-cta-button"
-            >
-              {t('perpsModify')}
-            </Button>
+            {/* Modify dropdown */}
+            <Box ref={modifyMenuRef} className="relative flex-1">
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Lg}
+                onClick={() => setIsModifyMenuOpen((prev) => !prev)}
+                disabled={!isEligible}
+                title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+                className="w-full flex items-center justify-between gap-2"
+                data-testid="perps-modify-cta-button"
+              >
+                {t('perpsModify')}
+                <Icon
+                  name={
+                    isModifyMenuOpen ? IconName.ArrowUp : IconName.ArrowDown
+                  }
+                  size={IconSize.Sm}
+                  color={IconColor.IconDefault}
+                />
+              </Button>
+              {isModifyMenuOpen && (
+                <Box
+                  className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg"
+                  flexDirection={BoxFlexDirection.Column}
+                  data-testid="perps-modify-menu"
+                >
+                  <ButtonBase
+                    className="w-full text-left rounded-none px-3 py-2 bg-transparent hover:bg-hover active:bg-pressed"
+                    onClick={handleOpenAddMarginModal}
+                    data-testid="perps-modify-menu-add-margin"
+                  >
+                    <Text variant={TextVariant.BodySm}>
+                      {t('perpsAddMargin')}
+                    </Text>
+                  </ButtonBase>
+                  <ButtonBase
+                    className="w-full text-left rounded-none px-3 py-2 bg-transparent hover:bg-hover active:bg-pressed"
+                    onClick={handleOpenDecreaseMarginModal}
+                    data-testid="perps-modify-menu-decrease-margin"
+                  >
+                    <Text variant={TextVariant.BodySm}>
+                      {t('perpsRemoveMargin')}
+                    </Text>
+                  </ButtonBase>
+                  <ButtonBase
+                    className="w-full text-left rounded-none px-3 py-2 bg-transparent hover:bg-hover active:bg-pressed"
+                    onClick={handleOpenReverseModal}
+                    data-testid="perps-modify-menu-reverse-position"
+                  >
+                    <Text variant={TextVariant.BodySm}>
+                      {t('perpsReversePosition')}
+                    </Text>
+                  </ButtonBase>
+                </Box>
+              )}
+            </Box>
 
             {/* Close Button - White / Primary style */}
             <Button
@@ -2058,6 +2121,30 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Box>
         )}
       </Box>
+
+      {/* Add / Decrease margin modals (from Modify menu) */}
+      {position && selectedAddress && marginModalMode && (
+        <EditMarginModal
+          isOpen={marginModalMode !== null}
+          onClose={handleCloseMarginModal}
+          position={position}
+          account={account}
+          currentPrice={currentPrice}
+          selectedAddress={selectedAddress}
+          mode={marginModalMode}
+        />
+      )}
+
+      {/* Reverse position modal (from Modify menu) */}
+      {position && selectedAddress && isReverseModalOpen && (
+        <ReversePositionModal
+          isOpen={isReverseModalOpen}
+          onClose={handleCloseReverseModal}
+          position={position}
+          currentPrice={currentPrice}
+          selectedAddress={selectedAddress}
+        />
+      )}
     </Box>
   );
 };

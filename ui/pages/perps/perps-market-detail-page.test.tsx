@@ -381,35 +381,38 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
     });
 
-    it('expands edit margin section when margin card is clicked', () => {
+    it('opens Modify menu with Add margin, Remove margin, and Reverse position when Modify button is clicked', () => {
       const store = mockStore(createMockState(true));
 
       renderWithProvider(<PerpsMarketDetailPage />, store);
 
-      // The Edit Margin expandable is rendered but collapsed (hidden via CSS grid)
-      // Before expanding, the 'Add Margin' text exists in the DOM but is not visible
-      fireEvent.click(screen.getByText(messages.perpsMargin.message));
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
 
-      // After expanding, both the mode toggle and confirm button show 'Add Margin'
-      const addMarginElements = screen.getAllByText(
-        messages.perpsAddMargin.message,
-      );
-      expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
+      expect(screen.getByTestId('perps-modify-menu')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-modify-menu-add-margin'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-modify-menu-decrease-margin'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAddMargin.message),
+      ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsRemoveMargin.message),
       ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReversePosition.message),
+      ).toBeInTheDocument();
     });
 
-    it('collapses margin section when auto close is opened (mutual exclusion)', () => {
+    it('shows TP/SL content when auto close section is opened', () => {
       const store = mockStore(createMockState(true));
 
       renderWithProvider(<PerpsMarketDetailPage />, store);
-
-      fireEvent.click(screen.getByText(messages.perpsMargin.message));
-      const addMarginElements = screen.getAllByText(
-        messages.perpsAddMargin.message,
-      );
-      expect(addMarginElements.length).toBeGreaterThanOrEqual(1);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
       expect(
