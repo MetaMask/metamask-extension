@@ -140,10 +140,6 @@
   "alerts": {
     "message": "Avvisi"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Consenti a $1 di ritirare e spendere fino a questo importo:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Importo"
   },
@@ -310,9 +306,6 @@
   "connect": {
     "message": "Connetti"
   },
-  "connectAccountOrCreate": {
-    "message": "Connetti un account o creane uno nuovo"
-  },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
   },
@@ -445,9 +438,6 @@
   "customGasSettingToolTipMessage": {
     "message": "Usa $1 per personalizzare il prezzo del gas. Questo può creare confusione se non hai familiarità. Interagisci a tuo rischio.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customSpendLimit": {
-    "message": "Limite Spesa Personalizzato"
   },
   "customToken": {
     "message": "Token Personalizzato"
@@ -599,9 +589,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "La tariffa base massima è bassa per le condizioni di rete attuali"
   },
-  "editPermission": {
-    "message": "Modifica Permessi"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 vorrebbe la tua chiave di cifratura pubblica. Consentendo, questo sito sarà in grado di comporre messaggi criptati per te.",
     "description": "$1 is the web3 site name"
@@ -612,9 +599,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Inserisici Limite Spesa"
   },
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
@@ -727,9 +711,6 @@
     "message": "Importato",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "La transazione iniziale è stata confermata dalla rete. Clicca OK per tornare indietro."
-  },
   "insufficientBalance": {
     "message": "Bilancio insufficiente."
   },
@@ -792,9 +773,6 @@
   },
   "knownTokenWarning": {
     "message": "Questa azione modificherà i token che sono già nel tuo portafoglio, che possono essere utilizzati per truffarti. Approva solo se sei sicuro di voler cambiare ciò che rappresentano questi token."
-  },
-  "lastConnected": {
-    "message": "Ultima Connessione"
   },
   "learnMore": {
     "message": "Scopri di più"
@@ -965,9 +943,6 @@
   "privateNetwork": {
     "message": "Rete Privata"
   },
-  "proposedApprovalLimit": {
-    "message": "Limite di Approvazione Proposto"
-  },
   "provide": {
     "message": "Fornisci"
   },
@@ -985,12 +960,6 @@
   },
   "rejectAll": {
     "message": "Respingi Tutto"
-  },
-  "rejectTxsDescription": {
-    "message": "Stai per respingere in serie $1 transazioni."
-  },
-  "rejectTxsN": {
-    "message": "Respingi $1 transazioni"
   },
   "rejected": {
     "message": "Respinta"
@@ -1050,9 +1019,6 @@
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
   },
-  "selectAccounts": {
-    "message": "Seleziona account"
-  },
   "selectAll": {
     "message": "Seleziona tutti"
   },
@@ -1067,9 +1033,6 @@
   },
   "selectType": {
     "message": "Seleziona Tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selezionare tutto consentirà al sito di avere accesso a tutti i tuoi account. Assicurati di fidarti del sito."
   },
   "send": {
     "message": "Invia"
@@ -1109,22 +1072,6 @@
   },
   "speedUpCancellation": {
     "message": "Accelera questo annullamento"
-  },
-  "spendLimitInsufficient": {
-    "message": "Limite di spesa insufficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "Limite di spesa non valido; deve essere un numero positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Limite di spesa permesso"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limite di spesa richiesta da $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Limite di spesa troppo grande"
   },
   "stateLogError": {
     "message": "Errore nel recupero dei log di stato."

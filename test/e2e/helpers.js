@@ -19,9 +19,18 @@ const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
-const LocalWebSocketServer = require('./websocket-server').default;
-const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
-const { setupPerpsWebsocketMocks } = require('./websocket-perps-mocks');
+const WebSocketRegistry = require('./websocket/registry').default;
+const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
+const {
+  accountActivityWebSocketConfig,
+} = require('./websocket/account-activity-mocks');
+const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
+const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+
+// Register each WebSocket service explicitly.
+WebSocketRegistry.register(solanaWebSocketConfig);
+WebSocketRegistry.register(accountActivityWebSocketConfig);
+WebSocketRegistry.register(perpsWebSocketConfig);
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -151,6 +160,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
+    accountActivityWebSocketSpecificMocks = [],
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
   } = options;
@@ -188,8 +198,6 @@ async function withFixtures(options, testSuite) {
 
   let localNode;
   const localNodes = [];
-
-  let webSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -315,13 +323,14 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Start WebSocket server and apply Solana + Perps mocks (defaults + overrides).
-    // Clear mock handlers each test so we do not accumulate connection listeners.
-    webSocketServer = LocalWebSocketServer.getServerInstance();
-    webSocketServer.start();
-    webSocketServer.clearMockConnectionHandlers();
-    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
-    await setupPerpsWebsocketMocks(perpsWebSocketSpecificMocks);
+    // Start all registered WebSocket servers and apply mocks
+    await WebSocketRegistry.startAll({
+      [WEBSOCKET_SERVICES.solana]: { mocks: solanaWebSocketSpecificMocks },
+      [WEBSOCKET_SERVICES.accountActivity]: {
+        mocks: accountActivityWebSocketSpecificMocks,
+      },
+      [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
+    });
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -555,14 +564,9 @@ async function withFixtures(options, testSuite) {
       shutdownTasks.push(
         (async () => {
           try {
-            if (
-              webSocketServer &&
-              typeof webSocketServer.stopAndCleanup === 'function'
-            ) {
-              await webSocketServer.stopAndCleanup();
-            }
+            await WebSocketRegistry.stopAll();
           } catch (e) {
-            console.log('WebSocket server already stopped or not initialized');
+            console.log('WebSocket servers already stopped or not initialized');
           }
         })(),
       );

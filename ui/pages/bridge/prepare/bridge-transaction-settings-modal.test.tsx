@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -41,6 +41,7 @@ setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   updateBridgeQuoteRequestParams: jest.fn(),
+  getBearerToken: jest.fn(),
 });
 
 const TX_MODAL = {
@@ -140,8 +141,10 @@ describe('BridgeTransactionSettingsModal', () => {
     act(() => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-    expectButtonStates(null, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
+    await waitFor(() => {
+      expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+      expectButtonStates(null, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
+    });
 
     // Click and blur Custom button
     await interactWithCustomInput(getByTestId);
@@ -152,7 +155,7 @@ describe('BridgeTransactionSettingsModal', () => {
   it('should render the component, with initial Solana state', async () => {
     const { getByTestId, baseElement } = renderModal();
 
-    openModal(getByTestId);
+    await openModal(getByTestId);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expectButtonStates(DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
 

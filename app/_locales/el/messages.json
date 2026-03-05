@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Επιτρέψτε τις ειδοποιήσεις"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Ποσό"
   },
@@ -1610,9 +1606,6 @@
   "connectAccount": {
     "message": "Σύνδεση λογαριασμού"
   },
-  "connectAccountOrCreate": {
-    "message": "Σύνδεση λογαριασμού ή δημιουργία νέου"
-  },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
   },
@@ -1906,9 +1899,6 @@
   "customSlippage": {
     "message": "Προσαρμοσμένο"
   },
-  "customSpendLimit": {
-    "message": "Προσαρμοσμένο όριο δαπανών"
-  },
   "customToken": {
     "message": "Προσαρμοσμένο token"
   },
@@ -2196,9 +2186,6 @@
     "message": "Περιγραφή από $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Αποεπιλογή όλων"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "Δεν βρέθηκαν επιλέξιμοι λογαριασμοί"
   },
@@ -2478,9 +2465,6 @@
   "editNonceMessage": {
     "message": "Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε την με προσοχή."
   },
-  "editPermission": {
-    "message": "Επεξεργασία άδειας"
-  },
   "editPermissions": {
     "message": "Επεξεργασία αδειών"
   },
@@ -2564,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "Εισαγάγετε το αναγνωριστικό αλυσίδας"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Εισάγετε το μέγιστο όριο δαπανών"
   },
   "enterNetworkName": {
     "message": "Εισαγάγετε το όνομα δικτύου"
@@ -3359,9 +3340,6 @@
     "message": "Το MetaMask δεν μπορεί να συνδεθεί με τον διακομιστή του blockchain. Εξετάστε τους πιθανούς λόγους $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Κάντε κλικ στο OK για να επιστρέψετε."
-  },
   "insights": {
     "message": "Αναλύσεις"
   },
@@ -3544,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Τέλη συναλλαγών L2"
-  },
-  "lastConnected": {
-    "message": "Τελευταία σύνδεση"
   },
   "lastSold": {
     "message": "Τελευταία πώληση"
@@ -5692,9 +5667,6 @@
   "productAnnouncements": {
     "message": "Ανακοινώσεις προϊόντων"
   },
-  "proposedApprovalLimit": {
-    "message": "Προτεινόμενο αποδεκτό όριο"
-  },
   "provide": {
     "message": "Παροχή"
   },
@@ -5914,18 +5886,6 @@
   },
   "rejectAll": {
     "message": "Απόρριψη όλων"
-  },
-  "rejectRequestsDescription": {
-    "message": "Πρόκειται να απορρίψετε μαζικά $1 αιτήματα."
-  },
-  "rejectRequestsN": {
-    "message": "Απόρριψη $1 αιτημάτων"
-  },
-  "rejectTxsDescription": {
-    "message": "Πρόκειται να απορρίψετε μαζικά $1 συναλλαγές."
-  },
-  "rejectTxsN": {
-    "message": "Απόρριψη $1 συναλλαγών"
   },
   "rejected": {
     "message": "Απορρίφθηκε"
@@ -6463,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Επιλέξτε έναν λογαριασμό για σύνδεση"
   },
-  "selectAccounts": {
-    "message": "Επιλέξτε τον λογαριασμό (-ούς) που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο"
-  },
-  "selectAccountsForSnap": {
-    "message": "Επιλέξτε τον λογαριασμό (-ους) που θέλετε να χρησιμοποιήσετε με αυτό το snap"
-  },
   "selectAll": {
     "message": "Επιλογή όλων"
   },
@@ -6507,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Επιλογή διαφορετικού λογαριασμού"
-  },
-  "selectingAllWillAllow": {
-    "message": "Επιλέγοντας τα όλα θα επιτρέψετε σε αυτόν τον ιστότοπο να δει όλους τους τρεχούμενους λογαριασμούς σας. Βεβαιωθείτε ότι εμπιστεύεστε αυτόν τον ιστότοπο."
   },
   "send": {
     "message": "Αποστολή"
@@ -7649,22 +7600,6 @@
   },
   "speedUpTooltipText": {
     "message": "Νέο τέλος συναλλαγής"
-  },
-  "spendLimitInsufficient": {
-    "message": "Ανεπαρκές όριο δαπανών"
-  },
-  "spendLimitInvalid": {
-    "message": "Μη έγκυρο όριο δαπανών. Πρέπει να είναι θετικός αριθμός"
-  },
-  "spendLimitPermission": {
-    "message": "Άδεια ορίου δαπανών"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Το όριο δαπανών ζητήθηκε από το $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Πολύ μεγάλο όριο δαπανών"
   },
   "spender": {
     "message": "Επενδυτής"
@@ -8874,9 +8809,6 @@
   },
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"
-  },
-  "viewMore": {
-    "message": "Δείτε περισσότερα"
   },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"

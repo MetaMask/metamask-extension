@@ -8,6 +8,7 @@ import {
   isLikelyCommentLine,
   isInsideMultilineBlockComment,
   indicesOf,
+  detectMapLocationFromContentscript,
   discoverWebpackBundles,
   validateBundle,
   main,
@@ -134,6 +135,75 @@ describe('sourcemap-validator', () => {
       );
       assert.deepStrictEqual(indicesOf('aa', 'aaa'), [0, 1]);
       assert.deepStrictEqual(indicesOf('aa', 'aabaa'), [0, 3]);
+    });
+  });
+
+  describe('detectMapLocationFromContentscript', () => {
+    it('returns sibling when contentscript ends with sourceMappingURL comment', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-sibling-'),
+      );
+
+      try {
+        const chromeScriptsDir = join(fixtureDir, 'dist', 'chrome', 'scripts');
+        await mkdir(chromeScriptsDir, { recursive: true });
+        await writeFile(
+          join(chromeScriptsDir, 'contentscript.js'),
+          [
+            '(function(){',
+            '  throw new Error("x");',
+            '})();',
+            '//# sourceMappingURL=contentscript.js.map',
+          ].join('\n'),
+        );
+
+        const mapLocation = await detectMapLocationFromContentscript(
+          join(fixtureDir, 'dist', 'chrome'),
+        );
+        assert.strictEqual(mapLocation, 'sibling');
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('returns sourcemaps when contentscript does not end with sourceMappingURL comment', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-sourcemaps-'),
+      );
+
+      try {
+        const chromeScriptsDir = join(fixtureDir, 'dist', 'chrome', 'scripts');
+        await mkdir(chromeScriptsDir, { recursive: true });
+        await writeFile(
+          join(chromeScriptsDir, 'contentscript.js'),
+          '(function(){ throw new Error("x"); })();',
+        );
+
+        const mapLocation = await detectMapLocationFromContentscript(
+          join(fixtureDir, 'dist', 'chrome'),
+        );
+        assert.strictEqual(mapLocation, 'sourcemaps');
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('throws when contentscript does not exist', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-missing-'),
+      );
+
+      try {
+        await assert.rejects(
+          () =>
+            detectMapLocationFromContentscript(
+              join(fixtureDir, 'dist', 'chrome'),
+            ),
+          /Cannot auto-detect source map location/u,
+        );
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
     });
   });
 
@@ -425,7 +495,7 @@ describe('sourcemap-validator', () => {
       );
     });
 
-    it('returns false and logs when result.source is null for a code line (missing source for position)', async () => {
+    it('skips unmapped code positions (minification coverage gaps) instead of failing', async () => {
       const bundle = 'line1\n  throw new Error("x");\nline3';
       const gen = new SourceMapGenerator({ file: 'out.js' });
       gen.setSourceContent('src.ts', '  throw new Error("x");');
@@ -439,7 +509,10 @@ describe('sourcemap-validator', () => {
       const mapPath = join(tmpDir, 'missing-source.js.map');
       await writeFile(jsPath, bundle);
       await writeFile(mapPath, mapJson);
-      mock.method(console, 'log', noop);
+      const logs: string[] = [];
+      mock.method(console, 'log', (...args: unknown[]) => {
+        logs.push(args.map((a) => String(a)).join(' '));
+      });
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
       const ok = await validateBundle({
@@ -447,7 +520,11 @@ describe('sourcemap-validator', () => {
         mapPath,
         label: 'missing-source.js',
       });
-      assert.strictEqual(ok, false);
+      assert.strictEqual(ok, true);
+      assert.ok(
+        logs.some((l) => l.includes('skipped') && l.includes('unmapped')),
+        'should log that unmapped positions were skipped',
+      );
     });
 
     it('skips comment lines when result.source is null (no false failure)', async () => {
