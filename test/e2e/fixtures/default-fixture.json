@@ -227,6 +227,14 @@
       },
       "drafts": []
     },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
+    },
     "CurrencyController": {
       "currencyRates": {
         "BNB": {
