@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Connecter le compte"
   },
-  "connectAccountOrCreate": {
-    "message": "Connecter un compte ou en créer un nouveau"
-  },
   "connectAccounts": {
     "message": "Connecter les comptes"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "Description provenant de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Tout désélectionner"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Aucun compte admissible n’a été trouvé"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Frais de gaz L2"
-  },
-  "lastConnected": {
-    "message": "Dernière connexion"
   },
   "lastSold": {
     "message": "Dernière vente"
@@ -6429,12 +6420,6 @@
   "selectAccountToConnect": {
     "message": "Sélectionner un compte à connecter"
   },
-  "selectAccounts": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser avec ce snap"
-  },
   "selectAll": {
     "message": "Tout sélectionner"
   },
@@ -6473,9 +6458,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Compte différent sélectionné"
-  },
-  "selectingAllWillAllow": {
-    "message": "En sélectionnant tout, vous autorisez ce site à voir tous vos comptes actuels. Assurez-vous de bien avoir confiance en ce site."
   },
   "send": {
     "message": "Envoyer"
@@ -8824,9 +8806,6 @@
   },
   "viewDetails": {
     "message": "Afficher les détails"
-  },
-  "viewMore": {
-    "message": "Afficher plus"
   },
   "viewOnBlockExplorer": {
     "message": "Afficher sur l’explorateur de blocs"

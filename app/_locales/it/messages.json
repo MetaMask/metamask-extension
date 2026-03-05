@@ -306,9 +306,6 @@
   "connect": {
     "message": "Connetti"
   },
-  "connectAccountOrCreate": {
-    "message": "Connetti un account o creane uno nuovo"
-  },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
   },
@@ -777,9 +774,6 @@
   "knownTokenWarning": {
     "message": "Questa azione modificherà i token che sono già nel tuo portafoglio, che possono essere utilizzati per truffarti. Approva solo se sei sicuro di voler cambiare ciò che rappresentano questi token."
   },
-  "lastConnected": {
-    "message": "Ultima Connessione"
-  },
   "learnMore": {
     "message": "Scopri di più"
   },
@@ -1025,9 +1019,6 @@
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
   },
-  "selectAccounts": {
-    "message": "Seleziona account"
-  },
   "selectAll": {
     "message": "Seleziona tutti"
   },
@@ -1042,9 +1033,6 @@
   },
   "selectType": {
     "message": "Seleziona Tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selezionare tutto consentirà al sito di avere accesso a tutti i tuoi account. Assicurati di fidarti del sito."
   },
   "send": {
     "message": "Invia"
