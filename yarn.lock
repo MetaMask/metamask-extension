@@ -5991,7 +5991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:0.10.0":
+"@metamask/design-system-react@npm:^0.10.0":
   version: 0.10.0
   resolution: "@metamask/design-system-react@npm:0.10.0"
   dependencies:
@@ -32964,7 +32964,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.1"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
-    "@metamask/design-system-react": "npm:0.10.0"
+    "@metamask/design-system-react": "npm:^0.10.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.2.2"
     "@metamask/eip-5792-middleware": "npm:3.0.0"
