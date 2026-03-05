@@ -191,8 +191,8 @@ describe('TransactionDetailsSummary', () => {
         '[data-testid="transaction-details-summary"] > div:last-child > div',
       );
 
-      // Approval is filtered out; relay + receive (musdConversion) shown
-      expect(summaryLines).toHaveLength(2);
+      // approval + relay + receive (musdConversion)
+      expect(summaryLines).toHaveLength(3);
     });
 
     it('shows relay and receive when there are no approval txs', () => {
