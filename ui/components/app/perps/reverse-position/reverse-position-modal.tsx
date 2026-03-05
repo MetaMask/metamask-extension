@@ -8,9 +8,6 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  Button,
-  ButtonVariant,
-  ButtonSize,
 } from '@metamask/design-system-react';
 import {
   Modal,
@@ -134,7 +131,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Box
               flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.SpaceBetween}
+              justifyContent={BoxJustifyContent.Between}
               alignItems={BoxAlignItems.Center}
             >
               <Text
@@ -149,7 +146,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
             </Box>
             <Box
               flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.SpaceBetween}
+              justifyContent={BoxJustifyContent.Between}
               alignItems={BoxAlignItems.Center}
             >
               <Text
@@ -164,7 +161,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
             </Box>
             <Box
               flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.SpaceBetween}
+              justifyContent={BoxJustifyContent.Between}
               alignItems={BoxAlignItems.Center}
             >
               <Text
@@ -181,7 +178,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
               <Box
                 className="bg-error-muted rounded-lg px-3 py-2"
                 flexDirection={BoxFlexDirection.Row}
-                alignItems="center"
+                alignItems={BoxAlignItems.Center}
               >
                 <Text
                   variant={TextVariant.BodySm}
@@ -193,26 +190,20 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
             )}
           </Box>
         </ModalBody>
-        <ModalFooter>
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={onClose}
-            disabled={isSubmitting}
-            data-testid="perps-reverse-position-modal-cancel"
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleSave}
-            disabled={isSubmitting}
-            data-testid="perps-reverse-position-modal-save"
-          >
-            {isSubmitting ? t('perpsSubmitting') : t('save')}
-          </Button>
-        </ModalFooter>
+        <ModalFooter
+          onCancel={onClose}
+          onSubmit={handleSave}
+          cancelButtonProps={{
+            'data-testid': 'perps-reverse-position-modal-cancel',
+            children: t('cancel'),
+            disabled: isSubmitting,
+          }}
+          submitButtonProps={{
+            'data-testid': 'perps-reverse-position-modal-save',
+            children: isSubmitting ? t('perpsSubmitting') : t('save'),
+            disabled: isSubmitting,
+          }}
+        />
       </ModalContent>
     </Modal>
   );

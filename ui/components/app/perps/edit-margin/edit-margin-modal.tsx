@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import {
   Modal,
   ModalContent,
@@ -7,9 +7,6 @@ import {
   ModalContentSize,
   ModalBody,
   ModalFooter,
-  Button,
-  ButtonVariant,
-  ButtonSize,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import type { Position, AccountState } from '../types';
@@ -49,6 +46,12 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
 }) => {
   const t = useI18nContext();
   const title = mode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
+  const saveRef = useRef<(() => void) | null>(null);
+  const [saveEnabled, setSaveEnabled] = useState(false);
+
+  const handleSave = useCallback(() => {
+    saveRef.current?.();
+  }, []);
 
   return (
     <Modal
@@ -71,18 +74,24 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
             selectedAddress={selectedAddress}
             mode={mode}
             onClose={onClose}
+            externalSave
+            onSaveRef={saveRef}
+            onSaveEnabledChange={setSaveEnabled}
           />
         </ModalBody>
-        <ModalFooter>
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={onClose}
-            data-testid="perps-edit-margin-modal-cancel"
-          >
-            {t('cancel')}
-          </Button>
-        </ModalFooter>
+        <ModalFooter
+          onCancel={onClose}
+          onSubmit={handleSave}
+          cancelButtonProps={{
+            'data-testid': 'perps-edit-margin-modal-cancel',
+            children: t('cancel'),
+          }}
+          submitButtonProps={{
+            'data-testid': 'perps-edit-margin-modal-save',
+            children: t('save'),
+            disabled: !saveEnabled,
+          }}
+        />
       </ModalContent>
     </Modal>
   );

@@ -7,9 +7,6 @@ import {
   ModalContentSize,
   ModalBody,
   ModalFooter,
-  Button,
-  ButtonVariant,
-  ButtonSize,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import type { Position } from '../types';
@@ -59,16 +56,13 @@ export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
             onClose={onClose}
           />
         </ModalBody>
-        <ModalFooter>
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={onClose}
-            data-testid="perps-update-tpsl-modal-cancel"
-          >
-            {t('cancel')}
-          </Button>
-        </ModalFooter>
+        <ModalFooter
+          onCancel={onClose}
+          cancelButtonProps={{
+            'data-testid': 'perps-update-tpsl-modal-cancel',
+            children: t('cancel'),
+          }}
+        />
       </ModalContent>
     </Modal>
   );

@@ -24,7 +24,6 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
-  ButtonBase,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
@@ -931,12 +930,12 @@ const PerpsMarketDetailPage: React.FC = () => {
                     position={PopoverPosition.Top}
                     offset={[0, 8]}
                     padding={0}
-                    className="min-w-[220px] rounded-lg overflow-hidden"
+                    className="min-w-[220px] rounded-lg"
                     data-testid="perps-margin-menu"
                   >
                     <Box flexDirection={BoxFlexDirection.Column}>
-                      <ButtonBase
-                        className="w-full text-left rounded-t-lg px-3 py-2.5 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                      <Box
+                        className="w-full text-left rounded-t-lg px-4 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
                         onClick={handleOpenAddMarginModal}
                         data-testid="perps-margin-menu-add"
                       >
@@ -954,21 +953,19 @@ const PerpsMarketDetailPage: React.FC = () => {
                           <Text
                             variant={TextVariant.BodySm}
                             fontWeight={FontWeight.Medium}
-                            className="break-words"
                           >
                             {t('perpsAddMargin')}
                           </Text>
                           <Text
                             variant={TextVariant.BodyXs}
                             color={TextColor.TextAlternative}
-                            className="break-words"
                           >
                             {t('perpsAddMarginDescription')}
                           </Text>
                         </Box>
-                      </ButtonBase>
-                      <ButtonBase
-                        className="w-full text-left rounded-b-lg px-3 py-2.5 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                      </Box>
+                      <Box
+                        className="w-full text-left rounded-b-lg px-4 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
                         onClick={handleOpenDecreaseMarginModal}
                         data-testid="perps-margin-menu-remove"
                       >
@@ -986,19 +983,17 @@ const PerpsMarketDetailPage: React.FC = () => {
                           <Text
                             variant={TextVariant.BodySm}
                             fontWeight={FontWeight.Medium}
-                            className="break-words"
                           >
                             {t('perpsRemoveMargin')}
                           </Text>
                           <Text
                             variant={TextVariant.BodyXs}
                             color={TextColor.TextAlternative}
-                            className="break-words"
                           >
                             {t('perpsRemoveMarginDescription')}
                           </Text>
                         </Box>
-                      </ButtonBase>
+                      </Box>
                     </Box>
                   </Popover>
                 </Box>
@@ -1533,14 +1528,14 @@ const PerpsMarketDetailPage: React.FC = () => {
             data-testid="perps-position-cta-buttons"
           >
             {/* Modify dropdown */}
-            <Box ref={modifyMenuRef} className="relative flex-1">
+            <Box ref={modifyMenuRef} className="flex-1 min-w-0">
               <Button
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
                 onClick={() => setIsModifyMenuOpen((prev) => !prev)}
                 disabled={!isEligible}
                 title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-                className="w-full flex items-center justify-between gap-2"
+                className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"
               >
                 {t('perpsModify')}
@@ -1558,15 +1553,14 @@ const PerpsMarketDetailPage: React.FC = () => {
                 onClickOutside={() => setIsModifyMenuOpen(false)}
                 onPressEscKey={() => setIsModifyMenuOpen(false)}
                 position={PopoverPosition.Top}
-                matchWidth
-                offset={[0, 8]}
                 padding={0}
-                className="rounded-lg overflow-hidden"
+                matchWidth
+                className="rounded-lg"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
-                  <ButtonBase
-                    className="w-full text-left rounded-t-lg px-3 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                  <Box
+                    className="w-full text-left rounded-t-lg px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
                     onClick={handleAddExposure}
                     data-testid="perps-modify-menu-add-exposure"
                   >
@@ -1584,23 +1578,21 @@ const PerpsMarketDetailPage: React.FC = () => {
                       <Text
                         variant={TextVariant.BodySm}
                         fontWeight={FontWeight.Medium}
-                        className="break-words"
                       >
                         {t('perpsAddExposure')}
                       </Text>
                       <Text
                         variant={TextVariant.BodyXs}
                         color={TextColor.TextAlternative}
-                        className="break-words"
                       >
                         {parseFloat(position.size) >= 0
                           ? t('perpsAddExposureDescriptionLong')
                           : t('perpsAddExposureDescriptionShort')}
                       </Text>
                     </Box>
-                  </ButtonBase>
-                  <ButtonBase
-                    className="w-full text-left rounded-none px-3 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                  </Box>
+                  <Box
+                    className="w-full text-left px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
                     onClick={handleReduceExposure}
                     data-testid="perps-modify-menu-reduce-exposure"
                   >
@@ -1618,23 +1610,21 @@ const PerpsMarketDetailPage: React.FC = () => {
                       <Text
                         variant={TextVariant.BodySm}
                         fontWeight={FontWeight.Medium}
-                        className="break-words"
                       >
                         {t('perpsReduceExposure')}
                       </Text>
                       <Text
                         variant={TextVariant.BodyXs}
                         color={TextColor.TextAlternative}
-                        className="break-words"
                       >
                         {parseFloat(position.size) >= 0
                           ? t('perpsReduceExposureDescriptionLong')
                           : t('perpsReduceExposureDescriptionShort')}
                       </Text>
                     </Box>
-                  </ButtonBase>
-                  <ButtonBase
-                    className="w-full text-left rounded-b-lg px-3 py-3 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-2 shrink-0"
+                  </Box>
+                  <Box
+                    className="w-full text-left rounded-b-lg px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer"
                     onClick={handleOpenReverseModal}
                     data-testid="perps-modify-menu-reverse-position"
                   >
@@ -1652,39 +1642,39 @@ const PerpsMarketDetailPage: React.FC = () => {
                       <Text
                         variant={TextVariant.BodySm}
                         fontWeight={FontWeight.Medium}
-                        className="break-words"
                       >
                         {t('perpsReversePosition')}
                       </Text>
                       <Text
                         variant={TextVariant.BodyXs}
                         color={TextColor.TextAlternative}
-                        className="break-words"
                       >
                         {parseFloat(position.size) >= 0
                           ? t('perpsReversePositionDescriptionLong')
                           : t('perpsReversePositionDescriptionShort')}
                       </Text>
                     </Box>
-                  </ButtonBase>
+                  </Box>
                 </Box>
               </Popover>
             </Box>
 
             {/* Close Button - White / Primary style */}
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              onClick={handleClosePosition}
-              disabled={!isEligible}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-              className="flex-1"
-              data-testid="perps-close-cta-button"
-            >
-              {parseFloat(position.size) >= 0
-                ? t('perpsCloseLong')
-                : t('perpsCloseShort')}
-            </Button>
+            <Box className="flex-1 min-w-0">
+              <Button
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                onClick={handleClosePosition}
+                disabled={!isEligible}
+                title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+                className="w-full"
+                data-testid="perps-close-cta-button"
+              >
+                {parseFloat(position.size) >= 0
+                  ? t('perpsCloseLong')
+                  : t('perpsCloseShort')}
+              </Button>
+            </Box>
           </Box>
         )}
 

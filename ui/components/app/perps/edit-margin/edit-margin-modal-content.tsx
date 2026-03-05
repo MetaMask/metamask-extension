@@ -344,20 +344,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           </Text>
         </Box>
       )}
-
-      {/* Save button */}
-      <Button
-        variant={ButtonVariant.Primary}
-        size={ButtonSize.Md}
-        onClick={handleSaveMargin}
-        disabled={confirmDisabled}
-        title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-        className={
-          confirmDisabled ? 'w-full opacity-70 cursor-not-allowed' : 'w-full'
-        }
-      >
-        {getConfirmButtonLabel()}
-      </Button>
     </Box>
   );
 };
