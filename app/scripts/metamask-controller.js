@@ -6529,18 +6529,16 @@ export default class MetamaskController extends EventEmitter {
     // Static subscriptions (positions/orders/account) are NOT registered here;
     // they are registered in perpsInit after the controller provider is ready.
     const perpsController = this.controllersByName.PerpsController;
-    const perpsStream = perpsController
-      ? new PerpsStreamBridge((channel, data, extra) => {
-          if (!perpsStream.isActive || !isStreamWritable(outStream)) {
-            return;
-          }
-          outStream.write({
-            jsonrpc: '2.0',
-            method: 'perpsStreamUpdate',
-            params: [{ channel, data, ...extra }],
-          });
-        })
-      : null;
+    const perpsStream = new PerpsStreamBridge((channel, data, extra) => {
+      if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+        return;
+      }
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'perpsStreamUpdate',
+        params: [{ channel, data, ...extra }],
+      });
+    });
 
     const api = {
       ...this.getApi(),
