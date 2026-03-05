@@ -130,159 +130,144 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
 
   /**
    * Ref to hold the latest implementation of evaluateCohortEligibility.
-   * This allows the stable callback to access current values without recreating.
+   * Assigned synchronously during render (not in useEffect) so the ref
+   * is populated before commit-phase callbacks (componentDidUpdate) fire.
    */
   const evaluateCohortEligibilityRef =
-    useRef<(entrypointCohort: string) => Promise<void>>();
+    useRef<(entrypointCohort: string) => Promise<void>>(null!);
 
-  /**
-   * Update the ref with the latest implementation whenever dependencies change.
-   * This ensures the stable callback always has access to current values.
-   */
-  useEffect(() => {
-    evaluateCohortEligibilityRef.current = async (
-      entrypointCohort: string,
-    ): Promise<void> => {
-      try {
-        if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
-          return;
-        }
+  // eslint-disable-next-line react-compiler/react-compiler
+  evaluateCohortEligibilityRef.current = async (
+    entrypointCohort: string,
+  ): Promise<void> => {
+    try {
+      if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
+        return;
+      }
 
-        if (isShieldSubscriptionActive) {
-          dispatch(
-            setShowShieldEntryModalOnce({
-              show: false,
-            }),
-          );
-          return;
-        }
-
-        if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
-          return;
-        }
-
-        // Clear the pending cohort before any async work to prevent a race
-        // condition: if #assignPostTxCohort sets POST_TX while the eligibility
-        // check is in-flight, a late clear would clobber the new value.
-        // The entrypointCohort argument already captures the value we need.
-        await dispatch(setPendingShieldCohort(null));
-
-        const shieldEligibility = await getShieldSubscriptionEligibility();
-
-        if (
-          !shieldEligibility?.canSubscribe ||
-          !shieldEligibility.canViewEntryModal
-        ) {
-          return;
-        }
-
-        const eligibleCohorts = shieldEligibility.cohorts.filter(
-          (c: Cohort) => c.eligible,
+      if (isShieldSubscriptionActive) {
+        dispatch(
+          setShowShieldEntryModalOnce({
+            show: false,
+          }),
         );
-        const assignedCohortName = shieldEligibility.assignedCohort;
-        const isUserPending = Boolean(assignedCohortName);
-        const hasExpired = shieldEligibility.hasAssignedCohortExpired;
-        const { modalType } = shieldEligibility;
+        return;
+      }
 
-        // User has an assigned cohort
-        if (isUserPending) {
-          // At wallet_home entrypoint: wait for expiry before showing cohort 2
-          if (entrypointCohort !== COHORT_NAMES.POST_TX && !hasExpired) {
-            return;
-          }
+      if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
+        return;
+      }
 
-          // could continue if entrypointCohort is post_tx and assignedCohort has not expired
-          // so we need to check hasExpired here before recording the event
-          if (hasExpired) {
-            // User has an assigned cohort but it has expired
-            // track `shield_eligibility_cohort_timeout` event
-            await captureShieldEligibilityCohortEvent(
-              {
-                cohort: assignedCohortName as CohortName,
-                numberOfEligibleCohorts: eligibleCohorts.length,
-              },
-              MetaMetricsEventName.ShieldEligibilityCohortTimeout,
-            );
-          }
+      // Clear the pending cohort before any async work to prevent a race
+      // condition: if #assignPostTxCohort sets POST_TX while the eligibility
+      // check is in-flight, a late clear would clobber the new value.
+      // The entrypointCohort argument already captures the value we need.
+      await dispatch(setPendingShieldCohort(null));
 
-          const cohort = eligibleCohorts.find(
-            (c) => c.cohort === entrypointCohort,
+      const shieldEligibility = await getShieldSubscriptionEligibility();
+
+      if (
+        !shieldEligibility?.canSubscribe ||
+        !shieldEligibility.canViewEntryModal
+      ) {
+        return;
+      }
+
+      const eligibleCohorts = shieldEligibility.cohorts.filter(
+        (c: Cohort) => c.eligible,
+      );
+      const assignedCohortName = shieldEligibility.assignedCohort;
+      const isUserPending = Boolean(assignedCohortName);
+      const hasExpired = shieldEligibility.hasAssignedCohortExpired;
+      const { modalType } = shieldEligibility;
+
+      // User has an assigned cohort
+      if (isUserPending) {
+        // At wallet_home entrypoint: wait for expiry before showing cohort 2
+        if (entrypointCohort !== COHORT_NAMES.POST_TX && !hasExpired) {
+          return;
+        }
+
+        // could continue if entrypointCohort is post_tx and assignedCohort has not expired
+        // so we need to check hasExpired here before recording the event
+        if (hasExpired) {
+          // User has an assigned cohort but it has expired
+          // track `shield_eligibility_cohort_timeout` event
+          await captureShieldEligibilityCohortEvent(
+            {
+              cohort: assignedCohortName as CohortName,
+              numberOfEligibleCohorts: eligibleCohorts.length,
+            },
+            MetaMetricsEventName.ShieldEligibilityCohortTimeout,
           );
-          if (!cohort) {
-            log.warn(
-              '[evaluateCohortEligibility] error',
-              'user pending no cohort found',
-            );
-            return;
-          }
+        }
 
+        const cohort = eligibleCohorts.find(
+          (c) => c.cohort === entrypointCohort,
+        );
+        if (!cohort) {
+          log.warn(
+            '[evaluateCohortEligibility] error',
+            'user pending no cohort found',
+          );
+          return;
+        }
+
+        await dispatch(
+          setShowShieldEntryModalOnce({
+            show: true,
+            shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
+            triggeringCohort: entrypointCohort,
+            modalType,
+            // we will show the modal but we won't update the background state yet,
+            // we will only update after the user has interacted with the modal
+            shouldUpdateBackgroundState: false,
+          }),
+        );
+        return;
+      }
+
+      // New user - only assign from wallet_home entrypoint
+      if (
+        entrypointCohort === COHORT_NAMES.WALLET_HOME &&
+        eligibleCohorts.length > 0 &&
+        modalType
+      ) {
+        const selectedCohort = await assignToCohort(
+          eligibleCohorts,
+          modalType,
+        );
+        if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
           await dispatch(
             setShowShieldEntryModalOnce({
               show: true,
-              shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
-              triggeringCohort: entrypointCohort,
+              shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
+              triggeringCohort: selectedCohort.cohort,
               modalType,
               // we will show the modal but we won't update the background state yet,
               // we will only update after the user has interacted with the modal
               shouldUpdateBackgroundState: false,
             }),
           );
-          return;
         }
-
-        // New user - only assign from wallet_home entrypoint
-        if (
-          entrypointCohort === COHORT_NAMES.WALLET_HOME &&
-          eligibleCohorts.length > 0 &&
-          modalType
-        ) {
-          const selectedCohort = await assignToCohort(
-            eligibleCohorts,
-            modalType,
-          );
-          if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
-            await dispatch(
-              setShowShieldEntryModalOnce({
-                show: true,
-                shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
-                triggeringCohort: selectedCohort.cohort,
-                modalType,
-                // we will show the modal but we won't update the background state yet,
-                // we will only update after the user has interacted with the modal
-                shouldUpdateBackgroundState: false,
-              }),
-            );
-          }
-        }
-      } catch (error) {
-        // Restore the pending cohort so it can be retried on the next
-        // componentDidUpdate cycle instead of being silently lost.
-        try {
-          await dispatch(setPendingShieldCohort(entrypointCohort));
-        } catch {
-          // if this also fails - the next transaction will re-set the cohort.
-        }
-        captureException(
-          createSentryError(
-            'Failed to evaluate cohort eligibility',
-            error as Error,
-          ),
-        );
-        log.warn('[evaluateCohortEligibility] error', error);
       }
-    };
-  }, [
-    dispatch,
-    isMetaMaskShieldFeatureEnabled,
-    isBasicFunctionalityEnabled,
-    isShieldSubscriptionActive,
-    isSignedIn,
-    isUnlocked,
-    hasShieldEntryModalShownOnce,
-    getShieldSubscriptionEligibility,
-    assignToCohort,
-    captureShieldEligibilityCohortEvent,
-  ]);
+    } catch (error) {
+      // Restore the pending cohort so it can be retried on the next
+      // componentDidUpdate cycle instead of being silently lost.
+      try {
+        await dispatch(setPendingShieldCohort(entrypointCohort));
+      } catch {
+        // if this also fails - the next transaction will re-set the cohort.
+      }
+      captureException(
+        createSentryError(
+          'Failed to evaluate cohort eligibility',
+          error as Error,
+        ),
+      );
+      log.warn('[evaluateCohortEligibility] error', error);
+    }
+  };
 
   /**
    * Evaluates cohort eligibility at a specific entrypoint.

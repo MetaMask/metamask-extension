@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
@@ -170,6 +170,35 @@ describe('ShieldSubscriptionProvider', () => {
   });
 
   describe('evaluateCohortEligibility', () => {
+    it('is available during the commit phase (not deferred to useEffect)', async () => {
+      mockGetSubscriptionEligibility.mockResolvedValue({
+        canSubscribe: true,
+        canViewEntryModal: true,
+        cohorts: [],
+        assignedCohort: null,
+        hasAssignedCohortExpired: false,
+        modalType: 'entry',
+      });
+
+      const TestConsumer = () => {
+        const { evaluateCohortEligibility } = useShieldSubscriptionContext();
+        useLayoutEffect(() => {
+          evaluateCohortEligibility('wallet_home');
+        }, [evaluateCohortEligibility]);
+        return <div data-testid="consumer">Consumer</div>;
+      };
+
+      render(
+        <ShieldSubscriptionProvider>
+          <TestConsumer />
+        </ShieldSubscriptionProvider>,
+      );
+
+      await waitFor(() => {
+        expect(mockGetSubscriptionEligibility).toHaveBeenCalled();
+      });
+    });
+
     it('can be called successfully', async () => {
       mockGetSubscriptionEligibility.mockResolvedValue({
         canSubscribe: true,
