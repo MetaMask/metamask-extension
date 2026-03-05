@@ -697,7 +697,10 @@ const handleOnConnect = async (port) => {
         : CriticalErrorType.Other;
 
       try {
-        const backup = (await persistenceManager.getBackup()) ?? null;
+        // Swallow getBackup() errors so we always reach the finally and send RELOAD_WINDOW;
+        // otherwise the user gets no feedback and stays stuck on the critical error screen.
+        const backup =
+          (await persistenceManager.getBackup().catch(() => null)) ?? null;
         trackCriticalErrorEvent(
           backup,
           MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
