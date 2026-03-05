@@ -40,11 +40,9 @@ describe('Deprecated networks', function (this: Suite) {
           .window()
           .setRect({ width: 400, height: 600 });
 
-        await driver.clickElement('.multichain-connected-site-menu ');
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          '[data-testid="dapp-connection-control-bar__network-button"]',
+        );
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();

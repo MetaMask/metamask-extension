@@ -40,10 +40,8 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
+  private readonly dappNetworkButton =
+    '[data-testid="dapp-connection-control-bar__network-button"]';
 
   private readonly networkAddressesLink =
     '[data-testid="networks-subtitle-test-id"]';
@@ -232,19 +230,11 @@ class HeaderNavbar {
   }
 
   /**
-   * Open the connection menu
+   * Open the dapp network selector from the connection control bar
    */
-  async openConnectionMenu(): Promise<void> {
-    console.log('Opening connection menu');
-    await this.driver.clickElement(this.connectionMenu);
-  }
-
-  /**
-   * Click the connected site popover network button
-   */
-  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
-    console.log('Clicking connected site popover network button');
-    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  async openDappNetworkMenu(): Promise<void> {
+    console.log('Opening dapp network menu from control bar');
+    await this.driver.clickElement(this.dappNetworkButton);
   }
 
   /**
