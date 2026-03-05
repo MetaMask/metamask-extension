@@ -23,6 +23,11 @@ const createMetaRPCHandler = (api, outStream) => {
     }
 
     const { cleanParams, traceContext } = extractTraceContext(data.params);
+    const handler = api[data.method];
+    const controller = handler._controllerName;
+    const spanName = controller
+      ? `${TraceName.BackgroundRpc}: ${controller}.${data.method}`
+      : `${TraceName.BackgroundRpc}: ${data.method}`;
 
     let result;
     let error;
@@ -30,15 +35,15 @@ const createMetaRPCHandler = (api, outStream) => {
       if (traceContext) {
         result = await trace(
           {
-            name: `${TraceName.BackgroundRpc}: ${data.method}`,
+            name: spanName,
             parentContext: traceContext,
             op: 'rpc.handler',
-            data: { method: data.method },
+            data: { method: data.method, ...(controller && { controller }) },
           },
-          () => api[data.method](...cleanParams),
+          () => handler(...cleanParams),
         );
       } else {
-        result = await api[data.method](...cleanParams);
+        result = await handler(...cleanParams);
       }
     } catch (err) {
       error = err;
