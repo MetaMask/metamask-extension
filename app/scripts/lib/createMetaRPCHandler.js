@@ -54,7 +54,7 @@ const createMetaRPCHandler = (api, outStream) => {
       if (traceContext) {
         result = await trace(
           {
-            name: TraceName.BackgroundRpc,
+            name: `${TraceName.BackgroundRpc}: ${data.method}`,
             parentContext: traceContext,
             op: 'rpc.handler',
             data: { method: data.method },

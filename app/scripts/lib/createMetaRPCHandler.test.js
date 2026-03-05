@@ -143,6 +143,7 @@ describe('createMetaRPCHandler', () => {
 
       expect(trace).toHaveBeenCalledWith(
         expect.objectContaining({
+          name: 'Background RPC: foo',
           parentContext: { _traceId: 'trace123', _spanId: 'span456' },
           op: 'rpc.handler',
           data: { method: 'foo' },

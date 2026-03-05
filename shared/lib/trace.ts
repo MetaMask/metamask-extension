@@ -161,9 +161,10 @@ export type TraceRequest = {
   id?: string;
 
   /**
-   * The name of the trace.
+   * The name of the trace. Accepts TraceName enum values or a dynamic string
+   * (e.g. including the RPC method or messenger action).
    */
-  name: TraceName;
+  name: TraceName | (string & {});
 
   /**
    * The parent context of the trace.
