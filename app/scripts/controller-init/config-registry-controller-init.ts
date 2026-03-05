@@ -3,6 +3,7 @@ import {
   type FetchConfigResult,
   type RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { ControllerInitFunction } from './types';
 import type {
@@ -17,7 +18,22 @@ type PackageConfigRegistryMessenger = ConstructorParameters<
   typeof ConfigRegistryController
 >[0]['messenger'];
 
-/** Controller with update (from BaseController) for applying fetched config. */
+/**
+ * Controller messenger shape used for the initial fetch. The extension's restricted
+ * messenger doesn't expose this action type directly; we cast to this for the fetch call only.
+ */
+type ControllerMessengerWithFetch = {
+  call(
+    action: 'ConfigRegistryApiService:fetchConfig',
+    opts?: { etag?: string },
+  ): Promise<FetchConfigResult>;
+};
+
+/**
+ * Controller with update (from BaseController) for applying fetched config.
+ * The package does not export a type that includes update(); this local type is required
+ * until the package exposes it.
+ */
 type ControllerWithUpdate = ConfigRegistryController & {
   update(
     producer: (state: {
@@ -30,10 +46,28 @@ type ControllerWithUpdate = ConfigRegistryController & {
 };
 
 /**
+ * Returns whether the Config Registry API feature flag is enabled from the init messenger.
+ * Used to guard the initial fetch and polling start.
+ * @param initMessenger
+ */
+function isConfigRegistryApiEnabled(
+  initMessenger: ConfigRegistryControllerInitMessenger | undefined,
+): boolean {
+  if (!initMessenger) {
+    return false;
+  }
+  const state = initMessenger.call('RemoteFeatureFlagController:getState') as
+    | RemoteFeatureFlagControllerState
+    | undefined;
+  return Boolean(state?.remoteFeatureFlags?.configRegistryApiEnabled);
+}
+
+/**
  * Initialize the Config Registry controller.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
+ * @param request.initMessenger - The init messenger to read feature flag state.
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
@@ -41,7 +75,7 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
   ConfigRegistryController,
   ConfigRegistryControllerMessenger,
   ConfigRegistryControllerInitMessenger
-> = ({ controllerMessenger, persistedState }) => {
+> = ({ controllerMessenger, initMessenger, persistedState }) => {
   if (!controllerMessenger) {
     throw new Error('ConfigRegistryController requires a controllerMessenger');
   }
@@ -57,16 +91,16 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
     controller.state.configs?.networks &&
     Object.keys(controller.state.configs.networks).length > 0;
 
-  if (!hasPersistedConfigs) {
+  const isConfigRegistryApiEnabledFlag =
+    isConfigRegistryApiEnabled(initMessenger);
+
+  // Only fetch when we have no persisted config and the feature is enabled.
+  // When the flag is off, we skip the fetch to avoid unnecessary network requests.
+  if (!hasPersistedConfigs && isConfigRegistryApiEnabledFlag) {
     setImmediate(() => {
       try {
         const fetchPromise = (
-          controllerMessenger as unknown as {
-            call: (
-              action: string,
-              opts?: { etag?: string },
-            ) => Promise<FetchConfigResult>;
-          }
+          controllerMessenger as unknown as ControllerMessengerWithFetch
         ).call('ConfigRegistryApiService:fetchConfig', {});
 
         fetchPromise
@@ -104,7 +138,9 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
     });
   }
 
-  controller.startPolling(null);
+  if (isConfigRegistryApiEnabledFlag) {
+    controller.startPolling(null);
+  }
 
   return {
     controller,

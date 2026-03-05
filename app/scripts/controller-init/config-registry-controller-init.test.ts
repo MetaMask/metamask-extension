@@ -66,6 +66,21 @@ function buildInitRequestMock(
   };
 }
 
+/** Returns a spy on controllerMessenger.call for tests that assert fetchConfig usage. */
+function spyOnControllerMessengerCall(
+  request: jest.Mocked<
+    ControllerInitRequest<
+      ConfigRegistryControllerMessenger,
+      ConfigRegistryControllerInitMessenger
+    >
+  >,
+) {
+  return jest.spyOn(
+    request.controllerMessenger as unknown as { call: jest.Mock },
+    'call',
+  );
+}
+
 describe('ConfigRegistryControllerInit', () => {
   let mockControllerInstance: jest.Mocked<ConfigRegistryController>;
 
@@ -143,6 +158,117 @@ describe('ConfigRegistryControllerInit', () => {
       expect(() => ConfigRegistryControllerInit(requestMock)).toThrow(
         'ConfigRegistryController requires a controllerMessenger',
       );
+    });
+  });
+
+  describe('polling and feature flag', () => {
+    it('starts polling when configRegistryApiEnabled is true', () => {
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: true,
+      });
+      ConfigRegistryControllerInit(requestMock);
+
+      expect(mockControllerInstance.startPolling).toHaveBeenCalledWith(null);
+    });
+
+    it('does not start polling when configRegistryApiEnabled is false', () => {
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: false,
+      });
+      ConfigRegistryControllerInit(requestMock);
+
+      expect(mockControllerInstance.startPolling).not.toHaveBeenCalled();
+    });
+
+    it('does not start polling when configRegistryApiEnabled is missing', () => {
+      const requestMock = buildInitRequestMock();
+      ConfigRegistryControllerInit(requestMock);
+
+      expect(mockControllerInstance.startPolling).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('initial fetch and feature flag', () => {
+    it('does not call fetch when hasPersistedConfigs is true', () => {
+      mockControllerInstance.state = {
+        configs: { networks: { 'eip155:1': {} as never } },
+        version: '1',
+        lastFetched: Date.now(),
+        etag: null,
+      };
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: true,
+      });
+      const callSpy = spyOnControllerMessengerCall(requestMock);
+
+      ConfigRegistryControllerInit(requestMock);
+
+      expect(callSpy).not.toHaveBeenCalledWith(
+        'ConfigRegistryApiService:fetchConfig',
+        {},
+      );
+    });
+
+    it('calls fetch when hasPersistedConfigs is false and flag is true', () => {
+      jest.useFakeTimers();
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: true,
+      });
+      const callSpy = spyOnControllerMessengerCall(requestMock);
+      callSpy.mockImplementation((action: string) => {
+        if (action === 'ConfigRegistryApiService:fetchConfig') {
+          return Promise.resolve({ modified: false, data: null, etag: null });
+        }
+        return undefined as never;
+      });
+
+      ConfigRegistryControllerInit(requestMock);
+      jest.runAllTimers();
+
+      expect(callSpy).toHaveBeenCalledWith(
+        'ConfigRegistryApiService:fetchConfig',
+        {},
+      );
+      jest.useRealTimers();
+    });
+
+    it('does not call fetch when hasPersistedConfigs is false and flag is false', () => {
+      jest.useFakeTimers();
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: false,
+      });
+      const callSpy = spyOnControllerMessengerCall(requestMock);
+
+      ConfigRegistryControllerInit(requestMock);
+      jest.runAllTimers();
+
+      expect(callSpy).not.toHaveBeenCalledWith(
+        'ConfigRegistryApiService:fetchConfig',
+        {},
+      );
+      jest.useRealTimers();
+    });
+
+    it('does not throw when initial fetch rejects', async () => {
+      jest.useFakeTimers();
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: true,
+      });
+      spyOnControllerMessengerCall(requestMock).mockImplementation(
+        (action: string) => {
+          if (action === 'ConfigRegistryApiService:fetchConfig') {
+            return Promise.reject(new Error('fetch failed'));
+          }
+          return undefined as never;
+        },
+      );
+
+      expect(() => ConfigRegistryControllerInit(requestMock)).not.toThrow();
+      jest.runAllTimers();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      jest.useRealTimers();
     });
   });
 });

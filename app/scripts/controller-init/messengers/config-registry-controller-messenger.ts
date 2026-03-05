@@ -12,6 +12,13 @@ import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions = RemoteFeatureFlagControllerGetStateAction;
 
+/**
+ * Retains the ConfigRegistryApiService instance so it is not garbage-collected.
+ * The service registers fetchConfig on the messenger; without a reference it could be reclaimed.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Retained to prevent GC of the fetchConfig handler
+let retainedConfigRegistryApiService: ConfigRegistryApiService | null = null;
+
 export type ConfigRegistryControllerMessenger = ReturnType<
   typeof getConfigRegistryControllerMessenger
 >;
@@ -45,9 +52,11 @@ function createConfigRegistryApiServiceMessenger(
   const apiService = new ConfigRegistryApiService({
     messenger:
       apiServiceMessenger as unknown as ConfigRegistryApiServiceMessenger,
-    env: SDK.Env.UAT,
+    env: SDK.Env.PRD,
     fetch: globalThis.fetch.bind(globalThis),
   });
+
+  retainedConfigRegistryApiService = apiService;
 
   return { apiServiceMessenger, apiService };
 }
@@ -78,16 +87,15 @@ export function getConfigRegistryControllerMessenger(
     parent: apiServiceMessenger,
   });
 
-  // Messenger type does not expose delegate; cast required to wire controller messenger.
-  (
-    apiServiceMessenger as unknown as {
-      delegate: (params: {
-        messenger: unknown;
-        actions: string[];
-        events?: string[];
-      }) => void;
-    }
-  ).delegate({
+  // Messenger type does not expose delegate; cast once and reuse for both delegate calls.
+  type DelegateParams =
+    | { messenger: unknown; actions: string[]; events?: string[] }
+    | { messenger: unknown; events: string[] };
+  type MessengerWithDelegate = { delegate(params: DelegateParams): void };
+  const apiWithDelegate =
+    apiServiceMessenger as unknown as MessengerWithDelegate;
+
+  apiWithDelegate.delegate({
     messenger: controllerMessenger,
     actions: [
       'RemoteFeatureFlagController:getState',
@@ -102,11 +110,7 @@ export function getConfigRegistryControllerMessenger(
 
   // Forward ConfigRegistryController:stateChange to root so the store (subscribed on root)
   // receives it and persistence runs—same pattern as controllers with parent: root.
-  (
-    apiServiceMessenger as unknown as {
-      delegate: (params: { messenger: unknown; events: string[] }) => void;
-    }
-  ).delegate({
+  apiWithDelegate.delegate({
     messenger,
     events: ['ConfigRegistryController:stateChange'],
   });

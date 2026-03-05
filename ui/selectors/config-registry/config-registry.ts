@@ -18,8 +18,12 @@ export type ConfigRegistryStateSlice = {
   etag?: string | null;
 };
 
-type StateWithConfigRegistry = {
-  metamask: ConfigRegistryStateSlice & {
+/**
+ * Redux state shape required by config-registry selectors.
+ * Exported for use in tests. Metamask slice is optional (e.g. during bootstrap).
+ */
+export type StateWithConfigRegistry = {
+  metamask?: ConfigRegistryStateSlice & {
     remoteFeatureFlags?: Record<string, unknown>;
   };
 };
@@ -32,6 +36,30 @@ type StateWithConfigRegistry = {
 export const getConfigRegistryState = (
   state: StateWithConfigRegistry,
 ): ConfigRegistryStateSlice | undefined => state.metamask;
+
+/**
+ * Builds the shape expected by @metamask/config-registry-controller selectFeaturedNetworks
+ * from the flat state slice.
+ * @param slice
+ */
+function toRegistryControllerState(
+  slice: ConfigRegistryStateSlice | undefined,
+) {
+  if (!slice) {
+    return {
+      configs: { networks: {} },
+      version: null,
+      lastFetched: null,
+      etag: null,
+    };
+  }
+  return {
+    configs: slice.configs ?? { networks: {} },
+    version: slice.version ?? null,
+    lastFetched: slice.lastFetched ?? null,
+    etag: slice.etag ?? null,
+  };
+}
 
 /**
  * Returns whether the Config Registry API feature flag is enabled.
@@ -102,13 +130,8 @@ export const getFeaturedNetworksForAdditionalList = createSelector(
       return FEATURED_RPCS;
     }
 
-    const registryControllerState = {
-      configs: configRegistryState.configs,
-      version: configRegistryState.version ?? null,
-      lastFetched: configRegistryState.lastFetched ?? null,
-      etag: configRegistryState.etag ?? null,
-    };
-
+    const registryControllerState =
+      toRegistryControllerState(configRegistryState);
     const featuredFromRegistry = selectFeaturedNetworks(
       registryControllerState,
     );
