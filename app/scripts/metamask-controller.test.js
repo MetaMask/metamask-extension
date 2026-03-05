@@ -1,9 +1,9 @@
 /**
  * @jest-environment node
  */
+import { Duplex } from 'stream';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
-import { Duplex } from 'stream';
 import { obj as createThroughStream } from 'through2';
 import {
   ListNames,
@@ -2787,7 +2787,8 @@ describe('MetaMaskController', () => {
         // causing a write loop and OOM. In the real UI, controller writes go to the UI only.
         const stream = new Duplex({
           objectMode: true,
-          read() {},
+          // Intentional no-op: we only push the request once, no ongoing read
+          read(_size) {},
           write(_chunk, _enc, cb) {
             cb();
           },
