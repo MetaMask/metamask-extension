@@ -25,6 +25,10 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 7. **NEVER modify git config** or run destructive git operations
 8. **NEVER commit** unless explicitly requested by user
 9. **NEVER stage changes** unless explicitly requested by user
+10. **WHEN asked to commit, use Conventional Commits** format for commit messages
+11. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
+12. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
+13. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
 
 ### Comprehensive Guidelines Location
 
@@ -1071,6 +1075,29 @@ function transformData(state: any): void {
 ### Creating a PR
 
 **Reference:** Follow the [PR template](https://github.com/MetaMask/metamask-extension/blob/main/.github/pull-request-template.md) when creating pull requests.
+
+### Default Agent Commit/Push/PR Flow (When Requested)
+
+Use this default flow whenever a user asks to "commit", "push", or "open a PR" without further detail:
+
+1. Run `yarn lint:changed:fix` before creating the commit.
+2. Stage only files relevant to the requested change.
+3. Create a commit using Conventional Commits format: `<type>(optional-scope): <summary>`.
+4. Push the current branch to `origin`.
+5. Open a **draft** PR with:
+   - A Conventional Commits PR title (normally matching the commit summary).
+   - A PR body based on `.github/pull-request-template.md`.
+   - Any non-applicable template section commented out as a full block, including the section heading, for example:
+
+```markdown
+<!--
+## **Screenshots/Recordings**
+### **Before**
+### **After**
+-->
+```
+
+6. Do not mark the PR as "Ready for review" unless explicitly requested.
 
 **PR Title Format:**
 
