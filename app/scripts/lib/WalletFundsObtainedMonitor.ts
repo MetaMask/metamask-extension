@@ -105,7 +105,9 @@ export class WalletFundsObtainedMonitor {
 
       const assetsState = this.#messenger.call('AssetsController:getState');
       return Object.values(assetsState.assetsBalance).some((assets) =>
-        Object.values(assets).some((balance) => Number(balance.amount) > 0),
+        Object.values(assets).some(
+          (balance) => balance.amount && balance.amount !== '0',
+        ),
       );
     } catch (error) {
       log.error('Error checking for existing funds: ', error);
