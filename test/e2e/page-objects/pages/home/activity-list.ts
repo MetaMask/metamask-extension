@@ -53,9 +53,8 @@ class ActivityListPage {
   private readonly pendingTransactionItems =
     '.transaction-list__pending-transactions .activity-list-item';
 
-  private readonly spendingCapValue = {
-    tag: 'span',
-  };
+  private readonly spendingCapValue =
+    '[data-testid="transaction-breakdown-value-amount"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
@@ -254,7 +253,7 @@ class ActivityListPage {
       `Check spending cap value ${expectedValue} in transaction details`,
     );
     await this.driver.waitForSelector({
-      ...this.spendingCapValue,
+      css: this.spendingCapValue,
       text: expectedValue,
     });
   }
