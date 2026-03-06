@@ -41,6 +41,12 @@ bridge network fees`
 - UI updates for the Reveal SRP feature, specifically the Quiz Component and Reveal SRP views. (#40243)
 - Updated the UI for speeding up and cancelling transactions (#39918)
 - Initialize and use in assets controlle (#40233)
+## [13.21.0]
+
+### Added
+
+- Bump assets controller to v2.1.0 (#40439)
+- Bump @metamask/core-backend and set up ApiPlatformClient (#40262)
 - Sets Infura RPC for HyperEVM with Quicknode failover (#39635)
 - Implement safe state management for notification hooks (#40401)
 - `@metamask/seedless-onboarding-controller` upgrade to v8.1 (#40425)
@@ -78,6 +84,23 @@ bridge network fees`
 - Handle non-evm bridge details (#40383)
 - Fixes syncing failure caused by the sidepanel being opened in multiple browser windows, and then one of the sidepanels being (#40305)
   closed, causing syncing to stop.
+- Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind feature flag) (#39901)
+
+### Changed
+
+- Update NFT transaction labels (#40350)
+- Small styling tweaks to default address feature (#40393)
+- Updated Experimental Settings styles and Snaps settings content (#40369)
+- Map staking transaction icon (#40339)
+- Remove fil locale (#40333)
+- chore: update delete button from red to white (#40261)
+
+### Fixed
+
+- Nft image `startsWith` error (#40413)
+- When Basic functionality is off, protected routes now redirect to a “Basic functionality is off” page with an inline toggle and optional “Open the [feature] page” action instead of showing the feature. (#39975)
+- Handle non-evm bridge details (#40383)
+- Fixes syncing failure caused by the sidepanel being opened in multiple browser windows, and then one of the sidepanels being closed, causing syncing to stop. (#40305)
 - Refactors the Perps tutorial modal to align with the mobile implementation pattern (#40174)
 - Only show MUSD claim bonus CTA if there are rewards to claim (#40299)
 - Fixed blurry MMPoly font rendering on mobile devices by preventing browser font synthesis (#40349)
@@ -85,6 +108,7 @@ bridge network fees`
 - Bump assets and phishing controllers versions (#40132)
 - Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to (#40206)
   value `eip155:999/slip44:2457` if applicable.
+- Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to value `eip155:999/slip44:2457` if applicable. (#40206)
 - Adjusts update modal logic to use the pending extension version and only show when a newer version is available. (#39884)
 
 ## [13.20.1]
@@ -1925,6 +1949,8 @@ bridge network fees`
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...HEAD
 [13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.22.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...HEAD
+[13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
 [13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1
 [13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0
 [13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...v13.19.0
