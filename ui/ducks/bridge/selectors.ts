@@ -779,8 +779,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
  * the same pattern as {@link getIsQuoteExpired}).
  * @param state
  * @param currentTimeInMs
- * @param state
- * @param currentTimeInMs
  */
 export const getValidationErrors = (
   state: BridgeAppState,
@@ -796,8 +794,6 @@ export const getValidationErrors = (
 /**
  * Returns warning labels for metrics. Pass `currentTimeInMs` to include
  * the market_closed warning alongside the standard QuoteWarning values.
- * @param state
- * @param currentTimeInMs
  * @param state
  * @param currentTimeInMs
  */
