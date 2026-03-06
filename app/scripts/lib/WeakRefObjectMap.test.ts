@@ -213,6 +213,20 @@ describe('WeakRefObjectMap', () => {
       expect(Array.from(iterator)).toEqual(Array.from(map.entries()));
     });
 
+    it('iterators expose Symbol.dispose and calling it does not throw', () => {
+      const entriesIterator = map.entries();
+      const keysIterator = map.keys();
+      const valuesIterator = map.values();
+
+      expect(typeof entriesIterator[Symbol.dispose]).toBe('function');
+      expect(typeof keysIterator[Symbol.dispose]).toBe('function');
+      expect(typeof valuesIterator[Symbol.dispose]).toBe('function');
+
+      expect(() => entriesIterator[Symbol.dispose]()).not.toThrow();
+      expect(() => keysIterator[Symbol.dispose]()).not.toThrow();
+      expect(() => valuesIterator[Symbol.dispose]()).not.toThrow();
+    });
+
     it('uses thisArg in forEach callback', () => {
       const thisArg = { calledWithKeys: [] as string[] };
       const callback = jest.fn(function (
