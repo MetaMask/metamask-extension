@@ -6567,7 +6567,14 @@ export default class MetamaskController extends EventEmitter {
       ...this.controllerApi,
       perpsInit: async (...args) => {
         const result = await this.controllerApi.perpsInit(...args);
-        if (perpsController) {
+        // Guard against two race conditions before activating static subscriptions:
+        // 1. Subscription churn: skip re-activation if subscriptions are already established
+        // 2. Zombie subscriptions: skip activation if the outstream closed while the await above was in flight (mmFinished).
+        if (
+          perpsController &&
+          !perpsStream.isActivated &&
+          !outStream.mmFinished
+        ) {
           perpsStream.activate(perpsController);
         }
         return result;
@@ -6579,7 +6586,8 @@ export default class MetamaskController extends EventEmitter {
       perpsViewActive: (active) => {
         perpsStream.setViewActive(active);
       },
-      perpsActivateStreaming: (params) => {
+      perpsActivateStreaming: async (params) => {
+        await this.controllerApi.perpsInit();
         if (perpsController) {
           perpsStream.activateStreaming(perpsController, params);
         }
@@ -6634,7 +6642,7 @@ export default class MetamaskController extends EventEmitter {
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
-        perpsStream?.destroy();
+        perpsStream.destroy();
       }
     };
 

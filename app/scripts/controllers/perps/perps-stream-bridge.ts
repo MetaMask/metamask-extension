@@ -62,16 +62,23 @@ export class PerpsStreamBridge {
     }
     this.#staticUnsubs.length = 0;
 
+    // Register each perps subscription individually so that if one throws, th unsub functions already returned by earlier calls are safely stored and can be cleaned up by a subsequent destroy()
     this.#staticUnsubs.push(
       controller.subscribeToPositions({
         callback: (data: unknown) => this.#emit('positions', data),
       }),
+    );
+    this.#staticUnsubs.push(
       controller.subscribeToOrders({
         callback: (data: unknown) => this.#emit('orders', data),
       }),
+    );
+    this.#staticUnsubs.push(
       controller.subscribeToAccount({
         callback: (data: unknown) => this.#emit('account', data),
       }),
+    );
+    this.#staticUnsubs.push(
       controller.subscribeToOrderFills({
         callback: (data: unknown) => this.#emit('fills', data),
       }),
@@ -128,6 +135,10 @@ export class PerpsStreamBridge {
 
   get isActive(): boolean {
     return this.#activated && this.#viewActive;
+  }
+
+  get isActivated(): boolean {
+    return this.#activated;
   }
 
   #callAndClearUnsub(unsub: () => void): void {

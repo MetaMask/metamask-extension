@@ -243,6 +243,12 @@ function getApi(
     ) => {
       await ensureInitialized();
       await controller.depositWithConfirmation(...args);
+      // lastDepositTransactionId is written synchronously inside depositWithConfirmation
+      // via this.update() before the method resolves, so the read below is safe in
+      // practice. A concurrent deposit from a second UI connection is not a realistic
+      // scenario (deposits are single-user, one-at-a-time operations). The proper fix
+      // is for depositWithConfirmation to return the transaction ID directly — that
+      // requires a controller package change.
       return controller.state.lastDepositTransactionId;
     },
 
