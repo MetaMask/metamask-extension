@@ -110,10 +110,9 @@ describe('ImportAccount', () => {
 
   describe('private key import', () => {
     it('calls importNewAccount with private key strategy', async () => {
-      const mockSelectedAddress = '0x1234567890abcdef';
       mockedActions.importNewAccount.mockReturnValue((() =>
         Promise.resolve({
-          selectedAddress: mockSelectedAddress,
+          internalAccounts: { selectedAccount: 'mock-account-id' },
         })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
@@ -136,10 +135,9 @@ describe('ImportAccount', () => {
     });
 
     it('calls onActionComplete on successful import', async () => {
-      const mockSelectedAddress = '0x1234567890abcdef';
       mockedActions.importNewAccount.mockReturnValue((() =>
         Promise.resolve({
-          selectedAddress: mockSelectedAddress,
+          internalAccounts: { selectedAccount: 'mock-account-id' },
         })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
@@ -157,10 +155,10 @@ describe('ImportAccount', () => {
       });
     });
 
-    it('displays warning when import fails without selected address', async () => {
+    it('displays warning when import fails without selected account', async () => {
       mockedActions.importNewAccount.mockReturnValue((() =>
         Promise.resolve({
-          selectedAddress: null,
+          internalAccounts: { selectedAccount: null },
         })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
