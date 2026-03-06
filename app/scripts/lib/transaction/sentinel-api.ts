@@ -59,7 +59,7 @@ export async function getSentinelApiHeadersAsync(): Promise<HeadersInit> {
     try {
       const token = await getBearerTokenForSentinel();
       if (token) {
-        headers['Authorization'] = token.startsWith('Bearer ')
+        headers.Authorization = token.startsWith('Bearer ')
           ? token
           : `Bearer ${token}`;
       }

@@ -901,9 +901,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     // Authenticate Sentinel and Transaction API calls via core-backend (AuthenticationController)
-    setSentinelApiAuth(() =>
-      this.authenticationController.getBearerToken(),
-    );
+    setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
     this.snapController.init();
