@@ -6580,7 +6580,10 @@ export default class MetamaskController extends EventEmitter {
         return result;
       },
       perpsDisconnect: async (...args) => {
-        perpsStream.setViewActive(false);
+        // destroy() tears down stale static subscriptions and resets #activated,
+        // so a subsequent perpsInit re-establishes them cleanly after reconnect.
+        // also sets perps view active to false
+        perpsStream.destroy();
         return this.controllerApi.perpsDisconnect(...args);
       },
       perpsViewActive: (active) => {
