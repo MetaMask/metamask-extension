@@ -7,6 +7,7 @@ import {
   type Asset,
   type Compilation,
 } from 'webpack';
+import type { EntryDescriptionNormalized } from '../utils/plugins/ManifestPlugin';
 
 const { SourceMapSource, RawSource } = sources;
 
@@ -111,6 +112,8 @@ export function mockWebpack(
     deleteAsset: mock.fn((name: string) => {
       delete assets[name];
     }),
+    entrypoints: new Map(),
+    fileDependencies: new Set<string>(),
     hooks: {
       processAssets: {
         tapPromise(
@@ -140,8 +143,23 @@ export function mockWebpack(
     }
     done();
   };
+  const entries: Record<string, EntryDescriptionNormalized> = {};
   const compiler = {
+    context: '',
     hooks: {
+      entryOption: {
+        tap(
+          _: unknown,
+          fn: (context: string, entries: Record<string, unknown>) => void,
+        ) {
+          fn(compiler.context, entries);
+        },
+      },
+      afterCompile: {
+        tap(_: unknown, fn: (compilation: Compilation) => void) {
+          fn(compilation as unknown as Compilation);
+        },
+      },
       compilation: {
         tap(_: unknown, fn: (compilation: Compilation) => void) {
           fn(compilation as unknown as Compilation);
@@ -153,9 +171,12 @@ export function mockWebpack(
       sources: { SourceMapSource, RawSource },
     },
   } as Compiler;
+  // Link compilation back to compiler (used by resolveEntrypoints)
+  (compilation as Record<string, unknown>).compiler = compiler;
   return {
     compiler,
     compilation: compilation as Compilation & typeof compilation,
+    entries,
     promise,
   };
 }

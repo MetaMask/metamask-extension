@@ -104,6 +104,7 @@ export function useGasFeeInputs(
     userFeeLevel: _transaction?.userFeeLevel,
     originalGasEstimate: _transaction?.originalGasEstimate,
     userEditedGasLimit: _transaction?.userEditedGasLimit,
+    chainId: _transaction?.chainId,
   };
 
   if (_transaction?.previousGas) {

@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "添加您首选的IPFS网关"
   },
-  "addImportAccount": {
-    "message": "添加账户或硬件钱包"
-  },
   "addMemo": {
     "message": "添加备忘录"
   },
@@ -650,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "允许通知"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "允许 $1 提取和消费最高以下金额：",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "金额"
@@ -1613,9 +1606,6 @@
   "connectAccount": {
     "message": "连接账户"
   },
-  "connectAccountOrCreate": {
-    "message": "连接账户或创建新账户"
-  },
   "connectAccounts": {
     "message": "连接账户"
   },
@@ -1909,9 +1899,6 @@
   "customSlippage": {
     "message": "自定义"
   },
-  "customSpendLimit": {
-    "message": "自定义支付限额"
-  },
   "customToken": {
     "message": "自定义代币"
   },
@@ -2199,9 +2186,6 @@
     "message": "来自 $1 的描述",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "全部取消选择"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "未找到符合条件的账户"
   },
@@ -2481,9 +2465,6 @@
   "editNonceMessage": {
     "message": "这是高级功能，请谨慎使用。"
   },
-  "editPermission": {
-    "message": "编辑权限"
-  },
   "editPermissions": {
     "message": "编辑许可"
   },
@@ -2567,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "输入链 ID"
-  },
-  "enterMaxSpendLimit": {
-    "message": "输入最大消费限额"
   },
   "enterNetworkName": {
     "message": "输入网络名称"
@@ -3362,9 +3340,6 @@
     "message": "MetaMask 无法连接到区块链主机。请检查可能的原因 $1。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "您的初始交易已被网络确认。请点击“确定”返回。"
-  },
   "insights": {
     "message": "洞察"
   },
@@ -3547,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 燃料费"
-  },
-  "lastConnected": {
-    "message": "最后连接"
   },
   "lastSold": {
     "message": "最后售出"
@@ -3783,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "创建新的交换"
-  },
-  "makeSureNoOneWatching": {
-    "message": "请确保没有人在看您的屏幕",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "管理"
   },
   "manageDefaultSettings": {
     "message": "管理默认隐私设置"
@@ -5306,12 +5271,6 @@
   "perpsEntryPrice": {
     "message": "入场价格"
   },
-  "perpsExploreCrypto": {
-    "message": "探索加密货币"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "探索股票与大宗商品"
-  },
   "perpsFees": {
     "message": "费用"
   },
@@ -5425,9 +5384,6 @@
   },
   "perpsOpenedLong": {
     "message": "已开设多头仓位"
-  },
-  "perpsOrderAmount": {
-    "message": "订单金额"
   },
   "perpsOrders": {
     "message": "订单"
@@ -5576,12 +5532,6 @@
   "perpsWithdraw": {
     "message": "提取"
   },
-  "perpsYourOrders": {
-    "message": "您的订单"
-  },
-  "perpsYourPositions": {
-    "message": "您的仓位"
-  },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
   },
@@ -5695,9 +5645,6 @@
   },
   "productAnnouncements": {
     "message": "产品公告"
-  },
-  "proposedApprovalLimit": {
-    "message": "建议批准限额"
   },
   "provide": {
     "message": "提供"
@@ -5919,18 +5866,6 @@
   "rejectAll": {
     "message": "拒绝全部"
   },
-  "rejectRequestsDescription": {
-    "message": "您即将批量拒绝 $1 请求。"
-  },
-  "rejectRequestsN": {
-    "message": "拒绝 $1 请求"
-  },
-  "rejectTxsDescription": {
-    "message": "您将批量拒绝 $1 笔交易。"
-  },
-  "rejectTxsN": {
-    "message": "拒绝 $1 笔交易"
-  },
   "rejected": {
     "message": "已拒绝"
   },
@@ -6104,17 +6039,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 提供 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask 是$1。这意味着您是自己的 SRP 的所有者。",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "对您的钱包和资金的完整访问权限。"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "非保管钱包"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6128,10 +6053,6 @@
   "revealSeedWordsWarning": {
     "message": "确保没有人在看您的屏幕。$1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask 支持部门绝对不会要求您提供这个。",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "显示敏感内容"
@@ -6481,12 +6402,6 @@
   "selectAccountToConnect": {
     "message": "选择要连接的账户"
   },
-  "selectAccounts": {
-    "message": "选择要在此网站上使用的账户"
-  },
-  "selectAccountsForSnap": {
-    "message": "选择使用此 Snap 的账户"
-  },
   "selectAll": {
     "message": "全部选择"
   },
@@ -6525,9 +6440,6 @@
   },
   "selectedAccountMismatch": {
     "message": "已选择不同账户"
-  },
-  "selectingAllWillAllow": {
-    "message": "选择全部将允许本网站查看您当前的所有账户。确保您信任这个网站。"
   },
   "send": {
     "message": "发送"
@@ -7667,22 +7579,6 @@
   },
   "speedUpTooltipText": {
     "message": "新燃料费用"
-  },
-  "spendLimitInsufficient": {
-    "message": "消费限额不足"
-  },
-  "spendLimitInvalid": {
-    "message": "消费限额无效；必须是正数"
-  },
-  "spendLimitPermission": {
-    "message": "消费限额权限"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 请求的消费限额",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "消费限额过大"
   },
   "spender": {
     "message": "支出者"
@@ -8893,9 +8789,6 @@
   "viewDetails": {
     "message": "查看详情"
   },
-  "viewMore": {
-    "message": "查看更多"
-  },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"
   },
@@ -9061,9 +8954,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "您的私钥助记词"
   },
   "yourTransactionConfirmed": {
     "message": "交易已确认"

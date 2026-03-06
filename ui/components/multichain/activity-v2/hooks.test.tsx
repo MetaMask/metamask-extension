@@ -1,9 +1,34 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { renderHook as renderHookBase } from '@testing-library/react-hooks';
+import {
+  act,
+  renderHook as renderHookBase,
+} from '@testing-library/react-hooks';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
-import { useGetTitle } from './hooks';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
+import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
+import {
+  useGetTitle,
+  usePrefetchTransactions,
+  useTransactionsQuery,
+} from './hooks';
+
+const mockUseInfiniteQuery = jest.fn();
+const mockUseQueryClient = jest.fn();
+const mockQueriesTransactions = jest.fn();
+
+jest.mock('@tanstack/react-query', () => ({
+  useInfiniteQuery: (...args: unknown[]) => mockUseInfiniteQuery(...args),
+  useQueryClient: () => mockUseQueryClient(),
+}));
+
+jest.mock('../../../helpers/queries', () => ({
+  queries: {
+    transactions: (...args: unknown[]) => mockQueriesTransactions(...args),
+  },
+}));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: string[]) =>
@@ -33,6 +58,26 @@ function renderHook<Result>(callback: () => Result) {
 }
 
 describe('useGetTitle', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: false,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: undefined,
+        srcNetwork: undefined,
+        destNetwork: undefined,
+        category: TransactionGroupCategory.swap,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: undefined,
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
+  });
+
   it('returns swap title for swap-like CONTRACT_CALL', () => {
     const tx = {
       amounts: {
@@ -228,6 +273,26 @@ describe('useGetTitle', () => {
       transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
       value: '100000000000000',
     } as unknown as TransactionViewModel;
+
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: true,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: jest.fn(),
+        srcNetwork: undefined,
+        destNetwork: {
+          name: 'Linea',
+        } as unknown as ChainInfo,
+        category: TransactionGroupCategory.bridge,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: undefined,
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
 
     const { result } = renderHook(() => useGetTitle(tx));
 
@@ -434,5 +499,100 @@ describe('useGetTitle', () => {
     });
 
     expect(result.current).toBe('sentSpecifiedTokens:NFT');
+  });
+});
+
+describe('Query hooks', () => {
+  const expectedEvmAddress = selectedAddress;
+  const expectedNetworks = ['eip155:1'];
+  const mockStore = configureMockStore()({
+    metamask: {
+      useExternalServices: true,
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+      },
+      transactions: [],
+      internalAccounts: {
+        selectedAccount: '1',
+        accounts: {
+          '1': {
+            address: selectedAddress,
+            type: 'eip155:eoa',
+          },
+        },
+      },
+    },
+  });
+
+  function renderQueryHook<Result>(callback: () => Result) {
+    return renderHookBase(callback, {
+      wrapper: ({ children }) => (
+        <Provider store={mockStore}>{children}</Provider>
+      ),
+    });
+  }
+
+  beforeEach(() => {
+    mockUseInfiniteQuery.mockReturnValue({ data: undefined });
+    mockQueriesTransactions.mockReturnValue({
+      queryKey: ['transactions'],
+      queryFn: jest.fn(),
+      getNextPageParam: jest.fn(),
+      enabled: true,
+    });
+    mockUseQueryClient.mockReturnValue({
+      getQueryData: jest.fn().mockReturnValue(undefined),
+      isFetching: jest.fn().mockReturnValue(0),
+      prefetchInfiniteQuery: jest.fn().mockResolvedValue(undefined),
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('useTransactionsQuery composes query options and delegates to useInfiniteQuery', () => {
+    renderQueryHook(() => useTransactionsQuery());
+
+    expect(mockQueriesTransactions).toHaveBeenCalledWith(
+      {
+        accountAddresses: [`eip155:0:${expectedEvmAddress}`],
+        evmAddress: expectedEvmAddress,
+        networks: expectedNetworks,
+      },
+      { enabled: true, keepPreviousData: true },
+    );
+    expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ select: expect.any(Function) }),
+    );
+  });
+
+  it('usePrefetchTransactions prefetches when query is not cached and not fetching', () => {
+    const mockQueryClient = {
+      getQueryData: jest.fn().mockReturnValue(undefined),
+      isFetching: jest.fn().mockReturnValue(0),
+      prefetchInfiniteQuery: jest.fn().mockResolvedValue(undefined),
+    };
+    const queryOptions = {
+      queryKey: ['transactions'],
+      queryFn: jest.fn(),
+      getNextPageParam: jest.fn(),
+      enabled: true,
+    };
+
+    mockUseQueryClient.mockReturnValue(mockQueryClient);
+    mockQueriesTransactions.mockReturnValue(queryOptions);
+
+    const { result } = renderQueryHook(() => usePrefetchTransactions());
+
+    act(() => {
+      result.current();
+    });
+
+    expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
+      queryOptions,
+    );
   });
 });

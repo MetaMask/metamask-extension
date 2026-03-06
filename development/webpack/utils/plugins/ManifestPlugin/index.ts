@@ -1,11 +1,12 @@
-import { readFileSync } from 'node:fs';
-import { extname, join } from 'node:path/posix';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import path from 'node:path';
 import {
   sources,
   ProgressPlugin,
   Compilation,
   type Compiler,
   type Asset,
+  type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
@@ -14,12 +15,16 @@ import {
   AsyncZipDeflate,
   ZipPassThrough,
 } from 'fflate';
-import { noop, type Manifest, Browser } from '../../helpers';
+import { noop, extensionToJs, type Manifest, Browser } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 
 const { RawSource, ConcatSource } = sources;
 
+export type EntryDescriptionNormalized = { import?: string[] } & Omit<
+  EntryOptions,
+  'name'
+>;
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 
@@ -65,10 +70,6 @@ function addAssetToZip(
  * A webpack plugin that generates extension manifests for browsers and organizes
  * assets into browser-specific directories and optionally zips them.
  *
- * TODO: it'd be great if the logic to find entry points was also in this plugin
- * instead of in helpers.ts. Moving that here would allow us to utilize the
- * this.options.transform function to modify the manifest before collecting the
- * entry points.
  */
 export class ManifestPlugin<Z extends boolean> {
   /**
@@ -98,16 +99,60 @@ export class ManifestPlugin<Z extends boolean> {
 
   options: ManifestPluginOptions<Z>;
 
-  manifests: Map<Browser, sources.Source> = new Map();
+  manifests: Map<Browser, Manifest> = new Map();
+
+  private manifestSources: Map<Browser, sources.RawSource> = new Map();
+
+  private watchedFiles: string[] = [];
+
+  private addedScripts: Set<string> = new Set();
+
+  private selfContainedScripts: Set<string> = new Set([
+    'snow.prod',
+    'use-snow',
+    'bootstrap',
+  ]);
+
+  /**
+   * Returns `true` if the given entrypoint can be split into chunks.
+   * Scripts found in the extension manifest must be self-contained and cannot
+   * be chunked.
+   *
+   * @param entrypoint - The entrypoint to check.
+   * @param entrypoint.name - The name of the entrypoint.
+   * @returns `true` if the entrypoint can be split into chunks.
+   */
+  canBeChunked = ({ name }: { name?: string | null }): boolean => {
+    return !name || !this.selfContainedScripts.has(name);
+  };
 
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
     this.options = options;
-    this.manifests = new Map();
   }
 
   apply(compiler: Compiler) {
+    // Collect entrypoints from the manifest files and add them to webpack's entries
+    // This only runs once at the beginning of the compilation, so changes to entrypoints
+    // won't be registered. However, adding/removing entrypoints is a pretty major change
+    // that likely requires a full restart, so this seems acceptable.
+    compiler.hooks.entryOption.tap(NAME, (_context, entries) => {
+      this.prepareManifests(compiler);
+      this.collectEntrypoints(
+        compiler,
+        entries as Record<string, EntryDescriptionNormalized>,
+      );
+    });
+
+    // Hook into the compilation to resolve entrypoints, move/zip assets
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
+
+    // Watch files so that changes to them trigger a rebuild
+    compiler.hooks.afterCompile.tap(NAME, (compilation) => {
+      for (const watchedFile of this.watchedFiles) {
+        compilation.fileDependencies.add(watchedFile);
+      }
+    });
   }
 
   private async zipAssets(
@@ -155,7 +200,7 @@ export class ManifestPlugin<Z extends boolean> {
     // TODO(perf): run this in parallel. If you try without carefully optimizing the
     // process will run out of memory pretty quickly, and crash. Fun!
     for (const browser of browsers) {
-      const manifest = this.manifests.get(browser) as sources.Source;
+      const manifest = this.manifestSources.get(browser) as sources.RawSource;
       const source = await new Promise<sources.Source>((resolve, reject) => {
         // since Zipping is async, a past chunk could cause an error after we've
         // started processing additional chunks. We'll use this errored flag to
@@ -193,7 +238,7 @@ export class ManifestPlugin<Z extends boolean> {
         ) ?? []) {
           if (errored) return;
 
-          const extName = extname(browserRelativePath);
+          const extName = path.extname(browserRelativePath);
           if (excludeExtensions.includes(extName)) continue;
 
           addAssetToZip(
@@ -230,6 +275,11 @@ export class ManifestPlugin<Z extends boolean> {
    * extension manifest.json file to the list of assets. For one browser, this
    * uses `renameAsset` to preserve asset metadata relationships.
    *
+   * Note: This method uses `path.posix.join` instead of `path.join` because
+   * webpack asset names are expected to use forward slashes. On Windows,
+   * `path.join` would produce backslashes, which can cause mismatches with
+   * webpack internals that normalize asset names to forward slashes.
+   *
    * @param compilation
    * @param options
    */
@@ -243,11 +293,11 @@ export class ManifestPlugin<Z extends boolean> {
     // Snapshot asset names before emitting any browser-prefixed assets.
     const baseAssetNames = Object.keys(compilation.assets);
 
-    const primaryManifest = this.manifests.get(
+    const primaryManifest = this.manifestSources.get(
       primaryBrowser,
-    ) as sources.Source;
+    ) as sources.RawSource;
     compilation.emitAsset(
-      join(primaryBrowser, 'manifest.json'),
+      path.posix.join(primaryBrowser, 'manifest.json'),
       primaryManifest,
       {
         javascriptModule: false,
@@ -257,54 +307,100 @@ export class ManifestPlugin<Z extends boolean> {
 
     // Rename to the primary browser output path so we keep webpack asset links.
     for (const name of baseAssetNames) {
-      const primaryAssetName = join(primaryBrowser, name);
+      const primaryAssetName = path.posix.join(primaryBrowser, name);
       compilation.renameAsset(name, primaryAssetName);
     }
 
     for (const browser of extraBrowsers) {
-      const manifest = this.manifests.get(browser) as sources.Source;
-      compilation.emitAsset(join(browser, 'manifest.json'), manifest, {
-        javascriptModule: false,
-        contentType: 'application/json',
-      });
+      const manifest = this.manifestSources.get(browser) as sources.RawSource;
+      compilation.emitAsset(
+        path.posix.join(browser, 'manifest.json'),
+        manifest,
+        {
+          javascriptModule: false,
+          contentType: 'application/json',
+        },
+      );
       for (const name of baseAssetNames) {
-        const primaryAssetName = join(primaryBrowser, name);
+        const primaryAssetName = path.posix.join(primaryBrowser, name);
         const primaryAsset = compilation.getAsset(
           primaryAssetName,
         ) as Readonly<Asset>;
-        compilation.emitAsset(join(browser, name), primaryAsset.source, {
-          ...primaryAsset.info,
-        });
+        compilation.emitAsset(
+          path.posix.join(browser, name),
+          primaryAsset.source,
+          {
+            ...primaryAsset.info,
+          },
+        );
       }
     }
   }
 
-  private prepareManifests(compilation: Compilation): void {
-    const context = compilation.options.context as string;
-    const manifestPath = join(
-      context,
+  /**
+   * Reads and parses a JSON manifest file, tracking it as a file dependency
+   * so webpack's watcher triggers a rebuild when it changes.
+   *
+   * @param filePath - The path to the manifest JSON file.
+   * @returns The parsed manifest.
+   */
+  private readManifest(filePath: string): Manifest {
+    const manifest = JSON.parse(readFileSync(filePath, 'utf-8'));
+    this.watchedFiles.push(filePath);
+    return manifest;
+  }
+
+  /**
+   * Like {@link readManifest}, but returns an empty object if the file doesn't
+   * exist or is invalid.
+   *
+   * @param filePath - The path to the manifest JSON file.
+   */
+  private tryReadManifest(filePath: string): Partial<Manifest> {
+    try {
+      return this.readManifest(filePath);
+    } catch {
+      return {};
+    }
+  }
+
+  private prepareManifests(compiler: Compiler): void {
+    this.watchedFiles = [];
+
+    const root = path.join(compiler.context, '../');
+    const manifestOverridesPath = path.join(root, '.manifest-overrides.json');
+    if (existsSync(manifestOverridesPath)) {
+      this.watchedFiles.push(manifestOverridesPath);
+    }
+
+    const metamaskrcPath = path.join(root, '.metamaskrc');
+    if (existsSync(metamaskrcPath)) {
+      this.watchedFiles.push(metamaskrcPath);
+    }
+
+    const metamaskprodrcPath = path.join(root, '.metamaskprodrc');
+    if (existsSync(metamaskprodrcPath)) {
+      this.watchedFiles.push(metamaskprodrcPath);
+    }
+
+    const manifestPath = path.join(
+      compiler.context,
       `manifest/v${this.options.manifest_version}`,
     );
     // Load the base manifest
-    const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
+    const basePath = path.join(manifestPath, `_base.json`);
+    const baseManifest: Manifest = this.readManifest(basePath);
 
-    const buildTypeManifestPath = join(
-      context,
+    const buildTypeManifestPath = path.join(
+      compiler.context,
       'build-types',
       this.options.buildType,
       'manifest',
     );
-    // Load the build type base manifest if it exists for the specific build type
-    const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
-    let buildTypeBaseManifest: Partial<Manifest> = {};
-    try {
-      buildTypeBaseManifest = JSON.parse(
-        readFileSync(buildTypeBasePath, 'utf-8'),
-      );
-    } catch {
-      // File doesn't exist or is invalid, use empty object
-    }
+    // Load the build type base manifest for the specific build type if it exists
+    const buildTypeBaseManifest = this.tryReadManifest(
+      path.join(buildTypeManifestPath, `_base.json`),
+    );
 
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
@@ -328,30 +424,15 @@ export class ManifestPlugin<Z extends boolean> {
         manifest.version_name = this.options.versionName;
       }
 
-      const browserManifestPath = join(manifestPath, `${browser}.json`);
-      try {
-        // merge browser-specific overrides into the browser manifest
-        manifest = {
-          ...manifest,
-          ...JSON.parse(readFileSync(browserManifestPath, 'utf-8')),
-        };
-      } catch {
-        // File doesn't exist or is invalid, skip merging
-      }
-
-      const buildTypeBrowserManifestPath = join(
-        buildTypeManifestPath,
-        `${browser}.json`,
-      );
-      try {
-        // merge browser-specific build type overrides into the browser manifest
-        manifest = {
-          ...manifest,
-          ...JSON.parse(readFileSync(buildTypeBrowserManifestPath, 'utf-8')),
-        };
-      } catch {
-        // File doesn't exist or is invalid, skip merging
-      }
+      manifest = {
+        ...manifest,
+        // merge browser-specific overrides into the browser manifest if they exist
+        ...this.tryReadManifest(path.join(manifestPath, `${browser}.json`)),
+        // merge browser-specific build type overrides into the browser manifest if they exist
+        ...this.tryReadManifest(
+          path.join(buildTypeManifestPath, `${browser}.json`),
+        ),
+      } as Manifest;
 
       // merge provided `web_accessible_resources`
       if (resources && resources.length > 0) {
@@ -383,29 +464,209 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
-      // handle manifest v3 service worker logic
-      if (
-        manifest.manifest_version === 3 &&
-        manifest.background?.service_worker
-      ) {
-        const serviceWorkerEntrypoint = compilation.entrypoints.get(
-          manifest.background.service_worker,
-        );
-        if (serviceWorkerEntrypoint) {
-          const serviceWorkerFiles = serviceWorkerEntrypoint.getFiles();
-          manifest.background.service_worker = serviceWorkerFiles[0];
-        }
-      }
-
       // allow the user to `transform` the manifest
       if (transform) {
         manifest = transform(manifest, browser);
       }
 
-      // Add the manifest file to the assets
-      const source = new RawSource(JSON.stringify(manifest, null, 2));
-      this.manifests.set(browser, source);
+      // Add the manifest file to manifests
+      this.manifests.set(browser, manifest);
     });
+  }
+
+  private addManifestScript = ({
+    compiler,
+    entries,
+    filename,
+    opts,
+  }: {
+    compiler: Compiler;
+    entries: Record<string, EntryDescriptionNormalized>;
+    filename: string;
+    opts?: EntryDescriptionNormalized;
+  }) => {
+    if (this.addedScripts.has(filename)) return;
+    this.addedScripts.add(filename);
+    this.selfContainedScripts.add(filename);
+    const filePath = path.resolve(compiler.context, filename);
+    entries[filename] = {
+      import: [filePath],
+      chunkLoading: false,
+      filename: extensionToJs(filename),
+      ...opts,
+    };
+  };
+
+  private addHtml = ({
+    compiler,
+    entries,
+    filename,
+    opts,
+  }: {
+    compiler: Compiler;
+    entries: Record<string, EntryDescriptionNormalized>;
+    filename: string;
+    opts?: EntryDescriptionNormalized;
+  }) => {
+    const parsedFileName = path.parse(filename).name;
+    const filePath = path.join(compiler.context, 'html', 'pages', filename);
+    entries[parsedFileName] = { import: [filePath], ...opts };
+  };
+
+  private collectEntrypoints(
+    compiler: Compiler,
+    entries: Record<string, EntryDescriptionNormalized>,
+  ): void {
+    for (const manifest of this.manifests.values()) {
+      // collect content_scripts (MV2 + MV3)
+      for (const contentScript of manifest.content_scripts ?? []) {
+        for (const script of contentScript.js ?? []) {
+          this.addManifestScript({ compiler, entries, filename: script });
+        }
+      }
+
+      if (manifest.manifest_version === 2) {
+        // collect MV2 background scripts
+        for (const script of manifest.background?.scripts ?? []) {
+          this.addManifestScript({ compiler, entries, filename: script });
+        }
+        // collect MV2 web accessible resources
+        for (const resource of manifest.web_accessible_resources ?? []) {
+          if (resource.endsWith('.js')) {
+            this.addManifestScript({ compiler, entries, filename: resource });
+          }
+        }
+      } else if (manifest.manifest_version === 3) {
+        // collect MV3 service worker
+        if (manifest.background?.service_worker) {
+          this.addManifestScript({
+            compiler,
+            entries,
+            filename: manifest.background.service_worker,
+            opts: { chunkLoading: 'import-scripts' },
+          });
+        }
+        // collect MV3 web accessible resources
+        for (const resource of manifest.web_accessible_resources ?? []) {
+          for (const filename of resource.resources) {
+            if (filename.endsWith('.js')) {
+              this.addManifestScript({ compiler, entries, filename });
+            }
+          }
+        }
+      }
+    }
+
+    let htmlFiles: string[] = [];
+    try {
+      htmlFiles = readdirSync(path.join(compiler.context, 'html', 'pages'));
+    } catch {
+      // directory doesn't exist, no HTML pages to add
+    }
+
+    for (const filename of htmlFiles) {
+      // ignore non-htm/html files
+      if (/\.html?$/iu.test(filename)) {
+        // ignore background.html for MV3 extensions.
+        if (
+          this.options.manifest_version === 3 &&
+          filename === 'background.html'
+        ) {
+          continue;
+        }
+        // ignore offscreen.html for MV2 extensions.
+        if (
+          this.options.manifest_version === 2 &&
+          filename === 'offscreen.html'
+        ) {
+          continue;
+        }
+        this.addHtml({ compiler, entries, filename });
+      }
+    }
+  }
+
+  private resolveEntrypoints(compilation: Compilation): void {
+    // Re-read manifests from disk only if a watched file was modified.
+    // `compiler.modifiedFiles` is undefined on the first compilation, and
+    // populated on subsequent watch-mode rebuilds. Entrypoint changes still
+    // require a restart as they are only collected once in `entryOption`.
+    const { modifiedFiles } = compilation.compiler;
+    if (
+      modifiedFiles &&
+      this.watchedFiles.some((watchedFile) => modifiedFiles.has(watchedFile))
+    ) {
+      this.prepareManifests(compilation.compiler);
+    }
+
+    for (const [browser, manifest] of this.manifests) {
+      // resolve content_scripts (MV2 + MV3)
+      for (const contentScript of manifest.content_scripts ?? []) {
+        contentScript.js = contentScript.js?.map((contentScriptPath) => {
+          const contentScriptEntrypoint =
+            compilation.entrypoints.get(contentScriptPath);
+          const contentScriptFile = contentScriptEntrypoint?.getFiles().at(0);
+          return contentScriptFile ?? contentScriptPath;
+        });
+      }
+
+      if (manifest.manifest_version === 2) {
+        // resolve MV2 background scripts
+        if (manifest.background?.scripts) {
+          manifest.background.scripts = manifest.background.scripts.map(
+            (scriptPath) => {
+              const scriptEntrypoint = compilation.entrypoints.get(scriptPath);
+              const scriptFile = scriptEntrypoint?.getFiles().at(0);
+              return scriptFile ?? scriptPath;
+            },
+          );
+        }
+        // resolve MV2 web accessible resources
+        if (manifest.web_accessible_resources) {
+          manifest.web_accessible_resources =
+            manifest.web_accessible_resources.map((resourcePath) => {
+              if (resourcePath.endsWith('.js')) {
+                const resourceEntrypoint =
+                  compilation.entrypoints.get(resourcePath);
+                const resourceFile = resourceEntrypoint?.getFiles().at(0);
+                return resourceFile ?? resourcePath;
+              }
+              return resourcePath;
+            });
+        }
+      } else if (manifest.manifest_version === 3) {
+        // resolve MV3 service worker
+        if (manifest.background?.service_worker) {
+          const serviceWorkerEntrypoint = compilation.entrypoints.get(
+            manifest.background.service_worker,
+          );
+          const serviceWorkerFile = serviceWorkerEntrypoint?.getFiles().at(0);
+          if (serviceWorkerFile) {
+            manifest.background.service_worker = serviceWorkerFile;
+          }
+        }
+        // resolve MV3 web accessible resources
+        if (manifest.web_accessible_resources) {
+          for (const resource of manifest.web_accessible_resources) {
+            resource.resources = resource.resources.map((resourcePath) => {
+              if (resourcePath.endsWith('.js')) {
+                const resourceEntrypoint =
+                  compilation.entrypoints.get(resourcePath);
+                const resourceFile = resourceEntrypoint?.getFiles().at(0);
+                return resourceFile ?? resourcePath;
+              }
+              return resourcePath;
+            });
+          }
+        }
+      }
+
+      // cache the resolved manifests as RawSource
+      this.manifestSources.set(
+        browser,
+        new RawSource(JSON.stringify(manifest, null, 2)),
+      );
+    }
   }
 
   private hookIntoPipelines(compilation: Compilation): void {
@@ -423,7 +684,7 @@ export class ManifestPlugin<Z extends boolean> {
     };
 
     compilation.hooks.processAssets.tap(moveTapOptions, () => {
-      this.prepareManifests(compilation);
+      this.resolveEntrypoints(compilation);
       this.moveAssets(
         compilation,
         this.options as ManifestPluginOptions<false>,

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
@@ -20,7 +20,11 @@ import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
   filterLocalNotInApi,
+  matchesApiTransaction,
+  matchesLocalTransaction,
+  matchesNonEvmTransaction,
   type FlattenedItem,
+  type ActivityListFilter,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
@@ -32,7 +36,11 @@ import { useTransactionsQuery } from './hooks';
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
 
-export const ActivityList = () => {
+type Props = {
+  filter?: ActivityListFilter;
+};
+
+export const ActivityList = ({ filter }: Props) => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,7 +67,7 @@ export const ActivityList = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useTransactionsQuery();
+  } = useTransactionsQuery(filter);
 
   // Local transactions - may not be in API yet
   const localTransactions = useSelector(selectLocalTransactions);
@@ -71,11 +79,10 @@ export const ActivityList = () => {
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
-    const evmTransactions =
-      data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+    let evmTransactions = data?.pages?.flatMap((page) => page.data ?? []) ?? [];
 
     // Filter local transactions by converting hex chainId to CAIP-2
-    const filteredLocalTransactions = filterLocalNotInApi(
+    let filteredLocalTransactions = filterLocalNotInApi(
       localTransactions,
       evmTransactions,
       PENDING_STATUS_HASH,
@@ -84,9 +91,30 @@ export const ActivityList = () => {
       return !chainId || enabledNetworks.includes(toEvmCaipChainId(chainId));
     });
 
-    const filteredNonEvmTransactions = nonEvmTransactions.filter((tx) =>
+    let filteredNonEvmTransactions = nonEvmTransactions.filter((tx) =>
       enabledNetworks.includes(tx.chain),
     );
+
+    // Asset-page filtering: narrow by chain and asset scope
+    if (filter) {
+      const { chainId: filterChainId, assetScope } = filter;
+      filteredNonEvmTransactions = filteredNonEvmTransactions.filter(
+        (tx) => tx.chain === filterChainId,
+      );
+      filteredLocalTransactions = filteredLocalTransactions.filter((group) => {
+        const hexChainId = group.initialTransaction?.chainId;
+        return hexChainId && toEvmCaipChainId(hexChainId) === filterChainId;
+      });
+      evmTransactions = evmTransactions.filter((tx) =>
+        matchesApiTransaction(tx, assetScope),
+      );
+      filteredLocalTransactions = filteredLocalTransactions.filter((group) =>
+        matchesLocalTransaction(group, assetScope),
+      );
+      filteredNonEvmTransactions = filteredNonEvmTransactions.filter((tx) =>
+        matchesNonEvmTransaction(tx, assetScope),
+      );
+    }
 
     // Merge all three types by time
     const mergedByTime = mergeAllTransactionsByTime(
@@ -96,7 +124,15 @@ export const ActivityList = () => {
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [data, nonEvmTransactions, localTransactions, enabledNetworks]);
+  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
+
+  const [scrollMargin, setScrollMargin] = useState(0);
+
+  const listRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      setScrollMargin(node.offsetTop);
+    }
+  }, []);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,
@@ -106,6 +142,7 @@ export const ActivityList = () => {
       return item && item.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT;
     },
     overscan: 5,
+    scrollMargin,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -191,19 +228,24 @@ export const ActivityList = () => {
 
   return (
     <Box>
-      <AssetListControlBar
-        showSortControl={false}
-        showImportTokenButton={false}
-      />
+      {!filter?.chainId && (
+        <AssetListControlBar
+          showSortControl={false}
+          showImportTokenButton={false}
+        />
+      )}
 
       {!isInitialLoading && flattenedItems.length > 0 && (
         <>
           <div
+            ref={listRef}
             className="relative w-full"
             style={{ height: `${virtualizer.getTotalSize()}px` }}
           >
             {virtualItems.map((virtualItem) => {
               const item = flattenedItems[virtualItem.index];
+              const translateY =
+                virtualItem.start - virtualizer.options.scrollMargin;
 
               return (
                 <div
@@ -212,7 +254,7 @@ export const ActivityList = () => {
                   data-index={virtualItem.index}
                   ref={virtualizer.measureElement}
                   style={{
-                    transform: `translateY(${virtualItem.start}px)`,
+                    transform: `translateY(${translateY}px)`,
                   }}
                 >
                   {item && renderItem(item)}
