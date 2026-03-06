@@ -5687,10 +5687,6 @@
     "message": "Margin adjustment failed",
     "description": "Error toast text shown when adding or removing margin fails"
   },
-  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "Unable to adjust margin. Please try again.",
-    "description": "Fallback margin adjustment failure subtitle shown when no specific margin error is available"
-  },
   "perpsToastMarginRemoveSuccess": {
     "message": "Removed $1 $2 margin",
     "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
