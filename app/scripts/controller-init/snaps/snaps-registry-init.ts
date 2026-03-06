@@ -3,7 +3,7 @@ import { SemVerVersion } from '@metamask/utils';
 import { parse } from 'semver';
 import { ControllerInitFunction } from '../types';
 import { SnapsRegistryMessenger } from '../messengers/snaps';
-import { getBooleanFlag } from '../../lib/util';
+import { getBooleanFlag } from '../../../../shared/lib/common-utils';
 
 /**
  * Initialize the Snaps registry controller.

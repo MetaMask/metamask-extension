@@ -30,7 +30,7 @@ async function main() {
     TEST_RUNS_PATH:
       process.env.TEST_RUNS_PATH || 'test/test-results/test-runs.json',
     GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
-    GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
+    GITHUB_ACTIONS: process.env.GITHUB_ACTIONS?.toString() === 'true',
   };
 
   const github = new Octokit({ auth: env.GITHUB_TOKEN });

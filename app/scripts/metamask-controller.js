@@ -219,6 +219,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getBooleanFlag } from '../../shared/lib/common-utils';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -258,14 +259,12 @@ import {
   initializeRpcProviderDomains,
   isPublicEndpointUrl,
   getPlatform,
-  getBooleanFlag,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
 } from './lib/createDefiReferralMiddleware';
-
 import {
   diffMap,
   getPermissionBackgroundApiMethods,

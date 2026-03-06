@@ -1,7 +1,9 @@
+require('ts-node').register({ transpileOnly: true });
 const { promises: fs } = require('fs');
 const path = require('path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const { getBooleanFlag } = require('../../shared/lib/common-utils');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { retry } = require('../../development/lib/retry');
@@ -134,7 +136,8 @@ async function main() {
     // Use enhanced spec reporter for readable console output with colors and summary
     // Only add junit reporter in CI environments
     const isCI =
-      process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+      getBooleanFlag(process.env.CI) ||
+      getBooleanFlag(process.env.GITHUB_ACTIONS);
     // Use enhanced reporter by default, allow override via E2E_REPORTER env var
     const consoleReporter =
       process.env.E2E_REPORTER ||

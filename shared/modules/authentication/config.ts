@@ -1,4 +1,5 @@
 import { Env } from '@metamask/profile-sync-controller/sdk';
+import { getBooleanFlag } from '../../lib/common-utils';
 
 /**
  * Check if the FORCE_AUTH_MATCH_BUILD environment variable is set to `true`.
@@ -6,7 +7,7 @@ import { Env } from '@metamask/profile-sync-controller/sdk';
  * @returns true if the FORCE_AUTH_MATCH_BUILD environment variable is set to `true`, false otherwise
  */
 export function isForceAuthMatchBuild() {
-  return process.env.FORCE_AUTH_MATCH_BUILD?.toString() === 'true';
+  return getBooleanFlag(process.env.FORCE_AUTH_MATCH_BUILD);
 }
 
 export function loadAuthenticationConfig(): Env {

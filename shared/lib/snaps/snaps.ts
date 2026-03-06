@@ -1,6 +1,7 @@
 import { SnapId } from '@metamask/snaps-sdk';
 import { isFlask } from '../build-types';
 
+import { getIsForcePreinstalledSnapsEnabled } from '../../modules/environment';
 /**
  * Whether to force local Snaps to be treated as preinstalled Snaps.
  *
@@ -8,7 +9,7 @@ import { isFlask } from '../build-types';
  * are normally reserved for preinstalled Snaps.
  */
 const FORCE_PREINSTALLED_SNAPS =
-  isFlask() && process.env.FORCE_PREINSTALLED_SNAPS === 'true';
+  isFlask() && getIsForcePreinstalledSnapsEnabled();
 
 export const PREINSTALLED_SNAPS = [
   'npm:@metamask/message-signing-snap',
