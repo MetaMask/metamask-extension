@@ -788,9 +788,9 @@ export const getValidationErrors = (
 ) => ({
   ..._getBaseValidationErrors(state),
   isStockMarketClosed:
-    currentTimeInMs !== undefined
-      ? getIsStockMarketClosed(state, currentTimeInMs)
-      : false,
+    currentTimeInMs === undefined
+      ? false
+      : getIsStockMarketClosed(state, currentTimeInMs),
 });
 
 /**
