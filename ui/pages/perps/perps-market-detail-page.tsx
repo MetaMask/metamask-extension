@@ -66,7 +66,6 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
-  normalizeTpslPrices,
 } from '../../components/app/perps/utils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
