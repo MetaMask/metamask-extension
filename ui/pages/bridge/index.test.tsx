@@ -25,6 +25,20 @@ jest.mock('../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
+jest.mock('../../hooks/bridge/usePopularTokens', () => ({
+  usePopularTokens: jest.fn().mockReturnValue({
+    popularTokensList: [],
+    isLoading: false,
+  }),
+}));
+
+jest.mock('../../hooks/bridge/useTokenSearchResults', () => ({
+  useTokenSearchResults: jest.fn().mockReturnValue({
+    searchResults: [],
+    isSearchResultsLoading: false,
+  }),
+}));
+
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
   getStatePatches: jest.fn(),
