@@ -20,6 +20,7 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
+  // SETTINGS_V2_ROUTE,
   DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
@@ -455,6 +456,21 @@ export function useGlobalMenuSections(
           },
           disabled: hasUnapprovedTransactions,
         },
+        // Uncomment to view Settings V2 in Hamburger Menu
+        // {
+        //   id: 'global-menu-settings-v2',
+        //   iconName: IconName.Setting,
+        //   label: `${t('settings')} (V2)`,
+        //   to: SETTINGS_V2_ROUTE,
+        //   onClick: () => {
+        //     trackEvent({
+        //       category: MetaMetricsEventCategory.Navigation,
+        //       event: MetaMetricsEventName.NavSettingsOpened,
+        //       properties: { location: METRICS_LOCATION },
+        //     });
+        //   },
+        //   disabled: hasUnapprovedTransactions,
+        // },
         {
           id: 'global-menu-support',
           iconName: IconName.MessageQuestion,

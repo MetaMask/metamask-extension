@@ -73,6 +73,7 @@ import {
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
   CONTACTS_ROUTE,
+  SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -175,6 +176,10 @@ const RevealSeedConfirmation = mmLazy(
 );
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,
+);
+
+const SettingsV2 = mmLazy(
+  (() => import('../settings-v2/index.ts')) as unknown as DynamicImportType,
 );
 
 const NotificationsSettingsRedirect = () => (
@@ -600,6 +605,13 @@ export default function Routes() {
       createRouteWithLayout({
         path: `${SETTINGS_ROUTE}/*`,
         component: Settings,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityRequired: false,
+      }),
+      createRouteWithLayout({
+        path: `${SETTINGS_V2_ROUTE}/*`,
+        component: SettingsV2,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityRequired: false,
