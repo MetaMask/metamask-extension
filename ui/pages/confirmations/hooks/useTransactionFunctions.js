@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import BigNumber from 'bignumber.js';
+import { CANCEL_RATE, SPEED_UP_RATE } from '@metamask/transaction-controller';
 import {
   EditGasModes,
   PriorityLevels,
@@ -10,6 +11,7 @@ import {
 import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
+  getGasValuesForReplacement,
 } from '../../../helpers/utils/gas';
 import {
   createCancelTransaction,
@@ -146,16 +148,26 @@ export const useTransactionFunctions = ({
   );
 
   const cancelTransaction = useCallback(() => {
+    const gasValuesForCancel = getGasValuesForReplacement(
+      transaction.txParams,
+      transaction.previousGas,
+      CANCEL_RATE,
+    );
     dispatch(
-      createCancelTransaction(transaction.id, transaction.txParams, {
+      createCancelTransaction(transaction.id, gasValuesForCancel, {
         estimatedBaseFee,
       }),
     );
   }, [dispatch, estimatedBaseFee, transaction]);
 
   const speedUpTransaction = useCallback(() => {
+    const gasValuesForSpeedUp = getGasValuesForReplacement(
+      transaction.txParams,
+      transaction.previousGas,
+      SPEED_UP_RATE,
+    );
     dispatch(
-      createSpeedUpTransaction(transaction.id, transaction.txParams, {
+      createSpeedUpTransaction(transaction.id, gasValuesForSpeedUp, {
         estimatedBaseFee,
       }),
     );

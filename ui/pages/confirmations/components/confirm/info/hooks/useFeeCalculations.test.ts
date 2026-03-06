@@ -221,7 +221,7 @@ describe('useFeeCalculations', () => {
   });
 
   it('returns the correct estimate if quoted swap is displayed in info', () => {
-    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+    jest.spyOn(DappSwapContext, 'useDappSwapContextOptional').mockReturnValue({
       selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),

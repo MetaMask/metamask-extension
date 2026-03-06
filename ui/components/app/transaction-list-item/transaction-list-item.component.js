@@ -44,9 +44,7 @@ import {
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
-import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
 import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
@@ -433,17 +431,7 @@ const TransactionListItem = (props) => {
         supportsEIP1559={supportsEIP1559}
       />
       {supportsEIP1559 && (
-        <>
-          <CancelSpeedup transaction={transaction} editGasMode={editGasMode} />
-          <EditGasFeePopover
-            transaction={transaction}
-            editGasMode={editGasMode}
-          />
-          <AdvancedGasFeePopover
-            transaction={transaction}
-            editGasMode={editGasMode}
-          />
-        </>
+        <CancelSpeedup transaction={transaction} editGasMode={editGasMode} />
       )}
     </TransactionModalContextProvider>
   );

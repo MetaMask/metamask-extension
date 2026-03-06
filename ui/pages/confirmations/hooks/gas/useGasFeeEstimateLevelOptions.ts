@@ -6,7 +6,7 @@ import {
   type GasFeeEstimates as TransactionGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -16,10 +16,21 @@ import { updateTransactionGasFees } from '../../../../store/actions';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
-import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 
 const HEX_ZERO = '0x0';
+
+/**
+ * Minimal TransactionMeta used only when useConfirmContext returns no transaction
+ * so that useFeeCalculations and its inner hooks are always called (Rules of Hooks).
+ * The return value is never used when transactionMeta is undefined (we return []).
+ */
+const DUMMY_TRANSACTION_META = {
+  chainId: '',
+  networkClientId: '',
+  txParams: { gas: '0x5208' },
+} as unknown as TransactionMeta;
 
 export const useGasFeeEstimateLevelOptions = ({
   handleCloseModals,
@@ -30,15 +41,23 @@ export const useGasFeeEstimateLevelOptions = ({
   const dispatch = useDispatch();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const nativeTicker = useTransactionNativeTicker();
-  const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
+  const effectiveTransactionMeta = transactionMeta ?? DUMMY_TRANSACTION_META;
+
+  const nativeTicker = useSelector(
+    (state: Parameters<typeof getNetworkConfigurationsByChainId>[0]) =>
+      getNetworkConfigurationsByChainId(state)?.[transactionMeta?.chainId]
+        ?.nativeCurrency,
+  );
+  const { calculateGasEstimate } = useFeeCalculations(effectiveTransactionMeta);
   const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates(
-    transactionMeta.networkClientId,
+    transactionMeta?.networkClientId,
   ) as {
     gasFeeEstimates: GasFeeEstimates;
   };
 
-  const { gasFeeEstimates, id, userFeeLevel } = transactionMeta;
+  const gasFeeEstimates = transactionMeta?.gasFeeEstimates;
+  const id = transactionMeta?.id;
+  const userFeeLevel = transactionMeta?.userFeeLevel;
 
   const transactionGasFeeEstimates =
     gasFeeEstimates as TransactionGasFeeEstimates;
@@ -62,6 +81,10 @@ export const useGasFeeEstimateLevelOptions = ({
     },
     [id, handleCloseModals, dispatch],
   );
+
+  if (!transactionMeta) {
+    return [];
+  }
 
   const options: GasOption[] = [];
 
