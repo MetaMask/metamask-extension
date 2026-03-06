@@ -135,9 +135,6 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
     selectMusdMinAssetBalanceRequired,
   );
 
-  // Get account tokens
-  const selectedAccount = useSelector(getSelectedAccount);
-
   const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
 
   // Get all account tokens
