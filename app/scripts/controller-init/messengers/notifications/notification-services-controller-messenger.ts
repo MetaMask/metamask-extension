@@ -4,9 +4,12 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { type NotificationServicesControllerMessenger } from '@metamask/notification-services-controller/notification-services';
+import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = MessengerActions<NotificationServicesControllerMessenger>;
+type Actions =
+  | MessengerActions<NotificationServicesControllerMessenger>
+  | HandleSnapRequest;
 
 type Events = MessengerEvents<NotificationServicesControllerMessenger>;
 
@@ -35,6 +38,8 @@ export function getNotificationServicesControllerMessenger(
       'NotificationServicesPushController:enablePushNotifications',
       'NotificationServicesPushController:disablePushNotifications',
       'NotificationServicesPushController:subscribeToPushNotifications',
+      // Snap Actions
+      'SnapController:handleRequest',
     ],
     events: [
       // Keyring Events
