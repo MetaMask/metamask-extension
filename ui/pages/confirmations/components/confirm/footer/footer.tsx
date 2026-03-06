@@ -116,10 +116,11 @@ const ConfirmButton = ({
   const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
-  // Show danger button when any danger alert exists (matches main). This keeps the
-  // "open modal then confirm" flow for E2E (e.g. malicious-signatures.spec).
+  // Show danger button when any danger alert exists or there are unconfirmed danger
+  // alerts (matches main). This keeps the "open modal then confirm" flow for E2E
+  // (e.g. malicious-signatures.spec).
   const shouldShowDangerConfirmButton =
-    hasDangerAlerts || hasDangerBlockingAlerts;
+    hasDangerAlerts || hasUnconfirmedDangerAlerts || hasDangerBlockingAlerts;
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
