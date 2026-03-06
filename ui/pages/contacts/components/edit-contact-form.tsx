@@ -51,6 +51,7 @@ import type { EditContactFormProps } from '../contacts.types';
 export function EditContactForm({
   address,
   initialName,
+  initialMemo,
   contactChainId,
   onCancel,
   onSuccess,
@@ -63,6 +64,7 @@ export function EditContactForm({
 
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);
+  const [memo, setMemo] = useState(initialMemo);
   const [selectedChainId, setSelectedChainId] = useState(contactChainId);
   const [nameError, setNameError] = useState('');
   const [addressError, setAddressError] = useState('');
@@ -93,7 +95,8 @@ export function EditContactForm({
   const isUnchanged =
     contactName === initialName &&
     newAddress === address &&
-    selectedChainId === contactChainId;
+    selectedChainId === contactChainId &&
+    memo === initialMemo;
   const isSaveDisabled =
     !contactName.trim() || Boolean(nameError) || isUnchanged;
 
@@ -111,6 +114,7 @@ export function EditContactForm({
         addToAddressBook(
           newAddress,
           contactName || initialName,
+          memo,
           selectedChainId,
         ),
       );
@@ -118,19 +122,29 @@ export function EditContactForm({
     } else if (selectedChainId !== contactChainId) {
       await dispatch(removeFromAddressBook(contactChainId, address));
       await dispatch(
-        addToAddressBook(address, contactName || initialName, selectedChainId),
+        addToAddressBook(
+          address,
+          contactName || initialName,
+          memo,
+          selectedChainId,
+        ),
       );
       onSuccess();
     } else {
       await dispatch(
-        addToAddressBook(address, contactName || initialName, selectedChainId),
+        addToAddressBook(
+          address,
+          contactName || initialName,
+          memo,
+          selectedChainId,
+        ),
       );
       onSuccess();
     }
   };
 
   return (
-    <Box className="flex w-full flex-col justify-between">
+    <Box className="flex h-full w-full flex-col justify-between mb-4 gap-6">
       <Box
         className="flex w-full flex-col px-4 pt-4 gap-6"
         flexDirection={BoxFlexDirection.Column}
@@ -183,6 +197,7 @@ export function EditContactForm({
             error={Boolean(addressError)}
             helpText={addressError || undefined}
             size={FormTextFieldSize.Lg}
+            truncate={false}
             labelProps={{ marginBottom: 1 }}
             textFieldProps={{
               backgroundColor: BackgroundColor.backgroundMuted,
@@ -191,6 +206,26 @@ export function EditContactForm({
             }}
             data-testid="address-book-edit-contact-address"
           />
+
+          {initialMemo.length > 0 && (
+            <FormTextField
+              id="edit-contact-memo"
+              label={t('memo')}
+              placeholder={t('addMemo')}
+              value={memo}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setMemo(e.target.value)
+              }
+              size={FormTextFieldSize.Lg}
+              labelProps={{ marginBottom: 1 }}
+              textFieldProps={{
+                backgroundColor: BackgroundColor.backgroundMuted,
+                borderColor: BorderColor.borderDefault,
+                borderRadius: BorderRadius.XL,
+              }}
+              data-testid="address-book-edit-contact-memo"
+            />
+          )}
 
           <Box className="w-full">
             <Text
@@ -238,28 +273,31 @@ export function EditContactForm({
       </Box>
 
       {/* Footer */}
-      <Box className="mb-6 shrink-0 bg-background-default px-4 pb-6 pt-0">
-        <Box className="flex gap-4">
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={onCancel}
-            className="flex-1 rounded-xl border border-border-default"
-            data-testid="page-container-footer-cancel"
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            isDisabled={isSaveDisabled}
-            onClick={handleSubmit}
-            className="flex-1 rounded-xl"
-            data-testid="page-container-footer-next"
-          >
-            {t('save')}
-          </Button>
-        </Box>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        gap={4}
+        padding={4}
+        className="flex flex-row"
+      >
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          onClick={onCancel}
+          className="flex-1 rounded-xl border border-border-default"
+          data-testid="page-container-footer-cancel"
+        >
+          {t('cancel')}
+        </Button>
+        <Button
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          isDisabled={isSaveDisabled}
+          onClick={handleSubmit}
+          className="flex-1 rounded-xl"
+          data-testid="page-container-footer-next"
+        >
+          {t('save')}
+        </Button>
       </Box>
     </Box>
   );

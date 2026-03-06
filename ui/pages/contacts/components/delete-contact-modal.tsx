@@ -38,7 +38,7 @@ export function DeleteContactModal({
     >
       <ModalOverlay />
       <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onBack={onClose} onClose={onClose}>
+        <ModalHeader onClose={onClose}>
           {t('areYouSure')}
         </ModalHeader>
         <ModalBody>
@@ -53,7 +53,7 @@ export function DeleteContactModal({
           onSubmit={onConfirm}
           submitButtonProps={{
             children: t('delete'),
-            variant: ButtonVariant.Primary as unknown as ButtonProps<'button'>['variant'],
+            variant: ButtonVariant.Secondary as unknown as ButtonProps<'button'>['variant'],
             danger: true,
             'data-testid': 'delete-contact-confirm-button',
           }}

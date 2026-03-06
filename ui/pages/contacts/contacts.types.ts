@@ -1,6 +1,7 @@
 export type EditContactFormProps = {
   address: string;
   initialName: string;
+  initialMemo: string;
   contactChainId: string;
   onCancel: () => void;
   onSuccess: () => void;

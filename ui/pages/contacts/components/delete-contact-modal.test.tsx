@@ -54,7 +54,7 @@ describe('DeleteContactModal', () => {
       expect(onConfirm).toHaveBeenCalledTimes(1);
     });
 
-    it('calls onClose when back or close is used', () => {
+    it('calls onClose when close button is clicked', () => {
       const onClose = jest.fn();
       const { getByLabelText } = renderWithProvider(
         <DeleteContactModal {...defaultProps} onClose={onClose} />,

@@ -46,6 +46,7 @@ export function EditContactPage() {
   }
 
   const name = contact?.name ?? internalAccount?.metadata?.name ?? '';
+  const memo = contact?.memo ?? '';
   const contactChainId = contact?.chainId ?? providerConfig.chainId;
 
   if (!contact) {
@@ -78,15 +79,14 @@ export function EditContactPage() {
         {t('editContact')}
       </Header>
       <Content padding={0}>
-        <Box className="flex min-h-0 w-full flex-1 flex-col">
           <EditContactForm
             address={address}
             initialName={name}
+            initialMemo={memo}
             contactChainId={contactChainId}
             onCancel={() => navigate(`${CONTACTS_VIEW_ROUTE}/${address}`)}
             onSuccess={() => navigate(CONTACTS_ROUTE)}
           />
-        </Box>
       </Content>
     </Page>
   );

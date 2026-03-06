@@ -61,7 +61,7 @@ export function ViewContactContent({
       padding={4}
       paddingTop={4}
       gap={6}
-      className="flex flex-col min-h-0 w-full flex-1 justify-between"
+      className="flex flex-col h-full w-full flex-1 justify-between"
     >
       {/* Centered avatar with network badge */}
 
@@ -138,13 +138,12 @@ export function ViewContactContent({
               alignItems={BoxAlignItems.Center}
               gap={2}
               padding={4}
-              className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
+              className="flex min-h-12 items-center rounded-xl border border-border-muted bg-background-muted"
             >
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextDefault}
-                ellipsis
-                className="min-w-0 flex-1 truncate"
+                className="min-w-0 flex-1 break-all"
                 data-testid="address-book-view-contact-address"
               >
                 {quadSplit(checkSummedAddress)}
@@ -154,7 +153,7 @@ export function ViewContactContent({
                 title={copied ? t('copiedExclamation') : t('copyToClipboard')}
                 iconName={copied ? IconName.CopySuccess : IconName.Copy}
                 size={ButtonIconSize.Sm}
-                iconProps={{ color: IconColor.IconAlternative }}
+                iconProps={{ className: IconColor.IconAlternative }}
                 onClick={() => handleCopy(checkSummedAddress)}
               />
             </Box>
@@ -230,9 +229,9 @@ export function ViewContactContent({
       <Box
         flexDirection={BoxFlexDirection.Row}
         gap={4}
-        marginTop={6}
-        marginBottom={6}
-        className="mt-6 mb-6 flex shrink-0 flex-row"
+        className="flex shrink-0 flex-row"
+        paddingTop={4}
+        paddingBottom={4}
       >
         <Button
           variant={ButtonVariant.Secondary}

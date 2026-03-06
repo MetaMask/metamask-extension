@@ -352,9 +352,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         flexDirection={BoxFlexDirection.Row}
         gap={4}
         padding={4}
-        paddingTop={0}
-        marginBottom={6}
-        className="shrink-0 bg-background-default"
+        className="bg-background-default"
       >
         <Button
           variant={ButtonVariant.Secondary}

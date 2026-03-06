@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
 import {
@@ -8,25 +8,41 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  Icon,
   IconName,
+  IconColor,
   ButtonIcon,
   ButtonIconSize,
 } from '@metamask/design-system-react';
 import { Header, Page } from '../../components/multichain/pages/page';
+import { Toast, ToastContainer } from '../../components/multichain/toast';
+import { BorderRadius } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CONTACTS_ADD_ROUTE,
   CONTACTS_VIEW_ROUTE,
+  CONTACTS_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getCompleteAddressBook } from '../../selectors';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
 
+const TOAST_AUTO_HIDE_MS = 2500;
+
 export function ContactsListPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const completeAddressBook = useSelector(getCompleteAddressBook);
+  const [showDeletedToast, setShowDeletedToast] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.showContactDeletedToast) {
+      setShowDeletedToast(true);
+      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
+    }
+  }, [location.state?.showContactDeletedToast, navigate]);
 
   const contacts = useMemo(() => {
     const list = (completeAddressBook ?? []).filter(
@@ -43,6 +59,25 @@ export function ContactsListPage() {
 
   return (
     <Page data-testid="contacts-page">
+      {showDeletedToast && (
+        <ToastContainer>
+          <Toast
+            startAdornment={
+              <Icon
+                name={IconName.CheckBold}
+                color={IconColor.SuccessDefault}
+              />
+            }
+            text={t('contactDeleted')}
+            onClose={() => setShowDeletedToast(false)}
+            autoHideTime={TOAST_AUTO_HIDE_MS}
+            onAutoHideToast={() => setShowDeletedToast(false)}
+            borderRadius={BorderRadius.LG}
+            textClassName="text-base"
+            data-testid="contact-deleted-toast"
+          />
+        </ToastContainer>
+      )}
       <Header
         startAccessory={
           <ButtonIcon
