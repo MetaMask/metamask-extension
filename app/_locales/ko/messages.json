@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "가격 영향"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "가격 영향은 스왑이 시장 가격에 미치는 영향을 반영합니다. 가스비가 충분하지 않으면 일부 토큰이 수수료를 충당하는 데 사용되어 가격 영향이 증가합니다. MetaMask는 이를 설정하거나 제어하지 않습니다."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "가격 영향"
   },
