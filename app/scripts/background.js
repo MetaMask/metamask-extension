@@ -137,59 +137,7 @@ let inTestRestoreFlow = false;
 /** MetaMask UI ports (full page, side panel, etc.) for broadcasting RELOAD_WINDOW on timeout restore. */
 const metamaskUIPorts = new Set();
 /** Session storage key to persist inTestRestoreFlow across service worker restart (e.g. after RELOAD_WINDOW). */
-const SESSION_KEY_TEST_RESTORE_FLOW_PENDING =
-  'METAMASK_TEST_RESTORE_FLOW_PENDING';
-
-/**
- * The functions below are session storage helpers for E2E tests that simulate init/state-sync timeout
- * and then restore. The flag is persisted across service worker restart (e.g. after RELOAD_WINDOW).
- *
- * Why session storage (and not in-memory or local)?
- * - In-memory would be lost when the MV3 service worker restarts after we send RELOAD_WINDOW to the UI; the new worker would not know we're in the restore flow and might simulate the hang again.
- * - We use session (not local) so the flag is scoped to the current browser session and does not persist across restarts or leak into the next test run.
- */
-
-/** Writes the restore-flow flag to session storage. No-op when not in test. */
-async function saveTestRestoreFlowToSession() {
-  if (!inTest) {
-    return;
-  }
-  try {
-    await browser.storage.session.set({
-      [SESSION_KEY_TEST_RESTORE_FLOW_PENDING]: true,
-    });
-  } catch (err) {
-    // Not expected to happen.
-    console.warn(
-      '[MetaMask] Could not save test restore-flow flag to session storage',
-      err,
-    );
-  }
-}
-
-/** Reads the restore-flow flag from session and sets inTestRestoreFlow; clears the key. No-op when not in test. */
-async function restoreTestRestoreFlowFromSession() {
-  if (!inTest) {
-    return;
-  }
-  try {
-    const session = await browser.storage.session.get(
-      SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
-    );
-    if (session[SESSION_KEY_TEST_RESTORE_FLOW_PENDING]) {
-      inTestRestoreFlow = true;
-      await browser.storage.session.remove(
-        SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
-      );
-    }
-  } catch (err) {
-    // Not expected to happen.
-    console.warn(
-      '[MetaMask] Could not read test restore-flow flag from session storage',
-      err,
-    );
-  }
-}
+const IN_TEST_RESTORE_FLOW = 'IN_TEST_RESTORE_FLOW';
 
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
@@ -339,7 +287,9 @@ async function repairAndReinitialize(backup) {
   setGlobalInitializers();
 
   if (inTest && hasVault(backup)) {
-    await saveTestRestoreFlowToSession();
+    await browser.storage.session.set({
+      [IN_TEST_RESTORE_FLOW]: true,
+    });
   }
   if (hasVault(backup)) {
     await initBackground(backup);
@@ -644,10 +594,12 @@ const corruptionHandler = new CorruptionHandler();
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
   if (inTest) {
-    // Only read/clear the restore-flow session flag for UI ports so a content-script
-    // connection cannot consume it before the UI connects.
     if (isMetaMaskUIPort) {
-      await restoreTestRestoreFlowFromSession();
+      const res = await browser.storage.session.get(IN_TEST_RESTORE_FLOW);
+      inTestRestoreFlow = Boolean(res[IN_TEST_RESTORE_FLOW]);
+      if (inTestRestoreFlow) {
+        await browser.storage.session.remove(IN_TEST_RESTORE_FLOW);
+      }
     }
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
