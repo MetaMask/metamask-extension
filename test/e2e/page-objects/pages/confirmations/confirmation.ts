@@ -1,3 +1,4 @@
+import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 
@@ -78,7 +79,10 @@ class Confirmation {
   }
 
   async clickHeaderAccountDetailsButton() {
-    await this.driver.clickElement(this.headerAccountDetailsButton);
+    const accountDetailsButton = await this.driver.findElement(
+      this.headerAccountDetailsButton,
+    );
+    await accountDetailsButton.sendKeys(Key.RETURN);
     await this.driver.waitForSelector(this.accountAddressDetails);
   }
 
