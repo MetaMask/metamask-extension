@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -69,23 +69,34 @@ function createProviderWrapper(
   });
 
   const Wrapper = ({ children }) => {
+    const router = createMemoryRouter([{ path: '*', element: children }], {
+      initialEntries: [pathname],
+    });
+
     const container = (
-      <MemoryRouter initialEntries={[pathname]}>
-        <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-              <LegacyMetaMetricsProvider>
-                <QueryClientProvider client={queryClient}>
-                  {children}
-                </QueryClientProvider>
-              </LegacyMetaMetricsProvider>
-            </MetaMetricsContext.Provider>
-          </LegacyI18nProvider>
-        </I18nProvider>
-      </MemoryRouter>
+      <RouterProvider router={router} future={{ v7_startTransition: true }} />
     );
 
-    return store ? <Provider store={store}>{container}</Provider> : container;
+    // Wrap providers outside the router so they're available to all routes
+    const withProviders = (
+      <I18nProvider currentLocale="en" current={en} en={en}>
+        <LegacyI18nProvider>
+          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+            <LegacyMetaMetricsProvider>
+              <QueryClientProvider client={queryClient}>
+                {container}
+              </QueryClientProvider>
+            </LegacyMetaMetricsProvider>
+          </MetaMetricsContext.Provider>
+        </LegacyI18nProvider>
+      </I18nProvider>
+    );
+
+    return store ? (
+      <Provider store={store}>{withProviders}</Provider>
+    ) : (
+      withProviders
+    );
   };
 
   Wrapper.propTypes = {
