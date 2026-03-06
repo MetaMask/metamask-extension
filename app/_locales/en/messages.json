@@ -5667,9 +5667,6 @@
     "message": "Take Profit",
     "description": "Label for take profit price input"
   },
-  "perpsTotalBalance": {
-    "message": "Total Balance"
-  },
   "perpsToastCloseFailed": {
     "message": "Failed to close position",
     "description": "Error toast text shown when closing a perps position fails"
@@ -5685,6 +5682,14 @@
   "perpsToastMarginAddSuccess": {
     "message": "Added $1 $2 margin",
     "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
+  },
+  "perpsToastMarginAdjustmentFailed": {
+    "message": "Margin adjustment failed",
+    "description": "Error toast text shown when adding or removing margin fails"
+  },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "Unable to adjust margin. Please try again.",
+    "description": "Fallback margin adjustment failure subtitle shown when no specific margin error is available"
   },
   "perpsToastMarginRemoveSuccess": {
     "message": "Removed $1 $2 margin",
@@ -5733,6 +5738,9 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
+  },
+  "perpsTotalBalance": {
+    "message": "Total Balance"
   },
   "perpsTradePerps": {
     "message": "Trade perps"

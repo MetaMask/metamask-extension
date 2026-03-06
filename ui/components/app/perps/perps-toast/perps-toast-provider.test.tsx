@@ -70,12 +70,43 @@ const ToastHarness = () => {
         type="button"
         onClick={() => {
           replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.CLOSE_FAILED,
+          });
+        }}
+      >
+        Show Key Close Failed
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+          });
+        }}
+      >
+        Show Key Update Failed
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS,
             messageParams: ['100', 'ETH'],
           });
         }}
       >
         Show Key Margin Add Success
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+            description: 'Unable to adjust margin',
+          });
+        }}
+      >
+        Show Key Margin Adjustment Failed
       </button>
       <button
         type="button"
@@ -164,6 +195,12 @@ const expectLoadingToastIcon = () => {
   );
   const spinnerIcon = loadingIcon.querySelector('.mm-icon');
   expect(spinnerIcon).toBeInTheDocument();
+};
+
+const expectErrorAvatarToastIcon = () => {
+  const warningIcon = screen.getByTestId('perps-toast-icon-warning');
+  expect(warningIcon).toHaveClass('mm-avatar-icon');
+  expect(warningIcon).toHaveClass('mm-avatar-base--size-md');
 };
 
 describe('PerpsToastProvider', () => {
@@ -326,15 +363,63 @@ describe('PerpsToastProvider', () => {
       screen.getByRole('button', { name: 'Show Key Order Failed' }),
     );
     expect(screen.getByText('Order failed')).toBeInTheDocument();
-    const warningIcon = screen.getByTestId('perps-toast-icon-warning');
-    expect(warningIcon).toHaveClass('mm-avatar-icon');
-    expect(warningIcon).toHaveClass('mm-avatar-base--size-md');
+    expectErrorAvatarToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(5000);
     });
 
     expect(screen.queryByText('Order failed')).not.toBeInTheDocument();
+  });
+
+  it('maps close failed key to avatar warning error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Close Failed' }),
+    );
+    expect(screen.getByText('Failed to close position')).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.queryByText('Failed to close position'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('maps update failed key to avatar warning error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Update Failed' }),
+    );
+    expect(screen.getByText('Failed to update TP/SL')).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.queryByText('Failed to update TP/SL'),
+    ).not.toBeInTheDocument();
   });
 
   it('maps margin add success key to success variant with auto-hide', () => {
@@ -381,6 +466,32 @@ describe('PerpsToastProvider', () => {
     });
 
     expect(screen.queryByText('Removed 50 ETH margin')).not.toBeInTheDocument();
+  });
+
+  it('maps margin adjustment failed key to error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Margin Adjustment Failed' }),
+    );
+    expect(screen.getByText('Margin adjustment failed')).toBeInTheDocument();
+    expect(screen.getByText('Unable to adjust margin')).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.queryByText('Margin adjustment failed'),
+    ).not.toBeInTheDocument();
   });
 
   it('does not show toasts when perps toast flag is disabled', () => {

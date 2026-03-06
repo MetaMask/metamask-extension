@@ -207,14 +207,19 @@ describe('PerpsMarketDetailPage', () => {
   const mockStore = configureMockStore(middlewares);
 
   // Create a state with perps enabled
-  const createMockState = (perpsEnabled = true) => ({
+  const createMockState = (
+    perpsEnabled = true,
+    perpsInAppToastsEnabled = true,
+  ) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsInAppToastsEnabled,
       },
     },
   });
@@ -727,6 +732,74 @@ describe('PerpsMarketDetailPage', () => {
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
         key: 'perpsToastUpdateInProgress',
       });
+    });
+
+    it('shows TP/SL failure toast without inline error when toast flag is enabled', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TP/SL rejected',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState(true, true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'TP/SL rejected',
+        });
+      });
+
+      expect(screen.queryByText('TP/SL rejected')).not.toBeInTheDocument();
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('shows inline TP/SL error when perps toast flag is disabled', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TP/SL rejected',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState(true, false));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('TP/SL rejected')).toBeInTheDocument();
+      });
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateFailed',
+        description: 'TP/SL rejected',
+      });
+      consoleErrorSpy.mockRestore();
     });
   });
 
