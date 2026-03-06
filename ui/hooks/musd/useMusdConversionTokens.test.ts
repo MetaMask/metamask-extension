@@ -11,12 +11,8 @@ import {
   selectMusdConvertibleTokensBlocklist,
   selectMusdMinAssetBalanceRequired,
 } from '../../selectors/musd';
-import {
-  getAssetsBySelectedAccountGroup,
-} from '../../selectors/assets';
-import {
-  getSelectedAccount,
-} from '../../selectors';
+import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
+import { getSelectedAccount } from '../../selectors';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
@@ -116,9 +112,10 @@ const mockDaiMainnet: TokenWithFiatAmount = {
  * The real selector returns assets with `fiat.balance` (not `tokenFiatAmount`),
  * so we map `tokenFiatAmount` into that shape for the hook to consume correctly.
  * Uses `as never` because the mock doesn't need to satisfy the full Asset type.
+ * @param tokens
  */
 function toAccountGroupAssets(tokens: TokenWithFiatAmount[]) {
-  const grouped: Record<string, Array<Record<string, unknown>>> = {};
+  const grouped: Record<string, Record<string, unknown>[]> = {};
   for (const token of tokens) {
     const chainId = token.chainId as string;
     if (!grouped[chainId]) {
@@ -219,7 +216,11 @@ describe('useMusdConversionTokens', () => {
   describe('token filtering', () => {
     it('filters tokens correctly based on allowlist', () => {
       mockGetAssetsBySelectedAccountGroup.mockReturnValue(
-        toAccountGroupAssets([mockUsdcMainnet, mockUsdtMainnet, mockDaiMainnet]),
+        toAccountGroupAssets([
+          mockUsdcMainnet,
+          mockUsdtMainnet,
+          mockDaiMainnet,
+        ]),
       );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
@@ -537,7 +538,6 @@ describe('useMusdConversionTokens', () => {
 
   describe('filterAllowedTokens callback', () => {
     it('filters array of tokens correctly', () => {
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });
@@ -552,7 +552,6 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns empty array when given empty array', () => {
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });
@@ -562,7 +561,6 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('filters by both allowlist and minimum balance', () => {
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });
@@ -657,7 +655,6 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns null when no conversion tokens exist', () => {
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });

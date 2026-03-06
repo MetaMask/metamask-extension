@@ -19,12 +19,7 @@ import {
   type Asset,
   AssetStandard,
 } from '../../pages/confirmations/types/send';
-import {
-  getSelectedAccount,
-} from '../../selectors';
-import {
-  getAssetsBySelectedAccountGroup,
-} from '../../selectors/assets';
+import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import {
   selectMusdConvertibleTokensAllowlist,
   selectMusdConvertibleTokensBlocklist,

@@ -13,9 +13,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  getAssetsBySelectedAccountGroup,
-} from '../../selectors/assets';
+import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import { getSelectedAccount } from '../../selectors';
 import {
   isMusdToken,
