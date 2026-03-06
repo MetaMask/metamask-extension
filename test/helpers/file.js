@@ -1,4 +1,4 @@
-/* eslint-disable n/hashbang */
+/* eslint-disable n/shebang */
 const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
 
