@@ -243,10 +243,10 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     .check((args) => {
       // TODO: LavaMoat doesn't support watch mode yet, so disallow this
       // combination until that support is implemented.
-      // Tracking issue: https://github.com/MetaMask/MetaMask-planning/issues/7075
+      // Tracking issue: https://github.com/MetaMask/metamask-extension/issues/40677
       if (args.watch === true && args.lavamoat === true) {
         const message =
-          'LavaMoat does not currently support watch mode. See https://github.com/MetaMask/MetaMask-planning/issues/7075 for details.';
+          'LavaMoat does not currently support watch mode. See https://github.com/MetaMask/metamask-extension/issues/40677 for details.';
         if (args.mode === 'production') {
           throw new Error(
             `${message} LavaMoat is enabled automatically when mode is "production"; you can disable it with \`--no-lavamoat\`.`,
