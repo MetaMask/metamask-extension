@@ -1700,6 +1700,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={handleCloseTPSLModal}
           position={position}
           currentPrice={currentPrice}
+          isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
         />
       )}
 
