@@ -3,7 +3,6 @@ import {
   type FetchConfigResult,
   type RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
-import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { ControllerInitFunction } from './types';
 import type {
@@ -12,11 +11,6 @@ import type {
 } from './messengers/config-registry-controller-messenger';
 
 const log = createProjectLogger('config-registry-controller-init');
-
-/** Controller messenger type expected by the package (for type-safe cast). */
-type PackageConfigRegistryMessenger = ConstructorParameters<
-  typeof ConfigRegistryController
->[0]['messenger'];
 
 /**
  * Controller messenger shape used for the initial fetch. The extension's restricted
@@ -56,10 +50,14 @@ function isConfigRegistryApiEnabled(
   if (!initMessenger) {
     return false;
   }
-  const state = initMessenger.call('RemoteFeatureFlagController:getState') as
-    | RemoteFeatureFlagControllerState
-    | undefined;
-  return Boolean(state?.remoteFeatureFlags?.configRegistryApiEnabled);
+  const state = initMessenger.call('RemoteFeatureFlagController:getState');
+  return Boolean(
+    state &&
+    typeof state === 'object' &&
+    'remoteFeatureFlags' in state &&
+    (state as { remoteFeatureFlags?: { configRegistryApiEnabled?: boolean } })
+      .remoteFeatureFlags?.configRegistryApiEnabled,
+  );
 }
 
 /**
@@ -83,7 +81,7 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
   const persistedControllerState = persistedState.ConfigRegistryController;
 
   const controller = new ConfigRegistryController({
-    messenger: controllerMessenger as PackageConfigRegistryMessenger,
+    messenger: controllerMessenger,
     state: persistedControllerState,
   });
 
@@ -97,38 +95,30 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
   // Only fetch when we have no persisted config and the feature is enabled.
   // When the flag is off, we skip the fetch to avoid unnecessary network requests.
   if (!hasPersistedConfigs && isConfigRegistryApiEnabledFlag) {
-    setImmediate(() => {
+    setImmediate(async () => {
       try {
-        const fetchPromise = (
+        const fetchResult = await (
           controllerMessenger as unknown as ControllerMessengerWithFetch
         ).call('ConfigRegistryApiService:fetchConfig', {});
 
-        fetchPromise
-          .then((result: FetchConfigResult) => {
-            if (!result.modified || !result.data) {
-              return;
-            }
-            const { data } = result;
-            const apiChains = data.data.chains;
-            const newConfigs: Record<string, RegistryNetworkConfig> = {};
-            apiChains.forEach((chainConfig: RegistryNetworkConfig) => {
-              const { chainId } = chainConfig;
-              newConfigs[chainId] = chainConfig;
-            });
-            (controller as ControllerWithUpdate).update((state) => {
-              const { configs } = state;
-              configs.networks = newConfigs;
-              state.version = data.data.version;
-              state.lastFetched = Date.now();
-              state.etag = result.etag ?? null;
-            });
-          })
-          .catch((err: unknown) => {
-            log(
-              '[ConfigRegistryControllerInit] Initial fetch failed (non-fatal):',
-              err,
-            );
-          });
+        if (!fetchResult.modified || !fetchResult.data) {
+          return;
+        }
+        const { data } = fetchResult;
+        const apiChains = data.data.chains;
+        const newConfigs: Record<string, RegistryNetworkConfig> = {};
+        apiChains.forEach((chainConfig: RegistryNetworkConfig) => {
+          const { chainId } = chainConfig;
+          newConfigs[chainId] = chainConfig;
+        });
+        // Package does not expose update() in public type; cast required to apply fetched config
+        (controller as ControllerWithUpdate).update((state) => {
+          const { configs } = state;
+          configs.networks = newConfigs;
+          state.version = data.data.version;
+          state.lastFetched = Date.now();
+          state.etag = fetchResult.etag ?? null;
+        });
       } catch (err) {
         log(
           '[ConfigRegistryControllerInit] Initial fetch failed (non-fatal):',

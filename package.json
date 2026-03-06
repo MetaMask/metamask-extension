@@ -302,7 +302,7 @@
     "@metamask/chain-agnostic-permission": "^1.3.0",
     "@metamask/claims-controller": "^0.4.2",
     "@metamask/client-controller": "^1.0.0",
-    "@metamask/config-registry-controller": "npm:@metamask-previews/config-registry-controller@0.0.0-preview-42e3e713e",
+    "@metamask/config-registry-controller": "0.1.0",
     "@metamask/connectivity-controller": "^0.1.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.18.0",

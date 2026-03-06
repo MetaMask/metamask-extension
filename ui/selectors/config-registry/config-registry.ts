@@ -84,7 +84,7 @@ function registryConfigToAddNetworkFields(
     return null;
   }
   const reference = config.chainId.split(':')[1];
-  const hexChainId = add0x(parseInt(reference, 10).toString(16)) as Hex;
+  const hexChainId = add0x(Number.parseInt(reference, 10).toString(16)) as Hex;
 
   const defaultRpc = config.rpcProviders?.default;
   if (!defaultRpc?.url) {
