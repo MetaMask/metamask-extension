@@ -12,7 +12,6 @@ import {
   selectMusdMinAssetBalanceRequired,
 } from '../../selectors/musd';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
-import { getSelectedAccount } from '../../selectors';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
@@ -34,10 +33,6 @@ jest.mock('../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
 }));
 
-jest.mock('../../selectors', () => ({
-  getSelectedAccount: jest.fn(),
-}));
-
 const mockSelectMusdConvertibleTokensAllowlist = jest.mocked(
   selectMusdConvertibleTokensAllowlist,
 );
@@ -50,7 +45,6 @@ const mockSelectMusdMinAssetBalanceRequired = jest.mocked(
 const mockGetAssetsBySelectedAccountGroup = jest.mocked(
   getAssetsBySelectedAccountGroup,
 );
-const mockGetSelectedAccount = jest.mocked(getSelectedAccount);
 
 // Test data
 const mockUsdcMainnet: TokenWithFiatAmount = {
@@ -163,7 +157,6 @@ describe('useMusdConversionTokens', () => {
     mockSelectMusdConvertibleTokensAllowlist.mockReturnValue(mockAllowlist);
     mockSelectMusdConvertibleTokensBlocklist.mockReturnValue(mockBlocklist);
     mockSelectMusdMinAssetBalanceRequired.mockReturnValue(0.01);
-    mockGetSelectedAccount.mockReturnValue({ address: '0x123' });
     mockGetAssetsBySelectedAccountGroup.mockReturnValue({});
   });
 
