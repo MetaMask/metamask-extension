@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Δεν υπάρχει ακόμη κάτι να δείτε. Ανταλλάξτε το πρώτο σας token σήμερα."
   },
-  "activityLog": {
-    "message": "Αρχείο καταγραφής δραστηριότητας"
-  },
   "add": {
     "message": "Προσθήκη"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Προσθέστε την πύλη IPFS που προτιμάτε"
-  },
-  "addImportAccount": {
-    "message": "Προσθήκη λογαριασμού ή πορτοφολιού υλικού"
   },
   "addMemo": {
     "message": "Προσθήκη σημειώματος"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Επιτρέψτε τις ειδοποιήσεις"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Ποσό"
@@ -1069,9 +1059,6 @@
   },
   "bridgePriceImpact": {
     "message": "Επίδραση στην τιμή"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Η επίδραση στην τιμή αντικατοπτρίζει πώς η ανταλλαγή σας επηρεάζει την τιμή της αγοράς. Αν δεν έχετε αρκετά για τα τέλη συναλλαγών, μέρος των token σας χρησιμοποιείται για την κάλυψη των τελών, γεγονός που αυξάνει την επίδραση στην τιμή. Το MetaMask δεν ορίζει ούτε ελέγχει αυτήν τη διαδικασία."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Επίδραση στην τιμή"
@@ -1616,9 +1603,6 @@
   "connectAccount": {
     "message": "Σύνδεση λογαριασμού"
   },
-  "connectAccountOrCreate": {
-    "message": "Σύνδεση λογαριασμού ή δημιουργία νέου"
-  },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
   },
@@ -1912,9 +1896,6 @@
   "customSlippage": {
     "message": "Προσαρμοσμένο"
   },
-  "customSpendLimit": {
-    "message": "Προσαρμοσμένο όριο δαπανών"
-  },
   "customToken": {
     "message": "Προσαρμοσμένο token"
   },
@@ -2202,9 +2183,6 @@
     "message": "Περιγραφή από $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Αποεπιλογή όλων"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "Δεν βρέθηκαν επιλέξιμοι λογαριασμοί"
   },
@@ -2484,9 +2462,6 @@
   "editNonceMessage": {
     "message": "Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε την με προσοχή."
   },
-  "editPermission": {
-    "message": "Επεξεργασία άδειας"
-  },
   "editPermissions": {
     "message": "Επεξεργασία αδειών"
   },
@@ -2570,9 +2545,6 @@
   },
   "enterChainId": {
     "message": "Εισαγάγετε το αναγνωριστικό αλυσίδας"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Εισάγετε το μέγιστο όριο δαπανών"
   },
   "enterNetworkName": {
     "message": "Εισαγάγετε το όνομα δικτύου"
@@ -3365,9 +3337,6 @@
     "message": "Το MetaMask δεν μπορεί να συνδεθεί με τον διακομιστή του blockchain. Εξετάστε τους πιθανούς λόγους $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Κάντε κλικ στο OK για να επιστρέψετε."
-  },
   "insights": {
     "message": "Αναλύσεις"
   },
@@ -3550,9 +3519,6 @@
   },
   "l2FeeTooltip": {
     "message": "Τέλη συναλλαγών L2"
-  },
-  "lastConnected": {
-    "message": "Τελευταία σύνδεση"
   },
   "lastSold": {
     "message": "Τελευταία πώληση"
@@ -3786,13 +3752,6 @@
   },
   "makeAnotherSwap": {
     "message": "Δημιουργία νέας ανταλλαγής"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Διαχείριση"
   },
   "manageDefaultSettings": {
     "message": "Διαχείριση προεπιλεγμένων ρυθμίσεων"
@@ -5309,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Τιμή εισόδου"
   },
-  "perpsExploreCrypto": {
-    "message": "Εξερευνήστε τα κρυπτονομίσματα"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Εξερευνήστε μετοχές και εμπορεύματα"
-  },
   "perpsFees": {
     "message": "Τέλη"
   },
@@ -5434,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Η διάμεσος των εξωτερικών τιμών που αναφέρονται από τους επικυρωτές, η οποία χρησιμοποιείται για τον υπολογισμό του ποσοστού χρηματοδότησης"
-  },
-  "perpsOrderAmount": {
-    "message": "Ποσό εντολής"
   },
   "perpsOrders": {
     "message": "Εντολές"
@@ -5585,12 +5535,6 @@
   "perpsWithdraw": {
     "message": "Ανάληψη"
   },
-  "perpsYourOrders": {
-    "message": "Οι εντολές σας"
-  },
-  "perpsYourPositions": {
-    "message": "Οι θέσεις σας"
-  },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
   },
@@ -5704,9 +5648,6 @@
   },
   "productAnnouncements": {
     "message": "Ανακοινώσεις προϊόντων"
-  },
-  "proposedApprovalLimit": {
-    "message": "Προτεινόμενο αποδεκτό όριο"
   },
   "provide": {
     "message": "Παροχή"
@@ -5928,18 +5869,6 @@
   "rejectAll": {
     "message": "Απόρριψη όλων"
   },
-  "rejectRequestsDescription": {
-    "message": "Πρόκειται να απορρίψετε μαζικά $1 αιτήματα."
-  },
-  "rejectRequestsN": {
-    "message": "Απόρριψη $1 αιτημάτων"
-  },
-  "rejectTxsDescription": {
-    "message": "Πρόκειται να απορρίψετε μαζικά $1 συναλλαγές."
-  },
-  "rejectTxsN": {
-    "message": "Απόρριψη $1 συναλλαγών"
-  },
   "rejected": {
     "message": "Απορρίφθηκε"
   },
@@ -6113,17 +6042,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Το $1 παρέχει $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Το MetaMask είναι ένα $1. Αυτό σημαίνει ότι είστε ο κάτοχος της ΜΦΑ σας.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "πλήρη πρόσβαση στο πορτοφόλι και τα κεφάλαιά σας."
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial πορτοφόλι"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6137,10 +6056,6 @@
   "revealSeedWordsWarning": {
     "message": "Σιγουρευτείτε ότι δεν κοιτάζει κανείς την οθόνη σας.$1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Η Υποστήριξη του MetaMask δεν θα σας τη ζητήσει ποτέ.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Αποκάλυψη ευαίσθητου περιεχομένου"
@@ -6490,12 +6405,6 @@
   "selectAccountToConnect": {
     "message": "Επιλέξτε έναν λογαριασμό για σύνδεση"
   },
-  "selectAccounts": {
-    "message": "Επιλέξτε τον λογαριασμό (-ούς) που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο"
-  },
-  "selectAccountsForSnap": {
-    "message": "Επιλέξτε τον λογαριασμό (-ους) που θέλετε να χρησιμοποιήσετε με αυτό το snap"
-  },
   "selectAll": {
     "message": "Επιλογή όλων"
   },
@@ -6534,9 +6443,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Επιλογή διαφορετικού λογαριασμού"
-  },
-  "selectingAllWillAllow": {
-    "message": "Επιλέγοντας τα όλα θα επιτρέψετε σε αυτόν τον ιστότοπο να δει όλους τους τρεχούμενους λογαριασμούς σας. Βεβαιωθείτε ότι εμπιστεύεστε αυτόν τον ιστότοπο."
   },
   "send": {
     "message": "Αποστολή"
@@ -7677,25 +7583,6 @@
   "speedUpTooltipText": {
     "message": "Νέο τέλος συναλλαγής"
   },
-  "speedUpTransaction": {
-    "message": "Επιτάχυνση αυτής της συναλλαγής"
-  },
-  "spendLimitInsufficient": {
-    "message": "Ανεπαρκές όριο δαπανών"
-  },
-  "spendLimitInvalid": {
-    "message": "Μη έγκυρο όριο δαπανών. Πρέπει να είναι θετικός αριθμός"
-  },
-  "spendLimitPermission": {
-    "message": "Άδεια ορίου δαπανών"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Το όριο δαπανών ζητήθηκε από το $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Πολύ μεγάλο όριο δαπανών"
-  },
   "spender": {
     "message": "Επενδυτής"
   },
@@ -8530,18 +8417,6 @@
   "transaction": {
     "message": "συναλλαγή"
   },
-  "transactionCancelAttempted": {
-    "message": "Προσπάθεια ακύρωσης συναλλαγής με εκτιμώμενο τέλος συναλλαγής $1 στις $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Η συναλλαγή ακυρώθηκε με επιτυχία στις $2"
-  },
-  "transactionConfirmed": {
-    "message": "Η συναλλαγή επιβεβαιώθηκε στις $2."
-  },
-  "transactionCreated": {
-    "message": "Η συναλλαγή δημιουργήθηκε με αξία $1 στις $2."
-  },
   "transactionDataFunction": {
     "message": "Λειτουργία"
   },
@@ -8551,17 +8426,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Ποσά + τέλη"
   },
-  "transactionDropped": {
-    "message": "Η συναλλαγή υποχώρησε στα $2."
-  },
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό του συμβολαίου."
   },
   "transactionErrorNoContract": {
     "message": "Προσπάθεια κλήσης μιας λειτουργίας σε διεύθυνση μη συμβολαίου."
-  },
-  "transactionErrored": {
-    "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
   },
   "transactionFee": {
     "message": "Χρέωση συναλλαγής"
@@ -8597,24 +8466,15 @@
   "transactionIncludesTypes": {
     "message": "Αυτή η συναλλαγή περιλαμβάνει: $1."
   },
-  "transactionResubmitted": {
-    "message": "Η συναλλαγή υποβλήθηκε ξανά με το εκτιμώμενο τέλος συναλλαγής να έχει αυξηθεί στα $1 στις $2"
-  },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"
   },
   "transactionShield": {
     "message": "Προστασία συναλλαγών"
   },
-  "transactionSubmitted": {
-    "message": "Η συναλλαγή υποβλήθηκε με τέλος συναλλαγής στα $1 στις $2."
-  },
   "transactionTotalGasFee": {
     "message": "Σύνολο τελών συναλλαγών",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Η συναλλαγή ενημερώθηκε στις $2."
   },
   "transactions": {
     "message": "Συναλλαγές"
@@ -8932,9 +8792,6 @@
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"
   },
-  "viewMore": {
-    "message": "Δείτε περισσότερα"
-  },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"
   },
@@ -9100,9 +8957,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Η Μυστική σας Φράση Ανάκτησης"
   },
   "yourTransactionConfirmed": {
     "message": "Η συναλλαγή έχει ήδη επιβεβαιωθεί"

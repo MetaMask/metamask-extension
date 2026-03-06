@@ -150,10 +150,6 @@ import {
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
 import {
-  getSwapsControllerInitMessenger,
-  getSwapsControllerMessenger,
-} from './swaps-controller-messenger';
-import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
@@ -364,14 +360,6 @@ export type {
   RewardsControllerEvents,
 } from './rewards-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
-export type {
-  SwapsControllerMessenger,
-  SwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export {
-  getSwapsControllerMessenger,
-  getSwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -708,10 +696,6 @@ export const CONTROLLER_MESSENGERS = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
-  },
-  SwapsController: {
-    getMessenger: getSwapsControllerMessenger,
-    getInitMessenger: getSwapsControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

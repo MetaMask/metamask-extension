@@ -300,15 +300,32 @@ export const createBridgeMockStore = ({
       selectedMultichainNetworkChainId: 'eip155:1',
       isEvmSelected: true,
       completedOnboarding: true,
-      gasFeeEstimates: {
-        estimatedBaseFee: '0.00010456',
-        medium: {
-          suggestedMaxFeePerGas: '0.00018456',
-          suggestedMaxPriorityFeePerGas: '0.0001',
+      gasFeeEstimatesByChainId: {
+        '0x1': {
+          gasFeeEstimates: {
+            estimatedBaseFee: '0.00010456',
+            medium: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
+            },
+            high: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
+            },
+          },
         },
-        high: {
-          suggestedMaxFeePerGas: '0.00018456',
-          suggestedMaxPriorityFeePerGas: '0.0001',
+        '0xa': {
+          gasFeeEstimates: {
+            estimatedBaseFee: '0.00010456',
+            medium: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
+            },
+            high: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
+            },
+          },
         },
       },
       currencyRates: {
@@ -688,6 +705,12 @@ export const createBridgeMockStore = ({
               name: 'Ethereum',
             },
           ],
+          priceImpactThreshold: {
+            gasless: 0.055,
+            normal: 0.055,
+            warning: 0.055,
+            error: 0.251,
+          },
         },
       },
       ...bridgeStateOverrides,

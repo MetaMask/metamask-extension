@@ -6,6 +6,7 @@ import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import {
   Box,
   ButtonIcon,
@@ -70,9 +71,7 @@ export const MultichainAccountDetailsPage = () => {
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
   const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
-  const isRemovable =
-    wallet?.type !== AccountWalletType.Entropy &&
-    wallet?.type !== AccountWalletType.Snap;
+  const isRemovable = wallet?.type !== AccountWalletType.Entropy;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
@@ -95,6 +94,11 @@ export const MultichainAccountDetailsPage = () => {
     (account) => account.metadata.keyring.type === KeyringTypes.simple,
   );
   const shouldShowBackupReminder = isSRPBackedUp === false;
+
+  const evmKeyringType = evmInternalAccount?.metadata?.keyring?.type;
+  const isEip7702SupportedKeyring =
+    evmKeyringType &&
+    KEYRING_TYPES_SUPPORTING_7702.includes(evmKeyringType as KeyringTypes);
 
   const handleAddressesClick = () => {
     trace({
@@ -233,21 +237,23 @@ export const MultichainAccountDetailsPage = () => {
               }
             />
           )}
-          <AccountDetailsRow
-            label={t('smartAccountLabel')}
-            value={t('setUp')}
-            onClick={handleSmartAccountClick}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('smartAccountLabel')}
-                marginLeft={2}
-                data-testid="smart-account-action"
-              />
-            }
-          />
+          {isEip7702SupportedKeyring && (
+            <AccountDetailsRow
+              label={t('smartAccountLabel')}
+              value={t('setUp')}
+              onClick={handleSmartAccountClick}
+              endAccessory={
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  color={IconColor.iconAlternative}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('smartAccountLabel')}
+                  marginLeft={2}
+                  data-testid="smart-account-action"
+                />
+              }
+            />
+          )}
         </Box>
         <Box className="multichain-account-details-page__section">
           <AccountDetailsRow

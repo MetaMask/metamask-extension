@@ -32,10 +32,8 @@ class ActivityListPage {
     css: '.transaction-status-label--confirmed',
   };
 
-  private readonly confirmTransactionReplacementButton = {
-    text: 'Submit',
-    tag: 'button',
-  };
+  private readonly confirmTransactionReplacementButton =
+    '[data-testid="cancel-speedup-confirm-button"]';
 
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',

@@ -26,6 +26,7 @@ jobs:
     name: Run Page Load Benchmarks
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
