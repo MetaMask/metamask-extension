@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import { useConfirmContext } from '../context/confirm';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
 import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
@@ -30,6 +35,7 @@ import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
 import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
 import { useBurnAddressAlert } from './alerts/transactions/useBurnAddressAlert';
+import { usePerpsDepositInsufficientPayTokenBalanceAlert } from './perps/usePerpsDepositInsufficientPayTokenBalanceAlert';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -42,6 +48,9 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isPerpsDeposit =
+    currentConfirmation?.type === TransactionType.perpsDeposit;
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const burnAddressAlert = useBurnAddressAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
@@ -50,8 +59,13 @@ function useTransactionAlerts(): Alert[] {
   const gasSponsorshipWarningAlerts = useGasSponsorshipWarningAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
-  const insufficientPayTokenBalanceAlerts =
+  const defaultInsufficientPayTokenBalanceAlerts =
     useInsufficientPayTokenBalanceAlert();
+  const perpsInsufficientPayTokenBalanceAlerts =
+    usePerpsDepositInsufficientPayTokenBalanceAlert();
+  const insufficientPayTokenBalanceAlerts = isPerpsDeposit
+    ? perpsInsufficientPayTokenBalanceAlerts
+    : defaultInsufficientPayTokenBalanceAlerts;
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const noPayTokenQuotesAlerts = useNoPayTokenQuotesAlert();

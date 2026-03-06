@@ -65,44 +65,53 @@ jest.mock('loglevel', () => ({
     error: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
+    setLevel: jest.fn(),
+    setDefaultLevel: jest.fn(),
   },
   info: jest.fn(),
   warn: jest.fn(),
   error: jest.fn(),
   debug: jest.fn(),
   trace: jest.fn(),
+  setLevel: jest.fn(),
+  setDefaultLevel: jest.fn(),
 }));
 
-// Mock the PerpsControllerProvider to render children directly
+const mockSubmitRequestToBackground = jest
+  .fn()
+  .mockResolvedValue({ success: true });
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
+
 jest.mock('../../providers/perps', () => ({
-  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
-  getPerpsController: jest.fn().mockResolvedValue({
-    closePosition: jest.fn().mockResolvedValue({ success: true }),
-    placeOrder: jest.fn().mockResolvedValue({ success: true }),
-    updateMargin: jest.fn().mockResolvedValue({ success: true }),
-    updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
-  }),
-}));
-
-jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
-}));
-
-jest.mock('../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => ({
-    positions: { getCachedData: () => [], pushData: jest.fn() },
+    positions: {
+      getCachedData: () => [],
+      pushData: jest.fn(),
+      subscribe: jest.fn(() => jest.fn()),
+    },
     orders: { getCachedData: () => [], pushData: jest.fn() },
     account: { getCachedData: () => null, pushData: jest.fn() },
     markets: { getCachedData: () => [], pushData: jest.fn() },
+    prices: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => [] },
     setOptimisticTPSL: jest.fn(),
     clearOptimisticTPSL: jest.fn(),
     pushPositionsWithOverrides: jest.fn(),
     prewarm: jest.fn(),
     cleanupPrewarm: jest.fn(),
     isInitialized: () => true,
-    init: jest.fn().mockResolvedValue(undefined),
+    init: jest.fn(),
   }),
+}));
+
+jest.mock('../../hooks/perps', () => ({
+  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsOrderForm: jest.fn(),
+  useUserHistory: jest.fn(),
+  usePerpsTransactionHistory: jest.fn(),
+  usePerpsMarginCalculations: jest.fn(),
 }));
 
 // Mock the perps stream hooks

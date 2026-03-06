@@ -74,6 +74,7 @@
       "MetaMask: MetaMetrics invalid trait types": 2,
       "MetaMask: Sentry initialization warnings": 1,
       "ObjectMultiplex: Malformed chunk warnings": 1,
+      "Test errors: Fetch failures": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: AssertionError: The Snaps platform requires": 1,
       "error: Error initializing gator permissions controller": 5,
@@ -524,7 +525,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/order-entry/components/close-amount-section/close-amount-section.test.tsx": {
-      "Material-UI: JSS warnings": 15,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/order-entry/components/leverage-slider/leverage-slider.test.tsx": {
@@ -2692,6 +2692,16 @@
     "ui/pages/confirmations/hooks/gas/useIsGaslessSupported.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/perps/usePerpsDepositConfirmation.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/perps/usePerpsDepositInsufficientPayTokenBalanceAlert.test.ts": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/perps/usePerpsDepositTrigger.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/send/metrics/useAmountSelectionMetrics.test.tsx": {

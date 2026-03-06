@@ -256,6 +256,7 @@
     "permissionActivityLog": "object",
     "permissionHistory": "object"
   },
+  "PerpsController": "object",
   "PhishingController": {
     "addressScanCache": "object",
     "tokenScanCache": "object",

@@ -6,20 +6,11 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as mocks from './mocks';
 import { PerpsTabView } from './perps-tab-view';
 
-jest.mock('../../../ducks/perps', () => {
-  const actual = jest.requireActual('../../../ducks/perps');
-  return {
-    ...actual,
-    setTutorialModalOpen: jest.fn(),
-    selectTutorialModalOpen: () => false,
-    selectTutorialActiveStep: () => actual.PerpsTutorialStep.WhatArePerps,
-  };
-});
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
 
-// Mock the PerpsControllerProvider, getPerpsStreamManager, and usePerpsController
 jest.mock('../../../providers/perps', () => ({
-  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
   getPerpsStreamManager: () => ({
     init: jest.fn().mockResolvedValue(undefined),
     prewarm: jest.fn(),
@@ -146,7 +137,9 @@ describe('PerpsTabView', () => {
     it('shows Recent Activity section', () => {
       renderWithProvider(<PerpsTabView />, mockStore);
 
-      expect(screen.getByTestId('perps-recent-activity')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-recent-activity-empty'),
+      ).toBeInTheDocument();
     });
 
     it('shows watchlist when mock watchlist symbols match market data', () => {
