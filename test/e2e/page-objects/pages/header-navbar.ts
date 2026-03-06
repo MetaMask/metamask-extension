@@ -78,7 +78,6 @@ class HeaderNavbar {
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
-    await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
 
   async openAccountMenu(): Promise<void> {
@@ -125,34 +124,14 @@ class HeaderNavbar {
   }
 
   /**
-   * Opens the permissions page.
-   * Handles both flows:
-   * - Regular flow: Click "All Permissions" → Goes directly to Permissions Page
-   * - Gator flow (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
-   *
-   * @param options - Optional configuration
-   * @param options.skipSitesNavigation - If true, stops at Gator Permissions Page without clicking "Sites" (only relevant for Gator flow)
+   * Clicks the "All Permissions" (Connected Sites) button in the header menu.
+   * This may land on the Permissions Page directly, or on the Gator Permissions Page (Flask builds).
+   * Use openPermissionsPageFlow for the full flow that navigates to the Permissions Page.
    */
-  async openPermissionsPage(options?: {
-    skipSitesNavigation?: boolean;
-  }): Promise<void> {
-    console.log('Open permissions page in header navbar');
+  async clickAllPermissionsButton(): Promise<void> {
+    console.log('Click All Permissions button in header navbar');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.allPermissionsButton);
-
-    // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
-    // If so, we need to click "Sites" to get to the actual Permissions Page
-    const isGatorPermissionsPage = await this.driver
-      .findElement('[data-testid="gator-permissions-page"]')
-      .then(() => true)
-      .catch(() => false);
-
-    if (isGatorPermissionsPage && !options?.skipSitesNavigation) {
-      console.log(
-        'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
-      );
-      await this.driver.clickElement({ text: 'Sites', tag: 'p' });
-    }
   }
 
   async openSnapListPage(): Promise<void> {
