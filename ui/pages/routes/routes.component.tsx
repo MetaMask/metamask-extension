@@ -9,6 +9,7 @@ import {
   useLocation,
   useNavigationType,
   Navigate,
+  Outlet,
 } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
@@ -71,6 +72,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
@@ -137,6 +139,8 @@ import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
+import { contactsRoutes } from '../contacts/contacts-router';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
@@ -625,6 +629,17 @@ export default function Routes() {
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openNotificationsPage',
       }),
+      {
+        path: CONTACTS_ROUTE,
+        element: (
+          <RootLayout>
+            <Authenticated>
+              <Outlet />
+            </Authenticated>
+          </RootLayout>
+        ),
+        children: contactsRoutes,
+      },
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
