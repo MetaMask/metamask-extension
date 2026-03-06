@@ -42,12 +42,11 @@ describe('TokenDetectionControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: undefined,
+      disabled: false,
       getBalancesInSingleCall: expect.any(Function),
       trackMetaMetricsEvent: expect.any(Function),
       useExternalServices: expect.any(Function),
       useTokenDetection: expect.any(Function),
-      platform: 'extension',
-      useAccountsAPI: true,
     });
   });
 });
