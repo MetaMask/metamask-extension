@@ -5490,7 +5490,13 @@ export default class MetamaskController extends EventEmitter {
         ),
     );
     const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
+      (address) => {
+        try {
+          return this.keyringController.getAccountKeyringType(address);
+        } catch (error) {
+          return `unknown (${error.message})`;
+        }
+      },
     );
 
     const internalAccountCount = internalAccounts.length;
@@ -5520,7 +5526,24 @@ export default class MetamaskController extends EventEmitter {
    */
   sortEvmAccountsByLastSelected(addresses) {
     const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
+
+    const addressesWithInternalAccounts = addresses.filter((address) =>
+      internalAccounts.some(
+        (account) => account.address.toLowerCase() === address.toLowerCase(),
+      ),
+    );
+
+    if (addressesWithInternalAccounts.length !== addresses.length) {
+      this.captureKeyringTypesWithMissingIdentities(
+        internalAccounts,
+        addresses,
+      );
+    }
+
+    return this.sortAddressesWithInternalAccounts(
+      addressesWithInternalAccounts,
+      internalAccounts,
+    );
   }
 
   /**
