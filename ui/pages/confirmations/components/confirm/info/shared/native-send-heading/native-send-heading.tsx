@@ -1,4 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -8,23 +16,8 @@ import {
 } from '../../../../../../../../shared/constants/network';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
-import {
-  AvatarToken,
-  AvatarTokenSize,
-  Box,
-  Text,
-} from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import {
   getPreferences,
@@ -33,6 +26,7 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
@@ -91,34 +85,35 @@ const NativeSendHeading = () => {
       }
       name={nativeCurrency}
       size={AvatarTokenSize.Xl}
-      backgroundColor={BackgroundColor.backgroundDefault}
     />
   );
 
   const NativeAssetAmount =
     roundedTransferValue === transferValue ? (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        marginTop={3}
-      >
-        {`${roundedTransferValue} ${nativeCurrency}`}
-      </Text>
-    ) : (
-      <Tooltip title={transferValue} position="right">
+      <Box paddingBottom={1}>
         <Text
-          variant={TextVariant.headingLg}
-          color={TextColor.inherit}
-          marginTop={3}
+          variant={TextVariant.HeadingLg}
+          color={TextColor.Inherit}
         >
           {`${roundedTransferValue} ${nativeCurrency}`}
         </Text>
+      </Box>
+    ) : (
+      <Tooltip title={transferValue} position="right">
+        <Box paddingBottom={1}>
+          <Text
+            variant={TextVariant.HeadingLg}
+            color={TextColor.Inherit}
+          >
+            {`${roundedTransferValue} ${nativeCurrency}`}
+          </Text>
+        </Box>
       </Tooltip>
     );
 
   const NativeAssetFiatConversion = Boolean(fiatDisplayValue) &&
     (!isTestnet || showFiatInTestnets) && (
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {fiatDisplayValue}
       </Text>
     );
@@ -126,17 +121,10 @@ const NativeSendHeading = () => {
   useSendingValueMetric({ transactionMeta, fiatValue });
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      padding={4}
-    >
-      {NetworkImage}
+    <SendHeadingLayout image={NetworkImage}>
       {NativeAssetAmount}
       {NativeAssetFiatConversion}
-    </Box>
+    </SendHeadingLayout>
   );
 };
 
