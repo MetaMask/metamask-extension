@@ -102,7 +102,10 @@ describe('ManifestPlugin', () => {
         manifestPlugin.apply(compiler);
         await promise;
 
-        assert.deepStrictEqual(Object.keys(compilation.assets), expectedAssets);
+        assert.deepStrictEqual(
+          new Set(Object.keys(compilation.assets)),
+          new Set(expectedAssets),
+        );
         validateManifest(compilation as unknown as Compilation);
       });
     }
@@ -216,6 +219,50 @@ describe('ManifestPlugin', () => {
         });
       };
     }
+
+    it('emits source maps to the sourcemaps directory when devtool is hidden-source-map', async () => {
+      const files = [
+        {
+          name: 'filename.js',
+          source: Buffer.from('console.log(1 + 2);', 'utf8'),
+        },
+        {
+          name: 'filename.js.map',
+          source: Buffer.from('{}', 'utf8'),
+        },
+      ];
+      const { compiler, compilation, promise } = mockWebpack(
+        files.map(({ name }) => name),
+        files.map(({ source }) => source),
+        files.map(() => null),
+        'hidden-source-map',
+      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      assert.deepStrictEqual(
+        new Set(Object.keys(compilation.assets)),
+        new Set([
+          'chrome/manifest.json',
+          'chrome/filename.js',
+          'firefox/manifest.json',
+          'firefox/filename.js',
+          'sourcemaps/filename.js.map',
+        ]),
+      );
+    });
   });
 
   describe('should transform the manifest object', () => {
