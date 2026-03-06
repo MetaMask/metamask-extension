@@ -8781,6 +8781,15 @@
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
   },
+  "trustSignalBlockDescription": {
+    "message": "If you connect to this site, you could lose all your assets."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Malicious site detected"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Connect Anyway"
+  },
   "tryAgain": {
     "message": "Try again"
   },

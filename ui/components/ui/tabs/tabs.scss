@@ -1,0 +1,97 @@
+/* Animation specs */
+:root {
+  --tab-transition-duration: 200ms;
+  --tab-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --tab-transition-distance: 12px;
+}
+
+/* Clip overflow and make size changes instant (don't animate height) */
+::view-transition-group(tab-content) {
+  overflow: hidden;
+  animation-duration: 0s;
+}
+
+/* Disable default crossfade blending */
+::view-transition-image-pair(tab-content) {
+  isolation: auto;
+}
+
+/* Avoids ghosting */
+::view-transition-old(tab-content),
+::view-transition-new(tab-content) {
+  mix-blend-mode: normal;
+}
+
+/* Forward: old exits left, new enters from right */
+:root[data-tab-transition-direction='forward']::view-transition-old(tab-content) {
+  animation: slide-out-left var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+:root[data-tab-transition-direction='forward']::view-transition-new(tab-content) {
+  animation: slide-in-from-right var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+/* Backward: old exits right, new enters from left */
+:root[data-tab-transition-direction='backward']::view-transition-old(tab-content) {
+  animation: slide-out-right var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+:root[data-tab-transition-direction='backward']::view-transition-new(tab-content) {
+  animation: slide-in-from-left var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+@keyframes slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--tab-transition-distance)));
+  }
+}
+
+@keyframes slide-in-from-right {
+  from {
+    opacity: 0.5;
+    transform: translateX(var(--tab-transition-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(var(--tab-transition-distance));
+  }
+}
+
+@keyframes slide-in-from-left {
+  from {
+    opacity: 0.5;
+    transform: translateX(calc(-1 * var(--tab-transition-distance)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-tab-transition-direction]::view-transition-old(tab-content),
+  :root[data-tab-transition-direction]::view-transition-new(tab-content) {
+    animation-duration: 0.01ms !important;
+  }
+}
