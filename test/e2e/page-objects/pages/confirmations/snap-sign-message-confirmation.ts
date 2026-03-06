@@ -31,6 +31,16 @@ class SnapSignMessageConfirmation {
     });
   }
 
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Checking network ${networkName} is displayed on snap sign message confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+    });
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
