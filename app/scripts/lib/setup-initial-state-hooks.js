@@ -37,8 +37,12 @@ const getEnvironmentTypeMemo = memoize((url) => {
 const getEnvironmentTypeForHooks = (
   url = globalThis.self?.location?.href ?? '',
 ) => {
+  // With Webpack the UI chunk can run before the page global has location set, so
+  // url is empty; with Browserify the script runs in the page context and href is
+  // set. Return null when unknown so we never treat the UI as background and use
+  // FixtureExtensionStore(initialize: true) there, which would block on fetch.
   if (!url) {
-    return ENVIRONMENT_TYPE_BACKGROUND;
+    return null;
   }
   return getEnvironmentTypeMemo(url);
 };

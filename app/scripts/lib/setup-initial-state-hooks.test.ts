@@ -146,7 +146,7 @@ describe('setup-initial-state-hooks', () => {
       });
     });
 
-    it('treats empty href as background', async () => {
+    it('treats empty href as UI (avoids initialize:true in UI context)', async () => {
       setSelfHref('');
       const { FixtureExtensionStore } = jest.requireMock(
         './stores/fixture-extension-store',
@@ -155,11 +155,11 @@ describe('setup-initial-state-hooks', () => {
       await importFresh();
 
       expect(FixtureExtensionStore).toHaveBeenCalledWith({
-        initialize: true,
+        initialize: false,
       });
     });
 
-    it('treats undefined self as background', async () => {
+    it('treats undefined self as UI (avoids initialize:true in UI context)', async () => {
       Object.defineProperty(globalThis, 'self', {
         value: undefined,
         writable: true,
@@ -172,7 +172,7 @@ describe('setup-initial-state-hooks', () => {
       await importFresh();
 
       expect(FixtureExtensionStore).toHaveBeenCalledWith({
-        initialize: true,
+        initialize: false,
       });
     });
   });
