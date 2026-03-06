@@ -108,9 +108,6 @@ export const PerpsTabView: React.FC = () => {
 
       {/* Support & Learn */}
       <PerpsSupportLearn />
-
-      {/* Recent Activity Section - only shown when user has positions */}
-      {hasPositions && <PerpsRecentActivity transactions={[]} />}
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
     </Box>

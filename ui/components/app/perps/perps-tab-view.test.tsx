@@ -137,7 +137,9 @@ describe('PerpsTabView', () => {
     it('shows Recent Activity section', () => {
       renderWithProvider(<PerpsTabView />, mockStore);
 
-      expect(screen.getByTestId('perps-recent-activity')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-recent-activity-empty'),
+      ).toBeInTheDocument();
     });
 
     it('shows watchlist when mock watchlist symbols match market data', () => {
