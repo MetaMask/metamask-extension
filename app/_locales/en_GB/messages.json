@@ -888,6 +888,9 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Open the DeFi page"
   },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "Open the mUSD Conversion page"
+  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "Open the Notifications page"
   },
@@ -4091,6 +4094,17 @@
     "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
+  "musdBoostDescription": {
+    "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBoostTitle": {
+    "message": "Get $1% on your stablecoins",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBuyMusd": {
+    "message": "Buy mUSD"
+  },
   "musdClaimActivityTitle": {
     "message": "Claim mUSD bonus"
   },
@@ -4127,8 +4141,15 @@
   "musdConversionToastSuccess": {
     "message": "Your mUSD is here!"
   },
+  "musdConvert": {
+    "message": "Convert"
+  },
   "musdConvertAndGetBonus": {
     "message": "Convert and get $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdEarnBonusPercentage": {
+    "message": "Earn a $1% bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEducationGetStarted": {
@@ -4140,6 +4161,13 @@
   },
   "musdEducationNotNow": {
     "message": "Not now"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Get $1% bonus",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdGetMusd": {
+    "message": "Get mUSD"
   },
   "musdTermsApply": {
     "message": "Terms apply."

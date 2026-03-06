@@ -3999,7 +3999,8 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Chuyển đổi mUSD"
+    "message": "Chuyển đổi mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
     "message": "Chuyển đổi mUSD"

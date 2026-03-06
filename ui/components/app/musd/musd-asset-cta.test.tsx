@@ -152,11 +152,10 @@ describe('MusdAssetCta', () => {
       fireEvent.click(ctaCard);
 
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
-        preferredToken: expect.objectContaining({
+        preferredToken: {
           address: mockToken.address,
           chainId: mockToken.chainId,
-          symbol: mockToken.symbol,
-        }),
+        },
         entryPoint: 'asset_overview',
       });
     });

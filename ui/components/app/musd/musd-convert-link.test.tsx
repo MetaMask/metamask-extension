@@ -117,11 +117,10 @@ describe('MusdConvertLink', () => {
     fireEvent.click(ctaButton);
 
     expect(mockStartConversionFlow).toHaveBeenCalledWith({
-      preferredToken: expect.objectContaining({
+      preferredToken: {
         address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: '0x1',
-        symbol: 'USDC',
-      }),
+      },
       entryPoint: 'token_list',
     });
   });
