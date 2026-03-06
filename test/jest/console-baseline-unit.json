@@ -1556,6 +1556,7 @@
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "error: Error: Hardware wallet device is": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/index.test.tsx": {
@@ -1570,7 +1571,11 @@
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
+      "React: State updates on unmounted components": 1,
       "Reselect: Input stability warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/prepare/bridge-price-impact-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
