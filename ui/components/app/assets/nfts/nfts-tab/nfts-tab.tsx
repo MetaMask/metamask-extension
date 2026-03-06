@@ -2,11 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getIsMainnet,
@@ -23,7 +18,6 @@ import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
-import PulseLoader from '../../../../ui/pulse-loader';
 import { NftEmptyState } from '../nft-empty-state';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -37,17 +31,17 @@ export default function NftsTab() {
     getNftIsStillFetchingIndication,
   );
 
-  const { nftsLoading, collections } = useNftsCollections();
+  const { collections } = useNftsCollections();
 
   const { currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
 
   const hasAnyNfts = Object.keys(collections).length > 0;
 
   useEffect(() => {
-    if (!nftsLoading && !nftsStillFetchingIndication) {
+    if (!nftsStillFetchingIndication) {
       endTrace({ name: TraceName.AccountOverviewNftsTab });
     }
-  }, [nftsLoading, nftsStillFetchingIndication]);
+  }, [nftsStillFetchingIndication]);
 
   const handleNftClick = (nft: NFT) => {
     navigate(
@@ -60,22 +54,6 @@ export default function NftsTab() {
     order: 'asc',
     sortCallback: 'alphaNumeric',
   });
-
-  if (!hasAnyNfts && nftsStillFetchingIndication) {
-    return (
-      <Box
-        className="nfts-tab__loading"
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        display={Display.Flex}
-        marginTop={4}
-        paddingTop={4}
-        paddingBottom={4}
-      >
-        <PulseLoader />
-      </Box>
-    );
-  }
 
   return (
     <>
