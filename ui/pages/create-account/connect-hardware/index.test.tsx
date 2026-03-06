@@ -1,8 +1,9 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { useNavigate } from 'react-router-dom';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -22,6 +23,8 @@ jest.mock('../../../store/actions', () => ({
   checkHardwareStatus: () => mockCheckHardwareStatus,
 }));
 
+const mockGetActiveQrCodeScanRequest = jest.fn().mockReturnValue(null);
+
 jest.mock('../../../selectors', () => ({
   getCurrentChainId: () => '0x1',
   getSelectedAddress: () => '0xselectedAddress',
@@ -32,6 +35,8 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
+  getActiveQrCodeScanRequest: (...args: unknown[]) =>
+    mockGetActiveQrCodeScanRequest(...args),
 }));
 
 jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
@@ -390,6 +395,147 @@ describe('ConnectHardwareForm', () => {
           expect(getByText(appClosedMessage)).toBeInTheDocument();
         });
       });
+    });
+  });
+
+  describe('componentDidUpdate - QR scan completion', () => {
+    beforeEach(() => {
+      mockCheckHardwareStatus.mockReset().mockResolvedValue(false);
+      mockConnectHardware.mockReset();
+      mockGetActiveQrCodeScanRequest.mockReturnValue(null);
+    });
+
+    const mockStateWithQrPath = {
+      ...mockState,
+      appState: {
+        ...mockState.appState,
+        defaultHdPaths: {
+          ...mockState.appState.defaultHdPaths,
+          [HardwareDeviceNames.qr]: "m/44'/60'/0'",
+        },
+      },
+    };
+
+    function createStoreWithFreshRefs() {
+      const store = configureMockStore([thunk])(mockStateWithQrPath);
+      const origGetState = store.getState.bind(store);
+      store.getState = () => ({
+        ...(origGetState() as Record<string, unknown>),
+      });
+      return store;
+    }
+
+    async function renderAndWaitForMount(
+      store: ReturnType<typeof createStoreWithFreshRefs>,
+    ) {
+      const result = renderWithProvider(
+        <ConnectHardwareForm {...mockProps} />,
+        store,
+      );
+      await waitFor(() =>
+        expect(mockCheckHardwareStatus).toHaveBeenCalledTimes(4),
+      );
+      return result;
+    }
+
+    async function simulateScanCompletion(
+      store: ReturnType<typeof createStoreWithFreshRefs>,
+    ) {
+      mockGetActiveQrCodeScanRequest.mockReturnValue(null);
+      await act(async () => {
+        store.dispatch({ type: 'FORCE_UPDATE' });
+      });
+    }
+
+    it('fetches accounts when QR PAIR scan completes and keyring is unlocked', async () => {
+      mockGetActiveQrCodeScanRequest.mockReturnValue({
+        type: QrScanRequestType.PAIR,
+      });
+
+      const store = createStoreWithFreshRefs();
+      await renderAndWaitForMount(store);
+
+      mockCheckHardwareStatus.mockReset().mockResolvedValue(true);
+      mockConnectHardware
+        .mockReset()
+        .mockResolvedValue([{ address: '0xQR1', balance: null, index: 0 }]);
+
+      await simulateScanCompletion(store);
+
+      await waitFor(() => {
+        expect(mockCheckHardwareStatus).toHaveBeenCalled();
+        expect(mockConnectHardware).toHaveBeenCalled();
+      });
+    });
+
+    it('does not fetch accounts when keyring is locked', async () => {
+      mockGetActiveQrCodeScanRequest.mockReturnValue({
+        type: QrScanRequestType.PAIR,
+      });
+
+      const store = createStoreWithFreshRefs();
+      await renderAndWaitForMount(store);
+
+      mockCheckHardwareStatus.mockReset().mockResolvedValue(false);
+      mockConnectHardware.mockReset();
+
+      await simulateScanCompletion(store);
+
+      await waitFor(() => {
+        expect(mockCheckHardwareStatus).toHaveBeenCalled();
+      });
+      expect(mockConnectHardware).not.toHaveBeenCalled();
+    });
+
+    it('sets error state when checkHardwareStatus rejects with Error object', async () => {
+      mockGetActiveQrCodeScanRequest.mockReturnValue({
+        type: QrScanRequestType.PAIR,
+      });
+
+      const store = createStoreWithFreshRefs();
+      const { getByText } = await renderAndWaitForMount(store);
+
+      mockCheckHardwareStatus
+        .mockReset()
+        .mockRejectedValue(new Error('hardware error'));
+
+      await simulateScanCompletion(store);
+
+      await waitFor(() => {
+        expect(getByText('hardware error')).toBeInTheDocument();
+      });
+    });
+
+    it('sets error state when checkHardwareStatus rejects with string', async () => {
+      mockGetActiveQrCodeScanRequest.mockReturnValue({
+        type: QrScanRequestType.PAIR,
+      });
+
+      const store = createStoreWithFreshRefs();
+      const { getByText } = await renderAndWaitForMount(store);
+
+      mockCheckHardwareStatus.mockReset().mockRejectedValue('string error');
+
+      await simulateScanCompletion(store);
+
+      await waitFor(() => {
+        expect(getByText('string error')).toBeInTheDocument();
+      });
+    });
+
+    it('does not trigger when previous scan was not PAIR type', async () => {
+      mockGetActiveQrCodeScanRequest.mockReturnValue({
+        type: QrScanRequestType.SIGN,
+      });
+
+      const store = createStoreWithFreshRefs();
+      await renderAndWaitForMount(store);
+
+      mockCheckHardwareStatus.mockReset();
+
+      await simulateScanCompletion(store);
+
+      expect(mockCheckHardwareStatus).not.toHaveBeenCalled();
     });
   });
 });
