@@ -9,6 +9,7 @@ import {
   useLocation,
   useNavigationType,
   Navigate,
+  Outlet,
 } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
@@ -138,6 +139,8 @@ import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
+import { contactsRoutes } from '../contacts/contacts-router';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
@@ -191,9 +194,6 @@ const NotificationDetails = mmLazy(
 );
 const Notifications = mmLazy(
   (() => import('../notifications/index.js')) as unknown as DynamicImportType,
-);
-const Contacts = mmLazy(
-  (() => import('../contacts/index.ts')) as unknown as DynamicImportType,
 );
 const SnapList = mmLazy(
   (() =>
@@ -629,13 +629,17 @@ export default function Routes() {
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openNotificationsPage',
       }),
-      createRouteWithLayout({
-        path: `${CONTACTS_ROUTE}/*`,
-        component: Contacts,
-        layout: RootLayout,
-        authenticated: true,
-        basicFunctionalityRequired: false,
-      }),
+      {
+        path: CONTACTS_ROUTE,
+        element: (
+          <RootLayout>
+            <Authenticated>
+              <Outlet />
+            </Authenticated>
+          </RootLayout>
+        ),
+        children: contactsRoutes,
+      },
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
