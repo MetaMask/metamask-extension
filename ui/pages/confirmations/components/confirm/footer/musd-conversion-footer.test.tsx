@@ -112,7 +112,7 @@ describe('MusdConversionFooter', () => {
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('disables button for other blocking alerts', () => {
+  it('shows insufficient balance text for InsufficientPayTokenBalance alert', () => {
     const { getByTestId } = render({
       alerts: [
         {
@@ -124,7 +124,43 @@ describe('MusdConversionFooter', () => {
       ],
     });
 
-    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
+  });
+
+  it('shows insufficient balance text for InsufficientPayTokenFees alert', () => {
+    const { getByTestId } = render({
+      alerts: [
+        {
+          key: AlertsName.InsufficientPayTokenFees,
+          severity: Severity.Danger,
+          message: 'Insufficient token for fees',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
+  });
+
+  it('shows generic convert text for non-balance blocking alerts', () => {
+    const { getByTestId } = render({
+      alerts: [
+        {
+          key: AlertsName.Blockaid,
+          severity: Severity.Danger,
+          message: 'Security alert',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Convert');
   });
 
   it('disables button when amount is zero', () => {

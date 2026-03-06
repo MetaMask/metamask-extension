@@ -50,15 +50,14 @@ function useMusdConversionButtonState(isGaslessLoading: boolean) {
     const isLoadingState = isGaslessLoading || isLoading;
 
     if (firstBlockingAlert) {
-      if (firstBlockingAlert.key === AlertsName.InsufficientPayTokenNative) {
-        return {
-          buttonText: t('musdConvert'),
-          isDisabled: true,
-          isLoading: isLoadingState,
-        };
-      }
+      const isBalanceAlert =
+        firstBlockingAlert.key === AlertsName.InsufficientPayTokenBalance ||
+        firstBlockingAlert.key === AlertsName.InsufficientPayTokenFees;
+
       return {
-        buttonText: t('alertInsufficientPayTokenBalance'),
+        buttonText: isBalanceAlert
+          ? t('alertInsufficientPayTokenBalance')
+          : t('musdConvert'),
         isDisabled: true,
         isLoading: isLoadingState,
       };

@@ -71,8 +71,7 @@ const AssetList = ({
   // mUSD CTA visibility logic
   const { shouldShowBuyGetMusdCta } = useMusdCtaVisibility();
   const { hasMusdBalance } = useMusdBalance();
-  const { isPopularNetworksFilterActive, selectedChainId } =
-    useMusdNetworkFilter();
+  const { selectedChainId } = useMusdNetworkFilter();
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
 
   // Use the centralized token filter that includes min balance check
@@ -105,7 +104,6 @@ const AssetList = ({
     hasMusdBalance,
     isEmptyWallet: !hasBalance,
     selectedChainId,
-    isPopularNetworksFilterActive,
   });
 
   return (

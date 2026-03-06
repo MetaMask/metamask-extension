@@ -78,7 +78,6 @@ export type BuyGetCtaOptions = {
   hasMusdBalance?: boolean;
   isEmptyWallet?: boolean;
   selectedChainId?: Hex | null;
-  isPopularNetworksFilterActive?: boolean;
 };
 
 /**
