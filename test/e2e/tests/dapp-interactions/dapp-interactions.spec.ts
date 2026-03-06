@@ -17,25 +17,15 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-async function mockUserStorageEndpoints(
+async function mockNotificationsEndpoint(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   return [
     await mockServer
-      .forGet(
-        'https://user-storage.api.cx.metamask.io/api/v1/userstorage/multichain_accounts_groups/acdd8a187028a7b031aac2df10d822bc971b239ae184bc362ee1e47e4998c8ad',
-      )
+      .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
       .thenCallback(() => ({
         statusCode: 200,
-        json: null,
-      })),
-    await mockServer
-      .forGet(
-        'https://user-storage.api.cx.metamask.io/api/v1/userstorage/addressBook',
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: null,
+        json: [],
       })),
   ];
 }
@@ -86,7 +76,7 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        testSpecificMock: mockUserStorageEndpoints,
+        testSpecificMock: mockNotificationsEndpoint,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -117,13 +107,12 @@ describe('Dapp interactions', function () {
           'Account 1',
         ]);
 
-        // Wait for the user-storage requests to complete before proceeding
-        for (const endpoint of mockedEndpoints) {
-          await driver.wait(async () => {
-            const isPending = await endpoint.isPending();
-            return isPending === false;
-          }, driver.timeout);
-        }
+        // Wait until last request happens in the connect screen to ensure is ready
+        const [notificationsEndpoint] = mockedEndpoints;
+        await driver.wait(async () => {
+          const isPending = await notificationsEndpoint.isPending();
+          return isPending === false;
+        }, driver.timeout);
 
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
