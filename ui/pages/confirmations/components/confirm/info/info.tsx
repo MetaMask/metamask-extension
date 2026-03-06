@@ -106,6 +106,7 @@ export const InfoSkeleton = ({
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
   const { loader } = useConfirmationNavigationOptions();
+
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
 

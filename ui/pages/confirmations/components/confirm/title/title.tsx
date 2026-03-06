@@ -273,6 +273,7 @@ const ConfirmTitle: React.FC = memo(() => {
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
   const { loader } = useConfirmationNavigationOptions();
+
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
   const { primaryType, tokenStandard } = useTypedSignSignatureInfo(
