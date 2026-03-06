@@ -10,6 +10,19 @@ const mockUseParams = jest
   .fn()
   .mockReturnValue({ chainId: CHAIN_IDS.MAINNET, protocolId: 'aave' });
 
+jest.mock('../../../../ui/hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../../ui/hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
