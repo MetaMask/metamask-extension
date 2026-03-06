@@ -620,7 +620,6 @@ const handleOnConnect = async (port) => {
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
       port,
-      database: persistenceManager,
       repairCallback: (backup) => repairAndReinitialize(backup),
     });
     removeCriticalErrorListeners = () =>

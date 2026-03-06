@@ -1,5 +1,4 @@
 import type { Backup } from '../../../../shared/lib/backup';
-import type { PersistenceManager } from '../stores/persistence-manager';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../../shared/constants/start-up-errors';
 import {
   CriticalErrorType,
@@ -14,7 +13,6 @@ type Message = Parameters<chrome.runtime.Port['postMessage']>[0];
 
 export type RegisterPortForCriticalErrorConfig = {
   port: chrome.runtime.Port;
-  database: PersistenceManager;
   repairCallback: (backup: Backup | null) => Promise<void>;
 };
 
@@ -49,8 +47,6 @@ export class CriticalErrorHandler {
    */
   connectedPorts = new Set<chrome.runtime.Port>();
 
-  #database: PersistenceManager | null = null;
-
   #repairCallback: ((backup: Backup | null) => Promise<void>) | null = null;
 
   #restoreListener = (message: Message): void => {
@@ -67,17 +63,14 @@ export class CriticalErrorHandler {
    * unregister from all UI windows in one go when one triggers repair), and
    * removes listeners when the port disconnects.
    *
-   * @param config - Configuration for this port (port, database, repairCallback).
+   * @param config - Configuration for this port (port, repairCallback).
    * @param config.port
-   * @param config.database
    * @param config.repairCallback
    */
   registerPortForCriticalError({
     port,
-    database,
     repairCallback,
   }: RegisterPortForCriticalErrorConfig): void {
-    this.#database = database;
     this.#repairCallback = repairCallback;
 
     this.connectedPorts.add(port);
@@ -112,7 +105,7 @@ export class CriticalErrorHandler {
       return;
     }
     const params = message?.data?.params ?? {};
-    if (!this.#database || !this.#repairCallback || !params.backup) {
+    if (!this.#repairCallback || !params.backup) {
       return;
     }
 

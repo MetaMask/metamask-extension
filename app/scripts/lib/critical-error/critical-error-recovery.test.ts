@@ -9,7 +9,6 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../../../../shared/lib/backup';
 import { captureException } from '../../../../shared/lib/sentry';
-import type { PersistenceManager } from '../stores/persistence-manager';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { tryPostMessage } from '../start-up-errors/start-up-errors';
 import {
@@ -86,11 +85,8 @@ function createConfig(
   overrides: Partial<RegisterPortForCriticalErrorConfig> = {},
 ): RegisterPortForCriticalErrorConfig {
   const port = createMockPort();
-  const database: PersistenceManager = {
-    getBackup: jest.fn().mockResolvedValue(null),
-  } as unknown as PersistenceManager;
   const repairCallback = jest.fn().mockResolvedValue(undefined);
-  return { port, database, repairCallback, ...overrides };
+  return { port, repairCallback, ...overrides };
 }
 
 describe('CriticalErrorHandler', () => {
@@ -103,9 +99,9 @@ describe('CriticalErrorHandler', () => {
 
   describe('registerPortForCriticalError', () => {
     it('adds port to connectedPorts and attaches message and disconnect listeners', () => {
-      const { port, database, repairCallback } = createConfig();
+      const { port, repairCallback } = createConfig();
 
-      handler.registerPortForCriticalError({ port, database, repairCallback });
+      handler.registerPortForCriticalError({ port, repairCallback });
 
       expect(handler.connectedPorts.has(port)).toBe(true);
       expect(handler.connectedPorts.size).toBe(1);
@@ -139,11 +135,8 @@ describe('CriticalErrorHandler', () => {
   describe('when port receives METHOD_REPAIR_DATABASE_TIMEOUT', () => {
     it('calls repairCallback with backup and sends RELOAD_WINDOW to connectedPorts', async () => {
       const backup: Backup = { KeyringController: {} };
-      const database: PersistenceManager = {
-        getBackup: jest.fn().mockResolvedValue(backup),
-      } as unknown as PersistenceManager;
       const repairCallback = jest.fn().mockResolvedValue(undefined);
-      const config = createConfig({ database, repairCallback });
+      const config = createConfig({ repairCallback });
 
       handler.registerPortForCriticalError(config);
 
