@@ -27,6 +27,14 @@ describe('extractNetworkName', () => {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [],
     },
+    '0xaa36a7': {
+      chainId: '0xaa36a7',
+      name: 'Sepolia Test Network',
+      blockExplorerUrls: [],
+      nativeCurrency: 'SepoliaETH',
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [],
+    },
   };
 
   describe('when network exists and has a valid name', () => {
@@ -53,6 +61,11 @@ describe('extractNetworkName', () => {
     it('should handle single word network names correctly', () => {
       const result = extractNetworkName(mockNetworks, '0x89', false);
       expect(result).toBe('networkNamePolygon');
+    });
+
+    it('should handle Sepolia network name correctly', () => {
+      const result = extractNetworkName(mockNetworks, '0xaa36a7', false);
+      expect(result).toBe('networkNameSepolia');
     });
 
     it('should handle network names with leading/trailing whitespace correctly', () => {

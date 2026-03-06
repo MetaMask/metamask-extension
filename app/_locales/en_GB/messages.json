@@ -4291,6 +4291,9 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
+  "networkNameSepolia": {
+    "message": "Sepolia"
+  },
   "networkNameSolana": {
     "message": "Solana"
   },
