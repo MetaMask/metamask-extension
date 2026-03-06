@@ -1,0 +1,63 @@
+# TODO(POC): This is a minimal test of the merge-queue-validator concept.
+# It observes Main workflow completions for merge_group events and attempts
+# to rerun failed jobs on the first attempt.
+#
+# Questions this POC answers:
+# 1. Does workflow_run fire for merge_group-triggered Main runs?
+# 2. Does gh run rerun --failed work on the completed Main run?
+# 3. Does workflow_run fire again after the rerun completes?
+# 4. What does run_attempt show in the event payload?
+
+name: Merge Queue Validator
+
+on:
+  workflow_run:
+    workflows: ["Main"]
+    types: [completed]
+
+jobs:
+  validate:
+    name: Merge Queue Gate
+    if: ${{ github.event.workflow_run.event == 'merge_group' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      checks: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MAIN_RUN_ID: ${{ github.event.workflow_run.id }}
+      MAIN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+      MAIN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Debug info
+        run: |
+          echo "=== Merge Queue Validator ==="
+          echo "Main run ID: $MAIN_RUN_ID"
+          echo "Main conclusion: $MAIN_CONCLUSION"
+          echo "Main run attempt: $MAIN_ATTEMPT"
+          echo "Head SHA: $HEAD_SHA"
+          echo "Event payload workflow_run.run_attempt: ${{ github.event.workflow_run.run_attempt }}"
+          echo ""
+          echo "Listing failed jobs (if any):"
+          gh run view "$MAIN_RUN_ID" --repo "$REPO" --json jobs --jq '.jobs[] | select(.conclusion == "failure") | "\(.name) — \(.conclusion)"' || echo "(could not fetch jobs)"
+
+      - name: Rerun failed jobs (attempt 1 failure only)
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        run: |
+          # Safety: only retry attempt 1
+          if [[ "$MAIN_ATTEMPT" != "1" ]]; then
+            echo "Main already on attempt $MAIN_ATTEMPT — not retrying again."
+            exit 0
+          fi
+
+          echo "Main failed on attempt 1. Rerunning failed jobs..."
+          gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
+          echo "Rerun triggered successfully."
+
+      - name: Report success pass-through
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        run: |
+          echo "Main succeeded on attempt $MAIN_ATTEMPT. Nothing to do."
