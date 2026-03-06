@@ -29,25 +29,32 @@ import type { TokenPayload } from './types';
 import {
   type BridgeAppState,
   getFromAccount,
+  getFromAmount,
+  getFromChains,
+  getFromToken,
   getLastSelectedChainId,
+  getToToken,
 } from './selectors';
-import { getMaybeHexChainId } from './utils';
+import { getDefaultToToken, getMaybeHexChainId } from './utils';
 
 const {
   setFromToken: setFromTokenAction,
-  setToToken,
+  setToToken: setToTokenAction,
   setFromTokenInputValue,
   resetInputFields,
+  rehydrateBridgeStore,
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
   restoreQuoteRequestFromState,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 } = bridgeSlice.actions;
 
 export {
   resetInputFields,
-  setToToken,
+  rehydrateBridgeStore,
   setFromTokenInputValue,
   setSrcTokenExchangeRates,
   setSortOrder,
@@ -56,6 +63,8 @@ export {
   setSlippage,
   setTxAlerts,
   restoreQuoteRequestFromState,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 };
 
 const callBridgeControllerMethod = (
@@ -175,5 +184,40 @@ export const setFromToken = (token: TokenPayload) => {
     }
     // Set the fromToken
     dispatch(setFromTokenAction(token));
+  };
+};
+
+export const setToToken = (newToToken: TokenPayload) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
+    const state = getState();
+    const currentFromAmount = getFromAmount(state);
+    const fromToken = getFromToken(state);
+    const toToken = getToToken(state);
+    const fromChains = getFromChains(state);
+    // If the new toToken is the same as the current fromToken
+    // try to set the fromToken to the old toToken
+    if (fromToken?.assetId.toLowerCase() === newToToken.assetId.toLowerCase()) {
+      let fromTokenToUse = toToken;
+
+      // If the old toToken's chain is disabled, it can't be set as the fromToken
+      // So reset fromToken to a fallback value (either native or default)
+      if (
+        fromChains.every(({ chainId }) => chainId !== fromTokenToUse.chainId)
+      ) {
+        // If the new toToken is native, use default as the new fromToken
+        // otherwise use the native asset
+        fromTokenToUse = getDefaultToToken(
+          fromToken.chainId,
+          fromToken.assetId,
+        );
+      }
+      dispatch(setFromToken(fromTokenToUse));
+    }
+
+    dispatch(setToTokenAction(newToToken));
+    dispatch(setFromTokenInputValue(currentFromAmount));
   };
 };

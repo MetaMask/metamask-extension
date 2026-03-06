@@ -167,7 +167,7 @@ describe('usePrefillFromBridgeState', () => {
           "symbol": "USDC",
           "tokenFiatAmount": undefined,
         },
-        "fromTokenInputValue": undefined,
+        "fromTokenInputValue": "14",
         "toToken": {
           "accountType": undefined,
           "assetId": "eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",

@@ -50,7 +50,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -163,7 +162,7 @@ const AssetPage = ({
       (!address && !isEvm && item.isNative),
   );
 
-  address = assetWithBalance?.assetId || '';
+  address = assetWithBalance?.assetId || address;
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
@@ -247,7 +246,7 @@ const AssetPage = ({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(DEFAULT_ROUTE)}
+            onClick={() => navigate(-1)}
           />
         </Box>
         {optionsButton}

@@ -770,6 +770,16 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+                style="align-self: center;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </button>
             </div>
             <div
               class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
@@ -847,6 +857,16 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+                style="align-self: center;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </button>
             </div>
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
@@ -1065,6 +1085,16 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+                style="align-self: center;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </button>
             </div>
             <div
               class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
@@ -1142,6 +1172,16 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+                style="align-self: center;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </button>
             </div>
             <div
               class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
@@ -1219,6 +1259,16 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+                style="align-self: center;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </button>
             </div>
           </div>
         </div>

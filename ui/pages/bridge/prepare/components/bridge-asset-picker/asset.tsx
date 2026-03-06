@@ -15,6 +15,9 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   PolymorphicRef,
   Tag,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
 } from '../../../../../components/component-library';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
@@ -28,7 +31,9 @@ import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
+  IconColor,
 } from '../../../../../helpers/constants/design-system';
+import { useBridgeNavigation } from '../../../../../hooks/bridge/useBridgeNavigation';
 import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column, Row } from '../../../layout';
@@ -53,6 +58,7 @@ export const BridgeAsset = React.forwardRef(
     const currency = useSelector(getCurrentCurrency);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
+    const { navigateToAssetPage } = useBridgeNavigation();
 
     return (
       <Row
@@ -152,6 +158,19 @@ export const BridgeAsset = React.forwardRef(
             </Text>
           </Row>
         </Column>
+
+        <ButtonIcon
+          iconName={IconName.Info}
+          size={ButtonIconSize.Sm}
+          onClick={(e: React.MouseEvent) => {
+            e.stopPropagation();
+            e.preventDefault();
+            navigateToAssetPage(asset);
+          }}
+          color={IconColor.iconAlternative}
+          ariaLabel={t('viewTokenDetails')}
+          style={{ alignSelf: 'center' }}
+        />
       </Row>
     );
   },

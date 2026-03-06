@@ -18,6 +18,8 @@ import {
   setToToken,
   updateQuoteRequestParams,
   trackUnifiedSwapBridgeEvent,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -42,6 +44,8 @@ import {
   getIsStxEnabled,
   getIsGasIncluded,
   getValidatedFromValue,
+  getIsSrcAssetPickerOpen,
+  getIsDestAssetPickerOpen,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -69,7 +73,7 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { getDefaultToToken, isNetworkAdded } from '../../../ducks/bridge/utils';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -143,6 +147,8 @@ const PrepareBridgePage = ({
   );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
+  const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
+  const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
@@ -386,6 +392,10 @@ const PrepareBridgePage = ({
 
       <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
+          isAssetPickerOpen={isSrcAssetPickerOpen}
+          setIsAssetPickerOpen={(isOpen) =>
+            dispatch(setIsSrcAssetPickerOpen(isOpen))
+          }
           header={getFromInputHeader()}
           token={fromToken}
           accountAddress={selectedAccount?.address}
@@ -535,6 +545,10 @@ const PrepareBridgePage = ({
           />
 
           <BridgeInputGroup
+            isAssetPickerOpen={isDestAssetPickerOpen}
+            setIsAssetPickerOpen={(isOpen) =>
+              dispatch(setIsDestAssetPickerOpen(isOpen))
+            }
             header={getToInputHeader()}
             accountAddress={
               selectedDestinationAccount?.address ?? selectedAccount.address
@@ -547,36 +561,7 @@ const PrepareBridgePage = ({
                 ? fromChain.chainId
                 : undefined
             }
-            onAssetChange={(newToToken) => {
-              const currentFromAmount = fromAmount;
-              // If the new toToken is the same as the current fromToken
-              // try to set the fromToken to the old toToken
-              if (
-                fromToken?.assetId.toLowerCase() ===
-                newToToken.assetId.toLowerCase()
-              ) {
-                let fromTokenToUse = toToken;
-
-                // If the old toToken's chain is disabled, it can't be set as the fromToken
-                // So reset fromToken to a fallback value (either native or default)
-                if (
-                  fromChains.every(
-                    ({ chainId }) => chainId !== fromTokenToUse.chainId,
-                  )
-                ) {
-                  // If the new toToken is native, use default as the new fromToken
-                  // otherwise use the native asset
-                  fromTokenToUse = getDefaultToToken(
-                    fromToken.chainId,
-                    fromToken.assetId,
-                  );
-                }
-                dispatch(setFromToken(fromTokenToUse));
-              }
-
-              dispatch(setToToken(newToToken));
-              dispatch(setFromTokenInputValue(currentFromAmount));
-            }}
+            onAssetChange={(newToToken) => dispatch(setToToken(newToToken))}
             networks={toChains}
             amountInFiat={
               activeQuote?.toTokenAmount?.valueInCurrency ?? undefined

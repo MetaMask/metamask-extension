@@ -29,10 +29,15 @@ import {
   useBridgeNavigation,
 } from './useBridgeNavigation';
 
+/**
+ * This hook is the entrypoint for the bridge experience
+ *
+ * @returns a function to navigate to the bridge page
+ */
 const useBridging = () => {
   const dispatch = useDispatch();
 
-  const { navigateToBridgePage } = useBridgeNavigation();
+  const { navigateToBridgePage, bridgeState } = useBridgeNavigation();
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
@@ -48,6 +53,12 @@ const useBridging = () => {
     [fromChains],
   );
 
+  /**
+   * Navigates to the bridge page
+   *
+   * @param location - the entrypoint from which the bridge experience was triggered
+   * @param token - the token to set as the source token for the bridge experience
+   */
   const openBridgeExperience = useCallback(
     (
       location: MetaMetricsSwapsEventSource | 'Carousel',
@@ -95,7 +106,8 @@ const useBridging = () => {
         };
         if (validateMinimalAssetObject(tokenWithAssetId)) {
           tokenToUse = tokenWithAssetId;
-        } else {
+        } else if (!bridgeState) {
+          // If bridgeState is defined, it means the user is returning to the bridge page
           // Otherwise, set the `from` query param to use the bridge page's deep linking logic
           search.set(BridgeQueryParams.From, assetId);
         }
@@ -120,7 +132,7 @@ const useBridging = () => {
       navigateToBridgePage({
         token: tokenToUse,
         searchParams: search.toString(),
-        preventBackNavigation: false,
+        isEntrypoint: true,
       });
     },
     [
@@ -129,6 +141,8 @@ const useBridging = () => {
       fromChain?.chainId,
       isChainIdEnabledForBridging,
       bip44DefaultPairsConfig,
+      bridgeState,
+      dispatch,
     ],
   );
 
