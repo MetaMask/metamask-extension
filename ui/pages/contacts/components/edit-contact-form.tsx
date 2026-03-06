@@ -18,6 +18,8 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
+  BoxFlexDirection,
+  BoxAlignItems,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -100,19 +102,19 @@ export function EditContactForm({
       const valid =
         !isBurnAddress(newAddress) &&
         isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
-      if (valid) {
-        await dispatch(removeFromAddressBook(contactChainId, address));
-        await dispatch(
-          addToAddressBook(
-            newAddress,
-            contactName || initialName,
-            selectedChainId,
-          ),
-        );
-        onSuccess();
-      } else {
+      if (!valid) {
         setAddressError(t('invalidAddress'));
+        return;
       }
+      await dispatch(removeFromAddressBook(contactChainId, address));
+      await dispatch(
+        addToAddressBook(
+          newAddress,
+          contactName || initialName,
+          selectedChainId,
+        ),
+      );
+      onSuccess();
     } else if (selectedChainId !== contactChainId) {
       await dispatch(removeFromAddressBook(contactChainId, address));
       await dispatch(
@@ -128,8 +130,12 @@ export function EditContactForm({
   };
 
   return (
-    <Box className="flex min-h-0 w-full flex-1 flex-col justify-between">
-      <Box className="flex min-h-0 w-full flex-col overflow-auto px-4 pt-4 gap-6">
+    <Box className="flex w-full flex-col justify-between">
+      <Box
+        className="flex w-full flex-col px-4 pt-4 gap-6"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+      >
         {/* Avatar */}
         <Box className="flex flex-col items-center">
           <BadgeWrapper

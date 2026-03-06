@@ -154,7 +154,7 @@ export function ViewContactContent({
                 title={copied ? t('copiedExclamation') : t('copyToClipboard')}
                 iconName={copied ? IconName.CopySuccess : IconName.Copy}
                 size={ButtonIconSize.Sm}
-                color={IconColor.IconAlternative}
+                iconProps={{ color: IconColor.IconAlternative }}
                 onClick={() => handleCopy(checkSummedAddress)}
               />
             </Box>

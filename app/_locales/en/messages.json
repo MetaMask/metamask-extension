@@ -2208,8 +2208,14 @@
   "delete": {
     "message": "Delete"
   },
+  "contactDeleted": {
+    "message": "Contact deleted"
+  },
   "deleteContact": {
     "message": "Delete contact"
+  },
+  "thisContactWillBeDeleted": {
+    "message": "This contact will be deleted."
   },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"

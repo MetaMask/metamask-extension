@@ -46,7 +46,6 @@ export function EditContactPage() {
   }
 
   const name = contact?.name ?? internalAccount?.metadata?.name ?? '';
-  const memo = contact?.memo ?? '';
   const contactChainId = contact?.chainId ?? providerConfig.chainId;
 
   if (!contact) {

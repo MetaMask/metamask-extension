@@ -13,6 +13,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
+  IconColor,
   IconName,
   Text,
   TextAlign,
@@ -114,6 +115,7 @@ export function ContactListItem({
         title={copied ? t('copiedExclamation') : t('copyToClipboard')}
         iconName={copied ? IconName.CopySuccess : IconName.Copy}
         size={ButtonIconSize.Md}
+        iconProps={{ color: IconColor.IconAlternative }}
         onClick={onCopy}
         data-testid="contact-list-item-copy"
         className="mt-4"
