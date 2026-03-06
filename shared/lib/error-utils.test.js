@@ -2,10 +2,14 @@ import { fetchLocale } from '../modules/i18n';
 import { SUPPORT_LINK } from './ui-utils';
 import { maybeGetLocaleContext, getErrorHtml } from './error-utils';
 
-jest.mock('../modules/i18n', () => ({
-  fetchLocale: jest.fn(),
-  loadRelativeTimeFormatLocaleData: jest.fn(),
-}));
+jest.mock('../modules/i18n', () => {
+  const actual = jest.requireActual('../modules/i18n');
+  return {
+    ...actual,
+    fetchLocale: jest.fn(),
+    loadRelativeTimeFormatLocaleData: jest.fn(),
+  };
+});
 jest.mock('./deep-linking', () => ({
   openCustomProtocol: jest.fn(),
 }));
@@ -53,6 +57,12 @@ describe('Error utils Tests', function () {
           errorPageContactSupport: {
             message: 'Contact support',
           },
+          criticalErrorFooter: {
+            message: '$1 $2 or $3',
+          },
+          stateCorruptionRestoreAccountsFromBackup: {
+            message: 'Restore accounts from backup',
+          },
         },
       },
       metamask: {
@@ -85,5 +95,40 @@ describe('Error utils Tests', function () {
     expect(errorHtml).toContain(restartMetamaskMessage);
     expect(errorHtml).toContain(stillGettingMessageMessage);
     expect(errorHtml).toContain(errorPageContactSupport);
+  });
+
+  it('includes restore accounts link when hasBackup is true', async function () {
+    const mockStore = {
+      localeMessages: {
+        current: {
+          troubleStartingTitle: { message: 'MetaMask had trouble starting.' },
+          troubleStartingMessage: {
+            message: 'Try restarting the extension.',
+          },
+          restartMetamask: { message: 'Restart MetaMask' },
+          stillGettingMessage: { message: 'Still getting this message?' },
+          errorPageContactSupport: { message: 'Contact support' },
+          criticalErrorFooter: { message: '$1 $2 or $3' },
+          stateCorruptionRestoreAccountsFromBackup: {
+            message: 'Restore accounts from backup',
+          },
+        },
+      },
+      metamask: { currentLocale: 'en' },
+    };
+    fetchLocale.mockReturnValue(mockStore.localeMessages.current);
+    const localeContext = await maybeGetLocaleContext(
+      mockStore.metamask.currentLocale,
+    );
+    const error = new Error('Test error');
+    const errorHtml = getErrorHtml(
+      'troubleStarting',
+      error,
+      localeContext,
+      SUPPORT_LINK,
+      true,
+    );
+    expect(errorHtml).toContain('critical-error-restore-link');
+    expect(errorHtml).toContain('Restore accounts from backup');
   });
 });

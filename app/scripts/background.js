@@ -28,7 +28,10 @@ import {
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
+import {
+  BACKGROUND_LIVENESS_METHOD,
+  BACKGROUND_INITIALIZED_METHOD,
+} from '../../shared/constants/ui-initialization';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -52,15 +55,11 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { backedUpStateKeys, hasVault } from '../../shared/lib/backup';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
-import {
-  CorruptionHandler,
-  hasVault,
-} from './lib/state-corruption/state-corruption-recovery';
-import {
-  backedUpStateKeys,
-  PersistenceManager,
-} from './lib/stores/persistence-manager';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
@@ -106,7 +105,7 @@ import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageM
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
- * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ * @typedef {import('../../shared/lib/backup').Backup} Backup
  */
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
@@ -120,6 +119,11 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
+/** Persisted to session during repairAndReinitialize; restored from session at start of handleOnConnect so we do not simulate state sync hang on the reconnecting UI. */
+let inTestRestoreFlow = false;
+/** Session storage key to persist inTestRestoreFlow across service worker restart (e.g. after RELOAD_WINDOW). */
+const IN_TEST_RESTORE_FLOW = 'IN_TEST_RESTORE_FLOW';
+
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
 const localStore = useFixtureStore
@@ -248,6 +252,43 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
+
+/**
+ * Resets initialization state, reinitializes the background from the given
+ * backup (or from scratch if no vault exists), and sets the onboarding flow
+ * type to "restore" when a vault is present.
+ *
+ * Used by both the state corruption handler and the general error repair
+ * listener so the repair logic is not duplicated.
+ *
+ * @param {object | null} backup - The backup state from IndexedDB, or null.
+ */
+async function repairAndReinitialize(backup) {
+  // We are going to reinitialize the background script, so we need to
+  // reset the initialization promises. This is gross since it is
+  // possible the original references could have been passed to other
+  // functions, and we can't update those references from here.
+  // Right now, that isn't the case though.
+  setGlobalInitializers();
+
+  if (inTest && hasVault(backup)) {
+    await browser.storage.session.set({
+      [IN_TEST_RESTORE_FLOW]: true,
+    });
+  }
+  if (hasVault(backup)) {
+    await initBackground(backup);
+    controller.onboardingController.setFirstTimeFlowType(
+      FirstTimeFlowType.restore,
+    );
+  } else {
+    // If we don't have a backup we need to make sure we clear the state
+    // from the database, and then reinitialize the background script
+    // with the first time state.
+    await persistenceManager.reset();
+    await initBackground(null);
+  }
+}
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -530,13 +571,19 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
+const criticalErrorHandler = new CriticalErrorHandler();
 /**
  * Handles the onConnect event.
  *
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
+  const { isMetaMaskUIPort } = parsePortInfo(port);
   if (inTest) {
+    if (isMetaMaskUIPort) {
+      const res = await browser.storage.session.get(IN_TEST_RESTORE_FLOW);
+      inTestRestoreFlow = Boolean(res[IN_TEST_RESTORE_FLOW]);
+    }
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
     if (simulatedDelay === true) {
@@ -569,19 +616,63 @@ const handleOnConnect = async (port) => {
     return;
   }
 
+  let removeCriticalErrorListeners;
+  if (isMetaMaskUIPort) {
+    criticalErrorHandler.registerPortForCriticalError({
+      port,
+      repairCallback: (backup) => repairAndReinitialize(backup),
+    });
+    removeCriticalErrorListeners = () =>
+      criticalErrorHandler.removeListenersForPort(port);
+  }
+
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
 
+    // Notify UI that background initialization is complete, before sending state.
+    // This is sent on the raw port (like ALIVE) so the UI can distinguish between
+    // "background still initializing" vs "background initialized but state sync failed".
+    try {
+      port.postMessage({
+        data: { method: BACKGROUND_INITIALIZED_METHOD },
+        name: 'background-initialized',
+      });
+    } catch (e) {
+      log.error(
+        'MetaMask - background-initialized: Failed to message to port',
+        e,
+      );
+      return;
+    }
+
+    // For testing: skip connectWindowPostMessage to simulate state sync hang.
+    // Only when backup exists and we're not in the restore flow (so recovery can complete).
+    if (
+      inTest &&
+      getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
+      !inTestRestoreFlow
+    ) {
+      const backupInIndexedDb = await persistenceManager
+        .getBackup()
+        .catch(() => null);
+      if (backupInIndexedDb?.KeyringController) {
+        return;
+      }
+    }
+
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(port);
+    connectWindowPostMessage(
+      port,
+      isMetaMaskUIPort ? removeCriticalErrorListeners : undefined,
+    );
   } catch (error) {
     sentry?.captureException(error);
 
     // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
     // not for contentscripts injected into regular web pages.
     // Contentscripts can't display error screens and would create hanging promises.
-    if (parsePortInfo(port).isMetaMaskUIPort) {
+    if (isMetaMaskUIPort) {
       // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
       // restore from a backup, if we have one.
       if (isStateCorruptionError(error)) {
@@ -589,27 +680,7 @@ const handleOnConnect = async (port) => {
           port,
           error,
           database: persistenceManager,
-          repairCallback: async (backup) => {
-            // we are going to reinitialize the background script, so we need to
-            // reset the initialization promises. this is gross since it is
-            // possible the original references could have been passed to other
-            // functions, and we can't update those references from here.
-            // right now, that isn't the case though.
-            setGlobalInitializers();
-
-            if (hasVault(backup)) {
-              await initBackground(backup);
-              controller.onboardingController.setFirstTimeFlowType(
-                FirstTimeFlowType.restore,
-              );
-            } else {
-              // if we don't have a backup we need to make sure we clear the state
-              // from the database, and then reinitialize the background script
-              // with the first time state.
-              await persistenceManager.reset();
-              await initBackground(null);
-            }
-          },
+          repairCallback: (backup) => repairAndReinitialize(backup),
         });
       } else {
         // General errors
@@ -1593,7 +1664,7 @@ export function setupController(
     }
   };
 
-  connectWindowPostMessage = (remotePort) => {
+  connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
@@ -1632,7 +1703,11 @@ export function setupController(
 
       // communication with popup
       controller.isClientOpen = true;
-      controller.setupTrustedCommunication(portStream, remotePort.sender);
+      controller.setupTrustedCommunication(
+        portStream,
+        remotePort.sender,
+        removeCriticalErrorListeners,
+      );
       trackAppOpened(processName);
 
       // lazily update the remote feature flags every time the UI is opened.
@@ -2324,6 +2399,27 @@ async function initBackground(backup) {
       }
     }
     persistenceManager.cleanUpMostRecentRetrievedState();
+
+    // For testing: simulate initialization hang. Only when backup exists in
+    // IndexedDB and we're not already in the restore flow (backup param is
+    // null). Skip when backup param is non-null so vault recovery can complete.
+    if (
+      inTest &&
+      !backup &&
+      getManifestFlags().testing?.simulateBackgroundInitializationHang
+    ) {
+      const backupInIndexedDb = await persistenceManager
+        .getBackup()
+        .catch(() => null);
+      if (backupInIndexedDb?.KeyringController) {
+        log.info(
+          'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
+        );
+        await new Promise(() => {
+          // Intentionally never resolves to simulate a hang
+        });
+      }
+    }
 
     log.info('MetaMask initialization complete.');
     resolveInitialization();

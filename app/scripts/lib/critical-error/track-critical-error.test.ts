@@ -1,11 +1,11 @@
 import { segment } from '../segment';
-import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import { CriticalErrorType } from '../../../../shared/constants/state-corruption';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../../../../shared/lib/backup';
-import { trackVaultCorruptionEvent } from './track-vault-corruption';
+import { trackCriticalErrorEvent } from './track-critical-error';
 
 jest.mock('../segment', () => ({
   segment: {
@@ -16,7 +16,7 @@ jest.mock('../segment', () => ({
 
 const mockSegment = segment as jest.Mocked<typeof segment>;
 
-describe('trackVaultCorruptionEvent', () => {
+describe('trackCriticalErrorEvent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -31,18 +31,56 @@ describe('trackVaultCorruptionEvent', () => {
       },
     };
 
-    trackVaultCorruptionEvent(
+    trackCriticalErrorEvent(
       backup,
-      MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.InaccessibleDatabase,
+      MetaMetricsEventName.CriticalErrorScreenViewed,
+      CriticalErrorType.BackgroundInitTimeout,
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
       userId: 'test-metrics-id-123',
-      event: MetaMetricsEventName.VaultCorruptionDetected,
+      event: MetaMetricsEventName.CriticalErrorScreenViewed,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_type: VaultCorruptionType.InaccessibleDatabase,
+        error_type: CriticalErrorType.BackgroundInitTimeout,
+        category: MetaMetricsEventCategory.Error,
+      },
+      context: {
+        app: {
+          name: 'MetaMask Extension',
+          version: process.env.METAMASK_VERSION,
+        },
+      },
+    });
+    expect(mockSegment.flush).toHaveBeenCalledTimes(1);
+  });
+
+  it('includes optional properties in the tracked event', () => {
+    const backup: Backup = {
+      KeyringController: { vault: 'encrypted-vault-data' },
+      AppMetadataController: {},
+      MetaMetricsController: {
+        participateInMetaMetrics: true,
+        metaMetricsId: 'test-metrics-id-456',
+      },
+    };
+
+    trackCriticalErrorEvent(
+      backup,
+      MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
+      CriticalErrorType.BackgroundStateSyncTimeout,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { restore_accounts_enabled: true },
+    );
+
+    expect(mockSegment.track).toHaveBeenCalledWith({
+      userId: 'test-metrics-id-456',
+      event: MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_type: CriticalErrorType.BackgroundStateSyncTimeout,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        restore_accounts_enabled: true,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
@@ -82,10 +120,10 @@ describe('trackVaultCorruptionEvent', () => {
       { MetaMetricsController: { participateInMetaMetrics: true } },
     ],
   ])('does not track when %s', (_: string, backup: Backup | null) => {
-    trackVaultCorruptionEvent(
+    trackCriticalErrorEvent(
       backup,
-      MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.MissingVaultInDatabase,
+      MetaMetricsEventName.CriticalErrorScreenViewed,
+      CriticalErrorType.Other,
     );
 
     expect(mockSegment.track).not.toHaveBeenCalled();

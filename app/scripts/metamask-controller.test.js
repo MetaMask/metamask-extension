@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { Duplex } from 'stream';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
@@ -2750,7 +2751,41 @@ describe('MetaMaskController', () => {
             _name: 'controller',
             _parent: expect.any(ObjectMultiplex),
           }),
+          undefined,
         );
+      });
+
+      it('invokes removeCriticalErrorListeners when the UI calls startSendingPatches', async () => {
+        const removeCriticalErrorListeners = jest.fn();
+        // Use a Duplex that does NOT echo controller writes back: otherwise the handler
+        // would see its own response/sendUpdate and re-invoke (methodNotFound, etc.),
+        // causing a write loop and OOM. In the real UI, controller writes go to the UI only.
+        const stream = new Duplex({
+          objectMode: true,
+          // Signal EOF after the single request; we only push once via stream.push()
+          read(_size) {
+            this.push(null);
+          },
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+        });
+
+        metamaskController.setupControllerConnection(
+          stream,
+          removeCriticalErrorListeners,
+        );
+
+        stream.push({
+          method: 'startSendingPatches',
+          params: [],
+          id: 1,
+        });
+
+        await flushPromises();
+
+        expect(removeCriticalErrorListeners).toHaveBeenCalledTimes(1);
+        stream.end();
       });
 
       const createTestStream = () => {

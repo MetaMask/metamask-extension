@@ -4,14 +4,14 @@ import {
   METHOD_REPAIR_DATABASE,
   VaultCorruptionType,
 } from '../../../../shared/constants/state-corruption';
+import { type Backup, hasVault } from '../../../../shared/lib/backup';
 import {
-  type Backup,
   PersistenceError,
   PersistenceManager,
 } from '../stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
+import { runRepairAndReloadPorts } from '../repair';
 import { tryPostMessage } from '../start-up-errors/start-up-errors';
-import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
@@ -23,36 +23,6 @@ export type HandleStateCorruptionErrorConfig = {
   database: PersistenceManager;
   repairCallback: (backup: Backup | null) => void | Promise<void>;
 };
-
-const REPAIR_LOCK_NAME = 'repairDatabase';
-
-/**
- * Requests a lock for the repair operation. This is used to ensure that only
- * one repair operation is happening at a time. If the lock is available it will
- * call and await the provided `repairDatabase` function then return true. If
- * the lock is not available, it will return false and the callback will *not*
- * be called.
- *
- * @param repairDatabase - A function that is called only when the request is
- * granted.
- */
-async function requestRepair(
-  repairDatabase: () => Promise<void> | (() => void),
-): Promise<boolean> {
-  return await navigator.locks.request(
-    REPAIR_LOCK_NAME,
-    { ifAvailable: true },
-    async function requestRepairLockCallback(lock) {
-      // something is already repairing the database
-      if (lock === null) {
-        return false;
-      }
-
-      await repairDatabase();
-      return true;
-    },
-  );
-}
 
 /**
  * Attempts to get a backup from the database. If the error passed in exposes a
@@ -144,27 +114,6 @@ function getVaultCorruptionType(error: ErrorLike): VaultCorruptionType {
   }
   // Fallback for non-PersistenceError errors (shouldn't happen in practice)
   return VaultCorruptionType.Unknown;
-}
-
-/**
- * Checks if the backup object has a vault.
- *
- * @param backup - The backup object to check for a vault.
- * @returns True if the vault exists, otherwise false.
- */
-export function hasVault(backup: Backup | null): boolean {
-  // we're overly defensive here because we have no idea what happened to the
-  // database, and we don't want to throw another error on some unexpected object.
-  if (isObject(backup) && hasProperty(backup, 'KeyringController')) {
-    const keyringController = backup.KeyringController;
-    if (
-      isObject(keyringController) &&
-      hasProperty(keyringController, 'vault')
-    ) {
-      return Boolean(keyringController.vault);
-    }
-  }
-  return false;
 }
 
 export class CorruptionHandler {
@@ -269,25 +218,11 @@ export class CorruptionHandler {
           );
 
           try {
-            await requestRepair(async function repairDatabase() {
-              // this callback might be ignored if another repair request
-              // is already in progress.
-
-              try {
-                await repairCallback(backup);
-              } finally {
-                // always reload the UI because if `initBackground` worked, the UI
-                // will redirect to the login screen, and if it didn't work, it'll
-                // show them a new error message (which could be the same as the
-                // vault error that sent them here in the first place, but hopefully
-                // not!)
-                connectedPorts.forEach((connectedPort) => {
-                  // as each page reloads, it will remove itself from the
-                  // `connectedPorts` on disconnection.
-                  tryPostMessage(connectedPort, RELOAD_WINDOW);
-                });
-              }
-            });
+            await runRepairAndReloadPorts(
+              backup,
+              repairCallback,
+              connectedPorts,
+            );
             resolve();
           } catch (e) {
             reject(e);

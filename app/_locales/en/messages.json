@@ -1889,6 +1889,10 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "criticalErrorFooter": {
+    "message": "$1 $2 or $3",
+    "description": "Footer on the critical error screen. $1 is the 'Still getting this message?' text, $2 is the 'Contact support' link, $3 is the 'Restore accounts' link. Translators may reorder the links (e.g. '$1 $3 or $2')."
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },

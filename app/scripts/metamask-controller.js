@@ -6425,12 +6425,20 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} connectionStream - The duplex stream to connect to.
    * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param {Function} [removeCriticalErrorListeners] - Called when the UI invokes startSendingPatches to remove critical-error port listeners.
    */
-  setupTrustedCommunication(connectionStream, sender) {
+  setupTrustedCommunication(
+    connectionStream,
+    sender,
+    removeCriticalErrorListeners,
+  ) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    this.setupControllerConnection(mux.createStream('controller'));
+    this.setupControllerConnection(
+      mux.createStream('controller'),
+      removeCriticalErrorListeners,
+    );
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -6524,8 +6532,9 @@ export default class MetamaskController extends EventEmitter {
    * A method for providing our API over a stream using JSON-RPC.
    *
    * @param {*} outStream - The stream to provide our API over.
+   * @param {Function} [removeCriticalErrorListeners] - Called when the UI invokes startSendingPatches to remove critical-error port listeners.
    */
-  setupControllerConnection(outStream) {
+  setupControllerConnection(outStream, removeCriticalErrorListeners) {
     const patchStore = new PatchStore(this.memStore);
     let uiReady = false;
 
@@ -6547,6 +6556,7 @@ export default class MetamaskController extends EventEmitter {
       ...this.getApi(),
       ...this.controllerApi,
       startSendingPatches: () => {
+        removeCriticalErrorListeners?.(); //  UI invoking 'startSendingPatches' is a signal that UI<>Background connection is established and we won't need to listen for critical-error messages anymore.
         uiReady = true;
         handleUpdate();
       },

@@ -15,6 +15,11 @@ import {
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
+import {
+  type Backup,
+  type BackedUpStateKey,
+  backedUpStateKeys,
+} from '../../../../shared/lib/backup';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -25,27 +30,6 @@ import type {
 import { runTrackedTask } from './utils/run-tracked-task';
 
 export type StorageKind = 'data' | 'split';
-
-export type Backup = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  KeyringController?: unknown;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  AppMetadataController?: unknown;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  MetaMetricsController?: unknown;
-  meta?: MetaData;
-};
-
-export const backedUpStateKeys = [
-  'KeyringController',
-  'AppMetadataController',
-  'MetaMetricsController',
-] as const;
-
-export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
 /**
  * This Error represents an error that occurs during persistence operations.

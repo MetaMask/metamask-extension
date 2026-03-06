@@ -1,6 +1,6 @@
-// Vault corruption events are tracked via the early Segment tracking utility,
+// Critical error events are tracked via the early Segment tracking utility,
 // which is available before MetaMetricsController is initialized.
-import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import type { CriticalErrorType } from '../../../../shared/constants/state-corruption';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -9,19 +9,21 @@ import type { Backup } from '../../../../shared/lib/backup';
 import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 
 /**
- * Tracks a vault corruption event directly to Segment.
+ * Tracks a critical error event directly to Segment.
  *
- * This bypasses MetaMetricsController (which isn't initialized during corruption
- * handling) and sends events directly using the backup state for consent/ID.
+ * This bypasses MetaMetricsController (which may not be initialized during
+ * critical error handling) and sends events using the backup state for consent/ID.
  *
  * @param backup - The backup state from IndexedDB containing MetaMetricsController state.
  * @param eventName - The MetaMetrics event name to track.
- * @param corruptionType - The type of vault corruption (missing_vault_in_database, inaccessible_database).
+ * @param criticalErrorType - The type of critical error (timeout or other).
+ * @param properties - Optional additional properties to include with the event.
  */
-export function trackVaultCorruptionEvent(
+export function trackCriticalErrorEvent(
   backup: Backup | null,
   eventName: MetaMetricsEventName,
-  corruptionType: VaultCorruptionType,
+  criticalErrorType: CriticalErrorType,
+  properties?: Record<string, string | boolean>,
 ): void {
   trackEarlySegmentEvent({
     state: backup,
@@ -29,7 +31,8 @@ export function trackVaultCorruptionEvent(
     category: MetaMetricsEventCategory.Error,
     properties: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      error_type: corruptionType,
+      error_type: criticalErrorType,
+      ...(properties ?? {}),
     },
   });
 }
