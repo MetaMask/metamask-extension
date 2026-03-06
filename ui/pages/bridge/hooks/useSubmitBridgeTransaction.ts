@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
@@ -75,8 +75,9 @@ export default function useSubmitBridgeTransaction() {
 
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
-  const allWarnings = useSelector((state) =>
-    getWarningLabels(state as BridgeAppState, Date.now()),
+  const allWarnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
   );
   const warnings = allWarnings.filter(
     (w): w is QuoteWarning => w !== 'market_closed',

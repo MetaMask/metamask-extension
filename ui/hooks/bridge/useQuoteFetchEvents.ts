@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
@@ -26,8 +26,9 @@ export const useQuoteFetchEvents = () => {
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
-  const allWarnings = useSelector((state) =>
-    getWarningLabels(state as BridgeAppState, Date.now()),
+  const allWarnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
   );
   const warnings = allWarnings.filter(
     (w): w is QuoteWarning => w !== 'market_closed',
