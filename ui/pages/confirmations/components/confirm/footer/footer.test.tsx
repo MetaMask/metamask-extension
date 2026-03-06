@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -39,6 +40,10 @@ import Footer from './footer';
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
+  useIsTransactionPayLoading: jest.fn(() => false),
+  useTransactionPayRequiredTokens: jest.fn(() => []),
+}));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
@@ -599,5 +604,23 @@ describe('ConfirmFooter', () => {
         },
       );
     });
+  });
+
+  it('renders MusdConversionFooter for musdConversion transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.musdConversion,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 });
