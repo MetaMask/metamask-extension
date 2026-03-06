@@ -103,24 +103,23 @@ const mockDaiMainnet: TokenWithFiatAmount = {
  * Converts a flat array of tokens into the account-group-assets structure
  * keyed by chainId, as returned by getAssetsBySelectedAccountGroup.
  *
- * The real selector returns assets with `fiat.balance` (not `tokenFiatAmount`),
- * so we map `tokenFiatAmount` into that shape for the hook to consume correctly.
- * Uses `as never` because the mock doesn't need to satisfy the full Asset type.
- * @param tokens
+* @param tokens - Tokens to convert to account-group-assets.
  */
 function toAccountGroupAssets(tokens: TokenWithFiatAmount[]) {
-  const grouped: Record<string, Record<string, unknown>[]> = {};
+  const assets: Record<string, Record<string, unknown>[]> = {};
   for (const token of tokens) {
     const chainId = token.chainId as string;
-    if (!grouped[chainId]) {
-      grouped[chainId] = [];
+    if (!assets[chainId]) {
+      assets[chainId] = [];
     }
-    grouped[chainId].push({
+    assets[chainId].push({
       ...token,
       fiat: { balance: token.tokenFiatAmount ?? null },
     });
   }
-  return grouped as never;
+
+  // Partial implementation.
+  return assets as unknown as ReturnType<typeof getAssetsBySelectedAccountGroup>;
 }
 
 // Helper to create a wrapper with Redux store
