@@ -15,7 +15,8 @@ export class PerpsMarketListPage {
 
   private readonly marketListView = { testId: 'market-list-view' };
 
-  private readonly searchInput = { testId: 'search-input' };
+  /** CSS selector for the search input; driver.fill() expects a string locator. */
+  private readonly searchInput = '[data-testid="search-input"]';
 
   private readonly sortDropdownButton = { testId: 'sort-dropdown-button' };
 

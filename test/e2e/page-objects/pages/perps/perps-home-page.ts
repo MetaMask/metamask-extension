@@ -23,10 +23,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-tab-view',
   };
 
-  private readonly perpsExploreMarketsRow = {
-    testId: 'perps-explore-markets-row',
-  };
-
   private readonly perpsHomeSearchButton = {
     testId: 'perps-home-search-button',
   };
