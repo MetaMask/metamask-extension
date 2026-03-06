@@ -115,6 +115,35 @@ it('returns the block number', () => {});
   - Methods starting with `_` (informal private convention)
   - Methods with `private` keyword in TypeScript
   - Functions/methods tagged with `@private` JSDoc
+- **NEVER name a `describe` block after private code** — doing so exposes implementation details in test descriptions and signals the test is structured around internals rather than behaviour
+- If a private function is only reachable through a public function, its tests belong nested inside that public function's `describe` block, using "when..." scenarios to describe the different paths
+
+Example:
+
+```typescript
+// Given this module with one exported function and private helpers:
+//   export function processOrder(order) { ... }  // calls validateOrder(), applyDiscount()
+
+❌ WRONG: separate describe blocks for private helpers
+describe('validateOrder', () => {          // ← private, should not appear
+  it('throws when amount is negative', () => { ... });
+});
+
+describe('applyDiscount', () => {          // ← private, should not appear
+  it('applies 10% for premium users', () => { ... });
+});
+
+✅ CORRECT: all behaviour tested through the public entry point
+describe('processOrder', () => {
+  describe('when the order amount is negative', () => {
+    it('throws a validation error', () => { ... });
+  });
+
+  describe('when the user is a premium member', () => {
+    it('applies a 10% discount', () => { ... });
+  });
+});
+```
 
 #### Test Phase Organization
 
@@ -438,6 +467,61 @@ it('has initial balance', () => {
 });
 ```
 
+#### Prefer Inline Setup Over `beforeEach` Variables
+
+- **PREFER declaring variables inside each test** rather than in outer scope and initialising them in `beforeEach`
+- Shared `beforeEach` variables make it harder to understand what a test depends on — the reader must scroll up to find the setup
+- Use factory functions to reduce repetition without sacrificing locality
+- Reserve `beforeEach` for truly global side effects (e.g. `jest.useFakeTimers()`, `jest.clearAllMocks()`, starting/stopping a server)
+
+Example:
+
+```typescript
+❌ WRONG: variables declared outside tests, initialised in beforeEach
+describe('TokensController', () => {
+  let controller: TokensController;
+  let messenger: Messenger;
+
+  beforeEach(() => {
+    messenger = buildMessenger();
+    controller = new TokensController({ messenger });
+  });
+
+  it('adds a token', () => {
+    controller.addToken({ address: '0x123', symbol: 'DAI', decimals: 18 });
+    expect(controller.state.tokens).toHaveLength(1);
+  });
+
+  it('removes a token', () => {
+    controller.addToken({ address: '0x123', symbol: 'DAI', decimals: 18 });
+    controller.removeToken('0x123');
+    expect(controller.state.tokens).toHaveLength(0);
+  });
+});
+
+✅ CORRECT: each test creates its own instances via factory functions
+function buildController() {
+  const messenger = buildMessenger();
+  const controller = new TokensController({ messenger });
+  return { controller, messenger };
+}
+
+describe('TokensController', () => {
+  it('adds a token', () => {
+    const { controller } = buildController();
+    controller.addToken({ address: '0x123', symbol: 'DAI', decimals: 18 });
+    expect(controller.state.tokens).toHaveLength(1);
+  });
+
+  it('removes a token', () => {
+    const { controller } = buildController();
+    controller.addToken({ address: '0x123', symbol: 'DAI', decimals: 18 });
+    controller.removeToken('0x123');
+    expect(controller.state.tokens).toHaveLength(0);
+  });
+});
+```
+
 ### Controller-Specific Testing Patterns
 
 Reference: [MetaMask Controller Guidelines](https://github.com/MetaMask/core/blob/main/docs/controller-guidelines.md)
@@ -720,6 +804,7 @@ Before submitting tests, ensure:
 - [ ] Test descriptions use present tense without "should"
 - [ ] Tests are focused on single behaviors
 - [ ] Private code is tested through public interface
+- [ ] No `describe` block is named after private/non-exported code
 - [ ] Test phases (Arrange, Act, Assert) are clear
 
 ### Mocking and Data
@@ -730,6 +815,7 @@ Before submitting tests, ensure:
 - [ ] Factory functions used for complex test objects
 - [ ] No shared mutable state across tests
 - [ ] Fresh mock data created per test
+- [ ] Variables declared inside each test (not in outer scope via `beforeEach`)
 
 ### Async Testing
 
