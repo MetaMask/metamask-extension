@@ -226,9 +226,7 @@ export async function main(
  * @returns Sorted array of { jsPath, mapPath, label } for each bundle (label is path relative to dist/chrome).
  */
 export async function discoverWebpackBundles(
-  options: DiscoverWebpackBundlesOptions = {
-    mapLocation: DEFAULT_MAP_LOCATION,
-  },
+  options: DiscoverWebpackBundlesOptions,
 ): Promise<FilePair[]> {
   const { mapLocation } = options;
   const distDir = join(process.cwd(), 'dist');
