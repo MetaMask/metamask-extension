@@ -75,6 +75,12 @@ export default function GasTiming({
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
   const previousIsUnknownLow = usePrevious(isUnknownLow);
 
+  const estimateTextMap = {
+    [PriorityLevels.tenPercentIncreased]: t('tenPercentIncreased'),
+    [PriorityLevels.dAppSuggested]: t('dappSuggested'),
+    [PriorityLevels.dappSuggestedHigh]: t('dappSuggested'),
+  };
+
   useEffect(() => {
     let isMounted = true;
     const priority = maxPriorityFeePerGas;
@@ -147,13 +153,9 @@ export default function GasTiming({
 
   const isPresetEstimate = PRESET_ESTIMATES.includes(estimateToUse);
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
-  let text = t('custom');
-
-  if (estimateToUse === PriorityLevels.tenPercentIncreased) {
-    text = t('tenPercentIncreased');
-  } else if (isPresetEstimate) {
-    text = t(textTKey);
-  }
+  let text =
+    estimateTextMap[estimateToUse] ??
+    (isPresetEstimate ? t(textTKey) : t('custom'));
   let time = '';
   let timeMs = 0;
 

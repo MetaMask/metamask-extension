@@ -73,6 +73,23 @@ describe('Gas timing', () => {
     });
   });
 
+  it('renders "Site suggested" when the estimate is dappSuggested', async () => {
+    useGasFeeContext.mockReturnValue({
+      estimateUsed: 'dappSuggested',
+    });
+
+    const mockStore = configureMockStore()(mockState);
+    const props = {
+      maxPriorityFeePerGas: '1000000',
+    };
+
+    const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
+
+    await waitFor(() => {
+      expect(screen.queryByText(messages.dappSuggested.message)).toBeTruthy();
+    });
+  });
+
   it('uses userFeeLevelOverride when context has no estimateUsed', async () => {
     useGasFeeContext.mockReturnValue({});
 

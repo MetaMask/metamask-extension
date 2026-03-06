@@ -1,5 +1,6 @@
 import React, { ComponentType } from 'react';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import { Meta, StoryObj } from '@storybook/react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -7,6 +8,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { TransactionModalContext } from '../../../../contexts/transaction-modal';
+import { ConfirmContextProvider } from '../../context/confirm';
 import {
   EditGasModes,
   PriorityLevels,
@@ -68,22 +70,41 @@ interface StoryArgs {
   transaction: TransactionMeta;
 }
 
+const mockCurrentConfirmation = {
+  networkClientId: 'mainnet',
+} as React.ComponentProps<typeof ConfirmContextProvider>['currentConfirmationOverride'];
+
+const defaultEditGasMode = EditGasModes.modifyInPlace;
+const defaultTransaction = createTransaction(defaultEditGasMode);
+
 const meta: Meta<StoryArgs> = {
   title: 'Pages/Confirmations/Components/EditGasFeePopover',
   component: EditGasFeePopover as unknown as ComponentType<StoryArgs>,
   decorators: [
-    (Story, context) => (
-      <Provider store={store}>
-        <MockTransactionModalProvider>
-          <GasFeeContextProvider
-            transaction={createTransaction(context.args.editGasMode)}
-            editGasMode={context.args.editGasMode}
-          >
-            <Story />
-          </GasFeeContextProvider>
-        </MockTransactionModalProvider>
-      </Provider>
-    ),
+    (Story, context) => {
+      const editGasMode =
+        context.args?.editGasMode ?? defaultEditGasMode;
+      const transaction =
+        context.args?.transaction ?? defaultTransaction;
+      return (
+        <Provider store={store}>
+          <MemoryRouter initialEntries={['/']}>
+            <ConfirmContextProvider
+              currentConfirmationOverride={mockCurrentConfirmation}
+            >
+              <MockTransactionModalProvider>
+                <GasFeeContextProvider
+                  transaction={transaction}
+                  editGasMode={editGasMode}
+                >
+                  <Story />
+                </GasFeeContextProvider>
+              </MockTransactionModalProvider>
+            </ConfirmContextProvider>
+          </MemoryRouter>
+        </Provider>
+      );
+    },
   ],
 };
 
@@ -93,7 +114,8 @@ type Story = StoryObj<StoryArgs>;
 
 export const Default: Story = {
   args: {
-    editGasMode: EditGasModes.modifyInPlace,
-    transaction: createTransaction(EditGasModes.modifyInPlace),
+    editGasMode: defaultEditGasMode,
+    transaction: defaultTransaction,
   },
+  render: (args) => <EditGasFeePopover {...args} />,
 };

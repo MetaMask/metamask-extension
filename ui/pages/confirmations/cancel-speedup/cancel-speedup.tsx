@@ -218,13 +218,20 @@ const DescriptionSection = ({ isCancel }: { isCancel: boolean }) => {
   );
 };
 
-const ConfirmButton = ({ onClick }: { onClick: () => void }) => {
+const ConfirmButton = ({
+  onClick,
+  disabled,
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+}) => {
   const t = useI18nContext();
   return (
     <Button
       variant={ButtonVariant.Primary}
       className="w-full"
       onClick={onClick}
+      disabled={disabled}
       data-testid="cancel-speedup-confirm-button"
     >
       {t('confirm')}
@@ -286,7 +293,10 @@ const CancelSpeedupModal = ({
           <DescriptionSection isCancel={isCancel} />
         </Box>
         <ModalFooter>
-          <ConfirmButton onClick={handleSubmit} />
+          <ConfirmButton
+            onClick={handleSubmit}
+            disabled={!effectiveTransaction.previousGas}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>
@@ -336,6 +346,7 @@ const CancelSpeedupContent = ({
         <CancelSpeedupModal
           mode={editGasMode}
           onClose={onClose}
+          dataTestId="speed-up-and-cancel-modal"
           effectiveTransaction={effectiveTransaction}
           cancelTransaction={cancelTransaction}
           speedUpTransaction={speedUpTransaction}

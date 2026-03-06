@@ -7,6 +7,7 @@ import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import SpeedUpAndCancelModal from '../../../page-objects/pages/confirmations/speed-up-and-cancel-modal';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
@@ -59,7 +60,13 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.checkSpeedUpInlineButtonIsPresent();
           await activityListPage.clickTransactionListItem();
           await activityListPage.clickSpeedUpTransaction();
-          await activityListPage.clickConfirmTransactionReplacement();
+
+          const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
+          await speedUpCancelModal.waitForModal();
+          await speedUpCancelModal.checkSpeedUpTitleVisible();
+          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.waitForConfirmEnabled();
+          await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
@@ -110,7 +117,13 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
           await activityListPage.clickCancelTransaction();
-          await activityListPage.clickConfirmTransactionReplacement();
+
+          const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
+          await speedUpCancelModal.waitForModal();
+          await speedUpCancelModal.checkCancelTitleVisible();
+          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.waitForConfirmEnabled();
+          await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');

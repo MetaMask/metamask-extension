@@ -79,6 +79,11 @@ const mockTransaction = {
   chainId: '0x5',
   networkClientId: 'goerli',
   userFeeLevel: 'tenPercentIncreased',
+  previousGas: {
+    maxFeePerGas: MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+    maxPriorityFeePerGas: '0x2540be400',
+    gasLimit: '0x5208',
+  },
   txParams: {
     from: mockSelectedInternalAccount.address,
     gas: '0x5208',
