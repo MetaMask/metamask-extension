@@ -183,7 +183,7 @@ describe('Multiple Standard Dapp Connections', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
             account: EVM_ADDRESS_TWO,
@@ -233,7 +233,7 @@ describe('Multiple Standard Dapp Connections', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
             account: EVM_ADDRESS_TWO,
@@ -284,7 +284,7 @@ describe('Multiple Standard Dapp Connections', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
@@ -399,7 +399,7 @@ describe('Multiple Standard Dapp Connections', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToMultichainTestDapp({
             // @ts-expect-error Type error is expected here since its being inferred as null

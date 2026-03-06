@@ -12,6 +12,9 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
+export const SETTINGS_V2_ROUTE = '/settings-v2';
+export const ASSETS_ROUTE = '/settings-v2/assets';
+export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -212,6 +215,17 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
+  {
+    path: SETTINGS_V2_ROUTE,
+    label: 'Settings V2 Page',
+    trackInAnalytics: true,
+  },
+  { path: ASSETS_ROUTE, label: 'Assets Settings Page', trackInAnalytics: true },
+  {
+    path: CURRENCY_ROUTE,
+    label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
   {
     path: GENERAL_ROUTE,
     label: 'General Settings Page',

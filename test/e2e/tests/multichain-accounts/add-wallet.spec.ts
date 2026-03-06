@@ -113,7 +113,7 @@ describe('Add wallet', function () {
         fixtures: new FixtureBuilder()
           .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
+          .withPreferencesController()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           await mockPriceApi(server);
