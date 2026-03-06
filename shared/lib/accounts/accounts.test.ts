@@ -15,8 +15,11 @@ import {
 } from '@metamask/messenger';
 import { AccountsControllerActions } from '@metamask/accounts-controller';
 import { SnapControllerActions } from '@metamask/snaps-controllers';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { HardwareKeyringType } from '../../constants/hardware-wallets';
 import {
   getNextAvailableSnapAccountName,
+  isHardwareAccount,
   MultichainWalletSnapClient,
   SnapAccountNameOptions,
   CreateAccountSnapOptions,
@@ -56,6 +59,87 @@ describe('accounts', () => {
       expect(await get('npm:not-known' as SnapId)).toStrictEqual(
         `Snap Account ${index}`,
       );
+    });
+  });
+
+  describe('isHardwareAccount', () => {
+    const createMockAccount = (keyringType: string): InternalAccount =>
+      ({
+        id: 'test-account-id',
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+        metadata: {
+          keyring: {
+            type: keyringType,
+          },
+        },
+      }) as InternalAccount;
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      ['Ledger', HardwareKeyringType.ledger],
+      ['Trezor', HardwareKeyringType.trezor],
+      ['OneKey', HardwareKeyringType.oneKey],
+      ['Lattice', HardwareKeyringType.lattice],
+      ['QR', HardwareKeyringType.qr],
+    ])(
+      'returns true for %s hardware wallet',
+      (_name: string, keyringType: HardwareKeyringType) => {
+        const account = createMockAccount(keyringType);
+        expect(isHardwareAccount(account)).toBe(true);
+      },
+    );
+
+    it('returns false for non-hardware keyring type', () => {
+      const account = createMockAccount('HD Key Tree');
+      expect(isHardwareAccount(account)).toBe(false);
+    });
+
+    it('returns false for snap keyring type', () => {
+      const account = createMockAccount('Snap Keyring');
+      expect(isHardwareAccount(account)).toBe(false);
+    });
+
+    it('returns false for simple keyring type', () => {
+      const account = createMockAccount('Simple Key Pair');
+      expect(isHardwareAccount(account)).toBe(false);
+    });
+
+    it('returns false when account is null', () => {
+      expect(isHardwareAccount(null as unknown as InternalAccount)).toBe(false);
+    });
+
+    it('returns false when account is undefined', () => {
+      expect(isHardwareAccount(undefined as unknown as InternalAccount)).toBe(
+        false,
+      );
+    });
+
+    it('returns false when metadata is missing', () => {
+      const account = {
+        id: 'test-account-id',
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+      } as InternalAccount;
+      expect(isHardwareAccount(account)).toBe(false);
+    });
+
+    it('returns false when keyring is missing', () => {
+      const account = {
+        id: 'test-account-id',
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+        metadata: {},
+      } as InternalAccount;
+      expect(isHardwareAccount(account)).toBe(false);
+    });
+
+    it('returns false when keyring type is missing', () => {
+      const account = {
+        id: 'test-account-id',
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+        metadata: {
+          keyring: {},
+        },
+      } as InternalAccount;
+      expect(isHardwareAccount(account)).toBe(false);
     });
   });
 
