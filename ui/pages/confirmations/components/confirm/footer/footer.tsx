@@ -105,7 +105,6 @@ const ConfirmButton = ({
 
   const {
     alerts,
-    hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
     hasUnconfirmedFieldDangerAlerts,
     setAlertConfirmed,
@@ -116,11 +115,8 @@ const ConfirmButton = ({
   const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
-  // Show danger button when any danger alert exists or there are unconfirmed danger
-  // alerts (matches main). This keeps the "open modal then confirm" flow for E2E
-  // (e.g. malicious-signatures.spec).
   const shouldShowDangerConfirmButton =
-    hasDangerAlerts || hasUnconfirmedDangerAlerts || hasDangerBlockingAlerts;
+    hasUnconfirmedDangerAlerts || hasDangerBlockingAlerts;
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -131,12 +127,21 @@ const ConfirmButton = ({
   }, []);
 
   const handleSubmitConfirmModal = useCallback(async () => {
-    unconfirmedDangerAlerts.forEach((alert) => {
-      setAlertConfirmed(alert.key, true);
-    });
+    if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
+      const [selectedUnconfirmedDangerAlert] = unconfirmedDangerAlerts;
+
+      if (selectedUnconfirmedDangerAlert) {
+        setAlertConfirmed(selectedUnconfirmedDangerAlert.key, true);
+      }
+    }
+
     setConfirmModalVisible(false);
-    await onSubmit();
-  }, [onSubmit, setAlertConfirmed, unconfirmedDangerAlerts]);
+  }, [
+    alertOwnerId,
+    currentConfirmation?.id,
+    setAlertConfirmed,
+    unconfirmedDangerAlerts,
+  ]);
 
   const { trialedProducts } = useUserSubscriptions();
   const isShieldTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);

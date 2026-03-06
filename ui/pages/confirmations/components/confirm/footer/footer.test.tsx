@@ -937,7 +937,7 @@ describe('ConfirmFooter', () => {
       expect(getByText(messages.reviewAlert.message)).toBeInTheDocument();
     });
 
-    it('renders the "confirm" button when there are confirmed danger alerts', () => {
+    it('renders the standard "confirm" button when danger alerts are already confirmed', () => {
       const stateWithConfirmedDangerAlertMock = createStateWithAlerts(
         alertsMock,
         {
@@ -948,7 +948,7 @@ describe('ConfirmFooter', () => {
         stateWithConfirmedDangerAlertMock,
       );
       expect(getByText(messages.confirm.message)).toBeInTheDocument();
-      expect(getByTestId('confirm-footer-button')).toHaveClass(
+      expect(getByTestId('confirm-footer-button')).not.toHaveClass(
         'mm-button-primary--type-danger',
       );
     });
