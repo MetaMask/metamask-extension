@@ -1,3 +1,5 @@
+import { NamespacedName } from '@metamask/messenger';
+import { Json, JsonRpcNotification } from '@metamask/utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 
@@ -47,4 +49,36 @@ export async function setBackgroundConnection(
   backgroundConnection: BackgroundRpcClient,
 ) {
   background = backgroundConnection;
+}
+
+export const MESSENGER_SUBSCRIPTION_NOTIFICATION = 'messengerSubscription';
+
+/**
+ * Subscribe to a given messenger event emitted by the background.
+ *
+ * @param event - The event name.
+ * @param callback - The callback to invoke when the event is emitted.
+ * @returns A cleanup function that can be invoked to unsubscribe.
+ */
+export async function subscribeToMessengerEvent<Data extends Json>(
+  event: NamespacedName,
+  callback: (data: Data) => void,
+): Promise<() => Promise<void>> {
+  const listener = (notification: JsonRpcNotification<[string, Data]>) => {
+    if (
+      notification.method === MESSENGER_SUBSCRIPTION_NOTIFICATION &&
+      notification.params?.[0] === event
+    ) {
+      callback(notification.params[1]);
+    }
+  };
+
+  await submitRequestToBackground('messengerSubscribe', [event]);
+
+  background.onNotification(listener);
+
+  return () => {
+    background.removeOnNotification(listener);
+    return submitRequestToBackground('messengerUnsubscribe', [event]);
+  };
 }
