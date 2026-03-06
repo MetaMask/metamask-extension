@@ -48,7 +48,6 @@ describe('useNetworkManagerInitialTab() tests', () => {
     },
   ];
 
-  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each(testScenarios)(
     'should return "$expectedTab" when $scenario',
     ({ enabledNetworks, expectedTab }: (typeof testScenarios)[number]) => {

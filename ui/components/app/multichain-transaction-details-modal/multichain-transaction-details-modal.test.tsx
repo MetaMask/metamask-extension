@@ -236,7 +236,6 @@ describe('MultichainTransactionDetailsModal', () => {
     expect(mockTrackEvent).toHaveBeenCalled();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [TransactionStatus.Confirmed, 'Confirmed'],
     [TransactionStatus.Unconfirmed, 'Pending'],

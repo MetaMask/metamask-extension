@@ -207,7 +207,6 @@ describe('useHardwareWalletPermissions', () => {
       );
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       HardwareConnectionPermissionState.Granted,
       HardwareConnectionPermissionState.Denied,

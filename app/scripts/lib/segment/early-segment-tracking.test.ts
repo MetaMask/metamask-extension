@@ -91,7 +91,6 @@ describe('trackEarlySegmentEvent', () => {
     });
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['state is null', null],
     ['MetaMetricsController is missing', { KeyringController: {} }],

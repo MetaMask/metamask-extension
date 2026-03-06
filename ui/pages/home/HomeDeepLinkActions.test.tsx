@@ -118,7 +118,6 @@ describe('useHomeDeepLinkEffects', () => {
     jest.clearAllMocks();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(openNetworkSelectorDeepLinkCases)(
     'openNetworkSelectorDeepLink: $testName',
     ({
@@ -156,7 +155,6 @@ describe('HomeDeepLinkActions', () => {
     jest.clearAllMocks();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(openNetworkSelectorDeepLinkCases)(
     'openNetworkSelectorDeepLink: $testName',
     ({

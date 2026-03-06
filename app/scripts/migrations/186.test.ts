@@ -160,10 +160,9 @@ describe(`migration #${VERSION}`, () => {
     },
   ];
 
-  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidStates)(
     'should capture exception if $scenario',
-    async ({ state }: { errorMessage: string; state: VersionedData }) => {
+    async ({ state }) => {
       const orgState = cloneDeep(state);
       const localChangedControllers = new Set<string>();
 
@@ -345,7 +344,6 @@ describe(`migration #${VERSION}`, () => {
     },
   ];
 
-  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidNetworkEnablementControllerStates)(
     'does not update the enablement map and adds the megaeth testnet v2 network configuration and remove the megaeth testnet v1 network configuration if $scenario',
     async ({ state }: { state: VersionedData; scenario: string }) => {
@@ -402,7 +400,6 @@ describe(`migration #${VERSION}`, () => {
     },
   ];
 
-  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(switchToMainnetScenarios)(
     'switchs to mainnet if $scenario',
     async ({ state }: { state: VersionedData; scenario: string }) => {
@@ -492,7 +489,6 @@ describe(`migration #${VERSION}`, () => {
     },
   ];
 
-  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidSwitchToMainnetScenarios)(
     'does not switch to mainnet if $scenario',
     async ({ state }: { state: VersionedData; scenario: string }) => {

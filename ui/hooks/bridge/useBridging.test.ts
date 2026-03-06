@@ -50,7 +50,6 @@ describe('useBridging', () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         BRIDGE_PREPARE_PATH,
@@ -122,13 +121,8 @@ describe('useBridging', () => {
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      async (
-        expectedUrl: string,
-        token: Record<string, unknown>,
-        location: string,
-        isSwap: boolean,
-        expectedState = {},
-      ) => {
+      async (...args) => {
+        const [expectedUrl, token, location, isSwap, expectedState = {}] = args;
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging(
           createBridgeMockStore({
@@ -180,7 +174,6 @@ describe('useBridging', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         '/',
@@ -275,13 +268,9 @@ describe('useBridging', () => {
       ],
     ])(
       'should open swap with correct token pair when pathname is %s',
-      async (
-        pathname: string,
-        expectedUrl: string,
-        token: string,
-        location: string,
-        expectedState = {},
-      ) => {
+      async (...args) => {
+        const [pathname, expectedUrl, token, location, expectedState = {}] =
+          args;
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')

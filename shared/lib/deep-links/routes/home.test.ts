@@ -21,7 +21,6 @@ describe('homeRoute', () => {
     { searchParamVal: undefined, expected: null },
   ];
 
-  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each(testCases)(
     'homeRoute.handler correctly handles openNetworkSelector param: input=$searchParamVal, expected=$expected',
     ({ searchParamVal, expected }: TestCase) => {

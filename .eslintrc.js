@@ -3,9 +3,39 @@ const path = require('node:path');
 const ts = require('typescript');
 const { version: reactVersion } = require('react/package.json');
 
-const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
-const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
-const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
+/**
+ * Finds the path to a tsconfig file with the given name, starting from the
+ * current directory and moving up the directory tree.
+ * @param {string} fileName
+ * @returns {string}
+ */
+function requireTsconfigPath(fileName) {
+  return ts.findConfigFile('./', ts.sys.fileExists, fileName);
+}
+
+/**
+ * Given the path to a tsconfig file, returns the list of TypeScript files
+ * included in that config.
+ *
+ * @param {string} configPath
+ * @returns {string[]}
+ */
+function getTypeScriptFileNames(configPath) {
+  const { config } = ts.readConfigFile(configPath, ts.sys.readFile);
+  const tsconfig = ts.parseJsonConfigFileContent(
+    config,
+    ts.sys,
+    path.dirname(configPath),
+  );
+
+  return tsconfig.fileNames.filter((fileName) => /\.tsx?$/u.test(fileName));
+}
+
+const typeScriptProjectConfigs = [
+  requireTsconfigPath('tsconfig.source.json'),
+  requireTsconfigPath('tsconfig.unit.json'),
+  requireTsconfigPath('tsconfig.e2e.json'),
+];
 
 /**
  * @type {import('eslint').Linter.Config }
@@ -120,12 +150,12 @@ module.exports = {
     /**
      * TypeScript files
      */
-    {
-      files: tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
+    ...typeScriptProjectConfigs.map((typeScriptProjectConfigPath) => ({
+      files: getTypeScriptFileNames(typeScriptProjectConfigPath),
       parserOptions: {
-        project: tsconfigPath,
+        project: typeScriptProjectConfigPath,
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
-        tsconfigRootDir: path.dirname(tsconfigPath),
+        tsconfigRootDir: __dirname,
       },
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
@@ -301,9 +331,8 @@ module.exports = {
       settings: {
         'import/resolver': {
           // When determining the location of an `import`, prefer TypeScript's
-          // resolution algorithm. Note that due to how we've configured
-          // TypeScript in `tsconfig.json`, we are able to import JavaScript
-          // files from TypeScript files.
+          // resolution algorithm. These settings are applied once per
+          // TypeScript project config.
           typescript: {
             // Always try to resolve types under `<root>/@types` directory even
             // it doesn't contain any source code, like `@types/unist`
@@ -311,7 +340,7 @@ module.exports = {
           },
         },
       },
-    },
+    })),
     /**
      * == Everything else ==
      *

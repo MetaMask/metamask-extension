@@ -550,7 +550,6 @@ describe('ConfirmFooter', () => {
     });
 
     describe('navigates to the next confirmation', () => {
-      // @ts-expect-error This is missing from the Mocha type definitions
       it.each(['Confirm', 'Cancel'])(
         'on %s button click',
         async (buttonText: string) => {

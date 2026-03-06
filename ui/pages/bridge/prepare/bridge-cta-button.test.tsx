@@ -285,7 +285,6 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
   });
 
-  // @ts-expect-error: each is a valid test function in jest
   it.each([
     ['disable', 'there is a tx alert', { isTxAlertPresent: true }],
     [
@@ -299,10 +298,10 @@ describe('BridgeCTAButton', () => {
   ])(
     'should %s the component when quotes are loading and %s',
     async (
-      status: 'disable' | 'enable',
-      _: string,
-      validationErrors: Record<string, boolean>,
-      buttonLabel: string = messages.swap.message,
+      status,
+      _,
+      validationErrors,
+      buttonLabel = messages.swap.message,
     ) => {
       const mockStore = createBridgeMockStore({
         featureFlagOverrides: {

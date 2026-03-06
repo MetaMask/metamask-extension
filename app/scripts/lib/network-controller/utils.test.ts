@@ -25,7 +25,6 @@ describe('shouldCreateRpcServiceEvents', () => {
     const error = undefined;
 
     describe('if given a MetaMetrics ID', () => {
-      // @ts-expect-error The Mocha types are incorrect.
       describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
         'if the environment is %s',
         (environment: string) => {
@@ -135,7 +134,6 @@ describe('shouldCreateRpcServiceEvents', () => {
     const error = new Error('some error');
 
     describe('if given a MetaMetrics ID', () => {
-      // @ts-expect-error The Mocha types are incorrect.
       describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
         'if the environment is %s',
         (environment: string) => {

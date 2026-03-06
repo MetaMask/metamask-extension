@@ -55,7 +55,6 @@ describe('trackVaultCorruptionEvent', () => {
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['backup is null', null],
     ['MetaMetricsController is missing', { KeyringController: {} }],

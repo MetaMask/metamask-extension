@@ -147,7 +147,6 @@ describe('utils', () => {
       },
     ];
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(testCases)(
       '$description',
       ({ input, expected }: { input: Date | number; expected: string }) => {
