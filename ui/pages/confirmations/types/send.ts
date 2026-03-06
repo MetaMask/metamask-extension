@@ -51,6 +51,8 @@ export type RecipientValidationResult = {
     similarTo: string;
   }[];
   error?: string;
+  learnMoreLink?: string;
+  allowAcknowledge?: boolean;
   resolvedLookup?: string;
   warning?: string;
   toAddressValidated?: string;

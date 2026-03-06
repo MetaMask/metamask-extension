@@ -251,4 +251,96 @@ describe('Recipient', () => {
       expect(mockSetRecipientInputMethodSelectAccount).toHaveBeenCalled();
     });
   });
+
+  describe('learn more and acknowledge', () => {
+    const tokenContractAddress = '0x1234567890abcdef1234567890abcdef12345678';
+    const learnMoreLink = 'https://support.metamask.io/test-link';
+
+    it('renders Learn More link when recipientErrorLearnMoreLink is provided', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { getByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorLearnMoreLink: learnMoreLink,
+          recipientErrorAllowAcknowledge: true,
+          acknowledgeError: jest.fn(),
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      const link = getByTestId('recipient-error-learn-more-link');
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute('href', learnMoreLink);
+    });
+
+    it('renders I understand text when recipientErrorAllowAcknowledge is true', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { getByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorLearnMoreLink: learnMoreLink,
+          recipientErrorAllowAcknowledge: true,
+          acknowledgeError: jest.fn(),
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(getByTestId('recipient-error-acknowledge')).toBeInTheDocument();
+    });
+
+    it('calls acknowledgeError when I understand is clicked', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const mockAcknowledgeError = jest.fn();
+
+      const { getByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorLearnMoreLink: learnMoreLink,
+          recipientErrorAllowAcknowledge: true,
+          acknowledgeError: mockAcknowledgeError,
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      fireEvent.click(getByTestId('recipient-error-acknowledge'));
+      expect(mockAcknowledgeError).toHaveBeenCalled();
+    });
+
+    it('does not render I understand when recipientErrorAllowAcknowledge is false', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { queryByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorLearnMoreLink: learnMoreLink,
+          recipientErrorAllowAcknowledge: false,
+          acknowledgeError: jest.fn(),
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(
+        queryByTestId('recipient-error-acknowledge'),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

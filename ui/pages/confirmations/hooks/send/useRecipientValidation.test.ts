@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -54,6 +54,9 @@ describe('useRecipientValidation', () => {
     expect(result.current).toEqual({
       recipientConfusableCharacters: undefined,
       recipientError: undefined,
+      recipientErrorLearnMoreLink: undefined,
+      recipientErrorAllowAcknowledge: false,
+      acknowledgeError: expect.any(Function),
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
       resolutionProtocol: undefined,
@@ -80,6 +83,9 @@ describe('useRecipientValidation', () => {
       expect(result.current).toEqual({
         recipientConfusableCharacters: undefined,
         recipientError: 'invalidAddress',
+        recipientErrorLearnMoreLink: undefined,
+        recipientErrorAllowAcknowledge: false,
+        acknowledgeError: expect.any(Function),
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
         resolutionProtocol: undefined,
@@ -150,6 +156,9 @@ describe('useRecipientValidation', () => {
       expect(result.current).toEqual({
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
+        recipientErrorLearnMoreLink: undefined,
+        recipientErrorAllowAcknowledge: false,
+        acknowledgeError: expect.any(Function),
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
         resolutionProtocol: undefined,
@@ -171,6 +180,9 @@ describe('useRecipientValidation', () => {
       expect(result.current).toEqual({
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
+        recipientErrorLearnMoreLink: undefined,
+        recipientErrorAllowAcknowledge: false,
+        acknowledgeError: expect.any(Function),
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
         resolutionProtocol: undefined,
@@ -413,6 +425,9 @@ describe('useRecipientValidation', () => {
         expect(result.current).toEqual({
           recipientConfusableCharacters: undefined,
           recipientError: 'invalidAddress',
+          recipientErrorLearnMoreLink: undefined,
+          recipientErrorAllowAcknowledge: false,
+          acknowledgeError: expect.any(Function),
           recipientResolvedLookup: undefined,
           recipientWarning: undefined,
           resolutionProtocol: undefined,
@@ -446,6 +461,91 @@ describe('useRecipientValidation', () => {
           expect.any(Object),
         );
         expect(result.current.recipientResolvedLookup).toBe('0x123');
+      });
+    });
+  });
+
+  describe('acknowledgment', () => {
+    it('returns learnMoreLink and allowAcknowledge when validation includes them', async () => {
+      jest
+        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
+        .mockResolvedValue({
+          error: 'tokenContractError',
+          learnMoreLink: 'https://example.com/learn-more',
+          allowAcknowledge: true,
+        });
+
+      const { result } = renderHook();
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('tokenContractError');
+        expect(result.current.recipientErrorLearnMoreLink).toBe(
+          'https://example.com/learn-more',
+        );
+        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
+      });
+    });
+
+    it('clears recipientError and sets allowAcknowledge to false when acknowledgeError is called', async () => {
+      jest
+        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
+        .mockResolvedValue({
+          error: 'tokenContractError',
+          learnMoreLink: 'https://example.com/learn-more',
+          allowAcknowledge: true,
+        });
+
+      const { result } = renderHook();
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('tokenContractError');
+      });
+
+      act(() => {
+        result.current.acknowledgeError();
+      });
+
+      expect(result.current.recipientError).toBeUndefined();
+      expect(result.current.recipientErrorAllowAcknowledge).toBe(false);
+    });
+
+    it('resets acknowledgment when to address changes', async () => {
+      jest
+        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
+        .mockResolvedValue({
+          error: 'tokenContractError',
+          learnMoreLink: 'https://example.com/learn-more',
+          allowAcknowledge: true,
+        });
+
+      const { result, rerender } = renderHook();
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('tokenContractError');
+      });
+
+      act(() => {
+        result.current.acknowledgeError();
+      });
+
+      expect(result.current.recipientError).toBeUndefined();
+
+      // Change address
+      mockUseSendContext.mockReturnValue({
+        to: '0xABCDEF1234567890ABCDEF1234567890ABCDEF12',
+        chainId: '0x1',
+        from: '',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateValue: jest.fn(),
+        value: '',
+      } as unknown as ReturnType<typeof useSendContext>);
+      rerender();
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('tokenContractError');
+        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
       });
     });
   });
