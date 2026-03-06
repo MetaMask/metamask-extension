@@ -22,9 +22,7 @@ jest.mock('../../../selectors/nft', () => ({
 const ADDRESS_MOCK = '0x0000000000000000000000000000000000000000';
 
 const mockState = {
-  metamask: {
-    useBlockie: false,
-  },
+  metamask: {},
 };
 
 const mockStore = configureMockStore()(mockState);

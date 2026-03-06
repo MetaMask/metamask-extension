@@ -5,11 +5,10 @@ import Identicon from './identicon.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { useBlockie, ipfsGateway },
+    metamask: { ipfsGateway },
   } = state;
 
   return {
-    useBlockie,
     tokenList: getTokenList(state),
     ipfsGateway,
     watchedNftContracts: getNftContractsByAddressOnCurrentChain(state),

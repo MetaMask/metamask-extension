@@ -2712,37 +2712,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setUseBlockie', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setUseBlockie in background', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().resolves();
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(setUseBlockieStub.callCount).toStrictEqual(1);
-    });
-
-    it('errors when setUseBlockie in background throws', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().rejects(new Error('error'));
-
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setUsePhishDetect', () => {
     afterEach(() => {
       sinon.restore();
