@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
+  type QuoteWarning,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
@@ -25,8 +26,11 @@ export const useQuoteFetchEvents = () => {
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
-  const warnings = useSelector((state) =>
+  const allWarnings = useSelector((state) =>
     getWarningLabels(state as BridgeAppState, Date.now()),
+  );
+  const warnings = allWarnings.filter(
+    (w): w is QuoteWarning => w !== 'market_closed',
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 

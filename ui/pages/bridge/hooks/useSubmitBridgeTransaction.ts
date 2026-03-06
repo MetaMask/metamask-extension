@@ -6,7 +6,11 @@ import {
   isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  QuoteMetadata,
+  QuoteResponse,
+  QuoteWarning,
+} from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -71,8 +75,11 @@ export default function useSubmitBridgeTransaction() {
 
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
-  const warnings = useSelector((state) =>
+  const allWarnings = useSelector((state) =>
     getWarningLabels(state as BridgeAppState, Date.now()),
+  );
+  const warnings = allWarnings.filter(
+    (w): w is QuoteWarning => w !== 'market_closed',
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
