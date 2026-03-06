@@ -4,6 +4,7 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { SmartTransactionsControllerMessenger } from '@metamask/smart-transactions-controller';
+import type { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -46,7 +47,8 @@ export function getSmartTransactionsControllerMessenger(
 }
 
 export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | AuthenticationControllerGetBearerToken;
 
 export type SmartTransactionsControllerInitMessenger = ReturnType<
   typeof getSmartTransactionsControllerInitMessenger
@@ -74,7 +76,10 @@ export function getSmartTransactionsControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
+    actions: [
+      'MetaMetricsController:trackEvent',
+      'AuthenticationController:getBearerToken',
+    ],
   });
   return controllerInitMessenger;
 }
