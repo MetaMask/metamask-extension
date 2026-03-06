@@ -643,6 +643,9 @@ const PrepareBridgePage = ({
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
                 description={t('noOptionsAvailableMessage')}
+                descriptionProps={{
+                  'data-testid': 'bridge-no-options-available',
+                }}
                 textAlign={TextAlign.Left}
               />
             </Column>
@@ -775,6 +778,9 @@ const PrepareBridgePage = ({
                   : 'bridgeValidationInsufficientGasMessage',
                 [ticker],
               )}
+              descriptionProps={{
+                'data-testid': 'bridge-insufficient-gas-for-quote',
+              }}
               textAlign={TextAlign.Left}
               actionButtonLabel={t('buyMoreAsset', [ticker])}
               actionButtonOnClick={() => openBuyCryptoInPdapp()}
