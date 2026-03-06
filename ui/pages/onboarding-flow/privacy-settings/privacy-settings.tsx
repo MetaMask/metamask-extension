@@ -289,7 +289,7 @@ export default function PrivacySettings() {
                 {t('defaultSettingsSubTitle')}
               </Text>
               <a
-                href="https://support.metamask.io/privacy-and-security/privacy-best-practices"
+                href={ZENDESK_URLS.PRIVACY_BEST_PRACTICES}
                 target="_blank"
                 rel="noreferrer"
                 key="learnMoreAboutPrivacy"

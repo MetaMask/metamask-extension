@@ -38,10 +38,6 @@
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": "object",
     "defaultHomeActiveTabName": null,
-    "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": "object",
-    "enforcedSimulationsSlippage": "number",
-    "enforcedSimulationsSlippageForTransactions": "object",
     "fullScreenGasPollTokens": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
@@ -60,6 +56,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "pendingExtensionVersion": null,
+    "pendingRedirectRoute": null,
     "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "pna25Acknowledged": "boolean",
@@ -113,6 +110,7 @@
   "BridgeStatusController": { "txHistory": "object" },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
+  "ClientController": "object",
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
@@ -326,11 +324,14 @@
   "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
+    "localOverrides": "object",
+    "rawRemoteFeatureFlags": "object",
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
-    }
+      "feature3": { "name": "groupA", "value": "valueA" }
+    },
+    "thresholdCache": "object"
   },
   "RewardsController": {
     "rewardsAccounts": "object",
@@ -378,36 +379,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "SwapsController": {
-    "swapsState": {
-      "approveTxId": null,
-      "customApproveTxData": "string",
-      "customGasPrice": null,
-      "customMaxFeePerGas": null,
-      "customMaxGas": "",
-      "customMaxPriorityFeePerGas": null,
-      "errorKey": "",
-      "fetchParams": null,
-      "quotes": "object",
-      "quotesLastFetched": null,
-      "quotesPollingLimitEnabled": false,
-      "routeState": "",
-      "saveFetchedQuotes": false,
-      "selectedAggId": null,
-      "swapsFeatureFlags": {},
-      "swapsFeatureIsLive": true,
-      "swapsQuotePrefetchingRefreshTime": 60000,
-      "swapsQuoteRefreshTime": 60000,
-      "swapsStxBatchStatusRefreshTime": 10000,
-      "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2,
-      "swapsStxStatusDeadline": 180,
-      "swapsUserFeeLevel": "",
-      "tokens": null,
-      "topAggId": null,
-      "tradeTxId": null
-    }
-  },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
     "tokensChainsCache": { "0x539": "object" }
