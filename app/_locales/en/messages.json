@@ -1784,6 +1784,12 @@
   "connectionsRemovedModalTitle": {
     "message": "Connections removed"
   },
+  "contactDeleted": {
+    "message": "Contact deleted"
+  },
+  "contactDetails": {
+    "message": "Contact details"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -8542,6 +8548,9 @@
   "thirdPartySoftware": {
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
+  },
+  "thisContactWillBeDeleted": {
+    "message": "This contact will be deleted."
   },
   "time": {
     "message": "Time"
