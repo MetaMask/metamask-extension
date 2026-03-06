@@ -91,7 +91,7 @@ describe('./utils/cli.ts', () => {
   });
 
   // TODO: Remove this temporary block and tests once LavaMoat supports watch
-  // mode. Tracking issue: https://github.com/MetaMask/MetaMask-planning/issues/7075
+  // mode. Tracking issue: https://github.com/MetaMask/metamask-extension/issues/40677
   describe('temporary: block lavamoat and watch mode options', () => {
     it('exits when watch and lavamoat are both enabled', () => {
       const exit = mock.method(process, 'exit', noop as () => never);
