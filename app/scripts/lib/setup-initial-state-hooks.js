@@ -1,11 +1,5 @@
-import { memoize } from 'lodash';
-import {
-  ENVIRONMENT_TYPE_BACKGROUND,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
@@ -14,38 +8,24 @@ import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
-const platform = new ExtensionPlatform();
-
-// TODO: This logic is duplicated from app/scripts/lib/util.ts getEnvironmentType.
-// It should be extracted to a shared get-environment-type.ts module, but that
-// causes a LavaMoat + Webpack harmony re-export error in the UI bundle. See:
-// https://github.com/LavaMoat/LavaMoat/issues/1893
-const getEnvironmentTypeMemo = memoize((url) => {
-  const parsedUrl = new URL(url);
-  if (parsedUrl.pathname === '/popup.html') {
-    return ENVIRONMENT_TYPE_POPUP;
-  } else if (['/home.html'].includes(parsedUrl.pathname)) {
-    return ENVIRONMENT_TYPE_FULLSCREEN;
-  } else if (parsedUrl.pathname === '/notification.html') {
-    return ENVIRONMENT_TYPE_NOTIFICATION;
-  } else if (parsedUrl.pathname === '/sidepanel.html') {
-    return ENVIRONMENT_TYPE_SIDEPANEL;
-  }
-  return ENVIRONMENT_TYPE_BACKGROUND;
-});
-
-const getEnvironmentTypeForHooks = (
+/**
+ * Returns environment type for the current context, or null when URL is not yet
+ * available (e.g. Webpack UI chunk before location is set). Used so we never
+ * treat UI as background (initialize: true) when we're unsure.
+ *
+ * @param url - Optional URL (defaults to globalThis.self?.location?.href ?? '')
+ * @returns The environment type, or null when url is empty
+ */
+function getEnvironmentTypeForHooks(
   url = globalThis.self?.location?.href ?? '',
-) => {
-  // With Webpack the UI chunk can run before the page global has location set, so
-  // url is empty; with Browserify the script runs in the page context and href is
-  // set. Return null when unknown so we never treat the UI as background and use
-  // FixtureExtensionStore(initialize: true) there, which would block on fetch.
+) {
   if (!url) {
     return null;
   }
-  return getEnvironmentTypeMemo(url);
-};
+  return getEnvironmentType(url);
+}
+
+const platform = new ExtensionPlatform();
 
 const useFixtureStore =
   process.env.IN_TEST &&
