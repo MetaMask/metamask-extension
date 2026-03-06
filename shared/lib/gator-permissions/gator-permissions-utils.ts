@@ -16,7 +16,7 @@ import {
 // Token info type used across helpers
 export type GatorTokenInfo = {
   symbol: string;
-  decimals: number;
+  decimals: number | undefined;
   name?: string;
   image?: string;
   address?: string;

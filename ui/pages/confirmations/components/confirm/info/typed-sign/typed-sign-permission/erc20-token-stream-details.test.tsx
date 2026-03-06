@@ -9,7 +9,7 @@ import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
-  fetchErc20Decimals: jest.fn().mockResolvedValue(2),
+  fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(2),
 }));
 
 describe('Erc20TokenStreamDetails', () => {
@@ -60,7 +60,8 @@ describe('Erc20TokenStreamDetails', () => {
 
     await waitFor(() =>
       expect(
-        (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
+        (tokenUtils as jest.Mocked<typeof tokenUtils>)
+          .fetchErc20DecimalsOrThrow,
       ).toHaveBeenCalled(),
     );
 
@@ -134,7 +135,7 @@ describe('Erc20TokenStreamDetails', () => {
     it('formats the allowance based on the resolved token decimals', async () => {
       (
         tokenUtils as jest.Mocked<typeof tokenUtils>
-      ).fetchErc20Decimals.mockResolvedValue(3);
+      ).fetchErc20DecimalsOrThrow.mockResolvedValue(3);
 
       const { detailsSection } = await renderAndGetSections(defaultProps);
 
@@ -172,6 +173,21 @@ describe('Erc20TokenStreamDetails', () => {
           getMockStore(),
         ),
       ).toThrow('Start time is required');
+    });
+
+    it('throws error when decimals cannot be resolved', async () => {
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20DecimalsOrThrow.mockRejectedValue(
+        new Error('Unable to resolve token decimals'),
+      );
+
+      expect(() =>
+        renderWithConfirmContextProvider(
+          <Erc20TokenStreamDetails {...defaultProps} />,
+          getMockStore(),
+        ),
+      ).toThrow();
     });
   });
 
