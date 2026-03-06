@@ -9,7 +9,7 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
-import { fetchErc20Decimals } from '../../../../../utils/token';
+import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { formatPeriodDuration } from './typed-sign-permission-util';
 import { TokenAmountRow } from './token-amount-row';
@@ -41,8 +41,13 @@ export const Erc20TokenPeriodicDetails: React.FC<{
   const { periodAmount, periodDuration, startTime } = permission.data;
 
   const metadataResult = useAsyncResult(() =>
-    fetchErc20Decimals(permission.data.tokenAddress, chainId),
+    fetchErc20DecimalsOrThrow(permission.data.tokenAddress, chainId),
   );
+
+  // Throw error if decimals cannot be resolved during permission signing
+  if (metadataResult.status === 'error') {
+    throw metadataResult.error;
+  }
 
   const decimals = metadataResult.value;
 

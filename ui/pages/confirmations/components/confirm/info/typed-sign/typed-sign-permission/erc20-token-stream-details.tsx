@@ -6,7 +6,7 @@ import { Hex } from '@metamask/utils';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
 import { DAY } from '../../../../../../../../shared/constants/time';
-import { fetchErc20Decimals } from '../../../../../utils/token';
+import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { TokenAmountRow } from './token-amount-row';
@@ -41,8 +41,13 @@ export const Erc20TokenStreamDetails: React.FC<{
   const amountPerDay = new BigNumber(amountPerSecond).mul(DAY / 1000); // DAY is in milliseconds
 
   const metadataResult = useAsyncResult(() =>
-    fetchErc20Decimals(permission.data.tokenAddress, chainId),
+    fetchErc20DecimalsOrThrow(permission.data.tokenAddress, chainId),
   );
+
+  // Throw error if decimals cannot be resolved during permission signing
+  if (metadataResult.status === 'error') {
+    throw metadataResult.error;
+  }
 
   const decimals = metadataResult.value;
 
