@@ -1647,7 +1647,17 @@ export default class MetamaskController extends EventEmitter {
         });
 
         if (hasNonEvmAccounts) {
-          await snapKeyring.setSelectedAccounts(group.accounts);
+          const snapAccounts = group.accounts.filter((id) => {
+            const account = this.accountsController.getAccount(id);
+            return (
+              Boolean(account) &&
+              account.metadata?.keyring?.type === KeyringType.snap
+            );
+          });
+
+          if (snapAccounts.length > 0) {
+            await snapKeyring.setSelectedAccounts(snapAccounts);
+          }
         }
       }
     }
