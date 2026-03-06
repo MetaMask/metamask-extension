@@ -103,7 +103,7 @@ const mockDaiMainnet: TokenWithFiatAmount = {
  * Converts a flat array of tokens into the account-group-assets structure
  * keyed by chainId, as returned by getAssetsBySelectedAccountGroup.
  *
-* @param tokens - Tokens to convert to account-group-assets.
+ * @param tokens - Tokens to convert to account-group-assets.
  */
 function toAccountGroupAssets(tokens: TokenWithFiatAmount[]) {
   const assets: Record<string, Record<string, unknown>[]> = {};
@@ -119,7 +119,9 @@ function toAccountGroupAssets(tokens: TokenWithFiatAmount[]) {
   }
 
   // Partial implementation.
-  return assets as unknown as ReturnType<typeof getAssetsBySelectedAccountGroup>;
+  return assets as unknown as ReturnType<
+    typeof getAssetsBySelectedAccountGroup
+  >;
 }
 
 // Helper to create a wrapper with Redux store
