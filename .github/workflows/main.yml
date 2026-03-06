@@ -282,6 +282,7 @@ jobs:
     with:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
+      enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
