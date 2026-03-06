@@ -32,7 +32,7 @@
         "mac": "Alt+Shift+M",
         "chromeos": "Alt+Shift+M",
         "linux": "Alt+Shift+M"
-      }
+      }l/
     }
   },
   "content_scripts": [
