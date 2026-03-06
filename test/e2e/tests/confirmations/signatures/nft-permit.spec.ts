@@ -51,6 +51,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         await assertInfoValues(driver);
         await confirmation.clickScrollToBottomButton();
         await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await assertAccountDetailsMetrics(
           driver,
