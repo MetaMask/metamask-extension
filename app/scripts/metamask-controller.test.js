@@ -5612,4 +5612,194 @@ describe('MetaMaskController', () => {
       ).not.toHaveBeenCalled();
     });
   });
+
+  describe('forwardSelectedAccountGroupToSnapKeyring', () => {
+    let metamaskController;
+
+    beforeEach(async () => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
+      });
+    });
+
+    it('does nothing if snapKeyring is not available', async () => {
+      await expect(
+        metamaskController.forwardSelectedAccountGroupToSnapKeyring(
+          undefined,
+          'some-group-id',
+        ),
+      ).resolves.toBeUndefined();
+    });
+
+    it('does nothing if groupId is not provided', async () => {
+      const mockSnapKeyring = {
+        setSelectedAccounts: jest.fn(),
+      };
+
+      await metamaskController.forwardSelectedAccountGroupToSnapKeyring(
+        mockSnapKeyring,
+        null,
+      );
+
+      expect(mockSnapKeyring.setSelectedAccounts).not.toHaveBeenCalled();
+    });
+
+    it('does nothing if group has no non-EVM accounts', async () => {
+      const mockEvmAccount = createMockInternalAccount({
+        type: EthAccountType.Eoa,
+        address: '0x742d35Cc6634C0532925a3b8D69b5b7f6Bb5b0bF',
+      });
+
+      const mockGroup = {
+        accounts: [mockEvmAccount.id],
+      };
+
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountGroupObject',
+        )
+        .mockReturnValue(mockGroup);
+
+      jest
+        .spyOn(metamaskController.accountsController, 'getAccount')
+        .mockReturnValue(mockEvmAccount);
+
+      const mockSnapKeyring = {
+        setSelectedAccounts: jest.fn(),
+      };
+
+      await metamaskController.forwardSelectedAccountGroupToSnapKeyring(
+        mockSnapKeyring,
+        'test-group-id',
+      );
+
+      expect(mockSnapKeyring.setSelectedAccounts).not.toHaveBeenCalled();
+    });
+
+    it('maps MetaMask internal account IDs to Snap keyring account IDs and forwards them', async () => {
+      const mockSolanaAddress = '7ThGuS6a4KmX2rMFhqeCPHrRmmYEF7XoimGG53171xJa';
+      const mockSolanaAccount = createMockInternalAccount({
+        type: SolAccountType.DataAccount,
+        address: mockSolanaAddress,
+        name: 'Solana Account 1',
+      });
+
+      const snapKeyringAccountId = 'snap-account-id-123';
+      const mockSnapAccount = {
+        id: snapKeyringAccountId,
+        address: mockSolanaAddress,
+      };
+
+      const mockGroup = {
+        accounts: [mockSolanaAccount.id],
+      };
+
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountGroupObject',
+        )
+        .mockReturnValue(mockGroup);
+
+      jest
+        .spyOn(metamaskController.accountsController, 'getAccount')
+        .mockReturnValue(mockSolanaAccount);
+
+      const mockSnapKeyring = {
+        setSelectedAccounts: jest.fn(),
+        getAccountByAddress: jest.fn().mockReturnValue(mockSnapAccount),
+      };
+
+      await metamaskController.forwardSelectedAccountGroupToSnapKeyring(
+        mockSnapKeyring,
+        'test-group-id',
+      );
+
+      expect(mockSnapKeyring.getAccountByAddress).toHaveBeenCalledWith(
+        mockSolanaAddress,
+      );
+      expect(mockSnapKeyring.setSelectedAccounts).toHaveBeenCalledWith([
+        snapKeyringAccountId,
+      ]);
+    });
+
+    it('filters out null values when snap account is not found', async () => {
+      const mockSolanaAddress1 = '7ThGuS6a4KmX2rMFhqeCPHrRmmYEF7XoimGG53171xJa';
+      const mockSolanaAddress2 = '8ThGuS6a4KmX2rMFhqeCPHrRmmYEF7XoimGG53171xJb';
+
+      const mockSolanaAccount1 = createMockInternalAccount({
+        type: SolAccountType.DataAccount,
+        address: mockSolanaAddress1,
+      });
+
+      const mockSolanaAccount2 = createMockInternalAccount({
+        type: SolAccountType.DataAccount,
+        address: mockSolanaAddress2,
+      });
+
+      const snapKeyringAccountId1 = 'snap-account-id-123';
+      const mockSnapAccount1 = {
+        id: snapKeyringAccountId1,
+        address: mockSolanaAddress1,
+      };
+
+      const mockGroup = {
+        accounts: [mockSolanaAccount1.id, mockSolanaAccount2.id],
+      };
+
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountGroupObject',
+        )
+        .mockReturnValue(mockGroup);
+
+      jest
+        .spyOn(metamaskController.accountsController, 'getAccount')
+        .mockImplementation((id) => {
+          if (id === mockSolanaAccount1.id) {
+            return mockSolanaAccount1;
+          } else if (id === mockSolanaAccount2.id) {
+            return mockSolanaAccount2;
+          }
+          return null;
+        });
+
+      const mockSnapKeyring = {
+        setSelectedAccounts: jest.fn(),
+        getAccountByAddress: jest.fn().mockImplementation((address) => {
+          if (address === mockSolanaAddress1) {
+            return mockSnapAccount1;
+          }
+          return null;
+        }),
+      };
+
+      await metamaskController.forwardSelectedAccountGroupToSnapKeyring(
+        mockSnapKeyring,
+        'test-group-id',
+      );
+
+      expect(mockSnapKeyring.setSelectedAccounts).toHaveBeenCalledWith([
+        snapKeyringAccountId1,
+      ]);
+    });
+  });
 });
