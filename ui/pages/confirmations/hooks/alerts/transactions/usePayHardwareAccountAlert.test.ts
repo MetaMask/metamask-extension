@@ -46,6 +46,9 @@ function createHardwareAccountState(keyringType: string) {
         },
         selectedAccount: HARDWARE_ACCOUNT_ID,
       },
+      accountIdByAddress: {
+        [CONTRACT_INTERACTION_SENDER_ADDRESS]: HARDWARE_ACCOUNT_ID,
+      },
     },
   };
 }

@@ -225,18 +225,25 @@ export const createBridgeMockStore = ({
     }),
   );
 
+  const internalAccountsAccounts = {
+    ...(internalAccountsOverrides?.accounts ?? {}),
+    [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
+    [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
+    [MOCK_BITCOIN_ACCOUNT.id]: MOCK_BITCOIN_ACCOUNT,
+    [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
+    [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
+  };
   const internalAccounts = {
     selectedAccount:
       internalAccountsOverrides?.selectedAccount ?? MOCK_EVM_ACCOUNT.id,
-    accounts: {
-      ...(internalAccountsOverrides?.accounts ?? {}),
-      [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
-      [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
-      [MOCK_BITCOIN_ACCOUNT.id]: MOCK_BITCOIN_ACCOUNT,
-      [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
-      [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
-    },
+    accounts: internalAccountsAccounts,
   };
+  const accountIdByAddress = (
+    Object.values(internalAccountsAccounts) as { address: string; id: string }[]
+  ).reduce<Record<string, string>>(
+    (acc, account) => ({ ...acc, [account.address]: account.id }),
+    {},
+  );
   return {
     activeTab: {
       origin: 'https://github.com',
@@ -474,6 +481,7 @@ export const createBridgeMockStore = ({
       ...tokenData,
       ...metamaskStateOverridesWithoutAccounts,
       internalAccounts,
+      accountIdByAddress,
       accountsAssets: {
         [MOCK_SOLANA_ACCOUNT.id]: [
           getNativeAssetForChainId(ChainId.SOLANA)?.assetId,
