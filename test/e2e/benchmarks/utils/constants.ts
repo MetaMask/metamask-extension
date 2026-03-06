@@ -11,6 +11,7 @@ export const STARTUP_PRESETS = {
 
 export const INTERACTION_PRESETS = {
   USER_ACTIONS: 'interactionUserActions',
+  SINGLE_TRANSITION_PROFILING: 'singleTransitionProfiling',
 } as const;
 
 export const USER_JOURNEY_PRESETS = {
