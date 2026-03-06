@@ -35,9 +35,7 @@ describe('AddContactPage', () => {
 
   it('renders the add contact form', () => {
     const { getByPlaceholderText } = renderPage();
-    expect(
-      getByPlaceholderText(messages.addAlias.message),
-    ).toBeInTheDocument();
+    expect(getByPlaceholderText(messages.addAlias.message)).toBeInTheDocument();
   });
 
   it('navigates to contacts list when back button is clicked', () => {

@@ -47,7 +47,7 @@ describe('ContactListItem', () => {
       mockStore,
     );
     const addressEl = getByTestId('contact-list-item-address');
-    expect(addressEl.textContent).toMatch(/^0x/);
+    expect(addressEl.textContent).toMatch(/^0x/u);
     expect(addressEl.textContent?.length).toBeLessThan(
       defaultProps.address.length,
     );

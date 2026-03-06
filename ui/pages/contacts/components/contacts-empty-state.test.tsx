@@ -20,9 +20,7 @@ describe('ContactsEmptyState', () => {
 
   it('renders buildContactList heading', () => {
     const { getByText } = renderWithProvider(<ContactsEmptyState />);
-    expect(
-      getByText(messages.buildContactList.message),
-    ).toBeInTheDocument();
+    expect(getByText(messages.buildContactList.message)).toBeInTheDocument();
   });
 
   it('renders addFriendsAndAddresses description', () => {

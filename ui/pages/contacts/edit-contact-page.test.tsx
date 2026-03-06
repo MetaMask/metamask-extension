@@ -4,9 +4,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
-import {
-  CONTACTS_ROUTE,
-} from '../../helpers/constants/routes';
+import { CONTACTS_ROUTE } from '../../helpers/constants/routes';
 import { EditContactPage } from './edit-contact-page';
 
 const MOCK_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
