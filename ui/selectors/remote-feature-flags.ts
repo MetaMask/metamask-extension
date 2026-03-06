@@ -1,10 +1,10 @@
-import merge from 'lodash/merge';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { createSelector } from 'reselect';
 import {
   getManifestFlags,
   ManifestFlags,
 } from '../../shared/lib/manifestFlags';
+import { mergeRemoteFeatureFlagsManifestFlags } from '../../shared/lib/flags-utils';
 
 export type RemoteFeatureFlagsState = {
   metamask: {
@@ -27,5 +27,5 @@ export const getRemoteFeatureFlags = createSelector(
     state: RemoteFeatureFlagsState,
   ): RemoteFeatureFlagControllerState['remoteFeatureFlags'] =>
     state.metamask.remoteFeatureFlags,
-  (manifestFlags, stateFlags) => merge({}, stateFlags, manifestFlags),
+  mergeRemoteFeatureFlagsManifestFlags,
 );
