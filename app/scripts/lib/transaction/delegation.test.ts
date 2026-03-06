@@ -239,6 +239,32 @@ describe('delegation', () => {
       expect(buildCaveatMock).toHaveBeenCalledTimes(1);
     });
 
+    it('normalizes nestedTransactions callData', async () => {
+      const transaction = {
+        ...TRANSACTION_META_MOCK,
+        nestedTransactions: [
+          {
+            to: '0x1111111111111111111111111111111111111111',
+            value: '0x0',
+          },
+        ],
+      } as unknown as TransactionMeta;
+
+      await convertTransactionToRedeemDelegations({ transaction, messenger });
+
+      expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          executions: [
+            [
+              expect.objectContaining({
+                callData: '0x',
+              }),
+            ],
+          ],
+        }),
+      );
+    });
+
     it('falls back to txParams when nestedTransactions is empty', async () => {
       const transaction = {
         ...TRANSACTION_META_MOCK,
@@ -326,6 +352,23 @@ describe('delegation', () => {
             ],
           ],
         }),
+      );
+    });
+
+    it('includes additionalExecutions in default caveats', async () => {
+      await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+        additionalExecutions: [ADDITIONAL_EXECUTION_MOCK],
+      });
+
+      expect(addCaveatMock).toHaveBeenCalledWith(
+        'exactExecutionBatch',
+        expect.arrayContaining([
+          expect.objectContaining({
+            to: ADDITIONAL_EXECUTION_MOCK.target,
+          }),
+        ]),
       );
     });
 

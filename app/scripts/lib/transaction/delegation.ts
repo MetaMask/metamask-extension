@@ -145,7 +145,7 @@ export async function convertTransactionToRedeemDelegations(
   ];
 
   const caveats =
-    request.caveats ?? buildDefaultCaveats(environment, defaultExecutions);
+    request.caveats ?? buildDefaultCaveats(environment, executions[0]);
 
   const modes: ExecutionMode[] = [
     executions[0].length > 1 ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
@@ -243,7 +243,7 @@ function getDefaultTransactionExecutions(
     return nestedTransactions.map((tx) => ({
       target: tx.to as Hex,
       value: BigInt(tx.value ?? '0x0'),
-      callData: tx.data as Hex,
+      callData: normalizeCallData(tx.data),
     }));
   }
 
