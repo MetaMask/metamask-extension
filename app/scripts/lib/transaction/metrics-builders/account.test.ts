@@ -29,4 +29,25 @@ describe('account builder', () => {
     });
     expect(result.sensitiveProperties).toStrictEqual({});
   });
+
+  it('handles locked keyring gracefully when device model is undefined', async () => {
+    const result = await getAccountMetricsProperties(
+      createBuilderRequest({
+        transactionMetricsRequest: {
+          ...createBuilderRequest().transactionMetricsRequest,
+          getAccountType: jest.fn().mockResolvedValue('MetaMask'),
+          getDeviceModel: jest.fn().mockResolvedValue(undefined),
+          getHDEntropyIndex: jest.fn().mockReturnValue(3),
+        } as never,
+      }),
+    );
+
+    expect(result.properties).toMatchObject({
+      account_type: 'MetaMask',
+      device_model: undefined,
+      hd_entropy_index: 3,
+      snap_hardware: 'ledger',
+    });
+    expect(result.sensitiveProperties).toStrictEqual({});
+  });
 });

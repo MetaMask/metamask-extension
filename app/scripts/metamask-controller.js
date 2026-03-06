@@ -12,7 +12,10 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, uniq } from 'lodash';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import {
+  KeyringTypes,
+  KeyringControllerError,
+} from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
@@ -5275,26 +5278,33 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyring(
-      { address },
-      async ({ keyring }) => {
-        switch (keyring.type) {
-          case KeyringType.trezor:
-          case KeyringType.oneKey:
-            return keyring.getModel();
-          case KeyringType.qr:
-            return keyring.getName();
-          case KeyringType.ledger:
-            // TODO: get model after ledger keyring exposes method
-            return HardwareDeviceNames.ledger;
-          case KeyringType.lattice:
-            // TODO: get model after lattice keyring exposes method
-            return HardwareDeviceNames.lattice;
-          default:
-            return undefined;
-        }
-      },
-    );
+    try {
+      return this.keyringController.withKeyring(
+        { address },
+        async ({ keyring }) => {
+          switch (keyring.type) {
+            case KeyringType.trezor:
+            case KeyringType.oneKey:
+              return keyring.getModel();
+            case KeyringType.qr:
+              return keyring.getName();
+            case KeyringType.ledger:
+              // TODO: get model after ledger keyring exposes method
+              return HardwareDeviceNames.ledger;
+            case KeyringType.lattice:
+              // TODO: get model after lattice keyring exposes method
+              return HardwareDeviceNames.lattice;
+            default:
+              return undefined;
+          }
+        },
+      );
+    } catch (error) {
+      if (error instanceof KeyringControllerError) {
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   /**
