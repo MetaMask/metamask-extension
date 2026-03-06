@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Conectar conta"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar conta ou criar nova"
-  },
   "connectAccounts": {
     "message": "Conectar contas"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "Descrição de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Desmarcar tudo"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Nenhuma conta qualificada encontrada"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Taxa de gás da L2"
-  },
-  "lastConnected": {
-    "message": "Última conexão"
   },
   "lastSold": {
     "message": "Última venda"
@@ -5280,12 +5271,6 @@
   "perpsEntryPrice": {
     "message": "Preço de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explorar criptomoedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explorar ações e commodities"
-  },
   "perpsFees": {
     "message": "Taxas"
   },
@@ -5405,9 +5390,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "A mediana dos preços externos reportados pelos validadores, utilizada para calcular a taxa de financiamento"
-  },
-  "perpsOrderAmount": {
-    "message": "Valor da ordem"
   },
   "perpsOrders": {
     "message": "Ordens"
@@ -5555,12 +5537,6 @@
   },
   "perpsWithdraw": {
     "message": "Sacar"
-  },
-  "perpsYourOrders": {
-    "message": "Suas ordens"
-  },
-  "perpsYourPositions": {
-    "message": "Suas posições"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
@@ -6432,12 +6408,6 @@
   "selectAccountToConnect": {
     "message": "Selecione uma conta para se conectar"
   },
-  "selectAccounts": {
-    "message": "Selecione a(s) conta(s) para usar nesse site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Selecione a(s) conta(s) para usar com esse snap"
-  },
   "selectAll": {
     "message": "Selecionar tudo"
   },
@@ -6476,9 +6446,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Conta diferente selecionada"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecionar todos permitirá que esse site visualize todas as suas contas atuais. Certifique-se de confiar nesse site."
   },
   "send": {
     "message": "Enviar"
@@ -8827,9 +8794,6 @@
   },
   "viewDetails": {
     "message": "Ver detalhes"
-  },
-  "viewMore": {
-    "message": "Ver mais"
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"

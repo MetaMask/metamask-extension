@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "连接账户"
   },
-  "connectAccountOrCreate": {
-    "message": "连接账户或创建新账户"
-  },
   "connectAccounts": {
     "message": "连接账户"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "来自 $1 的描述",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "全部取消选择"
   },
   "destinationAccountPickerNoEligible": {
     "message": "未找到符合条件的账户"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 燃料费"
-  },
-  "lastConnected": {
-    "message": "最后连接"
   },
   "lastSold": {
     "message": "最后售出"
@@ -5280,12 +5271,6 @@
   "perpsEntryPrice": {
     "message": "入场价格"
   },
-  "perpsExploreCrypto": {
-    "message": "探索加密货币"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "探索股票与大宗商品"
-  },
   "perpsFees": {
     "message": "费用"
   },
@@ -5399,9 +5384,6 @@
   },
   "perpsOpenedLong": {
     "message": "已开设多头仓位"
-  },
-  "perpsOrderAmount": {
-    "message": "订单金额"
   },
   "perpsOrders": {
     "message": "订单"
@@ -5549,12 +5531,6 @@
   },
   "perpsWithdraw": {
     "message": "提取"
-  },
-  "perpsYourOrders": {
-    "message": "您的订单"
-  },
-  "perpsYourPositions": {
-    "message": "您的仓位"
   },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
@@ -6426,12 +6402,6 @@
   "selectAccountToConnect": {
     "message": "选择要连接的账户"
   },
-  "selectAccounts": {
-    "message": "选择要在此网站上使用的账户"
-  },
-  "selectAccountsForSnap": {
-    "message": "选择使用此 Snap 的账户"
-  },
   "selectAll": {
     "message": "全部选择"
   },
@@ -6470,9 +6440,6 @@
   },
   "selectedAccountMismatch": {
     "message": "已选择不同账户"
-  },
-  "selectingAllWillAllow": {
-    "message": "选择全部将允许本网站查看您当前的所有账户。确保您信任这个网站。"
   },
   "send": {
     "message": "发送"
@@ -8821,9 +8788,6 @@
   },
   "viewDetails": {
     "message": "查看详情"
-  },
-  "viewMore": {
-    "message": "查看更多"
   },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"

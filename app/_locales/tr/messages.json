@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Hesabı bağla"
   },
-  "connectAccountOrCreate": {
-    "message": "Hesabı bağla ya da yeni hesap oluştur"
-  },
   "connectAccounts": {
     "message": "Hesapları bağla"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "$1 açıklaması",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Tümünün seçimini kaldır"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Uygun hesap bulunamadı"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 gaz ücreti"
-  },
-  "lastConnected": {
-    "message": "Son bağlanma"
   },
   "lastSold": {
     "message": "Son satış"
@@ -5280,12 +5271,6 @@
   "perpsEntryPrice": {
     "message": "Giriş fiyatı"
   },
-  "perpsExploreCrypto": {
-    "message": "Kriptoyu keşfet"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Hisse senetlerini ve emtiaları keşfet"
-  },
   "perpsFees": {
     "message": "Ücretler"
   },
@@ -5405,9 +5390,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
-  },
-  "perpsOrderAmount": {
-    "message": "Emir Miktarı"
   },
   "perpsOrders": {
     "message": "Emirler"
@@ -5555,12 +5537,6 @@
   },
   "perpsWithdraw": {
     "message": "Çek"
-  },
-  "perpsYourOrders": {
-    "message": "Emirleriniz"
-  },
-  "perpsYourPositions": {
-    "message": "Pozisyonlarınız"
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
@@ -6432,12 +6408,6 @@
   "selectAccountToConnect": {
     "message": "Bağlamak için bir hesap seç"
   },
-  "selectAccounts": {
-    "message": "Bu sitede kullanılacak hesap veya hesapları seçin"
-  },
-  "selectAccountsForSnap": {
-    "message": "Bu snap ile kullanılacak hesabı/hesapları seçin"
-  },
   "selectAll": {
     "message": "Tümünü seç"
   },
@@ -6476,9 +6446,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Farklı hesap seçildi"
-  },
-  "selectingAllWillAllow": {
-    "message": "Tümü seçimi bu sitenin mevcut tüm hesaplarınızı görüntülemesine izin verecektir. Bu siteye güvendiğinizden emin olun."
   },
   "send": {
     "message": "Gönder"
@@ -8827,9 +8794,6 @@
   },
   "viewDetails": {
     "message": "Ayrıntıları görüntüle"
-  },
-  "viewMore": {
-    "message": "Daha fazlasını görüntüle"
   },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"

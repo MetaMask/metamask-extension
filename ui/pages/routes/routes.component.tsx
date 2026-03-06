@@ -68,10 +68,10 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -174,6 +174,10 @@ const RevealSeedConfirmation = mmLazy(
 );
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,
+);
+
+const SettingsV2 = mmLazy(
+  (() => import('../settings-v2/index.ts')) as unknown as DynamicImportType,
 );
 
 const NotificationsSettingsRedirect = () => (
@@ -329,10 +333,6 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
-const PerpsHomePage = mmLazy(
-  (() =>
-    import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
-);
 const PerpsMarketDetailPage = mmLazy(
   (() =>
     import(
@@ -355,12 +355,6 @@ const PerpsOrderEntryPage = mmLazy(
 );
 
 // Perps pages wrapped with PerpsControllerProvider
-const WrappedPerpsHomePage = () => (
-  <PerpsControllerProvider>
-    <PerpsHomePage />
-  </PerpsControllerProvider>
-);
-
 const WrappedPerpsMarketDetailPage = () => (
   <PerpsControllerProvider>
     <PerpsMarketDetailPage />
@@ -596,6 +590,13 @@ export default function Routes() {
       createRouteWithLayout({
         path: `${SETTINGS_ROUTE}/*`,
         component: Settings,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityRequired: false,
+      }),
+      createRouteWithLayout({
+        path: `${SETTINGS_V2_ROUTE}/*`,
+        component: SettingsV2,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityRequired: false,
@@ -876,14 +877,6 @@ export default function Routes() {
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openRewardsPage',
-      }),
-      createRouteWithLayout({
-        path: PERPS_HOME_ROUTE,
-        component: WrappedPerpsHomePage,
-        layout: RootLayout,
-        authenticated: true,
-        basicFunctionalityOpenPageCtaKey:
-          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,

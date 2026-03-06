@@ -108,6 +108,31 @@ function createNonEvmEnabledNetworkMap(
   return enabledNetworkMap;
 }
 
+/**
+ * Merges enabled network maps by namespace while preserving chain entries.
+ *
+ * @param baseEnabledNetworkMap - The base enabled network map.
+ * @param additionalEnabledNetworkMap - The additional enabled network map to merge.
+ * @returns The merged enabled network map.
+ */
+function mergeEnabledNetworkMaps(
+  baseEnabledNetworkMap: Record<string, Record<string, boolean>>,
+  additionalEnabledNetworkMap: Record<string, Record<string, boolean>>,
+): Record<string, Record<string, boolean>> {
+  const mergedEnabledNetworkMap = { ...baseEnabledNetworkMap };
+
+  for (const [namespace, networkMap] of Object.entries(
+    additionalEnabledNetworkMap,
+  )) {
+    mergedEnabledNetworkMap[namespace] = {
+      ...(mergedEnabledNetworkMap[namespace] ?? {}),
+      ...networkMap,
+    };
+  }
+
+  return mergedEnabledNetworkMap;
+}
+
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -191,11 +216,11 @@ function transformState(
     selectedMultichainNetworkChainId,
   );
 
-  // Merge both maps
-  networkOrderControllerState.enabledNetworkMap = {
-    ...evmEnabledNetworkMap,
-    ...nonEvmEnabledNetworkMap,
-  };
+  // Merge both maps by namespace to avoid replacing existing chain maps.
+  networkOrderControllerState.enabledNetworkMap = mergeEnabledNetworkMaps(
+    evmEnabledNetworkMap,
+    nonEvmEnabledNetworkMap,
+  );
 
   return state;
 }

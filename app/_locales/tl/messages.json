@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Ikonekta ang account"
   },
-  "connectAccountOrCreate": {
-    "message": "Ikonekta ang account o gumawa ng bago"
-  },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "Deskripsyon mula sa $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Alisin ang pagkapili sa lahat"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Walang nahanap na kwalipikadong account"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 na bayad sa gas"
-  },
-  "lastConnected": {
-    "message": "Huling Kumonekta"
   },
   "lastSold": {
     "message": "Huling naibenta"
@@ -5280,12 +5271,6 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Tuklasin ang crypto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Tuklasin ang mga stock at commodity"
-  },
   "perpsFees": {
     "message": "Mga Bayarin"
   },
@@ -5405,9 +5390,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
-  },
-  "perpsOrderAmount": {
-    "message": "Halaga ng Order"
   },
   "perpsOrders": {
     "message": "Mga Order"
@@ -5555,12 +5537,6 @@
   },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
-  },
-  "perpsYourOrders": {
-    "message": "Ang mga order mo"
-  },
-  "perpsYourPositions": {
-    "message": "Mga position mo"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -6432,12 +6408,6 @@
   "selectAccountToConnect": {
     "message": "Piliin ang account na ikokonekta"
   },
-  "selectAccounts": {
-    "message": "Pumili ng (mga) account"
-  },
-  "selectAccountsForSnap": {
-    "message": "Piliin ang (mga) account para gamitin ang snap na ito"
-  },
   "selectAll": {
     "message": "Piliin lahat"
   },
@@ -6476,9 +6446,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Ibang account ang pinili"
-  },
-  "selectingAllWillAllow": {
-    "message": "Kapag pinili lahat, mabibigyang-daan ang site na ito na makita ang lahat ng kasalukuyan mong account. Tiyaking pinagkakatiwalaan mo ang site na ito."
   },
   "send": {
     "message": "Ipadala"
@@ -8827,9 +8794,6 @@
   },
   "viewDetails": {
     "message": "Tingnan ang mga detalye"
-  },
-  "viewMore": {
-    "message": "Tingnan Pa"
   },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"
