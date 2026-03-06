@@ -9,10 +9,6 @@ import { Box, Text } from '../../../../../../../components/component-library';
 import { NftItem } from '../../../../../../../components/multichain/nft-item';
 import { getNFTsByChainId } from '../../../../../../../ducks/metamask/metamask';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
@@ -20,12 +16,12 @@ import {
   getNftImage,
   getNftImageAlt,
 } from '../../../../../../../helpers/utils/nfts';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useNftImageUrl } from '../../../../../hooks/useNftImageUrl';
 import { ellipsify } from '../../../../../send-utils/send.utils';
 import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 export const generateTokenIdDisplay = (tokenId: string) => {
   if (tokenId.length >= 10) {
@@ -36,7 +32,6 @@ export const generateTokenIdDisplay = (tokenId: string) => {
 };
 
 const NFTSendHeading = () => {
-  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -117,33 +112,10 @@ const NFTSendHeading = () => {
   );
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      paddingBottom={3}
-      paddingInline={0}
-      marginBottom={2}
-    >
-      <Text
-        variant={TextVariant.bodyMd}
-        color={TextColor.textAlternative}
-        marginBottom={1}
-      >
-        {t('confirmTitleSending')}
-      </Text>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-      >
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          {TokenName}
-          {TokenID}
-        </Box>
-        {TokenImage}
-      </Box>
-    </Box>
+    <SendHeadingLayout image={TokenImage}>
+      {TokenName}
+      {TokenID}
+    </SendHeadingLayout>
   );
 };
 

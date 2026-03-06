@@ -14,8 +14,6 @@ import {
   AlignItems,
   BackgroundColor,
   Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
@@ -25,6 +23,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 const SendHeading = () => {
   const t = useI18nContext();
@@ -114,33 +113,10 @@ const SendHeading = () => {
   useSendingValueMetric({ transactionMeta, fiatValue });
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      paddingBottom={3}
-      paddingInline={0}
-      marginBottom={2}
-    >
-      <Text
-        variant={TextVariant.bodyMd}
-        color={TextColor.textAlternative}
-        marginBottom={1}
-      >
-        {t('confirmTitleSending')}
-      </Text>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-      >
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          {TokenValue}
-          {TokenFiatValue}
-        </Box>
-        {TokenImage}
-      </Box>
-    </Box>
+    <SendHeadingLayout image={TokenImage}>
+      {TokenValue}
+      {TokenFiatValue}
+    </SendHeadingLayout>
   );
 };
 
