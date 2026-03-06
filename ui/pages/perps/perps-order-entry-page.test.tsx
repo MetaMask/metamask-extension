@@ -537,12 +537,14 @@ describe('PerpsOrderEntryPage', () => {
           description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastTradeSuccess',
-          description: expect.stringMatching(/^Your PnL is -?\d+\.\d{2}%$/u),
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastDescription: expect.stringMatching(
+            /^Your PnL is -?\d+\.\d{2}%$/u,
+          ),
         }),
-      );
+      });
     });
 
     it('falls back to close subtitle when close PnL cannot be calculated', async () => {
@@ -566,12 +568,12 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastTradeSuccess',
-          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
-      );
+      });
     });
 
     it('calls updatePositionTPSL when in modify mode', async () => {
@@ -596,8 +598,10 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastUpdateSuccess',
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastUpdateSuccess',
+        }),
       });
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
         key: 'perpsToastUpdateInProgress',

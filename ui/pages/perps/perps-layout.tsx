@@ -1,4 +1,5 @@
 import React, { useEffect, type ReactNode } from 'react';
+import { PerpsToastProvider } from '../../components/app/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 
 type PerpsLayoutProps = {
@@ -33,5 +34,5 @@ export default function PerpsLayout({ children }: PerpsLayoutProps) {
     };
   }, []);
 
-  return <>{children}</>;
+  return <PerpsToastProvider>{children}</PerpsToastProvider>;
 }
