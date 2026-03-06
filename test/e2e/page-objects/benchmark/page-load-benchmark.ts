@@ -75,7 +75,39 @@ export type BenchmarkMetrics = {
      */
     jsHeapSizeLimit: number;
   };
+  /**
+   * Total count of long tasks (>50ms) observed.
+   * Part of Long Task metrics for measuring main thread blocking.
+   */
+  longTaskCount?: number;
+  /**
+   * Sum of all long task durations in milliseconds.
+   */
+  longTaskTotalDuration?: number;
+  /**
+   * Maximum single long task duration in milliseconds.
+   */
+  longTaskMaxDuration?: number;
+  /**
+   * Total Blocking Time in milliseconds (sum of duration - 50ms for each task).
+   * TBT is a key Core Web Vital proxy metric.
+   */
+  tbt?: number;
+  /**
+   * TBT rating based on Lighthouse thresholds ('good' | 'needs-improvement' | 'poor').
+   * Non-numeric, excluded from statistical aggregation.
+   */
+  tbtRating?: 'good' | 'needs-improvement' | 'poor';
 };
+
+/**
+ * Numeric-only benchmark metrics for statistical aggregation.
+ * Excludes object-typed properties (memoryUsage) and non-numeric fields (tbtRating).
+ */
+export type NumericBenchmarkMetrics = Omit<
+  BenchmarkMetrics,
+  'memoryUsage' | 'tbtRating'
+>;
 
 /**
  * Individual benchmark measurement result for a single page load test.
@@ -102,17 +134,17 @@ export type BenchmarkSummary = {
   /** Number of test samples collected for this page */
   samples: number;
   /** Mean (average) values for each performance metric */
-  mean: Partial<BenchmarkMetrics>;
+  mean: Partial<NumericBenchmarkMetrics>;
   /** 95th percentile values for each performance metric */
-  p95: Partial<BenchmarkMetrics>;
+  p95: Partial<NumericBenchmarkMetrics>;
   /** 99th percentile values for each performance metric */
-  p99: Partial<BenchmarkMetrics>;
+  p99: Partial<NumericBenchmarkMetrics>;
   /** Minimum values for each performance metric */
-  min: Partial<BenchmarkMetrics>;
+  min: Partial<NumericBenchmarkMetrics>;
   /** Maximum values for each performance metric */
-  max: Partial<BenchmarkMetrics>;
+  max: Partial<NumericBenchmarkMetrics>;
   /** Standard deviation values for each performance metric */
-  standardDeviation: Partial<BenchmarkMetrics>;
+  standardDeviation: Partial<NumericBenchmarkMetrics>;
 };
 
 /**
@@ -317,6 +349,21 @@ export class PageLoadBenchmark {
         'largest-contentful-paint',
       )[0] as PerformanceEntry;
 
+      // Collect Long Task / TBT metrics from stateHooks if available
+      const longTaskMetricsRaw = (
+        window as typeof window & {
+          stateHooks?: {
+            getLongTaskMetricsWithTBT?: () => {
+              count: number;
+              totalDuration: number;
+              maxDuration: number;
+              tbt: number;
+              tbtRating: 'good' | 'needs-improvement' | 'poor';
+            };
+          };
+        }
+      ).stateHooks?.getLongTaskMetricsWithTBT?.();
+
       return {
         pageLoadTime: navigation.loadEventEnd - navigation.startTime,
         domContentLoaded:
@@ -333,6 +380,11 @@ export class PageLoadBenchmark {
               jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
             }
           : undefined,
+        longTaskCount: longTaskMetricsRaw?.count,
+        longTaskTotalDuration: longTaskMetricsRaw?.totalDuration,
+        longTaskMaxDuration: longTaskMetricsRaw?.maxDuration,
+        tbt: longTaskMetricsRaw?.tbt,
+        tbtRating: longTaskMetricsRaw?.tbtRating,
       };
     });
 
@@ -413,10 +465,9 @@ export class PageLoadBenchmark {
 
     for (const [page, pageResults] of Object.entries(resultsByPage)) {
       const metrics = pageResults.map((r) => r.metrics);
-      const metricKeys = Object.keys(metrics[0]) as (keyof Omit<
-        BenchmarkMetrics,
-        'memoryUsage'
-      >)[];
+      const metricKeys = Object.keys(metrics[0]).filter(
+        (k) => k !== 'memoryUsage' && k !== 'tbtRating',
+      ) as (keyof NumericBenchmarkMetrics)[];
 
       const summary: BenchmarkSummary = {
         page,

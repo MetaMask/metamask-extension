@@ -253,6 +253,44 @@ describe('buildTableRows', () => {
     expect(rows[3]).toContain('>10200<');
   });
 
+  it('filters out zero-value long task metrics', () => {
+    const rows = buildTableRows([
+      {
+        benchmarkName: 'firefoxStartup',
+        mean: { uiStartup: 1500, longTaskCount: 0, tbt: 0 },
+        min: { uiStartup: 1200 },
+        max: { uiStartup: 1800 },
+        stdDev: { uiStartup: 100 },
+        p75: { uiStartup: 1600 },
+        p95: { uiStartup: 1750 },
+      },
+    ]);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toContain('uiStartup');
+    expect(rows[0]).not.toContain('longTaskCount');
+    expect(rows[0]).not.toContain('tbt');
+  });
+
+  it('keeps non-zero long task metrics', () => {
+    const rows = buildTableRows([
+      {
+        benchmarkName: 'chromeStartup',
+        mean: { uiStartup: 1500, longTaskCount: 3, tbt: 878 },
+        min: { uiStartup: 1200, longTaskCount: 2, tbt: 672 },
+        max: { uiStartup: 1800, longTaskCount: 5, tbt: 1087 },
+        stdDev: { uiStartup: 100, longTaskCount: 1, tbt: 98 },
+        p75: { uiStartup: 1600, longTaskCount: 3, tbt: 927 },
+        p95: { uiStartup: 1750, longTaskCount: 4, tbt: 1014 },
+      },
+    ]);
+
+    expect(rows).toHaveLength(3);
+    expect(rows[0]).toContain('uiStartup');
+    expect(rows[1]).toContain('longTaskCount');
+    expect(rows[2]).toContain('tbt');
+  });
+
   it('renders dash when a metric key is missing from a stats field', () => {
     const rows = buildTableRows([
       {

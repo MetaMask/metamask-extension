@@ -47,6 +47,11 @@ export const ALL_METRICS = {
   loadScripts: 'Load Scripts',
   setupStore: 'Setup Store',
   numNetworkReqs: 'numNetworkReqs',
+  // Long Task / TBT metrics (benchmark-only, via `PerformanceObserver`)
+  longTaskCount: 'longTaskCount',
+  longTaskTotalDuration: 'longTaskTotalDuration',
+  longTaskMaxDuration: 'longTaskMaxDuration',
+  tbt: 'tbt',
 } as const;
 
 export const WITH_STATE_POWER_USER = {
@@ -219,6 +224,23 @@ export const SOLANA_ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
     p75: { warn: 5500, fail: 8000 },
     p95: { warn: 8000, fail: 10000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+};
+
+/**
+ * Long Task / TBT thresholds for startup benchmarks.
+ * Baseline from CI: Standard Home ~878ms, Power User ~1503ms.
+ */
+export const STARTUP_LONG_TASK_THRESHOLDS: ThresholdConfig = {
+  tbt: {
+    p75: { warn: 1100, fail: 1500 },
+    p95: { warn: 1800, fail: 2400 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  longTaskCount: {
+    p75: { warn: 8, fail: 12 },
+    p95: { warn: 15, fail: 25 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
