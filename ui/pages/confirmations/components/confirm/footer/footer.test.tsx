@@ -948,7 +948,7 @@ describe('ConfirmFooter', () => {
         stateWithConfirmedDangerAlertMock,
       );
       expect(getByText(messages.confirm.message)).toBeInTheDocument();
-      expect(getByTestId('confirm-footer-button')).not.toHaveClass(
+      expect(getByTestId('confirm-footer-button')).toHaveClass(
         'mm-button-primary--type-danger',
       );
     });
