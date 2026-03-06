@@ -6,9 +6,16 @@ import {
   TextButton,
   Text,
   Box,
+  Checkbox,
+  type CheckboxProps,
   TextVariant,
   TextColor,
+  BoxBackgroundColor,
 } from '@metamask/design-system-react';
+import {
+  RecommendedAction,
+  type PhishingDetectionScanResult,
+} from '@metamask/phishing-controller';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -18,8 +25,11 @@ import {
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { requestRevealSeedWords } from '../../store/actions';
-import { getHDEntropyIndex } from '../../selectors';
+import {
+  requestRevealSeedWords,
+  scanUrlForPhishing,
+} from '../../store/actions';
+import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
@@ -58,6 +68,57 @@ function RevealSeedPage() {
   const [phraseRevealed, setPhraseRevealed] = useState(false);
 
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const [scanResult, setScanResult] =
+    useState<PhishingDetectionScanResult | null>(null);
+  const [dangerAcknowledged, setDangerAcknowledged] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setScanResult(null);
+    setDangerAcknowledged(false);
+
+    if (activeTabOrigin) {
+      scanUrlForPhishing(activeTabOrigin)
+        .then((result: unknown) => {
+          if (cancelled) {
+            return;
+          }
+          setScanResult(result as PhishingDetectionScanResult);
+        })
+        .catch(() => {
+          // Scan failed — no action needed
+        });
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTabOrigin]);
+
+  const trackEventRef = React.useRef(trackEvent);
+  trackEventRef.current = trackEvent;
+  const activeTabOriginRef = React.useRef(activeTabOrigin);
+  activeTabOriginRef.current = activeTabOrigin;
+
+  useEffect(() => {
+    if (scanResult?.recommendedAction === RecommendedAction.Block) {
+      trackEventRef.current({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          active_tab_origin: activeTabOriginRef.current,
+          hostname: scanResult.hostname ?? 'unknown',
+        },
+      });
+    }
+  }, [scanResult]);
+
+  const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
   const onClickCopy = useCallback(() => {
     if (!seedWords || !phraseRevealed) {
@@ -300,6 +361,8 @@ function RevealSeedPage() {
           onTogglePasswordVisibility={togglePasswordVisibility}
           onSubmit={handleSubmit}
           onContinueClick={handlePasswordContinueClick}
+          isMalicious={isMalicious}
+          dangerAcknowledged={dangerAcknowledged}
         />
       );
     }
@@ -351,8 +414,34 @@ function RevealSeedPage() {
           ])}
         </Text>
       )}
-      {screen === PASSWORD_PROMPT_SCREEN && (
+      {screen === PASSWORD_PROMPT_SCREEN && isMalicious && (
+        <RevealSeedWarning
+          message={t('dappScanMaliciousWarning')}
+          title={t('dappScanMaliciousTitle')}
+          data-testid="dapp-scan-warning"
+        />
+      )}
+      {screen === PASSWORD_PROMPT_SCREEN && !isMalicious && (
         <RevealSeedWarning message={t('revealSeedWordsWarning')} />
+      )}
+      {screen === PASSWORD_PROMPT_SCREEN && isMalicious && (
+        <Box
+          className="flex w-full p-4 rounded-lg"
+          style={{ borderLeft: '4px solid var(--color-error-default)' }}
+          backgroundColor={BoxBackgroundColor.ErrorMuted}
+        >
+          <Checkbox
+            id="dapp-scan-acknowledge-checkbox"
+            label={t('alertModalAcknowledge')}
+            isSelected={dangerAcknowledged}
+            onChange={
+              setDangerAcknowledged as unknown as CheckboxProps['onChange']
+            }
+            inputProps={{
+              'data-testid': 'dapp-scan-acknowledge-checkbox',
+            }}
+          />
+        </Box>
       )}
       {renderContent()}
       {showSuccessToast && (

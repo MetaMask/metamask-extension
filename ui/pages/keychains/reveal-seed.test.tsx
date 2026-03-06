@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import { RecommendedAction } from '@metamask/phishing-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -39,6 +40,7 @@ const mockRequestRevealSeedWords = jest
   .mockImplementation(
     mockSuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
   );
+const mockScanUrlForPhishing = jest.fn().mockResolvedValue(null);
 
 const password = 'password';
 
@@ -46,6 +48,7 @@ jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword: string, keyringId?: string) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
+  scanUrlForPhishing: (...args: unknown[]) => mockScanUrlForPhishing(...args),
 }));
 
 type NavigateQuizToPasswordScreenArgs = {
@@ -460,6 +463,185 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
         },
       });
+    });
+  });
+
+  describe('dapp scan warning', () => {
+    beforeEach(() => {
+      mockScanUrlForPhishing.mockReset().mockResolvedValue(null);
+    });
+
+    it('does not show dapp scan warning when scan returns no result', async () => {
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(mockScanUrlForPhishing).toHaveBeenCalled();
+      });
+
+      expect(queryByTestId('dapp-scan-warning')).not.toBeInTheDocument();
+      expect(queryByTestId('reveal-seed-warning')).toBeInTheDocument();
+    });
+
+    it('shows dapp scan warning and hides generic warning when site is malicious', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
+      });
+
+      expect(queryByTestId('reveal-seed-warning')).not.toBeInTheDocument();
+    });
+
+    it('shows acknowledgment checkbox when site is malicious', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('dapp-scan-acknowledge-checkbox'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('continue button is disabled until checkbox is acknowledged on malicious site', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
+      });
+
+      fireEvent.change(queryByTestId('input-password') as HTMLElement, {
+        target: { value: password },
+      });
+
+      const continueButton = queryByTestId(
+        'reveal-seed-password-continue',
+      ) as HTMLElement;
+      expect(continueButton).toBeDisabled();
+
+      fireEvent.click(
+        queryByTestId('dapp-scan-acknowledge-checkbox') as HTMLElement,
+      );
+
+      expect(continueButton).toBeEnabled();
+    });
+
+    it('fires SrpRevealMaliciousSiteDetected metric only when site is malicious', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <RevealSeedPage />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            active_tab_origin: 'https://metamask.github.io',
+            hostname: 'evil.com',
+          },
+        });
+      });
+    });
+
+    it('does not fire metric event when site is not malicious', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: 'ALLOW',
+        hostname: 'safe-site.com',
+      });
+
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <RevealSeedPage />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockScanUrlForPhishing).toHaveBeenCalled();
+      });
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+        }),
+      );
     });
   });
 
