@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
@@ -30,9 +30,8 @@ export const useQuoteFetchEvents = () => {
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
-  const warnings = useMemo(
-    () => allWarnings.filter((w): w is QuoteWarning => w !== 'market_closed'),
-    [allWarnings],
+  const warnings = allWarnings.filter(
+    (w): w is QuoteWarning => w !== 'market_closed',
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 

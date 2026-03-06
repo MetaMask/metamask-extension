@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -80,9 +79,8 @@ export default function useSubmitBridgeTransaction() {
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
-  const warnings = useMemo(
-    () => allWarnings.filter((w): w is QuoteWarning => w !== 'market_closed'),
-    [allWarnings],
+  const warnings = allWarnings.filter(
+    (w): w is QuoteWarning => w !== 'market_closed',
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();

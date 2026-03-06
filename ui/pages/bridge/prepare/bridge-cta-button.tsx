@@ -122,12 +122,12 @@ export const BridgeCTAButton = ({
       };
     }
 
-    if (needsDestinationAddress) {
-      return { key: 'bridgeSelectDestinationAccount' };
-    }
-
     if (isMarketClosed) {
       return { key: 'bridgeMarketClosedAction' };
+    }
+
+    if (needsDestinationAddress) {
+      return { key: 'bridgeSelectDestinationAccount' };
     }
 
     if (isQuoteExpired && !isLoading) {
@@ -225,7 +225,7 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        (isMarketClosed && !needsDestinationAddress) ||
+        isMarketClosed ||
         (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }

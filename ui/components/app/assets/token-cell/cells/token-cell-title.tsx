@@ -37,10 +37,6 @@ export const TokenCellTitle = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.token.title === nextProps.token.title &&
-    prevProps.token.isStakeable === nextProps.token.isStakeable &&
-    prevProps.token.accountType === nextProps.token.accountType &&
-    prevProps.token.chainId === nextProps.token.chainId &&
-    prevProps.token.symbol === nextProps.token.symbol &&
     prevProps.token.rwaData?.instrumentType ===
       nextProps.token.rwaData?.instrumentType &&
     prevProps.token.rwaData?.market?.nextOpen ===
