@@ -10,10 +10,14 @@
 
 import type {
   PercentileThreshold,
+  RatingDistribution,
   StatisticalResult,
   ThresholdConfig,
   ThresholdViolation,
   TimerStatistics,
+  WebVitalsAggregated,
+  WebVitalsMetrics,
+  WebVitalsRating,
 } from './types';
 
 /**
@@ -541,3 +545,136 @@ export const formatThresholdViolations = (
     return `${severityPrefix}: ${v.metricId} ${percentileLabel} (${v.value.toFixed(2)}ms) exceeds threshold (${v.threshold.toFixed(2)}ms)`;
   });
 };
+
+const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
+
+type WebVitalsNumericKey = (typeof WEB_VITALS_NUMERIC_KEYS)[number];
+
+/**
+ * Per-metric sanity bounds for web vitals.
+ *
+ * These differ from timer bounds because:
+ * - CLS is unitless (0-10 range in practice), not milliseconds
+ * - CLS of 0 is valid (perfect visual stability)
+ * - INP/LCP have different reasonable ceilings than arbitrary timer durations
+ */
+const WEB_VITALS_BOUNDS: Record<
+  WebVitalsNumericKey,
+  { min: number; max: number }
+> = {
+  /** INP: interaction responsiveness. Google "poor" starts at 500ms. 0ms means sub-frame. */
+  inp: { min: 0, max: 30_000 },
+  /** FCP: first content paint. Google "poor" starts at 3s. 0ms is invalid. */
+  fcp: { min: 1, max: 60_000 },
+  /** LCP: perceived load time. Google "poor" starts at 4s. 0ms is invalid. */
+  lcp: { min: 1, max: 60_000 },
+  /** CLS: layout shift score (unitless). 0 is perfect stability; >1 is extremely poor. */
+  cls: { min: 0, max: 10 },
+};
+
+/**
+ * Calculate statistics for a single web vitals metric.
+ *
+ * Uses metric-specific sanity bounds, then the same IQR+z-score outlier
+ * detection and percentile analysis as timer statistics.
+ *
+ * @param metricId - The metric name ('inp', 'lcp', or 'cls')
+ * @param values - Raw metric values across benchmark iterations
+ */
+export const calculateWebVitalsStatistics = (
+  metricId: WebVitalsNumericKey,
+  values: number[],
+): TimerStatistics => {
+  const bounds = WEB_VITALS_BOUNDS[metricId];
+
+  // Metric-specific sanity filtering: exclude values outside [min, max]
+  const filtered: number[] = [];
+  let excludedCount = 0;
+  for (const value of values) {
+    if (value < bounds.min || value > bounds.max) {
+      excludedCount += 1;
+    } else {
+      filtered.push(value);
+    }
+  }
+
+  // Standard outlier detection on surviving values
+  const outlierResult = detectOutliers(filtered);
+  const sorted = [...outlierResult.filtered].sort((a, b) => a - b);
+  const mean = calculateMean(outlierResult.filtered);
+  const stdDev = calculateStdDev(outlierResult.filtered);
+  const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
+
+  const totalExcluded = excludedCount + outlierResult.outlierCount;
+
+  return {
+    id: metricId,
+    mean,
+    min: sorted.length > 0 ? sorted[0] : 0,
+    max: sorted.length > 0 ? sorted[sorted.length - 1] : 0,
+    stdDev,
+    cv,
+    p50: calculatePercentile(sorted, 50),
+    p75: calculatePercentile(sorted, 75),
+    p95: calculatePercentile(sorted, 95),
+    p99: calculatePercentile(sorted, 99),
+    samples: outlierResult.filtered.length,
+    outliers: totalExcluded,
+    dataQuality: assessDataQuality(cv),
+  };
+};
+
+function createEmptyRatingDistribution(): RatingDistribution {
+  return { good: 0, 'needs-improvement': 0, poor: 0, null: 0 };
+}
+
+/**
+ * Aggregate per-run web vitals into statistical summaries.
+ *
+ * Uses metric-specific sanity bounds (CLS is unitless, INP/LCP have different
+ * ceilings than generic timer durations), then standard outlier detection and
+ * percentile analysis. Preserves rating distributions for categorical analysis.
+ *
+ * @param runs - Array of per-run web vitals snapshots
+ * @returns Aggregated statistics per metric + rating distributions
+ */
+export function aggregateWebVitals(
+  runs: WebVitalsMetrics[],
+): WebVitalsAggregated {
+  const result: WebVitalsAggregated = {
+    inp: null,
+    fcp: null,
+    lcp: null,
+    cls: null,
+    ratings: {
+      inp: createEmptyRatingDistribution(),
+      fcp: createEmptyRatingDistribution(),
+      lcp: createEmptyRatingDistribution(),
+      cls: createEmptyRatingDistribution(),
+    },
+  };
+
+  for (const metric of WEB_VITALS_NUMERIC_KEYS) {
+    // Extract non-null numeric values for statistical analysis
+    const values = runs
+      .map((r) => r[metric])
+      .filter((v): v is number => v !== null);
+
+    if (values.length > 0) {
+      result[metric] = calculateWebVitalsStatistics(metric, values);
+    }
+
+    // Tally rating distribution across all runs
+    const ratingKey = `${metric}Rating` as const;
+    for (const run of runs) {
+      const rating: WebVitalsRating | null = run[ratingKey];
+      if (rating === null) {
+        result.ratings[metric].null += 1;
+      } else {
+        result.ratings[metric][rating] += 1;
+      }
+    }
+  }
+
+  return result;
+}

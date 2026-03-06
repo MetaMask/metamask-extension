@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import {
   AccountOverviewTabsProps,
@@ -14,9 +14,21 @@ export const AccountOverviewLayout = ({
   children,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
+  const heroRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      node.setAttribute('elementtiming', 'hero');
+      requestAnimationFrame(() => {
+        performance.mark('mm-hero-painted');
+      });
+    }
+  }, []);
+
   return (
     <>
-      <div className="account-overview__balance-wrapper flex flex-col p-4 gap-4">
+      <div
+        ref={heroRef}
+        className="account-overview__balance-wrapper flex flex-col p-4 gap-4"
+      >
         <NetworkConnectionBanner />
 
         {children}
