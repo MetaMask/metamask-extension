@@ -357,7 +357,7 @@ async function resolveUpgradeContractAddress(
   }
 
   if (!authorization.isAtomicBatchSupported) {
-    return undefined;
+    throw new Error('Upgrade contract address not found');
   }
 
   const { chainId, txParams } = transaction;
@@ -387,6 +387,10 @@ async function resolveUpgradeContractAddress(
     throw new Error(
       `Account is already upgraded to a different delegation address: ${delegationAddress}`,
     );
+  }
+
+  if (!upgradeContractAddress) {
+    throw new Error('Upgrade contract address not found');
   }
 
   if (delegationAddress) {
