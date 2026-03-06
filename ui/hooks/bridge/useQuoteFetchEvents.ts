@@ -47,15 +47,5 @@ export const useQuoteFetchEvents = () => {
         ),
       );
     }
-  }, [
-    activeQuote,
-    dispatch,
-    fromTokenBalanceInUsd,
-    isLoading,
-    isTxSubmittable,
-    quoteFetchError,
-    quotesRefreshCount,
-    recommendedQuote,
-    warnings,
-  ]);
+  }, [quotesRefreshCount]);
 };
