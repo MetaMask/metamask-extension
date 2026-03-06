@@ -2,10 +2,10 @@
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { HeaderCompactSearch } from './header-compact-search';
-import { HeaderCompactSearchVariant } from './header-compact-search.types';
+import { HeaderSearch } from './header-search';
+import { HeaderSearchVariant } from './header-search.types';
 
-describe('HeaderCompactSearch', () => {
+describe('HeaderSearch', () => {
   const defaultSearchProps = {
     value: '',
     placeholder: messages.search.message,
@@ -15,12 +15,12 @@ describe('HeaderCompactSearch', () => {
     it('renders back button and search input', () => {
       const onClickBackButton = jest.fn();
       const { getByRole, getByPlaceholderText } = render(
-        <HeaderCompactSearch
-          variant={HeaderCompactSearchVariant.Screen}
+        <HeaderSearch
+          variant={HeaderSearchVariant.Screen}
           onClickBackButton={onClickBackButton}
           textFieldSearchProps={{
             ...defaultSearchProps,
-            inputProps: { 'data-testid': 'header-compact-search-input' },
+            inputProps: { 'data-testid': 'header-search-input' },
           }}
         />,
       );
@@ -28,16 +28,14 @@ describe('HeaderCompactSearch', () => {
       const backButton = getByRole('button');
       expect(backButton).toBeDefined();
       expect(getByPlaceholderText(messages.search.message)).toBeDefined();
-      expect(backButton.closest('header')).toHaveClass(
-        'mm-header-compact-search',
-      );
+      expect(backButton.closest('header')).toHaveClass('mm-header-search');
     });
 
     it('invokes callback when back button is clicked', () => {
       const onClickBackButton = jest.fn();
       const { getByRole } = render(
-        <HeaderCompactSearch
-          variant={HeaderCompactSearchVariant.Screen}
+        <HeaderSearch
+          variant={HeaderSearchVariant.Screen}
           onClickBackButton={onClickBackButton}
           textFieldSearchProps={defaultSearchProps}
         />,
@@ -53,8 +51,8 @@ describe('HeaderCompactSearch', () => {
     it('renders search input and close button', () => {
       const onClickCancelButton = jest.fn();
       const { getByRole, getByPlaceholderText } = render(
-        <HeaderCompactSearch
-          variant={HeaderCompactSearchVariant.Inline}
+        <HeaderSearch
+          variant={HeaderSearchVariant.Inline}
           onClickCancelButton={onClickCancelButton}
           textFieldSearchProps={defaultSearchProps}
         />,
@@ -67,8 +65,8 @@ describe('HeaderCompactSearch', () => {
     it('invokes callback when close button is clicked', () => {
       const onClickCancelButton = jest.fn();
       const { getByRole } = render(
-        <HeaderCompactSearch
-          variant={HeaderCompactSearchVariant.Inline}
+        <HeaderSearch
+          variant={HeaderSearchVariant.Inline}
           onClickCancelButton={onClickCancelButton}
           textFieldSearchProps={defaultSearchProps}
         />,
@@ -84,8 +82,8 @@ describe('HeaderCompactSearch', () => {
     it('invokes onChangeText with input value when user types', () => {
       const onChangeText = jest.fn();
       const { getByPlaceholderText } = render(
-        <HeaderCompactSearch
-          variant={HeaderCompactSearchVariant.Inline}
+        <HeaderSearch
+          variant={HeaderSearchVariant.Inline}
           onClickCancelButton={jest.fn()}
           textFieldSearchProps={{
             ...defaultSearchProps,
@@ -104,8 +102,8 @@ describe('HeaderCompactSearch', () => {
   describe('className', () => {
     it('applies custom className to root element', () => {
       const { container } = render(
-        <HeaderCompactSearch
-          variant={HeaderCompactSearchVariant.Screen}
+        <HeaderSearch
+          variant={HeaderSearchVariant.Screen}
           onClickBackButton={jest.fn()}
           className="custom-class"
           textFieldSearchProps={defaultSearchProps}
@@ -113,7 +111,7 @@ describe('HeaderCompactSearch', () => {
       );
 
       expect(
-        container.querySelector('header.mm-header-compact-search.custom-class'),
+        container.querySelector('header.mm-header-search.custom-class'),
       ).toBeInTheDocument();
     });
   });

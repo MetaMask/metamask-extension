@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import type { StoryFn, Meta } from '@storybook/react';
-import { HeaderCompactSearch } from './header-compact-search';
-import { HeaderCompactSearchVariant } from './header-compact-search.types';
+import { HeaderSearch } from './header-search';
+import { HeaderSearchVariant } from './header-search.types';
 
 export default {
-  title: 'Components/ComponentLibrary/HeaderCompactSearch',
-  component: HeaderCompactSearch,
+  title: 'Components/ComponentLibrary/HeaderSearch',
+  component: HeaderSearch,
   argTypes: {
     variant: {
       control: 'select',
-      options: Object.values(HeaderCompactSearchVariant),
+      options: Object.values(HeaderSearchVariant),
     },
     onClickBackButton: { action: 'onClickBackButton' },
     onClickCancelButton: { action: 'onClickCancelButton' },
   },
   args: {
-    variant: HeaderCompactSearchVariant.Screen,
+    variant: HeaderSearchVariant.Screen,
     onClickBackButton: () => {},
     textFieldSearchProps: {
       value: '',
       placeholder: 'Search',
     },
   },
-} as Meta<typeof HeaderCompactSearch>;
+} as Meta<typeof HeaderSearch>;
 
-const Template: StoryFn<typeof HeaderCompactSearch> = (args) => {
+const Template: StoryFn<typeof HeaderSearch> = (args) => {
   const initialValue = (args.textFieldSearchProps?.value as string) ?? '';
   const [value, setValue] = useState(initialValue);
 
@@ -46,12 +46,12 @@ const Template: StoryFn<typeof HeaderCompactSearch> = (args) => {
     onClickClearButton: handleClickClearButton,
   };
 
-  return <HeaderCompactSearch {...args} textFieldSearchProps={searchProps} />;
+  return <HeaderSearch {...args} textFieldSearchProps={searchProps} />;
 };
 
-export const Screen: StoryFn<typeof HeaderCompactSearch> = Template.bind({});
+export const Screen: StoryFn<typeof HeaderSearch> = Template.bind({});
 Screen.args = {
-  variant: HeaderCompactSearchVariant.Screen,
+  variant: HeaderSearchVariant.Screen,
   onClickBackButton: () => {},
   textFieldSearchProps: {
     value: '',
@@ -59,9 +59,9 @@ Screen.args = {
   },
 };
 
-export const Inline: StoryFn<typeof HeaderCompactSearch> = Template.bind({});
+export const Inline: StoryFn<typeof HeaderSearch> = Template.bind({});
 Inline.args = {
-  variant: HeaderCompactSearchVariant.Inline,
+  variant: HeaderSearchVariant.Inline,
   onClickCancelButton: () => {},
   textFieldSearchProps: {
     value: '',
@@ -69,10 +69,9 @@ Inline.args = {
   },
 };
 
-export const ScreenWithValue: StoryFn<typeof HeaderCompactSearch> =
-  Template.bind({});
+export const ScreenWithValue: StoryFn<typeof HeaderSearch> = Template.bind({});
 ScreenWithValue.args = {
-  variant: HeaderCompactSearchVariant.Screen,
+  variant: HeaderSearchVariant.Screen,
   onClickBackButton: () => {},
   textFieldSearchProps: {
     value: 'Search query',
@@ -80,10 +79,9 @@ ScreenWithValue.args = {
   },
 };
 
-export const InlineWithValue: StoryFn<typeof HeaderCompactSearch> =
-  Template.bind({});
+export const InlineWithValue: StoryFn<typeof HeaderSearch> = Template.bind({});
 InlineWithValue.args = {
-  variant: HeaderCompactSearchVariant.Inline,
+  variant: HeaderSearchVariant.Inline,
   onClickCancelButton: () => {},
   textFieldSearchProps: {
     value: 'Search query',

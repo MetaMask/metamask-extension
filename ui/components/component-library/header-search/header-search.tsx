@@ -10,13 +10,10 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TextFieldSearch } from '../text-field-search';
-import {
-  HeaderCompactSearchProps,
-  HeaderCompactSearchVariant,
-} from './header-compact-search.types';
+import { HeaderSearchProps, HeaderSearchVariant } from './header-search.types';
 
 function adaptTextFieldSearchProps(
-  props: HeaderCompactSearchProps['textFieldSearchProps'],
+  props: HeaderSearchProps['textFieldSearchProps'],
 ) {
   const {
     onChangeText,
@@ -38,9 +35,7 @@ function adaptTextFieldSearchProps(
   };
 }
 
-export const HeaderCompactSearch: React.FC<HeaderCompactSearchProps> = (
-  props,
-) => {
+export const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
   const t = useI18nContext();
   const { variant, className = '', textFieldSearchProps } = props;
   const searchProps = adaptTextFieldSearchProps(textFieldSearchProps);
@@ -54,10 +49,7 @@ export const HeaderCompactSearch: React.FC<HeaderCompactSearchProps> = (
     </Box>
   );
 
-  const rootClassName = classnames(
-    'mm-header-compact-search w-full',
-    className,
-  );
+  const rootClassName = classnames('mm-header-search w-full', className);
 
   const baseLayoutProps = {
     flexDirection: BoxFlexDirection.Row as const,
@@ -66,7 +58,7 @@ export const HeaderCompactSearch: React.FC<HeaderCompactSearchProps> = (
     paddingHorizontal: 4 as const,
   };
 
-  if (variant === HeaderCompactSearchVariant.Screen) {
+  if (variant === HeaderSearchVariant.Screen) {
     const {
       onClickBackButton,
       backButtonProps,
