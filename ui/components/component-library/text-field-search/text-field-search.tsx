@@ -1,7 +1,11 @@
 import React from 'react';
 import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BorderRadius } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderRadius,
+  IconColor,
+} from '../../../helpers/constants/design-system';
 import { TextFieldProps, TextFieldType } from '../text-field/text-field.types';
 import { PolymorphicRef } from '../box';
 import { TextField } from '../text-field';
@@ -56,12 +60,19 @@ export const TextFieldSearch: TextFieldSearchComponent = React.forwardRef(
             endAccessory
           )
         }
-        startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
+        startAccessory={
+          <Icon
+            name={IconName.Search}
+            size={IconSize.Sm}
+            color={IconColor.iconAlternative}
+          />
+        }
         inputProps={{
           marginRight: showClearButton ? 6 : 0,
           ...inputProps,
         }}
         {...(props as TextFieldProps<C>)}
+        backgroundColor={BackgroundColor.backgroundMuted}
         borderRadius={BorderRadius.pill}
       />
     );
