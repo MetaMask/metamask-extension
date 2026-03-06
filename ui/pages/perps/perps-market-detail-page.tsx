@@ -1599,35 +1599,32 @@ const PerpsMarketDetailPage: React.FC = () => {
       )}
 
       {/* Reverse position modal (from Modify menu) */}
-      {position && selectedAddress && isReverseModalOpen && (
+      {position && isReverseModalOpen && (
         <ReversePositionModal
           isOpen={isReverseModalOpen}
           onClose={handleCloseReverseModal}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
 
       {/* TP/SL update modal (from Auto Close row) */}
-      {position && selectedAddress && isTPSLModalOpen && (
+      {position && isTPSLModalOpen && (
         <UpdateTPSLModal
           isOpen={isTPSLModalOpen}
           onClose={handleCloseTPSLModal}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
 
       {/* Close position modal */}
-      {position && selectedAddress && isCloseModalOpen && (
+      {position && isCloseModalOpen && (
         <ClosePositionModal
           isOpen={isCloseModalOpen}
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
     </Box>

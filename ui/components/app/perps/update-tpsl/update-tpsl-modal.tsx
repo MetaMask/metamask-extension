@@ -17,7 +17,6 @@ export type UpdateTPSLModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
-  selectedAddress: string;
 };
 
 /**
@@ -28,14 +27,12 @@ export type UpdateTPSLModalProps = {
  * @param options0.onClose
  * @param options0.position
  * @param options0.currentPrice
- * @param options0.selectedAddress
  */
 export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
   isOpen,
   onClose,
   position,
   currentPrice,
-  selectedAddress,
 }) => {
   const t = useI18nContext();
 
@@ -52,7 +49,6 @@ export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
           <UpdateTPSLModalContent
             position={position}
             currentPrice={currentPrice}
-            selectedAddress={selectedAddress}
             onClose={onClose}
           />
         </ModalBody>
