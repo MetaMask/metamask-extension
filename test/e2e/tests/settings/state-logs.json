@@ -697,18 +697,6 @@
     "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
-    "lostIdentities": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      }
-    },
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketData": {
