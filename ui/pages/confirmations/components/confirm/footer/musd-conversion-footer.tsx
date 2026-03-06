@@ -52,7 +52,8 @@ function useMusdConversionButtonState(isGaslessLoading: boolean) {
     if (firstBlockingAlert) {
       const isBalanceAlert =
         firstBlockingAlert.key === AlertsName.InsufficientPayTokenBalance ||
-        firstBlockingAlert.key === AlertsName.InsufficientPayTokenFees;
+        firstBlockingAlert.key === AlertsName.InsufficientPayTokenFees ||
+        firstBlockingAlert.key === AlertsName.InsufficientPayTokenNative;
 
       return {
         buttonText: isBalanceAlert

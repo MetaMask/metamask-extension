@@ -8,6 +8,7 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   Box,
   Text,
@@ -27,8 +28,11 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   BoxBackgroundColor,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTheme } from '../../../hooks/useTheme';
 import { setMusdConversionEducationSeen } from '../../../store/actions';
 import {
   useMusdConversion,
@@ -39,12 +43,14 @@ import {
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
   MUSD_CONVERSION_APY,
+  MUSD_CONVERSION_BONUS_TERMS_OF_USE,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
 } from '../../../components/app/musd/constants';
 import { MUSD_DEEPLINK_PARAM } from '../../../../shared/lib/deep-links/routes/musd';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-const MUSD_EDUCATION_COIN_IMAGE = './images/musd-education-coin.png';
+const MUSD_EDUCATION_COIN_IMAGE_DARK = './images/musd-education-coin-dark.png';
+const MUSD_EDUCATION_COIN_IMAGE_LIGHT = './images/musd-education-coin-light.png';
 
 /**
  * MUSD Education Screen Component
@@ -60,6 +66,7 @@ const MusdEducationScreen: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
   const [searchParams] = useSearchParams();
 
   const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
@@ -206,7 +213,22 @@ const MusdEducationScreen: React.FC = () => {
             textAlign={TextAlign.Center}
             color={TextColor.TextAlternative}
           >
-            {t('musdBonusExplanation', [String(MUSD_CONVERSION_APY)])}
+            {t('musdBonusExplanation', [
+              String(MUSD_CONVERSION_APY),
+              <TextButton
+                key="terms-link"
+                size={TextButtonSize.BodyMd}
+                asChild
+              >
+                <a
+                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('musdTermsApply')}
+                </a>
+              </TextButton>,
+            ])}
           </Text>
         </Box>
 
@@ -216,7 +238,7 @@ const MusdEducationScreen: React.FC = () => {
           alignItems={BoxAlignItems.Center}
         >
           <img
-            src={MUSD_EDUCATION_COIN_IMAGE}
+            src={theme === ThemeType.dark ? MUSD_EDUCATION_COIN_IMAGE_DARK : MUSD_EDUCATION_COIN_IMAGE_LIGHT}
             alt={t('musdGetMusd') as string}
             width={252}
             height={252}
@@ -244,7 +266,7 @@ const MusdEducationScreen: React.FC = () => {
             variant={ButtonVariant.Tertiary}
             size={ButtonSize.Lg}
             onClick={handleSkip}
-            style={{ width: '100%', color: 'var(--color-overlay-inverse)' }}
+            style={{ width: '100%', color: 'var(--color-text-default)' }}
             data-testid="musd-education-not-now-button"
           >
             {t('musdEducationNotNow')}

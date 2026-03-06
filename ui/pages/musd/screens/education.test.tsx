@@ -41,6 +41,11 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   default: () => ({ openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp }),
 }));
 
+// Mock useTheme
+jest.mock('../../../hooks/useTheme', () => ({
+  useTheme: jest.fn().mockReturnValue('light'),
+}));
+
 // Mock Redux dispatch
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
@@ -87,6 +92,8 @@ const createMockStore = () => {
 describe('MusdEducationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    const { useTheme } = jest.requireMock('../../../hooks/useTheme');
+    useTheme.mockReturnValue('light');
     mockSearchParamsGet.mockReturnValue(null);
     mockUseMusdGeoBlocking.mockReturnValue({
       isBlocked: false,
@@ -119,13 +126,31 @@ describe('MusdEducationScreen', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the illustration image', () => {
+  it('renders the illustration image for light theme', () => {
     const store = createMockStore();
     renderWithProvider(<MusdEducationScreen />, store);
 
     const img = screen.getByRole('img');
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', './images/musd-education-coin.png');
+    expect(img).toHaveAttribute(
+      'src',
+      './images/musd-education-coin-light.png',
+    );
+  });
+
+  it('renders the illustration image for dark theme', () => {
+    const { useTheme } = jest.requireMock('../../../hooks/useTheme');
+    useTheme.mockReturnValue('dark');
+
+    const store = createMockStore();
+    renderWithProvider(<MusdEducationScreen />, store);
+
+    const img = screen.getByRole('img');
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute(
+      'src',
+      './images/musd-education-coin-dark.png',
+    );
   });
 
   it('renders the "Get started" primary button', () => {

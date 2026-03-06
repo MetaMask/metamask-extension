@@ -97,7 +97,7 @@ describe('MusdConversionFooter', () => {
     expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
   });
 
-  it('disables button for InsufficientPayTokenNative blocking alert', () => {
+  it('disables button and shows insufficient balance text for InsufficientPayTokenNative blocking alert', () => {
     const { getByTestId } = render({
       alerts: [
         {
@@ -109,7 +109,9 @@ describe('MusdConversionFooter', () => {
       ],
     });
 
-    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
   });
 
   it('shows insufficient balance text for InsufficientPayTokenBalance alert', () => {

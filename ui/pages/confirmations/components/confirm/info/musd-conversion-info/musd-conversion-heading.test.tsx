@@ -6,10 +6,11 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import { MusdConversionHeading } from './musd-conversion-heading';
 
 jest.mock('../../../../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, values?: string[]) => {
+  useI18nContext: () => (key: string, values?: (string | React.ReactNode)[]) => {
     const translations: Record<string, string> = {
       musdConvertAndGetBonus: 'Convert and get 3%',
-      musdBonusExplanation: `You will receive a ${values?.[0] ?? ''}% bonus`,
+      musdBonusExplanation: `You will receive a ${values?.[0] ?? ''}% bonus. ${typeof values?.[1] === 'string' ? values[1] : 'Terms apply.'}`,
+      musdTermsApply: 'Terms apply.',
       info: 'Info',
     };
     return translations[key] ?? key;
@@ -18,6 +19,8 @@ jest.mock('../../../../../../hooks/useI18nContext', () => ({
 
 jest.mock('../../../../../../components/app/musd/constants', () => ({
   MUSD_CONVERSION_APY: 3,
+  MUSD_CONVERSION_BONUS_TERMS_OF_USE:
+    'https://metamask.io/musd-bonus-terms-of-use',
 }));
 
 describe('MusdConversionHeading', () => {
@@ -51,7 +54,9 @@ describe('MusdConversionHeading', () => {
     );
     fireEvent.click(infoButton);
 
-    expect(screen.getByText('You will receive a 3% bonus')).toBeInTheDocument();
+    expect(
+      screen.getByText(/You will receive a 3% bonus/u),
+    ).toBeInTheDocument();
   });
 
   it('closes tooltip on second click (toggle)', () => {
@@ -62,11 +67,13 @@ describe('MusdConversionHeading', () => {
     );
 
     fireEvent.click(infoButton);
-    expect(screen.getByText('You will receive a 3% bonus')).toBeInTheDocument();
+    expect(
+      screen.getByText(/You will receive a 3% bonus/u),
+    ).toBeInTheDocument();
 
     fireEvent.click(infoButton);
     expect(
-      screen.queryByText('You will receive a 3% bonus'),
+      screen.queryByText(/You will receive a 3% bonus/u),
     ).not.toBeInTheDocument();
   });
 

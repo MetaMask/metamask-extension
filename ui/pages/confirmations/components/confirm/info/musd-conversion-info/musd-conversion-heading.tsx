@@ -3,6 +3,8 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  ButtonLink,
+  ButtonLinkSize,
   IconName,
   Popover,
   PopoverPosition,
@@ -13,10 +15,14 @@ import {
   Display,
   JustifyContent,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { MUSD_CONVERSION_APY } from '../../../../../../components/app/musd/constants';
+import {
+  MUSD_CONVERSION_APY,
+  MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+} from '../../../../../../components/app/musd/constants';
 
 /**
  * MusdConversionHeading Component
@@ -80,7 +86,19 @@ export const MusdConversionHeading: React.FC = () => {
         >
           <Box padding={2} style={{ maxWidth: 280 }}>
             <Text variant={TextVariant.bodySm}>
-              {t('musdBonusExplanation', [String(MUSD_CONVERSION_APY)])}
+              {t('musdBonusExplanation', [
+                String(MUSD_CONVERSION_APY),
+                <ButtonLink
+                  key="terms-link"
+                  size={ButtonLinkSize.Inherit}
+                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                  externalLink
+                  color={TextColor.textDefault}
+                  style={{ textDecoration: 'underline' }}
+                >
+                  {t('musdTermsApply')}
+                </ButtonLink>,
+              ])}
             </Text>
           </Box>
         </Popover>
