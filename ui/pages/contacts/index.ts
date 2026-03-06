@@ -4,4 +4,11 @@ export { ContactDetailsPage } from './contact-details-page';
 export { AddContactPage } from './add-contact-page';
 export { EditContactPage } from './edit-contact-page';
 
+export type {
+  AddContactFormProps,
+  ContactListItemProps,
+  EditContactFormProps,
+  ViewContactContentProps,
+} from './contacts.types';
+
 export { ContactsRouter as default } from './contacts-router';

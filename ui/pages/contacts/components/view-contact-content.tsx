@@ -1,12 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  BoxJustifyContent,
   Button,
   ButtonVariant,
   ButtonSize,
@@ -24,26 +22,22 @@ import {
   AvatarNetworkSize,
   BadgeWrapper,
   AvatarIcon,
-  IconSize,
   AvatarIconSize,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
+import type { ViewContactContentProps } from '../contacts.types';
 
 function quadSplit(addr: string) {
-  return `0x${addr.slice(2).match(/.{1,4}/gu)?.join('') ?? ''}`;
+  return `0x${
+    addr
+      .slice(2)
+      .match(/.{1,4}/gu)
+      ?.join('') ?? ''
+  }`;
 }
-
-type ViewContactContentProps = {
-  name: string;
-  address: string;
-  checkSummedAddress: string;
-  memo: string;
-  chainId: string;
-  onEdit: () => void;
-  onDelete: () => void;
-};
 
 export function ViewContactContent({
   name,
@@ -58,7 +52,7 @@ export function ViewContactContent({
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const network = networks?.[chainId as Hex];
-  const networkName = network?.name ?? t('network');
+  const networkName = network?.name ?? t('networkTabCustom');
   const networkImage = getImageForChainId(chainId);
 
   return (

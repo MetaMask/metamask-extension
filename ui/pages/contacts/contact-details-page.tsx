@@ -1,20 +1,26 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-import { ButtonIcon, ButtonIconSize } from '../../components/component-library';
-import { IconName } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CONTACTS_ROUTE,
   CONTACTS_EDIT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { ViewContactContent } from './components/view-contact-content';
-import { getAddressBookEntry, getInternalAccountByAddress } from '../../selectors';
+import {
+  getAddressBookEntry,
+  getInternalAccountByAddress,
+} from '../../selectors';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
+import { ViewContactContent } from './components/view-contact-content';
 
 export function ContactDetailsPage() {
   const t = useI18nContext();
@@ -37,7 +43,9 @@ export function ContactDetailsPage() {
   };
 
   const handleDelete = async () => {
-    if (!address || !contact?.chainId) return;
+    if (!address || !contact?.chainId) {
+      return;
+    }
     await dispatch(removeFromAddressBook(contact.chainId, address));
     navigate(CONTACTS_ROUTE);
   };
@@ -50,8 +58,7 @@ export function ContactDetailsPage() {
     return <Navigate to={CONTACTS_ROUTE} replace />;
   }
 
-  const name =
-    contact.name ?? internalAccount?.metadata?.name ?? '';
+  const name = contact.name ?? internalAccount?.metadata?.name ?? '';
   const memo = contact.memo ?? '';
   const checkSummedAddress = toChecksumHexAddress(address);
 
@@ -81,15 +88,17 @@ export function ContactDetailsPage() {
         {t('contactDetails')}
       </Header>
       <Content padding={0}>
-        <ViewContactContent
-          name={name}
-          address={address}
-          checkSummedAddress={checkSummedAddress}
-          memo={memo}
-          chainId={contact.chainId ?? ''}
-          onEdit={() => navigate(`${CONTACTS_EDIT_ROUTE}/${address}`)}
-          onDelete={handleDelete}
-        />
+        <Box className="flex flex-1 min-h-0 w-full flex-col">
+          <ViewContactContent
+            name={name}
+            address={address}
+            checkSummedAddress={checkSummedAddress}
+            memo={memo}
+            chainId={contact.chainId ?? ''}
+            onEdit={() => navigate(`${CONTACTS_EDIT_ROUTE}/${address}`)}
+            onDelete={handleDelete}
+          />
+        </Box>
       </Content>
     </Page>
   );

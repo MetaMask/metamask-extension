@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -20,6 +19,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
   FormTextFieldSize,
@@ -44,25 +44,14 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
-
-type EditContactFormProps = {
-  address: string;
-  initialName: string;
-  initialMemo: string;
-  contactChainId: string;
-  onCancel: () => void;
-  onSuccess: () => void;
-  onDelete: () => void;
-};
+import type { EditContactFormProps } from '../contacts.types';
 
 export function EditContactForm({
   address,
   initialName,
-  initialMemo,
   contactChainId,
   onCancel,
   onSuccess,
-  onDelete,
 }: EditContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -72,14 +61,15 @@ export function EditContactForm({
 
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);
-  const [newMemo, setNewMemo] = useState(initialMemo);
   const [selectedChainId, setSelectedChainId] = useState(contactChainId);
   const [nameError, setNameError] = useState('');
   const [addressError, setAddressError] = useState('');
   const [showNetworkModal, setShowNetworkModal] = useState(false);
 
   const validateName = (nameValue: string) => {
-    if (nameValue === initialName) return true;
+    if (nameValue === initialName) {
+      return true;
+    }
     return !isDuplicateContact(addressBook, internalAccounts, nameValue);
   };
 
@@ -97,12 +87,11 @@ export function EditContactForm({
     selectedNetwork?.name ??
     (selectedChainId
       ? `${t('unknownNetworkForGatorPermissions')} (${selectedChainId})`
-      : t('network'));
+      : t('networkTabCustom'));
   const isUnchanged =
     contactName === initialName &&
     newAddress === address &&
-    selectedChainId === contactChainId &&
-    newMemo === initialMemo;
+    selectedChainId === contactChainId;
   const isSaveDisabled =
     !contactName.trim() || Boolean(nameError) || isUnchanged;
 
@@ -117,7 +106,6 @@ export function EditContactForm({
           addToAddressBook(
             newAddress,
             contactName || initialName,
-            newMemo || initialMemo,
             selectedChainId,
           ),
         );
@@ -128,38 +116,20 @@ export function EditContactForm({
     } else if (selectedChainId !== contactChainId) {
       await dispatch(removeFromAddressBook(contactChainId, address));
       await dispatch(
-        addToAddressBook(
-          address,
-          contactName || initialName,
-          newMemo || initialMemo,
-          selectedChainId,
-        ),
+        addToAddressBook(address, contactName || initialName, selectedChainId),
       );
       onSuccess();
     } else {
       await dispatch(
-        addToAddressBook(
-          address,
-          contactName || initialName,
-          newMemo || initialMemo,
-          selectedChainId,
-        ),
+        addToAddressBook(address, contactName || initialName, selectedChainId),
       );
       onSuccess();
     }
   };
 
-  const handleDelete = async () => {
-    await dispatch(removeFromAddressBook(contactChainId, address));
-    onDelete();
-  };
-
   return (
     <Box className="flex min-h-0 w-full flex-1 flex-col justify-between">
-      <Box
-        className="flex min-h-0 w-full flex-col overflow-auto px-4 pt-4 gap-6"
-        style={{ scrollbarColor: 'var(--color-icon-muted) transparent' }}
-      >
+      <Box className="flex min-h-0 w-full flex-col overflow-auto px-4 pt-4 gap-6">
         {/* Avatar */}
         <Box className="flex flex-col items-center">
           <BadgeWrapper
@@ -178,17 +148,6 @@ export function EditContactForm({
 
         {/* Form fields */}
         <Box className="flex w-full flex-col gap-6">
-          <Box className="flex w-full justify-end">
-            <Button
-              variant={ButtonVariant.Tertiary}
-              onClick={handleDelete}
-              className="text-error-default"
-              data-testid="delete-contact-button"
-            >
-              {t('deleteContact')}
-            </Button>
-          </Box>
-
           <FormTextField
             id="edit-contact-nickname"
             label={t('nickname')}
@@ -225,24 +184,6 @@ export function EditContactForm({
               borderRadius: BorderRadius.XL,
             }}
             data-testid="address-book-edit-contact-address"
-          />
-
-          <FormTextField
-            id="edit-contact-memo"
-            label={t('memo')}
-            placeholder={initialMemo}
-            value={newMemo}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setNewMemo(e.target.value)
-            }
-            size={FormTextFieldSize.Lg}
-            labelProps={{ marginBottom: 1 }}
-            textFieldProps={{
-              backgroundColor: BackgroundColor.backgroundMuted,
-              borderColor: BorderColor.borderDefault,
-              borderRadius: BorderRadius.XL,
-            }}
-            data-testid="address-book-edit-contact-memo"
           />
 
           <Box className="w-full">

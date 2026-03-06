@@ -1,22 +1,25 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-import { Box, ButtonIcon, ButtonIconSize } from '../../components/component-library';
-import { IconName } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CONTACTS_ROUTE,
   CONTACTS_VIEW_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { EditContactForm } from './components/edit-contact-form';
 import {
   getAddressBookEntry,
   getInternalAccountByAddress,
 } from '../../selectors';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { EditContactForm } from './components/edit-contact-form';
 
 export function EditContactPage() {
   const t = useI18nContext();
@@ -42,8 +45,7 @@ export function EditContactPage() {
     return <Navigate to={CONTACTS_ROUTE} replace />;
   }
 
-  const name =
-    contact?.name ?? internalAccount?.metadata?.name ?? '';
+  const name = contact?.name ?? internalAccount?.metadata?.name ?? '';
   const memo = contact?.memo ?? '';
   const contactChainId = contact?.chainId ?? providerConfig.chainId;
 
@@ -77,16 +79,14 @@ export function EditContactPage() {
         {t('editContact')}
       </Header>
       <Content padding={0}>
-        <Box className="flex min-h-0 w-full flex-1 flex-col gap-6">
+        <Box className="flex min-h-0 w-full flex-1 flex-col">
           <EditContactForm
-          address={address}
-          initialName={name}
-          initialMemo={memo}
-          contactChainId={contactChainId}
-          onCancel={() => navigate(`${CONTACTS_VIEW_ROUTE}/${address}`)}
-          onSuccess={() => navigate(CONTACTS_ROUTE)}
-          onDelete={() => navigate(CONTACTS_ROUTE)}
-        />
+            address={address}
+            initialName={name}
+            contactChainId={contactChainId}
+            onCancel={() => navigate(`${CONTACTS_VIEW_ROUTE}/${address}`)}
+            onSuccess={() => navigate(CONTACTS_ROUTE)}
+          />
         </Box>
       </Content>
     </Page>

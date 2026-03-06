@@ -1,6 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, ButtonIcon, ButtonIconSize, IconName } from '@metamask/design-system-react';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { CONTACTS_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';

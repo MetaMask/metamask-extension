@@ -2,18 +2,15 @@ import React from 'react';
 import {
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+
+const EMPTY_CONTACTS_IMAGE_SRC = './images/empty-contacts.svg';
 
 export function ContactsEmptyState() {
   const t = useI18nContext();
@@ -27,17 +24,13 @@ export function ContactsEmptyState() {
       className="flex w-full flex-col items-center justify-center py-12"
       data-testid="contacts-empty-state"
     >
-      <Box
-        backgroundColor={BoxBackgroundColor.BackgroundMuted}
-        padding={4}
-        className="flex rounded-full"
-      >
-        <Icon
-          name={IconName.People}
-          size={IconSize.Xl}
-          color={IconColor.IconAlternative}
-        />
-      </Box>
+      <img
+        src={EMPTY_CONTACTS_IMAGE_SRC}
+        alt=""
+        width={72}
+        height={72}
+        className="flex-shrink-0"
+      />
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}

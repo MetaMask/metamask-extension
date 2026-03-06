@@ -1781,6 +1781,9 @@
   "connectionsRemovedModalTitle": {
     "message": "Connections removed"
   },
+  "contactDetails": {
+    "message": "Contact details"
+  },
   "contactUs": {
     "message": "Contact us"
   },

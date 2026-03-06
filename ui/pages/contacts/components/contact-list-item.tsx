@@ -24,13 +24,9 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
+import type { ContactListItemProps } from '../contacts.types';
 
-export type ContactListItemProps = {
-  address: string;
-  name: string;
-  chainId: string;
-  onSelect: () => void;
-};
+export type { ContactListItemProps } from '../contacts.types';
 
 export function ContactListItem({
   address,
@@ -42,7 +38,7 @@ export function ContactListItem({
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const network = allNetworks?.[chainId as Hex];
-  const networkName = network?.name ?? t('network');
+  const networkName = network?.name ?? t('networkTabCustom');
   const networkImage = getImageForChainId(chainId);
 
   const onCopy = (e: React.MouseEvent) => {

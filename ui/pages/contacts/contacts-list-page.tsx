@@ -14,9 +14,12 @@ import {
 } from '@metamask/design-system-react';
 import { Header, Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { CONTACTS_ADD_ROUTE, CONTACTS_VIEW_ROUTE } from '../../helpers/constants/routes';
+import {
+  CONTACTS_ADD_ROUTE,
+  CONTACTS_VIEW_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { getCompleteAddressBook } from '../../selectors';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
 
@@ -38,10 +41,6 @@ export function ContactsListPage() {
     navigate(DEFAULT_ROUTE);
   };
 
-  const handleClose = () => {
-    navigate(DEFAULT_ROUTE);
-  };
-
   return (
     <Page data-testid="contacts-page">
       <Header
@@ -52,15 +51,6 @@ export function ContactsListPage() {
             size={ButtonIconSize.Md}
             onClick={handleBack}
             data-testid="contacts-back-button"
-          />
-        }
-        endAccessory={
-          <ButtonIcon
-            ariaLabel={t('close')}
-            iconName={IconName.Close}
-            size={ButtonIconSize.Md}
-            onClick={handleClose}
-            data-testid="contacts-close-button"
           />
         }
         marginBottom={0}
@@ -81,16 +71,9 @@ export function ContactsListPage() {
           }}
         >
           {contacts.length > 0 ? (
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              paddingBottom={4}
-            >
+            <Box flexDirection={BoxFlexDirection.Column} paddingBottom={4}>
               {contacts.map(
-                (entry: {
-                  address: string;
-                  name: string;
-                  chainId: string;
-                }) => (
+                (entry: { address: string; name: string; chainId: string }) => (
                   <ContactListItem
                     key={`${entry.chainId}-${entry.address}`}
                     address={entry.address}

@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   BoxFlexDirection,
@@ -20,6 +19,9 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
+import { addHexPrefix } from 'ethereumjs-util';
+import { isHexString } from '@metamask/utils';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
   FormTextFieldSize,
@@ -58,15 +60,9 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
-import { addHexPrefix } from 'ethereumjs-util';
-import { isHexString } from '@metamask/utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
-
-type AddContactFormProps = {
-  onCancel: () => void;
-  onSuccess: () => void;
-};
+import type { AddContactFormProps } from '../contacts.types';
 
 export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
@@ -127,18 +123,15 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       dispatch(lookupDomainName(domainToResolve, selectedChainId));
     }
     prevChainIdRef.current = selectedChainId;
-  }, [
-    selectedChainId,
-    enteredDomainName,
-    input,
-    dispatch,
-  ]);
+  }, [selectedChainId, enteredDomainName, input, dispatch]);
 
   useEffect(() => {
     if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
       const scannedAddress = qrCodeData.values.address.toLowerCase();
       const addresses = [
-        ...(domainResolutions?.map((r: { resolvedAddress: string }) => r.resolvedAddress) ?? []),
+        ...(domainResolutions?.map(
+          (r: { resolvedAddress: string }) => r.resolvedAddress,
+        ) ?? []),
         selectedAddress,
       ]
         .filter(Boolean)
@@ -204,10 +197,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
     !isBurnAddress(newAddress) &&
     isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
   const isSaveDisabled = Boolean(
-    addressInputError ||
-      nameInputError ||
-      !validAddress ||
-      !newName.trim(),
+    addressInputError || nameInputError || !validAddress || !newName.trim(),
   );
 
   const handleSubmit = async () => {
@@ -225,7 +215,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const selectedNetworkName: string =
     (networks && typeof selectedChainId === 'string'
       ? (networks as Record<string, { name?: string }>)[selectedChainId]?.name
-      : undefined) ?? t('network');
+      : undefined) ?? t('networkTabCustom');
 
   return (
     <Box
@@ -242,33 +232,13 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         }}
       >
         <FormTextField
-        id="contact-nickname"
-        label={t('nickname')}
-        placeholder={t('addAlias')}
-        value={newName}
-        onChange={handleNameChange}
-        error={Boolean(nameInputError)}
-        helpText={nameInputError || undefined}
-        size={FormTextFieldSize.Lg}
-        labelProps={{ marginBottom: 1 }}
-        textFieldProps={{
-          backgroundColor: BackgroundColor.backgroundMuted,
-          borderColor: BorderColor.borderDefault,
-          borderRadius: BorderRadius.XL,
-        }}
-      />
-
-      <Box>
-        <FormTextField
-          id="contact-address"
-          label={t('address')}
-          placeholder={t('recipientAddressPlaceholderNew')}
-          value={selectedAddress || input}
-          onChange={handleAddressChange}
-          error={Boolean(addressError)}
-          helpText={
-            addressError ? t(String(addressError)) : undefined
-          }
+          id="contact-nickname"
+          label={t('nickname')}
+          placeholder={t('addAlias')}
+          value={newName}
+          onChange={handleNameChange}
+          error={Boolean(nameInputError)}
+          helpText={nameInputError || undefined}
           size={FormTextFieldSize.Lg}
           labelProps={{ marginBottom: 1 }}
           textFieldProps={{
@@ -276,90 +246,106 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
             borderColor: BorderColor.borderDefault,
             borderRadius: BorderRadius.XL,
           }}
-          endAccessory={
-            <ButtonIcon
-              iconName={
-                selectedAddress || input ? IconName.Close : IconName.Scan
-              }
-              ariaLabel={t(
-                selectedAddress || input ? 'close' : 'scanQrCode',
+        />
+
+        <Box>
+          <FormTextField
+            id="contact-address"
+            label={t('address')}
+            placeholder={t('recipientAddressPlaceholderNew')}
+            value={selectedAddress || input}
+            onChange={handleAddressChange}
+            error={Boolean(addressError)}
+            helpText={addressError ? t(String(addressError)) : undefined}
+            size={FormTextFieldSize.Lg}
+            labelProps={{ marginBottom: 1 }}
+            textFieldProps={{
+              backgroundColor: BackgroundColor.backgroundMuted,
+              borderColor: BorderColor.borderDefault,
+              borderRadius: BorderRadius.XL,
+            }}
+            endAccessory={
+              <ButtonIcon
+                iconName={
+                  selectedAddress || input ? IconName.Close : IconName.Scan
+                }
+                ariaLabel={t(selectedAddress || input ? 'close' : 'scanQrCode')}
+                onClick={handleAddressClearOrScan}
+                size={ButtonIconSize.Sm}
+                data-testid="ens-qr-scan-button"
+              />
+            }
+            inputProps={{ onPaste: handleAddressPaste }}
+            autoFocus
+          />
+          {domainResolutions?.length > 0 && (
+            <Box marginTop={2}>
+              {domainResolutions.map(
+                (resolution: {
+                  resolvedAddress: string;
+                  resolvingSnap?: string;
+                  addressBookEntryName?: string;
+                  protocol?: string;
+                  domainName?: string;
+                }) => (
+                  <DomainInputResolutionCell
+                    key={`${resolution.resolvedAddress}-${resolution.protocol ?? ''}`}
+                    address={resolution.resolvedAddress}
+                    domainName={
+                      resolution.addressBookEntryName ??
+                      resolution.domainName ??
+                      ''
+                    }
+                    onClick={() => {
+                      setNewName(resolution.domainName ?? '');
+                      setInput(resolution.resolvedAddress);
+                      setSelectedAddress(resolution.resolvedAddress);
+                      setEnteredDomainName(resolution.domainName ?? '');
+                      dispatch(resetDomainResolution());
+                    }}
+                    protocol={resolution.protocol}
+                    resolvingSnap={resolution.resolvingSnap}
+                  />
+                ),
               )}
-              onClick={handleAddressClearOrScan}
-              size={ButtonIconSize.Sm}
-              data-testid="ens-qr-scan-button"
-            />
-          }
-          inputProps={{ onPaste: handleAddressPaste }}
-          autoFocus
-        />
-        {domainResolutions?.length > 0 && (
-          <Box marginTop={2}>
-            {domainResolutions.map(
-              (resolution: {
-                resolvedAddress: string;
-                resolvingSnap?: string;
-                addressBookEntryName?: string;
-                protocol?: string;
-                domainName?: string;
-              }) => (
-                <DomainInputResolutionCell
-                  key={`${resolution.resolvedAddress}-${resolution.protocol ?? ''}`}
-                  address={resolution.resolvedAddress}
-                  domainName={
-                    resolution.addressBookEntryName ??
-                    resolution.domainName ??
-                    ''
-                  }
-                  onClick={() => {
-                    setNewName(resolution.domainName ?? '');
-                    setInput(resolution.resolvedAddress);
-                    setSelectedAddress(resolution.resolvedAddress);
-                    setEnteredDomainName(resolution.domainName ?? '');
-                    dispatch(resetDomainResolution());
-                  }}
-                  protocol={resolution.protocol}
-                  resolvingSnap={resolution.resolvingSnap}
-                />
-              ),
-            )}
-          </Box>
+            </Box>
+          )}
+        </Box>
+
+        <Box>
+          <Label marginBottom={1}>{t('network')}</Label>
+          <SelectButton
+            size={SelectButtonSize.Lg}
+            isBlock
+            backgroundColor={BackgroundColor.backgroundMuted}
+            borderColor={BorderColor.borderDefault}
+            borderRadius={BorderRadius.XL}
+            startAccessory={
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                src={
+                  typeof selectedChainId === 'string'
+                    ? getImageForChainId(selectedChainId) || undefined
+                    : undefined
+                }
+                name={String(selectedNetworkName)}
+              />
+            }
+            onClick={() => setShowNetworkModal(true)}
+            data-testid="network-selector"
+          >
+            {selectedNetworkName}
+          </SelectButton>
+        </Box>
+
+        {showNetworkModal && (
+          <ContactNetworks
+            isOpen
+            onClose={() => setShowNetworkModal(false)}
+            selectedChainId={selectedChainId}
+            onSelect={(chainId: string) => setSelectedChainId(String(chainId))}
+          />
         )}
-      </Box>
-
-      <Box>
-        <Label marginBottom={1}>{t('network')}</Label>
-        <SelectButton
-          size={SelectButtonSize.Lg}
-          isBlock
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderColor={BorderColor.borderDefault}
-          borderRadius={BorderRadius.XL}
-          startAccessory={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              src={
-                typeof selectedChainId === 'string'
-                  ? getImageForChainId(selectedChainId) || undefined
-                  : undefined
-              }
-              name={String(selectedNetworkName)}
-            />
-          }
-          onClick={() => setShowNetworkModal(true)}
-          data-testid="network-selector"
-        >
-          {selectedNetworkName}
-        </SelectButton>
-      </Box>
-
-      {showNetworkModal && (
-        <ContactNetworks
-          isOpen
-          onClose={() => setShowNetworkModal(false)}
-          selectedChainId={selectedChainId}
-          onSelect={(chainId: string) => setSelectedChainId(String(chainId))}
-        />
-      )}
       </Box>
 
       <Box
