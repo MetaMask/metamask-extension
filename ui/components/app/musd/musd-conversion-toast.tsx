@@ -14,7 +14,7 @@ import {
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversionToastStatus } from '../../../hooks/musd/useMusdConversionToastStatus';
-import { Toast } from '../../multichain';
+import { Toast } from '../../multichain/toast';
 
 export function MusdConversionToast() {
   const t = useI18nContext();

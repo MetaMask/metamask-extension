@@ -3999,7 +3999,7 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Konversi mUSD",
+    "message": "Konversi $1 ke mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {

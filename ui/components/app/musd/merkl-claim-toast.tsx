@@ -14,7 +14,7 @@ import {
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
-import { Toast } from '../../multichain';
+import { Toast } from '../../multichain/toast';
 
 export function MerklClaimToast() {
   const t = useI18nContext();
