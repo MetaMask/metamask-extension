@@ -29,7 +29,7 @@ class TermsOfUseUpdateModal {
       await this.driver.waitForSelector(this.termsOfUseModalTitle);
     } catch (e) {
       console.log(
-        'Timeout while waiting for terms of use update modal to be loaded',
+        'Timeout while waiting for terms  of use update modal to be loaded',
         e,
       );
       throw e;
