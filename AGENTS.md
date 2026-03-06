@@ -1078,12 +1078,24 @@ function transformData(state: any): void {
 
 ### Default Agent Commit/Push/PR Flow (When Requested)
 
-Use this default flow whenever a user asks to "commit", "push", or "open a PR" without further detail:
+Execute only the steps that correspond to what the user explicitly requested. Do not perform additional steps (e.g., do not push or open a PR if the user only asked to commit).
+
+#### When asked to **commit**
 
 1. Run `yarn lint:changed:fix` before creating the commit.
 2. Stage only files relevant to the requested change.
 3. Create a commit using Conventional Commits format: `<type>(optional-scope): <summary>`.
+
+#### When asked to **push**
+
+Complete all steps for **commit** above, then:
+
 4. Push the current branch to `origin`.
+
+#### When asked to **open a PR**
+
+Complete all steps for **push** above, then:
+
 5. Open a **draft** PR with:
    - A Conventional Commits PR title (normally matching the commit summary).
    - A PR body based on `.github/pull-request-template.md`.
