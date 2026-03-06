@@ -150,7 +150,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -161,7 +162,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build dist
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -198,7 +200,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build --build-type flask dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -209,7 +212,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build --build-type flask dist
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -613,7 +617,8 @@ jobs:
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
-    secrets: inherit
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
   trigger-regression-validation:
     name: Trigger Regression Validation
@@ -749,15 +754,6 @@ jobs:
           google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
           sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
-
-  publish-release:
-    name: Publish release
-    if: ${{ !cancelled() && needs.all-jobs-pass.result == 'success' && github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
-    needs:
-      - get-requirements
-      - all-jobs-pass
-    uses: ./.github/workflows/publish-release.yml
-    secrets: inherit
 
   check-retry-ci:
     name: Check for retry-ci label and retry

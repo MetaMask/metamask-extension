@@ -102,3 +102,4 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+.worktrees
