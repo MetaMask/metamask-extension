@@ -61,7 +61,13 @@ export async function applyTransactionContainers({
   return {
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.containerTypes = types;
-      transaction.txParams = cloneDeep(finalMetadata.txParams);
+
+      // Only update the fields modified by container wrapping.
+      // Preserves gas fees, nonce, gasLimit, type, chainId,
+      // authorizationList, and other fields set by the approval flow.
+      transaction.txParams.data = finalMetadata.txParams.data;
+      transaction.txParams.to = finalMetadata.txParams.to;
+      transaction.txParams.value = finalMetadata.txParams.value;
 
       if (newGas) {
         transaction.txParams.gas = newGas;
@@ -108,6 +114,9 @@ export async function applyTransactionContainersExisting({
     containerTypes,
     data: newTransactionMeta.txParams.data,
     gas: newTransactionMeta.txParams.gas,
+    gasPrice: transactionMeta.txParams.gasPrice,
+    maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
+    maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas,
     to: newTransactionMeta.txParams.to,
     value: newTransactionMeta.txParams.value,
   });

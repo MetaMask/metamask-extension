@@ -28,6 +28,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
+        "containerDiffFiat": "",
         "estimatedFeeFiat": "< $0.01",
         "estimatedFeeFiatWith18SignificantDigits": "0",
         "estimatedFeeNative": "0",
@@ -58,6 +59,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
+        "containerDiffFiat": "",
         "estimatedFeeFiat": "$0.04",
         "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",
@@ -109,6 +111,7 @@ describe('useFeeCalculations', () => {
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
+        "containerDiffFiat": "",
         "estimatedFeeFiat": "",
         "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",

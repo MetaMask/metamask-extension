@@ -343,6 +343,18 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "addedProtectionDescription": {
+    "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+  },
+  "addedProtectionFeeDescription": {
+    "message": "Add $1 in network fees to lock in your expected balance changes."
+  },
+  "addedProtectionOptionalBadge": {
+    "message": "Optional"
+  },
+  "addedProtectionTitle": {
+    "message": "Added protection"
+  },
   "additionalNetworks": {
     "message": "Additional networks"
   },
