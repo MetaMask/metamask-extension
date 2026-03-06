@@ -5271,12 +5271,6 @@
   "perpsEntryPrice": {
     "message": "エントリー価格"
   },
-  "perpsExploreCrypto": {
-    "message": "仮想通貨を探す"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "株式や商品先物を探す"
-  },
   "perpsFees": {
     "message": "手数料"
   },
@@ -5390,9 +5384,6 @@
   },
   "perpsOpenedLong": {
     "message": "ロングをオープンしました"
-  },
-  "perpsOrderAmount": {
-    "message": "注文金額"
   },
   "perpsOrders": {
     "message": "注文"
@@ -5540,12 +5531,6 @@
   },
   "perpsWithdraw": {
     "message": "出金"
-  },
-  "perpsYourOrders": {
-    "message": "注文一覧"
-  },
-  "perpsYourPositions": {
-    "message": "保有ポジション"
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
