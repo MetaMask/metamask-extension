@@ -79,7 +79,6 @@ import { ClosePositionModal } from '../../components/app/perps/close-position';
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
-  type PerpsToastRouteState,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
@@ -174,14 +173,47 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   </Box>
 );
 
-const PERPS_TOAST_KEY_SET = new Set<PerpsToastKey>(
+const PERPS_TOAST_KEY_SET: Set<string> = new Set(
   Object.values(PERPS_TOAST_KEYS),
 );
 
 const isPerpsToastKey = (value: unknown): value is PerpsToastKey => {
-  return (
-    typeof value === 'string' && PERPS_TOAST_KEY_SET.has(value as PerpsToastKey)
-  );
+  return typeof value === 'string' && PERPS_TOAST_KEY_SET.has(value);
+};
+
+type ParsedPerpsToastRouteState = {
+  perpsToastDescription?: string;
+  perpsToastKey: PerpsToastKey;
+  remainingState?: Record<string, unknown>;
+};
+
+const parsePerpsToastRouteState = (
+  state: unknown,
+): ParsedPerpsToastRouteState | null => {
+  if (!state || typeof state !== 'object') {
+    return null;
+  }
+
+  const routeState = state as Record<string, unknown>;
+  if (!isPerpsToastKey(routeState.perpsToastKey)) {
+    return null;
+  }
+
+  const { perpsToastKey, perpsToastDescription, ...remainingState } =
+    routeState;
+
+  const routeToastDescription =
+    typeof perpsToastDescription === 'string' && perpsToastDescription
+      ? perpsToastDescription
+      : undefined;
+
+  return {
+    perpsToastKey,
+    ...(routeToastDescription
+      ? { perpsToastDescription: routeToastDescription }
+      : {}),
+    ...(Object.keys(remainingState).length > 0 ? { remainingState } : {}),
+  };
 };
 
 /**
@@ -207,36 +239,21 @@ const PerpsMarketDetailPage: React.FC = () => {
   const { replacePerpsToastByKey } = usePerpsToast();
 
   useEffect(() => {
-    if (!location.state || typeof location.state !== 'object') {
+    const parsedRouteState = parsePerpsToastRouteState(location.state);
+    if (!parsedRouteState) {
       return;
     }
-
-    const routeState = location.state as PerpsToastRouteState &
-      Record<string, unknown>;
-    if (!isPerpsToastKey(routeState.perpsToastKey)) {
-      return;
-    }
-
-    const routeToastDescription =
-      typeof routeState.perpsToastDescription === 'string' &&
-      routeState.perpsToastDescription
-        ? routeState.perpsToastDescription
-        : undefined;
 
     replacePerpsToastByKey({
-      key: routeState.perpsToastKey,
-      ...(routeToastDescription ? { description: routeToastDescription } : {}),
+      key: parsedRouteState.perpsToastKey,
+      ...(parsedRouteState.perpsToastDescription
+        ? { description: parsedRouteState.perpsToastDescription }
+        : {}),
     });
 
-    const {
-      perpsToastKey: _consumedToastKey,
-      perpsToastDescription: _consumedToastDescription,
-      ...remainingState
-    } = routeState;
     navigate(`${location.pathname}${location.search}`, {
       replace: true,
-      state:
-        Object.keys(remainingState).length > 0 ? remainingState : undefined,
+      state: parsedRouteState.remainingState ?? undefined,
     });
   }, [
     location.pathname,

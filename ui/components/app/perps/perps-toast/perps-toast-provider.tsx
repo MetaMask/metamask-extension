@@ -66,7 +66,7 @@ export type PerpsToastKeyConfig = Omit<
   'message' | 'variant'
 > & {
   key: PerpsToastKey;
-  messageParams?: unknown[];
+  messageParams?: (string | number)[];
 };
 
 type PerpsToastState = Omit<PerpsToastConfig, 'variant'> & {
@@ -78,23 +78,17 @@ type PerpsToastContextValue = {
   hidePerpsToast: () => void;
   replacePerpsToast: (config: PerpsToastConfig) => void;
   replacePerpsToastByKey: (config: PerpsToastKeyConfig) => void;
-  showPerpsToast: (config: PerpsToastConfig) => void;
-  showPerpsToastByKey: (config: PerpsToastKeyConfig) => void;
 };
 
 const DEFAULT_SUCCESS_AUTO_HIDE_TIME = 3000;
 const DEFAULT_ERROR_AUTO_HIDE_TIME = 5000;
 
 const noop = () => undefined;
-const noopShow = (_config: PerpsToastConfig) => undefined;
-const noopShowByKey = (_config: PerpsToastKeyConfig) => undefined;
 
 const PERPS_TOAST_CONTEXT_DEFAULT: PerpsToastContextValue = {
   hidePerpsToast: noop,
-  replacePerpsToast: noopShow,
-  replacePerpsToastByKey: noopShowByKey,
-  showPerpsToast: noopShow,
-  showPerpsToastByKey: noopShowByKey,
+  replacePerpsToast: noop,
+  replacePerpsToastByKey: noop,
 };
 
 export const PerpsToastContext = createContext<PerpsToastContextValue>(
@@ -278,7 +272,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     }
   }, [isPerpsInAppToastsEnabled]);
 
-  const showOrReplacePerpsToast = useCallback(
+  const upsertPerpsToast = useCallback(
     (config: PerpsToastConfig) => {
       if (!isPerpsInAppToastsEnabled) {
         return;
@@ -301,7 +295,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     [isPerpsInAppToastsEnabled],
   );
 
-  const showOrReplacePerpsToastByKey = useCallback(
+  const upsertPerpsToastByKey = useCallback(
     (config: PerpsToastKeyConfig) => {
       if (!isPerpsInAppToastsEnabled) {
         return;
@@ -332,12 +326,10 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
   const contextValue = useMemo<PerpsToastContextValue>(
     () => ({
       hidePerpsToast,
-      replacePerpsToast: showOrReplacePerpsToast,
-      replacePerpsToastByKey: showOrReplacePerpsToastByKey,
-      showPerpsToast: showOrReplacePerpsToast,
-      showPerpsToastByKey: showOrReplacePerpsToastByKey,
+      replacePerpsToast: upsertPerpsToast,
+      replacePerpsToastByKey: upsertPerpsToastByKey,
     }),
-    [hidePerpsToast, showOrReplacePerpsToast, showOrReplacePerpsToastByKey],
+    [hidePerpsToast, upsertPerpsToast, upsertPerpsToastByKey],
   );
 
   return (

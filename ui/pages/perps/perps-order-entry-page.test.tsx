@@ -49,24 +49,18 @@ jest.mock('../../store/background-connection', () => ({
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
-jest.mock('../../components/app/perps/perps-toast', () => ({
-  PERPS_TOAST_KEYS: {
-    CLOSE_FAILED: 'perpsToastCloseFailed',
-    CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
-    ORDER_FAILED: 'perpsToastOrderFailed',
-    ORDER_FILLED: 'perpsToastOrderFilled',
-    ORDER_PLACED: 'perpsToastOrderPlaced',
-    ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
-    SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
-    TRADE_SUCCESS: 'perpsToastTradeSuccess',
-    UPDATE_FAILED: 'perpsToastUpdateFailed',
-    UPDATE_IN_PROGRESS: 'perpsToastUpdateInProgress',
-    UPDATE_SUCCESS: 'perpsToastUpdateSuccess',
-  },
-  usePerpsToast: () => ({
-    replacePerpsToastByKey: mockReplacePerpsToastByKey,
-  }),
-}));
+jest.mock('../../components/app/perps/perps-toast', () => {
+  const { PERPS_TOAST_KEYS } = jest.requireActual(
+    '../../components/app/perps/perps-toast/perps-toast-provider',
+  );
+
+  return {
+    PERPS_TOAST_KEYS,
+    usePerpsToast: () => ({
+      replacePerpsToastByKey: mockReplacePerpsToastByKey,
+    }),
+  };
+});
 jest.mock('../../providers/perps', () => {
   return {
     getPerpsStreamManager: () => mockGetPerpsStreamManager(),
