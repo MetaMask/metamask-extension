@@ -387,5 +387,100 @@ describe('SmartTransactionsController Init', () => {
       expect(fullRequest.getAccountType).toHaveBeenCalledWith(selectedAddress);
       expect(fullRequest.getDeviceModel).toHaveBeenCalledWith(selectedAddress);
     });
+
+    it('returns undefined props when no selected account', async () => {
+      const { fullRequest } = buildInitRequest({
+        getUIState: jest.fn().mockReturnValue({
+          internalAccounts: {
+            selectedAccount: null,
+            accounts: {},
+          },
+          preferences: {},
+          swapsState: {},
+        }),
+      });
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const { getMetaMetricsProps } = constructorCall;
+
+      const result = await getMetaMetricsProps();
+
+      expect(result).toEqual({
+        accountHardwareType: undefined,
+        accountType: undefined,
+        deviceModel: undefined,
+      });
+      expect(fullRequest.getHardwareTypeForMetric).not.toHaveBeenCalled();
+      expect(fullRequest.getAccountType).not.toHaveBeenCalled();
+      expect(fullRequest.getDeviceModel).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getBearerToken', () => {
+    it('passes getter that returns token when AuthenticationController returns one', async () => {
+      const bearerToken = 'test-bearer-token';
+      const { fullRequest } = buildInitRequest();
+      fullRequest.baseControllerMessenger.registerActionHandler(
+        'AuthenticationController:getBearerToken',
+        () => Promise.resolve(bearerToken),
+      );
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const getBearerToken = constructorCall.getBearerToken as () => Promise<
+        string | undefined
+      >;
+
+      const result = await getBearerToken();
+
+      expect(result).toBe(bearerToken);
+    });
+
+    it('passes getter that returns undefined when AuthenticationController returns undefined', async () => {
+      const { fullRequest } = buildInitRequest();
+      fullRequest.baseControllerMessenger.registerActionHandler(
+        'AuthenticationController:getBearerToken',
+        () => undefined,
+      );
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const getBearerToken = constructorCall.getBearerToken as () => Promise<
+        string | undefined
+      >;
+
+      const result = await getBearerToken();
+
+      expect(result).toBeUndefined();
+    });
+
+    it('passes getter that returns undefined when AuthenticationController throws', async () => {
+      const { fullRequest } = buildInitRequest();
+      fullRequest.baseControllerMessenger.registerActionHandler(
+        'AuthenticationController:getBearerToken',
+        () => {
+          throw new Error('auth error');
+        },
+      );
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const getBearerToken = constructorCall.getBearerToken as () => Promise<
+        string | undefined
+      >;
+
+      const result = await getBearerToken();
+
+      expect(result).toBeUndefined();
+    });
   });
 });
