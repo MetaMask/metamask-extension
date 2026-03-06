@@ -104,6 +104,7 @@ import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { BrowserStorageAdapter } from './lib/stores/browser-storage-adapter';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -793,6 +794,27 @@ async function initialize(backup) {
     : {};
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
+
+  // Persist preinstalled snap source code to browser storage
+  // This is required after migration 193, which moved snap source code from
+  // SnapController state to browser storage
+  const browserStorageAdapter = new BrowserStorageAdapter();
+  await Promise.all(
+    preinstalledSnaps.map(async (snap) => {
+      if (snap.snapId && snap.files) {
+        // Find the bundle.js file which contains the source code
+        const bundleFile = snap.files.find((file) =>
+          file.path.endsWith('bundle.js'),
+        );
+        if (bundleFile?.value) {
+          await browserStorageAdapter.setItem('SnapController', snap.snapId, {
+            sourceCode: bundleFile.value,
+          });
+        }
+      }
+    }),
+  );
+
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
@@ -858,6 +880,7 @@ async function initialize(backup) {
  * Loads the preinstalled snaps from urls and returns them as an array.
  * It fails if any Snap fails to load in the expected time range.
  * Supports .json.gz files using gzip decompression.
+ * Also persists the source code to browser storage.
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
