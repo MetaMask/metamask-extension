@@ -23,12 +23,15 @@ import { codeFrameColumns } from '@babel/code-frame';
 
 const PLATFORM = 'chrome';
 const SOURCEMAPS_DIRNAME = 'sourcemaps';
-const DEFAULT_MAP_LOCATION = 'sibling';
 const CONTENTSCRIPT_RELATIVE_PATH = 'scripts/contentscript.js';
 const CONTENTSCRIPT_SOURCEMAP_REFERENCE =
   '//# sourceMappingURL=contentscript.js.map';
 
 const TARGET_STRING = 'new Error';
+
+function toPosixPath(pathValue: string): string {
+  return pathValue.replace(/\\/gu, '/');
+}
 
 export const MAP_LOCATIONS = ['sibling', 'sourcemaps'] as const;
 export type MapLocation = (typeof MAP_LOCATIONS)[number];
@@ -166,6 +169,7 @@ export async function main(
       `SourcemapValidator (webpack) - dist/chrome/ does not exist or is not a directory. Run a webpack build first (e.g. yarn webpack). Exiting with code 1.`,
     );
     process.exit(1);
+    return;
   }
 
   let mapLocation: MapLocation;
@@ -210,6 +214,7 @@ export async function main(
       'SourcemapValidator (webpack) - one or more bundles failed validation. Exiting with code 1.',
     );
     process.exit(1);
+    return;
   }
 
   console.log(
@@ -252,7 +257,7 @@ export async function discoverWebpackBundles(
     for (const e of entries) {
       const full = join(dir, e.name);
       if (e.isFile() && e.name.endsWith('.js') && !e.name.endsWith('.min.js')) {
-        const relativeBundlePath = relative(chromeDir, full);
+        const relativeBundlePath = toPosixPath(relative(chromeDir, full));
         const mapPath =
           mapLocation === 'sourcemaps'
             ? join(sourcemapsDir, `${relativeBundlePath}.map`)

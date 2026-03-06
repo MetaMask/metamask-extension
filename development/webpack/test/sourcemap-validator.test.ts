@@ -674,7 +674,7 @@ describe('sourcemap-validator', () => {
       mock.method(console, 'error', noop);
       mock.method(console, 'log', noop);
       await main({ mapLocation: 'sibling' });
-      assert.ok(exitMock.mock.calls.length >= 1);
+      assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
 
@@ -688,7 +688,7 @@ describe('sourcemap-validator', () => {
       mock.method(console, 'error', noop);
       mock.method(console, 'log', noop);
       await main({ mapLocation: 'sibling' });
-      assert.ok(exitMock.mock.calls.length >= 1);
+      assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
 
@@ -722,7 +722,7 @@ describe('sourcemap-validator', () => {
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
       await main({ mapLocation: 'sibling' });
-      assert.ok(exitMock.mock.calls.length >= 1);
+      assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
   });
