@@ -9,22 +9,43 @@ import { PERPS_MARKET_LIST_ROUTE } from '../../../tests/perps/helpers';
 export class PerpsMarketListPage {
   private readonly driver: Driver;
 
-  private readonly marketListView = { testId: 'market-list-view' };
+  private readonly filterSelectButton = { testId: 'filter-select-button' };
 
   private readonly filterSortRow = { testId: 'market-list-filter-sort-row' };
 
+  private readonly marketListView = { testId: 'market-list-view' };
+
+  /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';
 
-  private readonly filterSelectButton = { testId: 'filter-select-button' };
-
   private readonly sortDropdownButton = { testId: 'sort-dropdown-button' };
+
+  private readonly sortOptionVolumeHigh = {
+    testId: 'sort-dropdown-option-volumeHigh',
+  };
+
+  private readonly sortOptionVolumeLow = {
+    testId: 'sort-dropdown-option-volumeLow',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   /**
+   * Fills the search input with the given query.
+   *
+   * @param query
+   */
+  async fillSearch(query: string): Promise<void> {
+    await this.driver.waitForSelector(this.searchInput);
+    await this.driver.fill(this.searchInput, query);
+  }
+
+  /**
    * Navigates to the Perps Market List route and waits for the page to load.
+   * Uses window.location.hash so the SPA router switches view without a full page reload,
+   * which keeps the extension context and avoids re-injecting the extension.
    */
   async navigateToMarketList(): Promise<void> {
     await this.driver.executeScript(
@@ -34,10 +55,34 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Waits for the market list view to be visible.
+   * Selects a filter by type (e.g. 'crypto', 'all').
+   * Opens the filter dropdown and clicks the option.
+   *
+   * @param optionId - 'all' | 'crypto' | 'stocks' | 'commodities' | 'forex' | 'new'
    */
-  async waitForPageLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.marketListView);
+  async selectFilter(optionId: string): Promise<void> {
+    await this.driver.waitForSelector(this.filterSelectButton);
+    await this.driver.clickElement(this.filterSelectButton);
+    await this.driver.clickElement({ testId: `filter-select-option-${optionId}` });
+  }
+
+  /**
+   * Selects sort by volume high to low.
+   * Opens the sort dropdown and clicks the volumeHigh option.
+   */
+  async selectSortByVolumeHigh(): Promise<void> {
+    await this.driver.waitForSelector(this.sortDropdownButton);
+    await this.driver.clickElement(this.sortDropdownButton);
+    await this.driver.clickElement(this.sortOptionVolumeHigh);
+  }
+
+  /**
+   * Selects sort by volume low to high.
+   */
+  async selectSortByVolumeLow(): Promise<void> {
+    await this.driver.waitForSelector(this.sortDropdownButton);
+    await this.driver.clickElement(this.sortDropdownButton);
+    await this.driver.clickElement(this.sortOptionVolumeLow);
   }
 
   /**
@@ -48,47 +93,9 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Fills the search input with the given query.
-   * @param query
+   * Waits for the market list view to be visible.
    */
-  async fillSearch(query: string): Promise<void> {
-    await this.driver.waitForSelector(this.searchInput);
-    await this.driver.fill(this.searchInput, query);
-  }
-
-  /**
-   * Selects a filter by type (e.g. 'crypto', 'all').
-   * Opens the filter dropdown and clicks the option.
-   * @param optionId - 'all' | 'crypto' | 'stocks' | 'commodities' | 'forex' | 'new'
-   */
-  async selectFilter(optionId: string): Promise<void> {
-    await this.driver.waitForSelector(this.filterSelectButton);
-    await this.driver.clickElement(this.filterSelectButton);
-    await this.driver.clickElement({
-      testId: `filter-select-option-${optionId}`,
-    });
-  }
-
-  /**
-   * Selects sort by volume high to low.
-   * Opens the sort dropdown and clicks the volumeHigh option.
-   */
-  async selectSortByVolumeHigh(): Promise<void> {
-    await this.driver.waitForSelector(this.sortDropdownButton);
-    await this.driver.clickElement(this.sortDropdownButton);
-    await this.driver.clickElement({
-      testId: 'sort-dropdown-option-volumeHigh',
-    });
-  }
-
-  /**
-   * Selects sort by volume low to high.
-   */
-  async selectSortByVolumeLow(): Promise<void> {
-    await this.driver.waitForSelector(this.sortDropdownButton);
-    await this.driver.clickElement(this.sortDropdownButton);
-    await this.driver.clickElement({
-      testId: 'sort-dropdown-option-volumeLow',
-    });
+  async waitForPageLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.marketListView);
   }
 }

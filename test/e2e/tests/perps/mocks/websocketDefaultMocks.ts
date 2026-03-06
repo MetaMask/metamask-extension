@@ -25,7 +25,9 @@ export type WebSocketMessageMock = {
 
 /**
  * Returns the response payload, evaluating getters at send time so timestamps are fresh.
- * @param mock
+ *
+ * @param mock - The WebSocket message mock (response may be a function).
+ * @returns The response object to send back.
  */
 export function getResponsePayload(mock: WebSocketMessageMock): object {
   return typeof mock.response === 'function' ? mock.response() : mock.response;
