@@ -1171,6 +1171,7 @@ Complete all steps for **push** above, then:
 - Link to commits that address feedback (e.g., "Fixed in abc1234")
 - **Avoid rebasing after receiving comments** (makes review harder)
 - Push new commits instead of amending
+- If the Conventional Commit type in the PR's title is `chore`, please evaluate if `chore` is truly the best choice. We also have two custom types: `bump` (for package updates) and `release` (for tasks on a release branch and tasks that are all about getting a release ready).
 
 ### Before Merging
 
