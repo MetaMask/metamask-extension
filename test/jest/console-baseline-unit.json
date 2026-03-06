@@ -991,6 +991,9 @@
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/multichain/detected-token-banner/detected-token-banner.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1569,7 +1572,8 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
+      "React: Act warnings (component updates not wrapped)": 2,
+      "React: State updates on unmounted components": 1,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2997,6 +3001,9 @@
     },
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/home/home.container.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/keychains/restore-vault.test.tsx": {

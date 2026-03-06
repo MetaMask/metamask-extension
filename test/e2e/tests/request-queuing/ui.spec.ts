@@ -492,9 +492,8 @@ describe('Request-queue UI changes', function () {
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
-        // Switch to mainnet using per-dapp connected network flow
-        await headerNavbar.openConnectionMenu();
-        await headerNavbar.clickConnectedSitePopoverNetworkButton();
+        // Switch to mainnet using control bar per-dapp network selector
+        await headerNavbar.openDappNetworkMenu();
         await headerNavbar.selectNetwork('Ethereum');
 
         // Switch back to the Dapp tab
