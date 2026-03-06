@@ -1115,7 +1115,7 @@ Complete all steps for **push** above, then:
 
 - Clear and descriptive
 - Will be used in squash commit message
-- Example: "Add token validation for custom networks"
+- Example: "feat(networks): add token validation for custom networks"
 
 **Description Section:**
 
