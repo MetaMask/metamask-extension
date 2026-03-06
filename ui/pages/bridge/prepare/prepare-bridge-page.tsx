@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
@@ -95,7 +95,6 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
-import { useRWAToken } from '../hooks/useRWAToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -122,13 +121,6 @@ const PrepareBridgePage = ({
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
-
-  const { isStockToken, isTokenTradingOpen } = useRWAToken();
-  const isFromStockToken = isStockToken(fromToken);
-  const isToStockToken = isStockToken(toToken);
-  const isFromMarketClosed = isFromStockToken && !isTokenTradingOpen(fromToken);
-  const isToMarketClosed = isToStockToken && !isTokenTradingOpen(toToken);
-  const isStockMarketClosed = isFromMarketClosed || isToMarketClosed;
 
   const isSwap = fromToken.chainId === toToken.chainId;
 
@@ -189,7 +181,11 @@ const PrepareBridgePage = ({
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
     isInsufficientBalance,
-  } = useSelector(getValidationErrors);
+    isStockMarketClosed,
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
   const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
 
@@ -701,7 +697,6 @@ const PrepareBridgePage = ({
               needsDestinationAddress={
                 isToOrFromNonEvm && !selectedDestinationAccount
               }
-              isMarketClosed={isStockMarketClosed}
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }
