@@ -19,6 +19,14 @@ export class PerpsMarketListPage {
 
   private readonly sortDropdownButton = { testId: 'sort-dropdown-button' };
 
+  private readonly sortOptionVolumeHigh = {
+    testId: 'sort-dropdown-option-volumeHigh',
+  };
+
+  private readonly sortOptionVolumeLow = {
+    testId: 'sort-dropdown-option-volumeLow',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -35,7 +43,8 @@ export class PerpsMarketListPage {
 
   /**
    * Navigates to the Perps Market List route and waits for the page to load.
-   * Uses window.location.hash for SPA navigation without a full page reload.
+   * Uses window.location.hash so the SPA router switches view without a full page reload,
+   * which keeps the extension context and avoids re-injecting the extension.
    */
   async navigateToMarketList(): Promise<void> {
     await this.driver.executeScript(
@@ -53,9 +62,7 @@ export class PerpsMarketListPage {
   async selectFilter(optionId: string): Promise<void> {
     await this.driver.waitForSelector(this.filterSelectButton);
     await this.driver.clickElement(this.filterSelectButton);
-    await this.driver.clickElement({
-      testId: `filter-select-option-${optionId}`,
-    });
+    await this.driver.clickElement({ testId: `filter-select-option-${optionId}` });
   }
 
   /**
@@ -65,9 +72,7 @@ export class PerpsMarketListPage {
   async selectSortByVolumeHigh(): Promise<void> {
     await this.driver.waitForSelector(this.sortDropdownButton);
     await this.driver.clickElement(this.sortDropdownButton);
-    await this.driver.clickElement({
-      testId: 'sort-dropdown-option-volumeHigh',
-    });
+    await this.driver.clickElement(this.sortOptionVolumeHigh);
   }
 
   /**
@@ -76,9 +81,7 @@ export class PerpsMarketListPage {
   async selectSortByVolumeLow(): Promise<void> {
     await this.driver.waitForSelector(this.sortDropdownButton);
     await this.driver.clickElement(this.sortDropdownButton);
-    await this.driver.clickElement({
-      testId: 'sort-dropdown-option-volumeLow',
-    });
+    await this.driver.clickElement(this.sortOptionVolumeLow);
   }
 
   /**

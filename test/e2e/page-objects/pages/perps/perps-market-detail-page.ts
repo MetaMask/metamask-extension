@@ -116,10 +116,11 @@ export class PerpsMarketDetailPage {
 
   /**
    * Navigates to the market detail page for the given symbol.
-   * Uses window.location.hash for SPA navigation without a full page reload.
+   * Uses window.location.hash so the SPA router switches view without a full page reload,
+   * which keeps the extension context and avoids re-injecting the extension.
    * Use a symbol with no existing position (e.g. AVAX) to see Long/Short buttons.
    *
-   * @param symbol
+   * @param symbol - Market symbol (e.g. 'AVAX', 'ETH').
    */
   async navigateToMarket(symbol: string): Promise<void> {
     const encoded = encodeURIComponent(symbol);
@@ -155,16 +156,9 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Waits for the submit button to be present (order form visible).
-   */
-  async waitForSubmitButton(): Promise<void> {
-    await this.driver.waitForSelector(this.submitOrderButton);
-  }
-
-  /**
    * Waits for the Long/Short trade buttons (visible when user has no position in this market).
    *
-   * @param timeout
+   * @param timeout - Optional timeout in ms.
    */
   async waitForTradeCtaButtons(timeout?: number): Promise<void> {
     await this.driver.waitForSelector(this.tradeCtaButtons, { timeout });

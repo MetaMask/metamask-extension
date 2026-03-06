@@ -2,8 +2,9 @@ import { PERPS_HOME_ROUTE } from '../../../tests/perps/helpers';
 import { PerpsPositionsBase } from './perps-positions-base';
 
 /**
- * Page object for the Perps tab (wallet home with perps tab selected).
- * Content merged from former PerpsHomePage into PerpsTabView.
+ * Page object for the Perps Home view (balance, positions, explore markets, tutorial).
+ * Use this when the user is already on the Perps tab and you interact with the tab content.
+ * For opening the Perps tab from account overview, use PerpsTabPage first (e.g. openPerpsTab), then use this page.
  *
  * @see ui/components/app/perps/perps-tab-view.tsx
  */
@@ -128,7 +129,8 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Navigates to the Perps Home route and waits for the page to load.
-   * Uses window.location.hash for SPA navigation without a full page reload.
+   * Uses window.location.hash so the SPA router switches view without a full page reload,
+   * which keeps the extension context and avoids re-injecting the extension.
    */
   async navigateToPerpsHome(): Promise<void> {
     await this.driver.executeScript(
@@ -163,14 +165,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
       );
       return elements.length === expectedCount;
     }, timeout);
-  }
-
-  /**
-   * Returns the number of position cards currently displayed.
-   */
-  async getPositionCardsCount(): Promise<number> {
-    const elements = await this.driver.findElements(this.positionCardsSelector);
-    return elements.length;
   }
 
   /**
