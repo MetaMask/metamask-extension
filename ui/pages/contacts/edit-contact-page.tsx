@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,

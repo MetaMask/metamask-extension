@@ -1,5 +1,6 @@
 import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ContactsEmptyState } from './contacts-empty-state';
 
 describe('ContactsEmptyState', () => {
@@ -19,13 +20,15 @@ describe('ContactsEmptyState', () => {
 
   it('renders buildContactList heading', () => {
     const { getByText } = renderWithProvider(<ContactsEmptyState />);
-    expect(getByText('Build your contact list')).toBeInTheDocument();
+    expect(
+      getByText(messages.buildContactList.message),
+    ).toBeInTheDocument();
   });
 
   it('renders addFriendsAndAddresses description', () => {
     const { getByText } = renderWithProvider(<ContactsEmptyState />);
     expect(
-      getByText('Add friends and addresses you trust'),
+      getByText(messages.addFriendsAndAddresses.message),
     ).toBeInTheDocument();
   });
 });

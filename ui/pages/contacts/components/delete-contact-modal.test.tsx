@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { DeleteContactModal } from './delete-contact-modal';
 
 describe('DeleteContactModal', () => {
@@ -26,14 +27,16 @@ describe('DeleteContactModal', () => {
       const { getByText } = renderWithProvider(
         <DeleteContactModal {...defaultProps} />,
       );
-      expect(getByText('Are you sure?')).toBeInTheDocument();
+      expect(getByText(messages.areYouSure.message)).toBeInTheDocument();
     });
 
     it('renders body text "This contact will be deleted."', () => {
       const { getByText } = renderWithProvider(
         <DeleteContactModal {...defaultProps} />,
       );
-      expect(getByText('This contact will be deleted.')).toBeInTheDocument();
+      expect(
+        getByText(messages.thisContactWillBeDeleted.message),
+      ).toBeInTheDocument();
     });
 
     it('renders Delete confirm button', () => {
@@ -57,7 +60,7 @@ describe('DeleteContactModal', () => {
       const { getByLabelText } = renderWithProvider(
         <DeleteContactModal {...defaultProps} onClose={onClose} />,
       );
-      const closeButton = getByLabelText('Close');
+      const closeButton = getByLabelText(messages.close.message);
       fireEvent.click(closeButton);
       expect(onClose).toHaveBeenCalledTimes(1);
     });

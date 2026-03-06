@@ -102,7 +102,7 @@ export function EditContactForm({
     Boolean(nameError) ||
     Boolean(addressError) ||
     isUnchanged;
-
+const isChainChanged = selectedChainId !== contactChainId;
   const handleSubmit = async () => {
     if (newAddress && newAddress !== address) {
       const valid =
@@ -122,7 +122,7 @@ export function EditContactForm({
         ),
       );
       onSuccess();
-    } else if (selectedChainId !== contactChainId) {
+    } else if (isChainChanged) {
       await dispatch(removeFromAddressBook(contactChainId, address));
       await dispatch(
         addToAddressBook(

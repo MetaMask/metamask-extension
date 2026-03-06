@@ -2,10 +2,10 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
 import {
   CONTACTS_ROUTE,
-  CONTACTS_VIEW_ROUTE,
 } from '../../helpers/constants/routes';
 import { EditContactPage } from './edit-contact-page';
 
@@ -39,7 +39,7 @@ describe('EditContactPage', () => {
 
   it('renders header with "Edit contact" title', () => {
     const { getByText } = renderPage();
-    expect(getByText('Edit contact')).toBeInTheDocument();
+    expect(getByText(messages.editContact.message)).toBeInTheDocument();
   });
 
   it('renders edit contact form with contact name', () => {
