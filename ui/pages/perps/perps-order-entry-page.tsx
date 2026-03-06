@@ -46,6 +46,7 @@ import {
 import { usePerpsEligibility, usePerpsDeposit } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplayName,
   normalizeTpslPrices,
@@ -530,10 +531,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderType: 'market' as const,
           currentPrice,
         };
-        const result = await submitRequestToBackground<{
-          success: boolean;
-          error?: string;
-        }>('perpsClosePosition', [closeParams]);
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsClosePosition',
+          [closeParams],
+        );
         if (!result.success) {
           throw new Error(result.error ?? 'Failed to close position');
         }
@@ -553,16 +554,10 @@ const PerpsOrderEntryPage: React.FC = () => {
             ? orderFormState.stopLossPrice
             : undefined,
         });
-        const result = await submitRequestToBackground<{
-          success: boolean;
-          error?: string;
-        }>('perpsUpdatePositionTPSL', [
-          {
-            symbol: orderFormState.asset,
-            takeProfitPrice,
-            stopLossPrice,
-          },
-        ]);
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdatePositionTPSL',
+          [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
+        );
         if (!result.success) {
           throw new Error(result.error ?? 'Failed to update TP/SL');
         }
@@ -576,10 +571,10 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsPlaceOrder', [orderParams]);
+      const result = await submitRequestToBackground<PerpsBackgroundResult>(
+        'perpsPlaceOrder',
+        [orderParams],
+      );
       if (!result.success) {
         throw new Error(result.error ?? 'Failed to place order');
       }
