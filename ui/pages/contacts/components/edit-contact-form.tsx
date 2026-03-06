@@ -98,7 +98,10 @@ export function EditContactForm({
     selectedChainId === contactChainId &&
     memo === initialMemo;
   const isSaveDisabled =
-    !contactName.trim() || Boolean(nameError) || isUnchanged;
+    !contactName.trim() ||
+    Boolean(nameError) ||
+    Boolean(addressError) ||
+    isUnchanged;
 
   const handleSubmit = async () => {
     if (newAddress && newAddress !== address) {
