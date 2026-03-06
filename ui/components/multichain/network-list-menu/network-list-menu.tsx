@@ -376,7 +376,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         );
       }
 
-      dispatch(setActiveNetwork(finalNetworkClientId));
+      await dispatch(setActiveNetwork(finalNetworkClientId));
       dispatch(updateCustomNonce(''));
       dispatch(setNextNonce(''));
       dispatch(detectNfts(allChainIds));
