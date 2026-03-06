@@ -820,6 +820,21 @@ export const getWarningLabels = (
   return warnings;
 };
 
+/**
+ * Returns only the QuoteWarning labels (excluding RWA-specific warnings
+ * like 'market_closed') for use in metrics and submission flows.
+ *
+ * @param state
+ * @param currentTimeInMs
+ */
+export const getQuoteWarningLabels = (
+  state: BridgeAppState,
+  currentTimeInMs: number,
+): QuoteWarning[] =>
+  getWarningLabels(state, currentTimeInMs).filter(
+    (w): w is QuoteWarning => w !== 'market_closed',
+  );
+
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };

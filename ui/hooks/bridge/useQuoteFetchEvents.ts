@@ -4,12 +4,11 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
-  type QuoteWarning,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
   getFromTokenBalanceInUsd,
-  getWarningLabels,
+  getQuoteWarningLabels,
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
@@ -27,9 +26,9 @@ export const useQuoteFetchEvents = () => {
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
   const warnings = useSelector(
-    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    (state) => getQuoteWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
-  ).filter((w): w is QuoteWarning => w !== 'market_closed');
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 
   // Emitted each time quotes are fetched successfully

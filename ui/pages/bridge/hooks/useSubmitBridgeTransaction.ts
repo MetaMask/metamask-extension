@@ -6,11 +6,7 @@ import {
   isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type {
-  QuoteMetadata,
-  QuoteResponse,
-  QuoteWarning,
-} from '@metamask/bridge-controller';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -26,7 +22,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
-  getWarningLabels,
+  getQuoteWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
@@ -76,9 +72,9 @@ export default function useSubmitBridgeTransaction() {
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
-    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    (state) => getQuoteWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
-  ).filter((w): w is QuoteWarning => w !== 'market_closed');
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
 
