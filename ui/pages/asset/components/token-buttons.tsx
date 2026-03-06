@@ -36,12 +36,10 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 const TokenButtons = ({
   token,
   disableSendForNonEvm = false,
-  onSwapClick,
 }: {
   token: Asset & { type: AssetType.token };
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
-  onSwapClick?: () => void;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -120,14 +118,8 @@ const TokenButtons = ({
   }, [trackEvent, navigate, token]);
 
   const handleSwapOnClick = useCallback(async () => {
-    if (onSwapClick) {
-      onSwapClick();
-      return;
-    }
-
-    // Handle clicking from the asset details page
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
-  }, [onSwapClick, token, openBridgeExperience]);
+  }, [token, openBridgeExperience]);
 
   return (
     <Box
