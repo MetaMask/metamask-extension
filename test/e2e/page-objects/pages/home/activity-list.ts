@@ -53,6 +53,9 @@ class ActivityListPage {
   private readonly pendingTransactionItems =
     '.transaction-list__pending-transactions .activity-list-item';
 
+  private readonly spendingCapValue =
+    '[data-testid="transaction-breakdown-value-amount"]';
+
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
   private readonly speedupModalButton = '[data-testid="speedup-button"]';
@@ -237,6 +240,22 @@ class ActivityListPage {
 
   async checkSpeedUpInlineButtonIsPresent(): Promise<void> {
     await this.driver.waitForSelector(this.speedupInlineButton);
+  }
+
+  /**
+   * Checks that the spending cap value is displayed in the transaction details view.
+   * Must be called after clicking on a transaction to open its details.
+   *
+   * @param expectedValue - The expected spending cap text (e.g. '3 TST').
+   */
+  async checkSpendingCapValueInDetails(expectedValue: string): Promise<void> {
+    console.log(
+      `Check spending cap value ${expectedValue} in transaction details`,
+    );
+    await this.driver.waitForSelector({
+      css: this.spendingCapValue,
+      text: expectedValue,
+    });
   }
 
   /**
