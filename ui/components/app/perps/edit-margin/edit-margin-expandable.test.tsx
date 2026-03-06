@@ -33,7 +33,6 @@ const defaultProps = {
   position: mockPositions[0],
   account: mockAccountState,
   currentPrice: 2900,
-  selectedAddress: '0x123',
   isExpanded: true,
   onToggle: jest.fn(),
 };

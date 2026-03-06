@@ -16,6 +16,11 @@ jest.mock('../../../providers/perps', () => ({
     prewarm: jest.fn(),
     cleanupPrewarm: jest.fn(),
   }),
+  usePerpsController: () => ({
+    messenger: {
+      subscribe: jest.fn(() => jest.fn()),
+    },
+  }),
 }));
 
 // Mock the perps stream hooks
@@ -58,10 +63,10 @@ describe('PerpsTabView', () => {
       expect(screen.getByTestId('perps-tab-view')).toBeInTheDocument();
     });
 
-    it('renders the control bar', () => {
+    it('renders the balance dropdown', () => {
       renderWithProvider(<PerpsTabView />, mockStore);
 
-      expect(screen.getByTestId('perps-tab-control-bar')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-balance-dropdown')).toBeInTheDocument();
     });
 
     it('shows positions section when mock positions exist', () => {
@@ -82,12 +87,12 @@ describe('PerpsTabView', () => {
       expect(screen.getByTestId('perps-orders-section')).toBeInTheDocument();
     });
 
-    it('does not show empty state when there are positions or orders', () => {
+    it('shows explore markets section', () => {
       renderWithProvider(<PerpsTabView />, mockStore);
 
       expect(
-        screen.queryByTestId('perps-tab-empty-state'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-explore-markets-row'),
+      ).toBeInTheDocument();
     });
 
     it('renders position cards for each position', () => {
@@ -102,12 +107,6 @@ describe('PerpsTabView', () => {
 
       // Check that at least the first order is rendered
       expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
-    });
-
-    it('shows the start new trade CTA when there are positions', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
-
-      expect(screen.getByTestId('start-new-trade-cta')).toBeInTheDocument();
     });
 
     it('displays position section header', () => {
@@ -125,9 +124,26 @@ describe('PerpsTabView', () => {
     it('displays close all option in positions section', () => {
       renderWithProvider(<PerpsTabView />, mockStore);
 
-      // There should be at least one "Close all" text (one in positions, one in orders)
       const closeAllElements = screen.getAllByText(/close all/iu);
       expect(closeAllElements.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('shows Support & Learn section with Learn basics', () => {
+      renderWithProvider(<PerpsTabView />, mockStore);
+
+      expect(screen.getByTestId('perps-learn-basics')).toBeInTheDocument();
+    });
+
+    it('shows Recent Activity section', () => {
+      renderWithProvider(<PerpsTabView />, mockStore);
+
+      expect(screen.getByTestId('perps-recent-activity')).toBeInTheDocument();
+    });
+
+    it('shows watchlist when mock watchlist symbols match market data', () => {
+      renderWithProvider(<PerpsTabView />, mockStore);
+
+      expect(screen.getByTestId('perps-watchlist')).toBeInTheDocument();
     });
   });
 

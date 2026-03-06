@@ -40,7 +40,7 @@ import {
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility, usePerpsDeposit } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
@@ -122,6 +122,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
+  const { triggerDeposit } = usePerpsDeposit();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
@@ -571,6 +572,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           existingPosition={existingPositionForOrder}
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={setOrderType}
+          onAddFunds={triggerDeposit}
         />
       </Box>
 

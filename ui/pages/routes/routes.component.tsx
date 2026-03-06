@@ -68,7 +68,6 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
@@ -338,10 +337,6 @@ const ShieldPlan = mmLazy(
 // when a user navigates to a Perps route.
 const PerpsLayout = mmLazy(
   (() => import('../perps/perps-layout.tsx')) as unknown as DynamicImportType,
-);
-const PerpsHomePage = mmLazy(
-  (() =>
-    import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
 );
 const PerpsMarketDetailPage = mmLazy(
   (() =>
@@ -862,18 +857,6 @@ export default function Routes() {
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openRewardsPage',
-      }),
-      createRouteWithLayout({
-        path: PERPS_HOME_ROUTE,
-        element: (
-          <PerpsLayout>
-            <PerpsHomePage />
-          </PerpsLayout>
-        ),
-        layout: RootLayout,
-        authenticated: true,
-        basicFunctionalityOpenPageCtaKey:
-          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
