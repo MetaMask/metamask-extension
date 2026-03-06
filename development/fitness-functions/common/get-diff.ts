@@ -68,4 +68,4 @@ function getPrePushHookDiff(): string {
   );
 }
 
-export { getDiffByAutomationType };
+export { getDiffByAutomationType, isMergeInProgress, getPreCommitHookDiff };
