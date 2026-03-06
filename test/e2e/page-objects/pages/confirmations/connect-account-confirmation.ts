@@ -52,12 +52,14 @@ class ConnectAccountConfirmation {
 
   async checkPageIsLoaded({
     origin = '127.0.0.1',
-  }: { origin?: string } = {}): Promise<void> {
+    account = 'Account 1',
+  }: { origin?: string; account?: string } = {}): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.connectAccountConfirmationTitle,
         this.connectAccountConfirmationButton,
         this.originHeader(origin),
+        this.accountListItem(account),
       ]);
     } catch (e) {
       console.log(

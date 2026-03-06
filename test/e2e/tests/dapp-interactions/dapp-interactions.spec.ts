@@ -54,7 +54,7 @@ describe('Dapp interactions', function () {
     );
   });
 
-  it('should connect a second Dapp despite MetaMask being locked', async function () {
+  it('TEST should connect a second Dapp despite MetaMask being locked', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
