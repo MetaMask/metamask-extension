@@ -1,3 +1,4 @@
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
@@ -13,7 +14,31 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+
+async function mockUserStorageEndpoints(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forGet(
+        'https://user-storage.api.cx.metamask.io/api/v1/userstorage/multichain_accounts_groups/acdd8a187028a7b031aac2df10d822bc971b239ae184bc362ee1e47e4998c8ad',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: null,
+      })),
+    await mockServer
+      .forGet(
+        'https://user-storage.api.cx.metamask.io/api/v1/userstorage/addressBook',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: null,
+      })),
+  ];
+}
 
 describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
@@ -61,9 +86,16 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        testSpecificMock: mockUserStorageEndpoints,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -85,9 +117,13 @@ describe('Dapp interactions', function () {
           'Account 1',
         ]);
 
-        // TODO: investigate what is not yet ready in the background
-        // that causes the account not being connected if we don't wait some seconds
-        await driver.delay(5000);
+        // Wait for the user-storage requests to complete before proceeding
+        for (const endpoint of mockedEndpoints) {
+          await driver.wait(async () => {
+            const isPending = await endpoint.isPending();
+            return isPending === false;
+          }, driver.timeout);
+        }
 
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
