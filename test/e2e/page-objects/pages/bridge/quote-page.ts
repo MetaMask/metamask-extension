@@ -50,15 +50,10 @@ class BridgeQuotePage {
   private confirmButton =
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
 
-  private noOptionAvailable = {
-    text: `This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.`,
-    css: '.mm-text--body-md',
-  };
+  private noOptionAvailable = '[data-testid="bridge-no-options-available"]';
 
-  private moreETHneededForGas = {
-    text: `You don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.`,
-    css: '.mm-text--body-md',
-  };
+  private moreETHneededForGas =
+    '[data-testid="bridge-insufficient-gas-for-quote"]';
 
   private switchTokensButton = '[data-testid="switch-tokens"]';
 

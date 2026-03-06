@@ -1,0 +1,23 @@
+{
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/contentscript.js"]
+    },
+    {
+      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "js": ["vendor/trezor/content-script.js"]
+    }
+  ],
+  "description": "MV3 test manifest",
+  "manifest_version": 3,
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["images/icon.png", "testing.js"]
+    }
+  ]
+}
