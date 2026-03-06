@@ -2736,7 +2736,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves>@noble/hashes": true
       }
     },
     "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/curves": {
@@ -2745,14 +2745,6 @@
       }
     },
     "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
-      }
-    },
-    "viem>ox>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
@@ -2782,6 +2774,12 @@
       }
     },
     "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -5254,7 +5252,7 @@
         "crypto.getRandomValues": true
       },
       "packages": {
-        "viem>ox>@noble/curves": true,
+        "viem>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
       }
