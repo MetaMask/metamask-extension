@@ -13,6 +13,9 @@ import {
 } from '../../../shared/constants/state-corruption';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 
+/** Timeout for vault backup check; if IndexedDB hangs, we still show the error page (without restore link). */
+const CHECK_VAULT_BACKUP_TIMEOUT_MS = 5_000;
+
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
  *
@@ -174,7 +177,16 @@ async function handleRestartAction(
  * initializes. IndexedDB has no way to probe for existence without opening.
  *
  * @returns A promise that resolves to true if a vault backup exists, false otherwise.
+ * Resolves to false on timeout so the critical error page is never blocked by a hanging IndexedDB.
  */
+async function safeCheckVaultBackupExists(): Promise<boolean> {
+  const timeoutPromise = new Promise<boolean>((resolve) => {
+    setTimeout(() => resolve(false), CHECK_VAULT_BACKUP_TIMEOUT_MS);
+  });
+
+  return Promise.race([checkVaultBackupExists(), timeoutPromise]);
+}
+
 async function checkVaultBackupExists(): Promise<boolean> {
   let db: IDBDatabase | undefined;
   try {
@@ -243,7 +255,8 @@ export async function displayCriticalErrorMessage(
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
-  const canTriggerRestore = Boolean(port) && (await checkVaultBackupExists());
+  const canTriggerRestore =
+    Boolean(port) && (await safeCheckVaultBackupExists());
 
   try {
     port?.postMessage({
