@@ -124,7 +124,7 @@ exports[`Security Tab should match snapshot 1`] = `
               class="mm-box mm-box--min-width-0"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Secret Recovery Phrase backed up
               </p>
