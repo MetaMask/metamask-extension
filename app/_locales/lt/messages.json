@@ -299,9 +299,6 @@
     "message": "Importuota",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Jūsų pradinė operacija patvirtinta tinkle. Norėdami grįžti, spustelėkite „Gerai“."
-  },
   "insufficientBalance": {
     "message": "Nepakankamas likutis."
   },
@@ -483,12 +480,6 @@
   },
   "rejectAll": {
     "message": "Atmesti viską"
-  },
-  "rejectTxsDescription": {
-    "message": "Vienu metu atmesite $1 operac."
-  },
-  "rejectTxsN": {
-    "message": "Atmesti $1 operac."
   },
   "rejected": {
     "message": "Atmesta"
@@ -682,8 +673,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsų asmeninė atkūrimo frazė"
   }
 }

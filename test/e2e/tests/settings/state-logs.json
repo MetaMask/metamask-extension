@@ -554,18 +554,6 @@
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
     "historicalPrices": {},
-    "identities": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      }
-    },
     "ignoredNfts": [],
     "initialEnqueueCompleted": "boolean",
     "insights": {},
@@ -680,18 +668,6 @@
     "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
-    "lostIdentities": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      }
-    },
     "manageInstitutionalWallets": "boolean",
     "marketData": {
       "0x539": {}
@@ -775,16 +751,7 @@
     "musdConversionEducationSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
-      "ethereumAddress": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "*": {
-            "name": "string",
-            "origin": "string",
-            "proposedNames": {},
-            "sourceId": "null"
-          }
-        }
-      }
+      "ethereumAddress": {}
     },
     "nameSources": {},
     "networkConfigurations": {},
@@ -822,6 +789,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "participateInMetaMetrics": "boolean",
+    "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
@@ -896,6 +864,7 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "asterdex": {},
       "gmx": {},
       "hyperliquid": {}
     },
@@ -935,7 +904,6 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "boolean",
     "segmentApiCalls": {},
-    "selectedAddress": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
@@ -1072,34 +1040,6 @@
     "subscriptionAccountsSeen": ["string"],
     "subscriptions": [],
     "surveyLinkLastClickedOrClosed": "null",
-    "swapsState": {
-      "approveTxId": "null",
-      "customApproveTxData": "string",
-      "customGasPrice": "null",
-      "customMaxFeePerGas": "null",
-      "customMaxGas": "string",
-      "customMaxPriorityFeePerGas": "null",
-      "errorKey": "string",
-      "fetchParams": "null",
-      "quotes": {},
-      "quotesLastFetched": "null",
-      "quotesPollingLimitEnabled": "boolean",
-      "routeState": "string",
-      "saveFetchedQuotes": "boolean",
-      "selectedAggId": "null",
-      "swapsFeatureFlags": {},
-      "swapsFeatureIsLive": "boolean",
-      "swapsQuotePrefetchingRefreshTime": "number",
-      "swapsQuoteRefreshTime": "number",
-      "swapsStxBatchStatusRefreshTime": "number",
-      "swapsStxGetTransactionsRefreshTime": "number",
-      "swapsStxMaxFeeMultiplier": "number",
-      "swapsStxStatusDeadline": "number",
-      "swapsUserFeeLevel": "string",
-      "tokens": "null",
-      "topAggId": "null",
-      "tradeTxId": "null"
-    },
     "termsOfUseLastAgreed": "number",
     "theme": "string",
     "throttledOrigins": {},

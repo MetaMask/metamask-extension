@@ -72,6 +72,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -140,6 +141,7 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
+import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -160,7 +162,7 @@ const UnlockPage = mmLazy(
 );
 const RestoreVaultPage = mmLazy(
   (() =>
-    import('../keychains/restore-vault.js')) as unknown as DynamicImportType,
+    import('../keychains/restore-vault.tsx')) as unknown as DynamicImportType,
 );
 const ImportSrpPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
@@ -168,10 +170,15 @@ const ImportSrpPage = mmLazy(
     import('../multi-srp/import-srp/index.ts')) as unknown as DynamicImportType,
 );
 const RevealSeedConfirmation = mmLazy(
-  (() => import('../keychains/reveal-seed.js')) as unknown as DynamicImportType,
+  (() =>
+    import('../keychains/reveal-seed.tsx')) as unknown as DynamicImportType,
 );
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,
+);
+
+const SettingsV2 = mmLazy(
+  (() => import('../settings-v2/index.ts')) as unknown as DynamicImportType,
 );
 
 const NotificationsSettingsRedirect = () => (
@@ -415,7 +422,7 @@ export default function Routes() {
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
   const currentCurrency = useAppSelector(
-    (state) => state.metamask.currentCurrency,
+    getCurrencyRateControllerCurrentCurrency,
   );
   const os = useAppSelector((state) => state.metamask.browserEnvironment?.os);
   const browser = useAppSelector(
@@ -594,6 +601,13 @@ export default function Routes() {
       createRouteWithLayout({
         path: `${SETTINGS_ROUTE}/*`,
         component: Settings,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityRequired: false,
+      }),
+      createRouteWithLayout({
+        path: `${SETTINGS_V2_ROUTE}/*`,
+        component: SettingsV2,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityRequired: false,
