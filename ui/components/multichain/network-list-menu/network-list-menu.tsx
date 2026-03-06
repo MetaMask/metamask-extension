@@ -45,7 +45,6 @@ import {
   detectNfts,
 } from '../../../store/actions';
 import {
-  FEATURED_RPCS,
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
   BUILT_IN_NETWORKS,
@@ -72,6 +71,7 @@ import {
   getAllChainsToPoll,
 } from '../../../selectors';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
+import { getFeaturedNetworksForAdditionalList } from '../../../selectors/config-registry/config-registry';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -199,6 +199,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
+  const featuredNetworksBaseList = useSelector(
+    getFeaturedNetworksForAdditionalList,
+  );
   const canSelectNetwork: boolean =
     Boolean(selectedTabOrigin) &&
     Boolean(domains[selectedTabOrigin]) &&
@@ -285,7 +288,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled
-    const availableNetworks = FEATURED_RPCS.filter(
+    const availableNetworks = featuredNetworksBaseList.filter(
       ({ chainId }) => !evmNetworks[chainId],
     );
 
@@ -297,7 +300,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
     // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
-  }, [evmNetworks, blacklistedChainIds]);
+  }, [evmNetworks, blacklistedChainIds, featuredNetworksBaseList]);
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
@@ -435,7 +438,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
       (builtInNetwork) => builtInNetwork.chainId === hexChainId,
     );
-    const isFeaturedRpc = FEATURED_RPCS.some(
+    const isFeaturedRpc = featuredNetworksBaseList.some(
       (featuredRpc) => featuredRpc.chainId === hexChainId,
     );
     const isMultichainProviderConfig = Object.values(MultichainNetworks).some(

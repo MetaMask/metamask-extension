@@ -382,6 +382,7 @@ import {
   SubscriptionServiceInit,
 } from './controller-init/subscription';
 import { ConnectivityControllerInit } from './controller-init/connectivity';
+import { ConfigRegistryControllerInit } from './controller-init/config-registry-controller-init';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
@@ -664,6 +665,7 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsService: ProfileMetricsServiceInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
+      ConfigRegistryController: ConfigRegistryControllerInit,
       ...(shouldInitAssetsController
         ? { AssetsController: AssetsControllerInit }
         : {}),

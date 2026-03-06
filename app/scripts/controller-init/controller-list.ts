@@ -86,6 +86,7 @@ import {
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
+import { ConfigRegistryController } from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
@@ -208,6 +209,7 @@ export type Controller =
   | NetworkEnablementController
   | ClaimsService
   | ClientController
+  | ConfigRegistryController
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
@@ -232,6 +234,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   BridgeStatusController['state'] &
   ClaimsController['state'] &
   ClientController['state'] &
+  ConfigRegistryController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &

@@ -111,6 +111,12 @@
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
+  "ConfigRegistryController": {
+    "configs": "object",
+    "etag": null,
+    "lastFetched": null,
+    "version": null
+  },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
@@ -377,9 +383,7 @@
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": {
-    "tokensChainsCache": { "0x539": "object" }
-  },
+  "TokenListController": { "tokensChainsCache": { "0x539": "object" } },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},
