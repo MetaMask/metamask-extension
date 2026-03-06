@@ -44,7 +44,10 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { setBackgroundConnection, MESSENGER_SUBSCRIPTION_NOTIFICATION } from './store/background-connection';
+import {
+  setBackgroundConnection,
+  MESSENGER_SUBSCRIPTION_NOTIFICATION,
+} from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 

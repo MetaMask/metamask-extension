@@ -64,6 +64,8 @@ export async function subscribeToMessengerEvent<Data extends Json>(
   event: NamespacedName,
   callback: (data: Data) => void,
 ): Promise<() => Promise<void>> {
+  await submitRequestToBackground('messengerSubscribe', [event]);
+
   const listener = (notification: JsonRpcNotification<[string, Data]>) => {
     if (
       notification.method === MESSENGER_SUBSCRIPTION_NOTIFICATION &&
@@ -72,8 +74,6 @@ export async function subscribeToMessengerEvent<Data extends Json>(
       callback(notification.params[1]);
     }
   };
-
-  await submitRequestToBackground('messengerSubscribe', [event]);
 
   background.onNotification(listener);
 
