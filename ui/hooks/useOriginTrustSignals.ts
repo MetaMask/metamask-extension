@@ -33,13 +33,6 @@ function getTrustState(
   }
 }
 
-// TODO: TEMPORARY — remove after testing. Maps hostnames to trust states.
-const TEST_TRUST_OVERRIDES: Record<string, TrustSignalDisplayState> = {
-  'app.uniswap.org': TrustSignalDisplayState.Verified,
-  'pancakeswap.finance': TrustSignalDisplayState.Warning,
-  'revoke.cash': TrustSignalDisplayState.Malicious,
-};
-
 export function useOriginTrustSignals(origin: string): TrustSignalResult {
   let hostname: string | undefined;
 
@@ -56,9 +49,7 @@ export function useOriginTrustSignals(origin: string): TrustSignalResult {
     getUrlScanCacheResult(state, hostname),
   );
 
-  // TODO: TEMPORARY — remove after testing. Use override if available.
-  const override = hostname ? TEST_TRUST_OVERRIDES[hostname] : undefined;
-  const state = override ?? getTrustState(urlScanCacheResult);
+  const state = getTrustState(urlScanCacheResult);
 
   return {
     state,
