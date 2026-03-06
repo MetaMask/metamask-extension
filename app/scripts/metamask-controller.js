@@ -6565,11 +6565,13 @@ export default class MetamaskController extends EventEmitter {
       ...this.controllerApi,
       perpsInit: async (...args) => {
         const result = await this.controllerApi.perpsInit(...args);
-        perpsStream?.activate(perpsController);
+        if (perpsController) {
+          perpsStream.activate(perpsController);
+        }
         return result;
       },
       perpsViewActive: (active) => {
-        perpsStream?.setViewActive(active);
+        perpsStream.setViewActive(active);
       },
       perpsActivateStreaming: (params) => {
         if (perpsController && perpsStream) {

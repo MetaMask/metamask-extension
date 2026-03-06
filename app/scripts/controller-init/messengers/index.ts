@@ -209,10 +209,7 @@ import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
-import {
-  getPerpsControllerMessenger,
-  getPerpsControllerInitMessenger,
-} from './perps-controller-messenger';
+import { getPerpsControllerMessenger } from './perps-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -625,7 +622,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   PerpsController: {
     getMessenger: getPerpsControllerMessenger,
-    getInitMessenger: getPerpsControllerInitMessenger,
+    getInitMessenger: noop,
   },
   PhishingController: {
     getMessenger: getPhishingControllerMessenger,

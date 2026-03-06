@@ -81,9 +81,3 @@ export function getPerpsControllerMessenger(
 
   return perpsControllerMessenger;
 }
-
-/**
- * No init-time-only messenger actions needed for PerpsController.
- * Placeholder matching the CONTROLLER_MESSENGERS pattern.
- */
-export const getPerpsControllerInitMessenger = () => undefined;

@@ -44,6 +44,7 @@ export const PerpsControllerInit: ControllerInitFunction<
   });
 
   let initPromise: Promise<void> | null = null;
+  let initCompleted = false;
 
   /**
    * Defensive init guard invoked by every API method.
@@ -64,6 +65,11 @@ export const PerpsControllerInit: ControllerInitFunction<
    * subsequent calls retry. This handles transient network failures without
    * leaving the controller permanently stuck.
    *
+   * Re-init semantics: if a lifecycle event (toggleTestnet, disconnect) resets
+   * `initializationState`, `initCompleted` flags the stale promise so the next
+   * call clears it and starts a fresh init, rather than returning a resolved
+   * promise that bypasses re-initialization.
+   *
    * Inspired by the mobile pattern where multiple app lifecycle events
    * (backgrounding, foregrounding, etc.) can trigger API calls before an
    * explicit init has had a chance to run.
@@ -72,16 +78,27 @@ export const PerpsControllerInit: ControllerInitFunction<
     if (controller.state.initializationState === 'initialized') {
       return;
     }
+    // If initPromise is non-null here but the state is no longer 'initialized',
+    // it means either: (a) init is still in-flight — reuse the promise, or
+    // (b) a lifecycle event (toggleTestnet, disconnect) reset the state after
+    // a previous successful init — in that case initPromise holds a stale
+    // resolved promise and must be cleared so a fresh init can start.
+    //
+    // We track this with a flag that init() sets on success.
+    if (initCompleted) {
+      initPromise = null;
+      initCompleted = false;
+    }
     if (initPromise === null) {
-      initPromise = controller
-        .init()
-        .then(() => {
-          initPromise = null;
-        })
-        .catch((error) => {
+      initPromise = controller.init().then(
+        () => {
+          initCompleted = true;
+        },
+        (error) => {
           initPromise = null;
           throw error;
-        });
+        },
+      );
     }
     return initPromise;
   };
