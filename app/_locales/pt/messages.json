@@ -5271,12 +5271,6 @@
   "perpsEntryPrice": {
     "message": "Preço de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explorar criptomoedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explorar ações e commodities"
-  },
   "perpsFees": {
     "message": "Taxas"
   },
@@ -5396,9 +5390,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "A mediana dos preços externos reportados pelos validadores, utilizada para calcular a taxa de financiamento"
-  },
-  "perpsOrderAmount": {
-    "message": "Valor da ordem"
   },
   "perpsOrders": {
     "message": "Ordens"
@@ -5546,12 +5537,6 @@
   },
   "perpsWithdraw": {
     "message": "Sacar"
-  },
-  "perpsYourOrders": {
-    "message": "Suas ordens"
-  },
-  "perpsYourPositions": {
-    "message": "Suas posições"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
