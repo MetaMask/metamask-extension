@@ -76,5 +76,14 @@ describe('numbers-utils', () => {
       expect(getDecimalizedHexValue('0xff', 0)).toBe('255');
       expect(getDecimalizedHexValue('0xFf', 0)).toBe('255');
     });
+
+    it('should return raw units when decimals is undefined', () => {
+      // When decimals cannot be resolved, return the raw hex value in decimal
+      expect(getDecimalizedHexValue('0x64', undefined)).toBe('100');
+      expect(getDecimalizedHexValue('0xde0b6b3a7640000', undefined)).toBe(
+        '1000000000000000000',
+      );
+      expect(getDecimalizedHexValue('0x1', undefined)).toBe('1');
+    });
   });
 });

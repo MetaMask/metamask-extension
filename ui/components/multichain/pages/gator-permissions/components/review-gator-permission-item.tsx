@@ -235,10 +235,13 @@ export const ReviewGatorPermissionItem = ({
         'weekly',
       );
 
+      const decimalsNotice =
+        decimals === undefined ? ' (raw units - decimals unavailable)' : '';
+
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value: `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
+          value: `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}${decimalsNotice}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -252,7 +255,7 @@ export const ReviewGatorPermissionItem = ({
             value: `${getDecimalizedHexValue(
               permission.data.initialAmount || '0x0',
               decimals,
-            )} ${symbol}`,
+            )} ${symbol}${decimalsNotice}`,
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
@@ -261,7 +264,7 @@ export const ReviewGatorPermissionItem = ({
               ? `${getDecimalizedHexValue(
                   permission.data.maxAmount,
                   decimals,
-                )} ${symbol}`
+                )} ${symbol}${decimalsNotice}`
               : t('unlimited'),
             testId: 'review-gator-permission-max-allowance',
           },
@@ -283,7 +286,7 @@ export const ReviewGatorPermissionItem = ({
             value: `${getDecimalizedHexValue(
               permission.data.amountPerSecond,
               decimals,
-            )} ${symbol}/sec`,
+            )} ${symbol}/sec${decimalsNotice}`,
             testId: 'review-gator-permission-stream-rate',
           },
         },
@@ -303,13 +306,16 @@ export const ReviewGatorPermissionItem = ({
       permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
     ): PermissionDetails => {
       const { symbol, decimals } = tokenMetadata;
+      const decimalsNotice =
+        decimals === undefined ? ' (raw units - decimals unavailable)' : '';
+
       return {
         amountLabel: {
           translationKey: 'amount',
           value: `${getDecimalizedHexValue(
             permission.data.periodAmount,
             decimals,
-          )} ${symbol}`,
+          )} ${symbol}${decimalsNotice}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {

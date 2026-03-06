@@ -125,6 +125,36 @@ export const fetchErc20Decimals = async (
 };
 
 /**
+ * Fetches the decimals for the given token address, throwing an error if unable to resolve.
+ * Used during permission signing to ensure accurate token metadata is available.
+ *
+ * @param address - The ethereum token contract address. It is expected to be in hex format.
+ * @param chainId - ChainId on which we need to check token. It is expected to be in hex format.
+ * @throws Error if token decimals cannot be resolved
+ */
+export const fetchErc20DecimalsOrThrow = async (
+  address: Hex | string,
+  chainId?: Hex | string,
+): Promise<number> => {
+  const result = (await getTokenStandardAndDetailsByChain(
+    address,
+    undefined,
+    undefined,
+    chainId,
+  )) as TokenDetailsERC20;
+  const { decimals: decStr } = result;
+  const decimals = parseTokenDetailDecimals(decStr);
+
+  if (decimals === undefined) {
+    throw new Error(
+      `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
+    );
+  }
+
+  return decimals;
+};
+
+/**
  * Fetches the decimals for the given token addresses.
  *
  * @param addresses - The array ofethereum token contract address. Addresses are expected to be in hex format.

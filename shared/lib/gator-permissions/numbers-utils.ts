@@ -19,9 +19,16 @@ export const DEFAULT_TOKEN_AMOUNT_FORMAT_OPTIONS: Intl.NumberFormatOptions = {
  * Converts a hex value to a decimal value
  *
  * @param value - The hex value to convert
- * @param decimals - The number of decimals to shift the value by
- * @returns The decimal value
+ * @param decimals - The number of decimals to shift the value by (undefined if decimals could not be resolved)
+ * @returns The decimal value, or raw units if decimals is undefined
  */
-export function getDecimalizedHexValue(value: Hex, decimals: number): string {
+export function getDecimalizedHexValue(
+  value: Hex,
+  decimals: number | undefined,
+): string {
+  if (decimals === undefined) {
+    // Return raw units when decimals cannot be resolved
+    return new Numeric(value, 16).toBase(10).toString();
+  }
   return new Numeric(value, 16).toBase(10).shiftedBy(decimals).toString();
 }

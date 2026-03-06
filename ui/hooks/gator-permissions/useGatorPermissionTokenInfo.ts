@@ -147,7 +147,7 @@ export function useGatorPermissionTokenInfo(
     return {
       tokenInfo: {
         symbol: 'Unknown Token',
-        decimals: 18,
+        decimals: error ? undefined : 18,
         chainId: chainId || ('0x0' as const),
       },
       loading: isFetching,
@@ -158,6 +158,7 @@ export function useGatorPermissionTokenInfo(
     fetchedTokenInfo,
     chainId,
     isFetching,
+    error,
   ]);
 
   return { ...result, error };
