@@ -18,6 +18,7 @@ import { Loader } from '../components/send/loader';
 import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
+import { Animated } from '../../../components/ui/animated';
 
 const SendContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -67,20 +68,19 @@ export const SendInner = () => {
   if (currentPage === SendPages.LOADER) {
     return <Loader />;
   }
-  if (currentPage === SendPages.ASSET) {
-    return (
-      <SendContainer>
-        <Asset />
-      </SendContainer>
-    );
-  }
-  if (currentPage === SendPages.AMOUNTRECIPIENT) {
-    return (
-      <SendContainer>
-        <AmountRecipient />
-      </SendContainer>
-    );
-  }
 
-  return null;
+  return (
+    <Animated>
+      {currentPage === SendPages.ASSET && (
+        <SendContainer>
+          <Asset />
+        </SendContainer>
+      )}
+      {currentPage === SendPages.AMOUNTRECIPIENT && (
+        <SendContainer>
+          <AmountRecipient />
+        </SendContainer>
+      )}
+    </Animated>
+  );
 };

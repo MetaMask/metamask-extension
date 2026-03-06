@@ -23,6 +23,7 @@ import { getMultichainAccountGroupById } from '../../../selectors/multichain-acc
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { Animated } from '../../../components/ui/animated';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -103,46 +104,47 @@ export const MultichainAccountAddressListPage = ({
   }, []);
 
   return (
-    <Page>
-      <Header
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
-        startAccessory={
-          <ButtonIcon
-            size={ButtonIconSize.Md}
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
-            data-testid="multichain-account-address-list-page-back-button"
-          />
-        }
-      >
-        {pageTitle}
-      </Header>
-      <Content padding={0}>
-        <Box flexDirection={BoxFlexDirection.Column}>
-          {decodedAccountGroupId ? (
-            <MultichainAddressRowsList
-              groupId={decodedAccountGroupId}
-              onQrClick={handleShowQR}
+    <Animated>
+      <Page>
+        <Header
+          textProps={{
+            variant: TextVariant.headingSm,
+          }}
+          startAccessory={
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('back')}
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(PREVIOUS_ROUTE)}
+              data-testid="multichain-account-address-list-page-back-button"
             />
-          ) : null}
-        </Box>
-      </Content>
+          }
+        >
+          {pageTitle}
+        </Header>
+        <Content padding={0}>
+          <Box flexDirection={BoxFlexDirection.Column}>
+            {decodedAccountGroupId ? (
+              <MultichainAddressRowsList
+                groupId={decodedAccountGroupId}
+                onQrClick={handleShowQR}
+              />
+            ) : null}
+          </Box>
+        </Content>
 
-      {/* QR Code Modal */}
-      {selectedQRData && (
-        <AddressQRCodeModal
-          isOpen={isQRModalOpen}
-          onClose={handleCloseQR}
-          address={selectedQRData.address}
-          accountName={accountGroup?.metadata?.name || t('account')}
-          networkName={selectedQRData.networkName}
-          chainId={selectedQRData.chainId}
-          networkImageSrc={selectedQRData.networkImageSrc}
-        />
-      )}
-    </Page>
+        {selectedQRData && (
+          <AddressQRCodeModal
+            isOpen={isQRModalOpen}
+            onClose={handleCloseQR}
+            address={selectedQRData.address}
+            accountName={accountGroup?.metadata?.name || t('account')}
+            networkName={selectedQRData.networkName}
+            chainId={selectedQRData.chainId}
+            networkImageSrc={selectedQRData.networkImageSrc}
+          />
+        )}
+      </Page>
+    </Animated>
   );
 };

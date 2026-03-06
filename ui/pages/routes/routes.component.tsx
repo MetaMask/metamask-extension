@@ -10,6 +10,7 @@ import {
   useNavigationType,
   Navigate,
 } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion'; // eslint-disable-line import/no-extraneous-dependencies
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -925,7 +926,15 @@ export default function Routes() {
   const routeElements = useRoutes(routeConfig);
 
   const renderRoutes = () => {
-    const routes = <Suspense fallback={null}>{routeElements}</Suspense>;
+    const routes = (
+      <Suspense fallback={null}>
+        <AnimatePresence custom={location.pathname}>
+          <div style={{ display: 'contents' }} key={location.pathname}>
+            {routeElements}
+          </div>
+        </AnimatePresence>
+      </Suspense>
+    );
 
     if (autoLockTimeLimit > 0) {
       return (

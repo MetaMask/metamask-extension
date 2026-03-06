@@ -37,6 +37,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { Animated } from '../../components/ui/animated';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -115,67 +116,67 @@ const CrossChainSwap = () => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   return (
-    <Page className="bridge__container">
-      <Header
-        textProps={{ variant: TextVariant.headingSm }}
-        startAccessory={
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={redirectToDefaultRoute}
-          />
-        }
-        endAccessory={
-          <ButtonIcon
-            iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('settings')}
-            data-testid="bridge__header-settings-button"
-            onClick={() => {
-              setIsSettingsModalOpen(true);
-            }}
-          />
-        }
-      >
-        {t('swap')}
-      </Header>
-      <Content padding={0}>
-        <Routes>
-          <Route
-            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => {
-                    setIsSettingsModalOpen(false);
-                  }}
-                />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                />
-              </>
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </>
-            }
-          />
-        </Routes>
-      </Content>
-    </Page>
+    <Animated>
+      <Page className="bridge__container">
+        <Header
+          textProps={{ variant: TextVariant.headingSm }}
+          startAccessory={
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('back')}
+              onClick={redirectToDefaultRoute}
+            />
+          }
+          endAccessory={
+            <ButtonIcon
+              iconName={IconName.Setting}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('settings')}
+              data-testid="bridge__header-settings-button"
+              onClick={() => {
+                setIsSettingsModalOpen(true);
+              }}
+            />
+          }
+        >
+          {t('swap')}
+        </Header>
+        <Content padding={0}>
+          <Routes>
+            <Route
+              path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+              element={
+                <>
+                  <BridgeTransactionSettingsModal
+                    isOpen={isSettingsModalOpen}
+                    onClose={() => {
+                      setIsSettingsModalOpen(false);
+                    }}
+                  />
+                  <PrepareBridgePage
+                    onOpenSettings={() => setIsSettingsModalOpen(true)}
+                  />
+                </>
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+              element={
+                <>
+                  <Content>
+                    <AwaitingSignatures />
+                  </Content>
+                  <Footer>
+                    <AwaitingSignaturesCancelButton />
+                  </Footer>
+                </>
+              }
+            />
+          </Routes>
+        </Content>
+      </Page>
+    </Animated>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line import/no-extraneous-dependencies
 import {
   Box,
   Icon,
@@ -174,12 +175,21 @@ const AddFundsModal = ({
             iconName: IconName.SwapHorizontal,
             onClick: handleSwapOnClick,
           })}
-          {showReceiveModal && (
-            <ReceiveModal
-              address={payerAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          )}
+          <AnimatePresence>
+            {showReceiveModal && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <ReceiveModal
+                  address={payerAddress}
+                  onClose={() => setShowReceiveModal(false)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </ModalBody>
       </ModalContent>
     </Modal>
