@@ -35,28 +35,18 @@ jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
-const getStore = (perpsInAppToastsEnabled = true) =>
-  configureStore({
-    metamask: {
-      ...mockState.metamask,
-      remoteFeatureFlags: {
-        ...mockState.metamask.remoteFeatureFlags,
-        perpsEnabledVersion: {
-          enabled: true,
-          minimumVersion: '0.0.0',
-        },
-        perpsInAppToastsEnabled,
-      },
-    },
-  });
-
-const mockStore = getStore();
+const mockStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+  },
+});
 
 const defaultProps = {
   position: mockPositions[0],
   account: mockAccountState,
   currentPrice: 2900,
   isExpanded: true,
+  isPerpsInAppToastsEnabled: true,
   onToggle: jest.fn(),
 };
 
@@ -316,8 +306,12 @@ describe('EditMarginExpandable', () => {
       });
 
       renderWithProvider(
-        <EditMarginExpandable {...defaultProps} isExpanded />,
-        getStore(false),
+        <EditMarginExpandable
+          {...defaultProps}
+          isExpanded
+          isPerpsInAppToastsEnabled={false}
+        />,
+        mockStore,
       );
 
       const input = screen.getByPlaceholderText('0.00');
