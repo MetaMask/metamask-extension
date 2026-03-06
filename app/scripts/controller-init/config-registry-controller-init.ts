@@ -53,11 +53,55 @@ function isConfigRegistryApiEnabled(
   const state = initMessenger.call('RemoteFeatureFlagController:getState');
   return Boolean(
     state &&
-    typeof state === 'object' &&
-    'remoteFeatureFlags' in state &&
-    (state as { remoteFeatureFlags?: { configRegistryApiEnabled?: boolean } })
-      .remoteFeatureFlags?.configRegistryApiEnabled,
+      typeof state === 'object' &&
+      'remoteFeatureFlags' in state &&
+      (state as { remoteFeatureFlags?: { configRegistryApiEnabled?: boolean } })
+        .remoteFeatureFlags?.configRegistryApiEnabled,
   );
+}
+
+/**
+ * Runs the initial config registry fetch and applies the result to the controller.
+ * Used both at init (when flag is already true) and when the flag turns true later.
+ *
+ * @param controller - ConfigRegistryController instance to update with fetched config.
+ * @param controllerMessenger - Messenger that can call ConfigRegistryApiService:fetchConfig.
+ */
+function runInitialFetch(
+  controller: ControllerWithUpdate,
+  controllerMessenger: ControllerMessengerWithFetch,
+): void {
+  setImmediate(async () => {
+    try {
+      const fetchResult = await controllerMessenger.call(
+        'ConfigRegistryApiService:fetchConfig',
+        {},
+      );
+
+      if (!fetchResult.modified || !fetchResult.data) {
+        return;
+      }
+      const { data } = fetchResult;
+      const apiChains = data.data.chains;
+      const newConfigs: Record<string, RegistryNetworkConfig> = {};
+      apiChains.forEach((chainConfig: RegistryNetworkConfig) => {
+        const { chainId } = chainConfig;
+        newConfigs[chainId] = chainConfig;
+      });
+      controller.update((state) => {
+        const { configs } = state;
+        configs.networks = newConfigs;
+        state.version = data.data.version;
+        state.lastFetched = Date.now();
+        state.etag = fetchResult.etag ?? null;
+      });
+    } catch (err) {
+      log(
+        '[ConfigRegistryControllerInit] Initial fetch failed (non-fatal):',
+        err,
+      );
+    }
+  });
 }
 
 /**
@@ -95,41 +139,39 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
   // Only fetch when we have no persisted config and the feature is enabled.
   // When the flag is off, we skip the fetch to avoid unnecessary network requests.
   if (!hasPersistedConfigs && isConfigRegistryApiEnabledFlag) {
-    setImmediate(async () => {
-      try {
-        const fetchResult = await (
-          controllerMessenger as unknown as ControllerMessengerWithFetch
-        ).call('ConfigRegistryApiService:fetchConfig', {});
-
-        if (!fetchResult.modified || !fetchResult.data) {
-          return;
-        }
-        const { data } = fetchResult;
-        const apiChains = data.data.chains;
-        const newConfigs: Record<string, RegistryNetworkConfig> = {};
-        apiChains.forEach((chainConfig: RegistryNetworkConfig) => {
-          const { chainId } = chainConfig;
-          newConfigs[chainId] = chainConfig;
-        });
-        // Package does not expose update() in public type; cast required to apply fetched config
-        (controller as ControllerWithUpdate).update((state) => {
-          const { configs } = state;
-          configs.networks = newConfigs;
-          state.version = data.data.version;
-          state.lastFetched = Date.now();
-          state.etag = fetchResult.etag ?? null;
-        });
-      } catch (err) {
-        log(
-          '[ConfigRegistryControllerInit] Initial fetch failed (non-fatal):',
-          err,
-        );
-      }
-    });
+    runInitialFetch(
+      controller as ControllerWithUpdate,
+      controllerMessenger as unknown as ControllerMessengerWithFetch,
+    );
   }
 
+  let pollingStarted = isConfigRegistryApiEnabledFlag;
   if (isConfigRegistryApiEnabledFlag) {
     controller.startPolling(null);
+  }
+
+  // When the flag becomes true later (e.g. after remote flags load on first UI open),
+  // run the initial fetch and start polling so the dynamic list appears without a refresh.
+  if (initMessenger) {
+    initMessenger.subscribe('RemoteFeatureFlagController:stateChange', () => {
+      if (!isConfigRegistryApiEnabled(initMessenger)) {
+        return;
+      }
+      const hasConfigs =
+        controller.state.configs?.networks &&
+        Object.keys(controller.state.configs.networks).length > 0;
+      if (hasConfigs) {
+        return;
+      }
+      runInitialFetch(
+        controller as ControllerWithUpdate,
+        controllerMessenger as unknown as ControllerMessengerWithFetch,
+      );
+      if (!pollingStarted) {
+        pollingStarted = true;
+        controller.startPolling(null);
+      }
+    });
   }
 
   return {

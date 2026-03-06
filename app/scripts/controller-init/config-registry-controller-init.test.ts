@@ -273,5 +273,158 @@ describe('ConfigRegistryControllerInit', () => {
 
       jest.useRealTimers();
     });
+
+    it('updates controller state when initial fetch returns modified true and data', async () => {
+      jest.useFakeTimers();
+      const controllerWithUpdate = mockControllerInstance as unknown as {
+        update: jest.Mock;
+      };
+      controllerWithUpdate.update = jest.fn();
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: true,
+      });
+      const chainConfig = {
+        chainId: 'eip155:1',
+        name: 'Ethereum Mainnet',
+        rpcProviders: {
+          default: {
+            url: 'https://eth.llamarpc.com',
+            type: 'custom',
+            networkClientId: 'evm-1',
+          },
+          fallbacks: [],
+        },
+        config: {
+          isActive: true,
+          isTestnet: false,
+          isDefault: true,
+          isFeatured: true,
+          isDeprecated: false,
+          isDeletable: false,
+          priority: 0,
+        },
+      };
+      spyOnControllerMessengerCall(requestMock).mockImplementation(
+        (action: string) => {
+          if (action === 'ConfigRegistryApiService:fetchConfig') {
+            return Promise.resolve({
+              modified: true,
+              data: {
+                data: {
+                  chains: [chainConfig],
+                  version: '1.0',
+                },
+              },
+              etag: 'test-etag',
+            });
+          }
+          return undefined as never;
+        },
+      );
+
+      ConfigRegistryControllerInit(requestMock);
+      jest.runAllTimers();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(controllerWithUpdate.update).toHaveBeenCalledTimes(1);
+      const producer = controllerWithUpdate.update.mock.calls[0][0];
+      const state = {
+        configs: { networks: {} as Record<string, unknown> },
+        version: null as string | null,
+        lastFetched: null as number | null,
+        etag: null as string | null,
+      };
+      producer(state);
+      expect(state.configs.networks['eip155:1']).toEqual(chainConfig);
+      expect(state.version).toBe('1.0');
+      expect(state.lastFetched).not.toBeNull();
+      expect(state.etag).toBe('test-etag');
+
+      jest.useRealTimers();
+    });
+  });
+
+  describe('when flag becomes true later (stateChange)', () => {
+    it('triggers initial fetch and startPolling when stateChange fires with configRegistryApiEnabled true and no configs', () => {
+      jest.useFakeTimers();
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: false,
+      });
+      const callSpy = spyOnControllerMessengerCall(requestMock);
+      callSpy.mockImplementation((action: string) => {
+        if (action === 'ConfigRegistryApiService:fetchConfig') {
+          return Promise.resolve({ modified: false, data: null, etag: null });
+        }
+        return undefined as never;
+      });
+
+      const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+      ConfigRegistryControllerInit(requestMock);
+
+      expect(mockControllerInstance.startPolling).not.toHaveBeenCalled();
+
+      const stateChangeHandler = subscribeSpy.mock.calls.find(
+        (call) => call[0] === 'RemoteFeatureFlagController:stateChange',
+      )?.[1] as () => void;
+      expect(stateChangeHandler).toBeDefined();
+
+      requestMock.initMessenger.call = jest.fn((action: string) => {
+        if (action === 'RemoteFeatureFlagController:getState') {
+          return {
+            remoteFeatureFlags: { configRegistryApiEnabled: true },
+          } as never;
+        }
+        return undefined as never;
+      }) as typeof requestMock.initMessenger.call;
+
+      stateChangeHandler();
+      jest.runAllTimers();
+
+      expect(callSpy).toHaveBeenCalledWith(
+        'ConfigRegistryApiService:fetchConfig',
+        {},
+      );
+      expect(mockControllerInstance.startPolling).toHaveBeenCalledWith(null);
+      jest.useRealTimers();
+    });
+
+    it('does not trigger fetch when stateChange fires but controller already has configs', () => {
+      jest.useFakeTimers();
+      mockControllerInstance.state = {
+        configs: { networks: { 'eip155:1': {} as never } },
+        version: '1',
+        lastFetched: Date.now(),
+        etag: null,
+      };
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: false,
+      });
+      const callSpy = spyOnControllerMessengerCall(requestMock);
+
+      const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+      ConfigRegistryControllerInit(requestMock);
+
+      const stateChangeHandler = subscribeSpy.mock.calls.find(
+        (call) => call[0] === 'RemoteFeatureFlagController:stateChange',
+      )?.[1] as () => void;
+      requestMock.initMessenger.call = jest.fn((action: string) => {
+        if (action === 'RemoteFeatureFlagController:getState') {
+          return {
+            remoteFeatureFlags: { configRegistryApiEnabled: true },
+          } as never;
+        }
+        return undefined as never;
+      }) as typeof requestMock.initMessenger.call;
+
+      stateChangeHandler();
+      jest.runAllTimers();
+
+      expect(callSpy).not.toHaveBeenCalledWith(
+        'ConfigRegistryApiService:fetchConfig',
+        {},
+      );
+      jest.useRealTimers();
+    });
   });
 });

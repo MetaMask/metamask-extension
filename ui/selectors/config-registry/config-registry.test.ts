@@ -212,5 +212,39 @@ describe('config-registry selectors', () => {
       const result = getFeaturedNetworksForAdditionalList(state);
       expect(result).toBe(FEATURED_RPCS);
     });
+
+    it('returns FEATURED_RPCS when featured EVM network has no default RPC URL', () => {
+      const state: ConfigRegistryTestState = {
+        metamask: {
+          remoteFeatureFlags: { configRegistryApiEnabled: true },
+          configs: {
+            networks: {
+              'eip155:999': {
+                chainId: 'eip155:999',
+                name: 'Testnet No RPC',
+                rpcProviders: {
+                  default: { url: '', type: 'custom', networkClientId: 'x' },
+                  fallbacks: [],
+                },
+                config: {
+                  isActive: true,
+                  isTestnet: true,
+                  isDefault: false,
+                  isFeatured: true,
+                  isDeprecated: false,
+                  isDeletable: false,
+                  priority: 0,
+                },
+              } as never,
+            },
+          },
+          version: '1',
+          lastFetched: 1,
+          etag: null,
+        },
+      };
+      const result = getFeaturedNetworksForAdditionalList(state);
+      expect(result).toBe(FEATURED_RPCS);
+    });
   });
 });
