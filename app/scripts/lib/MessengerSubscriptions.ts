@@ -4,11 +4,11 @@ import { BaseControllerMessenger } from '../controller-init/types';
 import { isStreamWritable } from './stream-utils';
 
 export class MessengerSubscriptions {
-  #messenger: BaseControllerMessenger;
+  readonly #messenger: BaseControllerMessenger;
 
-  #stream: Duplex;
+  readonly #stream: Duplex;
 
-  #subscriptions = new Map<
+  readonly #subscriptions = new Map<
     NamespacedName,
     { listener: (...payload: unknown[]) => void; count: number }
   >();

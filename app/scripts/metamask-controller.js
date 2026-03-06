@@ -6561,7 +6561,7 @@ export default class MetamaskController extends EventEmitter {
       messengerUnsubscribe: messengerSubscriptions.unsubscribe.bind(
         messengerSubscriptions,
       ),
-      messengerCall: (method, params) =>
+      messengerCall: (method, params = []) =>
         this.controllerMessenger.call(method, ...params),
     };
 
