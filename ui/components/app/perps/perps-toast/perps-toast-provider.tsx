@@ -215,7 +215,7 @@ const getToastIcon = ({ icon }: PerpsToastPresentation): ReactNode => {
   if (icon.type === 'spinner') {
     return (
       <Box
-        className="perps-toast__loading-spinner-container"
+        className="flex h-8 w-8 items-center justify-center"
         data-testid={icon.dataTestId}
       >
         <Icon
@@ -336,7 +336,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     <PerpsToastContext.Provider value={contextValue}>
       {children}
       {isPerpsInAppToastsEnabled && activeToast ? (
-        <Box className="toasts-container toasts-container--perps">
+        <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
           <Toast
             key={activeToast.id}
             startAdornment={getToastIcon(activeToast.presentation)}
