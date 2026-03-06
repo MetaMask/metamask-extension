@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
@@ -22,7 +22,8 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
-  getWarningLabels,
+  getQuoteWarningLabels,
+  type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
@@ -70,7 +71,10 @@ export default function useSubmitBridgeTransaction() {
 
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector(
+    (state) => getQuoteWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
 

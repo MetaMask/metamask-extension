@@ -118,7 +118,6 @@ const TokenButtons = ({
   }, [trackEvent, navigate, token]);
 
   const handleSwapOnClick = useCallback(async () => {
-    // Handle clicking from the asset details page
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 

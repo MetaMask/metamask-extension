@@ -34,6 +34,13 @@ jest.mock('../../../../component-library', () => ({
   ),
 }));
 
+jest.mock('../../../../../pages/bridge/hooks/useRWAToken', () => ({
+  useRWAToken: () => ({
+    isStockToken: () => false,
+    isTokenTradingOpen: () => true,
+  }),
+}));
+
 describe('TokenCellTitle', () => {
   const createMockToken = (
     overrides: Partial<TokenFiatDisplayInfo> = {},

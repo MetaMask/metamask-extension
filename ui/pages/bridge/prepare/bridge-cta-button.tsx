@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
   ButtonLink,
@@ -74,7 +74,11 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     isTxAlertPresent,
     isTxAlertLoading,
-  } = useSelector(getValidationErrors);
+    isStockMarketClosed: isMarketClosed,
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
@@ -116,6 +120,10 @@ export const BridgeCTAButton = ({
           ? 'bridgeSelectDestinationAccount'
           : 'bridgeEnterAmount',
       };
+    }
+
+    if (isMarketClosed) {
+      return { key: 'bridgeMarketClosedAction' };
     }
 
     if (needsDestinationAddress) {
@@ -160,6 +168,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
+    isMarketClosed,
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
@@ -216,6 +225,7 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
+        isMarketClosed ||
         (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }

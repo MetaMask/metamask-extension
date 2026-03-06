@@ -16,6 +16,7 @@ import {
   PolymorphicRef,
   Tag,
 } from '../../../../../components/component-library';
+import { StockBadge } from '../../../../../components/app/assets/stock-badge/stock-badge';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
@@ -33,6 +34,7 @@ import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/consta
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column, Row } from '../../../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
+import { useRWAToken } from '../../../hooks/useRWAToken';
 
 export const BridgeAsset = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(
@@ -53,6 +55,8 @@ export const BridgeAsset = React.forwardRef(
     const currency = useSelector(getCurrentCurrency);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
+    const tokenIsStock = isStockToken(asset);
 
     return (
       <Row
@@ -116,6 +120,9 @@ export const BridgeAsset = React.forwardRef(
               <Text ellipsis>{asset.symbol}</Text>
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
+              )}
+              {tokenIsStock && (
+                <StockBadge isMarketClosed={!isTokenTradingOpen(asset)} />
               )}
               {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
                 <Tag label={t('bridgeNoMMFee')} />

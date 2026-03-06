@@ -12,7 +12,7 @@ import {
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -21,6 +21,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
@@ -37,6 +38,7 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
+import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
@@ -78,8 +80,10 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
+import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
+import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { TronDailyResources } from './tron-daily-resources';
 
@@ -169,15 +173,6 @@ const AssetPage = ({
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
-  const updatedAsset = {
-    ...asset,
-    balance: {
-      value: hexToDecimal(tokenHexBalance),
-      display: balance,
-      fiat: String(tokenFiatAmount),
-    },
-  };
-
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
     () =>
@@ -205,6 +200,17 @@ const AssetPage = ({
   const tokenChainImage = getImageForChainId(chainId);
 
   const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
+  const rwaData =
+    assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
+  const updatedAsset: Asset = {
+    ...asset,
+    rwaData,
+    balance: {
+      value: hexToDecimal(tokenHexBalance),
+      display: balance,
+      fiat: String(tokenFiatAmount),
+    },
+  };
 
   const tokenWithFiatAmount = {
     address: isEvm ? address : assetId,
@@ -222,12 +228,36 @@ const AssetPage = ({
     secondary: balance ? Number(balance) : 0,
     accountType: bip44Asset?.accountType,
     assetId: bip44Asset?.assetId ?? assetId,
+    rwaData,
   };
   const { safeChains } = useSafeChains();
+  const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
+  const isStockToken = checkIsStockToken(updatedAsset);
+  const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
+  const assetDisplayName =
+    name && symbol && name !== symbol
+      ? `${name} (${symbol})`
+      : (name ?? symbol);
+  const assetNameElement = (
+    <Text
+      variant={TextVariant.bodyMdMedium}
+      color={TextColor.textAlternative}
+      data-testid="asset-name"
+    >
+      {assetDisplayName}
+    </Text>
+  );
 
   // Check if we should show Tron resources
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
   const showTronResources = isTron && type === AssetType.native;
+
+  const isUpdatedAssetNative = isNativeAsset(updatedAsset);
+  const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
+  const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
+  const handleOpenMarketClosedModal = () => {
+    setIsMarketClosedModalOpen(true);
+  };
 
   return (
     <Box className="asset__content">
@@ -253,15 +283,14 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <Box paddingLeft={4}>
-        <Text
-          data-testid="asset-name"
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
-        >
-          {name && symbol && name !== symbol
-            ? `${name} (${symbol})`
-            : (name ?? symbol)}
-        </Text>
+        {isStockToken ? (
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            {assetNameElement}
+            <StockBadge isMarketClosed={isMarketClosed} />
+          </Box>
+        ) : (
+          assetNameElement
+        )}
       </Box>
       <AssetChart
         chainId={chainId}
@@ -271,7 +300,7 @@ const AssetPage = ({
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {isNativeAsset(updatedAsset) ? (
+        {isUpdatedAssetNative ? (
           <CoinButtons
             {...{
               account: selectedAccount,
@@ -284,9 +313,15 @@ const AssetPage = ({
               disableSendForNonEvm: true,
             }}
           />
-        ) : (
-          <TokenButtons token={updatedAsset} disableSendForNonEvm />
-        )}
+        ) : null}
+        {tokenAsset ? (
+          <TokenButtons token={tokenAsset} disableSendForNonEvm />
+        ) : null}
+        {isMarketClosed && tokenAsset ? (
+          <Box marginTop={4}>
+            <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
+          </Box>
+        ) : null}
       </Box>
       <Box
         display={Display.Flex}
@@ -448,6 +483,10 @@ const AssetPage = ({
           </Box>
         </Box>
       </Box>
+      <MarketClosedModal
+        isOpen={isMarketClosedModalOpen}
+        onClose={() => setIsMarketClosedModalOpen(false)}
+      />
     </Box>
   );
 };

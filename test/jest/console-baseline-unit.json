@@ -1553,6 +1553,9 @@
     "ui/pages/bridge/hooks/useGasIncluded7702.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/bridge/hooks/useRWAToken.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
@@ -1569,7 +1572,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
+      "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

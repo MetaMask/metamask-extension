@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
@@ -8,7 +8,8 @@ import {
 import {
   getBridgeQuotes,
   getFromTokenBalanceInUsd,
-  getWarningLabels,
+  getQuoteWarningLabels,
+  type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
@@ -24,7 +25,10 @@ export const useQuoteFetchEvents = () => {
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector(
+    (state) => getQuoteWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 
   // Emitted each time quotes are fetched successfully

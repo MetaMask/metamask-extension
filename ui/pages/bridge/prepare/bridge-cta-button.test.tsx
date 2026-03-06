@@ -335,6 +335,7 @@ describe('BridgeCTAButton', () => {
         isInsufficientBalance: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
+        isStockMarketClosed: false,
         ...validationErrors,
       });
       const { findByRole } = renderWithProvider(
