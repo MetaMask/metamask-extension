@@ -106,7 +106,6 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
         }
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to fetch geolocation';
-        console.error('[MUSD Geo] Geolocation error:', errorMessage);
         setError(errorMessage);
       } finally {
         if (!signal?.aborted) {

@@ -3999,7 +3999,8 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD Dönüştürme"
+    "message": "$1 mUSD'ye dönüştür",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
     "message": "mUSD Dönüştürme"
@@ -5271,6 +5272,12 @@
   "perpsEntryPrice": {
     "message": "Giriş fiyatı"
   },
+  "perpsExploreCrypto": {
+    "message": "Kriptoyu keşfet"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Hisse senetlerini ve emtiaları keşfet"
+  },
   "perpsFees": {
     "message": "Ücretler"
   },
@@ -5390,6 +5397,9 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
+  },
+  "perpsOrderAmount": {
+    "message": "Emir Miktarı"
   },
   "perpsOrders": {
     "message": "Emirler"
@@ -5537,6 +5547,12 @@
   },
   "perpsWithdraw": {
     "message": "Çek"
+  },
+  "perpsYourOrders": {
+    "message": "Emirleriniz"
+  },
+  "perpsYourPositions": {
+    "message": "Pozisyonlarınız"
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."

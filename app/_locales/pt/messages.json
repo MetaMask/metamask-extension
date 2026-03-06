@@ -3999,7 +3999,8 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversão mUSD"
+    "message": "Converter $1 para mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
     "message": "Conversão mUSD"
@@ -5271,6 +5272,12 @@
   "perpsEntryPrice": {
     "message": "Preço de entrada"
   },
+  "perpsExploreCrypto": {
+    "message": "Explorar criptomoedas"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Explorar ações e commodities"
+  },
   "perpsFees": {
     "message": "Taxas"
   },
@@ -5390,6 +5397,9 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "A mediana dos preços externos reportados pelos validadores, utilizada para calcular a taxa de financiamento"
+  },
+  "perpsOrderAmount": {
+    "message": "Valor da ordem"
   },
   "perpsOrders": {
     "message": "Ordens"
@@ -5537,6 +5547,12 @@
   },
   "perpsWithdraw": {
     "message": "Sacar"
+  },
+  "perpsYourOrders": {
+    "message": "Suas ordens"
+  },
+  "perpsYourPositions": {
+    "message": "Suas posições"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
