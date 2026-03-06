@@ -4413,7 +4413,7 @@
         "uuid": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true,
         "viem": true,
-        "eth-lattice-keyring>gridplus-sdk>zod": true
+        "@metamask/client-mcp-core>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -6363,7 +6363,7 @@
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "@metamask/client-mcp-core>zod": {
       "globals": {
         "File": true,
         "URL": true,
