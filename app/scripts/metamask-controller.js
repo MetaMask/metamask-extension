@@ -6570,11 +6570,15 @@ export default class MetamaskController extends EventEmitter {
         }
         return result;
       },
+      perpsDisconnect: async (...args) => {
+        perpsStream.setViewActive(false);
+        return this.controllerApi.perpsDisconnect(...args);
+      },
       perpsViewActive: (active) => {
         perpsStream.setViewActive(active);
       },
       perpsActivateStreaming: (params) => {
-        if (perpsController && perpsStream) {
+        if (perpsController) {
           perpsStream.activateStreaming(perpsController, params);
         }
         return 'ok';
