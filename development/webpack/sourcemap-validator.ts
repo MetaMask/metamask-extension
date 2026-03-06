@@ -192,6 +192,7 @@ export async function main(
       `SourcemapValidator (webpack) - no .js+.map pairs found using map location "${mapLocation}" (${searchedLocation}). Run a webpack build first and ensure bundles and their .map files are present. Exiting with code 1.`,
     );
     process.exit(1);
+    return;
   }
 
   console.log(
