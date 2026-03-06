@@ -17,6 +17,7 @@ export const ASSETS_ROUTE = '/settings-v2/assets';
 export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
+export const TRANSACTIONS_ROUTE = '/settings/transactions';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
