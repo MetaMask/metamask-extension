@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_ROUTE,
+} from '../../../../helpers/constants/routes';
 
 let mockLocationState: unknown;
 const mockNavigate = jest.fn();
@@ -31,7 +34,7 @@ describe('ConfirmContextProvider', () => {
   });
 
   it('navigates to returnTo when confirmation disappears', async () => {
-    mockLocationState = { returnTo: DEFAULT_ROUTE };
+    mockLocationState = { returnTo: PERPS_ROUTE };
 
     const { rerender } = render(
       <ConfirmContextProvider>
@@ -49,7 +52,7 @@ describe('ConfirmContextProvider', () => {
     );
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ROUTE, {
         replace: true,
       });
     });
