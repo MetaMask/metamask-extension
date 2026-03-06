@@ -9,8 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.22.0]
 
+### Uncategorized
+
+- resolve merge conflicts (#40668)
+- chore: sync stable into release/13.22.0 (#40645)
+- Unused accounts code (#40551)
+- Remove unused modals (#40550)
+- Bump RemoteFeatureFlagController (#40480)
+- Null (#40511)
+
 ### Added
 
+- Initialize and use in assets controlle (#40233)
 - Replace activity list in asset page (#40542)
 - Added AsterDEX to the DeFi referral program (#40563)
 - Add network name and logo for Tempo Mainnet (#40571)
@@ -27,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Null (#40467)
+- Await click & remove duplicate call in transaction modal test (#40486)
 - Allow users to remove snap accounts if they are from a snap account wallet (#40404)
 - Reject `wallet_requestExecutionPermissions` requests that include chains that do not support EIP-7702 (#40152)
 - Fix error message displayed for Ledger hardware wallets (#40597)
