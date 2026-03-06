@@ -102,10 +102,49 @@ describe('ManifestPlugin', () => {
         manifestPlugin.apply(compiler);
         await promise;
 
-        assert.deepStrictEqual(Object.keys(compilation.assets), expectedAssets);
+        assert.deepStrictEqual(
+          Object.keys(compilation.assets).sort(),
+          [...expectedAssets].sort(),
+        );
         validateManifest(compilation as unknown as Compilation);
       });
     }
+
+    it('uses renameAsset for single-browser asset relocation', async () => {
+      const { compiler, compilation, promise } = mockWebpack(
+        ['filename.js'],
+        [Buffer.from('console.log(1 + 2);', 'utf8')],
+        [null],
+      );
+      compilation.options.context = join(
+        __dirname,
+        'fixtures/ManifestPlugin/empty',
+      );
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      assert.strictEqual(
+        compilation.renameAsset.mock.callCount(),
+        1,
+        'should rename original asset once for single-browser output',
+      );
+      assert.strictEqual(
+        compilation.deleteAsset.mock.callCount(),
+        0,
+        'should not delete assets after moving',
+      );
+    });
 
     function getZipOptions(
       zip: boolean,

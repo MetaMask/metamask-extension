@@ -3,7 +3,7 @@ import path from 'node:path';
 import {
   sources,
   ProgressPlugin,
-  type Compilation,
+  Compilation,
   type Compiler,
   type Asset,
   type EntryOptions,
@@ -21,13 +21,10 @@ import type { ManifestPluginOptions } from './types';
 
 const { RawSource, ConcatSource } = sources;
 
-type Assets = Compilation['assets'];
-
 export type EntryDescriptionNormalized = { import?: string[] } & Omit<
   EntryOptions,
   'name'
 >;
-
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 
@@ -160,7 +157,6 @@ export class ManifestPlugin<Z extends boolean> {
 
   private async zipAssets(
     compilation: Compilation,
-    assets: Assets, // an object of asset names to assets
     options: ManifestPluginOptions<true>,
   ): Promise<void> {
     // TODO(perf): this zips (and compresses) every file individually for each
@@ -168,11 +164,35 @@ export class ManifestPlugin<Z extends boolean> {
     const { browsers, zipOptions } = options;
     const { excludeExtensions, level, outFilePath, mtime } = zipOptions;
     const compressionOptions: DeflateOptions = { level };
-    const assetsArray = Object.entries(assets);
+
+    const assetsByBrowser = new Map<
+      string,
+      { browserRelativePath: string; asset: Readonly<Asset> }[]
+    >();
+    for (const browser of browsers) {
+      assetsByBrowser.set(browser, []);
+    }
+    for (const asset of compilation.getAssets()) {
+      for (const browser of browsers) {
+        const browserPrefix = `${browser}/`;
+        if (!asset.name.startsWith(browserPrefix)) {
+          continue;
+        }
+        const browserRelativePath = asset.name.slice(browserPrefix.length);
+        // manifest.json is added manually to the root of each zip
+        if (browserRelativePath === 'manifest.json') {
+          continue;
+        }
+        assetsByBrowser.get(browser)?.push({ browserRelativePath, asset });
+      }
+    }
 
     let filesProcessed = 0;
-    const numAssetsPerBrowser = assetsArray.length + 1;
-    const totalWork = numAssetsPerBrowser * browsers.length; // +1 for each browser's manifest.json
+    const totalWork =
+      browsers.reduce(
+        (sum, browser) => sum + (assetsByBrowser.get(browser)?.length ?? 0),
+        0,
+      ) + browsers.length; // +1 manifest.json per browser zip
     const reportProgress =
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -213,15 +233,17 @@ export class ManifestPlugin<Z extends boolean> {
         const message = `${++filesProcessed}/${totalWork} assets zipped for ${browser}`;
         reportProgress(0, message, 'manifest.json');
 
-        for (const [assetName, asset] of assetsArray) {
+        for (const { browserRelativePath, asset } of assetsByBrowser.get(
+          browser,
+        ) ?? []) {
           if (errored) return;
 
-          const extName = path.extname(assetName);
+          const extName = path.extname(browserRelativePath);
           if (excludeExtensions.includes(extName)) continue;
 
           addAssetToZip(
-            asset.buffer(),
-            assetName,
+            asset.source.buffer(),
+            browserRelativePath,
             ManifestPlugin.compressibleFileTypes.has(extName),
             compressionOptions,
             mtime,
@@ -230,7 +252,7 @@ export class ManifestPlugin<Z extends boolean> {
           reportProgress(
             0,
             `${++filesProcessed}/${totalWork} assets zipped for ${browser}`,
-            assetName,
+            browserRelativePath,
           );
         }
 
@@ -250,7 +272,8 @@ export class ManifestPlugin<Z extends boolean> {
 
   /**
    * Moves the assets to the correct browser locations and adds each browser's
-   * extension manifest.json file to the list of assets.
+   * extension manifest.json file to the list of assets. For one browser, this
+   * uses `renameAsset` to preserve asset metadata relationships.
    *
    * Note: This method uses `path.posix.join` instead of `path.join` because
    * webpack asset names are expected to use forward slashes. On Windows,
@@ -258,19 +281,37 @@ export class ManifestPlugin<Z extends boolean> {
    * webpack internals that normalize asset names to forward slashes.
    *
    * @param compilation
-   * @param assets
    * @param options
    */
   private moveAssets(
     compilation: Compilation,
-    assets: Assets,
     options: ManifestPluginOptions<false>,
   ): void {
-    // we need to wait to delete assets until after we've zipped them all
-    const assetDeletions = new Set<string>();
     const { browsers } = options;
-    const assetEntries = Object.entries(assets);
-    browsers.forEach((browser) => {
+    const [primaryBrowser, ...extraBrowsers] = browsers;
+
+    // Snapshot asset names before emitting any browser-prefixed assets.
+    const baseAssetNames = Object.keys(compilation.assets);
+
+    const primaryManifest = this.manifestSources.get(
+      primaryBrowser,
+    ) as sources.RawSource;
+    compilation.emitAsset(
+      path.posix.join(primaryBrowser, 'manifest.json'),
+      primaryManifest,
+      {
+        javascriptModule: false,
+        contentType: 'application/json',
+      },
+    );
+
+    // Rename to the primary browser output path so we keep webpack asset links.
+    for (const name of baseAssetNames) {
+      const primaryAssetName = path.posix.join(primaryBrowser, name);
+      compilation.renameAsset(name, primaryAssetName);
+    }
+
+    for (const browser of extraBrowsers) {
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
       compilation.emitAsset(
         path.posix.join(browser, 'manifest.json'),
@@ -280,19 +321,20 @@ export class ManifestPlugin<Z extends boolean> {
           contentType: 'application/json',
         },
       );
-      for (const [name, asset] of assetEntries) {
-        // move the assets to their final browser-relative locations
-        const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
+      for (const name of baseAssetNames) {
+        const primaryAssetName = path.posix.join(primaryBrowser, name);
+        const primaryAsset = compilation.getAsset(
+          primaryAssetName,
+        ) as Readonly<Asset>;
         compilation.emitAsset(
           path.posix.join(browser, name),
-          asset,
-          assetDetails.info,
+          primaryAsset.source,
+          {
+            ...primaryAsset.info,
+          },
         );
-        assetDeletions.add(name);
       }
-    });
-    // delete the assets after we've zipped them all
-    assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
+    }
   }
 
   /**
@@ -628,27 +670,31 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private hookIntoPipelines(compilation: Compilation): void {
-    // hook into the processAssets hook to move/zip assets
-    const tapOptions = { name: NAME, stage: Infinity };
+    // Move/rename extension assets before hash optimization to keep hash
+    // dependency analysis aligned with final asset names.
+    const moveTapOptions = {
+      name: NAME,
+      stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_HASH - 1,
+    };
+    // Run zipping after hashing and transfer optimizations, once final asset
+    // names/content are settled.
+    const zipTapOptions = {
+      name: NAME,
+      stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_TRANSFER,
+    };
+
+    compilation.hooks.processAssets.tap(moveTapOptions, () => {
+      this.resolveEntrypoints(compilation);
+      this.moveAssets(
+        compilation,
+        this.options as ManifestPluginOptions<false>,
+      );
+    });
+
     if (this.options.zip) {
       const options = this.options as ManifestPluginOptions<true>;
-      compilation.hooks.processAssets.tapPromise(
-        tapOptions,
-        async (assets: Assets) => {
-          this.resolveEntrypoints(compilation);
-          await this.zipAssets(compilation, assets, options);
-          this.moveAssets(
-            compilation,
-            assets,
-            this.options as ManifestPluginOptions<false>,
-          );
-        },
-      );
-    } else {
-      const options = this.options as ManifestPluginOptions<false>;
-      compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
-        this.resolveEntrypoints(compilation);
-        this.moveAssets(compilation, assets, options);
+      compilation.hooks.processAssets.tapPromise(zipTapOptions, async () => {
+        await this.zipAssets(compilation, options);
       });
     }
   }
