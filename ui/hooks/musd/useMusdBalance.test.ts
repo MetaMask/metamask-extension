@@ -6,7 +6,6 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../selectors/assets', () => ({
-  getTokenBalancesEvm: jest.fn(),
   getAssetsBySelectedAccountGroup: jest.fn(),
 }));
 
@@ -28,16 +27,12 @@ const MOCK_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12';
 
 type SelectorSetup = {
   selectedAccount: { address: string } | null;
-  isMultichain: boolean;
-  evmBalances: unknown;
   accountGroupAssets: Record<string, unknown[]>;
 };
 
 function setupSelectors(overrides: Partial<SelectorSetup> = {}) {
   const defaults: SelectorSetup = {
     selectedAccount: { address: MOCK_ADDRESS },
-    isMultichain: false,
-    evmBalances: [],
     accountGroupAssets: {},
     ...overrides,
   };
@@ -46,14 +41,10 @@ function setupSelectors(overrides: Partial<SelectorSetup> = {}) {
   useSelector.mockImplementation(() => {
     const idx = callIndex;
     callIndex += 1;
-    switch (idx % 4) {
+    switch (idx % 2) {
       case 0:
         return defaults.selectedAccount;
       case 1:
-        return defaults.isMultichain;
-      case 2:
-        return defaults.evmBalances;
-      case 3:
         return defaults.accountGroupAssets;
       default:
         return undefined;
@@ -81,98 +72,9 @@ describe('useMusdBalance', () => {
     });
   });
 
-  describe('legacy EVM balances (multichain disabled)', () => {
-    it('detects mUSD balance from legacy token list', () => {
-      setupSelectors({
-        isMultichain: false,
-        evmBalances: [
-          {
-            address: '0xMusdAddr',
-            chainId: '0x1',
-            balance: '1000000',
-            symbol: 'MUSD',
-          },
-        ],
-      });
-
-      const { result } = renderHook(() => useMusdBalance());
-
-      expect(result.current.hasMusdBalance).toBe(true);
-      expect(result.current.totalMusdBalance).toBe('1000000');
-      expect(result.current.musdBalancesByChain).toEqual({
-        '0x1': '1000000',
-      });
-    });
-
-    it('returns no balance when mUSD token has zero balance', () => {
-      setupSelectors({
-        isMultichain: false,
-        evmBalances: [
-          {
-            address: '0xMusdAddr',
-            chainId: '0x1',
-            balance: '0',
-            symbol: 'MUSD',
-          },
-        ],
-      });
-
-      const { result } = renderHook(() => useMusdBalance());
-
-      expect(result.current.hasMusdBalance).toBe(false);
-      expect(result.current.totalMusdBalance).toBe('0');
-    });
-
-    it('ignores non-mUSD tokens', () => {
-      setupSelectors({
-        isMultichain: false,
-        evmBalances: [
-          {
-            address: '0xOtherToken',
-            chainId: '0x1',
-            balance: '5000',
-            symbol: 'USDC',
-          },
-        ],
-      });
-
-      const { result } = renderHook(() => useMusdBalance());
-
-      expect(result.current.hasMusdBalance).toBe(false);
-    });
-
-    it('ignores mUSD on unsupported chains', () => {
-      setupSelectors({
-        isMultichain: false,
-        evmBalances: [
-          {
-            address: '0xMusdAddr',
-            chainId: '0x999',
-            balance: '1000',
-            symbol: 'MUSD',
-          },
-        ],
-      });
-
-      const { result } = renderHook(() => useMusdBalance());
-
-      expect(result.current.hasMusdBalance).toBe(false);
-    });
-
-    it('handles null evmBalances', () => {
-      setupSelectors({ isMultichain: false, evmBalances: null });
-
-      const { result } = renderHook(() => useMusdBalance());
-
-      expect(result.current.hasMusdBalance).toBe(false);
-      expect(result.current.totalMusdBalance).toBe('0');
-    });
-  });
-
-  describe('multichain balances (multichain enabled)', () => {
+  describe('mUSD balance detection', () => {
     it('detects mUSD balance from accountGroupAssets', () => {
       setupSelectors({
-        isMultichain: true,
         accountGroupAssets: {
           '0x1': [{ address: '0xMusdAddr', balance: '2000000' }],
         },
@@ -187,9 +89,33 @@ describe('useMusdBalance', () => {
       });
     });
 
+    it('returns no balance when mUSD token has zero balance', () => {
+      setupSelectors({
+        accountGroupAssets: {
+          '0x1': [{ address: '0xMusdAddr', balance: '0' }],
+        },
+      });
+
+      const { result } = renderHook(() => useMusdBalance());
+
+      expect(result.current.hasMusdBalance).toBe(false);
+      expect(result.current.totalMusdBalance).toBe('0');
+    });
+
+    it('ignores non-mUSD tokens', () => {
+      setupSelectors({
+        accountGroupAssets: {
+          '0x1': [{ address: '0xOtherToken', balance: '5000' }],
+        },
+      });
+
+      const { result } = renderHook(() => useMusdBalance());
+
+      expect(result.current.hasMusdBalance).toBe(false);
+    });
+
     it('sums balances across multiple chains', () => {
       setupSelectors({
-        isMultichain: true,
         accountGroupAssets: {
           '0x1': [{ address: '0xMusdAddr', balance: '1000000' }],
           '0xe708': [{ address: '0xMusdAddr', balance: '3000000' }],
@@ -208,7 +134,6 @@ describe('useMusdBalance', () => {
 
     it('skips unsupported chains', () => {
       setupSelectors({
-        isMultichain: true,
         accountGroupAssets: {
           '0x999': [{ address: '0xMusdAddr', balance: '500' }],
         },
@@ -221,7 +146,6 @@ describe('useMusdBalance', () => {
 
     it('skips assets without address', () => {
       setupSelectors({
-        isMultichain: true,
         accountGroupAssets: {
           '0x1': [{ symbol: 'ETH', balance: '1000000' }],
         },
@@ -230,6 +154,15 @@ describe('useMusdBalance', () => {
       const { result } = renderHook(() => useMusdBalance());
 
       expect(result.current.hasMusdBalance).toBe(false);
+    });
+
+    it('handles empty accountGroupAssets', () => {
+      setupSelectors({ accountGroupAssets: {} });
+
+      const { result } = renderHook(() => useMusdBalance());
+
+      expect(result.current.hasMusdBalance).toBe(false);
+      expect(result.current.totalMusdBalance).toBe('0');
     });
   });
 

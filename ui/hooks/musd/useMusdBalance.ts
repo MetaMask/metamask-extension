@@ -14,7 +14,6 @@ import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import {
-  getTokenBalancesEvm,
   getAssetsBySelectedAccountGroup,
 } from '../../selectors/assets';
 import { getSelectedAccount } from '../../selectors';
@@ -52,14 +51,6 @@ export type UseMusdBalanceResult = {
  */
 export function useMusdBalance(): UseMusdBalanceResult {
   const selectedAccount = useSelector(getSelectedAccount);
-
-  // Get token balances based on multichain state
-  const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(
-      state as Parameters<typeof getTokenBalancesEvm>[0],
-      selectedAccount?.address,
-    ),
-  );
   const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
 
   // Compute mUSD balances
@@ -106,11 +97,7 @@ export function useMusdBalance(): UseMusdBalanceResult {
         musdBalancesByChain: balancesByChain,
         isLoading: loading,
       };
-    }, [
-      selectedAccount?.address,
-      accountGroupAssets,
-      evmBalances,
-    ]);
+    }, [selectedAccount?.address, accountGroupAssets]);
 
   return {
     hasMusdBalance,

@@ -24,7 +24,6 @@ import {
 } from '../../selectors';
 import {
   getAssetsBySelectedAccountGroup,
-  getTokenBalancesEvm,
 } from '../../selectors/assets';
 import {
   selectMusdConvertibleTokensAllowlist,
@@ -139,10 +138,6 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
   // Get account tokens
   const selectedAccount = useSelector(getSelectedAccount);
 
-  // Get tokens using the appropriate selector
-  const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount?.address ?? ''),
-  );
   const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
 
   // Get all account tokens
@@ -170,7 +165,7 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
           }),
     );
     return flattened as TokenWithFiatAmount[];
-  }, [accountGroupAssets, evmBalances]);
+  }, [accountGroupAssets]);
 
   /**
    * Filter tokens with minimum balance requirement

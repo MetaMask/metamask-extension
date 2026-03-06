@@ -58,9 +58,9 @@ export const getMultichainAccountsRemoteFeatureFlags = (
 
 /**
  * Selector to check if the multichain accounts feature is enabled for state 2.
+ *
  * @deprecated This selector is no longer used and will be removed in the future.
  * All multichain accounts features are now enabled by default.
- *
  * @param state - The MetaMask state object
  * @returns boolean - True if the feature is enabled for state 2, false otherwise.
  */
