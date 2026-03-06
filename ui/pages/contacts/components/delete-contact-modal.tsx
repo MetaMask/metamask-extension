@@ -17,11 +17,11 @@ import {
 import type { ButtonProps } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export interface DeleteContactModalProps {
+export type DeleteContactModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
-}
+};
 
 export function DeleteContactModal({
   isOpen,
@@ -31,21 +31,12 @@ export function DeleteContactModal({
   const t = useI18nContext();
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      data-testid="delete-contact-modal"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} data-testid="delete-contact-modal">
       <ModalOverlay />
       <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onClose={onClose}>
-          {t('areYouSure')}
-        </ModalHeader>
+        <ModalHeader onClose={onClose}>{t('areYouSure')}</ModalHeader>
         <ModalBody>
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-          >
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('thisContactWillBeDeleted')}
           </Text>
         </ModalBody>
@@ -53,7 +44,8 @@ export function DeleteContactModal({
           onSubmit={onConfirm}
           submitButtonProps={{
             children: t('delete'),
-            variant: ButtonVariant.Secondary as unknown as ButtonProps<'button'>['variant'],
+            variant:
+              ButtonVariant.Secondary as unknown as ButtonProps<'button'>['variant'],
             danger: true,
             'data-testid': 'delete-contact-confirm-button',
           }}

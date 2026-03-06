@@ -3,7 +3,10 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
-import { CONTACTS_ROUTE, CONTACTS_VIEW_ROUTE } from '../../helpers/constants/routes';
+import {
+  CONTACTS_ROUTE,
+  CONTACTS_VIEW_ROUTE,
+} from '../../helpers/constants/routes';
 import { EditContactPage } from './edit-contact-page';
 
 const MOCK_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
@@ -67,7 +70,9 @@ describe('EditContactPage', () => {
       <EditContactPage />,
       configureStore(mockState),
     );
-    expect(container.querySelector('[data-testid="edit-contact-page"]')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="edit-contact-page"]'),
+    ).not.toBeInTheDocument();
   });
 
   it('redirects to contacts list when contact is not in address book', () => {
@@ -78,6 +83,8 @@ describe('EditContactPage', () => {
       <EditContactPage />,
       configureStore(mockState),
     );
-    expect(container.querySelector('[data-testid="edit-contact-page"]')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="edit-contact-page"]'),
+    ).not.toBeInTheDocument();
   });
 });

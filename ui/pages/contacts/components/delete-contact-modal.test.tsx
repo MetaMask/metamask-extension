@@ -40,9 +40,7 @@ describe('DeleteContactModal', () => {
       const { getByTestId } = renderWithProvider(
         <DeleteContactModal {...defaultProps} />,
       );
-      expect(
-        getByTestId('delete-contact-confirm-button'),
-      ).toBeInTheDocument();
+      expect(getByTestId('delete-contact-confirm-button')).toBeInTheDocument();
     });
 
     it('calls onConfirm when Delete button is clicked', () => {

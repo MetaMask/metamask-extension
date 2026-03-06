@@ -30,15 +30,6 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/se
 import { getImageForChainId } from '../../../selectors/multichain';
 import type { ViewContactContentProps } from '../contacts.types';
 
-function quadSplit(addr: string) {
-  return `0x${
-    addr
-      .slice(2)
-      .match(/.{1,4}/gu)
-      ?.join('') ?? ''
-  }`;
-}
-
 export function ViewContactContent({
   name,
   address,
@@ -146,7 +137,7 @@ export function ViewContactContent({
                 className="min-w-0 flex-1 break-all"
                 data-testid="address-book-view-contact-address"
               >
-                {quadSplit(checkSummedAddress)}
+                {checkSummedAddress}
               </Text>
               <ButtonIcon
                 ariaLabel={t('copyToClipboard')}

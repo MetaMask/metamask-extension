@@ -397,7 +397,7 @@ export function useGlobalMenuSections(
       id: 'global-menu-section-manage',
       title: t('manage'),
       items: [
-      // TODO: Uncomment when we remove the Contacts tab from Settings
+        // TODO: Uncomment when we remove the Contacts tab from Settings
         // {
         //   id: 'global-menu-contacts',
         //   iconName: IconName.Book,

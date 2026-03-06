@@ -79,14 +79,14 @@ export function EditContactPage() {
         {t('editContact')}
       </Header>
       <Content padding={0}>
-          <EditContactForm
-            address={address}
-            initialName={name}
-            initialMemo={memo}
-            contactChainId={contactChainId}
-            onCancel={() => navigate(`${CONTACTS_VIEW_ROUTE}/${address}`)}
-            onSuccess={() => navigate(CONTACTS_ROUTE)}
-          />
+        <EditContactForm
+          address={address}
+          initialName={name}
+          initialMemo={memo}
+          contactChainId={contactChainId}
+          onCancel={() => navigate(`${CONTACTS_VIEW_ROUTE}/${address}`)}
+          onSuccess={() => navigate(CONTACTS_ROUTE)}
+        />
       </Content>
     </Page>
   );

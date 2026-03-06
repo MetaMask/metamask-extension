@@ -96,10 +96,7 @@ describe('ContactListItem', () => {
       },
     });
     const { getByTestId } = renderWithProvider(
-      <ContactListItem
-        {...defaultProps}
-        chainId="0x999"
-      />,
+      <ContactListItem {...defaultProps} chainId="0x999" />,
       storeUnknownChain,
     );
     expect(getByTestId('contact-list-item')).toBeInTheDocument();

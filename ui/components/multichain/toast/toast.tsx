@@ -110,11 +110,13 @@ export const Toast = ({
         )}
         <Box>
           <Text
-            className={textClassName ? `toast-text ${textClassName}` : 'toast-text'}
+            className={
+              textClassName ? `toast-text ${textClassName}` : 'toast-text'
+            }
             variant={
               textClassName
                 ? undefined
-                : (textVariant || TextVariant.bodyMdMedium)
+                : textVariant || TextVariant.bodyMdMedium
             }
           >
             {text}
