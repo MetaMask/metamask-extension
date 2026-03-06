@@ -15,7 +15,11 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { ENVIRONMENTS, MODES, THREAD_LOADER_PRESETS } from './constants';
+import { ENVIRONMENTS, MODES } from './constants';
+import {
+  resolveAutoThreads,
+  resolveAutoJobs,
+} from './loaders/threadLoader';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -185,9 +189,8 @@ export function parseArgv(
     'progress',
     'stats',
     'watch',
-    'threadLoader',
-    'threadLoaderWorkers',
-    'threadLoaderJobs',
+    'threads',
+    'jobsPerThread',
   ]);
   const cacheKey = Object.entries(args)
     .filter(([key]) => key.length > 1 && !ignore.has(key) && !key.includes('-'))
@@ -324,36 +327,30 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'string',
     },
-    threadLoader: {
+    threads: {
       array: false,
-      choices: Object.values(THREAD_LOADER_PRESETS),
-      default: THREAD_LOADER_PRESETS.AUTO,
+      default: 'auto' as 'auto' | number,
+      defaultDescription: `auto (resolved: ${resolveAutoThreads()})`,
       description:
-        'Thread-loader parallelization preset. ' +
-        '`auto` adapts to core count (light on <=4 cores, full otherwise). ' +
-        '`light` uses 1 worker (good for CI). ' +
-        '`full` uses max workers. ' +
-        '`off` disables thread-loader entirely.',
+        'Number of thread-loader worker threads. ' +
+        '`auto` adapts to core count and available memory. ' +
+        '`0` disables thread-loader entirely.',
       group: toOrange('Developer assistance:'),
       type: 'string',
+      coerce: (v: string) =>
+        v === 'auto' ? ('auto' as const) : Number(v),
     },
-    threadLoaderWorkers: {
+    jobsPerThread: {
       array: false,
-      default: undefined,
-      defaultDescription: 'Use preset value',
+      default: 'auto' as 'auto' | number,
+      defaultDescription: `auto (resolved: ${resolveAutoJobs(resolveAutoThreads())})`,
       description:
-        'Override thread-loader worker count. Ignored when `threadLoader` is `off`.',
+        'Number of parallel jobs per thread-loader worker. ' +
+        '`auto` derives from thread count.',
       group: toOrange('Developer assistance:'),
-      type: 'number',
-    },
-    threadLoaderJobs: {
-      array: false,
-      default: undefined,
-      defaultDescription: 'Use preset value',
-      description:
-        'Override thread-loader `workerParallelJobs`. Ignored when `threadLoader` is `off`.',
-      group: toOrange('Developer assistance:'),
-      type: 'number',
+      type: 'string',
+      coerce: (v: string) =>
+        v === 'auto' ? ('auto' as const) : Number(v),
     },
 
     ...prerequisites,
@@ -537,7 +534,8 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
-Thread Loader: ${args.threadLoader}${args.threadLoaderWorkers !== undefined || args.threadLoaderJobs !== undefined ? ` [workers: ${args.threadLoaderWorkers ?? 'preset'}, jobs: ${args.threadLoaderJobs ?? 'preset'}]` : ''}
+Threads: ${args.threads === 'auto' ? `auto (${resolveAutoThreads()})` : args.threads}
+Jobs per thread: ${args.jobsPerThread === 'auto' ? `auto (${resolveAutoJobs(typeof args.threads === 'number' ? args.threads : resolveAutoThreads())})` : args.jobsPerThread}
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
