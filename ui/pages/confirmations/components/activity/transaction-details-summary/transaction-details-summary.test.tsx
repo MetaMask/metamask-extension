@@ -254,5 +254,94 @@ describe('TransactionDetailsSummary', () => {
       // Only the primary musdConversion line
       expect(summaryLines).toHaveLength(1);
     });
+
+    it('falls back to relay deposit hash when musdConversion hash is 0x0', () => {
+      const relayTx = createMockTransactionMeta(TransactionType.relayDeposit, {
+        id: 'relay-tx-id',
+        hash: '0xrelayhash',
+      });
+
+      const primaryTx = createMockTransactionMeta(
+        TransactionType.musdConversion,
+        {
+          id: 'musd-tx-id',
+          hash: '0x0',
+          requiredTransactionIds: ['relay-tx-id'],
+          metamaskPay: { tokenAddress: '0xtoken' },
+        },
+      );
+
+      const state = createMockState([relayTx, primaryTx] as never[]);
+
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionDetailsProvider transactionMeta={primaryTx as never}>
+          <TransactionDetailsSummary />
+        </TransactionDetailsProvider>,
+        mockStore(state),
+      );
+
+      const explorerLinks = getAllByTestId('block-explorer-link');
+      expect(explorerLinks).toHaveLength(2);
+    });
+
+    it('does not show explorer link on musdConversion line when relay hash is also 0x0', () => {
+      const relayTx = createMockTransactionMeta(TransactionType.relayDeposit, {
+        id: 'relay-tx-id',
+        hash: '0x0',
+      });
+
+      const primaryTx = createMockTransactionMeta(
+        TransactionType.musdConversion,
+        {
+          id: 'musd-tx-id',
+          hash: '0x0',
+          requiredTransactionIds: ['relay-tx-id'],
+          metamaskPay: { tokenAddress: '0xtoken' },
+        },
+      );
+
+      const state = createMockState([relayTx, primaryTx] as never[]);
+
+      const { queryAllByTestId } = renderWithProvider(
+        <TransactionDetailsProvider transactionMeta={primaryTx as never}>
+          <TransactionDetailsSummary />
+        </TransactionDetailsProvider>,
+        mockStore(state),
+      );
+
+      const explorerLinks = queryAllByTestId('block-explorer-link');
+      // Only the relay deposit line has a link ('0x0' is passed through);
+      // the musdConversion line has no fallback since relay hash is also '0x0'.
+      expect(explorerLinks).toHaveLength(1);
+    });
+
+    it('uses own hash when musdConversion has a valid hash', () => {
+      const relayTx = createMockTransactionMeta(TransactionType.relayDeposit, {
+        id: 'relay-tx-id',
+        hash: '0xrelayhash',
+      });
+
+      const primaryTx = createMockTransactionMeta(
+        TransactionType.musdConversion,
+        {
+          id: 'musd-tx-id',
+          hash: '0xownhash',
+          requiredTransactionIds: ['relay-tx-id'],
+          metamaskPay: { tokenAddress: '0xtoken' },
+        },
+      );
+
+      const state = createMockState([relayTx, primaryTx] as never[]);
+
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionDetailsProvider transactionMeta={primaryTx as never}>
+          <TransactionDetailsSummary />
+        </TransactionDetailsProvider>,
+        mockStore(state),
+      );
+
+      const explorerLinks = getAllByTestId('block-explorer-link');
+      expect(explorerLinks).toHaveLength(2);
+    });
   });
 });
