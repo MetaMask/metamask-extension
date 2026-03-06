@@ -445,7 +445,7 @@ describe('SmartTransactionsController Init', () => {
       const { fullRequest } = buildInitRequest();
       fullRequest.baseControllerMessenger.registerActionHandler(
         'AuthenticationController:getBearerToken',
-        () => undefined,
+        () => undefined as unknown as Promise<string>,
       );
 
       SmartTransactionsControllerInit(fullRequest);
