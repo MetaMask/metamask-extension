@@ -9,38 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.22.0]
 
-### Uncategorized
-
-- `chore: add auth header to bridge-api token calls`, `chore: use chain-agnostic gas fee estimates for calculating swap and (#40172)
-bridge network fees`
-- Unused accounts code (#40551)
-- Remove unused modals (#40550)
-- Moved the Claim Bonus CTA to cover token percent change, rather than token quantity (#40535)
-- Bump RemoteFeatureFlagController (#40480)
-- Null (#40511)
-- Remove activity log from activity details (#40380)
-- Bump assets controller to v2.1.0 (#40439)
-- Null (#40246)
-- Update NFT transaction labels (#40350)
-- Small styling tweaks to default address feature (#40393)
-- Updated Experimental Settings styles and Snaps settings content (#40369)
-- Map staking transaction icon (#40339)
-- Remove fil locale (#40333)
-- Null (#40189)
-- Bump @metamask/core-backend and set up ApiPlatformClient (#40262)
-- chore: update delete button from red to white (#40261)
-
 ### Added
 
 - Replace activity list in asset page (#40542)
 - Added AsterDEX to the DeFi referral program (#40563)
-- Changed styling of the MUSD rewards claiming modal (#40291)
 - Add network name and logo for Tempo Mainnet (#40571)
-- Fixed an issue where abandoning the Shield card payment checkout would not return users to the Shield plan page on next (#39899)
-  extension open
-- UI updates for the Reveal SRP feature, specifically the Quiz Component and Reveal SRP views. (#40243)
+- Adds "CHZ" to `CHAIN_ID_TO_CURRENCY_SYMBOL_MAP` (#40528)
+- UI updates for the Reveal SRP feature, specifically the Quiz Component and Reveal SRP views (#40243)
 - Updated the UI for speeding up and cancelling transactions (#39918)
-- Initialize and use in assets controlle (#40233)
+- Use chain-agnostic gas fee estimates for calculating swap and bridge network fees (#40172)
+
+### Changed
+
+- Changed styling of the MUSD rewards claiming modal (#40291)
+- Moved the Claim Bonus CTA to cover token percent change, rather than token quantity (#40535)
+- Remove activity log from activity details (#40380)
+
+### Fixed
+
+- Allow users to remove snap accounts if they are from a snap account wallet (#40404)
+- Reject `wallet_requestExecutionPermissions` requests that include chains that do not support EIP-7702 (#40152)
+- Fix error message displayed for Ledger hardware wallets (#40597)
+- Fixed infinite loader when using QR hardware wallets in popup mode after signing bridge transactions (#40014)
+- Fixed a bug when cancelling a hardware wallet tx that would cause swaps button to not display (#40501)
+- Fixed an issue where abandoning the Shield card payment checkout would not return users to the Shield plan page on next extension open (#39899)
+- Only show claim bonus CTA if there is at least 1 cent to claim (#40444)
+- Limit smart account navigation to entropy and simple accounts (#40487)
+- Non-EVM transaction details account display name (#40498)
+- Add enable networks null guards (#40402)
+- Clean up spammy Migration 164 Sentry logging (#40405)
+
 ## [13.21.0]
 
 ### Added
@@ -59,31 +57,6 @@ bridge network fees`
 - Refresh new state (#40230)
 - Support import/hide tokens for the new controller (#40228)
 - Adds Chiliz chain logo for network and token (#40144)
-- Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind (#39901)
-  feature flag)
-
-### Fixed
-
-- Allow users to remove snap accounts if they are from a snap account wallet (#40404)
-- Reject `wallet_requestExecutionPermissions` requests that include chains that do not support EIP-7702 (#40152)
-- Null (#40467)
-- Fix error message displayed for Ledger hardware wallets (#40597)
-- Fixed infinite loader when using QR hardware wallets in popup mode after signing bridge transactions (#40014)
-- Fixed a bug when cancelling a hardware wallet tx that would cause swaps button to not display (#40501)
-- Adds "CHZ' to `CHAIN_ID_TO_CURRENCY_SYMBOL_MAP` (#40528)
-- Only show claim bonus CTA if there is at least 1 cent to claim (#40444)
-- Limit smart account navigation to entropy and simple accounts (#40487)
-- Non-evm txn details account display name (#40498)
-- Await click & remove duplicate call in transaction modal test (#40486)
-- Add enable networks null guards (#40402)
-- Clean up spammy Migration 164 Sentry logging (#40405)
-- Nft image `startsWith` error (#40413)
-- When Basic functionality is off, protected routes now redirect to a “Basic functionality is off” page with an inline toggle (#39975)
-  and optional “Open the [feature] page” action instead of showing the
-  feature.
-- Handle non-evm bridge details (#40383)
-- Fixes syncing failure caused by the sidepanel being opened in multiple browser windows, and then one of the sidepanels being (#40305)
-  closed, causing syncing to stop.
 - Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind feature flag) (#39901)
 
 ### Changed
@@ -106,8 +79,6 @@ bridge network fees`
 - Fixed blurry MMPoly font rendering on mobile devices by preventing browser font synthesis (#40349)
 - Inconsistent decimals between and and selected network (#40341)
 - Bump assets and phishing controllers versions (#40132)
-- Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to (#40206)
-  value `eip155:999/slip44:2457` if applicable.
 - Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to value `eip155:999/slip44:2457` if applicable. (#40206)
 - Adjusts update modal logic to use the pending extension version and only show when a newer version is available. (#39884)
 
@@ -1948,8 +1919,7 @@ bridge network fees`
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...HEAD
-[13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.22.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...HEAD
+[13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...v13.22.0
 [13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
 [13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1
 [13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0
