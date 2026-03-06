@@ -30,6 +30,7 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
+import { PerpsControllerProvider } from '../../../providers/perps';
 import { PerpsTabView } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
@@ -149,6 +150,7 @@ export const AccountOverviewTabs = ({
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTab>
+        animated
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
@@ -178,7 +180,9 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__perps-tab"
           >
             <ErrorBoundary key="perps">
-              <PerpsTabView />
+              <PerpsControllerProvider>
+                <PerpsTabView />
+              </PerpsControllerProvider>
             </ErrorBoundary>
           </Tab>
         )}

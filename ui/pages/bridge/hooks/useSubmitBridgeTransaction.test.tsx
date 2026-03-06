@@ -10,8 +10,8 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import * as sharedSelectors from '../../../../shared/modules/selectors';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
@@ -80,14 +80,6 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
         ],
       },
     })),
-  };
-});
-
-jest.mock('../../../../shared/modules/selectors', () => {
-  const original = jest.requireActual('../../../../shared/modules/selectors');
-  return {
-    ...original,
-    isHardwareWallet: jest.fn(),
   };
 });
 
@@ -227,7 +219,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     });
 
     it('routes to awaiting signatures with requestId for hardware wallets', async () => {
-      (sharedSelectors.isHardwareWallet as jest.Mock).mockReturnValue(true);
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),

@@ -27,17 +27,20 @@ function hasInternalEntry(map: WeakRefObjectMap<TestRecord>, key: string) {
   ).map.has(key);
 }
 
-async function collectWithRetries(
+async function collectWithinTimeout(
   weakRef: WeakRef<object>,
-  retries = 100,
+  timeoutMs = 15_000,
 ): Promise<boolean> {
-  for (let i = 0; i < retries; i++) {
+  const deadline = Date.now() + timeoutMs;
+
+  do {
     global.gc?.();
     await new Promise((resolve) => setImmediate(resolve));
     if (weakRef.deref() === undefined) {
       return true;
     }
-  }
+  } while (Date.now() < deadline);
+
   return false;
 }
 
@@ -113,7 +116,7 @@ describe('WeakRefObjectMap', () => {
       const weakRef = new WeakRef(staleTarget);
       staleTarget = null;
 
-      const collected = await collectWithRetries(weakRef);
+      const collected = await collectWithinTimeout(weakRef);
       if (!collected) {
         // Keep this test resilient in runtimes where collection is delayed.
         expect(map.has('stale')).toBe(true);
@@ -338,7 +341,7 @@ describe('WeakRefObjectMap with garbage collection', () => {
       const weakRef = new WeakRef(staleTarget);
       staleTarget = null;
 
-      const collected = await collectWithRetries(weakRef);
+      const collected = await collectWithinTimeout(weakRef);
       if (!collected) {
         expect(gcMap.size).toBe(2);
         return;
