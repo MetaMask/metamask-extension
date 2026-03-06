@@ -46,27 +46,18 @@ class ConnectAccountConfirmation {
     testId: 'permissions-tab',
   };
 
-  private readonly walletItem = (walletNumber: string) => {
-    return {
-      tag: 'p',
-      text: walletNumber,
-    };
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded({
     origin = '127.0.0.1',
-    walletItem = 'Wallet 1',
-  }: { origin?: string; walletItem?: string } = {}): Promise<void> {
+  }: { origin?: string } = {}): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.connectAccountConfirmationTitle,
         this.connectAccountConfirmationButton,
         this.originHeader(origin),
-        this.walletItem(walletItem),
       ]);
     } catch (e) {
       console.log(
