@@ -17,6 +17,7 @@ export type EditMarginExpandableProps = {
   account: AccountState | null;
   currentPrice: number;
   isExpanded: boolean;
+  isPerpsInAppToastsEnabled?: boolean;
   onToggle: () => void;
 };
 
@@ -36,6 +37,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   account,
   currentPrice,
   isExpanded,
+  isPerpsInAppToastsEnabled = true,
   onToggle,
 }) => {
   const t = useI18nContext();
@@ -143,6 +145,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
               account={account}
               currentPrice={currentPrice}
               mode={marginMode}
+              isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
               onClose={handleClose}
               onSavingChange={setIsSaving}
             />
