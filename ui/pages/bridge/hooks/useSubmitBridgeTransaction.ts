@@ -75,13 +75,10 @@ export default function useSubmitBridgeTransaction() {
 
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
-  const allWarnings = useSelector(
+  const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
-  );
-  const warnings = allWarnings.filter(
-    (w): w is QuoteWarning => w !== 'market_closed',
-  );
+  ).filter((w): w is QuoteWarning => w !== 'market_closed');
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
 

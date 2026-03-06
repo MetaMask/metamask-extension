@@ -26,13 +26,10 @@ export const useQuoteFetchEvents = () => {
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
-  const allWarnings = useSelector(
+  const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
-  );
-  const warnings = allWarnings.filter(
-    (w): w is QuoteWarning => w !== 'market_closed',
-  );
+  ).filter((w): w is QuoteWarning => w !== 'market_closed');
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 
   // Emitted each time quotes are fetched successfully
@@ -51,5 +48,15 @@ export const useQuoteFetchEvents = () => {
         ),
       );
     }
-  }, [quotesRefreshCount]);
+  }, [
+    activeQuote,
+    dispatch,
+    fromTokenBalanceInUsd,
+    isLoading,
+    isTxSubmittable,
+    quoteFetchError,
+    quotesRefreshCount,
+    recommendedQuote,
+    warnings,
+  ]);
 };
