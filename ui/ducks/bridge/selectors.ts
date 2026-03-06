@@ -676,7 +676,7 @@ export const getPriceImpact = createSelector(
 
 export const getFormattedPriceImpact = createSelector(
   [getPriceImpact],
-  (priceImpact) => (priceImpact ? formatPriceImpact(priceImpact) : null),
+  (priceImpact) => formatPriceImpact(priceImpact),
 );
 
 export const getValidationErrors = createDeepEqualSelector(

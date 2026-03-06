@@ -45,9 +45,8 @@ export const BridgePriceImpactWarningModal = ({
   const formattedPriceImpact = useSelector(getFormattedPriceImpact);
 
   const shouldShowModal = useMemo(() => {
-    // Hide the modal if the user closes it, if it has not been opened,
-    // or if the price impact is not available
-    if (variant === null || !formattedPriceImpact) {
+    // Hide the modal if the user closes it or if it has not been opened
+    if (variant === null) {
       return false;
     }
     // Only show the modal during submission if there is a price impact error
@@ -64,17 +63,26 @@ export const BridgePriceImpactWarningModal = ({
     }
     // Otherwise, keep the modal open
     return true;
-  }, [variant, isPriceImpactError, isPriceImpactWarning, formattedPriceImpact]);
+  }, [variant, isPriceImpactError, isPriceImpactWarning]);
+
+  const shouldAllowClose = !(isSubmitting && variant === 'submit-cta');
 
   return (
     <Modal
       isOpen={shouldShowModal}
       onClose={onClose}
+      isClosedOnEscapeKey={shouldAllowClose}
+      isClosedOnOutsideClick={shouldAllowClose}
       className="bridge-price-impact-modal"
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{
+            disabled: isSubmitting && variant === 'submit-cta',
+          }}
+        >
           <Column alignItems={AlignItems.center} gap={2}>
             <Icon
               name={isPriceImpactError ? IconName.Danger : IconName.Warning}

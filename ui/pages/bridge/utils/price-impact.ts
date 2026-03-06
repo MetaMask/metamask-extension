@@ -5,7 +5,7 @@
  * @returns Formatted price impact string.
  */
 export function formatPriceImpact(
-  priceImpact: string | number | undefined,
+  priceImpact: string | number | undefined | null,
 ): string {
   if (priceImpact === undefined || priceImpact === null) {
     return '0%';

@@ -309,7 +309,8 @@ exports[`BridgePriceImpactModal submit-cta should disable the submit button when
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                disabled=""
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
