@@ -1,3 +1,4 @@
+require('ts-node').register({ transpileOnly: true });
 const path = require('path');
 const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
