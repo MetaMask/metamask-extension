@@ -9,6 +9,7 @@ export const METAMASK_EIP_1193_PROVIDER = 'metamask-provider';
 export const METAMASK_CAIP_MULTICHAIN_PROVIDER = 'metamask-multichain-provider';
 export const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 export const PHISHING_STREAM = 'phishing';
+export const SEED_PHRASE_PROTECTION_STREAM = 'metamask-seed-phrase-protection';
 
 // For more information about these legacy streams, see here:
 // https://github.com/MetaMask/metamask-extension/issues/15491

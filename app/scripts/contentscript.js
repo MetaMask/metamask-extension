@@ -14,8 +14,15 @@ import {
   initializeCookieHandlerSteam,
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
+import { initSeedPhraseProtection } from './streams/seed-phrase-protection-stream';
 
-const start = () => {
+const start = async () => {
+  // Initialize seed phrase protection on all pages (non-blocking)
+  // Tradeoff: The "don't show again" preference loads async from extension storage.
+  // If a user pastes before it loads, the warning may show even if previously dismissed.
+  // This is acceptable as it errs on the side of caution and avoids blocking page init.
+  initSeedPhraseProtection();
+
   if (isDetectedPhishingSite) {
     initPhishingStreams();
     return;
