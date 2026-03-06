@@ -6586,6 +6586,12 @@ export default class MetamaskController extends EventEmitter {
         perpsStream.destroy();
         return this.controllerApi.perpsDisconnect(...args);
       },
+      perpsToggleTestnet: async (...args) => {
+        // destroy() resets #activated so the next perpsInit re-establishes
+        // static subscriptions against the new testnet/mainnet provider.
+        perpsStream.destroy();
+        return this.controllerApi.perpsToggleTestnet(...args);
+      },
       perpsViewActive: (active) => {
         perpsStream.setViewActive(active);
       },
