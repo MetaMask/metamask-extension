@@ -1,5 +1,7 @@
 import { memoize } from 'lodash';
 
+import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
+
 type AppRoute = {
   path: string;
   label: string;
@@ -603,6 +605,7 @@ export const ROUTES = [
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
+  ...MUSD_ROUTE_DEFINITIONS,
 ] as const satisfies AppRoute[];
 
 export type AppRoutes = (typeof ROUTES)[number];

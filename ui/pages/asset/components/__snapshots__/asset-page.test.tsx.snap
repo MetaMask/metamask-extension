@@ -239,35 +239,26 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row min-w-0"
+                class="flex flex-row gap-2 min-w-0"
               >
-                <div
-                  class="flex flex-row gap-2 min-w-0"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
                 <button
-                  class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
+                  class="mm-box mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-sm"
                   data-testid="staking-entrypoint-0x1"
                   tabindex="0"
                 >
-                  <span
-                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-                  >
-                    •
-                  </span>
-                  <span
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--color-primary-default"
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-primary-default"
                   >
                     Earn
-                  </span>
+                  </p>
                   <span
-                    class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
+                    class="mm-box mm-icon mm-icon--size-xs mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
                     style="mask-image: url('./images/icons/stake.svg');"
                   />
                 </button>
@@ -304,11 +295,7 @@ exports[`AssetPage should render a native asset 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="mm-box mm-box--margin-top-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
@@ -619,18 +606,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row min-w-0"
+                class="flex flex-row gap-2 min-w-0"
               >
-                <div
-                  class="flex flex-row gap-2 min-w-0"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -664,11 +647,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="mm-box mm-box--margin-top-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
@@ -1042,18 +1021,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row min-w-0"
+                class="flex flex-row gap-2 min-w-0"
               >
-                <div
-                  class="flex flex-row gap-2 min-w-0"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -1087,11 +1062,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="mm-box mm-box--margin-top-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
