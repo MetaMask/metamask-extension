@@ -900,6 +900,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       'https://yearn.fi',
       'https://app.teller.org',
       'https://kalshi.com',
+      'https://send.hinkal.io',
     ],
     status: FeatureFlagStatus.Active,
   },
