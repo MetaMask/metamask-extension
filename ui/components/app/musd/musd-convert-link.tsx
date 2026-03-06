@@ -93,11 +93,6 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
         preferredToken: {
           address: tokenAddress as Hex,
           chainId: chainId as Hex,
-          symbol: tokenSymbol,
-          name: tokenSymbol,
-          decimals: 6,
-          balance: '0',
-          fiatBalance: '0',
         },
         entryPoint,
       });

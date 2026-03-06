@@ -126,11 +126,6 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
       preferredToken: {
         address: token.address as Hex,
         chainId: token.chainId as Hex,
-        symbol: token.symbol,
-        name: token.symbol,
-        decimals: 6, // Default, will be updated
-        balance: token.balance,
-        fiatBalance: token.fiatBalance,
       },
       entryPoint: 'asset_overview',
     });
@@ -182,7 +177,7 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
       backgroundColor={BackgroundColor.backgroundDefault}
       className="musd-asset-cta"
       onClick={handleConvert}
-      onKeyPress={(e) => {
+      onKeyPress={(e: React.KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
           handleConvert();
         }
@@ -247,7 +242,7 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
           data-testid="musd-asset-cta-dismiss"
           iconName={IconName.Close}
           size={ButtonIconSize.Sm}
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             handleDismiss();
           }}

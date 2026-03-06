@@ -39,7 +39,7 @@ describe('MusdOverrideContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseTransactionPayToken.mockReturnValue({
-      payToken: { address: '0xabc', chainId: '0x1' } as ReturnType<
+      payToken: { address: '0xabc', chainId: '0x1' } as unknown as ReturnType<
         typeof useTransactionPayToken
       >['payToken'],
       setPayToken: jest.fn(),
