@@ -1,3 +1,5 @@
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
@@ -6,17 +8,36 @@ import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
+/**
+ * Returns environment type for the current context, or null when URL is not yet
+ * available (e.g. Webpack UI chunk before location is set). Used so we never
+ * treat UI as background (initialize: true) when we're unsure.
+ *
+ * @param url - Optional URL (defaults to globalThis.self?.location?.href ?? '')
+ * @returns The environment type, or null when url is empty
+ */
+function getEnvironmentTypeForHooks(
+  url = globalThis.self?.location?.href ?? '',
+) {
+  if (!url) {
+    return null;
+  }
+  return getEnvironmentType(url);
+}
+
 const platform = new ExtensionPlatform();
 
 const useFixtureStore =
   process.env.IN_TEST &&
   getManifestFlags().testing?.forceExtensionStore !== true;
-// This instance of `localStore` is used by Sentry to get the persisted state
-const sentryLocalStore = new PersistenceManager({
-  localStore: useFixtureStore
-    ? new FixtureExtensionStore()
-    : new ExtensionStore(),
-});
+const isBackground =
+  getEnvironmentTypeForHooks() === ENVIRONMENT_TYPE_BACKGROUND;
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore({ initialize: isBackground })
+  : new ExtensionStore();
+
+// Single PersistenceManager per context: one in background, one per UI context.
+export const persistenceManager = new PersistenceManager({ localStore });
 
 /**
  * Get the persisted wallet state.
@@ -24,7 +45,7 @@ const sentryLocalStore = new PersistenceManager({
  * @returns The persisted wallet state.
  */
 globalThis.stateHooks.getPersistedState = async function () {
-  return await sentryLocalStore.get({ validateVault: false });
+  return await persistenceManager.get({ validateVault: false });
 };
 
 /**
@@ -34,7 +55,7 @@ globalThis.stateHooks.getPersistedState = async function () {
  * @returns The backup state, or null if unavailable.
  */
 globalThis.stateHooks.getBackupState = async function () {
-  return await sentryLocalStore.getBackup();
+  return await persistenceManager.getBackup();
 };
 
 const persistedStateMask = {
@@ -65,7 +86,7 @@ globalThis.stateHooks.getSentryState = function () {
   };
   // If `getSentryAppState` is set, it implies that initialization has completed
   if (globalThis.stateHooks.getSentryAppState) {
-    sentryLocalStore.cleanUpMostRecentRetrievedState();
+    persistenceManager.cleanUpMostRecentRetrievedState();
     return {
       ...sentryState,
       state: globalThis.stateHooks.getSentryAppState(),
@@ -74,12 +95,12 @@ globalThis.stateHooks.getSentryState = function () {
     // This is truthy if Sentry has retrieved state at least once already. This
     // should always be true when getting context for an error report, but can
     // be unset when Sentry is performing the opt-in check.
-    sentryLocalStore.mostRecentRetrievedState ||
+    persistenceManager.mostRecentRetrievedState ||
     // This is only set in the background process.
     globalThis.stateHooks.getMostRecentPersistedState
   ) {
     const persistedState =
-      sentryLocalStore.mostRecentRetrievedState ||
+      persistenceManager.mostRecentRetrievedState ||
       globalThis.stateHooks.getMostRecentPersistedState();
     // This can be unset when this method is called in the background for an
     // opt-in check, but the state hasn't been loaded yet.
