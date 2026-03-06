@@ -1,0 +1,62 @@
+name: Check feature flag registry drift
+
+on:
+  schedule:
+    # Run weekly on Mondays at 01:00 UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-feature-flag-registry:
+    name: Check feature flag registry against production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Check for drift and generate report
+        id: check
+        shell: bash
+        run: |
+          set +e
+          yarn feature-flags:sync:check 2>&1 | tee sync-report.txt
+          EXIT="${PIPESTATUS[0]}"
+          set -e
+          echo "HAS_DRIFT=$( [ "$EXIT" -eq 1 ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
+          echo "HAS_ERROR=$( [ "$EXIT" -eq 2 ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
+          # Succeed for 0 (no drift) and 1 (drift); fail for 2 (API/script error)
+          [ "$EXIT" -eq 0 ] || [ "$EXIT" -eq 1 ] || exit "$EXIT"
+
+      - name: Upload drift report
+        if: steps.check.outputs.HAS_DRIFT == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-report
+          path: sync-report.json
+
+      - name: Notify Slack on drift
+        if: ${{ always() && steps.check.outputs.HAS_DRIFT == 'true' }}
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Feature flag registry drift detected in metamask-extension. Check the workflow run for details.",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Feature Flag Registry Drift Detected* :warning:\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
+                  }
+                }
+              ]
+            }
