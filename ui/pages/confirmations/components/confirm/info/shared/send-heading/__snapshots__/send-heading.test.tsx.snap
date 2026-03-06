@@ -3,18 +3,22 @@
 exports[`<SendHeading /> renders component 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-2 mm-box--padding-bottom-3 mm-box--padding-inline-0 mm-box--display-flex mm-box--flex-direction-column"
+    class="flex flex-col mb-2 pb-3 px-0"
   >
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-1 mm-box--color-text-alternative"
-    >
-      Sending
-    </p>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+      class="mb-1"
+    >
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Sending
+      </p>
+    </div>
+    <div
+      class="flex flex-row items-center"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        class="flex flex-col"
       >
         <div>
           <div

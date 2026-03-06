@@ -1,13 +1,13 @@
 import React from 'react';
-import { Box, Text } from '../../../../../../../components/component-library';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 interface SendHeadingLayoutProps {
@@ -20,26 +20,25 @@ const SendHeadingLayout = ({ children, image }: SendHeadingLayoutProps) => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       paddingBottom={3}
-      paddingInline={0}
+      paddingHorizontal={0}
       marginBottom={2}
     >
-      <Text
-        variant={TextVariant.bodyMd}
-        color={TextColor.textAlternative}
-        marginBottom={1}
-      >
-        {t('confirmTitleSending')}
-      </Text>
+      <Box marginBottom={1}>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+        >
+          {t('confirmTitleSending')}
+        </Text>
+      </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.SpaceBetween}
+        alignItems={BoxAlignItems.Center}
       >
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box flexDirection={BoxFlexDirection.Column}>
           {children}
         </Box>
         {image}
