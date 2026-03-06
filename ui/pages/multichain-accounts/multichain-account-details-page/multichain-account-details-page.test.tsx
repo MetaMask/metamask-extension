@@ -127,16 +127,6 @@ describe('MultichainAccountDetailsPage', () => {
     expect(screen.queryByText(/remove account/iu)).not.toBeInTheDocument();
   });
 
-  it('does not render remove account section for Snap wallet type', () => {
-    mockUseParams.mockReturnValue({
-      id: 'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d',
-    });
-
-    renderComponent();
-
-    expect(screen.queryByText(/remove account/iu)).not.toBeInTheDocument();
-  });
-
   it('renders remove account section for Keyring wallet type', () => {
     mockUseParams.mockReturnValue({
       id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',

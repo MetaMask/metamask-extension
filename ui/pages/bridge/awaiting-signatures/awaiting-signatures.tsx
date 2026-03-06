@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
@@ -33,7 +33,6 @@ import {
   getToChain,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useBridgeTransactionNavigation } from '../hooks/useBridgeTransactionNavigation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -49,25 +48,8 @@ export default function AwaitingSignatures() {
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = Boolean(activeQuote?.approval);
   const { trackEvent } = useContext(MetaMetricsContext);
-  const hasTrackedEventRef = useRef(false);
-
-  // Handle navigation logic for transaction success, cancellation, and failure
-  // (encapsulates refs, detection logic, and navigation)
-  useBridgeTransactionNavigation();
 
   useEffect(() => {
-    // Only track the event once on mount to avoid duplicate events when dependencies change
-    // (e.g., when activeQuote becomes null during popup-to-fullscreen transition)
-    if (hasTrackedEventRef.current) {
-      return;
-    }
-
-    // Only fire if we have valid quote data to avoid sending empty values
-    if (!activeQuote) {
-      return;
-    }
-
-    hasTrackedEventRef.current = true;
     trackEvent({
       event: 'Awaiting Signature(s) on a HW wallet',
       category: MetaMetricsEventCategory.Swaps,
@@ -97,15 +79,7 @@ export default function AwaitingSignatures() {
         token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
       },
     });
-  }, [
-    activeQuote,
-    fromToken?.symbol,
-    hardwareWalletType,
-    hardwareWalletUsed,
-    needsTwoConfirmations,
-    toToken?.symbol,
-    trackEvent,
-  ]);
+  }, []);
 
   const isSwap =
     fromChain && !isCrossChain(fromChain.chainId, toChain?.chainId);
