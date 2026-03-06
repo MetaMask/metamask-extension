@@ -17,6 +17,9 @@
 /** Hash to show the Perps tab on the account overview (home). Tab is controlled by search param. */
 export const PERPS_TAB_HASH = '#/?tab=perps';
 
+/** Perps Home page route. */
+export const PERPS_HOME_ROUTE = '#/perps/home';
+
 /** Base route for Perps market detail. Append encoded symbol, e.g. PERPS_MARKET_DETAIL_ROUTE + '/AVAX' */
 export const PERPS_MARKET_DETAIL_ROUTE = '#/perps/market';
 

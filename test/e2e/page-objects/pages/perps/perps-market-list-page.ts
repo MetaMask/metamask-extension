@@ -9,13 +9,13 @@ import { PERPS_MARKET_LIST_ROUTE } from '../../../tests/perps/helpers';
 export class PerpsMarketListPage {
   private readonly driver: Driver;
 
-  private readonly marketListView = { testId: 'market-list-view' };
+  private readonly filterSelectButton = { testId: 'filter-select-button' };
 
   private readonly filterSortRow = { testId: 'market-list-filter-sort-row' };
 
-  private readonly searchInput = '[data-testid="search-input"]';
+  private readonly marketListView = { testId: 'market-list-view' };
 
-  private readonly filterSelectButton = { testId: 'filter-select-button' };
+  private readonly searchInput = { testId: 'search-input' };
 
   private readonly sortDropdownButton = { testId: 'sort-dropdown-button' };
 
@@ -24,7 +24,18 @@ export class PerpsMarketListPage {
   }
 
   /**
+   * Fills the search input with the given query.
+   *
+   * @param query
+   */
+  async fillSearch(query: string): Promise<void> {
+    await this.driver.waitForSelector(this.searchInput);
+    await this.driver.fill(this.searchInput, query);
+  }
+
+  /**
    * Navigates to the Perps Market List route and waits for the page to load.
+   * Uses window.location.hash for SPA navigation without a full page reload.
    */
   async navigateToMarketList(): Promise<void> {
     await this.driver.executeScript(
@@ -34,31 +45,9 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Waits for the market list view to be visible.
-   */
-  async waitForPageLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.marketListView);
-  }
-
-  /**
-   * Waits for the filter/sort row to be visible (hidden when search has text).
-   */
-  async waitForFilterSortRow(): Promise<void> {
-    await this.driver.waitForSelector(this.filterSortRow);
-  }
-
-  /**
-   * Fills the search input with the given query.
-   * @param query
-   */
-  async fillSearch(query: string): Promise<void> {
-    await this.driver.waitForSelector(this.searchInput);
-    await this.driver.fill(this.searchInput, query);
-  }
-
-  /**
    * Selects a filter by type (e.g. 'crypto', 'all').
    * Opens the filter dropdown and clicks the option.
+   *
    * @param optionId - 'all' | 'crypto' | 'stocks' | 'commodities' | 'forex' | 'new'
    */
   async selectFilter(optionId: string): Promise<void> {
@@ -90,5 +79,19 @@ export class PerpsMarketListPage {
     await this.driver.clickElement({
       testId: 'sort-dropdown-option-volumeLow',
     });
+  }
+
+  /**
+   * Waits for the filter/sort row to be visible (hidden when search has text).
+   */
+  async waitForFilterSortRow(): Promise<void> {
+    await this.driver.waitForSelector(this.filterSortRow);
+  }
+
+  /**
+   * Waits for the market list view to be visible.
+   */
+  async waitForPageLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.marketListView);
   }
 }
