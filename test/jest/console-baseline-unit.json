@@ -1927,6 +1927,9 @@
       "Reselect: Identity function warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-heading.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1
+    },
     "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-info.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -3083,6 +3086,11 @@
       "MetaMask: Background connection not initialized": 4,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/musd/index.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "warn: No routes matched location \"/\"": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/musd/screens/education.test.tsx": {
