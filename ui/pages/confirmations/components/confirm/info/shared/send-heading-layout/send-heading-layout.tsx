@@ -26,21 +26,16 @@ const SendHeadingLayout = ({ children, image }: SendHeadingLayoutProps) => {
       marginBottom={2}
     >
       <Box marginBottom={1}>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-        >
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('confirmTitleSending')}
         </Text>
       </Box>
       <Box
         flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.SpaceBetween}
+        justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Box flexDirection={BoxFlexDirection.Column}>
-          {children}
-        </Box>
+        <Box flexDirection={BoxFlexDirection.Column}>{children}</Box>
         {image}
       </Box>
     </Box>

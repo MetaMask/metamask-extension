@@ -1,4 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -8,25 +16,9 @@ import {
 } from '../../../../../../../../shared/constants/network';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
-import {
-  AvatarToken,
-  AvatarTokenSize,
-  Box,
-  Text,
-} from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   getPreferences,
   selectConversionRateByChainId,
@@ -34,9 +26,9 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 const NativeSendHeading = () => {
-  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -93,34 +85,35 @@ const NativeSendHeading = () => {
       }
       name={nativeCurrency}
       size={AvatarTokenSize.Xl}
-      backgroundColor={BackgroundColor.backgroundDefault}
     />
   );
 
   const NativeAssetAmount =
     roundedTransferValue === transferValue ? (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        paddingBottom={1}
-      >
-        {`${roundedTransferValue} ${nativeCurrency}`}
-      </Text>
-    ) : (
-      <Tooltip title={transferValue} position="right">
+      <Box paddingBottom={1}>
         <Text
-          variant={TextVariant.headingLg}
-          color={TextColor.inherit}
-          paddingBottom={1}
+          variant={TextVariant.HeadingLg}
+          color={TextColor.Inherit}
         >
           {`${roundedTransferValue} ${nativeCurrency}`}
         </Text>
+      </Box>
+    ) : (
+      <Tooltip title={transferValue} position="right">
+        <Box paddingBottom={1}>
+          <Text
+            variant={TextVariant.HeadingLg}
+            color={TextColor.Inherit}
+          >
+            {`${roundedTransferValue} ${nativeCurrency}`}
+          </Text>
+        </Box>
       </Tooltip>
     );
 
   const NativeAssetFiatConversion = Boolean(fiatDisplayValue) &&
     (!isTestnet || showFiatInTestnets) && (
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {fiatDisplayValue}
       </Text>
     );
@@ -128,32 +121,10 @@ const NativeSendHeading = () => {
   useSendingValueMetric({ transactionMeta, fiatValue });
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      paddingBottom={3}
-      paddingInline={0}
-    >
-      <Text
-        variant={TextVariant.bodyMd}
-        color={TextColor.textAlternative}
-        marginBottom={1}
-      >
-        {t('confirmTitleSending')}
-      </Text>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-      >
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          {NativeAssetAmount}
-          {NativeAssetFiatConversion}
-        </Box>
-        {NetworkImage}
-      </Box>
-    </Box>
+    <SendHeadingLayout image={NetworkImage}>
+      {NativeAssetAmount}
+      {NativeAssetFiatConversion}
+    </SendHeadingLayout>
   );
 };
 

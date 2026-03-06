@@ -98,10 +98,7 @@ const NFTSendHeading = () => {
 
   const TokenName = (
     <Box paddingBottom={1}>
-      <Text
-        variant={TextVariant.HeadingLg}
-        color={TextColor.Inherit}
-      >
+      <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
         {assetName}
       </Text>
     </Box>
