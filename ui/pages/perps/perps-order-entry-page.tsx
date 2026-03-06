@@ -489,12 +489,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleOrderSubmit = useCallback(async () => {
-    if (
-      !isEligible ||
-      !orderFormState ||
-      !selectedAddress ||
-      currentPrice <= 0
-    ) {
+    if (!isEligible || !orderFormState || currentPrice <= 0) {
       return;
     }
 
@@ -534,13 +529,14 @@ const PerpsOrderEntryPage: React.FC = () => {
         if (!result.success) {
           throw new Error(result.error ?? 'Failed to close position');
         }
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
-          ...(closeSuccessToastDescription
-            ? { description: closeSuccessToastDescription }
-            : {}),
-        });
-      } else if (orderMode === 'modify' && position) {
+        handleBackClick(
+          PERPS_TOAST_KEYS.TRADE_SUCCESS,
+          closeSuccessToastDescription,
+        );
+        return;
+      }
+
+      if (orderMode === 'modify' && position) {
         const { takeProfitPrice, stopLossPrice } = normalizeTpslPrices({
           takeProfitPrice: orderFormState.autoCloseEnabled
             ? orderFormState.takeProfitPrice
@@ -562,36 +558,33 @@ const PerpsOrderEntryPage: React.FC = () => {
         if (!result.success) {
           throw new Error(result.error ?? 'Failed to update TP/SL');
         }
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
-        });
-      } else {
-        const orderParams = formStateToOrderParams(
-          orderFormState,
-          currentPrice,
-          orderMode,
-          position?.size,
-        );
-        const result = await submitRequestToBackground<{
-          success: boolean;
-          error?: string;
-        }>('perpsPlaceOrder', [orderParams]);
-        if (!result.success) {
-          throw new Error(result.error ?? 'Failed to place order');
-        }
-
-        if (orderFormState.type === 'limit') {
-          handleBackClick(
-            PERPS_TOAST_KEYS.ORDER_PLACED,
-            tradeActionToastDescription,
-          );
-          return;
-        }
-        setPendingOrderToastDescription(tradeActionToastDescription ?? null);
-        setPendingOrderSymbol(orderFormState.asset);
+        handleBackClick(PERPS_TOAST_KEYS.UPDATE_SUCCESS);
         return;
       }
-      handleBackClick();
+
+      const orderParams = formStateToOrderParams(
+        orderFormState,
+        currentPrice,
+        orderMode,
+        position?.size,
+      );
+      const result = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsPlaceOrder', [orderParams]);
+      if (!result.success) {
+        throw new Error(result.error ?? 'Failed to place order');
+      }
+
+      if (orderFormState.type === 'limit') {
+        handleBackClick(
+          PERPS_TOAST_KEYS.ORDER_PLACED,
+          tradeActionToastDescription,
+        );
+        return;
+      }
+      setPendingOrderToastDescription(tradeActionToastDescription ?? null);
+      setPendingOrderSymbol(orderFormState.asset);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
@@ -620,7 +613,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [
     isEligible,
     orderFormState,
-    selectedAddress,
     orderMode,
     position,
     currentPrice,
