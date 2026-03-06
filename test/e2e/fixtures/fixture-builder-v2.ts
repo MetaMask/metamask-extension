@@ -250,21 +250,7 @@ class FixtureBuilderV2 {
           selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
         },
       })
-      .withPreferencesController({
-        identities: {
-          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            lastSelected: 1665507600000,
-            name: 'Account 1',
-          },
-          [ledgerAddressLower]: {
-            address: ledgerAddressLower,
-            lastSelected: 1665507800000,
-            name: 'Ledger 1',
-          },
-        } as unknown as PreferencesControllerState['identities'],
-        selectedAddress: ledgerAddressLower,
-      });
+      .withPreferencesController({});
     return this;
   }
 
