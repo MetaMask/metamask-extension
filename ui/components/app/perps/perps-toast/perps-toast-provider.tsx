@@ -112,13 +112,6 @@ const getDefaultAutoHideTime = (
 
 type PerpsToastIconConfig =
   | {
-      className?: string;
-      color: IconColor;
-      dataTestId: string;
-      name: IconName;
-      type: 'icon';
-    }
-  | {
       color: IconColor;
       dataTestId: string;
       name: IconName;
@@ -146,9 +139,11 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
   error: {
     variant: 'error',
     icon: {
-      type: 'icon',
+      type: 'avatar-icon',
       name: IconName.Warning,
-      color: IconColor.errorDefault,
+      color: TextColor.errorDefault,
+      backgroundColor: BackgroundColor.errorMuted,
+      size: AvatarIconSize.Md,
       dataTestId: 'perps-toast-icon-warning',
     },
   },
@@ -231,24 +226,12 @@ const getToastIcon = ({ icon }: PerpsToastPresentation): ReactNode => {
     );
   }
 
-  if (icon.type === 'avatar-icon') {
-    return (
-      <AvatarIcon
-        iconName={icon.name}
-        size={icon.size}
-        color={icon.color}
-        backgroundColor={icon.backgroundColor}
-        className={icon.className}
-        data-testid={icon.dataTestId}
-      />
-    );
-  }
-
   return (
-    <Icon
-      name={icon.name}
-      size={IconSize.Xl}
+    <AvatarIcon
+      iconName={icon.name}
+      size={icon.size}
       color={icon.color}
+      backgroundColor={icon.backgroundColor}
       className={icon.className}
       data-testid={icon.dataTestId}
     />
