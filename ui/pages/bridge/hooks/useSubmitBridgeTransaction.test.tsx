@@ -225,7 +225,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
         {
-          replace: true,
           state: { stayOnHomePage: true },
         },
       );
@@ -233,7 +232,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitTxSpy).toHaveBeenCalled();
     });
 
-    it('routes to awaiting signatures with requestId for hardware wallets', async () => {
+    it('routes to awaiting signatures for hardware wallets', async () => {
       const store = makeMockStore({
         metamaskStateOverrides: {
           internalAccounts: {
@@ -258,13 +257,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      const {
-        quote: { requestId },
-      } = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
-          requestId,
-        )}`,
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
       );
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalledTimes(1);

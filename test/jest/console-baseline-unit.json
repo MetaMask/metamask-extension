@@ -1531,9 +1531,6 @@
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/bridge/awaiting-signatures/awaiting-signatures.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/bridge/hooks/useDestinationAccount.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1565,6 +1562,7 @@
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
+      "React: State updates on unmounted components": 1,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

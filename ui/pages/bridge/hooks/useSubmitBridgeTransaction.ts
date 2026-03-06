@@ -120,16 +120,7 @@ export default function useSubmitBridgeTransaction() {
 
     // Navigate to HW signing page
     if (hardwareWalletUsed) {
-      const {
-        quote: { requestId },
-      } = quoteResponse;
-      // Preserve requestId across popup -> fullscreen transitions (QR flow).
-      const awaitingUrl = requestId
-        ? `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
-            requestId,
-          )}`
-        : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
-      navigate(awaitingUrl);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
       setIsSubmitting(false);
     }
 
@@ -163,7 +154,6 @@ export default function useSubmitBridgeTransaction() {
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      replace: true,
       state: { stayOnHomePage: true },
     });
   };
