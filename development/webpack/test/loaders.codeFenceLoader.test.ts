@@ -32,10 +32,11 @@ console.log('I am Groot.');
     const { promise, resolve } = Promise.withResolvers!<CallbackArgs>();
     const mockContext = {
       getOptions: () => {
+        // Options use arrays (as serialized through thread-loader)
         return {
           features: {
-            active: new Set(omitFeature ? [] : [featureLabel]),
-            all: new Set([featureLabel]),
+            active: omitFeature ? [] : [featureLabel],
+            all: [featureLabel],
           },
         };
       },
@@ -91,9 +92,10 @@ console.log('I am Groot.');
       const features: FeatureLabels = { active: new Set(), all: new Set() };
       const result = getCodeFenceLoader(features);
 
+      // Sets are converted to arrays for JSON serialization through thread-loader
       assert.deepStrictEqual(result, {
         loader: require.resolve('../utils/loaders/codeFenceLoader'),
-        options: { features },
+        options: { features: { active: [], all: [] } },
       });
     });
   });

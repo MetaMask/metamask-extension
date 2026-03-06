@@ -16,6 +16,10 @@ import {
   toOrange,
 } from './helpers';
 import { ENVIRONMENTS, MODES } from './constants';
+import {
+  resolveAutoThreads,
+  resolveAutoJobs,
+} from './loaders/threadLoader';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -179,7 +183,15 @@ export function parseArgv(
   const setActive = (f: string) => omit.includes(f) || active.add(f);
   [defaultFeaturesForBuildType, add].forEach((feat) => feat.forEach(setActive));
 
-  const ignore = new Set(['$0', 'conf', 'progress', 'stats', 'watch']);
+  const ignore = new Set([
+    '$0',
+    'conf',
+    'progress',
+    'stats',
+    'watch',
+    'threads',
+    'jobsPerThread',
+  ]);
   const cacheKey = Object.entries(args)
     .filter(([key]) => key.length > 1 && !ignore.has(key) && !key.includes('-'))
     .sort(([x], [y]) => x.localeCompare(y));
@@ -331,6 +343,31 @@ function getOptions(
         'Sets React Compiler panic threshold that fails the build for all errors or critical errors only. If `none`, the build will not fail.',
       group: toOrange('Developer assistance:'),
       type: 'string',
+    },
+    threads: {
+      array: false,
+      default: 'auto' as 'auto' | number,
+      defaultDescription: `auto (resolved: ${resolveAutoThreads()})`,
+      description:
+        'Number of thread-loader worker threads. ' +
+        '`auto` adapts to core count and available memory. ' +
+        '`0` disables thread-loader entirely.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
+      coerce: (v: string) =>
+        v === 'auto' ? ('auto' as const) : Number(v),
+    },
+    jobsPerThread: {
+      array: false,
+      default: 'auto' as 'auto' | number,
+      defaultDescription: `auto (resolved: ${resolveAutoJobs(resolveAutoThreads())})`,
+      description:
+        'Number of parallel jobs per thread-loader worker. ' +
+        '`auto` derives from thread count.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
+      coerce: (v: string) =>
+        v === 'auto' ? ('auto' as const) : Number(v),
     },
 
     ...prerequisites,
@@ -514,6 +551,8 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
+Threads: ${args.threads === 'auto' ? `auto (${resolveAutoThreads()})` : args.threads}
+Jobs per thread: ${args.jobsPerThread === 'auto' ? `auto (${resolveAutoJobs(typeof args.threads === 'number' ? args.threads : resolveAutoThreads())})` : args.jobsPerThread}
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}

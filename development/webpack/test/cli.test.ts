@@ -21,6 +21,8 @@ describe('./utils/cli.ts', () => {
     test: false,
     reactCompilerVerbose: false,
     reactCompilerDebug: 'none',
+    threads: 'auto',
+    jobsPerThread: 'auto',
     zip: false,
     minify: false,
     browser: ['chrome'],
