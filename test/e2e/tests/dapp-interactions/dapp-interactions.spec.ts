@@ -84,6 +84,11 @@ describe('Dapp interactions', function () {
         await connectAccountConfirmation.checkForAccountsInPermissionList([
           'Account 1',
         ]);
+
+        // TODO: investigate what is not yet ready in the background
+        // that causes the account not being connected if we don't wait some seconds
+        await driver.delay(5000);
+
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
