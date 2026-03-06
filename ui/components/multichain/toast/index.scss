@@ -27,21 +27,7 @@
         color: var(--color-accent03-dark);
         background-color: var(--color-accent03-normal);
       }
-
-      .perps-toast__loading-spinner-container {
-        display: flex;
-        width: 32px;
-        height: 32px;
-        align-items: center;
-        justify-content: center;
-      }
     }
-  }
-
-  &--perps {
-    bottom: 80px;
-    width: calc(100% - 32px);
-    max-width: 408px;
   }
 }
 

@@ -155,7 +155,13 @@ const expectPerpsToastLayout = () => {
 
 const expectLoadingToastIcon = () => {
   const loadingIcon = screen.getByTestId('perps-toast-icon-loading');
-  expect(loadingIcon).toHaveClass('perps-toast__loading-spinner-container');
+  expect(loadingIcon).toHaveClass(
+    'flex',
+    'h-8',
+    'w-8',
+    'items-center',
+    'justify-center',
+  );
   const spinnerIcon = loadingIcon.querySelector('.mm-icon');
   expect(spinnerIcon).toBeInTheDocument();
 };
