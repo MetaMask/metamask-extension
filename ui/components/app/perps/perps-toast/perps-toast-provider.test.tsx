@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import {
@@ -270,7 +271,9 @@ describe('PerpsToastProvider', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Info' }));
-    expect(screen.getByText('Order submitted')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderSubmitted.message),
+    ).toBeInTheDocument();
     expectLoadingToastIcon();
     expectPerpsToastLayout();
 
@@ -278,7 +281,9 @@ describe('PerpsToastProvider', () => {
       jest.advanceTimersByTime(10000);
     });
 
-    expect(screen.getByText('Order submitted')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderSubmitted.message),
+    ).toBeInTheDocument();
   });
 
   it('maps trade success key to success variant with auto-hide', () => {
@@ -292,7 +297,9 @@ describe('PerpsToastProvider', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Success' }));
-    expect(screen.getByText('Position closed')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastTradeSuccess.message),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
     expectPerpsToastLayout();
 
@@ -300,7 +307,9 @@ describe('PerpsToastProvider', () => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Position closed')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastTradeSuccess.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps order placed key to success variant with auto-hide', () => {
@@ -316,14 +325,18 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Placed' }),
     );
-    expect(screen.getByText('Order placed')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderPlaced.message),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Order placed')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastOrderPlaced.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps order filled key to success variant with auto-hide', () => {
@@ -339,14 +352,18 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Filled' }),
     );
-    expect(screen.getByText('Order filled')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderFilled.message),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Order filled')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastOrderFilled.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps order failed key to error variant with auto-hide', () => {
@@ -362,14 +379,18 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Failed' }),
     );
-    expect(screen.getByText('Order failed')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderFailed.message),
+    ).toBeInTheDocument();
     expectErrorAvatarToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(5000);
     });
 
-    expect(screen.queryByText('Order failed')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastOrderFailed.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps close failed key to avatar warning error variant with auto-hide', () => {
@@ -385,7 +406,9 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Close Failed' }),
     );
-    expect(screen.getByText('Failed to close position')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastCloseFailed.message),
+    ).toBeInTheDocument();
     expectErrorAvatarToastIcon();
 
     act(() => {
@@ -393,7 +416,7 @@ describe('PerpsToastProvider', () => {
     });
 
     expect(
-      screen.queryByText('Failed to close position'),
+      screen.queryByText(messages.perpsToastCloseFailed.message),
     ).not.toBeInTheDocument();
   });
 
@@ -410,7 +433,9 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Update Failed' }),
     );
-    expect(screen.getByText('Failed to update TP/SL')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastUpdateFailed.message),
+    ).toBeInTheDocument();
     expectErrorAvatarToastIcon();
 
     act(() => {
@@ -418,7 +443,7 @@ describe('PerpsToastProvider', () => {
     });
 
     expect(
-      screen.queryByText('Failed to update TP/SL'),
+      screen.queryByText(messages.perpsToastUpdateFailed.message),
     ).not.toBeInTheDocument();
   });
 
@@ -481,7 +506,9 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Margin Adjustment Failed' }),
     );
-    expect(screen.getByText('Margin adjustment failed')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastMarginAdjustmentFailed.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Unable to adjust margin')).toBeInTheDocument();
     expectErrorAvatarToastIcon();
 
@@ -490,7 +517,7 @@ describe('PerpsToastProvider', () => {
     });
 
     expect(
-      screen.queryByText('Margin adjustment failed'),
+      screen.queryByText(messages.perpsToastMarginAdjustmentFailed.message),
     ).not.toBeInTheDocument();
   });
 
