@@ -506,7 +506,7 @@ describe('Delegation 7702 Publish Hook', () => {
     // No transfer execution should be included for gasless flow
   });
 
-  it('builds caveats for non-gasless flow', async () => {
+  it('includes transfer execution in delegation for gas fee token flow', async () => {
     isAtomicBatchSupportedMock.mockResolvedValueOnce([
       {
         chainId: TRANSACTION_META_MOCK.chainId,
@@ -526,8 +526,7 @@ describe('Delegation 7702 Publish Hook', () => {
     );
 
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
-    const nonGaslessSignArgs = signDelegationControllerMock.mock.calls[0][0];
-    expect(Array.isArray(nonGaslessSignArgs.delegation.caveats)).toBe(true);
-    expect(nonGaslessSignArgs.delegation.caveats.length).toBe(2);
+    const signArgs = signDelegationControllerMock.mock.calls[0][0];
+    expect(signArgs.delegation.caveats).toHaveLength(2);
   });
 });

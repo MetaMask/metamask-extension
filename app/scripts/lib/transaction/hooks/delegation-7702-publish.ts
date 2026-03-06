@@ -9,18 +9,11 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
-import {
-  Caveat,
-  ExecutionStruct,
-  createCaveatBuilder,
-  getDeleGatorEnvironment,
-} from '../../../../../shared/lib/delegation';
+import { ExecutionStruct } from '../../../../../shared/lib/delegation';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
 } from '../../../../../shared/lib/eip7702-support-utils';
-import { limitedCalls } from '../../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
-import { specificActionERC20TransferBatch } from '../../../../../shared/lib/delegation/caveatBuilder/specificActionERC20TransferBatchBuilder';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
@@ -35,7 +28,6 @@ import {
 import {
   type DelegationMessenger,
   convertTransactionToRedeemDelegations,
-  normalizeCallData,
 } from '../delegation';
 
 const POLLING_INTERVAL_MS = 1000; // 1 Second
@@ -135,10 +127,6 @@ export class Delegation7702PublishHook {
       throw new Error('Selected gas fee token not found');
     }
 
-    const delegationEnvironment = getDeleGatorEnvironment(
-      parseInt(transactionMeta.chainId, 16),
-    );
-    const delegationManagerAddress = delegationEnvironment.DelegationManager;
     const includeTransfer =
       !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
 
@@ -160,23 +148,16 @@ export class Delegation7702PublishHook {
       );
     }
 
-    const transferOverrides =
+    const additionalExecutions =
       includeTransfer && gasFeeToken
-        ? {
-            caveats: this.#buildTransferCaveats(
-              delegationEnvironment,
-              finalTransactionMeta,
-              gasFeeToken,
-            ),
-            additionalExecutions: [this.#buildTransferExecution(gasFeeToken)],
-          }
-        : {};
+        ? [this.#buildTransferExecution(gasFeeToken)]
+        : [];
 
-    const { data, authorizationList } =
+    const { data, to, authorizationList } =
       await convertTransactionToRedeemDelegations({
         transaction: finalTransactionMeta,
         messenger: this.#messenger as DelegationMessenger,
-        ...transferOverrides,
+        additionalExecutions,
         authorization: delegationAddress
           ? undefined
           : {
@@ -188,7 +169,7 @@ export class Delegation7702PublishHook {
     const relayRequest: RelaySubmitRequest = {
       chainId,
       data,
-      to: delegationManagerAddress,
+      to,
       metadata: {
         txType: transactionMeta.type,
         client: getClientForTransactionMetadata(),
@@ -219,55 +200,14 @@ export class Delegation7702PublishHook {
     };
   }
 
-  #buildTransferExecution(
-    gasFeeToken: GasFeeToken | undefined,
-  ): ExecutionStruct {
-    if (!gasFeeToken) {
-      throw new Error('Selected gas fee token not found');
-    }
-
+  #buildTransferExecution(gasFeeToken: GasFeeToken): ExecutionStruct {
     return {
       target: gasFeeToken.tokenAddress,
       value: BigInt('0x0'),
-      callData: this.#buildTokenTransferData(
+      callData: new Interface(abiERC20).encodeFunctionData('transfer', [
         gasFeeToken.recipient,
         gasFeeToken.amount,
-      ),
+      ]) as Hex,
     };
-  }
-
-  #buildTransferCaveats(
-    environment: ReturnType<typeof getDeleGatorEnvironment>,
-    transactionMeta: TransactionMeta,
-    gasFeeToken: GasFeeToken,
-  ): Caveat[] {
-    const caveatBuilder = createCaveatBuilder(environment);
-
-    const { txParams } = transactionMeta;
-    const { to, value, data } = txParams;
-    const { tokenAddress, recipient, amount } = gasFeeToken;
-
-    if (to !== undefined) {
-      caveatBuilder.addCaveat(
-        specificActionERC20TransferBatch,
-        tokenAddress,
-        recipient,
-        amount,
-        to,
-        (value as Hex) ?? '0x0',
-        normalizeCallData(data),
-      );
-    }
-
-    caveatBuilder.addCaveat(limitedCalls, 1);
-
-    return caveatBuilder.build();
-  }
-
-  #buildTokenTransferData(recipient: Hex, amount: Hex): Hex {
-    return new Interface(abiERC20).encodeFunctionData('transfer', [
-      recipient,
-      amount,
-    ]) as Hex;
   }
 }
