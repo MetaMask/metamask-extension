@@ -103,7 +103,7 @@ describe('Send NFT', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
 
     describe('Wallet initiated', function () {
-      it.only('sends ERC721', async function () {
+      it('sends ERC721', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
