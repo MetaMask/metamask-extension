@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmations/snap-sign-transaction-confirmation';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -37,11 +36,8 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await sendSolTest.signTransaction();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const signTxConfirmation = new SnapSignTransactionConfirmation(
-            driver,
-          );
-          await signTxConfirmation.checkPageIsLoaded();
-          await signTxConfirmation.clickFooterConfirmButton();
+          const signTxConfirmation = new SnapTransactionConfirmation(driver);
+          await signTxConfirmation.clickFooterConfirmButtonWithoutWait();
           await testDapp.switchTo();
 
           const signedTransaction = await sendSolTest.getSignedTransaction();
@@ -53,8 +49,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new SnapTransactionConfirmation(driver);
-          await txConfirmation.checkPageIsLoaded();
-          await txConfirmation.clickFooterConfirmButton();
+          await txConfirmation.clickFooterConfirmButtonWithoutWait();
           await testDapp.switchTo();
 
           const transactionHash = await sendSolTest.getTransactionHash();
@@ -87,20 +82,18 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           // 1. Start a transaction and cancel it
           const sendSolTest = await testDapp.getSendSolTest();
           await sendSolTest.sendTransaction();
-
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const cancelTxConfirmation = new SnapTransactionConfirmation(driver);
-          await cancelTxConfirmation.checkPageIsLoaded();
-          await cancelTxConfirmation.clickFooterCancelButton();
+          await cancelTxConfirmation.clickFooterCancelButtonWithoutWait();
           await testDapp.switchTo();
 
           // 2. Send another transaction
           await sendSolTest.sendTransaction();
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
+
           const txConfirmation = new SnapTransactionConfirmation(driver);
-          await txConfirmation.checkPageIsLoaded();
-          await txConfirmation.clickFooterConfirmButton();
+          await txConfirmation.clickFooterConfirmButtonWithoutWait();
           await testDapp.switchTo();
 
           const transactionHash = await sendSolTest.getTransactionHash();
@@ -135,11 +128,10 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             const sendSolTest = await testDapp.getSendSolTest();
             await sendSolTest.sendTransaction();
 
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
             const txConfirmation = new SnapTransactionConfirmation(driver);
-            await txConfirmation.checkPageIsLoaded();
             await txConfirmation.checkNetworkIsDisplayed('Solana Devnet');
-            await txConfirmation.clickFooterConfirmButton();
+            await txConfirmation.clickFooterConfirmButtonWithoutWait();
           },
         );
       });

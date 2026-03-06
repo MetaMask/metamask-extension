@@ -72,11 +72,25 @@ class SnapTransactionConfirmation {
   }
 
   async clickFooterConfirmButton() {
+    console.log('Clicking footer confirm button');
     await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
   }
 
   async clickFooterConfirmButtonAndWaitForWindowToClose() {
+    console.log(
+      'Clicking footer confirm button and waiting for window to close',
+    );
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  }
+
+  async clickFooterConfirmButtonWithoutWait() {
+    console.log('Clicking footer confirm button without waiting');
+    await this.driver.clickElement(this.confirmButton);
+  }
+
+  async clickFooterCancelButtonWithoutWait() {
+    console.log('Clicking footer cancel button without waiting');
+    await this.driver.clickElement(this.cancelButton);
   }
 }
 export default SnapTransactionConfirmation;

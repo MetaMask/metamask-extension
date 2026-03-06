@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmations/snap-sign-transaction-confirmation';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
@@ -35,19 +34,17 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           });
 
           // 1. Sign multiple transactions
+          console.log('1. Sign multiple transactions');
           const sendWSolTest = await testDapp.getSendWSolTest();
           await sendWSolTest.signTransaction();
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const signTxConfirmation = new SnapSignTransactionConfirmation(
-            driver,
-          );
-          await signTxConfirmation.checkPageIsLoaded();
-          await signTxConfirmation.clickFooterConfirmButton();
+          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
+          const signTxConfirmation = new SnapTransactionConfirmation(driver);
+          await signTxConfirmation.clickFooterConfirmButtonWithoutWait();
+          await driver.delay(1000);
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await signTxConfirmation.checkPageIsLoaded();
-          await signTxConfirmation.clickFooterConfirmButton();
+          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
+          await signTxConfirmation.clickFooterConfirmButtonWithoutWait();
           await testDapp.switchTo();
 
           const signedTransactions = await sendWSolTest.getSignedTransactions();
@@ -56,16 +53,15 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           assert.ok(signedTransactions[1]);
 
           // 2. Send multiple transactions
+          console.log('2. Send multiple transactions');
           await sendWSolTest.sendTransaction();
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
           const txConfirmation = new SnapTransactionConfirmation(driver);
-          await txConfirmation.checkPageIsLoaded();
-          await txConfirmation.clickFooterConfirmButton();
+          await txConfirmation.clickFooterConfirmButtonWithoutWait();
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await txConfirmation.checkPageIsLoaded();
-          await txConfirmation.clickFooterConfirmButton();
+          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
+          await txConfirmation.clickFooterConfirmButtonWithoutWait();
           await testDapp.switchTo();
 
           const transactionHashes = await sendWSolTest.getTransactionHashs();
