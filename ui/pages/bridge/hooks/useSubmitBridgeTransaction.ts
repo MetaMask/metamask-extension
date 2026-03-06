@@ -23,6 +23,7 @@ import {
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
   getWarningLabels,
+  type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
@@ -70,7 +71,9 @@ export default function useSubmitBridgeTransaction() {
 
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector((state) =>
+    getWarningLabels(state as BridgeAppState, Date.now()),
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
 

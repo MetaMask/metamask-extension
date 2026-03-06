@@ -9,6 +9,7 @@ import {
   getBridgeQuotes,
   getFromTokenBalanceInUsd,
   getWarningLabels,
+  type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
@@ -24,7 +25,9 @@ export const useQuoteFetchEvents = () => {
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector((state) =>
+    getWarningLabels(state as BridgeAppState, Date.now()),
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 
   // Emitted each time quotes are fetched successfully
