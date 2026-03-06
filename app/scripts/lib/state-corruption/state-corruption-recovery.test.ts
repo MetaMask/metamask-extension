@@ -1,6 +1,6 @@
 import 'navigator.locks';
+import type { Backup } from '../../../../shared/lib/backup';
 import {
-  Backup,
   PersistenceError,
   PersistenceManager,
 } from '../stores/persistence-manager';

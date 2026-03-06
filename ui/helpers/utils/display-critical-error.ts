@@ -12,9 +12,7 @@ import {
   METHOD_REPAIR_DATABASE_TIMEOUT,
 } from '../../../shared/constants/state-corruption';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
-
-/** Timeout for vault backup check; if IndexedDB hangs, we still show the error page (without restore link). */
-const CHECK_VAULT_BACKUP_TIMEOUT_MS = 5_000;
+import { safeGetVaultBackup, hasVault } from '../../../shared/lib/backup';
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
@@ -164,76 +162,6 @@ async function handleRestartAction(
 }
 
 /**
- * Checks if a vault backup exists in IndexedDB.
- * This is used to determine whether to show the "restore accounts" option
- * on the critical error screen.
- *
- * We access IndexedDB directly here instead of using globalThis.stateHooks.getBackupState()
- * because this function is called when the UI initialization has timed out, meaning the
- * PersistenceManager (which powers stateHooks) may not have been initialized yet.
- *
- * If the database does not exist yet, opening it creates an empty DB and object store
- * (same schema as IndexedDBStore) so that PersistenceManager can use it when it later
- * initializes. IndexedDB has no way to probe for existence without opening.
- *
- * @returns A promise that resolves to true if a vault backup exists, false otherwise.
- * Resolves to false on timeout so the critical error page is never blocked by a hanging IndexedDB.
- */
-async function safeCheckVaultBackupExists(): Promise<boolean> {
-  const timeoutPromise = new Promise<boolean>((resolve) => {
-    setTimeout(() => resolve(false), CHECK_VAULT_BACKUP_TIMEOUT_MS);
-  });
-
-  return Promise.race([checkVaultBackupExists(), timeoutPromise]);
-}
-
-async function checkVaultBackupExists(): Promise<boolean> {
-  let db: IDBDatabase | undefined;
-  try {
-    db = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open('metamask-backup', 1);
-      request.onupgradeneeded = () => {
-        const database = request.result;
-        if (!database.objectStoreNames.contains('store')) {
-          database.createObjectStore('store');
-        }
-      };
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-
-    const openedDb = db;
-    const tx = openedDb.transaction('store', 'readonly');
-    const store = tx.objectStore('store');
-    const keyringRequest = store.get('KeyringController');
-
-    return new Promise((resolve) => {
-      keyringRequest.onsuccess = () => {
-        const keyringController = keyringRequest.result as
-          | { vault?: unknown }
-          | undefined;
-        const hasVault = Boolean(keyringController?.vault);
-        openedDb.close();
-        resolve(hasVault);
-      };
-      keyringRequest.onerror = () => {
-        openedDb.close();
-        resolve(false);
-      };
-    });
-  } catch {
-    if (db) {
-      try {
-        db.close();
-      } catch {
-        // Ignore close errors when cleaning up after a failed check
-      }
-    }
-    return false;
-  }
-}
-
-/**
  * Displays a critical error message in the given container.
  *
  * This function always throws the error after displaying the message.
@@ -255,14 +183,15 @@ export async function displayCriticalErrorMessage(
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
-  const canTriggerRestore =
-    Boolean(port) && (await safeCheckVaultBackupExists());
+  const backup = await safeGetVaultBackup();
+  const canTriggerRestore = Boolean(port) && hasVault(backup);
 
   try {
     port?.postMessage({
       data: {
         method: CRITICAL_ERROR_SCREEN_VIEWED,
         params: {
+          backup,
           canTriggerRestore,
           criticalErrorType,
         },
@@ -316,7 +245,7 @@ export async function displayCriticalErrorMessage(
             (port as browser.Runtime.Port).postMessage({
               data: {
                 method: METHOD_REPAIR_DATABASE_TIMEOUT,
-                params: { criticalErrorType },
+                params: { criticalErrorType, backup },
               },
             });
           }

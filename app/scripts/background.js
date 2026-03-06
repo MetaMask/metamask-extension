@@ -53,26 +53,13 @@ import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
-import {
-  CRITICAL_ERROR_SCREEN_VIEWED,
-  DISPLAY_GENERAL_STARTUP_ERROR,
-  RELOAD_WINDOW,
-} from '../../shared/constants/start-up-errors';
-import {
-  CriticalErrorType,
-  METHOD_REPAIR_DATABASE_TIMEOUT,
-} from '../../shared/constants/state-corruption';
+import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { backedUpStateKeys, hasVault } from '../../shared/lib/backup';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
-import {
-  CorruptionHandler,
-  hasVault,
-} from './lib/state-corruption/state-corruption-recovery';
-import { trackCriticalErrorEvent } from './lib/state-corruption/track-critical-error';
-import {
-  backedUpStateKeys,
-  PersistenceManager,
-} from './lib/stores/persistence-manager';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
@@ -118,7 +105,7 @@ import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageM
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
- * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ * @typedef {import('../../shared/lib/backup').Backup} Backup
  */
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
@@ -134,8 +121,6 @@ const BADGE_MAX_COUNT = 9;
 const inTest = process.env.IN_TEST;
 /** Persisted to session during repairAndReinitialize; restored from session at start of handleOnConnect so we do not simulate state sync hang on the reconnecting UI. */
 let inTestRestoreFlow = false;
-/** MetaMask UI ports (full page, side panel, etc.) for broadcasting RELOAD_WINDOW on timeout restore. */
-const metamaskUIPorts = new Set();
 /** Session storage key to persist inTestRestoreFlow across service worker restart (e.g. after RELOAD_WINDOW). */
 const IN_TEST_RESTORE_FLOW = 'IN_TEST_RESTORE_FLOW';
 
@@ -586,6 +571,7 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
+const criticalErrorHandler = new CriticalErrorHandler();
 /**
  * Handles the onConnect event.
  *
@@ -597,9 +583,6 @@ const handleOnConnect = async (port) => {
     if (isMetaMaskUIPort) {
       const res = await browser.storage.session.get(IN_TEST_RESTORE_FLOW);
       inTestRestoreFlow = Boolean(res[IN_TEST_RESTORE_FLOW]);
-      if (inTestRestoreFlow) {
-        await browser.storage.session.remove(IN_TEST_RESTORE_FLOW);
-      }
     }
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
@@ -633,78 +616,15 @@ const handleOnConnect = async (port) => {
     return;
   }
 
-  // Set up repair listener early so UI's "Restore accounts" button works even when we never
-  // reach the normal flow (e.g. init hang) or the catch block (e.g. state sync hang).
-  // We keep it for the lifetime of the port so "Restore accounts" still works if a
-  // critical error screen is shown later.
-  const repairListener = async (message) => {
-    if (message?.data?.method === METHOD_REPAIR_DATABASE_TIMEOUT) {
-      port.onMessage.removeListener(repairListener);
-
-      const params = message?.data?.params ?? {};
-      const criticalErrorType = Object.values(CriticalErrorType).includes(
-        params.criticalErrorType,
-      )
-        ? params.criticalErrorType
-        : CriticalErrorType.Other;
-
-      try {
-        // Swallow getBackup() errors so we always reach the finally and send RELOAD_WINDOW;
-        // otherwise the user gets no feedback and stays stuck on the critical error screen.
-        const backup =
-          (await persistenceManager.getBackup().catch(() => null)) ?? null;
-        trackCriticalErrorEvent(
-          backup,
-          MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
-          criticalErrorType,
-        );
-        // Snapshot ports before repair; re-init can disconnect them and clear the set.
-        const portsToReload = [...metamaskUIPorts];
-        try {
-          await repairAndReinitialize(backup);
-        } finally {
-          // Same as vault recovery: always reload all UI windows so each shows login
-          // (or a new error if init failed).
-          portsToReload.forEach((p) => tryPostMessage(p, RELOAD_WINDOW));
-        }
-      } catch (repairError) {
-        sentry?.captureException(repairError);
-      }
-    }
-  };
-  const criticalErrorScreenViewedListener = async (message) => {
-    if (message?.data?.method !== CRITICAL_ERROR_SCREEN_VIEWED) {
-      return;
-    }
-    const params = message?.data?.params ?? {};
-    const canTriggerRestore = Boolean(params.canTriggerRestore);
-    const criticalErrorType = Object.values(CriticalErrorType).includes(
-      params.criticalErrorType,
-    )
-      ? params.criticalErrorType
-      : CriticalErrorType.Other;
-    const backup =
-      (await persistenceManager.getBackup().catch(() => null)) ?? null;
-    trackCriticalErrorEvent(
-      backup,
-      MetaMetricsEventName.CriticalErrorScreenViewed,
-      criticalErrorType,
-      { restore_accounts_enabled: canTriggerRestore },
-    );
-  };
-  const removeCriticalErrorListeners = () => {
-    port.onMessage.removeListener(repairListener);
-    port.onMessage.removeListener(criticalErrorScreenViewedListener);
-  };
-  const deletePortAndDisconnectListeners = () => {
-    metamaskUIPorts.delete(port);
-    removeCriticalErrorListeners();
-  };
+  let removeCriticalErrorListeners;
   if (isMetaMaskUIPort) {
-    metamaskUIPorts.add(port);
-    port.onMessage.addListener(repairListener);
-    port.onMessage.addListener(criticalErrorScreenViewedListener);
-    port.onDisconnect.addListener(deletePortAndDisconnectListeners);
+    criticalErrorHandler.registerPortForCriticalError({
+      port,
+      database: persistenceManager,
+      repairCallback: (backup) => repairAndReinitialize(backup),
+    });
+    removeCriticalErrorListeners = () =>
+      criticalErrorHandler.removeListenersForPort(port);
   }
 
   // Queue up connection attempts here, waiting until after initialization

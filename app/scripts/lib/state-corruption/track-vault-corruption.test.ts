@@ -4,7 +4,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import type { Backup } from '../stores/persistence-manager';
+import type { Backup } from '../../../../shared/lib/backup';
 import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
 jest.mock('../segment', () => ({

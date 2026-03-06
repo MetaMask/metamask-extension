@@ -373,6 +373,7 @@ describe('displayCriticalError', () => {
       data: {
         method: CRITICAL_ERROR_SCREEN_VIEWED,
         params: {
+          backup: null,
           canTriggerRestore: false,
           criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
         },
@@ -467,14 +468,17 @@ describe('restore accounts link', () => {
     restoreLink?.dispatchEvent(new Event('click'));
 
     expect(window.confirm).toHaveBeenCalled();
-    expect(mockPort.postMessage).toHaveBeenCalledWith({
-      data: {
-        method: 'repairDatabaseTimeout',
-        params: {
-          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
-        },
-      },
-    });
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: 'repairDatabaseTimeout',
+          params: expect.objectContaining({
+            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+            backup: expect.any(Object),
+          }),
+        }),
+      }),
+    );
   });
 
   it('does not send METHOD_REPAIR_DATABASE_TIMEOUT when restore accounts link is clicked and user cancels', async () => {
@@ -513,6 +517,7 @@ describe('restore accounts link', () => {
         data: expect.objectContaining({
           method: CRITICAL_ERROR_SCREEN_VIEWED,
           params: expect.objectContaining({
+            backup: expect.anything(),
             criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
           }),
         }),

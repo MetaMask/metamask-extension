@@ -5,7 +5,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import type { Backup } from '../stores/persistence-manager';
+import type { Backup } from '../../../../shared/lib/backup';
 import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 
 /**
