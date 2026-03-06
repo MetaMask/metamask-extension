@@ -102,6 +102,7 @@ function TransactionListItemInner({
   );
   const bridgeTxHistoryItem =
     bridgeTxHistoryItemByHash ?? bridgeTxHistoryItemByOriginalTxMetaId;
+  const isIntentBridgeActivity = Boolean(bridgeTxHistoryItem?.quote?.intent);
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
@@ -287,7 +288,12 @@ function TransactionListItemInner({
     cancelTransaction,
   ]);
   const showCancelButton =
-    !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
+    !hasCancelled &&
+    isPending &&
+    !isUnapproved &&
+    !isSubmitting &&
+    !isBridgeTx &&
+    !isIntentBridgeActivity;
 
   return (
     <>

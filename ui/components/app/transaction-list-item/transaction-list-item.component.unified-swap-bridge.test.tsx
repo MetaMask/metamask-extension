@@ -97,7 +97,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
   });
 
   it('should render pending for submitted unified swap tx even when not earliest nonce', () => {
-    const { getByText, queryByText } = renderWithProvider(
+    const { getByText, queryByText, queryByTestId } = renderWithProvider(
       <TransactionListItem
         transactionGroup={{
           ...mockUnifiedSwapTxGroup,
@@ -122,6 +122,12 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
             txHistory: {
               intentOrderUid: {
                 ...mockBridgeTxData.bridgeHistoryItem,
+                quote: {
+                  ...mockBridgeTxData.bridgeHistoryItem.quote,
+                  intent: {
+                    protocol: 'cowswap',
+                  },
+                },
                 originalTransactionId: mockUnifiedSwapTxGroup.initialTransaction.id,
                 status: {
                   ...mockBridgeTxData.bridgeHistoryItem.status,
@@ -137,6 +143,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
 
     expect(getByText(messages.pending.message)).toBeInTheDocument();
     expect(queryByText(messages.queued.message)).not.toBeInTheDocument();
+    expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
   });
 
   it('should render pending confirmed bridge tx summary', () => {
