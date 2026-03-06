@@ -13,7 +13,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
@@ -21,6 +20,7 @@ import {
   getNftImage,
   getNftImageAlt,
 } from '../../../../../../../helpers/utils/nfts';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useNftImageUrl } from '../../../../../hooks/useNftImageUrl';
@@ -36,6 +36,7 @@ export const generateTokenIdDisplay = (tokenId: string) => {
 };
 
 const NFTSendHeading = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -103,8 +104,7 @@ const NFTSendHeading = () => {
     <Text
       variant={TextVariant.headingLg}
       color={TextColor.inherit}
-      marginTop={3}
-      textAlign={TextAlign.Center}
+      paddingBottom={1}
     >
       {assetName}
     </Text>
@@ -120,13 +120,29 @@ const NFTSendHeading = () => {
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      padding={4}
+      paddingBottom={3}
+      paddingInline={0}
+      marginBottom={2}
     >
-      {TokenImage}
-      {TokenName}
-      {TokenID}
+      <Text
+        variant={TextVariant.bodyMd}
+        color={TextColor.textAlternative}
+        marginBottom={1}
+      >
+        {t('confirmTitleSending')}
+      </Text>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+      >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          {TokenName}
+          {TokenID}
+        </Box>
+        {TokenImage}
+      </Box>
     </Box>
   );
 };
