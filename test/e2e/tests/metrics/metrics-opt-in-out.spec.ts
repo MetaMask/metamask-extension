@@ -31,6 +31,7 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt In',
             properties: {
               category: 'Onboarding',
+              account_type: 'create',
             },
           },
         ],
@@ -49,6 +50,7 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt Out',
             properties: {
               category: 'Onboarding',
+              account_type: 'create',
             },
           },
         ],
@@ -107,6 +109,7 @@ describe('Metrics Opt In/Out events', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.equal(events[0].event, 'Metrics Opt In');
+        assert.equal(events[0].properties.account_type, 'create');
       },
     );
   });
@@ -168,6 +171,7 @@ describe('Metrics Opt In/Out events', function () {
           const events = await getEventPayloads(driver, mockedEndpoints);
           assert.equal(events.length, 1);
           assert.equal(events[0].event, 'Metrics Opt Out');
+          assert.equal(events[0].properties.account_type, 'create');
         }
       },
     );

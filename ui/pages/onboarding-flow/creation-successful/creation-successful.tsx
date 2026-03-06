@@ -303,7 +303,10 @@ export default function CreationSuccessful() {
           event: participateInMetaMetrics
             ? MetaMetricsEventName.MetricsOptIn
             : MetaMetricsEventName.MetricsOptOut,
-          properties: {},
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: firstTimeFlowType,
+          },
         },
         {
           isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
