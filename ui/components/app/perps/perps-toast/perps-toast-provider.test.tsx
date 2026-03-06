@@ -10,20 +10,15 @@ import {
 } from './perps-toast-provider';
 
 const ToastHarness = () => {
-  const {
-    showPerpsToast,
-    showPerpsToastByKey,
-    replacePerpsToast,
-    replacePerpsToastByKey,
-    hidePerpsToast,
-  } = usePerpsToast();
+  const { replacePerpsToast, replacePerpsToastByKey, hidePerpsToast } =
+    usePerpsToast();
 
   return (
     <>
       <button
         type="button"
         onClick={() => {
-          showPerpsToast({
+          replacePerpsToast({
             message: 'Submitting order...',
             variant: 'info',
           });
@@ -34,7 +29,7 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
-          showPerpsToastByKey({
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
           });
         }}
@@ -44,7 +39,7 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
-          showPerpsToastByKey({
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.ORDER_PLACED,
           });
         }}
@@ -54,7 +49,7 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
-          showPerpsToastByKey({
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.ORDER_FILLED,
           });
         }}
@@ -64,7 +59,7 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
-          showPerpsToastByKey({
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.ORDER_FAILED,
           });
         }}
@@ -74,7 +69,7 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
-          showPerpsToastByKey({
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS,
             messageParams: ['100', 'ETH'],
           });
@@ -85,7 +80,7 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
-          showPerpsToastByKey({
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
             messageParams: ['50', 'ETH'],
           });

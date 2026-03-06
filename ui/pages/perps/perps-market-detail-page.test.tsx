@@ -107,24 +107,18 @@ jest.mock('../../providers/perps', () => ({
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
-jest.mock('../../components/app/perps/perps-toast', () => ({
-  PERPS_TOAST_KEYS: {
-    ORDER_FILLED: 'perpsToastOrderFilled',
-    ORDER_PLACED: 'perpsToastOrderPlaced',
-    ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
-    TRADE_SUCCESS: 'perpsToastTradeSuccess',
-    UPDATE_FAILED: 'perpsToastUpdateFailed',
-    UPDATE_IN_PROGRESS: 'perpsToastUpdateInProgress',
-    UPDATE_SUCCESS: 'perpsToastUpdateSuccess',
-    CLOSE_FAILED: 'perpsToastCloseFailed',
-    CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
-    ORDER_FAILED: 'perpsToastOrderFailed',
-    SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
-  },
-  usePerpsToast: () => ({
-    replacePerpsToastByKey: mockReplacePerpsToastByKey,
-  }),
-}));
+jest.mock('../../components/app/perps/perps-toast', () => {
+  const { PERPS_TOAST_KEYS } = jest.requireActual(
+    '../../components/app/perps/perps-toast/perps-toast-provider',
+  );
+
+  return {
+    PERPS_TOAST_KEYS,
+    usePerpsToast: () => ({
+      replacePerpsToastByKey: mockReplacePerpsToastByKey,
+    }),
+  };
+});
 
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
