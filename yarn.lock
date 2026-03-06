@@ -5951,11 +5951,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/design-system-react@npm:0.9.0"
+"@metamask/design-system-react@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metamask/design-system-react@npm:0.10.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.2.0"
+    "@metamask/design-system-shared": "npm:^0.3.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -5966,16 +5966,16 @@ __metadata:
     "@metamask/utils": ^11.10.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/344d16745f3924f8a9f10f4293e611238c16fe452eb151117ee6711565e081bc97d9a792047e50903a88a7f0bf1c64bb483bfe791b90fa0a7214646a519d8085
+  checksum: 10/ffe596117c6928959daba460f51ae1747fa854566ce82c0c3ca6398b9dc37035844c33dc23f5212910258386e3277b87789d0722c508873b62746a1137a53994
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/design-system-shared@npm:0.2.0"
+"@metamask/design-system-shared@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/design-system-shared@npm:0.3.0"
   dependencies:
     "@metamask/utils": "npm:^11.10.0"
-  checksum: 10/8b7436e4c1882495faa1ca402456dfb82247e517c718da0bed0c4daf7ec06ed0e6bfa7fa3c9fa6930b30e4e5f3f8576436f0de27d9a86f97169cab0423285612
+  checksum: 10/2be032b91b10d03ca4e02ba9ff5afc9db763fb865161add83a7e28ef83f165cc3c3edba03f5d600ec95e3014afd0077abcadd75e613792e77c709760813ff749
   languageName: node
   linkType: hard
 
@@ -32924,7 +32924,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.1"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
-    "@metamask/design-system-react": "npm:^0.9.0"
+    "@metamask/design-system-react": "npm:^0.10.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.2.2"
     "@metamask/eip-5792-middleware": "npm:3.0.0"
