@@ -4003,7 +4003,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD कन्वर्शन"
+    "message": "$1 को mUSD में बदलें",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
@@ -5272,12 +5273,6 @@
   "perpsEntryPrice": {
     "message": "एंट्री प्राइस"
   },
-  "perpsExploreCrypto": {
-    "message": "क्रिप्टो एक्सप्लोर करें"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "स्टॉक्स और कमोडिटीज़ एक्सप्लोर करें"
-  },
   "perpsFees": {
     "message": "फीस"
   },
@@ -5391,9 +5386,6 @@
   },
   "perpsOpenedLong": {
     "message": "खुला लॉन्ग"
-  },
-  "perpsOrderAmount": {
-    "message": "ऑर्डर अमाउंट"
   },
   "perpsOrders": {
     "message": "ऑर्डर"
@@ -5541,12 +5533,6 @@
   },
   "perpsWithdraw": {
     "message": "निकालें"
-  },
-  "perpsYourOrders": {
-    "message": "आपके ऑर्डर"
-  },
-  "perpsYourPositions": {
-    "message": "आपकी पोज़िशन्स"
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"

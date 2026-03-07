@@ -8,7 +8,6 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   Box,
   Text,
@@ -31,6 +30,7 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
 import { setMusdConversionEducationSeen } from '../../../store/actions';
@@ -50,7 +50,8 @@ import { MUSD_DEEPLINK_PARAM } from '../../../../shared/lib/deep-links/routes/mu
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 const MUSD_EDUCATION_COIN_IMAGE_DARK = './images/musd-education-coin-dark.png';
-const MUSD_EDUCATION_COIN_IMAGE_LIGHT = './images/musd-education-coin-light.png';
+const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
+  './images/musd-education-coin-light.png';
 
 /**
  * MUSD Education Screen Component
@@ -215,11 +216,7 @@ const MusdEducationScreen: React.FC = () => {
           >
             {t('musdBonusExplanation', [
               String(MUSD_CONVERSION_APY),
-              <TextButton
-                key="terms-link"
-                size={TextButtonSize.BodyMd}
-                asChild
-              >
+              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
                 <a
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"
@@ -238,7 +235,11 @@ const MusdEducationScreen: React.FC = () => {
           alignItems={BoxAlignItems.Center}
         >
           <img
-            src={theme === ThemeType.dark ? MUSD_EDUCATION_COIN_IMAGE_DARK : MUSD_EDUCATION_COIN_IMAGE_LIGHT}
+            src={
+              theme === ThemeType.dark
+                ? MUSD_EDUCATION_COIN_IMAGE_DARK
+                : MUSD_EDUCATION_COIN_IMAGE_LIGHT
+            }
             alt={t('musdGetMusd') as string}
             width={252}
             height={252}

@@ -68,7 +68,6 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
@@ -335,10 +334,6 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
-const PerpsHomePage = mmLazy(
-  (() =>
-    import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
-);
 const PerpsMarketDetailPage = mmLazy(
   (() =>
     import(
@@ -353,24 +348,17 @@ const PerpsActivityPage = mmLazy(
   (() =>
     import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
 );
-const MusdConversionPage = mmLazy(
-  (() => import('../musd/index.tsx')) as unknown as DynamicImportType,
-);
 const PerpsOrderEntryPage = mmLazy(
   (() =>
     import(
       '../perps/perps-order-entry-page.tsx'
     )) as unknown as DynamicImportType,
 );
-// End Lazy Routes
-
-// Perps pages wrapped with PerpsControllerProvider
-const WrappedPerpsHomePage = () => (
-  <PerpsControllerProvider>
-    <PerpsHomePage />
-  </PerpsControllerProvider>
+const MusdConversionPage = mmLazy(
+  (() => import('../musd/index.tsx')) as unknown as DynamicImportType,
 );
 
+// Perps pages wrapped with PerpsControllerProvider
 const WrappedPerpsMarketDetailPage = () => (
   <PerpsControllerProvider>
     <PerpsMarketDetailPage />
@@ -773,6 +761,14 @@ export default function Routes() {
           'basicFunctionalityRequired_openDefiPage',
       }),
       createRouteWithLayout({
+        path: `${MUSD_CONVERSION_ROUTE}/*`,
+        component: MusdConversionPage,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openMusdConversionPage',
+      }),
+      createRouteWithLayout({
         path: PERMISSIONS,
         component: PermissionsPage,
         layout: RootLayout,
@@ -895,14 +891,6 @@ export default function Routes() {
           'basicFunctionalityRequired_openRewardsPage',
       }),
       createRouteWithLayout({
-        path: PERPS_HOME_ROUTE,
-        component: WrappedPerpsHomePage,
-        layout: RootLayout,
-        authenticated: true,
-        basicFunctionalityOpenPageCtaKey:
-          'basicFunctionalityRequired_openPerpsPage',
-      }),
-      createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: WrappedPerpsMarketDetailPage,
         layout: RootLayout,
@@ -933,14 +921,6 @@ export default function Routes() {
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openPerpsPage',
-      }),
-      createRouteWithLayout({
-        path: `${MUSD_CONVERSION_ROUTE}/*`,
-        component: MusdConversionPage,
-        layout: RootLayout,
-        authenticated: true,
-        basicFunctionalityOpenPageCtaKey:
-          'basicFunctionalityRequired_openMusdConversionPage',
       }),
       createRouteWithLayout({
         path: DEFAULT_ROUTE,

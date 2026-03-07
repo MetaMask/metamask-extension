@@ -147,10 +147,7 @@ describe('MusdEducationScreen', () => {
 
     const img = screen.getByRole('img');
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute(
-      'src',
-      './images/musd-education-coin-dark.png',
-    );
+    expect(img).toHaveAttribute('src', './images/musd-education-coin-dark.png');
   });
 
   it('renders the "Get started" primary button', () => {

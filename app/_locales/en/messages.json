@@ -4116,20 +4116,13 @@
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Claimable bonus",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD Conversion"
+    "message": "Convert $1 to mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionToastFailed": {
     "message": "mUSD conversion failed"
@@ -4140,13 +4133,6 @@
   },
   "musdConversionToastSuccess": {
     "message": "Your mUSD is here!"
-  },
-  "musdConvert": {
-    "message": "Convert"
-  },
-  "musdConvertAndGetBonus": {
-    "message": "Convert and get $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
@@ -5366,6 +5352,15 @@
   "perpsActivity": {
     "message": "Activity"
   },
+  "perpsAddExposure": {
+    "message": "Add exposure"
+  },
+  "perpsAddExposureDescriptionLong": {
+    "message": "Increase the size of your long position"
+  },
+  "perpsAddExposureDescriptionShort": {
+    "message": "Increase the size of your short position"
+  },
   "perpsAddFunds": {
     "message": "Add funds"
   },
@@ -5373,7 +5368,10 @@
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
   "perpsAddMargin": {
-    "message": "Add Margin"
+    "message": "Add margin"
+  },
+  "perpsAddMarginDescription": {
+    "message": "Increase margin to reduce liquidation risk"
   },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
@@ -5387,6 +5385,9 @@
   },
   "perpsAvailableBalance": {
     "message": "Available balance"
+  },
+  "perpsAvailableToClose": {
+    "message": "Available to close"
   },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
@@ -5403,6 +5404,9 @@
   },
   "perpsCloseLong": {
     "message": "Close Long"
+  },
+  "perpsClosePosition": {
+    "message": "Close position"
   },
   "perpsCloseShort": {
     "message": "Close Short"
@@ -5449,11 +5453,11 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Explore crypto"
+  "perpsEstSize": {
+    "message": "Est. size"
   },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explore stocks and commodities"
+  "perpsExploreMarkets": {
+    "message": "Explore markets"
   },
   "perpsFees": {
     "message": "Fees"
@@ -5493,6 +5497,9 @@
   },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
+  },
+  "perpsIncludesPnl": {
+    "message": "includes P&L $1"
   },
   "perpsIncreasedPosition": {
     "message": "Increased position"
@@ -5590,9 +5597,6 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
-  "perpsOrderAmount": {
-    "message": "Order Amount"
-  },
   "perpsOrders": {
     "message": "Orders"
   },
@@ -5601,6 +5605,9 @@
   },
   "perpsPosition": {
     "message": "Position"
+  },
+  "perpsPositionClosedReverseOrderFailed": {
+    "message": "Your position was closed but the reverse order failed. You may need to manually open a new position"
   },
   "perpsPositionSize": {
     "message": "Position Size"
@@ -5611,11 +5618,32 @@
   "perpsRecentActivity": {
     "message": "Recent Activity"
   },
+  "perpsReduceExposure": {
+    "message": "Reduce exposure"
+  },
+  "perpsReduceExposureDescriptionLong": {
+    "message": "Decrease the size of your long position"
+  },
+  "perpsReduceExposureDescriptionShort": {
+    "message": "Decrease the size of your short position"
+  },
   "perpsRemoveMargin": {
-    "message": "Remove Margin"
+    "message": "Remove margin"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Withdraw excess margin from position"
   },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsReversePosition": {
+    "message": "Reverse position"
+  },
+  "perpsReversePositionDescriptionLong": {
+    "message": "Flip your long position to a short"
+  },
+  "perpsReversePositionDescriptionShort": {
+    "message": "Flip your short position to a long"
   },
   "perpsSaveChanges": {
     "message": "Save Changes",
@@ -5626,9 +5654,6 @@
   },
   "perpsSeeAll": {
     "message": "See All"
-  },
-  "perpsSeeAllPerps": {
-    "message": "See all Perps"
   },
   "perpsShort": {
     "message": "Short"
@@ -5765,14 +5790,14 @@
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
+  "perpsWatchlist": {
+    "message": "Watchlist"
+  },
   "perpsWithdraw": {
     "message": "Withdraw"
   },
-  "perpsYourOrders": {
-    "message": "Your orders"
-  },
-  "perpsYourPositions": {
-    "message": "Your positions"
+  "perpsYouWillReceive": {
+    "message": "You'll receive"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -8815,6 +8840,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
+  },
+  "trustSignalBlockDescription": {
+    "message": "If you connect to this site, you could lose all your assets."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Malicious site detected"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Connect Anyway"
   },
   "tryAgain": {
     "message": "Try again"

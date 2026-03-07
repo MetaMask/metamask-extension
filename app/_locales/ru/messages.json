@@ -4003,7 +4003,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
@@ -5272,12 +5273,6 @@
   "perpsEntryPrice": {
     "message": "Начальная цена"
   },
-  "perpsExploreCrypto": {
-    "message": "Обзор криптовалюты"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Обзор акций и товаров"
-  },
   "perpsFees": {
     "message": "Комиссии"
   },
@@ -5397,9 +5392,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Медианное значение внешних цен, сообщенных валидаторами, используется для расчета ставки финансирования"
-  },
-  "perpsOrderAmount": {
-    "message": "Сумма ордера"
   },
   "perpsOrders": {
     "message": "Ордеры"
@@ -5547,12 +5539,6 @@
   },
   "perpsWithdraw": {
     "message": "Вывести средства"
-  },
-  "perpsYourOrders": {
-    "message": "Ваши ордера"
-  },
-  "perpsYourPositions": {
-    "message": "Ваши позиции"
   },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."

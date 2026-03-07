@@ -4003,7 +4003,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD-Umrechnung"
+    "message": "$1 in mUSD umrechnen",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Sie müssen mindestens 1 Token auswählen."
@@ -5272,12 +5273,6 @@
   "perpsEntryPrice": {
     "message": "Einstiegspreis"
   },
-  "perpsExploreCrypto": {
-    "message": "Krypto entdecken"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Aktien und Rohstoffe entdecken"
-  },
   "perpsFees": {
     "message": "Gebühren"
   },
@@ -5397,9 +5392,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Der Median der von den Validatoren gemeldeten externen Preise, der zur Berechnung des Finanzierungssatzes verwendet wird"
-  },
-  "perpsOrderAmount": {
-    "message": "Order-Betrag"
   },
   "perpsOrders": {
     "message": "Orders"
@@ -5547,12 +5539,6 @@
   },
   "perpsWithdraw": {
     "message": "Auszahlen"
-  },
-  "perpsYourOrders": {
-    "message": "Ihre Orders"
-  },
-  "perpsYourPositions": {
-    "message": "Ihre Positionen"
   },
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte fügen Sie die Token Contract-Adresse ein."

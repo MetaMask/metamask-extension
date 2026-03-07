@@ -4003,7 +4003,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Palitan ng mUSD"
+    "message": "I-convert ang $1 sa mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
@@ -5272,12 +5273,6 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Tuklasin ang crypto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Tuklasin ang mga stock at commodity"
-  },
   "perpsFees": {
     "message": "Mga Bayarin"
   },
@@ -5397,9 +5392,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
-  },
-  "perpsOrderAmount": {
-    "message": "Halaga ng Order"
   },
   "perpsOrders": {
     "message": "Mga Order"
@@ -5547,12 +5539,6 @@
   },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
-  },
-  "perpsYourOrders": {
-    "message": "Ang mga order mo"
-  },
-  "perpsYourPositions": {
-    "message": "Mga position mo"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
