@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isCrossChain } from '@metamask/bridge-controller';
 import {
   resetBridgeControllerAndCache,
   restoreQuoteRequestFromState,
-  setEvmBalances,
   setFromToken,
 } from '../../ducks/bridge/actions';
-import { getBridgeQuotes, getFromToken } from '../../ducks/bridge/selectors';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
+import { getBridgeQuotes } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
@@ -20,29 +17,13 @@ import { useBridgeNavigation } from './useBridgeNavigation';
  */
 export const usePrefillFromBridgeState = () => {
   const dispatch = useDispatch();
-  const fromToken = useSelector(getFromToken);
 
-  /**
-   * @deprecated remove this when GNS references are removed
-   */
-  const currentChainId = useSelector(getMultichainCurrentChainId);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
   const { resetLocationState, token } = useBridgeNavigation();
 
   const shouldRehydrateFromLocationState = token;
   const shouldRestoreInputsFromQuote = activeQuote;
-
-  // Set src chain balances when the fromToken changes and after the token object is applied
-  useEffect(() => {
-    if (
-      isCrossChain(fromToken.chainId, currentChainId) ||
-      (token && token.assetId.toLowerCase() !== fromToken.assetId.toLowerCase())
-    ) {
-      return;
-    }
-    dispatch(setEvmBalances(fromToken.assetId));
-  }, [fromToken, currentChainId, token]);
 
   const resetControllerAndCache = () => {
     dispatch(resetBridgeControllerAndCache());

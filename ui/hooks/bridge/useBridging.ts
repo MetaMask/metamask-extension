@@ -51,7 +51,7 @@ const useBridging = () => {
   const openBridgeExperience = useCallback(
     (
       location: MetaMetricsSwapsEventSource | 'Carousel',
-      token?: {
+      srcToken?: {
         symbol: string;
         address: string;
         decimals?: number;
@@ -70,7 +70,7 @@ const useBridging = () => {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: token?.symbol ?? 'ETH',
+          token_symbol_source: srcToken?.symbol ?? 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
@@ -81,17 +81,17 @@ const useBridging = () => {
       const search = new URLSearchParams('');
 
       const assetId =
-        token?.chainId && isChainIdEnabledForBridging(token.chainId)
-          ? toAssetId(token.address, formatChainIdToCaip(token.chainId))
+        srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
+          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
           : undefined;
 
-      if (token && assetId) {
+      if (srcToken && assetId) {
         // If token is supported for bridging, propagate it to the bridge experience
         const tokenWithAssetId = {
-          ...token,
+          ...srcToken,
           assetId,
-          name: token.name ?? token.symbol,
-          chainId: formatChainIdToCaip(token.chainId),
+          name: srcToken.name ?? srcToken.symbol,
+          chainId: formatChainIdToCaip(srcToken.chainId),
         };
         if (validateMinimalAssetObject(tokenWithAssetId)) {
           tokenToUse = tokenWithAssetId;
@@ -119,7 +119,7 @@ const useBridging = () => {
 
       navigateToBridgePage({
         token: tokenToUse,
-        searchParams: search.toString(),
+        search,
         preventBackNavigation: false,
       });
     },

@@ -17,8 +17,7 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
-import { clearSwapsState } from '../../ducks/swaps/swaps';
-import { resetBackgroundSwapsState } from '../../store/actions';
+import { resetBridgeControllerAndCache } from '../../ducks/bridge/actions';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -48,7 +47,7 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
  * for the bridge navigation state. The navigation state is used for persisting and restoring data
  * when the user navigates (see usePrefilledQuoteParams hook).
  *
- * @returns a function to navigate to a bridge-related page, and the current navigation state
+ * @returns a function to navigate to a bridge route, and the current navigation state
  */
 export const useBridgeNavigation = () => {
   const navigate = useNavigate();
@@ -106,25 +105,25 @@ export const useBridgeNavigation = () => {
   /**
    * Navigates to the bridge page.
    * @param token - The token to set after loading the bridge page.
-   * @param searchParams - The search params for deep-link input parameters.
+   * @param search - The search params for deep-link input parameters.
    */
   const navigateToBridgePage = useCallback(
     (
       params: {
         token: BridgeNavigationOptions['state']['token'];
-        searchParams: string;
+        search: URLSearchParams;
         preventBackNavigation: boolean;
       } = {
         token: state?.token,
-        searchParams: new URLSearchParams('').toString(),
+        search: new URLSearchParams(''),
         preventBackNavigation: true,
       },
     ) => {
-      const { token, searchParams, preventBackNavigation } = params;
+      const { token, search, preventBackNavigation } = params;
       navigate(
         {
           pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-          search: searchParams,
+          search: search.toString(),
         },
         {
           state: {
@@ -167,10 +166,7 @@ export const useBridgeNavigation = () => {
   }, [state]);
 
   const navigateToDefaultRoute = useCallback(async () => {
-    // TODO remove these when swaps codebase is removed
-    dispatch(clearSwapsState());
-    dispatch(resetBackgroundSwapsState());
-
+    dispatch(resetBridgeControllerAndCache());
     const isFromTransactionShield = new URLSearchParams(search || '').get(
       BridgeQueryParams.IsFromTransactionShield,
     );
@@ -184,6 +180,10 @@ export const useBridgeNavigation = () => {
   const memoizedToken = useMemo(() => state.token, [state.token]);
 
   return {
+    /**
+     * The token propagated through the bridge navigation state when the Swap button is clicked
+     * from the asset page
+     */
     token: memoizedToken,
     search,
     resetLocationState,
