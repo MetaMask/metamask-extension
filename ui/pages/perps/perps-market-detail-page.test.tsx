@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -106,6 +106,20 @@ jest.mock('../../providers/perps', () => ({
   }),
 }));
 
+const mockReplacePerpsToastByKey = jest.fn();
+jest.mock('../../components/app/perps/perps-toast', () => {
+  const { PERPS_TOAST_KEYS } = jest.requireActual(
+    '../../components/app/perps/perps-toast/perps-toast-provider',
+  );
+
+  return {
+    PERPS_TOAST_KEYS,
+    usePerpsToast: () => ({
+      replacePerpsToastByKey: mockReplacePerpsToastByKey,
+    }),
+  };
+});
+
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
   usePerpsOrderForm: jest.fn(),
@@ -167,11 +181,17 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn().mockReturnValue({
+  pathname: '/perps/market/ETH',
+  search: '',
+  state: null,
+});
 const mockNavigateComponent = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useLocation: () => mockUseLocation(),
   useParams: () => mockUseParams(),
   Navigate: (props: { to: string; replace?: boolean }) => {
     mockNavigateComponent(props);
@@ -187,21 +207,32 @@ describe('PerpsMarketDetailPage', () => {
   const mockStore = configureMockStore(middlewares);
 
   // Create a state with perps enabled
-  const createMockState = (perpsEnabled = true) => ({
+  const createMockState = (
+    perpsEnabled = true,
+    perpsInAppToastsEnabled = true,
+  ) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsInAppToastsEnabled,
       },
     },
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
+    mockUseLocation.mockReturnValue({
+      pathname: '/perps/market/ETH',
+      search: '',
+      state: null,
+    });
   });
 
   describe('when perps feature is enabled', () => {
@@ -214,6 +245,29 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+    });
+
+    it('shows handed-off perps toast and clears route state', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          perpsToastKey: 'perpsToastOrderPlaced',
+          perpsToastDescription: 'Long 0.5 ETH',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderPlaced',
+        description: 'Long 0.5 ETH',
+      });
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+        state: undefined,
+      });
     });
 
     it('displays market symbol and price', () => {
@@ -649,6 +703,103 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(presetButton as HTMLElement);
 
       expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+    });
+
+    it('shows TP/SL success toast without in-progress toast when saving', async () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            expect.objectContaining({
+              symbol: 'ETH',
+            }),
+          ],
+        );
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateSuccess',
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateInProgress',
+      });
+    });
+
+    it('shows TP/SL failure toast without inline error when toast flag is enabled', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TP/SL rejected',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState(true, true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'TP/SL rejected',
+        });
+      });
+
+      expect(screen.queryByText('TP/SL rejected')).not.toBeInTheDocument();
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('shows inline TP/SL error when perps toast flag is disabled', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TP/SL rejected',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState(true, false));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('TP/SL rejected')).toBeInTheDocument();
+      });
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateFailed',
+        description: 'TP/SL rejected',
+      });
+      consoleErrorSpy.mockRestore();
     });
   });
 

@@ -48,6 +48,19 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockReplacePerpsToastByKey = jest.fn();
+jest.mock('../../components/app/perps/perps-toast', () => {
+  const { PERPS_TOAST_KEYS } = jest.requireActual(
+    '../../components/app/perps/perps-toast/perps-toast-provider',
+  );
+
+  return {
+    PERPS_TOAST_KEYS,
+    usePerpsToast: () => ({
+      replacePerpsToastByKey: mockReplacePerpsToastByKey,
+    }),
+  };
+});
 jest.mock('../../providers/perps', () => {
   return {
     getPerpsStreamManager: () => mockGetPerpsStreamManager(),
@@ -126,20 +139,26 @@ describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
-  const createMockState = (perpsEnabled = true) => ({
+  const createMockState = (
+    perpsEnabled = true,
+    perpsInAppToastsEnabled = true,
+  ) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsInAppToastsEnabled,
       },
     },
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -353,6 +372,17 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+        }),
+      );
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+          description: expect.any(String),
+        }),
+      );
     });
 
     it('shows error when order fails', async () => {
@@ -379,7 +409,11 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      expect(screen.queryByText('Insufficient margin')).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Insufficient margin',
+      });
     });
 
     it('shows error when controller throws', async () => {
@@ -403,7 +437,165 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Network error')).toBeInTheDocument();
+      expect(screen.queryByText('Network error')).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Network error',
+      });
+    });
+
+    it('shows inline submit error when perps toast flag is disabled', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Insufficient margin',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState(true, false));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Insufficient margin',
+      });
+    });
+
+    it('uses funds-returned fallback description when order failure is generic', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastOrderFailed',
+          description: 'Your funds have been returned to you',
+        });
+      });
+    });
+
+    it('uses funds-returned fallback description for non-user-facing technical errors', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Unexpected internal provider exception: code 0xdeadbeef',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastOrderFailed',
+          description: 'Your funds have been returned to you',
+        });
+      });
+    });
+
+    it('keeps service unavailable errors as user-facing order failure descriptions', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Service unavailable (503)',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Service unavailable (503)',
+      });
+    });
+
+    it('keeps IOC cancel liquidity errors as user-facing order failure descriptions', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'IOC order would cancel due to no liquidity',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'IOC order would cancel due to no liquidity',
+      });
     });
 
     it('calls closePosition when in close mode', async () => {
@@ -429,6 +621,49 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastCloseInProgress',
+          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastDescription: expect.stringMatching(
+            /^Your PnL is -?\d+\.\d{2}%$/u,
+          ),
+        }),
+      });
+    });
+
+    it('falls back to close subtitle when close PnL cannot be calculated', async () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: [
+          {
+            ...mockPositions[0],
+            marginUsed: '0',
+            unrealizedPnl: 'not-a-number',
+            returnOnEquity: 'not-a-number',
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      });
     });
 
     it('calls updatePositionTPSL when in modify mode', async () => {
@@ -453,6 +688,14 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastUpdateSuccess',
+        }),
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateInProgress',
+      });
     });
 
     it('does not submit when currentPrice is 0', async () => {
@@ -686,7 +929,11 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Close failed')).toBeInTheDocument();
+      expect(screen.queryByText('Close failed')).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCloseFailed',
+        description: 'Close failed',
+      });
     });
 
     it('shows error when updatePositionTPSL fails', async () => {
@@ -712,7 +959,11 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      expect(screen.queryByText('TPSL update failed')).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateFailed',
+        description: 'TPSL update failed',
+      });
     });
 
     it('shows generic error for non-Error throws', async () => {
@@ -737,7 +988,13 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+      expect(
+        screen.queryByText('An unknown error occurred'),
+      ).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Your funds have been returned to you',
+      });
     });
 
     it('navigates back after successful limit order', async () => {
@@ -771,7 +1028,23 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+        }),
+      );
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+          description: expect.any(String),
+        }),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastOrderPlaced',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      });
     });
   });
 
@@ -813,7 +1086,12 @@ describe('PerpsOrderEntryPage', () => {
         rerender(<PerpsOrderEntryPage />);
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastOrderFilled',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      });
     });
 
     it('navigates back after 15s timeout if position never appears', async () => {

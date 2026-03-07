@@ -20,6 +20,7 @@ export type EditMarginModalProps = {
   currentPrice: number;
   /** 'add' | 'remove' — modal title and content mode */
   mode: 'add' | 'remove';
+  isPerpsInAppToastsEnabled?: boolean;
 };
 
 /**
@@ -32,6 +33,7 @@ export type EditMarginModalProps = {
  * @param options0.account
  * @param options0.currentPrice
  * @param options0.mode
+ * @param options0.isPerpsInAppToastsEnabled
  */
 export const EditMarginModal: React.FC<EditMarginModalProps> = ({
   isOpen,
@@ -40,6 +42,7 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
   account,
   currentPrice,
   mode,
+  isPerpsInAppToastsEnabled = true,
 }) => {
   const t = useI18nContext();
   const title = mode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
@@ -70,6 +73,7 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
             currentPrice={currentPrice}
             mode={mode}
             onClose={onClose}
+            isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
             externalSave
             onSaveRef={saveRef}
             onSaveEnabledChange={setSaveEnabled}
