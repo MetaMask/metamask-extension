@@ -53,9 +53,14 @@ export const useBridgeNavigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { search, pathname, state: maybeState } = useLocation();
+  const {
+    search,
+    pathname,
+    state: maybeState,
+    ...locationProperties
+  } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
-    () => maybeState ?? { token: null },
+    () => maybeState ?? {},
     [maybeState],
   );
 
@@ -64,15 +69,15 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, stayOnHomePage = false) =>
+    (to: To = { pathname }, stayOnHomePage = false) => {
       navigate(to, {
         state: {
           ...state,
           token: null,
           stayOnHomePage,
         },
-        replace: true,
-      }),
+      });
+    },
     [state, pathname],
   );
 
