@@ -289,6 +289,13 @@ export function getIsMultiRpcOnboarding(state) {
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
 }
+
+/**
+ * To fetch the name of the tokens that are imported from tokens found page
+ *
+ * @param {*} state
+ * @returns
+ */
 export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
 }

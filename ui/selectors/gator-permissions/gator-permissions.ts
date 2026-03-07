@@ -101,7 +101,6 @@ function grantedPermissionsToMap(
 export type AppState = {
   metamask: GatorPermissionsControllerState;
 };
-// chainId -> count
 
 type PermissionsGroupMetaData = {
   chainId: Hex;
