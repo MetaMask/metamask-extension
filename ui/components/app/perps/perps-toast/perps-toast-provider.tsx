@@ -9,7 +9,7 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Toast } from '../../../multichain';
+import { Toast } from '../../../multichain/toast';
 import {
   AvatarIcon,
   AvatarIconSize,
