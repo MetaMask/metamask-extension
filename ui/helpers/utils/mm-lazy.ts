@@ -1,29 +1,78 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
-type DynamicImportType = () => Promise<any>;
-export type ModuleWithDefaultType<
-  Component extends React.ComponentType<any> = React.ComponentType,
-> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- contravariant parameter bound
+type AnyComponent = React.ComponentType<any>;
+
+type ModuleWithDefaultExport<Component extends AnyComponent = AnyComponent> = {
   default: Component;
 };
 
 /**
- * Infers the component type from a dynamic import function.
- * If the import returns a module with a `default` export that is a ComponentType,
- * the component type (including its props) is preserved.
+ * Resolves to `Value` only if it extends `AnyComponent` and is not `never`,
+ * otherwise falls back to `AnyComponent`.
  */
-type InferComponent<ImportFn extends DynamicImportType> =
-  Awaited<ReturnType<ImportFn>> extends {
-    default: infer Comp extends React.ComponentType<any>;
-  }
-    ? Comp
-    : React.ComponentType;
+type AssertComponent<Value> = [Value] extends [never]
+  ? AnyComponent
+  : Value extends AnyComponent
+    ? Value
+    : AnyComponent;
 
-// This only has to happen once per app load, so do it outside a function
+/**
+ * Extracts the React component type from a dynamically imported module.
+ *
+ * Handles default exports, single named exports, and the double-wrapping
+ * that TypeScript's generic inference produces for `import()` expressions
+ * (where `Module` is inferred as `{ default: <module namespace> }` rather
+ * than the module namespace itself).
+ *
+ * @template Module - The module object type, typically inferred from `() => import('...')`.
+ */
+export type InferComponent<
+  Module extends Record<PropertyKey, unknown> = Record<never, never>,
+  /**
+   * The value of `module.default`. `never` if there is no default export.
+   */
+  DefaultExport = Module extends { default: infer Value } ? Value : never,
+  /**
+   * Whether a default export is present.
+   */
+  IsDefaultExport = [DefaultExport] extends [never] ? false : true,
+  /**
+   * Unwraps one additional `default` level to handle inference of
+   * double-wrapped module namespaces e.g. `connect()`, `compose()`, etc.
+   */
+  NestedDefaultExport = DefaultExport extends { default: infer Value }
+    ? Value
+    : never,
+  /**
+   * Resolves the component from the default export path.
+   */
+  FromDefaultExport = DefaultExport extends AnyComponent
+    ? DefaultExport
+    : AssertComponent<NestedDefaultExport>,
+  /**
+   * Extracts the single component-assignable value from named exports.
+   */
+  FromNamedExport = AssertComponent<
+    Extract<Module[keyof Module], AnyComponent>
+  >,
+  /**
+   * The inferred component type.
+   */
+  InferredComponent = IsDefaultExport extends true
+    ? FromDefaultExport
+    : FromNamedExport,
+> = InferredComponent;
+
+type ComponentLike = {
+  name?: string;
+  displayName?: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- mirrors React HOC static property
+  WrappedComponent?: ComponentLike; // recursive, but only one level deep is accessed
+};
+
 const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
 
 /**
@@ -33,18 +82,16 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
  *
  * @param fn - an import of the form `() => import('AAA')`
  */
-export function mmLazy<ImportFn extends DynamicImportType>(
-  fn: ImportFn,
-): React.LazyExoticComponent<InferComponent<ImportFn>> {
-  type Component = InferComponent<ImportFn>;
+export function mmLazy<Module extends Record<PropertyKey, unknown>>(
+  fn: () => Promise<Module>,
+): React.LazyExoticComponent<InferComponent<Module>> {
+  type Component = InferComponent<Module>;
   return React.lazy(async () => {
-    // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
     const startTime = Date.now();
 
     const importedModule = await fn();
     const { componentName, component } = parseImportedComponent(importedModule);
 
-    // Only trace load time of lazy-loaded components if the manifestFlag is set, and then do it by Math.random probability
     if (lazyLoadSubSampleRate && Math.random() < lazyLoadSubSampleRate) {
       trace({
         name: TraceName.LazyLoadComponent,
@@ -55,52 +102,42 @@ export function mmLazy<ImportFn extends DynamicImportType>(
       endTrace({ name: TraceName.LazyLoadComponent });
     }
 
-    return component as ModuleWithDefaultType<Component>;
+    return component as ModuleWithDefaultExport<Component>;
   });
 }
 
-// There can be a lot of different types here, and we're basically doing type-checking in the code,
-// so I don't think TypeScript safety on `importedModule` is worth it in this function
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parseImportedComponent(importedModule: any): {
-  componentName: string; // TODO: in many circumstances, the componentName gets minified
-  component: ModuleWithDefaultType;
+function parseImportedComponent(importedModule: Record<PropertyKey, unknown>): {
+  componentName: string;
+  component: ModuleWithDefaultExport;
 } {
-  let componentName: string;
-
-  // If there's no default export
   if (!importedModule.default) {
     const keys = Object.keys(importedModule);
 
-    // If there's only one named export
     if (keys.length === 1) {
-      componentName = keys[0];
+      const componentName = keys[0];
 
       return {
         componentName,
-        // Force the component to be the default export
-        component: { default: importedModule[componentName] },
+        component: {
+          default: importedModule[componentName],
+        } as ModuleWithDefaultExport,
       };
     }
 
-    // If there are multiple named exports, this isn't good for tree-shaking, so throw an error
     throw new Error(
       'mmLazy: You cannot lazy-load a component when there are multiple exported components in one file',
     );
   }
 
-  if (importedModule.default.WrappedComponent) {
-    // If there's a wrapped component, we don't want to see the name reported as `withRouter(Connect(AAA))` we want just `AAA`
-    componentName = importedModule.default.WrappedComponent.name;
-  } else {
-    componentName =
-      importedModule.default.name || importedModule.default.displayName;
-  }
+  const defaultExport = importedModule.default as ComponentLike;
+  const componentName =
+    defaultExport.WrappedComponent?.name ||
+    defaultExport.name ||
+    defaultExport.displayName ||
+    'Unknown';
 
   return {
     componentName,
-    component: importedModule,
+    component: importedModule as ModuleWithDefaultExport,
   };
 }
