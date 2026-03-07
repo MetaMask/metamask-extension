@@ -30,6 +30,7 @@ export type EditMarginExpandableProps = {
  * @param options0.account
  * @param options0.currentPrice
  * @param options0.isExpanded
+ * @param options0.isPerpsInAppToastsEnabled
  * @param options0.onToggle
  */
 export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
