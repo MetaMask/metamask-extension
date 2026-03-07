@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "Criar nova troca"
   },
+  "manage": {
+    "message": "Gerenciar"
+  },
   "manageDefaultSettings": {
     "message": "Gerenciar configurações de privacidade padrão"
   },
@@ -3992,7 +3995,7 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdClaimClaimingTo": {
-    "message": "Reivindicação para",
+    "message": "Resgatando para",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
@@ -4582,12 +4585,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Algo deu errado. Tente novamente."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fique por dentro do que acontece na sua carteira com as notificações. Para isso, nós usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Saiba como protegemos sua privacidade enquanto usa este recurso."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 novos tokens encontrados nesta conta",
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "Adicione fundos para começar a negociar contratos de futuros perpétuos com alavancagem"
   },
-  "perpsAddMargin": {
-    "message": "Adicionar margem"
-  },
   "perpsAddToFavorites": {
     "message": "Adicionar aos favoritos"
   },
@@ -5405,9 +5399,6 @@
   },
   "perpsRecentActivity": {
     "message": "Atividade recente"
-  },
-  "perpsRemoveMargin": {
-    "message": "Remover margem"
   },
   "perpsReturn": {
     "message": "Retorno"
@@ -6040,22 +6031,11 @@
   "revealSeedWords": {
     "message": "Revelar Frase de Recuperação Secreta"
   },
-  "revealSeedWordsDescription1": {
-    "message": "A $1 concede $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "Frase de Recuperação Secreta (FRS)"
-  },
   "revealSeedWordsText": {
     "message": "Texto"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Certifique-se de que ninguém está olhando a sua tela. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Mostrar conteúdo sensível"

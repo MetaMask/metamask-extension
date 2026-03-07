@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "Crear un nuevo swap"
   },
+  "manage": {
+    "message": "Gestionar"
+  },
   "manageDefaultSettings": {
     "message": "Gestionar la configuración por defecto"
   },
@@ -4583,12 +4586,6 @@
   "notificationsSettingsBoxError": {
     "message": "Se produjo un error. Inténtalo de nuevo."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Manténgase informado sobre lo que sucede en su monedero con notificaciones. Para usar notificaciones, utilizamos un perfil para sincronizar algunas configuraciones en sus dispositivos. $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Descubra cómo protegemos su privacidad mientras utiliza esta función."
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Se encontraron tokens nuevos de $1 en esta cuenta",
     "description": "$1 is the number of new tokens detected"
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "Agrega fondos para comenzar a operar con contratos perpetuos con apalancamiento"
   },
-  "perpsAddMargin": {
-    "message": "Agregar margen"
-  },
   "perpsAddToFavorites": {
     "message": "Agregar a favoritos"
   },
@@ -5405,9 +5399,6 @@
   },
   "perpsRecentActivity": {
     "message": "Actividad reciente"
-  },
-  "perpsRemoveMargin": {
-    "message": "Eliminar margen"
   },
   "perpsReturn": {
     "message": "Rendimiento"
@@ -6040,22 +6031,11 @@
   "revealSeedWords": {
     "message": "Revelar frase secreta de recuperación"
   },
-  "revealSeedWordsDescription1": {
-    "message": "La $1 proporciona la $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "Frase secreta de recuperación (SRP)"
-  },
   "revealSeedWordsText": {
     "message": "Texto"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Asegúrese de que nadie esté mirando su pantalla. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Revelar contenido sensible"

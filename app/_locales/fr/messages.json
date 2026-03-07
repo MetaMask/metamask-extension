@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "Créer un nouveau swap"
   },
+  "manage": {
+    "message": "Gérer"
+  },
   "manageDefaultSettings": {
     "message": "Gérer les paramètres de confidentialité par défaut"
   },
@@ -3992,7 +3995,7 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdClaimClaimingTo": {
-    "message": "Réclamez à",
+    "message": "Réclamer vers",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
@@ -4582,12 +4585,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Un problème est survenu, veuillez réessayer."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Restez au courant de ce qui se passe dans votre portefeuille grâce aux notifications. Pour activer les notifications, nous utilisons un profil pour synchroniser certains paramètres entre vos appareils. $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Découvrez comment nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "Ajoutez des fonds pour commencer à trader des contrats perpétuels avec effet de levier"
   },
-  "perpsAddMargin": {
-    "message": "Ajouter une marge"
-  },
   "perpsAddToFavorites": {
     "message": "Ajouter aux favoris"
   },
@@ -5402,9 +5396,6 @@
   },
   "perpsRecentActivity": {
     "message": "Activité récente"
-  },
-  "perpsRemoveMargin": {
-    "message": "Supprimer la marge"
   },
   "perpsReturn": {
     "message": "Rendement"
@@ -6037,22 +6028,11 @@
   "revealSeedWords": {
     "message": "Révéler la phrase secrète de récupération"
   },
-  "revealSeedWordsDescription1": {
-    "message": "La $1 donne $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "phrase secrète de récupération (PSR)"
-  },
   "revealSeedWordsText": {
     "message": "Texte"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Assurez-vous que personne ne regarde votre écran. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Révéler un contenu sensible"

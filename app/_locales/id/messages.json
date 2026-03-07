@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "Buat swap baru"
   },
+  "manage": {
+    "message": "Kelola"
+  },
   "manageDefaultSettings": {
     "message": "Kelola pengaturan default"
   },
@@ -4583,12 +4586,6 @@
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Pantau terus segala yang terjadi di dompet Anda dengan notifikasi. Untuk menggunakan notifikasi, kami menggunakan profil untuk menyinkronkan beberapa pengaturan di seluruh perangkat Anda. $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Pelajari cara kami melindungi privasi Anda saat menggunakan fitur ini."
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "Tambahkan dana untuk mulai memperdagangkan kontrak perpetual dengan leverage"
   },
-  "perpsAddMargin": {
-    "message": "Tambahkan Margin"
-  },
   "perpsAddToFavorites": {
     "message": "Tambahkan ke favorit"
   },
@@ -5405,9 +5399,6 @@
   },
   "perpsRecentActivity": {
     "message": "Aktivitas Terbaru"
-  },
-  "perpsRemoveMargin": {
-    "message": "Hapus Margin"
   },
   "perpsReturn": {
     "message": "Laba"
@@ -6040,22 +6031,11 @@
   "revealSeedWords": {
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 memberikan $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "Pemulihan Rahasia (FPR)"
-  },
   "revealSeedWordsText": {
     "message": "Teks"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Pastikan tidak ada yang melihat layar Anda. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Tampilkan konten sensitif"

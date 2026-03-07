@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "创建新的交换"
   },
+  "manage": {
+    "message": "管理"
+  },
   "manageDefaultSettings": {
     "message": "管理默认隐私设置"
   },
@@ -4583,12 +4586,6 @@
   "notificationsSettingsBoxError": {
     "message": "出错了。请重试。"
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "通过通知随时了解您的钱包动态。为了使用通知，我们使用配置文件在您的不同设备上同步某些设置。$1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "了解我们如何在使用此功能时保护您的隐私。"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "在此账户中发现 $1 新代币",
     "description": "$1 is the number of new tokens detected"
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "添加资金以开始使用杠杆交易永续合约"
   },
-  "perpsAddMargin": {
-    "message": "追加保证金"
-  },
   "perpsAddToFavorites": {
     "message": "添加到收藏夹"
   },
@@ -5399,9 +5393,6 @@
   },
   "perpsRecentActivity": {
     "message": "最近活动"
-  },
-  "perpsRemoveMargin": {
-    "message": "移除保证金"
   },
   "perpsReturn": {
     "message": "回报率"
@@ -6034,22 +6025,11 @@
   "revealSeedWords": {
     "message": "显示私钥助记词"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 提供 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "（SRP）"
-  },
   "revealSeedWordsText": {
     "message": "文本"
-  },
-  "revealSeedWordsWarning": {
-    "message": "确保没有人在看您的屏幕。$1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "显示敏感内容"

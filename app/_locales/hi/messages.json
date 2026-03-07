@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "एक नया स्वैप बनाएं"
   },
+  "manage": {
+    "message": "मैनेज करें"
+  },
   "manageDefaultSettings": {
     "message": "डिफॉल्ट सेटिंग्स मैनेज करें"
   },
@@ -3992,7 +3995,7 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdClaimClaimingTo": {
-    "message": "को क्लेम किया जा रहा है",
+    "message": "इसमें क्लेम किया जा रहा है",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
@@ -4582,12 +4585,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "नोटिफिकेशंस के साथ आपके वॉलेट में क्या हो रहा है, इसकी जानकारी रखें। नोटिफिकेशंस का उपयोग करने के लिए, हम आपके डिवाइस में कुछ सेटिंग्स को सिंक करने के लिए एक प्रोफ़ाइल का उपयोग करते हैं। $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "जानें कि इस फीचर का उपयोग करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "इस अकाउंट में $1 के नए टोकन पाए गए",
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "लेवरेज के साथ परपेचुअल कॉन्ट्रैक्ट्स में ट्रेडिंग शुरू करने के लिए फंड जोड़ें"
   },
-  "perpsAddMargin": {
-    "message": "मार्जिन जोड़ें"
-  },
   "perpsAddToFavorites": {
     "message": "पसंदीदा में जोड़े"
   },
@@ -5399,9 +5393,6 @@
   },
   "perpsRecentActivity": {
     "message": "हालिया गतिविधि"
-  },
-  "perpsRemoveMargin": {
-    "message": "मार्जिन हटाएं"
   },
   "perpsReturn": {
     "message": "कमाई"
@@ -6034,22 +6025,11 @@
   "revealSeedWords": {
     "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 प्रदान करता है $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "सीक्रेट रिकवरी फ्रेज (SRP)"
-  },
   "revealSeedWordsText": {
     "message": "टेक्स्ट"
-  },
-  "revealSeedWordsWarning": {
-    "message": "यह पक्का करें कि कोई भी आपकी स्क्रीन ना देख रहा हो। $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "संवेदनशील कंटेंट दिखाएं"
