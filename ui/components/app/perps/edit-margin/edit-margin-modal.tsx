@@ -33,6 +33,7 @@ export type EditMarginModalProps = {
  * @param options0.account
  * @param options0.currentPrice
  * @param options0.mode
+ * @param options0.isPerpsInAppToastsEnabled
  */
 export const EditMarginModal: React.FC<EditMarginModalProps> = ({
   isOpen,

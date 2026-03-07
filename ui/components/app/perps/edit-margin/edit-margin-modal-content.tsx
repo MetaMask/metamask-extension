@@ -72,6 +72,7 @@ export type EditMarginModalContentProps = {
  * @param options0.onSaveRef
  * @param options0.onSaveEnabledChange
  * @param options0.onSavingChange
+ * @param options0.isPerpsInAppToastsEnabled
  */
 export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   position,
