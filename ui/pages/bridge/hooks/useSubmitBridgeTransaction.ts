@@ -143,6 +143,7 @@ export default function useSubmitBridgeTransaction() {
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
         navigateToBridgePage();
+        return;
       }
     } finally {
       setIsSubmitting(false);
