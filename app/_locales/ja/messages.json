@@ -4002,6 +4002,10 @@
     "message": "$1をmUSDに変換",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
+  "musdConversionTitle": {
+    "message": "$1をmUSDに変換",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
   },

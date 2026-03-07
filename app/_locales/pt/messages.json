@@ -4002,6 +4002,10 @@
     "message": "Converter $1 para mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
+  "musdConversionTitle": {
+    "message": "Converter $1 para mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
   },

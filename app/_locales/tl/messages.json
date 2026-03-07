@@ -4002,6 +4002,10 @@
     "message": "I-convert ang $1 sa mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
+  "musdConversionTitle": {
+    "message": "I-convert ang $1 sa mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
   },
