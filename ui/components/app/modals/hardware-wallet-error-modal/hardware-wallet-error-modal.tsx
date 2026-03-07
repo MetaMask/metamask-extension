@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   Text,
@@ -31,6 +31,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import {
   HardwareWalletType,
+  isUserRejectedHardwareWalletError,
   isRetryableHardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
@@ -46,6 +47,8 @@ type HardwareWalletErrorModalProps = {
   onRetry?: () => void;
 };
 
+const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
+
 /**
  * Modal component to display hardware wallet errors with recovery instructions
  *
@@ -57,14 +60,81 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
+    const recoveredDismissTimeoutRef = useRef<ReturnType<
+      typeof setTimeout
+    > | null>(null);
     const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
+    const handleRetry = async () => {
+      onRetry?.();
+      setIsLoading(true);
+      try {
+        const result = await ensureDeviceReady();
+        if (result) {
+          setRecovered(true);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handleClose = useCallback(() => {
+      onCancel?.();
+      clearError();
+      hideModal();
+    }, [clearError, hideModal, onCancel]);
+
+    const handleRecoveredClose = useCallback(() => {
+      clearError();
+      hideModal();
+    }, [clearError, hideModal]);
+
+    useEffect(() => {
+      if (!recovered) {
+        return;
+      }
+
+      recoveredDismissTimeoutRef.current = setTimeout(() => {
+        handleRecoveredClose();
+      }, RECOVERY_SUCCESS_AUTO_DISMISS_MS);
+
+      return () => {
+        if (recoveredDismissTimeoutRef.current) {
+          clearTimeout(recoveredDismissTimeoutRef.current);
+          recoveredDismissTimeoutRef.current = null;
+        }
+      };
+    }, [handleRecoveredClose, recovered]);
+
+    const isUserRejectedError =
+      error !== undefined && isUserRejectedHardwareWalletError(error);
+
+    useEffect(() => {
+      if (!isUserRejectedError) {
+        return;
+      }
+
+      handleClose();
+    }, [handleClose, isUserRejectedError]);
+
+    useEffect(() => {
+      if (error) {
+        return;
+      }
+
+      onClose?.();
+    }, [error, onClose]);
+
     // If no error, don't render anything
     if (!error) {
-      onClose?.();
+      return null;
+    }
+
+    // User intentionally rejected on device; this is a cancel path, not an error state.
+    if (isUserRejectedError) {
       return null;
     }
 
@@ -106,25 +176,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       </Text>
     );
 
-    const handleRetry = async () => {
-      onRetry?.();
-      setIsLoading(true);
-      try {
-        const result = await ensureDeviceReady();
-        if (result) {
-          setRecovered(true);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const handleClose = () => {
-      onCancel?.();
-      clearError();
-      hideModal();
-    };
-
     const retryButtonText =
       error.code === ErrorCode.DeviceDisconnected
         ? t('hardwareWalletErrorContinueButton')
@@ -142,13 +193,13 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       return (
         <Modal
           isOpen={true}
-          onClose={handleClose}
+          onClose={handleRecoveredClose}
           isClosedOnOutsideClick={false}
           isClosedOnEscapeKey
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={handleClose}>
+            <ModalHeader onClose={handleRecoveredClose}>
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}

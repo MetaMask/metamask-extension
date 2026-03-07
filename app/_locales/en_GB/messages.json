@@ -3155,6 +3155,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Enable blind signing"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "The Ethereum app is open on your Ledger"
   },
@@ -3194,6 +3197,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Open Ethereum app"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 connected",
