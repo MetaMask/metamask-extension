@@ -397,6 +397,53 @@ describe('ComposableObservableStore', () => {
     expect(store.getFlatState()).toStrictEqual({});
   });
 
+  it('updates flattened state incrementally and keeps controller priority', () => {
+    const messenger = getMessenger();
+    const firstStore = new ObservableStore({
+      shared: 'first',
+      onlyFirst: 'only-first',
+    });
+    const secondStore = new ObservableStore({
+      shared: 'second',
+      onlySecond: 'only-second',
+    });
+    const store = new ComposableObservableStore({
+      controllerMessenger: messenger,
+    });
+
+    store.updateStructure({
+      First: firstStore,
+      Second: secondStore,
+    });
+
+    expect(store.getFlatState()).toStrictEqual({
+      shared: 'second',
+      onlyFirst: 'only-first',
+      onlySecond: 'only-second',
+    });
+
+    firstStore.putState({
+      shared: 'updated-first',
+      onlyFirst: 'only-first',
+    });
+
+    expect(store.getFlatState()).toStrictEqual({
+      shared: 'second',
+      onlyFirst: 'only-first',
+      onlySecond: 'only-second',
+    });
+
+    secondStore.putState({
+      onlySecond: 'only-second',
+    });
+
+    expect(store.getFlatState()).toStrictEqual({
+      shared: 'updated-first',
+      onlyFirst: 'only-first',
+      onlySecond: 'only-second',
+    });
+  });
+
   it('should throw if the controller messenger is omitted and the config includes a BaseControllerV2 controller', () => {
     const messenger = getMessenger();
     const exampleController = new ExampleController({
