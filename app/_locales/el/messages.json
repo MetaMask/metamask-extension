@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "Δημιουργία νέας ανταλλαγής"
   },
+  "manage": {
+    "message": "Διαχείριση"
+  },
   "manageDefaultSettings": {
     "message": "Διαχείριση προεπιλεγμένων ρυθμίσεων"
   },
@@ -4583,12 +4586,6 @@
   "notificationsSettingsBoxError": {
     "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Μείνετε ενήμεροι για ό,τι συμβαίνει στο πορτοφόλι σας με τις ειδοποιήσεις. Για να χρησιμοποιήσετε τις ειδοποιήσεις, χρησιμοποιούμε ένα προφίλ για να συγχρονίσουμε ορισμένες ρυθμίσεις στις συσκευές σας. $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας κατά τη χρήση αυτής της λειτουργίας."
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
     "description": "$1 is the number of new tokens detected"
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "Προσθέστε κεφάλαια για να ξεκινήσετε συναλλαγές σε perpetual συμβόλαια με μόχλευση"
   },
-  "perpsAddMargin": {
-    "message": "Προσθήκη Περιθωρίου"
-  },
   "perpsAddToFavorites": {
     "message": "Προσθήκη στα αγαπημένα"
   },
@@ -5405,9 +5399,6 @@
   },
   "perpsRecentActivity": {
     "message": "Πρόσφατη δραστηριότητα"
-  },
-  "perpsRemoveMargin": {
-    "message": "Αφαίρεση Περιθωρίου"
   },
   "perpsReturn": {
     "message": "Επιστροφή"
@@ -6040,22 +6031,11 @@
   "revealSeedWords": {
     "message": "Αποκάλυψη της Μυστικής Φράσης Ανάκτησης"
   },
-  "revealSeedWordsDescription1": {
-    "message": "Το $1 παρέχει $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "Μυστική Φράση Ανάκτησης (ΜΦΑ)"
-  },
   "revealSeedWordsText": {
     "message": "Κείμενο"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Σιγουρευτείτε ότι δεν κοιτάζει κανείς την οθόνη σας.$1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Αποκάλυψη ευαίσθητου περιεχομένου"

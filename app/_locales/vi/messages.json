@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "Tạo một giao dịch hoán đổi mới"
   },
+  "manage": {
+    "message": "Quản lý"
+  },
   "manageDefaultSettings": {
     "message": "Quản lý cài đặt mặc định"
   },
@@ -4583,12 +4586,6 @@
   "notificationsSettingsBoxError": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn. Để sử dụng tính năng thông báo, chúng tôi dùng hồ sơ để đồng bộ một số chế độ cài đặt trên các thiết bị của bạn. $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
     "description": "$1 is the number of new tokens detected"
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "Nạp tiền để bắt đầu giao dịch hợp đồng vĩnh cửu có đòn bẩy"
   },
-  "perpsAddMargin": {
-    "message": "Nạp tiền ký quỹ"
-  },
   "perpsAddToFavorites": {
     "message": "Thêm vào mục yêu thích"
   },
@@ -5405,9 +5399,6 @@
   },
   "perpsRecentActivity": {
     "message": "Hoạt động gần đây"
-  },
-  "perpsRemoveMargin": {
-    "message": "Rút tiền ký quỹ"
   },
   "perpsReturn": {
     "message": "Lợi nhuận"
@@ -6040,22 +6031,11 @@
   "revealSeedWords": {
     "message": "Hiện Cụm từ khôi phục bí mật"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 cung cấp $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "khôi phục bí mật (SRP)"
-  },
   "revealSeedWordsText": {
     "message": "Văn bản"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Đảm bảo không có ai đang nhìn vào màn hình của bạn. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Hiển thị nội dung nhạy cảm"

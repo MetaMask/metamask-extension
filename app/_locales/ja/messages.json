@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "新しいスワップの作成"
   },
+  "manage": {
+    "message": "管理"
+  },
   "manageDefaultSettings": {
     "message": "デフォルトのプライバシー設定の管理"
   },
@@ -4583,12 +4586,6 @@
   "notificationsSettingsBoxError": {
     "message": "問題が発生しました。もう一度お試しください。"
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。通知を使用するには、プロファイルを使用してデバイス間で一部の設定を同期します。$1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "この機能を使用する際に当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください。"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 の新しいトークンがこのアカウントで見つかりました",
     "description": "$1 is the number of new tokens detected"
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "レバレッジを利用したパーペチュアル契約の取引を開始するには、資金を追加してください"
   },
-  "perpsAddMargin": {
-    "message": "証拠金を追加"
-  },
   "perpsAddToFavorites": {
     "message": "お気に入りに追加"
   },
@@ -5399,9 +5393,6 @@
   },
   "perpsRecentActivity": {
     "message": "最近のアクティビティ"
-  },
-  "perpsRemoveMargin": {
-    "message": "証拠金を減額"
   },
   "perpsReturn": {
     "message": "損益率"
@@ -6034,22 +6025,11 @@
   "revealSeedWords": {
     "message": "シークレットリカバリーフレーズを確認"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1は$2を提供します。",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "シークレットリカバリーフレーズ (SRP)"
-  },
   "revealSeedWordsText": {
     "message": "テキスト"
-  },
-  "revealSeedWordsWarning": {
-    "message": "誰にも画面を見られていないことを確認してください。$1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "機密コンテンツを確認"

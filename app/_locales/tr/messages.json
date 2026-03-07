@@ -3753,6 +3753,9 @@
   "makeAnotherSwap": {
     "message": "Yeni bir swap oluştur"
   },
+  "manage": {
+    "message": "Yönet"
+  },
   "manageDefaultSettings": {
     "message": "Varsayılan ayarları yönet"
   },
@@ -4583,12 +4586,6 @@
   "notificationsSettingsBoxError": {
     "message": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Bildirimler ile cüzdanınızda neler olduğundan haberdar olun. Bildirimleri kullanmak için cihazlarınızdaki bazı ayarları senkronize etmek amacıyla bir profil kullanıyoruz. $1"
-  },
-  "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Bu özelliği kullanırken gizliliğinizi nasıl koruduğumuzu öğrenin."
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Bu hesapta $1 yeni token bulundu",
     "description": "$1 is the number of new tokens detected"
@@ -5195,9 +5192,6 @@
   "perpsAddFundsDescription": {
     "message": "Sürekli vadeli işlem sözleşmeleri ile kaldıraçlı işlem yapmaya başlamak için fon ekle"
   },
-  "perpsAddMargin": {
-    "message": "Marj Ekle"
-  },
   "perpsAddToFavorites": {
     "message": "Favorilere ekle"
   },
@@ -5405,9 +5399,6 @@
   },
   "perpsRecentActivity": {
     "message": "Son Faaliyetler"
-  },
-  "perpsRemoveMargin": {
-    "message": "Marjı Kaldır"
   },
   "perpsReturn": {
     "message": "Getiri"
@@ -6040,22 +6031,11 @@
   "revealSeedWords": {
     "message": "Gizli Kurtarma İfadesini Açığa Çıkar"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
-  "revealSeedWordsSRPName": {
-    "message": "Gizli Kurtarma İfadesi (GKİ)"
-  },
   "revealSeedWordsText": {
     "message": "Metin"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Ekranınıza hiç kimsenin bakmadığından emin olun. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Hassas içeriği göster"
