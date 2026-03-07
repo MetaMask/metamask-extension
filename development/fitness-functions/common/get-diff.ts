@@ -2,6 +2,10 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import { AUTOMATION_TYPE } from './constants';
 
+const GIT_EXEC_SYNC_OPTIONS = {
+  maxBuffer: 50 * 1024 * 1024,
+};
+
 function getDiffByAutomationType(
   automationType: AUTOMATION_TYPE,
 ): string | undefined {
@@ -35,20 +39,33 @@ function getCIDiff(path: string): string {
   });
 }
 
+function runGitCommand(command: string): string {
+  return execSync(command, GIT_EXEC_SYNC_OPTIONS).toString().trim();
+}
+
+function isMergeInProgress(): boolean {
+  try {
+    runGitCommand('git rev-parse -q --verify MERGE_HEAD');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function getPreCommitHookDiff(): string {
-  return execSync(`git diff --cached HEAD`).toString().trim();
+  if (isMergeInProgress()) {
+    return '';
+  }
+
+  return runGitCommand(`git diff --cached HEAD`);
 }
 
 function getPrePushHookDiff(): string {
-  const currentBranch = execSync(`git rev-parse --abbrev-ref HEAD`)
-    .toString()
-    .trim();
+  const currentBranch = runGitCommand(`git rev-parse --abbrev-ref HEAD`);
 
-  return execSync(
+  return runGitCommand(
     `git diff ${currentBranch} origin/${currentBranch} -- . ':(exclude)development/fitness-functions/'`,
-  )
-    .toString()
-    .trim();
+  );
 }
 
-export { getDiffByAutomationType };
+export { getDiffByAutomationType, isMergeInProgress, getPreCommitHookDiff };
