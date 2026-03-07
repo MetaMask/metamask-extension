@@ -121,7 +121,7 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
-import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { PerpsControllerProvider } from '../../providers/perps';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
@@ -145,213 +145,108 @@ import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
 
-// TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
-// Casting is preferable over `@ts-expect-error` annotations in this case,
-// because it doesn't suppress competing error messages e.g. "Cannot find module..."
-
 // Begin Lazy Routes
-const OnboardingFlow = mmLazy(
-  (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
-);
-const Lock = mmLazy(
-  (() => import('../lock/index.ts')) as unknown as DynamicImportType,
-);
-const UnlockPage = mmLazy(
-  (() => import('../unlock-page/index.ts')) as unknown as DynamicImportType,
-);
-const RestoreVaultPage = mmLazy(
-  (() =>
-    import('../keychains/restore-vault.tsx')) as unknown as DynamicImportType,
-);
-const ImportSrpPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import('../multi-srp/import-srp/index.ts')) as unknown as DynamicImportType,
-);
+const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
+const Lock = mmLazy(() => import('../lock/index.ts'));
+const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
+const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
+const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
-  (() =>
-    import('../keychains/reveal-seed.tsx')) as unknown as DynamicImportType,
+  () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(
-  (() => import('../settings/index.js')) as unknown as DynamicImportType,
+const Settings = mmLazy(() => import('../settings/index.js'));
+const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NotificationDetails = mmLazy(
+  () => import('../notification-details/index.js'),
 );
-
-const SettingsV2 = mmLazy(
-  (() => import('../settings-v2/index.ts')) as unknown as DynamicImportType,
+const Notifications = mmLazy(() => import('../notifications/index.js'));
+const SnapList = mmLazy(() => import('../snaps/snaps-list/index.js'));
+const SnapView = mmLazy(() => import('../snaps/snap-view/index.js'));
+const ConfirmEncryptionPublicKey = mmLazy(
+  () => import('../confirm-encryption-public-key/index.js'),
 );
+const ConfirmDecryptMessage = mmLazy(
+  () => import('../confirm-decrypt-message/index.js'),
+);
+const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
+const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
+const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const PermissionsConnect = mmLazy(
+  () => import('../permissions-connect/index.js'),
+);
+const ConfirmAddSuggestedTokenPage = mmLazy(
+  () => import('../confirm-add-suggested-token/index.js'),
+);
+const ConfirmAddSuggestedNftPage = mmLazy(
+  () => import('../confirm-add-suggested-nft/index.js'),
+);
+const ConfirmationPage = mmLazy(
+  () => import('../confirmations/confirmation/index.js'),
+);
+const CreateAccountPage = mmLazy(
+  () => import('../create-account/create-account.component.js'),
+);
+const NftFullImage = mmLazy(
+  () =>
+    import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
+);
+const Asset = mmLazy(() => import('../asset/index.js'));
+const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const PermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page.js'
+    ),
+);
+const GatorPermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    ),
+);
+const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    ),
+);
+const GatorPermissionsReviewPermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    ),
+);
+const Home = mmLazy(() => import('../home/index.js'));
+const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
+const BasicFunctionalityOff = mmLazy(
+  () =>
+    import('../basic-functionality-required/basic-functionality-required.tsx'),
+);
+const MultichainAccountDetailsPage = mmLazy(
+  () =>
+    import('../multichain-accounts/multichain-account-details-page/index.ts'),
+);
+const SmartAccountPage = mmLazy(
+  () => import('../multichain-accounts/smart-account-page/index.ts'),
+);
+const NonEvmBalanceCheck = mmLazy(
+  () => import('../nonevm-balance-check/index.tsx'),
+);
+const ShieldPlan = mmLazy(() => import('../shield-plan/index.ts'));
+const PerpsMarketDetailPage = mmLazy(
+  () => import('../perps/perps-market-detail-page.tsx'),
+);
+const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
+const PerpsActivityPage = mmLazy(
+  () => import('../perps/perps-activity-page.tsx'),
+);
+const PerpsOrderEntryPage = mmLazy(
+  () => import('../perps/perps-order-entry-page.tsx'),
+);
+// End Lazy Routes
 
 const NotificationsSettingsRedirect = () => (
   <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
-);
-
-const NotificationDetails = mmLazy(
-  (() =>
-    import('../notification-details/index.js')) as unknown as DynamicImportType,
-);
-const Notifications = mmLazy(
-  (() => import('../notifications/index.js')) as unknown as DynamicImportType,
-);
-const SnapList = mmLazy(
-  (() =>
-    import('../snaps/snaps-list/index.js')) as unknown as DynamicImportType,
-);
-const SnapView = mmLazy(
-  (() => import('../snaps/snap-view/index.js')) as unknown as DynamicImportType,
-);
-const ConfirmEncryptionPublicKey = mmLazy(
-  (() =>
-    import(
-      '../confirm-encryption-public-key/index.js'
-    )) as unknown as DynamicImportType,
-);
-const ConfirmDecryptMessage = mmLazy(
-  (() =>
-    import(
-      '../confirm-decrypt-message/index.js'
-    )) as unknown as DynamicImportType,
-);
-const Confirm = mmLazy(
-  (() =>
-    import(
-      '../confirmations/confirm/confirm.tsx'
-    )) as unknown as DynamicImportType,
-);
-const SendPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
-);
-const CrossChainSwap = mmLazy(
-  (() => import('../bridge/index.tsx')) as unknown as DynamicImportType,
-);
-const PermissionsConnect = mmLazy(
-  (() =>
-    import('../permissions-connect/index.js')) as unknown as DynamicImportType,
-);
-const ConfirmAddSuggestedTokenPage = mmLazy(
-  (() =>
-    import(
-      '../confirm-add-suggested-token/index.js'
-    )) as unknown as DynamicImportType,
-);
-const ConfirmAddSuggestedNftPage = mmLazy(
-  (() =>
-    import(
-      '../confirm-add-suggested-nft/index.js'
-    )) as unknown as DynamicImportType,
-);
-const ConfirmationPage = mmLazy(
-  (() =>
-    import(
-      '../confirmations/confirmation/index.js'
-    )) as unknown as DynamicImportType,
-);
-const CreateAccountPage = mmLazy(
-  (() =>
-    import(
-      '../create-account/create-account.component.js'
-    )) as unknown as DynamicImportType,
-);
-const NftFullImage = mmLazy(
-  (() =>
-    import(
-      '../../components/app/assets/nfts/nft-details/nft-full-image.tsx'
-    )) as unknown as DynamicImportType,
-);
-const Asset = mmLazy(
-  (() => import('../asset/index.js')) as unknown as DynamicImportType,
-);
-const DeFiPage = mmLazy(
-  (() => import('../defi/index.ts')) as unknown as DynamicImportType,
-);
-const PermissionsPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/permissions-page/permissions-page.js'
-    )) as unknown as DynamicImportType,
-);
-const GatorPermissionsPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-    )) as unknown as DynamicImportType,
-);
-const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
-    )) as unknown as DynamicImportType,
-);
-const GatorPermissionsReviewPermissionsPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
-    )) as unknown as DynamicImportType,
-);
-
-const Home = mmLazy(
-  (() => import('../home/index.js')) as unknown as DynamicImportType,
-);
-
-const DeepLink = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() => import('../deep-link/deep-link.tsx')) as unknown as DynamicImportType,
-);
-
-const BasicFunctionalityOff = mmLazy(
-  (() =>
-    import(
-      '../basic-functionality-required/basic-functionality-required.tsx'
-    )) as unknown as DynamicImportType,
-);
-
-const MultichainAccountDetailsPage = mmLazy(
-  (() =>
-    import(
-      '../multichain-accounts/multichain-account-details-page/index.ts'
-    )) as unknown as DynamicImportType,
-);
-
-const SmartAccountPage = mmLazy(
-  (() =>
-    import(
-      '../multichain-accounts/smart-account-page/index.ts'
-    )) as unknown as DynamicImportType,
-);
-
-const NonEvmBalanceCheck = mmLazy(
-  (() =>
-    import(
-      '../nonevm-balance-check/index.tsx'
-    )) as unknown as DynamicImportType,
-);
-
-const ShieldPlan = mmLazy(
-  (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
-);
-const PerpsMarketDetailPage = mmLazy(
-  (() =>
-    import(
-      '../perps/perps-market-detail-page.tsx'
-    )) as unknown as DynamicImportType,
-);
-const MarketListView = mmLazy(
-  (() =>
-    import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
-);
-const PerpsActivityPage = mmLazy(
-  (() =>
-    import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
-);
-const PerpsOrderEntryPage = mmLazy(
-  (() =>
-    import(
-      '../perps/perps-order-entry-page.tsx'
-    )) as unknown as DynamicImportType,
 );
 
 // Perps pages wrapped with PerpsControllerProvider
@@ -378,8 +273,6 @@ const WrappedPerpsOrderEntryPage = () => (
     <PerpsOrderEntryPage />
   </PerpsControllerProvider>
 );
-
-// End Lazy Routes
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
