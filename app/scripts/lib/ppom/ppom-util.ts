@@ -197,6 +197,8 @@ function normalizePPOMRequest(
     controllerObject as TransactionMeta,
   );
 
+  normalizedRequest = normalizeRequestParams(normalizedRequest);
+
   const { delegationMock, id, jsonrpc, method, origin, params } =
     normalizedRequest;
 
@@ -207,6 +209,34 @@ function normalizePPOMRequest(
     method,
     origin,
     params,
+  };
+}
+
+function normalizeRequestParams(request: PPOMRequest): PPOMRequest {
+  // Ensure params is always an array for JSON-RPC requests
+  // PPOM validator expects params to be either a record (plain object) or an array
+  if (!request.params) {
+    return {
+      ...request,
+      params: [],
+    };
+  }
+
+  // If params is already an array, return as is
+  if (Array.isArray(request.params)) {
+    return request;
+  }
+
+  // If params is a plain object, convert to array format
+  // This handles cases where params might be passed as an object
+  if (typeof request.params === 'object' && request.params !== null) {
+    return request;
+  }
+
+  // Fallback: wrap in array
+  return {
+    ...request,
+    params: [request.params],
   };
 }
 

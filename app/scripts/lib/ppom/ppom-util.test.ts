@@ -217,6 +217,72 @@ describe('PPOM Utils', () => {
       expect(ppom.validateJsonRpc).toHaveBeenCalledWith(REQUEST_MOCK);
     });
 
+    it('normalizes undefined params to empty array', async () => {
+      const request = {
+        ...REQUEST_MOCK,
+        method: 'wallet_requestPermissions',
+        params: undefined,
+      } as unknown as JsonRpcRequest;
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        request,
+      });
+
+      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+        ...request,
+        params: [],
+      });
+    });
+
+    it('keeps array params unchanged for non-signature/transaction methods', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const params = [{ eth_accounts: {} }];
+      const request = {
+        ...REQUEST_MOCK,
+        method: 'wallet_requestPermissions',
+        params,
+      } as unknown as JsonRpcRequest;
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        request,
+      });
+
+      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+        ...request,
+        params,
+      });
+    });
+
+    it('keeps plain object params unchanged', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const params = { eth_accounts: {} };
+      const request = {
+        ...REQUEST_MOCK,
+        method: 'wallet_requestPermissions',
+        params,
+      } as unknown as JsonRpcRequest;
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        request,
+      });
+
+      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+        ...request,
+        params,
+      });
+    });
+
     it('updates securityAlertResponse with loading state', async () => {
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
