@@ -1681,6 +1681,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/activity/transaction-details-summary/transaction-details-summary.test.tsx": {
+      "warn: No tokens found for chainId:": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/activity/transaction-details-total-row/transaction-details-total-row.test.tsx": {
@@ -1737,6 +1738,10 @@
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/confirm/footer/musd-conversion-footer.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/confirm/footer/origin-throttle-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1768,6 +1773,11 @@
     "ui/pages/confirmations/components/confirm/header/header.test.tsx": {
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/header/musd-conversion-header.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/header/wallet-initiated-header.test.tsx": {
@@ -1916,6 +1926,18 @@
       "Reselect: Identity function warnings": 7,
       "Reselect: Input stability warnings": 4,
       "Test errors: Uncaught Errors": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/info/musd-claim-info/musd-claim-info.test.tsx": {
+      "MetaMask: Background connection not initialized": 16,
+      "Reselect: Identity function warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-heading.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1
+    },
+    "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-info.test.tsx": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
@@ -2330,10 +2352,6 @@
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "Reselect: Identity function warnings": 5,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
@@ -2356,6 +2374,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.test.tsx": {
+      "Test errors: Uncaught Errors": 7,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message.test.js": {
@@ -2386,6 +2405,11 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/bridge-time-row/bridge-time-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {

@@ -5,11 +5,16 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
+import { useMusdConversionTokens } from '../../../../../hooks/musd';
 import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../utils/transaction-pay');
+jest.mock('../../../context/confirm', () => ({
+  useConfirmContext: () => ({ currentConfirmation: { type: 'simpleSend' } }),
+}));
+jest.mock('../../../../../hooks/musd');
 
 jest.mock('../../send/asset', () => ({
   Asset: ({
@@ -68,12 +73,22 @@ describe('PayWithModal', () => {
     useTransactionPayRequiredTokens,
   );
   const getAvailableTokensMock = jest.mocked(getAvailableTokens);
+  const useMusdConversionTokensMock = jest.mocked(useMusdConversionTokens);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useMusdConversionTokensMock.mockReturnValue({
+      filterTokens: (tokens) => tokens,
+      filterAllowedTokens: (tokens) => tokens,
+      isConversionToken: () => false,
+      isMusdSupportedOnChain: () => false,
+      hasConvertibleTokensByChainId: () => false,
+      tokens: [],
+      defaultPaymentToken: null,
+    });
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
