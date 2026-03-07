@@ -255,7 +255,8 @@
     "fast-xml-parser": "^5.3.6",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.1",
-    "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch"
+    "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
+    "@metamask/snaps-controllers@npm:^17.2.0": "patch:@metamask/snaps-controllers@npm%3A18.0.1#~/.yarn/patches/@metamask-snaps-controllers-npm-18.0.1-aa2940d469.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -376,7 +377,7 @@
     "@metamask/shield-controller": "^5.0.1",
     "@metamask/signature-controller": "^39.0.3",
     "@metamask/smart-transactions-controller": "^22.6.0",
-    "@metamask/snaps-controllers": "^18.0.1",
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A18.0.1#~/.yarn/patches/@metamask-snaps-controllers-npm-18.0.1-aa2940d469.patch",
     "@metamask/snaps-execution-environments": "^11.0.0",
     "@metamask/snaps-rpc-methods": "^14.3.0",
     "@metamask/snaps-sdk": "^10.4.0",

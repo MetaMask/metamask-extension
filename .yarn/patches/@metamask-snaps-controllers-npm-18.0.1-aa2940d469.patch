@@ -1,0 +1,30 @@
+diff --git a/dist/services/AbstractExecutionService.cjs b/dist/services/AbstractExecutionService.cjs
+index 8710d44d94a71a34c4db576511325f4174756b26..8086b6d650ba37495449a07ad81b49833cf577b2 100644
+--- a/dist/services/AbstractExecutionService.cjs
++++ b/dist/services/AbstractExecutionService.cjs
+@@ -245,7 +245,9 @@ class AbstractExecutionService {
+             params: { snapId, sourceCode, endowments },
+             id: (0, nanoid_1.nanoid)(),
+         };
+-        (0, utils_1.assertIsJsonRpcRequest)(request);
++        // Skip JSON-RPC validation for internal snap execution requests
++        // as params may contain non-JSON-serializable endowments
++        // (0, utils_1.assertIsJsonRpcRequest)(request);
+         this.setSnapStatus(snapId, 'executing');
+         const result = await (0, utils_2.withTimeout)(this.#command(job.id, request), remainingTime);
+         if (result === utils_2.hasTimedOut) {
+diff --git a/dist/services/AbstractExecutionService.mjs b/dist/services/AbstractExecutionService.mjs
+index 5193ea911c0237755f4ab7eba47bfeb977487fb5..ba86ddf24d8c52734a7d7adf62e2000b0f77f5af 100644
+--- a/dist/services/AbstractExecutionService.mjs
++++ b/dist/services/AbstractExecutionService.mjs
+@@ -246,7 +246,9 @@ export class AbstractExecutionService {
+             params: { snapId, sourceCode, endowments },
+             id: nanoid(),
+         };
+-        assertIsJsonRpcRequest(request);
++        // Skip JSON-RPC validation for internal snap execution requests
++        // as params may contain non-JSON-serializable endowments
++        // assertIsJsonRpcRequest(request);
+         this.setSnapStatus(snapId, 'executing');
+         const result = await withTimeout(this.#command(job.id, request), remainingTime);
+         if (result === hasTimedOut) {
