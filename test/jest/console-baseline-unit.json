@@ -540,13 +540,13 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/perps-balance-dropdown/perps-balance-dropdown.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/perps-recent-activity/perps-recent-activity.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/perps-tab-control-bar/perps-tab-control-bar.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/perps-tab-view.test.tsx": {
@@ -555,13 +555,22 @@
     "ui/components/app/perps/perps-token-logo/perps-token-logo.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/perps-watchlist/perps-watchlist.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/position-card/position-card.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/reverse-position/reverse-position-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/start-trade-cta/start-trade-cta.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/transaction-card/transaction-card.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/update-tpsl/update-tpsl-modal-content.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/qr-hardware-popover/base-reader.test.js": {
@@ -1531,9 +1540,6 @@
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/bridge/awaiting-signatures/awaiting-signatures.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/bridge/hooks/useDestinationAccount.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1550,6 +1556,7 @@
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "error: Error: Hardware wallet device is": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/index.test.tsx": {
@@ -1564,7 +1571,11 @@
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
+      "React: State updates on unmounted components": 1,
       "Reselect: Input stability warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/prepare/bridge-price-impact-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
@@ -3158,6 +3169,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 5,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/perps/perps-order-entry-page.test.tsx": {
@@ -3181,6 +3193,43 @@
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 4,
       "warn: Could not find asset type": 9,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/autodetect-nfts-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/autodetect-tokens-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/currency-sub-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/display-nft-media-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/hide-zero-balance-tokens-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/local-currency-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/assets-tab/show-network-token-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/settings-v2.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/settings-tab.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/advanced-tab/advanced-tab.component.test.js": {

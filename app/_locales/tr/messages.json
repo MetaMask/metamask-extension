@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Fiyat etkisi"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Fiyat etkisi, takas işleminizin piyasa fiyatını nasıl etkilediğini yansıtır. Gaz için yeterli token'iniz yoksa ücretleri karşılamak için token'lerinizden bazıları kullanılır ve bu da fiyat etkisini artırır. MetaMask'in bunun üzerinde ayarlama veya kontrol yetkisi yoktur."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Fiyat etkisi"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Giriş fiyatı"
   },
-  "perpsExploreCrypto": {
-    "message": "Kriptoyu keşfet"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Hisse senetlerini ve emtiaları keşfet"
-  },
   "perpsFees": {
     "message": "Ücretler"
   },
@@ -5396,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
-  },
-  "perpsOrderAmount": {
-    "message": "Emir Miktarı"
   },
   "perpsOrders": {
     "message": "Emirler"
@@ -5546,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Çek"
-  },
-  "perpsYourOrders": {
-    "message": "Emirleriniz"
-  },
-  "perpsYourPositions": {
-    "message": "Pozisyonlarınız"
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
