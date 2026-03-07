@@ -558,6 +558,55 @@ describe('ConfirmFooter', () => {
     expect(setErrorModalSuppressedMock).toHaveBeenCalledWith(true);
   });
 
+  it('does not suppress hardware wallet error modal when there are no unconfirmed danger alerts', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Ready },
+    });
+
+    render(getMockPersonalSignConfirmState());
+
+    expect(setErrorModalSuppressedMock).toHaveBeenCalledWith(false);
+  });
+
+  it('resets hardware wallet error modal suppression on unmount', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Ready },
+    });
+
+    const { unmount } = render(
+      getMockPersonalSignConfirmStateForRequest(
+        { ...unapprovedPersonalSignMsg, id: '123' },
+        {
+          confirmAlerts: {
+            alerts: {
+              '123': [
+                {
+                  key: 'Contract',
+                  severity: Severity.Danger,
+                  message: 'Alert Info',
+                },
+              ],
+            },
+            confirmed: { '123': { Contract: false } },
+          },
+          metamask: {},
+        },
+      ),
+    );
+
+    expect(setErrorModalSuppressedMock).toHaveBeenCalledWith(true);
+    unmount();
+    expect(setErrorModalSuppressedMock).toHaveBeenLastCalledWith(false);
+  });
+
   it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: true,

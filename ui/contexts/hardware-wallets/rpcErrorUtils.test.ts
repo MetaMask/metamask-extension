@@ -165,6 +165,35 @@ describe('rpcErrorUtils', () => {
 
       expect(result).toBe(ErrorCode.UserRejected);
     });
+
+    it('extracts code from serialized RPC error with hardware wallet cause', () => {
+      const error = {
+        code: -32603,
+        data: {
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Serialized hardware wallet error',
+            code: ErrorCode.DeviceDisconnected,
+            stack: 'stack trace',
+          },
+        },
+      };
+
+      const result = getHardwareWalletErrorCode(error);
+
+      expect(result).toBe(ErrorCode.DeviceDisconnected);
+    });
+
+    it('returns Unknown for plain object with non-numeric, invalid string code', () => {
+      const error = {
+        code: 'NotARealErrorCode',
+        message: 'Invalid string code',
+      };
+
+      const result = getHardwareWalletErrorCode(error);
+
+      expect(result).toBe(ErrorCode.Unknown);
+    });
   });
 
   describe('toHardwareWalletError', () => {
@@ -338,6 +367,148 @@ describe('rpcErrorUtils', () => {
         walletType: HardwareWalletType.Ledger,
       });
     });
+
+    it('reconstructs from serialized RPC cause and preserves stack/metadata', () => {
+      const serializedRpcError = {
+        code: -32603,
+        data: {
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Serialized cause message',
+            code: ErrorCode.DeviceDisconnected,
+            stack: 'serialized stack trace',
+          },
+          metadata: { recreatedTxId: 'tx-123' },
+        },
+      };
+
+      const result = toHardwareWalletError(
+        serializedRpcError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.DeviceDisconnected);
+      expect(result.message).toBe('Serialized cause message');
+      expect(result.stack).toBe('serialized stack trace');
+      expect(result.metadata).toEqual({
+        recreatedTxId: 'tx-123',
+        walletType: HardwareWalletType.Ledger,
+      });
+    });
+
+    it('uses explicit code from KeyringControllerError cause when available', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            code: ErrorCode.UserCancelled,
+            message: 'User cancelled on device',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+      expect(result.message).toBe('User cancelled on device');
+    });
+
+    it('infers user action code from KeyringControllerError cause text', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Ledger: User canceled action on device',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+      expect(result.message).toBe('Ledger: User canceled action on device');
+    });
+
+    it('infers user rejected code from KeyringControllerError cause text', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Ledger: User rejected action on device',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserRejected);
+      expect(result.message).toBe('Ledger: User rejected action on device');
+    });
+
+    it('uses keyring error code when cause cannot be interpreted', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          code: 'UserRejected',
+          message: 'User rejected in keyring',
+          cause: {
+            name: 'SomeOtherError',
+            message: 'Unknown inner error',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserRejected);
+      expect(result.message).toBe('User rejected in keyring');
+    });
+
+    it('falls back to Unknown when keyring text inference does not match', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed for unknown reason',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'inner error without user-action marker',
+            stack: 'opaque stack trace',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('sign operation failed for unknown reason');
+    });
+
+    it('maps Ledger hex status code from fallback error message', () => {
+      const result = toHardwareWalletError(
+        new Error('Device is locked (Ledger device: Locked device (0x5515))'),
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
+      expect(result.message).toContain('0x5515');
+    });
   });
 
   describe('isHardwareWalletError', () => {
@@ -378,6 +549,22 @@ describe('rpcErrorUtils', () => {
         data: {
           cause: {
             name: 'HardwareWalletError',
+          },
+        },
+      };
+
+      expect(isHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for serialized RPC error with hardware wallet cause', () => {
+      const error = {
+        code: -32603,
+        data: {
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'serialized',
+            code: ErrorCode.DeviceDisconnected,
+            stack: 'trace',
           },
         },
       };
