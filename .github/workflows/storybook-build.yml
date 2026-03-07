@@ -1,0 +1,19 @@
+name: Storybook build
+
+on:
+  pull_request:
+    paths:
+      - "ui/**/*.{js,ts,tsx}"
+      - ".github/workflows/storybook-build.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: |
+          npm ci
+          npm run build-storybook
