@@ -4002,9 +4002,6 @@
     "message": "$1을(를) mUSD로 전환",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionTitle": {
-    "message": "mUSD 전환"
-  },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
   },

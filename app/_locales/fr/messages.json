@@ -4002,9 +4002,6 @@
     "message": "Convertir $1 en mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionTitle": {
-    "message": "Conversion en mUSD"
-  },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
   },
