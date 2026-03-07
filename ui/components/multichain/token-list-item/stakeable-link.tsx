@@ -2,9 +2,13 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
+  BorderRadius,
+  Display,
+  AlignItems,
   FontWeight,
   IconColor,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import {
@@ -34,12 +38,13 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   return (
     <Box
       as="button"
-      backgroundColor={BackgroundColor.transparent}
+      backgroundColor={BackgroundColor.backgroundMuted}
+      borderRadius={BorderRadius.SM}
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      paddingLeft={2}
+      paddingRight={2}
       data-testid={`staking-entrypoint-${chainId}`}
-      gap={1}
-      paddingInline={0}
-      paddingInlineStart={1}
-      paddingInlineEnd={1}
       tabIndex={0}
       onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
@@ -69,13 +74,10 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         });
       }}
     >
-      <Text as="span">•</Text>
       <Text
-        as="span"
-        color={TextColor.primaryDefault}
-        paddingInlineStart={1}
-        paddingInlineEnd={1}
+        variant={TextVariant.bodySm}
         fontWeight={FontWeight.Medium}
+        color={TextColor.primaryDefault}
       >
         {t('earn')}
       </Text>
@@ -83,6 +85,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         name={IconName.Stake}
         size={IconSize.Xs}
         color={IconColor.primaryDefault}
+        marginLeft={1}
       />
     </Box>
   );

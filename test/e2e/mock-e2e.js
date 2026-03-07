@@ -1169,6 +1169,19 @@ async function setupMocking(
       };
     });
 
+  // On Ramp: Geolocation
+  await server
+    .forGet('https://on-ramp.api.cx.metamask.io/geolocation')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: 'US-TX',
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+        },
+      };
+    });
+
   // Snaps: Execution environment html
   await server
     .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/index\.html$/u)

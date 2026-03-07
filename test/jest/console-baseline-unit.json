@@ -491,6 +491,15 @@
       "error: Unexpected keys \"allTokens\", \"enableEnforcedSimulations\", \"e...": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/musd/musd-asset-cta.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/musd/musd-buy-get-cta.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/musd/musd-convert-link.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/name/name-details/name-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 12,
       "warn: ⚠️ React Router Future Flag": 2
@@ -897,11 +906,15 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/account-overview/account-overview-non-evm.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 6,
+      "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1390,9 +1403,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 2,
-      "error: [MUSD Geo] Geolocation error: Geolocation": 1,
-      "error: [MUSD Geo] Geolocation error: Network": 2
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/hooks/perps/usePerpsOrderForm.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -2992,10 +3003,14 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/defi/components/defi-details-list.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -3058,6 +3073,15 @@
       "MetaMask: Background connection not initialized": 4,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/musd/index.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "warn: No routes matched location \"/\"": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/musd/screens/education.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
