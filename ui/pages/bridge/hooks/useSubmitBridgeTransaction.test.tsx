@@ -13,11 +13,6 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import {
-  AWAITING_SIGNATURES_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
@@ -183,6 +178,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
       expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -222,14 +231,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       });
 
       // Assert
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          state: { stayOnHomePage: true },
-        },
-      );
-      expect(result.current.isSubmitting).toBe(false);
-      expect(submitTxSpy).toHaveBeenCalled();
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
     });
 
     it('routes to awaiting signatures for hardware wallets', async () => {
@@ -257,9 +272,30 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-      );
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            {
+              "pathname": "/cross-chain/swaps/awaiting-signatures",
+            },
+            {
+              "state": {
+                "token": null,
+              },
+            },
+          ],
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalledTimes(1);
     });
