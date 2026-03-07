@@ -40,7 +40,7 @@ export type MultichainAccountsFeatureFlag = Infer<
  * @param flagName - The name of the remote flag to use
  * @returns MultichainAccountsFeatureFlag - The feature flags for multichain accounts.
  */
-export const getMultichainAccountsRemoteFeatureFlags = (
+const getMultichainAccountsRemoteFeatureFlags = (
   state: RemoteFeatureFlagsState,
   flagName: typeof STATE_2_FLAG,
 ) => {
