@@ -6,7 +6,7 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   Box,
   ButtonIcon,

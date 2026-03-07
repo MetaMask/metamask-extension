@@ -1,5 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { isExperimental, isFlask } from '../../../shared/lib/build-types';
 import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
@@ -12,6 +13,7 @@ import {
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -72,6 +74,14 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
     iconName: IconName.Setting,
+  },
+  {
+    tabMessage: (t) => t('general'),
+    sectionMessage: (t) => t('showDefaultAddress'),
+    descriptionMessage: (t) => t('showDefaultAddressDescription'),
+    route: `${GENERAL_ROUTE}#show-default-address`,
+    iconName: IconName.Setting,
+    hidden: true,
   },
   // advanced settingsRefs[0]
   {
@@ -183,6 +193,13 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('backupAndSyncFeatureContacts'),
     route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-contact-syncing`,
     iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('notifications'),
+    sectionMessage: (t) => t('notifications'),
+    descriptionMessage: (t) => t('notifications'),
+    route: NOTIFICATIONS_SETTINGS_ROUTE,
+    iconName: IconName.Notification,
   },
   {
     tabMessage: (t) => t('contacts'),
@@ -509,8 +526,6 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
     icon: 'fas fa-flask',
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
   // experimental settingsRefs[4]
   {
     tabMessage: (t) => t('experimental'),
@@ -519,7 +534,6 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#snaps`,
     icon: 'fas fa-flask',
   },
-  ///: END:ONLY_INCLUDE_IF
   // developerOptions settingsRefs[0]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
@@ -559,15 +573,14 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     iconName: IconName.CodeCircle,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('watchEthereumAccountsToggle'),
     descriptionMessage: (t) => t('watchEthereumAccountsDescription'),
     route: `${EXPERIMENTAL_ROUTE}#watch-only`,
     icon: 'fas fa-flask',
+    hidden: !isFlask() && !isExperimental(),
   },
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 export default SETTINGS_CONSTANTS;

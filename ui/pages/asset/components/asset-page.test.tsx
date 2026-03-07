@@ -48,6 +48,10 @@ jest.mock('../../../../shared/constants/network', () => ({
   },
 }));
 
+jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
+
 jest.mock('../../../hooks/useMultiPolling', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -217,11 +221,18 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
+      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
     } as never);
   });
 
   beforeEach(() => {
     openTabSpy.mockClear();
+
+    nock('https://price.api.cx.metamask.io')
+      .get(/\/v1\/chains\/\d+\/historical-prices/u)
+      .query(true)
+      .reply(200, {})
+      .persist();
 
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
@@ -256,6 +267,7 @@ describe('AssetPage', () => {
   afterEach(() => {
     store.clearActions();
     jest.restoreAllMocks();
+    nock.cleanAll();
   });
 
   const native = {
@@ -418,7 +430,7 @@ describe('AssetPage', () => {
 
     // Mock no price history
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .get(`/v1/chains/1/historical-prices/${address}`)
       .query(true)
       .reply(200, {});
 
@@ -439,9 +451,9 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify we show the loading state
+    // Verify loading finishes and we show the empty state (API returned no prices)
     await waitFor(() => {
-      const chart = queryByTestId('asset-chart-loading');
+      const chart = queryByTestId('asset-chart-empty-state');
       expect(chart).toBeInTheDocument();
     });
 
@@ -463,7 +475,7 @@ describe('AssetPage', () => {
 
     // Mock price history
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .get(`/v1/chains/1/historical-prices/${address}`)
       .query(true)
       .reply(200, { prices: [[1, 1]] });
 

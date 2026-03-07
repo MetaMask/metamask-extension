@@ -1,1689 +1,349 @@
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Provider } from '@metamask/network-controller';
 import {
-  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
 import {
-  createTestProviderTools,
-  getTestAccounts,
-} from '../../../../test/stub/provider';
-import {
-  MESSAGE_TYPE,
-  ORIGIN_METAMASK,
-} from '../../../../shared/constants/app';
-import {
-  AssetType,
-  EIP5792ErrorCode,
-  NATIVE_TOKEN_ADDRESS,
-  TokenStandard,
-  TransactionMetaMetricsEvent,
-} from '../../../../shared/constants/transaction';
-import {
-  MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
-  MetaMetricsEventTransactionEstimateType,
+  MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
 } from '../../../../shared/constants/metametrics';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import {
-  TransactionEventPayload,
-  TransactionMetaEventPayload,
-  TransactionMetricsRequest,
-} from '../../../../shared/types/metametrics';
-import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
+import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
+import { TransactionMetaMetricsEvent } from '../../../../shared/constants/transaction';
+import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
   handleTransactionConfirmed,
   handleTransactionDropped,
   handleTransactionFailed,
+  handlePostTransactionBalanceUpdate,
   handleTransactionRejected,
   handleTransactionSubmitted,
-  METRICS_STATUS_FAILED,
 } from './metrics';
 
-const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
-const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
-const ADDRESS_3_MOCK = '0x1234567890123456789012345678901234567892';
-const METHOD_NAME_MOCK = 'testMethod1';
-const METHOD_NAME_2_MOCK = 'testMethod2';
+jest.mock('../../../../shared/modules/transaction.utils', () => ({
+  ...jest.requireActual('../../../../shared/modules/transaction.utils'),
+  determineTransactionAssetType: jest.fn().mockResolvedValue({
+    assetType: 'native',
+    tokenStandard: null,
+  }),
+}));
 
-const providerResultStub = {
-  eth_getCode: '0x123',
-};
-const { provider } = createTestProviderTools({
-  scaffold: providerResultStub,
-  networkId: '5',
-  chainId: '5',
-});
+jest.mock('../snap-keyring/metrics', () => ({
+  getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({}),
+}));
 
-jest.mock('../snap-keyring/metrics', () => {
+const createRequest = () => {
   return {
-    getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({
-      account_snap_type: 'snaptype',
-      account_snap_version: 'snapversion',
-    }),
-  };
-});
+    getTransactionUIMetricsFragment: jest.fn(),
+    upsertTransactionUIMetricsFragment: jest.fn(),
+    getAccountBalance: jest.fn().mockReturnValue('0xffffffffffffffff'),
+    getAccountType: jest.fn().mockResolvedValue('MetaMask'),
+    getDeviceModel: jest.fn().mockResolvedValue('N/A'),
+    getHardwareTypeForMetric: jest.fn(),
+    getEIP1559GasFeeEstimates: jest
+      .fn()
+      .mockResolvedValue({ gasFeeEstimates: {} }),
+    getSelectedAddress: jest
+      .fn()
+      .mockReturnValue('0x1111111111111111111111111111111111111111'),
+    getParticipateInMetrics: jest.fn().mockReturnValue(true),
+    getTokenStandardAndDetails: jest.fn(),
+    getTransaction: jest.fn(),
+    provider: {} as any,
+    snapAndHardwareMessenger: {} as any,
+    trackEvent: jest.fn(),
+    getIsSmartTransaction: jest.fn().mockReturnValue(false),
+    getSmartTransactionByMinedTxHash: jest.fn(),
+    getMethodData: jest.fn().mockResolvedValue({ name: 'transfer' }),
+    getIsConfirmationAdvancedDetailsOpen: jest.fn().mockReturnValue(false),
+    getHDEntropyIndex: jest.fn().mockReturnValue(0),
+    getNetworkRpcUrl: jest
+      .fn()
+      .mockReturnValue('https://rpc.test.example/path'),
+    getFeatureFlags: jest.fn().mockReturnValue({ extensionUxPna25: true }),
+    getPna25Acknowledged: jest.fn().mockReturnValue(true),
+    getAddressSecurityAlertResponse: jest.fn(),
+    getSecurityAlertsEnabled: jest.fn().mockReturnValue(true),
+  } as unknown as TransactionMetricsRequest;
+};
 
-const mockTransactionMetricsRequest = {
-  createEventFragment: jest.fn(),
-  finalizeEventFragment: jest.fn(),
-  getEventFragmentById: jest.fn(),
-  updateEventFragment: jest.fn(),
-  getAccountBalance: jest.fn(),
-  getAccountType: jest.fn(),
-  getDeviceModel: jest.fn(),
-  getHardwareTypeForMetric: jest.fn(),
-  getEIP1559GasFeeEstimates: jest.fn(),
-  getSelectedAddress: jest.fn(),
-  getParticipateInMetrics: jest.fn(),
-  getTokenStandardAndDetails: jest.fn(),
-  getTransaction: jest.fn(),
-  provider: provider as unknown as Provider,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  snapAndHardwareMessenger: jest.fn() as any,
-  trackEvent: jest.fn(),
-  getIsSmartTransaction: jest.fn(),
-  getSmartTransactionByMinedTxHash: jest.fn(),
-  getMethodData: jest.fn(),
-  getIsConfirmationAdvancedDetailsOpen: jest.fn(),
-  getHDEntropyIndex: jest.fn(),
-  getNetworkRpcUrl: jest.fn(),
-  getFeatureFlags: jest.fn(),
-  getPna25Acknowledged: jest.fn(),
-  getAddressSecurityAlertResponse: jest.fn(),
-  getSecurityAlertsEnabled: jest.fn(),
-} as TransactionMetricsRequest;
+const createTxMeta = (overrides = {}) =>
+  ({
+    id: '1',
+    chainId: '0x1',
+    origin: 'metamask',
+    status: TransactionStatus.unapproved,
+    type: TransactionType.simpleSend,
+    time: Date.now(),
+    txParams: {
+      from: '0x1111111111111111111111111111111111111111',
+      to: '0x2222222222222222222222222222222222222222',
+      gas: '0x5208',
+      gasPrice: '0x3b9aca00',
+      value: '0x0',
+      data: '0xa9059cbb',
+    },
+    ...overrides,
+  }) as any;
 
-describe('Transaction metrics', () => {
-  let fromAccount,
-    mockChainId,
-    mockNetworkId,
-    mockTransactionMeta: TransactionMeta,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockTransactionMetaWithBlockaid: any,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expectedProperties: any,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expectedSensitiveProperties: any,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockActionId: any;
+describe('transaction metrics handlers', () => {
+  it('tracks added event', async () => {
+    const request = createRequest();
+    await handleTransactionAdded(request, { transactionMeta: createTxMeta() });
 
-  beforeEach(() => {
-    fromAccount = getTestAccounts()[0];
-    mockChainId = '0x5' as const;
-    mockNetworkId = '5';
-    mockActionId = '2';
-    mockTransactionMeta = {
-      id: '1',
-      status: TransactionStatus.unapproved,
-      hash: '0x1234567890123456789012345678901234567890',
-      txParams: {
-        from: fromAccount.address,
-        to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-        gasPrice: '0x77359400',
-        gas: '0x7b0d',
-        nonce: '0x4b',
-      },
-      type: TransactionType.simpleSend,
-      origin: ORIGIN_METAMASK,
-      chainId: mockChainId,
-      networkClientId: 'testNetworkClientId',
-      time: 1624408066355,
-      defaultGasEstimates: {
-        gas: '0x7b0d',
-        gasPrice: '0x77359400',
-      },
-      securityProviderResponse: {
-        flagAsDangerous: 0,
-      },
-    };
-
-    // copy mockTransactionMeta and add blockaid data
-    mockTransactionMetaWithBlockaid = {
-      ...JSON.parse(JSON.stringify(mockTransactionMeta)),
-      securityAlertResponse: {
-        result_type: BlockaidResultType.Malicious,
-        reason: BlockaidReason.maliciousDomain,
-        providerRequestsCount: {
-          eth_call: 5,
-          eth_getCode: 3,
-        },
-      },
-    };
-
-    expectedProperties = {
-      account_snap_type: 'snaptype',
-      account_snap_version: 'snapversion',
-      account_type: undefined,
-      address_alert_response: 'not_applicable',
-      api_method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-      asset_type: AssetType.native,
-      chain_id: mockChainId,
-      device_model: undefined,
-      eip_1559_version: '0',
-      eip7702_upgrade_transaction: false,
-      gas_edit_attempted: 'none',
-      gas_estimation_failed: false,
-      gas_fee_selected: undefined,
-      gas_insufficient_native_asset: true,
-      gas_paid_with: undefined,
-      gas_payment_tokens_available: undefined,
-      is_smart_transaction: undefined,
-      gas_edit_type: 'none',
-      network: mockNetworkId,
-      referrer: ORIGIN_METAMASK,
-      source: MetaMetricsTransactionEventSource.User,
-      status: 'unapproved',
-      token_standard: TokenStandard.none,
-      transaction_speed_up: false,
-      transaction_type: TransactionType.simpleSend,
-      ui_customizations: null,
-      transaction_advanced_view: undefined,
-      transaction_contract_method: [],
-      transaction_internal_id: '1',
-    };
-
-    expectedSensitiveProperties = {
-      default_estimate: MetaMetricsEventTransactionEstimateType.DefaultEstimate,
-      default_gas: '0.000031501',
-      default_gas_price: '2',
-      first_seen: 1624408066355,
-      gas_limit: '0x7b0d',
-      gas_price: '2',
-      transaction_contract_address: [],
-      transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-      transaction_replaced: undefined,
-    };
-
-    jest.clearAllMocks();
+    expect(request.trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: TransactionMetaMetricsEvent.added,
+        category: MetaMetricsEventCategory.Transactions,
+      }),
+    );
   });
 
-  describe('handleTransactionAdded', () => {
-    it('should return if transaction meta is not defined', async () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
-      expect(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
+  it('tracks approved event', async () => {
+    const request = createRequest();
+    await handleTransactionApproved(request, {
+      transactionMeta: createTxMeta({ status: TransactionStatus.approved }),
     });
 
-    it('should create event fragment', async () => {
-      await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMeta as any,
-        actionId: mockActionId,
-      });
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        failureEvent: TransactionMetaMetricsEvent.rejected,
-        initialEvent: TransactionMetaMetricsEvent.added,
-        successEvent: TransactionMetaMetricsEvent.approved,
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-    });
-
-    it('should create event fragment when simulation failed', async () => {
-      mockTransactionMeta.simulationFails = {
-        reason: 'test',
-        debug: {},
-      };
-
-      await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMeta as any,
-        actionId: mockActionId,
-      });
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        failureEvent: TransactionMetaMetricsEvent.rejected,
-        initialEvent: TransactionMetaMetricsEvent.added,
-        successEvent: TransactionMetaMetricsEvent.approved,
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        properties: {
-          ...expectedProperties,
-          ui_customizations: ['gas_estimation_failed'],
-          gas_estimation_failed: true,
-        },
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-    });
-
-    it('should create event fragment with blockaid', async () => {
-      await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMetaWithBlockaid as any,
-        actionId: mockActionId,
-      });
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        failureEvent: TransactionMetaMetricsEvent.rejected,
-        initialEvent: TransactionMetaMetricsEvent.added,
-        successEvent: TransactionMetaMetricsEvent.approved,
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        properties: {
-          ...expectedProperties,
-          security_alert_reason: BlockaidReason.maliciousDomain,
-          security_alert_response: 'Malicious',
-          ui_customizations: ['flagged_as_malicious'],
-          ppom_eth_call_count: 5,
-          ppom_eth_getCode_count: 3,
-        },
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-    });
+    expect(request.trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ event: TransactionMetaMetricsEvent.approved }),
+    );
   });
 
-  describe('handleTransactionApproved', () => {
-    it('should return if transaction meta is not defined', async () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
-      expect(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+  it('tracks submitted event', async () => {
+    const request = createRequest();
+    await handleTransactionSubmitted(request, {
+      transactionMeta: createTxMeta({ status: TransactionStatus.submitted }),
     });
 
-    it('should create, update, finalize event fragment', async () => {
-      await handleTransactionApproved(mockTransactionMetricsRequest, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMeta as any,
-        actionId: mockActionId,
-      });
-
-      const expectedUniqueId = 'transaction-added-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.approved,
-        failureEvent: TransactionMetaMetricsEvent.rejected,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: expectedSensitiveProperties,
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
-
-    it('should create, update, finalize event fragment with blockaid', async () => {
-      await handleTransactionApproved(mockTransactionMetricsRequest, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMetaWithBlockaid as any,
-        actionId: mockActionId,
-      });
-
-      const expectedUniqueId = 'transaction-added-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.approved,
-        failureEvent: TransactionMetaMetricsEvent.rejected,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: {
-          ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
-          security_alert_reason: BlockaidReason.maliciousDomain,
-          security_alert_response: 'Malicious',
-          ppom_eth_call_count: 5,
-          ppom_eth_getCode_count: 3,
-        },
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: expectedSensitiveProperties,
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
+    expect(request.trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ event: TransactionMetaMetricsEvent.submitted }),
+    );
   });
 
-  describe('handleTransactionFailed', () => {
-    it('should return if transaction meta is not defined', async () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await handleTransactionFailed(mockTransactionMetricsRequest, {} as any);
-      expect(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+  it('tracks rejected event', async () => {
+    const request = createRequest();
+    const transactionMeta = createTxMeta({
+      status: TransactionStatus.rejected,
     });
 
-    it('should create, update, finalize event fragment', async () => {
-      const mockErrorMessage = 'Unexpected error';
-      mockTransactionMeta.txReceipt = {
-        gasUsed: '0x123',
-        status: '0x0',
-      };
-      mockTransactionMeta.submittedTime = 123;
+    await handleTransactionRejected(request, { transactionMeta });
 
-      await handleTransactionFailed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
-        actionId: mockActionId,
-        error: mockErrorMessage,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          error: mockErrorMessage,
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            error: mockErrorMessage,
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
-
-    it('should create, update, finalize event fragment with blockaid', async () => {
-      const mockErrorMessage = 'Unexpected error';
-      mockTransactionMetaWithBlockaid.txReceipt = {
-        gasUsed: '0x123',
-        status: '0x0',
-      };
-      mockTransactionMetaWithBlockaid.submittedTime = 123;
-
-      await handleTransactionFailed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
-        actionId: mockActionId,
-        error: mockErrorMessage,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: {
-          ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
-          security_alert_reason: BlockaidReason.maliciousDomain,
-          security_alert_response: 'Malicious',
-          ppom_eth_call_count: 5,
-          ppom_eth_getCode_count: 3,
-        },
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          error: mockErrorMessage,
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            error: mockErrorMessage,
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
-
-    it('should append error to event properties', async () => {
-      const mockErrorMessage = 'Unexpected error';
-
-      await handleTransactionFailed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
-        actionId: mockActionId,
-        error: mockErrorMessage,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          error: mockErrorMessage,
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            error: mockErrorMessage,
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
+    expect(request.trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ event: TransactionMetaMetricsEvent.rejected }),
+    );
   });
 
-  describe('handleTransactionConfirmed', () => {
-    it('should return if transaction meta is not defined', async () => {
-      await handleTransactionConfirmed(
-        mockTransactionMetricsRequest,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        {} as any,
-      );
-      expect(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+  it('tracks finalized event for failed and includes error', async () => {
+    const request = createRequest();
+    await handleTransactionFailed(request, {
+      transactionMeta: createTxMeta({ status: TransactionStatus.failed }),
+      error: 'boom',
     });
 
-    it('should create, update, finalize event fragment', async () => {
-      mockTransactionMeta.txReceipt = {
-        gasUsed: '0x123',
-        status: '0x0',
-      };
-      mockTransactionMeta.submittedTime = 123;
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
+    expect(payload.sensitiveProperties.error).toBe('boom');
+  });
 
-      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        ...mockTransactionMeta,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          completion_time: expect.any(String),
-          gas_used: '0.000000291',
-          status: METRICS_STATUS_FAILED,
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            completion_time: expect.any(String),
-            gas_used: '0.000000291',
-            status: METRICS_STATUS_FAILED,
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
+  it('tracks finalized event for dropped and sets dropped marker', async () => {
+    const request = createRequest();
+    await handleTransactionDropped(request, {
+      transactionMeta: createTxMeta({ status: TransactionStatus.dropped }),
     });
 
-    it('should create, update, finalize event fragment with blockaid', async () => {
-      mockTransactionMetaWithBlockaid.txReceipt = {
-        gasUsed: '0x123',
-        status: '0x0',
-      };
-      mockTransactionMetaWithBlockaid.submittedTime = 123;
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
+    expect(payload.sensitiveProperties.dropped).toBe(true);
+  });
 
-      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        ...mockTransactionMetaWithBlockaid,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: {
-          ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
-          security_alert_reason: BlockaidReason.maliciousDomain,
-          security_alert_response: 'Malicious',
-          ppom_eth_call_count: 5,
-          ppom_eth_getCode_count: 3,
-        },
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          completion_time: expect.any(String),
-          gas_used: '0.000000291',
-          status: METRICS_STATUS_FAILED,
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            completion_time: expect.any(String),
-            gas_used: '0.000000291',
-            status: METRICS_STATUS_FAILED,
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
-
-    it('should create, update, finalize event fragment with transaction_contract_address', async () => {
-      mockTransactionMeta.txReceipt = {
-        gasUsed: '0x123',
-        status: '0x0',
-      };
-      mockTransactionMeta.submittedTime = 123;
-      mockTransactionMeta.status = TransactionStatus.confirmed;
-      mockTransactionMeta.type = TransactionType.contractInteraction;
-      const expectedUniqueId = 'transaction-submitted-1';
-      const properties = {
-        ...expectedProperties,
+  it('tracks finalized event for confirmed and computes status override', async () => {
+    const request = createRequest();
+    const now = Date.now();
+    await handleTransactionConfirmed(request, {
+      ...createTxMeta({
         status: TransactionStatus.confirmed,
-        transaction_type: TransactionType.contractInteraction,
-        asset_type: AssetType.unknown,
-        ui_customizations: null,
-        is_smart_transaction: undefined,
-        transaction_advanced_view: undefined,
-        rpc_domain: 'private',
-      };
-      const sensitiveProperties = {
-        ...expectedSensitiveProperties,
-        transaction_contract_address: [
-          '0x1678a085c290ebd122dc42cba69373b5953b831d',
-        ],
-        completion_time: expect.any(String),
-        gas_used: '0.000000291',
-        status: METRICS_STATUS_FAILED,
-      };
+        submittedTime: now - 3000,
+        blockTimestamp: `0x${Math.floor(now / 1000).toString(16)}`,
+        txReceipt: { gasUsed: '0x5208', blockNumber: '0x10', status: '0x0' },
+      }),
+    } as any);
 
-      (
-        mockTransactionMetricsRequest.getNetworkRpcUrl as jest.Mock
-      ).mockReturnValue('https://example.com');
-
-      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        ...mockTransactionMeta,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties,
-        sensitiveProperties,
-      });
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties,
-          sensitiveProperties,
-        },
-      );
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toHaveBeenCalledWith(expectedUniqueId);
-    });
-
-    it('should create, update, finalize event fragment with completion_time_onchain', async () => {
-      mockTransactionMeta.txReceipt = {
-        gasUsed: '0x123',
-        status: '0x0',
-      };
-      mockTransactionMeta.blockTimestamp = decimalToHex(124);
-      mockTransactionMeta.submittedTime = 123123;
-
-      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        ...mockTransactionMeta,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          completion_time: expect.any(String),
-          completion_time_onchain: '0.88',
-          gas_used: '0.000000291',
-          status: METRICS_STATUS_FAILED,
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            completion_time: expect.any(String),
-            completion_time_onchain: '0.88',
-            gas_used: '0.000000291',
-            status: METRICS_STATUS_FAILED,
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
+    expect(payload.sensitiveProperties.status).toBe('failed on-chain');
+    expect(payload.sensitiveProperties.gas_used).toBe(
+      hexWEIToDecGWEI('0x5208'),
+    );
+    expect(payload.sensitiveProperties.block_number).toBe('16');
   });
 
-  describe('handleTransactionDropped', () => {
-    it('should return if transaction meta is not defined', async () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
-      expect(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+  it('includes transaction hash when pna25 requirements are met', async () => {
+    const request = createRequest();
+    await handleTransactionFailed(request, {
+      transactionMeta: createTxMeta({
+        status: TransactionStatus.failed,
+        hash: '0xabc',
+      }),
     });
 
-    it('should create, update, finalize event fragment', async () => {
-      await handleTransactionDropped(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          dropped: true,
-          transaction_replaced: 'other',
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            dropped: true,
-            transaction_replaced: 'other',
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
-
-    it('should create, update, finalize event fragment with blockaid', async () => {
-      await handleTransactionDropped(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-submitted-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: {
-          ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
-          security_alert_reason: BlockaidReason.maliciousDomain,
-          security_alert_response: 'Malicious',
-          ppom_eth_call_count: 5,
-          ppom_eth_getCode_count: 3,
-        },
-        sensitiveProperties: {
-          ...expectedSensitiveProperties,
-          dropped: true,
-          transaction_replaced: 'other',
-        },
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: {
-            ...expectedSensitiveProperties,
-            dropped: true,
-            transaction_replaced: 'other',
-          },
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId);
-    });
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.properties.transaction_hash).toBe('0xabc');
   });
 
-  describe('handleTransactionRejected', () => {
-    it('should return if transaction meta is not defined', async () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
-      expect(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
+  it('merges confirmation metrics into event payload', async () => {
+    const request = createRequest();
+    (request.getTransactionUIMetricsFragment as jest.Mock).mockReturnValue({
+      properties: { gas_edit_attempted: 'basic' },
+      sensitiveProperties: { custom_sensitive: 'x' },
     });
 
-    it('should create, update, finalize event fragment', async () => {
-      await handleTransactionRejected(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
+    await handleTransactionAdded(request, { transactionMeta: createTxMeta() });
 
-      const expectedUniqueId = 'transaction-added-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.approved,
-        failureEvent: TransactionMetaMetricsEvent.rejected,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: expectedProperties,
-          sensitiveProperties: expectedSensitiveProperties,
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId, {
-        abandoned: true,
-      });
-    });
-
-    it('should create, update, finalize event fragment with blockaid', async () => {
-      await handleTransactionRejected(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
-        actionId: mockActionId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const expectedUniqueId = 'transaction-added-1';
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.approved,
-        failureEvent: TransactionMetaMetricsEvent.rejected,
-        uniqueIdentifier: expectedUniqueId,
-        persist: true,
-        properties: {
-          ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
-          security_alert_reason: BlockaidReason.maliciousDomain,
-          security_alert_response: 'Malicious',
-          ppom_eth_call_count: 5,
-          ppom_eth_getCode_count: 3,
-        },
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          properties: {
-            ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
-            security_alert_reason: BlockaidReason.maliciousDomain,
-            security_alert_response: 'Malicious',
-            ppom_eth_call_count: 5,
-            ppom_eth_getCode_count: 3,
-          },
-          sensitiveProperties: expectedSensitiveProperties,
-        },
-      );
-
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledTimes(1);
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).toBeCalledWith(expectedUniqueId, {
-        abandoned: true,
-      });
-    });
-
-    it('includes if upgrade was rejected', async () => {
-      await handleTransactionRejected(mockTransactionMetricsRequest, {
-        transactionMeta: {
-          ...mockTransactionMeta,
-          txParams: {
-            ...mockTransactionMeta.txParams,
-            authorizationList: [{}],
-          },
-          error: {
-            code: EIP5792ErrorCode.RejectedUpgrade,
-          },
-          status: TransactionStatus.rejected,
-        } as unknown as TransactionMeta,
-      });
-
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith(
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            eip7702_upgrade_rejection: true,
-          }),
-        }),
-      );
-    });
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.properties.gas_edit_attempted).toBe('basic');
+    expect(payload.sensitiveProperties.custom_sensitive).toBe('x');
   });
 
-  describe('handleTransactionSubmitted', () => {
-    it('should return if transaction meta is not defined', async () => {
-      await handleTransactionSubmitted(
-        mockTransactionMetricsRequest,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        {} as any,
-      );
-      expect(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).not.toBeCalled();
-    });
+  it('does not include contract-specific fields for simple send transactions', async () => {
+    const request = createRequest();
 
-    it('should only create event fragment', async () => {
-      await handleTransactionSubmitted(mockTransactionMetricsRequest, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMeta as any,
-        actionId: mockActionId,
-      });
+    await handleTransactionAdded(request, { transactionMeta: createTxMeta() });
 
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
-        1,
-      );
-      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
-        actionId: mockActionId,
-        category: MetaMetricsEventCategory.Transactions,
-        initialEvent: TransactionMetaMetricsEvent.submitted,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        uniqueIdentifier: 'transaction-submitted-1',
-        persist: true,
-        properties: expectedProperties,
-        sensitiveProperties: expectedSensitiveProperties,
-      });
-
-      expect(
-        mockTransactionMetricsRequest.updateEventFragment,
-      ).not.toBeCalled();
-      expect(
-        mockTransactionMetricsRequest.finalizeEventFragment,
-      ).not.toBeCalled();
-    });
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(
+      payload.sensitiveProperties.transaction_contract_address,
+    ).toStrictEqual([]);
+    expect(payload.sensitiveProperties.transaction_contract_method_4byte).toBe(
+      undefined,
+    );
   });
 
-  // @ts-expect-error This function is missing from the Mocha type definitions
-  describe.each([
-    ['if added', handleTransactionAdded],
-    ['if approved', handleTransactionApproved],
-    ['if dropped', handleTransactionDropped],
-    ['if failed', handleTransactionFailed],
-    ['if rejected', handleTransactionRejected],
-    ['if submitted', handleTransactionSubmitted],
-    [
-      'if confirmed',
-      (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
-        handleTransactionConfirmed(
-          request,
-          args.transactionMeta as TransactionMetaEventPayload,
-        ),
-    ],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ])('%s', (_title: string, fn: any) => {
-    it('includes batch properties', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        delegationAddress: ADDRESS_3_MOCK,
+  it('appends ui_customizations from fragment without dropping security flags', async () => {
+    const request = createRequest();
+    (request.getTransactionUIMetricsFragment as jest.Mock).mockReturnValue({
+      properties: {
+        ui_customizations: ['custom_ui'],
+      },
+    });
+
+    await handleTransactionAdded(request, {
+      transactionMeta: createTxMeta({
+        securityProviderResponse: {
+          flagAsDangerous: 1,
+        },
+      }),
+    });
+
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.properties.ui_customizations).toEqual(
+      expect.arrayContaining([
+        MetaMetricsEventUiCustomization.FlaggedAsMalicious,
+        'custom_ui',
+      ]),
+    );
+  });
+
+  it('tracks SwapFailed in post transaction balance update', async () => {
+    const request = createRequest();
+    const transactionMeta = createTxMeta({
+      swapMetaData: { token_to_amount: '10' },
+      txReceipt: { status: '0x0' },
+    });
+
+    await handlePostTransactionBalanceUpdate(request, { transactionMeta });
+
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.event).toBe(MetaMetricsEventName.SwapFailed);
+  });
+
+  it('tracks SwapCompleted in post transaction balance update', async () => {
+    const request = createRequest();
+    const transactionMeta = createTxMeta({
+      chainId: '0x1',
+      destinationTokenSymbol: 'USDC',
+      destinationTokenAddress: '0xabc',
+      destinationTokenDecimals: 6,
+      swapMetaData: { token_to_amount: '10', estimated_gas: '100' },
+      txReceipt: {
+        status: '0x1',
+        gasUsed: '0x64',
+        effectiveGasPrice: '0x3b9aca00',
+      },
+    });
+
+    await handlePostTransactionBalanceUpdate(request, { transactionMeta });
+
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.event).toBe(MetaMetricsEventName.SwapCompleted);
+  });
+
+  it('preserves batch arrays without index-based merge corruption', async () => {
+    const request = createRequest();
+    (request.getMethodData as jest.Mock)
+      .mockResolvedValueOnce({ name: 'approve' })
+      .mockResolvedValueOnce({ name: 'transfer' });
+
+    await handleTransactionAdded(request, {
+      transactionMeta: createTxMeta({
+        txParams: {
+          ...createTxMeta().txParams,
+          to: '0x9999999999999999999999999999999999999999',
+          data: undefined,
+        },
         nestedTransactions: [
           {
-            to: ADDRESS_MOCK,
-            data: '0x1',
-            type: TransactionType.contractInteraction,
+            type: TransactionType.tokenMethodApprove,
+            to: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            data: '0x095ea7b3',
           },
           {
-            to: ADDRESS_2_MOCK,
-            data: '0x2',
-            type: TransactionType.tokenMethodApprove,
+            type: TransactionType.tokenMethodTransfer,
+            to: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+            data: '0xa9059cbb',
           },
         ],
-        txParams: {
-          ...mockTransactionMeta.txParams,
-          authorizationList: [
-            {
-              address: ADDRESS_3_MOCK,
-            },
-          ],
-        },
-      } as TransactionMeta;
-
-      jest
-        .mocked(mockTransactionMetricsRequest.getMethodData)
-        .mockResolvedValueOnce({
-          name: METHOD_NAME_MOCK,
-        })
-        .mockResolvedValueOnce({
-          name: METHOD_NAME_2_MOCK,
-        });
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
-      });
-
-      const { properties, sensitiveProperties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          api_method: MESSAGE_TYPE.WALLET_SEND_CALLS,
-          batch_transaction_count: 2,
-          batch_transaction_method: 'eip7702',
-          eip7702_upgrade_transaction: true,
-          transaction_contract_method: [METHOD_NAME_MOCK, METHOD_NAME_2_MOCK],
-        }),
-      );
-
-      expect(sensitiveProperties).toStrictEqual(
-        expect.objectContaining({
-          account_eip7702_upgraded: ADDRESS_3_MOCK,
-          transaction_contract_address: [ADDRESS_MOCK, ADDRESS_2_MOCK],
-        }),
-      );
+      }),
     });
 
-    it('includes gas_paid_with if selected gas fee token', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        type: 'gas_payment',
-        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-      } as TransactionMeta;
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
-      });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_paid_with: GAS_FEE_TOKEN_MOCK.symbol,
-          transaction_type: 'gas_payment',
-        }),
-      );
-    });
-
-    it('set gas_paid_with to "pre-funded_ETH" if gas is paid using Future ETH', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        gasFeeTokens: [
-          { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
-        ],
-        selectedGasFeeToken: NATIVE_TOKEN_ADDRESS,
-      } as TransactionMeta;
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
-      });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_paid_with: 'pre-funded_ETH',
-        }),
-      );
-    });
-
-    it('includes gas_payment_tokens_available if gas fee tokens', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        gasFeeTokens: [
-          GAS_FEE_TOKEN_MOCK,
-          { ...GAS_FEE_TOKEN_MOCK, symbol: 'DAI' },
-        ],
-      } as TransactionMeta;
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
-      });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_payment_tokens_available: [GAS_FEE_TOKEN_MOCK.symbol, 'DAI'],
-        }),
-      );
-    });
-
-    it('includes gas_insufficient_native_asset as true if insufficient native balance', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        txParams: {
-          ...mockTransactionMeta.txParams,
-          gas: toHex(10),
-          maxFeePerGas: toHex(5),
-          value: toHex(3),
-        },
-      } as TransactionMeta;
-
-      jest
-        .mocked(mockTransactionMetricsRequest.getAccountBalance)
-        .mockReturnValueOnce(toHex(52));
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
-      });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_insufficient_native_asset: true,
-        }),
-      );
-    });
-
-    it('includes gas_insufficient_native_asset as false if sufficient native balance', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        txParams: {
-          ...mockTransactionMeta.txParams,
-          gas: toHex(10),
-          maxFeePerGas: toHex(5),
-          value: toHex(3),
-        },
-      } as TransactionMeta;
-
-      jest
-        .mocked(mockTransactionMetricsRequest.getAccountBalance)
-        .mockReturnValueOnce(toHex(53));
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
-      });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_insufficient_native_asset: false,
-        }),
-      );
-    });
-
-    it('sets account_type to `error`, if wallet is locked', async () => {
-      jest
-        .mocked(mockTransactionMetricsRequest.getAccountType)
-        .mockRejectedValueOnce(new Error('error'));
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
-      });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          account_type: 'error',
-        }),
-      );
-    });
-
-    it('includes swap or bridge specific types', async () => {
-      const transactionMetaForSwap = {
-        ...mockTransactionMeta,
-        type: TransactionType.swap,
-        assetsFiatValues: {
-          sending: '100',
-          receiving: '100',
-        },
-      } as TransactionMeta;
-
-      const transactionMetaForBridge = {
-        ...mockTransactionMeta,
-        type: TransactionType.bridge,
-        assetsFiatValues: {
-          sending: '200',
-          receiving: '200',
-        },
-      } as TransactionMeta;
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta: transactionMetaForSwap,
-      });
-
-      const { properties: propertiesForSwap } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(propertiesForSwap).toStrictEqual(
-        expect.objectContaining({
-          transaction_type: 'mm_swap',
-          simulation_sending_assets_total_value: '100',
-          simulation_receiving_assets_total_value: '100',
-        }),
-      );
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta: transactionMetaForBridge,
-      });
-
-      const { properties: propertiesForBridge } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[1][0];
-
-      expect(propertiesForBridge).toStrictEqual(
-        expect.objectContaining({
-          transaction_type: 'mm_bridge',
-          simulation_sending_assets_total_value: '200',
-          simulation_receiving_assets_total_value: '200',
-        }),
-      );
-    });
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(
+      payload.sensitiveProperties.transaction_contract_address,
+    ).toStrictEqual([
+      '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    ]);
+    expect(payload.properties.transaction_contract_method).toStrictEqual([
+      'approve',
+      'transfer',
+    ]);
   });
 
-  describe('transaction hash property', () => {
-    describe('included when', () => {
-      // @ts-expect-error This function is missing from the Mocha type definitions
-      it.each([
-        [TransactionStatus.failed, handleTransactionFailed],
-        [TransactionStatus.dropped, handleTransactionDropped],
-        [
-          TransactionStatus.confirmed,
-          (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
-            handleTransactionConfirmed(
-              request,
-              args.transactionMeta as TransactionMetaEventPayload,
-            ),
-        ],
-      ])(
-        'transaction is %s and metrics opted in and pna25 acknowledged',
-        async (
-          status: TransactionStatus,
-          handler: (
-            request: TransactionMetricsRequest,
-            args: TransactionEventPayload,
-          ) => Promise<void>,
-        ) => {
-          const mockMetricsRequest = {
-            ...mockTransactionMetricsRequest,
-            getFeatureFlags: jest.fn().mockReturnValue({
-              extensionUxPna25: true,
-            }),
-            getPna25Acknowledged: jest.fn().mockReturnValue(true),
-            getParticipateInMetrics: jest.fn().mockReturnValue(true),
-          } as TransactionMetricsRequest;
-
-          const failedTransactionMeta = {
-            ...mockTransactionMeta,
-            status,
-          } as TransactionMeta;
-
-          await handler(mockMetricsRequest, {
-            transactionMeta: failedTransactionMeta,
-          });
-
-          const { properties } = jest.mocked(
-            mockTransactionMetricsRequest.createEventFragment,
-          ).mock.calls[0][0];
-
-          expect(properties).toStrictEqual(
-            expect.objectContaining({
-              transaction_hash: mockTransactionMeta.hash,
-            }),
-          );
-        },
-      );
+  it('does not track post transaction balance update when metrics opted out', async () => {
+    const request = createRequest();
+    (request.getParticipateInMetrics as jest.Mock).mockReturnValue(false);
+    const transactionMeta = createTxMeta({
+      swapMetaData: { token_to_amount: '10' },
+      txReceipt: { status: '0x0' },
     });
 
-    describe('not included when', () => {
-      // @ts-expect-error This function is missing from the Mocha type definitions
-      it.each([
-        [TransactionStatus.unapproved, handleTransactionAdded],
-        [TransactionStatus.approved, handleTransactionApproved],
-        [TransactionStatus.submitted, handleTransactionSubmitted],
-      ])(
-        'transaction is %s and metrics opted in and pna25 acknowledged',
-        async (
-          status: TransactionStatus,
-          handler: (
-            request: TransactionMetricsRequest,
-            args: TransactionEventPayload,
-          ) => Promise<void>,
-        ) => {
-          const transactionMeta = {
-            ...mockTransactionMeta,
-            status,
-          } as TransactionMeta;
+    await handlePostTransactionBalanceUpdate(request, { transactionMeta });
 
-          await handler(mockTransactionMetricsRequest, {
-            transactionMeta,
-          });
+    expect(request.trackEvent).not.toHaveBeenCalled();
+  });
 
-          const { properties } = jest.mocked(
-            mockTransactionMetricsRequest.createEventFragment,
-          ).mock.calls[0][0];
-
-          expect(properties).not.toStrictEqual(
-            expect.objectContaining({
-              transaction_hash: mockTransactionMeta.hash,
-            }),
-          );
-        },
-      );
-
-      it('metrics not opted in', async () => {
-        const mockMetricsRequest = {
-          ...mockTransactionMetricsRequest,
-          getFeatureFlags: jest.fn().mockReturnValue({
-            extensionUxPna25: true,
-          }),
-          getPna25Acknowledged: jest.fn().mockReturnValue(true),
-          getParticipateInMetrics: jest.fn().mockReturnValue(false),
-        } as TransactionMetricsRequest;
-        const failedTransactionMeta = {
-          ...mockTransactionMeta,
-          status: TransactionStatus.failed,
-        } as TransactionMeta;
-
-        await handleTransactionFailed(mockMetricsRequest, {
-          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
-        });
-
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
-
-        expect(properties).not.toStrictEqual(
-          expect.objectContaining({
-            transaction_hash: mockTransactionMeta.hash,
-          }),
-        );
-      });
-
-      it('pna25 not acknowledged', async () => {
-        const mockMetricsRequest = {
-          ...mockTransactionMetricsRequest,
-          getFeatureFlags: jest.fn().mockReturnValue({
-            extensionUxPna25: true,
-          }),
-          getPna25Acknowledged: jest.fn().mockReturnValue(false),
-          getParticipateInMetrics: jest.fn().mockReturnValue(true),
-        } as TransactionMetricsRequest;
-        const failedTransactionMeta = {
-          ...mockTransactionMeta,
-          status: TransactionStatus.failed,
-        } as TransactionMeta;
-
-        await handleTransactionFailed(mockMetricsRequest, {
-          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
-        });
-
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
-
-        expect(properties).not.toStrictEqual(
-          expect.objectContaining({
-            transaction_hash: mockTransactionMeta.hash,
-          }),
-        );
-      });
-
-      it('ff not enabled', async () => {
-        const mockMetricsRequest = {
-          ...mockTransactionMetricsRequest,
-          getFeatureFlags: jest.fn().mockReturnValue({
-            extensionUxPna25: false,
-          }),
-          getPna25Acknowledged: jest.fn().mockReturnValue(true),
-          getParticipateInMetrics: jest.fn().mockReturnValue(true),
-        } as TransactionMetricsRequest;
-        const failedTransactionMeta = {
-          ...mockTransactionMeta,
-          status: TransactionStatus.failed,
-        } as TransactionMeta;
-
-        await handleTransactionFailed(mockMetricsRequest, {
-          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
-        });
-
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
-
-        expect(properties).not.toStrictEqual(
-          expect.objectContaining({
-            transaction_hash: mockTransactionMeta.hash,
-          }),
-        );
-      });
+  it('does not track post transaction balance update when no swap metadata', async () => {
+    const request = createRequest();
+    const transactionMeta = createTxMeta({
+      swapMetaData: undefined,
+      txReceipt: { status: '0x1' },
     });
+
+    await handlePostTransactionBalanceUpdate(request, { transactionMeta });
+
+    expect(request.trackEvent).not.toHaveBeenCalled();
   });
 });

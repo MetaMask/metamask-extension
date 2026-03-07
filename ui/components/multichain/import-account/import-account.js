@@ -53,10 +53,12 @@ export const ImportAccount = ({ onActionComplete }) => {
         }
       }
 
-      const { selectedAddress } = await dispatch(
+      const {
+        internalAccounts: { selectedAccount },
+      } = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );
-      if (selectedAddress) {
+      if (selectedAccount) {
         trackImportEvent(strategy, true);
         setImportErrorMessage();
         onActionComplete(true);

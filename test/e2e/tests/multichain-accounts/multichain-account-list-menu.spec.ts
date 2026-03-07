@@ -26,16 +26,21 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
+        await accountListPage.checkAccountNameIsDisplayedUnderWallet(
+          'Account 1',
+          'Wallet 1',
+        );
+
+        await accountListPage.checkAccountNameIsDisplayedUnderWallet(
+          'Account 1',
+          'Wallet 2',
+        );
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
         await accountListPage.checkMultichainAccountBalanceDisplayed(
           '$85,025.00',
         );
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
-        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
-        await accountListPage.checkAccountDisplayedInAccountList('Account 2');
         await accountListPage.checkNumberOfAvailableAccounts(2);
       },
     );

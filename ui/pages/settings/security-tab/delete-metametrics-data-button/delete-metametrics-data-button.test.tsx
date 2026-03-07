@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 import {
   getMetaMetricsDataDeletionTimestamp,
@@ -56,7 +57,9 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(getByTestId('delete-metametrics-data-button')).toBeInTheDocument();
-    expect(getAllByText('Delete MetaMetrics data')).toHaveLength(2);
+    expect(getAllByText(messages.deleteMetaMetricsData.message)).toHaveLength(
+      2,
+    );
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
@@ -71,7 +74,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeEnabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -99,7 +102,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeEnabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -123,7 +126,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -161,7 +164,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -194,7 +197,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -211,7 +214,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     const deleteButton = getByRole('button', {
-      name: 'Delete MetaMetrics data',
+      name: messages.deleteMetaMetricsData.message,
     });
     fireEvent.click(deleteButton);
     expect(mockDispatch).toHaveBeenCalledWith(openDeleteMetaMetricsDataModal());

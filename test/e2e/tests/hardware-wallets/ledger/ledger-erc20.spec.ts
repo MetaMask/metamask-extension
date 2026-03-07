@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
@@ -18,7 +18,7 @@ describe('Ledger Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
@@ -65,12 +65,11 @@ describe('Ledger Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
-
           .build(),
         title: this.test?.fullTitle(),
         smartContract: [
@@ -126,7 +125,7 @@ describe('Ledger Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
@@ -180,7 +179,7 @@ describe('Ledger Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,

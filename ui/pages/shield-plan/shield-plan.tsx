@@ -34,6 +34,7 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
+import log from 'loglevel';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -61,6 +62,7 @@ import {
 import {
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
+  SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -73,6 +75,7 @@ import {
 import {
   useHandleSubscription,
   useShieldRewards,
+  useSubscriptionError,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
@@ -90,9 +93,14 @@ import {
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
+import {
+  setLastUsedSubscriptionPaymentDetails,
+  setPendingRedirectRoute,
+} from '../../store/actions';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../ducks/locale/locale';
+import { getPendingRedirectRoute } from '../../selectors';
+import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
@@ -108,6 +116,13 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  const pendingRedirectRoute = useSelector(
+    getPendingRedirectRoute,
+  ) as PendingRedirectRoute | null;
+
+  const { shieldSubscriptionApiError, getSubscriptionErrorMessage } =
+    useSubscriptionError();
 
   const {
     isRewardsSeason,
@@ -349,7 +364,10 @@ const ShieldPlan = () => {
     subscriptionsError ||
     subscriptionPricingError ||
     availableTokenBalancesError ||
-    subscriptionResult.error;
+    subscriptionResult.error ||
+    shieldSubscriptionApiError;
+
+  const apiErrorMessage = getSubscriptionErrorMessage(hasApiError);
 
   const plans: Plan[] = useMemo(
     () =>
@@ -407,7 +425,16 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRewardsModal, setShowRewardsModal] = useState(false);
 
-  const handleBack = () => {
+  const handleBack = async () => {
+    // Clear pending redirect when user intentionally leaves this page.
+    if (pendingRedirectRoute?.path.includes(SHIELD_PLAN_ROUTE)) {
+      try {
+        await dispatch(setPendingRedirectRoute(null));
+      } catch (error) {
+        log.error('[shield plan] clear pending redirect error', error);
+      }
+    }
+
     const source = new URLSearchParams(search).get('source');
     if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page
@@ -451,6 +478,7 @@ const ShieldPlan = () => {
             className="shield-plan-page__error-content"
             error={hasApiError}
             location={ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage}
+            message={apiErrorMessage} // show the subscription error message if available
           />
         </Content>
       ) : (

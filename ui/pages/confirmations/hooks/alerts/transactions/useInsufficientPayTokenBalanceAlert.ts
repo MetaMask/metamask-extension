@@ -5,12 +5,12 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
@@ -20,8 +20,6 @@ import {
 import { getNativeTokenInfo } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { AlertsName } from '../constants';
-import { useMultichainBalances } from '../../../../../hooks/useMultichainBalances';
-import { useConfirmContext } from '../../../context/confirm';
 
 export function useInsufficientPayTokenBalanceAlert({
   pendingAmountUsd,
@@ -39,11 +37,6 @@ export function useInsufficientPayTokenBalanceAlert({
 
   const sourceChainId = (payToken?.chainId ?? '0x0') as Hex;
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const selectedAddress = currentConfirmation?.txParams?.from as
-    | Hex
-    | undefined;
-
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -55,21 +48,10 @@ export function useInsufficientPayTokenBalanceAlert({
   const ticker = nativeTokenInfo?.symbol ?? 'ETH';
 
   const nativeTokenAddress = getNativeTokenAddress(sourceChainId);
-  const { assetsWithBalance } = useMultichainBalances();
-
-  const nativeToken = useMemo(() => {
-    if (!selectedAddress || !sourceChainId) {
-      return undefined;
-    }
-    return assetsWithBalance.find(
-      (asset) =>
-        asset.chainId === sourceChainId &&
-        asset.address?.toLowerCase() === nativeTokenAddress?.toLowerCase(),
-    );
-  }, [assetsWithBalance, nativeTokenAddress, selectedAddress, sourceChainId]);
+  const nativeToken = useTokenWithBalance(nativeTokenAddress, sourceChainId);
 
   const { balanceUsd, balanceRaw } = payToken ?? {};
-  const nativeBalanceRaw = nativeToken?.balance ?? '0';
+  const nativeBalanceRaw = nativeToken?.balanceRaw ?? '0';
 
   const totalAmountUsd = useMemo(() => {
     if (isMax) {

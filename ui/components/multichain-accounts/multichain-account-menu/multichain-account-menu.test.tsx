@@ -9,6 +9,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -538,7 +539,7 @@ describe('MultichainAccountMenu', () => {
       expect(popover).toBeInTheDocument();
 
       const addressesItem = popover
-        ? within(popover as HTMLElement).getByText('Addresses')
+        ? within(popover as HTMLElement).getByText(messages.addresses.message)
         : null;
       expect(addressesItem).toBeInTheDocument();
 

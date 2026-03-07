@@ -9,6 +9,7 @@ import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transacti
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { TransactionGroup } from '../../../hooks/useTransactionDisplayData';
 import CrossChainSwapTxDetails from './transaction-details';
@@ -45,7 +46,10 @@ const getMockStore = (
           },
           selectedAccount: 'id',
         },
-        transactions: [transactionGroup.primaryTransaction],
+        transactions: [
+          transactionGroup.primaryTransaction,
+          transactionGroup.initialTransaction,
+        ],
         currencyRates: {},
         preferences: {},
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
@@ -65,17 +69,19 @@ describe('transaction-details', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocation.mockReturnValue({
-      pathname: '/cross-chain/tx-details/test-id',
+      pathname: `/cross-chain/tx-details/${mockBridgeTxData.transactionGroup.initialTransaction.hash}`,
       search: '',
       hash: '',
       state: {
-        transactionGroup: mockBridgeTxData.transactionGroup,
-        isEarliestNonce: true,
+        transaction: {
+          ...mockBridgeTxData.transactionGroup.initialTransaction,
+          transactionCategory: 'BRIDGE_OUT',
+        },
       },
       key: 'test-key',
     } as RouterLocation);
     mockParams.mockReturnValue({
-      srcTxMetaId: mockBridgeTxData.srcTxMetaId,
+      txHash: mockBridgeTxData.transactionGroup.primaryTransaction.hash,
     });
   });
 
@@ -103,9 +109,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render pending bridge snapshot', () => {
@@ -142,9 +164,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render confirmed bridge tx', () => {
@@ -181,9 +219,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render bridge tx that failed on src', () => {
@@ -220,9 +274,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render bridge tx that failed on dest', () => {
@@ -260,9 +330,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
   });
 });

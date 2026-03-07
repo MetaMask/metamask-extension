@@ -1,18 +1,26 @@
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
-import { withSolanaAccountSnap } from '../solana/common-solana';
+import { SOLANA_MAINNET_SCOPE } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { buildSolanaTestSpecificMock } from '../solana/common-solana';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Send Solana', function () {
   it('it should be possible to send SOL', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        mockGetTransactionSuccess: true,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
@@ -27,7 +35,7 @@ describe('Send Solana', function () {
         });
 
         await sendPage.createSendRequest({
-          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          chainId: SOLANA_MAINNET_SCOPE,
           symbol: 'SOL',
           recipientAddress: '7bYxDqvLQ4P8p6Vq3J6t1wczVwLk9h4Q9M5rjqvN1sVg',
           amount: '1',

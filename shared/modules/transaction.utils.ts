@@ -327,8 +327,14 @@ export async function determineTransactionAssetType(
   return { assetType: AssetType.native, tokenStandard: TokenStandard.none };
 }
 
+/**
+ * Regex to extract large numeric values from message.value.
+ * Uses [^{}]* instead of [^}]* to prevent matching nested "value" fields -
+ * by excluding both { and }, the regex stops at any nested object boundary,
+ * ensuring only top-level message.value is matched.
+ */
 const REGEX_MESSAGE_VALUE_LARGE =
-  /"message"\s*:\s*\{[^}]*"value"\s*:\s*(\d{15,})/u;
+  /"message"\s*:\s*\{[^{}]*"value"\s*:\s*(\d{15,})/u;
 
 function extractLargeMessageValue(dataToParse: string): string | undefined {
   if (typeof dataToParse !== 'string') {

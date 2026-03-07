@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
@@ -24,7 +24,7 @@ describe('Unlock wallet - ', function () {
   it('handle incorrect password during unlock and login successfully', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
       },
@@ -51,7 +51,7 @@ describe('Unlock wallet - ', function () {
   it('should show connections removed modal when max key chain length is reached for social account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {

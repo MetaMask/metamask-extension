@@ -1,4 +1,7 @@
-import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
+import {
+  GatorPermissionsController,
+  SupportedPermissionType,
+} from '@metamask/gator-permissions-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { getEnabledAdvancedPermissions } from '../../../../shared/modules/environment';
@@ -59,36 +62,49 @@ describe('GatorPermissionsControllerInit', () => {
     ).toBeInstanceOf(GatorPermissionsController);
   });
 
-  it('initializes with correct messenger and state(gator permissions feature enabled)', () => {
+  it('initializes with correct messenger, config, and state (gator permissions feature enabled)', () => {
     const requestMock = buildInitRequestMock();
-    jest
-      .mocked(getEnabledAdvancedPermissions)
-      .mockReturnValue(['native-token-stream']);
+    const supportedTypes: SupportedPermissionType[] = ['native-token-stream'];
+    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue(supportedTypes);
     GatorPermissionsControllerInit(requestMock);
 
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: {
-        isGatorPermissionsEnabled: true,
+      config: {
+        supportedPermissionTypes: supportedTypes,
         gatorPermissionsProviderSnapId: MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
-        ...requestMock.persistedState.GatorPermissionsController,
       },
+      state: requestMock.persistedState.GatorPermissionsController,
     });
   });
 
-  it('initializes with correct messenger and state(gator permissions feature disabled)', () => {
+  it('initializes with correct messenger, config, and state (gator permissions feature disabled)', () => {
     const requestMock = buildInitRequestMock();
     jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
     GatorPermissionsControllerInit(requestMock);
 
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: {
-        isGatorPermissionsEnabled: false,
+      config: {
+        supportedPermissionTypes: [],
         gatorPermissionsProviderSnapId: MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
-        ...requestMock.persistedState.GatorPermissionsController,
       },
+      state: requestMock.persistedState.GatorPermissionsController,
     });
+  });
+
+  it('passes supportedPermissionTypes from getEnabledAdvancedPermissions to config', () => {
+    const requestMock = buildInitRequestMock();
+    const supportedTypes: SupportedPermissionType[] = [
+      'native-token-stream',
+      'erc20-token-stream',
+      'native-token-periodic',
+    ];
+    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue(supportedTypes);
+    GatorPermissionsControllerInit(requestMock);
+
+    const { config } = GatorPermissionsControllerClassMock.mock.calls[0][0];
+    expect(config.supportedPermissionTypes).toEqual(supportedTypes);
   });
 
   it('returns correct API methods', () => {
@@ -113,10 +129,11 @@ describe('GatorPermissionsControllerInit', () => {
 
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: {
-        isGatorPermissionsEnabled: true,
+      config: {
+        supportedPermissionTypes: ['native-token-stream'],
         gatorPermissionsProviderSnapId: MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
       },
+      state: undefined,
     });
   });
 
@@ -127,27 +144,41 @@ describe('GatorPermissionsControllerInit', () => {
 
     GatorPermissionsControllerInit(requestMock);
 
-    expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
-      messenger: requestMock.controllerMessenger,
-      state: {
-        isGatorPermissionsEnabled: true,
-      },
-    });
+    const calledWith = GatorPermissionsControllerClassMock.mock.calls[0][0];
+    const { config } = calledWith;
 
-    const calledWithState =
-      GatorPermissionsControllerClassMock.mock.calls[0][0].state;
-
-    expect(calledWithState).toEqual({
-      isGatorPermissionsEnabled: true,
-    });
+    expect(calledWith.messenger).toBe(requestMock.controllerMessenger);
+    expect(config.supportedPermissionTypes).toEqual(['native-token-stream']);
 
     // GatorPermissionsController requires that the key does not exist if the snap id is not specified
     expect(
       Object.prototype.hasOwnProperty.call(
-        calledWithState,
+        config,
         'gatorPermissionsProviderSnapId',
       ),
     ).toBe(false);
+  });
+
+  it('passes persisted state to controller', () => {
+    const requestMock = buildInitRequestMock();
+    const persistedState = {
+      grantedPermissions: [],
+      isFetchingGatorPermissions: false,
+      pendingRevocations: [],
+      lastSyncedTimestamp: -1,
+    };
+    requestMock.persistedState.GatorPermissionsController = persistedState;
+
+    GatorPermissionsControllerInit(requestMock);
+
+    expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
+      messenger: requestMock.controllerMessenger,
+      config: expect.objectContaining({
+        supportedPermissionTypes: ['native-token-stream'],
+        gatorPermissionsProviderSnapId: MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
+      }),
+      state: persistedState,
+    });
   });
 
   describe('GATOR_PERMISSIONS_PROVIDER_SNAP_ID incorrectly specified', () => {

@@ -14,6 +14,7 @@ import configureStore from '../../../../../../store/store';
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { getSelectedInternalAccountFromMockState } from '../../../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import BaseFeeInput from './base-fee-input';
 
 const LOW_BASE_FEE = 0.000000001;
@@ -172,7 +173,7 @@ describe('BaseFeeInput', () => {
       target: { value: 55 },
     });
     expect(
-      screen.queryByText('Max base fee is low for current network conditions'),
+      screen.queryByText(messages.editGasMaxBaseFeeLow.message),
     ).not.toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 50 },
@@ -189,13 +190,13 @@ describe('BaseFeeInput', () => {
       target: { value: 75 },
     });
     expect(
-      screen.queryByText('Max base fee is higher than necessary'),
+      screen.queryByText(messages.editGasMaxBaseFeeHigh.message),
     ).not.toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 500 },
     });
     expect(
-      screen.queryByText('Max base fee is higher than necessary'),
+      screen.queryByText(messages.editGasMaxBaseFeeHigh.message),
     ).toBeInTheDocument();
   });
 

@@ -10,9 +10,7 @@ import {
 } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { InternalAccount } from '@metamask/keyring-internal-api';
-///: END:ONLY_INCLUDE_IF
 import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -27,7 +25,6 @@ import {
   getNetworkConfigurationIdByChainId,
   getSwapsDefaultToken,
 } from '../../../selectors';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
 import {
@@ -59,9 +56,7 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
-///: END:ONLY_INCLUDE_IF
 
 const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
   const t = useContext(I18nContext);
@@ -121,11 +116,6 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
-
-  // Multichain accounts feature flag and selected account group
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const defaultSwapsToken = useSelector((state) =>
@@ -137,9 +127,7 @@ const CoinButtons = ({
     throw new Error('defaultSwapsToken is required');
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
-  ///: END:ONLY_INCLUDE_IF
 
   const location = useLocation();
 
@@ -236,11 +224,7 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
 
   const setCorrectChain = useCallback(async () => {
-    if (
-      currentChainId !== chainId &&
-      multichainChainId !== chainId &&
-      !isMultichainAccountsState2Enabled
-    ) {
+    if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -255,14 +239,7 @@ const CoinButtons = ({
         throw err;
       }
     }
-  }, [
-    isMultichainAccountsState2Enabled,
-    currentChainId,
-    multichainChainId,
-    chainId,
-    networks,
-    dispatch,
-  ]);
+  }, [currentChainId, multichainChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -294,15 +271,7 @@ const CoinButtons = ({
       params = { chainId: chainId.toString() };
     }
     navigateToSendRoute(navigate, params);
-  }, [
-    chainId,
-    account,
-    setCorrectChain,
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    handleSendNonEvm,
-    ///: END:ONLY_INCLUDE_IF
-    trackingLocation,
-  ]);
+  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     setShowTabOpenedToast(true);
@@ -360,7 +329,7 @@ const CoinButtons = ({
       },
     });
 
-    if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
+    if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
       navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
@@ -369,14 +338,7 @@ const CoinButtons = ({
       // Show the traditional receive modal
       setShowReceiveModal(true);
     }
-  }, [
-    isMultichainAccountsState2Enabled,
-    selectedAccountGroup,
-    navigate,
-    trackEvent,
-    trackingLocation,
-    chainId,
-  ]);
+  }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
 
   return (
     <Box

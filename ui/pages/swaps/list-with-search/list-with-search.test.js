@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { createSwapsMockStore } from '../../../../test/jest';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import ListWithSearch from './list-with-search';
 
 const createProps = (customProps = {}) => {
@@ -45,7 +46,7 @@ describe('ListWithSearch', () => {
       getByText(props.itemsToSearch[0].rightSecondaryLabel),
     ).toBeInTheDocument();
     expect(
-      getByPlaceholderText('Enter token name or paste address'),
+      getByPlaceholderText(messages.enterTokenNameOrAddress.message),
     ).toBeInTheDocument();
     expect(
       document.querySelector('.list-with-search__text-search'),
@@ -60,6 +61,8 @@ describe('ListWithSearch', () => {
       <ListWithSearch {...props} />,
       store,
     );
-    expect(getByText('No tokens available matching')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapNoTokensAvailable.message.replace(' $1', '')),
+    ).toBeInTheDocument();
   });
 });

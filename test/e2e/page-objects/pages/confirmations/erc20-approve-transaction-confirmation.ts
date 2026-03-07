@@ -4,42 +4,42 @@ import TransactionConfirmation from './transaction-confirmation';
 class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   private readonly estimatedChangesSection = {
     css: 'p',
-    text: tEn('simulationDetailsTitle') as string,
+    text: tEn('simulationDetailsTitle'),
   };
 
   private readonly interactingWithSection = {
     css: 'p',
-    text: tEn('interactingWith') as string,
+    text: tEn('interactingWith'),
   };
 
   private readonly methodSection = {
     css: 'p',
-    text: tEn('methodData') as string,
+    text: tEn('methodData'),
   };
 
   private readonly requestFromSection = {
     css: 'p',
-    text: tEn('requestFrom') as string,
+    text: tEn('requestFrom'),
   };
 
   private readonly spenderSection = {
     css: 'p',
-    text: tEn('spender') as string,
+    text: tEn('spender'),
   };
 
   private readonly spendingCapPermissionDescription = {
     css: 'p',
-    text: tEn('confirmTitleDescERC20ApproveTransaction') as string,
+    text: tEn('confirmTitleDescERC20ApproveTransaction'),
   };
 
   private readonly spendingCapRequestTitle = {
     css: 'h2',
-    text: tEn('confirmTitlePermitTokens') as string,
+    text: tEn('confirmTitlePermitTokens'),
   };
 
   private readonly spendingCapSection = {
     css: 'p',
-    text: tEn('spendingCap') as string,
+    text: tEn('spendingCap'),
   };
 
   async checkAdvancedDetailsSections(): Promise<void> {

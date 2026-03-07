@@ -7,13 +7,15 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import mockState from '../../../../test/data/mock-state.json';
 import DeFiPage from './defi-details-page';
 
+const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
 describe('DeFiDetailsPage', () => {
   const mockStore = {
     ...mockState,
     metamask: {
       ...mockState.metamask,
       allDeFiPositions: {
-        [mockState.metamask.selectedAddress]: {
+        [selectedAddress]: {
           '0x1': {
             aggregatedMarketValue: 20540,
             protocols: {

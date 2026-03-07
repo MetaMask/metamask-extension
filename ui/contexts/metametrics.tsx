@@ -49,6 +49,7 @@ import type {
   EndTraceRequest,
   TraceCallback,
 } from '../../shared/lib/trace';
+import { EnvironmentType } from '../../shared/constants/app';
 
 /**
  * UI-specific event payload that omits fields added by the provider
@@ -262,7 +263,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
             string,
             string
           >,
-          environmentType,
+          environmentType: environmentType as EnvironmentType,
           page: context.page,
           referrer: context.referrer,
         },

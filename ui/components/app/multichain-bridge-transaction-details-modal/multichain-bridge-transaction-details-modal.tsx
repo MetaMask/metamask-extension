@@ -174,7 +174,6 @@ const MultichainBridgeTransactionDetailsModal = ({
   };
 
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
     nonEvmTransaction: transaction,
   });
 

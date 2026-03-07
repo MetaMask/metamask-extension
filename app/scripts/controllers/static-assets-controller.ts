@@ -311,6 +311,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     chainId: Hex,
     selectedAccountAddress: string,
   ): Promise<Token[]> {
+    // TODO: Handle returning correct state based on the feature flag at TokensController level
     const tokensControllerState = await this.messenger.call(
       'TokensController:getState',
     );

@@ -8,6 +8,10 @@ export type WebSocketMessageMock = {
   response: object;
   /** Delay before sending the response (in milliseconds) */
   delay?: number;
+  /** Optional follow-up response sent after the initial response */
+  followUpResponse?: object;
+  /** Delay before sending the follow-up response (in milliseconds) */
+  followUpDelay?: number;
   /** Custom log message for this mock */
   logMessage?: string;
 };
@@ -21,6 +25,18 @@ export const DEFAULT_SOLANA_WS_MOCKS: WebSocketMessageMock[] = [
       id: '1',
     },
     delay: 500,
+    followUpResponse: {
+      jsonrpc: '2.0',
+      method: 'signatureNotification',
+      params: {
+        result: {
+          context: { slot: 342840492 },
+          value: { err: null },
+        },
+        subscription: 8648699534240963,
+      },
+    },
+    followUpDelay: 1500,
     logMessage: 'Signature subscribe message received from client',
   },
   {

@@ -385,35 +385,8 @@ exports[`AssetPage should render a native asset 1`] = `
             Your activity
           </h4>
           <div
-            class="mm-box transaction-list"
-          >
-            <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
-              data-testid="activity-tab-empty-state"
-            >
-              <img
-                alt="Activity"
-                height="72"
-                src="./images/empty-state-activity-light.png"
-                width="72"
-              />
-              <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-              >
-                Nothing to see yet. Swap your first token today.
-              </p>
-              <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-                role="button"
-              >
-                <span
-                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  Swap tokens
-                </span>
-              </button>
-            </div>
-          </div>
+            data-testid="mock-activity-list"
+          />
         </div>
       </div>
     </div>
@@ -459,26 +432,16 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       <div
         class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
       >
-        <div
-          class="mm-box mm-skeleton mm-box--margin-bottom-1 mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 25%;"
+        <h1
+          class="mm-box mm-text mm-text--display-md mm-box--margin-bottom-1 mm-box--color-text-default"
         >
-          <h1
-            class="mm-box mm-text mm-text--display-md mm-box--color-text-default"
-          >
-             
-          </h1>
-        </div>
-        <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 33%;"
+           
+        </h1>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-          >
-             
-          </p>
-        </div>
+           
+        </p>
       </div>
       <div
         class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
@@ -486,11 +449,23 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       >
         <div
           class="mm-box asset-chart__empty-or-loading-state-container"
-          data-testid="asset-chart-loading"
+          data-testid="asset-chart-empty-state"
         >
           <div
-            class="mm-box mm-skeleton asset-chart__skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          />
+            class="flex flex-col gap-3 items-center justify-center bg-default max-w-56 asset-chart__empty-state-content mx-auto"
+          >
+            <img
+              alt="We could not fetch any historical data"
+              height="72"
+              src="/images/empty-state-asset-details-light.png"
+              width="72"
+            />
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+            >
+              We could not fetch any historical data
+            </p>
+          </div>
         </div>
         <div
           class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
@@ -838,35 +813,8 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             Your activity
           </h4>
           <div
-            class="mm-box transaction-list"
-          >
-            <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
-              data-testid="activity-tab-empty-state"
-            >
-              <img
-                alt="Activity"
-                height="72"
-                src="./images/empty-state-activity-light.png"
-                width="72"
-              />
-              <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-              >
-                Nothing to see yet. Swap your first token today.
-              </p>
-              <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-                role="button"
-              >
-                <span
-                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  Swap tokens
-                </span>
-              </button>
-            </div>
-          </div>
+            data-testid="mock-activity-list"
+          />
         </div>
       </div>
     </div>
@@ -1320,35 +1268,8 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             Your activity
           </h4>
           <div
-            class="mm-box transaction-list"
-          >
-            <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
-              data-testid="activity-tab-empty-state"
-            >
-              <img
-                alt="Activity"
-                height="72"
-                src="./images/empty-state-activity-light.png"
-                width="72"
-              />
-              <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-              >
-                Nothing to see yet. Swap your first token today.
-              </p>
-              <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-                role="button"
-              >
-                <span
-                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  Swap tokens
-                </span>
-              </button>
-            </div>
-          </div>
+            data-testid="mock-activity-list"
+          />
         </div>
       </div>
     </div>

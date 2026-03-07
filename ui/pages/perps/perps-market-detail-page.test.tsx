@@ -1,8 +1,56 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import {
+  mockPositions,
+  mockOrders,
+  mockAccountState,
+  mockCryptoMarkets,
+  mockHip3Markets,
+  mockTransactions,
+} from '../../components/app/perps/mocks';
+
+// Mock lightweight-charts to prevent DOM rendering issues in tests
+const mockPriceLine = { options: jest.fn() };
+jest.mock('lightweight-charts', () => ({
+  createChart: () => ({
+    addSeries: () => ({
+      setData: jest.fn(),
+      update: jest.fn(),
+      createPriceLine: jest.fn().mockReturnValue(mockPriceLine),
+      removePriceLine: jest.fn(),
+      priceScale: jest.fn().mockReturnValue({ applyOptions: jest.fn() }),
+      applyOptions: jest.fn(),
+    }),
+    applyOptions: jest.fn(),
+    timeScale: jest.fn().mockReturnValue({
+      fitContent: jest.fn(),
+      scrollToPosition: jest.fn(),
+      scrollToRealTime: jest.fn(),
+      getVisibleLogicalRange: jest.fn(),
+      setVisibleLogicalRange: jest.fn(),
+      subscribeVisibleLogicalRangeChange: jest.fn(),
+      unsubscribeVisibleLogicalRangeChange: jest.fn(),
+      applyOptions: jest.fn(),
+    }),
+    panes: jest.fn().mockReturnValue([]),
+    priceScale: jest.fn().mockReturnValue({ applyOptions: jest.fn() }),
+    resize: jest.fn(),
+    remove: jest.fn(),
+    subscribeCrosshairMove: jest.fn(),
+    unsubscribeCrosshairMove: jest.fn(),
+  }),
+  CandlestickSeries: 'CandlestickSeries',
+  HistogramSeries: 'HistogramSeries',
+  ColorType: { Solid: 'Solid' },
+  CrosshairMode: { Normal: 0 },
+  LineStyle: { Dashed: 2, Solid: 0 },
+  PriceScaleMode: { Normal: 0 },
+}));
 
 // Mock semver to control version comparison in tests
 jest.mock('semver', () => ({
@@ -23,6 +71,89 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
   debug: jest.fn(),
   trace: jest.fn(),
+}));
+
+// Mock the PerpsControllerProvider to render children directly
+jest.mock('../../providers/perps', () => ({
+  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+  getPerpsController: jest.fn().mockResolvedValue({
+    closePosition: jest.fn().mockResolvedValue({ success: true }),
+    placeOrder: jest.fn().mockResolvedValue({ success: true }),
+    updateMargin: jest.fn().mockResolvedValue({ success: true }),
+    updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
+  }),
+}));
+
+jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
+jest.mock('../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => ({
+    positions: { getCachedData: () => [], pushData: jest.fn() },
+    orders: { getCachedData: () => [], pushData: jest.fn() },
+    account: { getCachedData: () => null, pushData: jest.fn() },
+    markets: { getCachedData: () => [], pushData: jest.fn() },
+    setOptimisticTPSL: jest.fn(),
+    clearOptimisticTPSL: jest.fn(),
+    pushPositionsWithOverrides: jest.fn(),
+    prewarm: jest.fn(),
+    cleanupPrewarm: jest.fn(),
+    isInitialized: () => true,
+    init: jest.fn().mockResolvedValue(undefined),
+  }),
+}));
+
+// Mock the perps stream hooks
+jest.mock('../../hooks/perps/stream', () => ({
+  usePerpsLivePositions: () => ({
+    positions: mockPositions,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveOrders: () => ({
+    orders: mockOrders,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveAccount: () => ({
+    account: mockAccountState,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveMarketData: () => ({
+    markets: [...mockCryptoMarkets, ...mockHip3Markets],
+    isInitialLoading: false,
+  }),
+  usePerpsLiveCandles: () => ({
+    candleData: {
+      symbol: 'ETH',
+      interval: '5m',
+      candles: [
+        {
+          time: 1768188300000,
+          open: '2500.0',
+          high: '2520.0',
+          low: '2490.0',
+          close: '2510.0',
+          volume: '100.0',
+        },
+      ],
+    },
+    isInitialLoading: false,
+    isLoadingMore: false,
+    hasHistoricalData: true,
+    error: null,
+    fetchMoreHistory: jest.fn(),
+  }),
+}));
+
+// Mock usePerpsTransactionHistory hook to avoid controller dependency
+jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: () => ({
+    transactions: mockTransactions,
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
 }));
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
@@ -125,7 +256,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith('/');
     });
 
     it('displays market price change', () => {
@@ -187,7 +318,7 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       // ETH has a mock position
-      expect(getByText('Position')).toBeInTheDocument();
+      expect(getByText(messages.perpsPosition.message)).toBeInTheDocument();
     });
 
     it('displays position P&L', () => {
@@ -199,21 +330,25 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       // Check for P&L label
-      expect(getByText('P&L')).toBeInTheDocument();
+      expect(getByText(messages.perpsPnl.message)).toBeInTheDocument();
     });
 
     it('displays position details section', () => {
       const store = mockStore(createMockState(true));
 
-      const { getByText } = renderWithProvider(
+      const { getByText, getAllByText } = renderWithProvider(
         <PerpsMarketDetailPage />,
         store,
       );
 
-      expect(getByText('Details')).toBeInTheDocument();
-      expect(getByText('Direction')).toBeInTheDocument();
-      expect(getByText('Entry price')).toBeInTheDocument();
-      expect(getByText('Liquidation price')).toBeInTheDocument();
+      expect(getByText(messages.perpsDetails.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsDirection.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsEntryPrice.message)).toBeInTheDocument();
+      // 'Liquidation price' appears in both the Details section and the
+      // Edit Margin expandable, so use getAllByText
+      expect(
+        getAllByText(messages.perpsLiquidationPrice.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it('displays stats section', () => {
@@ -224,8 +359,8 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Stats')).toBeInTheDocument();
-      expect(getByText('24h Volume')).toBeInTheDocument();
+      expect(getByText(messages.perpsStats.message)).toBeInTheDocument();
+      expect(getByText(messages.perps24hVolume.message)).toBeInTheDocument();
     });
 
     it('displays recent activity section', () => {
@@ -236,7 +371,9 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Recent Activity')).toBeInTheDocument();
+      expect(
+        getByText(messages.perpsRecentActivity.message),
+      ).toBeInTheDocument();
     });
 
     it('displays learn section', () => {
@@ -247,7 +384,324 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Learn the basics of perps')).toBeInTheDocument();
+      expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
+    });
+
+    it('opens Modify menu with Add margin, Remove margin, and Reverse position when Modify button is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+
+      expect(screen.getByTestId('perps-modify-menu')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-modify-menu-add-exposure'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-modify-menu-reduce-exposure'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAddExposure.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReduceExposure.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReversePosition.message),
+      ).toBeInTheDocument();
+    });
+
+    it('opens Margin menu with Add margin and Remove margin when Margin card is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-margin-card'));
+      expect(screen.getByTestId('perps-margin-menu')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAddMargin.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsRemoveMargin.message),
+      ).toBeInTheDocument();
+    });
+
+    it('opens Close position modal when Close button is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-close-cta-button'));
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableToClose.message),
+      ).toBeInTheDocument();
+    });
+
+    it('navigates to order entry in modify mode when Add exposure is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-add-exposure'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('/perps/trade/ETH'),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('mode=modify'),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('direction=long'),
+      );
+    });
+
+    it('navigates to order entry in close mode when Reduce exposure is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-reduce-exposure'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('/perps/trade/ETH'),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('mode=close'),
+      );
+    });
+
+    it('opens Reverse position modal when Reverse position is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-reverse-position'));
+
+      expect(
+        screen.getByTestId('perps-reverse-position-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('opens Add margin modal from Margin menu', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-margin-card'));
+      fireEvent.click(screen.getByTestId('perps-margin-menu-add'));
+
+      expect(screen.getByTestId('perps-add-margin-modal')).toBeInTheDocument();
+    });
+
+    it('opens Remove margin modal from Margin menu', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-margin-card'));
+      fireEvent.click(screen.getByTestId('perps-margin-menu-remove'));
+
+      expect(
+        screen.getByTestId('perps-decrease-margin-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Close Long button text for long position', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.getByText(messages.perpsCloseLong.message),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Close Short button text for short position', () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.getByText(messages.perpsCloseShort.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows short-specific descriptions in Modify menu for short position', () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+
+      expect(
+        screen.getByText(messages.perpsAddExposureDescriptionShort.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReduceExposureDescriptionShort.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReversePositionDescriptionShort.message),
+      ).toBeInTheDocument();
+    });
+
+    it('displays disclaimer text', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.getByText(messages.perpsDisclaimer.message),
+      ).toBeInTheDocument();
+    });
+
+    it('opens TP/SL modal when Auto Close row is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-auto-close-row'));
+      expect(
+        screen.getByText(messages.perpsTakeProfit.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStopLoss.message),
+      ).toBeInTheDocument();
+    });
+
+    it('populates TP price from preset button for long position', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // After expand, TP input is initialized to position's existing TP (3200.00)
+      expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
+
+      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3,562.50
+      const presetButton = screen.getByText('+25%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('3,562.50')).toBeInTheDocument();
+    });
+
+    it('populates SL price from preset button for long position', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // After expand, SL input is initialized to position's existing SL (2600.00)
+      expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
+
+      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2,137.50
+      const presetButton = screen.getByText('-25%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('2,137.50')).toBeInTheDocument();
+    });
+
+    it('populates TP price from preset button for short position', () => {
+      // BTC is short (size=-0.5), entry = 45,000
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40,500.00
+      const presetButton = screen.getByText('+10%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('40,500.00')).toBeInTheDocument();
+    });
+
+    it('populates SL price from preset button for short position', () => {
+      // BTC is short (size=-0.5), entry = 45,000
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49,500.00
+      const presetButton = screen.getByText('-10%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+    });
+  });
+
+  describe('when user has no position on the viewed market', () => {
+    it('shows Long and Short trade buttons instead of Modify/Close', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(screen.getByTestId('perps-trade-cta-buttons')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-long-cta-button')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-short-cta-button')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-modify-cta-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-close-cta-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('navigates to order entry when Long button is clicked', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-long-cta-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/direction=long/u),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/mode=new/u),
+      );
+    });
+
+    it('navigates to order entry when Short button is clicked', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-short-cta-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/direction=short/u),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.stringMatching(/mode=new/u),
+      );
+    });
+
+    it('does not render position section', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.queryByText(messages.perpsPosition.message),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -261,7 +715,9 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Market not found')).toBeInTheDocument();
+      expect(
+        getByText(messages.perpsMarketNotFound.message),
+      ).toBeInTheDocument();
     });
 
     it('displays the unknown market symbol in error message', () => {

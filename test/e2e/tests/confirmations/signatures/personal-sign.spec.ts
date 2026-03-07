@@ -9,27 +9,23 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
 } from '../../../constants';
 import {
   assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
-  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  initializePages,
-  openDappAndTriggerSignature,
-  SignatureType,
+  WALLET_ADDRESS,
+  WALLET_ETH_BALANCE,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Personal Sign', function (this: Suite) {
@@ -43,15 +39,25 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0].toLowerCase() as string;
-        await initializePages(driver);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.PersonalSign,
+        );
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance();
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
 
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress();
+        await accountDetailsModal.clickAddressCopyButton();
+        await accountDetailsModal.waitForAddressCopied();
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.pasteIntoEip747ContractAddressInput();
+
+        await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
 
@@ -83,15 +89,18 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
         const confirmation = new PersonalSignConfirmation(driver);
+        const testDapp = new TestDapp(driver);
 
-        await initializePages(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.PersonalSign,
+        );
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -109,7 +118,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),

@@ -1,28 +1,30 @@
 import { strict as assert } from 'assert';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
-import { largeDelayMs } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
-import {
-  clickConfirmButton,
-  connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-} from './testHelpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
+import { clickConfirmButton, connectSolanaTestDapp } from './testHelpers';
 
 describe('Solana Wallet Standard - Transfer WSOL', function () {
   describe('Send WSOL transactions', function () {
     it('Should sign and send multiple WSOL transactions', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          mockGetTransactionSuccess: true,
-          // FIXME: We have to disable this one, since this mock is too "generic" and would
-          // "mock" the actual `getAccountInfo` request used by the dapp.
-          mockTokenAccountAccountInfo: false,
-          walletConnect: false,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
+          testSpecificMock: buildSolanaTestSpecificMock({
+            mockGetTransactionSuccess: true,
+            mockTokenAccountAccountInfo: false,
+            walletConnect: false,
+          }),
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();

@@ -12,7 +12,7 @@ import {
 } from '../../page-objects/flows/vault-corruption.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
-import { getConfig } from './helpers';
+import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 /**
  * Simple script that reloads the extension.
@@ -40,18 +40,22 @@ describe('Storage Operations Failure Recovery', function () {
 
   describe('storage.local.get() failure with simulateStorageGetFailure flag', function () {
     it('triggers vault recovery when get() fails but backup exists in IndexedDB', async function () {
-      await withFixtures(
-        getConfig(this.test?.title, {
-          additionalIgnoredErrors: [
-            'Simulated storage.local.get failure for testing',
-          ],
-          additionalManifestFlags: {
-            testing: {
-              // Enable the simulation flag - it will only trigger after backup exists
-              simulateStorageGetFailure: true,
-            },
+      const config = getConfig(this.test?.title, {
+        additionalIgnoredErrors: [
+          'Simulated storage.local.get failure for testing',
+        ],
+        additionalManifestFlags: {
+          testing: {
+            // Enable the simulation flag - it will only trigger after backup exists
+            simulateStorageGetFailure: true,
           },
-        }),
+        },
+      });
+      await withFixtures(
+        {
+          ...config,
+          testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+        },
         async ({ driver }: { driver: Driver }) => {
           // Phase 1: Onboard, get address, lock, reload, and wait for vault recovery
           // The simulateStorageGetFailure manifest flag triggers after backup exists

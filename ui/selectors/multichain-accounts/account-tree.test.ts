@@ -33,8 +33,10 @@ import {
   getAccountGroupsByAddress,
   getInternalAccountListSpreadByScopesByGroupId,
   getIconSeedAddressByAccountGroupId,
+  getDefaultScopeAndAddressByAccountGroupId,
   getIconSeedAddressesByAccountGroups,
   getNormalizedGroupsMetadata,
+  selectAccountGroupNameByAddress,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -1372,6 +1374,57 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
+  describe('getDefaultScopeAndAddressByAccountGroupId', () => {
+    it('returns defaultAddress and defaultScopes for default scope (eip155) when group has eip155 scope', () => {
+      const result = getDefaultScopeAndAddressByAccountGroupId(
+        typedMockState,
+        ENTROPY_GROUP_1_ID,
+      );
+
+      expect(result.defaultAddress).toBe(ACCOUNT_1_ADDRESS);
+      expect(Array.isArray(result.defaultScopes)).toBe(true);
+      expect(result.defaultScopes.length).toBeGreaterThan(0);
+      expect(
+        result.defaultScopes.every((s) => String(s).startsWith('eip155')),
+      ).toBe(true);
+    });
+
+    it('returns null defaultAddress and empty defaultScopes when group ID does not exist', () => {
+      const result = getDefaultScopeAndAddressByAccountGroupId(
+        typedMockState,
+        'nonExistentGroupId' as AccountGroupId,
+      );
+
+      expect(result.defaultAddress).toBeNull();
+      expect(result.defaultScopes).toEqual([]);
+    });
+
+    it('returns null defaultAddress and empty defaultScopes when defaultAddressScope does not match groupId scopes', () => {
+      const stateWithBip122 = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          preferences: {
+            ...(
+              typedMockState.metamask as {
+                preferences?: Record<string, unknown>;
+              }
+            ).preferences,
+            defaultAddressScope: 'bip122',
+          },
+        },
+      } as MultichainAccountsState;
+
+      const result = getDefaultScopeAndAddressByAccountGroupId(
+        stateWithBip122,
+        ENTROPY_GROUP_1_ID,
+      );
+
+      expect(result.defaultAddress).toBeNull();
+      expect(result.defaultScopes).toEqual([]);
+    });
+  });
+
   describe('getIconSeedAddressesByAccountGroups', () => {
     it('returns seed addresses for multiple valid account groups', () => {
       const mockAccountGroups = [
@@ -1530,6 +1583,29 @@ describe('Multichain Accounts Selectors', () => {
       expect(result).toEqual({
         'keyring:some/0x123': '',
       });
+    });
+  });
+
+  describe('selectAccountGroupNameByAddress', () => {
+    it('returns account group name for a valid address', () => {
+      const result = selectAccountGroupNameByAddress(
+        typedMockState,
+        ACCOUNT_1_ADDRESS,
+      );
+      expect(result).toBe('Account 1');
+    });
+
+    it('returns undefined when address is not provided', () => {
+      const result = selectAccountGroupNameByAddress(typedMockState, undefined);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when address does not match any account', () => {
+      const result = selectAccountGroupNameByAddress(
+        typedMockState,
+        '0x0000000000000000000000000000000000000000',
+      );
+      expect(result).toBeUndefined();
     });
   });
 });

@@ -3,6 +3,10 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import {
+  mockCryptoMarkets,
+  mockHip3Markets,
+} from '../../../components/app/perps/mocks';
 import { MarketListView } from '.';
 
 const mockNavigate = jest.fn();
@@ -10,6 +14,12 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+}));
+
+// Mock usePerpsLiveMarketData hook to avoid controller dependency
+const mockUsePerpsLiveMarketData = jest.fn();
+jest.mock('../../../hooks/perps/stream', () => ({
+  usePerpsLiveMarketData: () => mockUsePerpsLiveMarketData(),
 }));
 
 const mockStore = configureStore({
@@ -24,6 +34,11 @@ const mockStore = configureStore({
 describe('MarketListView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Default mock returns loaded state with markets
+    mockUsePerpsLiveMarketData.mockReturnValue({
+      markets: [...mockCryptoMarkets, ...mockHip3Markets],
+      isInitialLoading: false,
+    });
   });
 
   describe('rendering', () => {
@@ -60,6 +75,12 @@ describe('MarketListView', () => {
 
   describe('loading state', () => {
     it('shows loading skeletons initially', () => {
+      // Override mock to return loading state
+      mockUsePerpsLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: true,
+      });
+
       renderWithProvider(<MarketListView />, mockStore);
 
       // Should have multiple skeleton elements

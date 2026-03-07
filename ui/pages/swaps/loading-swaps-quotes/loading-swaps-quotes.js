@@ -34,7 +34,7 @@ import {
   JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({

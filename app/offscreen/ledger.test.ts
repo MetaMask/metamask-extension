@@ -16,6 +16,7 @@ const mockGetAddress = jest.fn();
 const mockClearSignTransaction = jest.fn();
 const mockSignPersonalMessage = jest.fn();
 const mockSignEIP712Message = jest.fn();
+const mockParse = jest.fn();
 
 const mockTransport = {
   close: mockTransportClose,
@@ -44,6 +45,10 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
     })),
   };
 });
+
+jest.mock('@ethersproject/transactions', () => ({
+  parse: (...args: unknown[]) => mockParse(...args),
+}));
 
 describe('Ledger Offscreen', () => {
   let mockAddEventListener: jest.Mock;
@@ -284,24 +289,84 @@ describe('Ledger Offscreen', () => {
     });
 
     describe('signTransaction', () => {
-      it('signs transaction and returns signature', async () => {
-        mockClearSignTransaction.mockResolvedValue({
-          v: '1b',
-          r: 'abcd1234',
-          s: 'efgh5678',
-        });
+      const defaultSignature = {
+        v: '1b',
+        r: 'abcd1234',
+        s: 'efgh5678',
+      };
 
+      beforeEach(() => {
+        mockClearSignTransaction.mockResolvedValue(defaultSignature);
+        // Default: parse returns approve selector so nft is false (ERC20/ERC721 shared)
+        mockParse.mockReturnValue({
+          data: `0x095ea7b3${'00'.repeat(64)}`,
+        });
+      });
+
+      it('signs transaction and returns signature', async () => {
         const response = await sendAction(LedgerAction.signTransaction, {
           hdPath: "m/44'/60'/0'/0/0",
           tx: 'f86c0a8502540be400825208...',
         });
 
         expect(response.success).toBe(true);
-        expect(response.payload).toEqual({
-          v: '1b',
-          r: 'abcd1234',
-          s: 'efgh5678',
+        expect(response.payload).toEqual(defaultSignature);
+      });
+
+      it('calls clearSignTransaction with "nft: false" for ERC20 approve selector', async () => {
+        mockParse.mockReturnValue({
+          data: `0x095ea7b3${'00'.repeat(64)}`,
         });
+
+        await sendAction(LedgerAction.signTransaction, {
+          hdPath: "m/44'/60'/0'/0/0",
+          tx: '0xdeadbeef',
+        });
+
+        expect(mockClearSignTransaction).toHaveBeenCalledWith(
+          "m/44'/60'/0'/0/0",
+          '0xdeadbeef',
+          expect.objectContaining({
+            externalPlugins: true,
+            erc20: true,
+            nft: false,
+          }),
+        );
+      });
+
+      it('calls clearSignTransaction with "nft: true" for setApprovalForAll selector', async () => {
+        mockParse.mockReturnValue({
+          data: `0xa22cb465${'00'.repeat(64)}`,
+        });
+
+        await sendAction(LedgerAction.signTransaction, {
+          hdPath: "m/44'/60'/0'/0/0",
+          tx: '0xabc',
+        });
+
+        expect(mockClearSignTransaction).toHaveBeenCalledWith(
+          "m/44'/60'/0'/0/0",
+          '0xabc',
+          expect.objectContaining({ nft: true }),
+        );
+      });
+
+      it('calls clearSignTransaction without "nft: true" when parse throws', async () => {
+        mockParse.mockImplementation(() => {
+          throw new Error('Invalid RLP');
+        });
+
+        await sendAction(LedgerAction.signTransaction, {
+          hdPath: "m/44'/60'/0'/0/0",
+          tx: 'invalid',
+        });
+
+        expect(mockClearSignTransaction).toHaveBeenCalledWith(
+          "m/44'/60'/0'/0/0",
+          'invalid',
+          expect.objectContaining({ externalPlugins: true, erc20: true }),
+        );
+        expect(mockClearSignTransaction.mock.calls[0][2].nft).not.toBe(true);
       });
     });
 

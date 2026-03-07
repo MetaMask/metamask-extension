@@ -17,7 +17,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {

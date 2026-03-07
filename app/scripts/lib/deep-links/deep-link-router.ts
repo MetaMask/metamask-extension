@@ -17,12 +17,17 @@ import {
   SignatureStatus,
   VALID,
 } from '../../../../shared/lib/deep-links/verify';
+import { BaseUrl } from '../../../../shared/constants/urls';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
 // non-slashed version here to skip that redirect step.
 const slashRe = /^\//u;
 const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
+
+const TRUSTED_ORIGINS = new Set(
+  Object.values(BaseUrl).map((url) => new URL(url).origin),
+);
 
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
@@ -104,16 +109,24 @@ export class DeepLinkRouter extends EventEmitter<{
    * @param details
    * @param details.tabId - The ID of the tab making the request.
    * @param details.url - The URL being requested.
+   * @param details.initiator - The origin that triggered this request (Chrome).
+   * @param details.originUrl - The URL of the document that triggered this request (Firefox).
    */
   private handleBeforeRequest = ({
     tabId,
     url,
+    initiator,
+    originUrl,
   }: browser.WebRequest.OnBeforeRequestDetailsType): browser.WebRequest.BlockingResponseOrPromise => {
     if (tabId === browser.tabs.TAB_ID_NONE) {
       return {};
     }
 
-    return this.tryNavigateTo(tabId, url);
+    const requestOrigin = DeepLinkRouter.resolveRequestOrigin(
+      initiator,
+      originUrl,
+    );
+    return this.tryNavigateTo(tabId, url, requestOrigin);
   };
 
   /**
@@ -149,10 +162,12 @@ export class DeepLinkRouter extends EventEmitter<{
    *
    * @param tabId - The ID of the tab to redirect.
    * @param urlStr - The URL string to navigate to.
+   * @param requestOrigin - The origin of the page that initiated this navigation, if known.
    */
   private async tryNavigateTo(
     tabId: number,
     urlStr: string,
+    requestOrigin?: string,
   ): Promise<browser.WebRequest.BlockingResponse> {
     if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
       log.debug('Url is too long, skipping deep link handling');
@@ -169,8 +184,7 @@ export class DeepLinkRouter extends EventEmitter<{
 
         if ('redirectTo' in parsed.destination) {
           link = parsed.destination.redirectTo.toString();
-        } else if (this.canSkipInterstitial(parsed.signature)) {
-          // signed links than can and should skip the interstitial page
+        } else if (this.canSkipInterstitial(parsed.signature, requestOrigin)) {
           link = this.getExtensionURL(
             parsed.destination.path,
             parsed.destination.query.toString(),
@@ -214,15 +228,51 @@ export class DeepLinkRouter extends EventEmitter<{
   }
 
   /**
-   * Checks if the interstitial page can be skipped based on the signature status.
-   * If the signature is valid and the user has opted to skip the interstitial,
-   * it returns true.
+   * Resolves the origin of the page that initiated a deep link navigation.
+   * Chrome provides `initiator` (an origin string), Firefox provides
+   * `originUrl` (a full URL). Returns `undefined` if neither is available
+   * (e.g. address bar navigation, bookmarks).
+   *
+   * @param initiator - Chrome's initiator origin string.
+   * @param originUrl - Firefox's full origin URL string.
+   */
+  static resolveRequestOrigin(
+    initiator?: string,
+    originUrl?: string,
+  ): string | undefined {
+    if (initiator) {
+      return initiator;
+    }
+    if (originUrl) {
+      try {
+        return new URL(originUrl).origin;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Checks if the interstitial page can be skipped.
+   *
+   * Deep links originating from a trusted MetaMask domain (e.g.
+   * metamask.io, app.metamask.io) always skip the interstitial regardless of
+   * signature status — the website is treated as a trusted origin. For links
+   * from other origins, the interstitial is skipped only when the link is
+   * signed and the user has opted in via their preferences.
    *
    * @param signatureStatus - The signature status of the deep link.
+   * @param requestOrigin - The origin of the page that initiated the navigation.
    */
   canSkipInterstitial(
     signatureStatus: SignatureStatus,
-  ): signatureStatus is typeof VALID {
+    requestOrigin?: string,
+  ): boolean {
+    if (requestOrigin && TRUSTED_ORIGINS.has(requestOrigin)) {
+      return true;
+    }
+
     if (signatureStatus !== VALID) {
       return false;
     }

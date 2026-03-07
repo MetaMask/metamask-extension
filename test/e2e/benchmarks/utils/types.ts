@@ -32,11 +32,13 @@ export type StatisticalResult = {
   [key: string]: number;
 };
 
+export type Persona = 'standard' | 'powerUser';
+
 export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
 
 export type BenchmarkResults = {
-  testTitle?: string;
-  persona?: string;
+  testTitle: string;
+  persona: Persona;
   benchmarkType?: BenchmarkType;
   mean: StatisticalResult;
   min: StatisticalResult;
@@ -49,7 +51,7 @@ export type BenchmarkResults = {
 /** User action result with testTitle, persona and numeric timing metrics. */
 export type UserActionResult = {
   testTitle: string;
-  persona?: string;
+  persona: Persona;
   benchmarkType?: BenchmarkType;
   [key: string]: string | number | undefined;
 };
@@ -60,7 +62,7 @@ export type BenchmarkArguments = {
   pageLoads: number;
   out?: string;
   retries: number;
-  persona: 'standard' | 'powerUser';
+  persona: Persona;
 };
 
 export type NetworkReport = {
@@ -135,10 +137,8 @@ export type BenchmarkSummary = {
   exclusionRatePassed: boolean;
   /** Percentage of runs that were excluded (0-1) */
   exclusionRate: number;
-  /** List of threshold violations (if any thresholds configured) */
-  thresholdViolations?: ThresholdViolation[];
-  /** Whether all thresholds passed (no 'fail' violations) */
-  thresholdsPassed?: boolean;
+  thresholdViolations: ThresholdViolation[];
+  thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
 };

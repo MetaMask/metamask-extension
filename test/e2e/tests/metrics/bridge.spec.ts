@@ -147,9 +147,9 @@ describe('Bridge tests', function (this: Suite) {
           return (
             event.properties.chain_id_source === 'eip155:1' &&
             event.properties.chain_id_destination === 'eip155:59144' &&
-            event.properties.token_address_source ===
-              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' &&
-            event.properties.token_address_destination ===
+            event.properties.token_address_source.toLowerCase() ===
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'.toLowerCase() &&
+            event.properties.token_address_destination.toLowerCase() ===
               'eip155:59144/slip44:60' &&
             event.properties.swap_type === 'crosschain' &&
             event.properties.token_symbol_source === 'DAI' &&
@@ -168,8 +168,8 @@ describe('Bridge tests', function (this: Suite) {
             'eip155:1' &&
             crossChainQuotesReceived[0].properties.chain_id_destination ===
               'eip155:59144' &&
-            crossChainQuotesReceived[0].properties.token_address_source ===
-              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' &&
+            crossChainQuotesReceived[0].properties.token_address_source.toLowerCase() ===
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'.toLowerCase() &&
             crossChainQuotesReceived[0].properties.token_address_destination ===
               'eip155:59144/slip44:60' &&
             crossChainQuotesReceived[0].properties.swap_type === 'crosschain',

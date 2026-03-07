@@ -5,6 +5,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   decryptMsg,
   decryptMsgInline,
@@ -174,7 +175,7 @@ describe('ConfirmDecryptMessage Component', () => {
       store,
     );
 
-    const confirmButton = getByText('Decrypt');
+    const confirmButton = getByText(messages.decrypt.message);
     confirmButton.click();
     await flushPromises();
 
@@ -190,7 +191,7 @@ describe('ConfirmDecryptMessage Component', () => {
       store,
     );
 
-    const confirmButton = getByText('Cancel');
+    const confirmButton = getByText(messages.cancel.message);
     confirmButton.click();
     await flushPromises();
 
@@ -242,7 +243,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
       const { getByText } = await renderAndUnlockMessage();
 
-      const confirmButton = getByText('Decrypt');
+      const confirmButton = getByText(messages.decrypt.message);
       expect(confirmButton).toBeDisabled();
     });
 
@@ -274,7 +275,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
       const { getByText } = await renderAndUnlockMessage();
 
-      const confirmButton = getByText('Decrypt');
+      const confirmButton = getByText(messages.decrypt.message);
       expect(confirmButton).not.toBeDisabled();
     });
   });

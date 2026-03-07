@@ -11,10 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -125,37 +122,39 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
   const mockNetworkClientId1 = 'mock-network-client-id-1';
   const mockNetworkClientId2 = 'mock-network-client-id-2';
 
-  const mockPermission1: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
-    {
-      permissionResponse: {
-        permission: {
-          type: 'custom' as const,
-          data: {},
-          isAdjustmentAllowed: false,
+  const mockPermission1: PermissionInfoWithMetadata = {
+    permissionResponse: {
+      permission: {
+        type: 'native-token-stream' as const,
+        data: {
+          amountPerSecond: '0x0',
         },
-        chainId: mockChainId1,
-        from: mockSelectedAccountAddress as Hex,
-        context: mockPermissionContext1,
-        delegationManager: mockDelegationManagerAddress,
+        isAdjustmentAllowed: false,
       },
-      siteOrigin: 'example.com',
-    };
+      chainId: mockChainId1,
+      from: mockSelectedAccountAddress as Hex,
+      context: mockPermissionContext1,
+      delegationManager: mockDelegationManagerAddress,
+    },
+    siteOrigin: 'example.com',
+  };
 
-  const mockPermission2: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
-    {
-      permissionResponse: {
-        permission: {
-          type: 'custom' as const,
-          data: {},
-          isAdjustmentAllowed: false,
+  const mockPermission2: PermissionInfoWithMetadata = {
+    permissionResponse: {
+      permission: {
+        type: 'native-token-stream' as const,
+        data: {
+          amountPerSecond: '0x0',
         },
-        chainId: mockChainId2,
-        from: mockSelectedAccountAddress as Hex,
-        context: mockPermissionContext2,
-        delegationManager: mockDelegationManagerAddress,
+        isAdjustmentAllowed: false,
       },
-      siteOrigin: 'example.com',
-    };
+      chainId: mockChainId2,
+      from: mockSelectedAccountAddress as Hex,
+      context: mockPermissionContext2,
+      delegationManager: mockDelegationManagerAddress,
+    },
+    siteOrigin: 'example.com',
+  };
 
   const mockTransactionMeta1: TransactionMeta = {
     id: 'tx-id-1',

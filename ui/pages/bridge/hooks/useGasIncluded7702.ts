@@ -4,8 +4,12 @@ import {
 } from '@metamask/bridge-controller';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import {
+  getGaslessBridgeWith7702EnabledForChain,
+  SmartTransactionsState,
+} from '../../../../shared/modules/selectors';
 import { isRelaySupported } from '../../../store/actions';
+import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 
 type Chain = {
@@ -39,14 +43,20 @@ export function useGasIncluded7702({
   fromChain,
   isSendBundleSupportedForChain,
 }: UseGasIncluded7702Params): boolean {
+  const isGaslessBridgeWith7702Enabled = useSelector(
+    (state: SmartTransactionsState) => {
+      const hexChainId = fromChain?.chainId
+        ? getMaybeHexChainId(fromChain.chainId)
+        : undefined;
+      return hexChainId
+        ? getGaslessBridgeWith7702EnabledForChain(state, hexChainId)
+        : false;
+    },
+  );
+
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
-  const isSmartTransaction = useSelector((state) =>
-    getIsSmartTransaction(
-      state as never,
-      getMaybeHexChainId(fromChain?.chainId) ?? fromChain?.chainId,
-    ),
-  );
+  const isSmartTransaction = useSelector(getIsStxEnabled);
 
   useEffect(() => {
     let isCancelled = false;
@@ -54,7 +64,7 @@ export function useGasIncluded7702({
     const checkGasIncluded7702Support = async () => {
       if (
         (isSendBundleSupportedForChain && isSmartTransaction) ||
-        !isSwap ||
+        (!isSwap && !isGaslessBridgeWith7702Enabled) ||
         !selectedAccount?.address ||
         !fromChain?.chainId
       ) {
@@ -93,6 +103,7 @@ export function useGasIncluded7702({
     fromChain?.chainId,
     isSendBundleSupportedForChain,
     isSmartTransaction,
+    isGaslessBridgeWith7702Enabled,
     isSwap,
     selectedAccount?.address,
   ]);

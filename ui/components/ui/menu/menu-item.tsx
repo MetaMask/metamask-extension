@@ -13,6 +13,7 @@ import {
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
   twMerge,
 } from '@metamask/design-system-react';
 import {
@@ -40,8 +41,11 @@ type MenuItemProps = {
   iconSize?: IconSize;
   iconColor?: IconColor;
   textVariant?: TextVariant;
+  fontWeight?: FontWeight;
   textColor?: TextColor;
   to?: string;
+  /** React Router location state (e.g. { prevPath } for back navigation) */
+  state?: object;
   onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
@@ -65,12 +69,14 @@ const MenuItem = React.forwardRef<
       iconSize,
       iconColor,
       textVariant,
+      fontWeight,
       textColor,
       onClick,
       subtitle,
       disabled,
       showInfoDot,
       to,
+      state,
     }: MenuItemProps,
     ref,
   ) => {
@@ -127,7 +133,12 @@ const MenuItem = React.forwardRef<
 
         <div>
           {textVariant && (
-            <Text variant={textVariant} color={textColor} asChild>
+            <Text
+              variant={textVariant}
+              fontWeight={fontWeight}
+              color={textColor}
+              asChild
+            >
               <div>{children}</div>
             </Text>
           )}
@@ -180,6 +191,7 @@ const MenuItem = React.forwardRef<
       ) : (
         <Link
           to={to}
+          state={state}
           className={baseClasses}
           data-testid={dataTestId}
           ref={ref as React.Ref<HTMLAnchorElement>}

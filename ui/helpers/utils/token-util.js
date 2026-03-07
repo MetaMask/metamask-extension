@@ -208,7 +208,7 @@ export function getTokenIdParam(tokenData = {}) {
  * Get the token balance converted to fiat and optionally formatted for display
  *
  * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
- * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
+ * @param {number|undefined} conversionRate - The exchange rate between the current fiat currency and the native currency
  * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
  * @param {string} [tokenAmount] - The current token balance
  * @param {string} [tokenSymbol] - The token symbol
@@ -229,6 +229,7 @@ export function getTokenFiatAmount(
   // is currently unknown, the fiat amount cannot be calculated so it is not
   // shown to the user
   if (
+    conversionRate === undefined ||
     conversionRate <= 0 ||
     !contractExchangeRate ||
     tokenAmount === undefined ||

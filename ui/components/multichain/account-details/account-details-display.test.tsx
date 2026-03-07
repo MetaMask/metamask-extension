@@ -3,6 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import configureStore from '../../../store/store';
 import * as EIP7702NetworkUtils from '../../../pages/confirmations/hooks/useEIP7702Networks';
@@ -43,7 +44,7 @@ describe('AccountDetailsDisplay', () => {
     const { getByText } = renderComponent();
     expect(getByText('0x0dcd5d8865...e70be3e7bc')).toBeInTheDocument();
     expect(getByText('Type')).toBeInTheDocument();
-    expect(getByText('Details')).toBeInTheDocument();
+    expect(getByText(messages.details.message)).toBeInTheDocument();
   });
 
   it('does not render tabs type and details if 7702 network are not present', async () => {
@@ -55,7 +56,7 @@ describe('AccountDetailsDisplay', () => {
     const { getByText, queryByText } = renderComponent();
     expect(getByText('0x0dcd5d8865...e70be3e7bc')).toBeInTheDocument();
     expect(queryByText('Type')).not.toBeInTheDocument();
-    expect(queryByText('Details')).not.toBeInTheDocument();
+    expect(queryByText(messages.details.message)).not.toBeInTheDocument();
   });
 
   it('renders button to copy address', async () => {

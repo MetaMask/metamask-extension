@@ -7,3 +7,8 @@ export type ShieldEnvConfig = {
   gatewayUrl: string;
   ruleEngineUrl: string;
 };
+
+export type ShieldSubscriptionError = {
+  message: string;
+  code?: string;
+};

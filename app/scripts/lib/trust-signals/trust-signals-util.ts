@@ -20,6 +20,16 @@ export function isEthSendTransaction(req: JsonRpcRequest): boolean {
   return req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION;
 }
 
+export function isEip7715AdvancedPermissionsRequest(
+  req: JsonRpcRequest,
+): boolean {
+  return (
+    req.method === MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS ||
+    req.method === MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS ||
+    req.method === MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS
+  );
+}
+
 export function hasValidTransactionParams(
   req: JsonRpcRequest,
 ): req is JsonRpcRequest & {

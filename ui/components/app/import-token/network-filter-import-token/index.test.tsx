@@ -4,6 +4,7 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
@@ -47,7 +48,9 @@ describe('NetworkFilterImportToken', () => {
       <NetworkFilterImportToken {...props} />,
       store,
     );
-    expect(screen.getByText('Current network')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.currentNetwork.message),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -68,7 +71,9 @@ describe('NetworkFilterImportToken', () => {
       <NetworkFilterImportToken {...props} />,
       store,
     );
-    expect(screen.getByText('Popular networks')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.popularNetworks.message),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

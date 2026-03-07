@@ -6,7 +6,6 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
-import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -14,7 +13,6 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
-import { resetBackgroundSwapsState } from '../../store/actions';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -28,7 +26,6 @@ import {
   Header,
   Page,
 } from '../../components/multichain/pages/page';
-import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import {
   resetBridgeState,
   restoreQuoteRequestFromState,
@@ -49,8 +46,6 @@ import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTran
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
-  // Load swaps feature flags so that we can use smart transactions
-  useSwapsFeatureFlags();
   useBridging();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -115,8 +110,6 @@ const CrossChainSwap = () => {
     } else {
       navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
     }
-    dispatch(clearSwapsState());
-    await dispatch(resetBackgroundSwapsState());
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);

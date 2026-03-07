@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
@@ -38,16 +39,18 @@ describe('Account Exist Seedless Onboarding View', () => {
   it('should display the correct content', () => {
     const { getByText } = renderWithProvider(<AccountExist />, customMockStore);
 
-    expect(getByText('Wallet already exists')).toBeInTheDocument();
+    expect(
+      getByText(messages.accountAlreadyExistsTitle.message),
+    ).toBeInTheDocument();
     // should show the correct button
-    const loginButton = getByText('Log in');
+    const loginButton = getByText(messages.accountAlreadyExistsLogin.message);
     expect(loginButton).toBeInTheDocument();
     expect(loginButton.nodeName).toBe('BUTTON');
   });
 
   it('should navigate to the unlock page when the button is clicked', async () => {
     const { getByText } = renderWithProvider(<AccountExist />, customMockStore);
-    const loginButton = getByText('Log in');
+    const loginButton = getByText(messages.accountAlreadyExistsLogin.message);
     fireEvent.click(loginButton);
 
     await waitFor(() => {

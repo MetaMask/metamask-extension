@@ -15,6 +15,7 @@ import {
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { createMockMultichainAccountsState } from '../../../selectors/multichain-accounts/test-utils';
 import {
   getAllNetworkConfigurationsByCaipChainId,
@@ -510,20 +511,20 @@ describe('MultichainConnectPage', () => {
 
   it('renders subtitle correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect this website with MetaMask')).toBeDefined();
+    expect(getByText(messages.connectionDescription.message)).toBeDefined();
   });
 
   it('renders accounts tab correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Accounts')).toBeDefined();
-    expect(getByText('Edit accounts')).toBeDefined();
+    expect(getByText(messages.accounts.message)).toBeDefined();
+    expect(getByText(messages.editAccounts.message)).toBeDefined();
   });
 
   it('renders permissions tab correctly', () => {
     const { getByText } = render();
 
-    const permissionsTab = getByText('Permissions');
+    const permissionsTab = getByText(messages.permissions.message);
     fireEvent.click(permissionsTab);
 
     // The permissions tab should be clickable and render content
@@ -533,7 +534,7 @@ describe('MultichainConnectPage', () => {
   it('renders edit accounts modal when edit button is clicked', () => {
     const { getByText } = render();
 
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
     // The modal should open when edit button is clicked
@@ -543,7 +544,7 @@ describe('MultichainConnectPage', () => {
   it('closes edit accounts modal when close button is clicked', () => {
     const { getByText } = render();
 
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
     // The modal should be interactive
@@ -553,8 +554,8 @@ describe('MultichainConnectPage', () => {
   it('renders confirm and cancel buttons', () => {
     const { getByText } = render();
 
-    const confirmButton = getByText('Connect');
-    const cancelButton = getByText('Cancel');
+    const confirmButton = getByText(messages.connect.message);
+    const cancelButton = getByText(messages.cancel.message);
 
     expect(confirmButton).toBeDefined();
     expect(cancelButton).toBeDefined();
@@ -568,7 +569,7 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const cancelButton = getByText('Cancel');
+    const cancelButton = getByText(messages.cancel.message);
     fireEvent.click(cancelButton);
 
     expect(mockRejectPermissionsRequest).toHaveBeenCalledWith('1');
@@ -582,7 +583,7 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const connectButton = getByText('Connect');
+    const connectButton = getByText(messages.connect.message);
     fireEvent.click(connectButton);
 
     expect(mockApproveConnection).toHaveBeenCalled();
@@ -650,7 +651,7 @@ describe('MultichainConnectPage', () => {
   it('handles account group selection correctly', () => {
     const { getByText } = render();
 
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
     // The modal should be interactive for account group selection
@@ -660,7 +661,7 @@ describe('MultichainConnectPage', () => {
   it('handles permissions tab interactions', () => {
     const { getByText } = render();
 
-    const permissionsTab = getByText('Permissions');
+    const permissionsTab = getByText(messages.permissions.message);
     fireEvent.click(permissionsTab);
 
     // The permissions tab should be interactive

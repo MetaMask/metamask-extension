@@ -14,6 +14,7 @@ import {
   calculateTimerStatistics,
   checkExclusionRate,
   MAX_EXCLUSION_RATE,
+  MAX_TOTAL_DURATION_MS,
   validateThresholds,
 } from './statistics';
 import type {
@@ -23,6 +24,8 @@ import type {
   BenchmarkSummary,
   BenchmarkType,
   Metrics,
+  Persona,
+  StatisticalResult,
   ThresholdConfig,
   TimerResult,
   TimerStatistics,
@@ -69,7 +72,7 @@ export async function runBenchmarkWithIterations(
   benchmarkFn: BenchmarkFunction,
   iterations: number,
   retries: number,
-  thresholdConfig?: ThresholdConfig,
+  thresholdConfig: ThresholdConfig,
 ): Promise<BenchmarkSummary> {
   const allResults: BenchmarkRunResult[] = [];
   let successfulRuns = 0;
@@ -132,6 +135,22 @@ export async function runBenchmarkWithIterations(
     }
   }
 
+  // Compute per-run total durations and derive total statistics from them
+  // (min/max/percentiles are not additive across timers from different runs)
+  const perRunTotalDurations: number[] = [];
+  for (const result of allResults) {
+    if (result.success && result.timers.length > 0) {
+      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      perRunTotalDurations.push(runTotal);
+    }
+  }
+  if (perRunTotalDurations.length > 0) {
+    const totalStats = calculateTimerStatistics('total', perRunTotalDurations, {
+      maxDurationMs: MAX_TOTAL_DURATION_MS,
+    });
+    timerStats.push(totalStats);
+  }
+
   // Check overall run exclusion rate
   const overallExclusionCheck = checkExclusionRate(
     iterations,
@@ -139,11 +158,9 @@ export async function runBenchmarkWithIterations(
     MAX_EXCLUSION_RATE,
   );
 
-  // Validate thresholds if configured
-  const thresholdResult = thresholdConfig
-    ? validateThresholds(timerStats, thresholdConfig)
-    : undefined;
+  const thresholdResult = validateThresholds(timerStats, thresholdConfig);
 
+  // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
   return {
@@ -156,18 +173,60 @@ export async function runBenchmarkWithIterations(
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
     exclusionRate: overallExclusionCheck.rate,
-    ...(thresholdResult && {
-      thresholdViolations: thresholdResult.violations,
-      thresholdsPassed: thresholdResult.passed,
-    }),
+    thresholdViolations: thresholdResult.violations,
+    thresholdsPassed: thresholdResult.passed,
     benchmarkType,
+  };
+}
+
+/**
+ * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
+ * for consistent output with send-to-sentry.ts
+ *
+ * @param summary
+ * @param testTitle
+ * @param persona
+ * @param benchmarkType
+ */
+export function convertSummaryToResults(
+  summary: BenchmarkSummary,
+  testTitle: string,
+  persona: Persona = 'standard',
+  benchmarkType?: BenchmarkType,
+): BenchmarkResults {
+  const mean: StatisticalResult = {};
+  const min: StatisticalResult = {};
+  const max: StatisticalResult = {};
+  const stdDev: StatisticalResult = {};
+  const p75: StatisticalResult = {};
+  const p95: StatisticalResult = {};
+
+  for (const timer of summary.timers) {
+    mean[timer.id] = timer.mean;
+    min[timer.id] = timer.min;
+    max[timer.id] = timer.max;
+    stdDev[timer.id] = timer.stdDev;
+    p75[timer.id] = timer.p75;
+    p95[timer.id] = timer.p95;
+  }
+
+  return {
+    testTitle,
+    persona,
+    benchmarkType,
+    mean,
+    min,
+    max,
+    stdDev,
+    p75,
+    p95,
   };
 }
 
 export type MeasurePageResult = {
   metrics: Metrics[];
   title: string;
-  persona: string;
+  persona: Persona;
 };
 
 export async function runPageLoadBenchmark(
@@ -190,7 +249,7 @@ export async function runPageLoadBenchmark(
   const pageName = 'home';
   let runResults: Metrics[] = [];
   let testTitle = '';
-  let resultPersona = '';
+  let resultPersona: Persona = 'standard';
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);

@@ -14,6 +14,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import Welcome from './welcome';
 
 const mockUseNavigate = jest.fn();
@@ -92,8 +93,12 @@ describe('Welcome Page', () => {
   it('render buttons', async () => {
     const { getByText } = renderWithProvider(<Welcome />, mockStore);
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
-      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingImportWallet.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -112,10 +117,12 @@ describe('Welcome Page', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('Create a new wallet');
+    const createButton = getByText(messages.onboardingCreateWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -153,10 +160,12 @@ describe('Welcome Page', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('Create a new wallet');
+    const createButton = getByText(messages.onboardingCreateWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -219,10 +228,12 @@ describe('Welcome Page', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingImportWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('I have an existing wallet');
+    const createButton = getByText(messages.onboardingImportWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -289,10 +300,12 @@ describe('Welcome Page', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingImportWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('I have an existing wallet');
+    const createButton = getByText(messages.onboardingImportWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -357,10 +370,12 @@ describe('Welcome Page', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('Create a new wallet');
+    const createButton = getByText(messages.onboardingCreateWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);

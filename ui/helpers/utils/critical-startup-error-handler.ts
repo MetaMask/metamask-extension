@@ -3,7 +3,10 @@ import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
-import { BACKGROUND_LIVENESS_METHOD } from '../../../shared/constants/ui-initialization';
+import {
+  APP_INIT_LIVENESS_METHOD,
+  BACKGROUND_LIVENESS_METHOD,
+} from '../../../shared/constants/ui-initialization';
 import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
@@ -33,6 +36,8 @@ export class CriticalStartupErrorHandler {
   #port: browser.Runtime.Port;
 
   #container: HTMLElement;
+
+  #receivedAppInitPing = false;
 
   #livenessCheckTimeoutId?: NodeJS.Timeout;
 
@@ -117,6 +122,29 @@ export class CriticalStartupErrorHandler {
     try {
       await Promise.race([startSyncUi, syncUiTimeoutPromise]);
     } catch (error) {
+      // add sentryTags to the error for better debugging in Sentry.
+      const sentryTags = {
+        // we want to know if a problem happens between app-init's onConnect and
+        // this background's onConnect. if we receive the app-init liveness
+        // ping, then we can be pretty confident that the connection was working
+        // but something went wrong between app-init and background.js.
+        // If after a few months, we find that most of the errors are happening
+        // without receiving the app-init ping (`uiStartup.receivedAppInitPing`
+        // is false), then we can be pretty confident that the port connection
+        // itself just isn't working, and we can remove the
+        // `uiStartup.receivedAppInitPing` tag and all logic related to it
+        // since it won't be providing any useful information anymore. However,
+        // if we find that some errors are happening with receiving the app-init
+        // ping (`uiStartup.receivedAppInitPing` is true), then we know that the
+        // connection _can be_ working, but something is going wrong somewhere else, probably
+        // related to the background.js startup process, and in that case, we
+        // can remove the app-init ping logic since it will have served its
+        // purpose of helping us.
+        'uiStartup.receivedAppInitPing': this.#receivedAppInitPing.toString(),
+      };
+      (
+        error as unknown as { sentryTags?: Record<string, unknown> }
+      ).sentryTags = sentryTags;
       await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
@@ -147,9 +175,12 @@ export class CriticalStartupErrorHandler {
       return;
     }
     const { method } = data;
-    // Currently, we only handle BACKGROUND_LIVENESS_METHOD, RELOAD_WINDOW, and the state
-    // corruption error message, but we will be adding more in the future.
-    if (method === BACKGROUND_LIVENESS_METHOD) {
+    // Currently, we only handle APP_INIT_LIVENESS_METHOD, BACKGROUND_LIVENESS_METHOD,
+    // RELOAD_WINDOW, the state corruption error message, and the general startup error
+    // message, but we will be adding more in the future.
+    if (method === APP_INIT_LIVENESS_METHOD) {
+      this.#receivedAppInitPing = true;
+    } else if (method === BACKGROUND_LIVENESS_METHOD) {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else {

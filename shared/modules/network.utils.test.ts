@@ -3,13 +3,13 @@ import {
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
-import {
-  type NetworkConfiguration,
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
-import type { AddNetworkFields } from '@metamask/network-controller';
+import type {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import {
   AVALANCHE_DISPLAY_NAME,
   BNB_DISPLAY_NAME,

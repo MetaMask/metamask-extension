@@ -116,16 +116,12 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
-  "enableEnforcedSimulations": "boolean",
-  "enableEnforcedSimulationsForTransactions": "object",
   "enableMV3TimestampSave": true,
   "enabledNetworkMap": {
     "eip155": {
       "0xaa36a7": true
     }
   },
-  "enforcedSimulationsSlippage": "number",
-  "enforcedSimulationsSlippageForTransactions": "object",
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "estimatedGasFeeTimeBounds": {},
@@ -141,13 +137,6 @@
   "hadAdvancedGasFeesSetPriorToMigration92_3": false,
   "hasDismissedOpenSeaToBlockaidBanner": false,
   "hiddenAccountList": [],
-  "identities": {
-    "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
-      "name": "Account 1",
-      "address": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
-      "lastSelected": 1715944041809
-    }
-  },
   "ignoredNfts": [],
   "ignoredTokens": [],
   "interfaces": {},
@@ -196,7 +185,6 @@
   "lastUpdated": null,
   "ledgerTransportType": "u2f",
   "logs": {},
-  "lostIdentities": {},
   "metaMetricsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
   "methodData": {},
   "multichainNetworkConfigurationsByChainId": {
@@ -277,7 +265,9 @@
   "pinnedAccountList": [],
   "popupGasPollTokens": [],
   "preferences": {
+    "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,
+    "showDefaultAddress": false,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
@@ -319,11 +309,11 @@
       }
     }
   },
-  "selectedAddress": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "shieldEndingToastLastClickedOrClosed": null,
   "shieldPausedToastLastClickedOrClosed": null,
+  "shieldSubscriptionError": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,

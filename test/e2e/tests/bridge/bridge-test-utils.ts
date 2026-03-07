@@ -329,6 +329,7 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
+
       .withJsonBodyIncluding({
         chainIds: ['eip155:59144'],
       })
@@ -348,6 +349,7 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
+
       .withJsonBodyIncluding({
         chainIds: ['eip155:42161'],
       })
@@ -469,7 +471,7 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: featureFlags }],
+        json: [{ bridgeConfig: featureFlags, extensionUxPna25: true }],
       };
     });
 }
@@ -478,6 +480,7 @@ async function mockSwapETHtoMUSD(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuoteStream/u)
     .once()
+
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
@@ -494,6 +497,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
     return await mockServer
       .forGet(/getQuoteStream/u)
       .once()
+
       .withQuery({
         srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -507,6 +511,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
 
   return await mockServer
     .forGet(/getQuote/u)
+
     .withQuery({
       srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -535,12 +540,15 @@ async function mockGetTxStatusInvalid(
   mockServer: Mockttp,
   options: { statusCode: number; json: unknown },
 ) {
-  return await mockServer.forGet(/getTxStatus/u).thenCallback(() => {
-    return {
-      statusCode: options.statusCode,
-      json: options.json,
-    };
-  });
+  return await mockServer
+    .forGet(/getTxStatus/u)
+
+    .thenCallback(() => {
+      return {
+        statusCode: options.statusCode,
+        json: options.json,
+      };
+    });
 }
 
 async function mockL2toMainnet(mockServer: Mockttp) {
@@ -887,6 +895,9 @@ export const getBridgeFixtures = (
       metaMetricsId: MOCK_META_METRICS_ID,
       participateInMetaMetrics: true,
     })
+    .withAppStateController({
+      pna25Acknowledged: true,
+    })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
     .withPreferencesControllerSmartTransactionsOptedOut()
@@ -1050,6 +1061,7 @@ export const getQuoteNegativeCasesFixtures = (
         await mockTokensLinea(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags),
       ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
@@ -1099,6 +1111,7 @@ export const getBridgeNegativeCasesFixtures = (
         await mockETHtoETH(mockServer),
         await mockGetTxStatusInvalid(mockServer, options),
         await mockPriceSpotPrices(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags),
       ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
@@ -1146,6 +1159,7 @@ export const getInsufficientFundsFixtures = (
         await mockGetPopularTokens(mockServer),
         await mockETHtoWETH(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags),
       ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {

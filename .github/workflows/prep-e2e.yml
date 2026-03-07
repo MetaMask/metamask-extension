@@ -2,12 +2,13 @@ name: Prep E2E
 
 on:
   workflow_call:
+    outputs:
+      use-matrix:
+        description: The matrix for the E2E jobs
+        value: ${{ jobs.prep-e2e.outputs.use-matrix }}
 
 jobs:
   prep-e2e:
-    # For a `pull_request` event, the branch is `github.head_ref``.
-    # For a `push` event, the branch is `github.ref_name`.
-    if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -16,18 +17,23 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       WORKFLOW_ID: main.yml
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    outputs:
+      use-matrix: ${{ steps.set-use-matrix.outputs.use-matrix }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Get changed files with git diff
+        # On branch `stable`, there's no reason to do a diff
+        if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
         run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Upload changed files artifact
+        # On branch `stable`, there's no reason to do a diff
+        if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
         uses: actions/upload-artifact@v6
         with:
           name: changed-files
@@ -66,3 +72,24 @@ jobs:
         with:
           name: test-runs-for-splitting
           path: test/test-results/test-runs-*.json
+
+      - name: Set use matrix
+        id: set-use-matrix
+        run: |
+          # Configure suite shard counts here (suite name -> shard count)
+          SUITE_SHARD_COUNTS=$(jq -cn '{
+            "test-e2e-chrome-browserify": 20,
+            "test-e2e-chrome-webpack": 20,
+            "test-e2e-chrome-flask": 5,
+            "test-e2e-firefox-browserify": 20,
+            "test-e2e-firefox-webpack": 20,
+            "test-e2e-firefox-flask": 5
+          }')
+
+          # Expand counts into the job matrix shape expected by downstream workflows
+          MATRIX_JSON=$(jq -cn --argjson counts "$SUITE_SHARD_COUNTS" '
+            reduce ($counts | to_entries[]) as $entry
+              ({}; . + { ($entry.key): { index: [range(0; $entry.value)] } })
+          ')
+
+          echo "use-matrix=${MATRIX_JSON}" >> "$GITHUB_OUTPUT"

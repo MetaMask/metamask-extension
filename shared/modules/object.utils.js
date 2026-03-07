@@ -18,7 +18,7 @@ export const AllProperties = Symbol('*');
  * If a property is excluded, its type is included instead.
  *
  * @param {object} object - The object to mask
- * @param {{[key: string]: object | boolean}} mask - The mask to apply to the object
+ * @param {{[key: string]: object | boolean} & { [AllProperties]?: boolean }} mask - The mask to apply to the object
  */
 export function maskObject(object, mask) {
   // make sure the object is actually an object, if not, just return its type
@@ -26,12 +26,13 @@ export function maskObject(object, mask) {
     // As typeof null (misleadingly) returns “object,” it would be more readable to display “null” instead of “object.”
     return object === null ? null : typeof object;
   }
-  let maskAllProperties = false;
-  if (Object.keys(mask).includes(AllProperties)) {
-    if (Object.keys(mask).length > 1) {
+  const maskKeys = Reflect.ownKeys(mask);
+  const maskAllProperties = maskKeys.includes(AllProperties);
+
+  if (maskAllProperties) {
+    if (maskKeys.length > 1) {
       throw new Error('AllProperties mask key does not support sibling keys');
     }
-    maskAllProperties = true;
   }
   return Object.keys(object).reduce((state, key) => {
     const maskKey = maskAllProperties ? mask[AllProperties] : mask[key];

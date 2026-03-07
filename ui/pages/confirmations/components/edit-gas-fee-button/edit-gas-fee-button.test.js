@@ -15,6 +15,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import EditGasFeeButton from './edit-gas-fee-button';
 
 jest.mock('../../../../store/actions', () => ({
@@ -73,26 +74,28 @@ describe('EditGasFeeButton', () => {
   it('should render edit link with text low if low gas estimates are selected', async () => {
     await render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
-    expect(screen.queryByText('Low')).toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
   });
 
   it('should render edit link with text market if medium gas estimates are selected', async () => {
     await render({ contextProps: { transaction: { userFeeLevel: 'medium' } } });
     expect(screen.queryByText('🦊')).toBeInTheDocument();
-    expect(screen.queryByText('Market')).toBeInTheDocument();
+    expect(screen.queryByText(messages.medium.message)).toBeInTheDocument();
   });
 
   it('should render edit link with text aggressive if high gas estimates are selected', async () => {
     await render({ contextProps: { transaction: { userFeeLevel: 'high' } } });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
-    expect(screen.queryByText('Aggressive')).toBeInTheDocument();
+    expect(screen.queryByText(messages.high.message)).toBeInTheDocument();
   });
 
   it('should render edit link with text 10% increase if tenPercentIncreased gas estimates are selected', async () => {
     await render({
       contextProps: { transaction: { userFeeLevel: 'tenPercentIncreased' } },
     });
-    expect(screen.queryByText('10% increase')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
   });
 
   it('should render edit link with text Site suggested if site suggested estimated are used', async () => {
@@ -106,7 +109,9 @@ describe('EditGasFeeButton', () => {
       },
     });
     expect(screen.queryByText('🌐')).toBeInTheDocument();
-    expect(screen.queryByText('Site suggested')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggested.message),
+    ).toBeInTheDocument();
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
   });
 
@@ -118,7 +123,9 @@ describe('EditGasFeeButton', () => {
       },
     });
     expect(screen.queryByText('🔄')).toBeInTheDocument();
-    expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapSuggested.message),
+    ).toBeInTheDocument();
   });
 
   it('should render edit link with text advance if custom gas estimates are used', async () => {
@@ -129,8 +136,8 @@ describe('EditGasFeeButton', () => {
       },
     });
     expect(screen.queryByText('⚙️')).toBeInTheDocument();
-    expect(screen.queryByText('Advanced')).toBeInTheDocument();
-    expect(screen.queryByText('Edit')).toBeInTheDocument();
+    expect(screen.queryByText(messages.advanced.message)).toBeInTheDocument();
+    expect(screen.queryByText(messages.edit.message)).toBeInTheDocument();
   });
 
   it('should not render edit link if transaction has simulation error and prop userAcknowledgedGasMissing is false', async () => {
@@ -144,7 +151,7 @@ describe('EditGasFeeButton', () => {
       componentProps: { userAcknowledgedGasMissing: false },
     });
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
-    expect(screen.queryByText('Low')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).not.toBeInTheDocument();
   });
 
   it('should render edit link if userAcknowledgedGasMissing is true even if transaction has simulation error', async () => {
@@ -158,7 +165,7 @@ describe('EditGasFeeButton', () => {
       componentProps: { userAcknowledgedGasMissing: true },
     });
     expect(screen.queryByRole('button')).toBeInTheDocument();
-    expect(screen.queryByText('Low')).toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
   });
 
   it('should render null for legacy transactions', async () => {

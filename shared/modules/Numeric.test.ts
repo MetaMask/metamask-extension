@@ -1,11 +1,19 @@
 import { BigNumber } from 'bignumber.js';
-import { BN } from 'bn.js';
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from './Numeric';
 
 const ONE_ETH = new Numeric(1, 10, EtherDenomination.ETH);
 const ONE_GWEI = new Numeric(1, 10, EtherDenomination.GWEI);
 const ONE_WEI = new Numeric(1, 10, EtherDenomination.WEI);
+
+function createBnLike(value: bigint) {
+  return {
+    words: [0],
+    toString(base = 10) {
+      return value.toString(base);
+    },
+  };
+}
 
 describe('Numeric', () => {
   describe('Basic Numeric Construction', () => {
@@ -75,14 +83,19 @@ describe('Numeric', () => {
       });
     });
 
-    describe('From BigNumbers or BN', () => {
+    describe('From BigNumbers or BN-like values', () => {
       it('should create a new Numeric from a BigNumber', () => {
         const numeric = new Numeric(new BigNumber(100, 10));
         expect(numeric.value).toStrictEqual(new BigNumber(100, 10));
       });
 
-      it('should create a new Numeric from a BN', () => {
-        const numeric = new Numeric(new BN(100, 10), 10);
+      it('should create a new Numeric from a bigint', () => {
+        const numeric = new Numeric(100n, 10);
+        expect(numeric.value).toStrictEqual(new BigNumber(100, 10));
+      });
+
+      it('should create a new Numeric from a BN-like value', () => {
+        const numeric = new Numeric(createBnLike(100n), 10);
         expect(numeric.value).toStrictEqual(new BigNumber(100, 10));
       });
     });
@@ -558,8 +571,8 @@ describe('Numeric', () => {
         );
       });
 
-      it('should return a string representation of provided BN', () => {
-        expect(new Numeric(new BN(10, 10)).toString()).toStrictEqual('10');
+      it('should return a string representation of provided BN-like value', () => {
+        expect(new Numeric(createBnLike(10n)).toString()).toStrictEqual('10');
       });
     });
 
@@ -584,8 +597,8 @@ describe('Numeric', () => {
         expect(new Numeric(new BigNumber(10, 10)).toNumber()).toStrictEqual(10);
       });
 
-      it('should return a number representation of provided BN', () => {
-        expect(new Numeric(new BN(10, 10)).toNumber()).toStrictEqual(10);
+      it('should return a number representation of provided BN-like value', () => {
+        expect(new Numeric(createBnLike(10n)).toNumber()).toStrictEqual(10);
       });
     });
 

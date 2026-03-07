@@ -4,6 +4,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import UnlockPageImport from '.';
@@ -115,7 +116,7 @@ describe('Unlock Page', () => {
       store,
     );
 
-    fireEvent.click(getByText('Forgot password?'));
+    fireEvent.click(getByText(messages.forgotPassword.message));
 
     const resetPasswordButton = getByTestId('reset-password-modal-button');
 
@@ -149,7 +150,9 @@ describe('Unlock Page', () => {
       '/unlock',
     );
 
-    fireEvent.click(queryByText('Use a different login method') as HTMLElement);
+    fireEvent.click(
+      queryByText(messages.useDifferentLoginMethod.message) as HTMLElement,
+    );
 
     await waitFor(() => {
       expect(mockLoginWithDifferentMethod).toHaveBeenCalled();

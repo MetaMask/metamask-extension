@@ -29,6 +29,7 @@ type RootMessenger = Messenger<
 >;
 
 jest.mock('webextension-polyfill');
+jest.mock('../../../shared/lib/deep-links/utils');
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
 jest.mock('../../../shared/modules/mv3.utils', () => ({
@@ -47,8 +48,6 @@ const extensionMock = {
     },
   },
 } as unknown as jest.Mocked<Browser>;
-
-const TRANSACTION_ID_MOCK = '123-456';
 
 describe('AppStateController', () => {
   describe('setOutdatedBrowserWarningLastShown', () => {
@@ -512,19 +511,111 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('isUpdateAvailable', () => {
-    it('defaults to false', async () => {
+  describe('setShieldSubscriptionError', () => {
+    it('sets the error object with message and code', async () => {
       await withController(({ controller }) => {
-        expect(controller.state.isUpdateAvailable).toStrictEqual(false);
+        controller.setShieldSubscriptionError({
+          message: 'payer address is already used',
+          code: 'payer_address_already_used',
+        });
+        expect(controller.state.shieldSubscriptionError).toStrictEqual({
+          message: 'payer address is already used',
+          code: 'payer_address_already_used',
+        });
+      });
+    });
+
+    it('sets the error object with message only', async () => {
+      await withController(({ controller }) => {
+        controller.setShieldSubscriptionError({
+          message: 'some error',
+        });
+        expect(controller.state.shieldSubscriptionError).toStrictEqual({
+          message: 'some error',
+        });
+      });
+    });
+
+    it('clears the error when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setShieldSubscriptionError({ message: 'some error' });
+        expect(controller.state.shieldSubscriptionError).not.toBeNull();
+
+        controller.setShieldSubscriptionError(null);
+        expect(controller.state.shieldSubscriptionError).toBeNull();
+      });
+    });
+
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.shieldSubscriptionError).toBeNull();
       });
     });
   });
 
-  describe('setIsUpdateAvailable', () => {
-    it('sets isUpdateAvailable', async () => {
+  describe('setPendingRedirectRoute', () => {
+    it('defaults to null', async () => {
       await withController(({ controller }) => {
-        controller.setIsUpdateAvailable(true);
-        expect(controller.state.isUpdateAvailable).toStrictEqual(true);
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+
+    it('sets a route with only path', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+        });
+      });
+    });
+
+    it('sets a route with path, search, and environmentType', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+      });
+    });
+
+    it('clears the route when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).not.toBeNull();
+
+        controller.setPendingRedirectRoute(null);
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+  });
+
+  describe('pendingExtensionVersion', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.pendingExtensionVersion).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setPendingExtensionVersion', () => {
+    it('sets pendingExtensionVersion', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingExtensionVersion('1.2.3');
+        expect(controller.state.pendingExtensionVersion).toStrictEqual('1.2.3');
+      });
+    });
+
+    it('clears pendingExtensionVersion when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingExtensionVersion('1.2.3');
+        controller.setPendingExtensionVersion(null);
+        expect(controller.state.pendingExtensionVersion).toStrictEqual(null);
       });
     });
   });
@@ -647,72 +738,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setEnableEnforcedSimulations', () => {
-    it('updates the enableEnforcedSimulations state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnableEnforcedSimulations(false);
-        expect(controller.state.enableEnforcedSimulations).toBe(false);
-
-        controller.setEnableEnforcedSimulations(true);
-        expect(controller.state.enableEnforcedSimulations).toBe(true);
-      });
-    });
-  });
-
-  describe('setEnableEnforcedSimulationsForTransaction', () => {
-    it('updates the enableEnforcedSimulationsForTransactions state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnableEnforcedSimulationsForTransaction(
-          TRANSACTION_ID_MOCK,
-          true,
-        );
-
-        expect(
-          controller.state.enableEnforcedSimulationsForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: true,
-        });
-
-        controller.setEnableEnforcedSimulationsForTransaction(
-          TRANSACTION_ID_MOCK,
-          false,
-        );
-
-        expect(
-          controller.state.enableEnforcedSimulationsForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: false,
-        });
-      });
-    });
-  });
-
-  describe('setEnforcedSimulationsSlippage', () => {
-    it('updates the enforcedSimulationsSlippage state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnforcedSimulationsSlippage(23);
-        expect(controller.state.enforcedSimulationsSlippage).toBe(23);
-      });
-    });
-  });
-
-  describe('setEnforcedSimulationsSlippageForTransaction', () => {
-    it('updates the enforcedSimulationsSlippageForTransactions state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnforcedSimulationsSlippageForTransaction(
-          TRANSACTION_ID_MOCK,
-          25,
-        );
-
-        expect(
-          controller.state.enforcedSimulationsSlippageForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: 25,
-        });
-      });
-    });
-  });
-
   describe('setCanTrackWalletFundsObtained', () => {
     it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
       await withController(({ controller }) => {
@@ -766,15 +791,10 @@ describe('AppStateController', () => {
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -785,6 +805,8 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
@@ -792,6 +814,8 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -801,6 +825,7 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldSubscriptionError": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -860,15 +885,10 @@ describe('AppStateController', () => {
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -879,6 +899,8 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
@@ -886,6 +908,8 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -895,6 +919,7 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldSubscriptionError": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -950,8 +975,6 @@ describe('AppStateController', () => {
               "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
@@ -965,11 +988,14 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",
@@ -1033,14 +1059,9 @@ describe('AppStateController', () => {
               "currentPopupId": 0,
               "dappSwapComparisonData": {},
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -1051,6 +1072,8 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "networkConnectionBanner": {
                 "status": "unknown",
               },
@@ -1060,6 +1083,8 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -1069,6 +1094,7 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldSubscriptionError": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -1088,6 +1114,39 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('setDeferredDeepLink', () => {
+    it('updates the state when deferred deep link is available', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+
+        expect(controller.state.deferredDeepLink).toStrictEqual(
+          mockDeepLinkData,
+        );
+      });
+    });
+  });
+
+  describe('removeDeferredDeepLink', () => {
+    it('removes the deferred deep link data from state', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+        controller.removeDeferredDeepLink();
+
+        expect(controller.state.deferredDeepLink).toBeUndefined();
+      });
     });
   });
 });

@@ -479,20 +479,6 @@ const state = {
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    identities: {
-      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        name: 'This is a Really Long Account Name',
-        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-      },
-      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-        name: 'Account 2',
-        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      },
-      '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-        name: 'Account 3',
-        address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
-      },
-    },
     transactionBatches: {},
     addressBook: {
       undefined: {
@@ -1353,11 +1339,9 @@ const state = {
     usePhishDetect: true,
     useTokenDetection: true,
     useCurrencyRateCheck: true,
-    lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',
     migratedPrivacyMode: false,
-    selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     selectedNetworkClientId: 'test-networkConfigurationId-1',
     metaMetricsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',

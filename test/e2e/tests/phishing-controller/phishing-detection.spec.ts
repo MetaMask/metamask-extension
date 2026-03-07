@@ -11,7 +11,7 @@ import {
   veryLargeDelayMs,
 } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
@@ -53,7 +53,7 @@ describe('Phishing Detection', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -91,7 +91,7 @@ describe('Phishing Detection', function (this: Suite) {
 
     const getFixtureOptions = (overrides: Record<string, unknown>) => {
       return {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
             statusCode: 200,
@@ -171,7 +171,7 @@ describe('Phishing Detection', function (this: Suite) {
   it('should display the MetaMask Phishing Detection page in an iframe but should NOT take the user to the blocked page if it is not an accessible resource', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -212,7 +212,7 @@ describe('Phishing Detection', function (this: Suite) {
   it('should navigate the user to eth-phishing-detect to dispute a block if the phishing warning page fails to identify the source', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) => {
           setupPhishingDetectionMocks(mockServer, {
@@ -253,7 +253,7 @@ describe('Phishing Detection', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -291,7 +291,7 @@ describe('Phishing Detection', function (this: Suite) {
   it('should open MetaMask Portfolio when clicking back to safety button', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -331,7 +331,7 @@ describe('Phishing Detection', function (this: Suite) {
     const testPageURL = 'http://localhost:8080';
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockServer.forAnyWebSocket().thenEcho();
@@ -369,7 +369,7 @@ describe('Phishing Detection', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockServer.forAnyWebSocket().thenEcho();
@@ -478,7 +478,7 @@ describe('Phishing Detection', function (this: Suite) {
       const { promise, resolve } = createDeferredPromise<Driver>();
       fixturePromise = withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: Mockttp) => {
             await setupPhishingDetectionMocks(mockServer, {
@@ -549,7 +549,7 @@ describe('Phishing Detection', function (this: Suite) {
       it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {
@@ -580,7 +580,7 @@ describe('Phishing Detection', function (this: Suite) {
       it('blocks access to blocklisted subpaths', async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {
@@ -617,7 +617,7 @@ describe('Phishing Detection', function (this: Suite) {
         }
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {
@@ -661,7 +661,7 @@ describe('Phishing Detection', function (this: Suite) {
         }
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {

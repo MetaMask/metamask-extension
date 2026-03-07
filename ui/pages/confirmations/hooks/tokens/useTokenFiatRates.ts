@@ -30,7 +30,7 @@ export function useTokenFiatRates(
         const isUsd = currency.toLowerCase() === 'usd';
 
         const chainTokens = marketData?.[chainId] ?? {};
-        const token = chainTokens[toChecksumHexAddress(address)];
+        const token = chainTokens[toChecksumHexAddress(address) as Hex];
         const networkConfiguration = networkConfigurations[chainId];
 
         const conversionRates =

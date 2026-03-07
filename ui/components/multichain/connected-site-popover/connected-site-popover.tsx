@@ -26,6 +26,7 @@ import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
 import Tooltip from '../../ui/tooltip';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 type ConnectedSitePopoverProps = {
   referenceElement: RefObject<HTMLElement>;
@@ -190,7 +191,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
               {t('connectionPopoverDescription')}
             </Text>
             <ButtonLink
-              href="https://support.metamask.io/more-web3/dapps/connecting-to-a-dapp/"
+              href={ZENDESK_URLS.CONNECTING_TO_DAPP}
               externalLink
               size={ButtonLinkSize.Sm}
             >

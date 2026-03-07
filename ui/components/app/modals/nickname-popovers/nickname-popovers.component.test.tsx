@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -82,7 +83,7 @@ describe('NicknamePopover', () => {
     const expectedExplorerUrl = mockEvmExplorer(mockAccount.address);
     const { getByText } = render({ props: { address: mockAccount.address } });
 
-    const viewExplorerButton = getByText('View on block explorer');
+    const viewExplorerButton = getByText(messages.viewOnBlockExplorer.message);
     fireEvent.click(viewExplorerButton);
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expectedExplorerUrl,
@@ -103,7 +104,7 @@ describe('NicknamePopover', () => {
       props: { address: mockNonEvmAccount.address },
     });
 
-    const viewExplorerButton = getByText('View on block explorer');
+    const viewExplorerButton = getByText(messages.viewOnBlockExplorer.message);
 
     fireEvent.click(viewExplorerButton);
     expect(global.platform.openTab).toHaveBeenCalledWith({

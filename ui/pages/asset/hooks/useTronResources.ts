@@ -2,16 +2,33 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAssetId } from '@metamask/keyring-api';
-import { isTronResource } from '../../../../shared/lib/asset-utils';
-import { getAssetsBySelectedAccountGroupWithTronResources } from '../../../selectors/assets';
+import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import { isTronSpecialAsset } from '../../../../shared/lib/asset-utils';
+import { getAssetsBySelectedAccountGroupWithTronSpecialAssets } from '../../../selectors/assets';
 import { getMultichainBalances } from '../../../selectors/multichain';
-import { TRON_RESOURCE } from '../../../../shared/constants/multichain/assets';
+import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
+
+const TronResourceType = {
+  ENERGY: 'energy',
+  BANDWIDTH: 'bandwidth',
+} as const;
+
+type TronResourceType =
+  (typeof TronResourceType)[keyof typeof TronResourceType];
 
 export type TronResource = {
-  type: 'energy' | 'bandwidth';
+  type: TronResourceType;
   current: number;
   max: number;
   percentage: number;
+};
+
+const getAssetCaipType = (assetId: string): string | undefined => {
+  if (!isCaipAssetType(assetId)) {
+    return undefined;
+  }
+  const { assetNamespace, assetReference } = parseCaipAssetType(assetId);
+  return `${assetNamespace}:${assetReference}`;
 };
 
 /**
@@ -29,16 +46,21 @@ export const useTronResources = (
   bandwidth: TronResource;
 } => {
   const accountGroupAssets = useSelector(
-    getAssetsBySelectedAccountGroupWithTronResources,
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
   );
   const multichainBalances = useSelector(getMultichainBalances);
 
   return useMemo(() => {
     if (!account || !chainId) {
       return {
-        energy: { type: 'energy' as const, current: 0, max: 0, percentage: 0 },
+        energy: {
+          type: TronResourceType.ENERGY,
+          current: 0,
+          max: 0,
+          percentage: 0,
+        },
         bandwidth: {
-          type: 'bandwidth' as const,
+          type: TronResourceType.BANDWIDTH,
           current: 0,
           max: 0,
           percentage: 0,
@@ -48,62 +70,52 @@ export const useTronResources = (
 
     const assets = accountGroupAssets[chainId] || [];
     const balances = multichainBalances?.[account.id];
-    const tronResources = assets.filter((asset) => isTronResource(asset));
+    const tronSpecialAssets = assets.filter((asset) =>
+      isTronSpecialAsset(asset.assetId),
+    );
 
-    // Build resource data from assets
-    const resourceData: {
-      energy: { current: number; max: number };
-      bandwidth: { current: number; max: number };
-    } = {
-      energy: { current: 0, max: 0 },
-      bandwidth: { current: 0, max: 0 },
+    const findByCaipType = (caipType: string) =>
+      tronSpecialAssets.find(
+        (asset) => getAssetCaipType(asset.assetId) === caipType,
+      );
+
+    const getBalance = (asset: (typeof tronSpecialAssets)[0] | undefined) =>
+      asset
+        ? parseFloat(balances?.[asset.assetId as CaipAssetId]?.amount || '0')
+        : 0;
+
+    const energyData = {
+      current: getBalance(findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY)),
+      max: getBalance(
+        findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY),
+      ),
     };
 
-    Object.keys(resourceData).forEach((resourceType) => {
-      const resource = tronResources.find(
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        (resource) => resource.symbol?.toLowerCase() === resourceType,
-      );
-      const max = tronResources.find(
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        (resource) => resource.symbol?.toLowerCase() === `max-${resourceType}`,
-      );
+    const bandwidthData = {
+      current: getBalance(
+        findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH),
+      ),
+      max: getBalance(
+        findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH),
+      ),
+    };
 
-      resourceData[resourceType as keyof typeof resourceData] = {
-        current: resource
-          ? parseFloat(
-              balances?.[resource.assetId as CaipAssetId]?.amount || '0',
-            )
-          : 0,
-        max: max
-          ? parseFloat(balances?.[max.assetId as CaipAssetId]?.amount || '0')
-          : 0,
-      };
-    });
-
-    // Create resource objects with calculated percentages
-    // Always create resources even if values are 0 (accounts get free bandwidth)
     const createResource = (
-      type: 'energy' | 'bandwidth',
+      type: TronResourceType,
       data: { current: number; max: number },
     ): TronResource => {
-      // Use max of 1 only for percentage calculation to avoid division by zero
       const divisor = Math.max(1, data.max);
-
       return {
         type,
         current: data.current,
-        max: data.max, // Keep actual max for display (can be 0)
+        max: data.max,
         percentage: (data.current / divisor) * 100,
       };
     };
 
     return {
-      energy: createResource(TRON_RESOURCE.ENERGY, resourceData.energy),
-      bandwidth: createResource(
-        TRON_RESOURCE.BANDWIDTH,
-        resourceData.bandwidth,
-      ),
+      energy: createResource(TronResourceType.ENERGY, energyData),
+      bandwidth: createResource(TronResourceType.BANDWIDTH, bandwidthData),
     };
   }, [account, chainId, accountGroupAssets, multichainBalances]);
 };

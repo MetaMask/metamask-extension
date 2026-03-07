@@ -24,6 +24,7 @@ import {
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
+  isEip7715AdvancedPermissionsRequest,
 } from './trust-signals-util';
 
 export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
@@ -60,6 +61,8 @@ export function createTrustSignalsMiddleware(
       } else if (isConnected(req, getPermittedAccounts)) {
         scanUrl(req, phishingController);
       } else if (connectScreenHasBeenPrompted(req)) {
+        scanUrl(req, phishingController);
+      } else if (isEip7715AdvancedPermissionsRequest(req)) {
         scanUrl(req, phishingController);
       }
     } catch (error) {

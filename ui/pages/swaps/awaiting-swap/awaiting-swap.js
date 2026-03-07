@@ -52,7 +52,7 @@ import {
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { stopPollingForQuotes } from '../../../store/actions';

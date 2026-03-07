@@ -8,6 +8,7 @@ import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import ConfirmRemoveAccount from '.';
 
 // @ts-expect-error mocking platform
@@ -91,7 +92,7 @@ describe('Confirm Remove Account', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByText('Nevermind'));
+    fireEvent.click(queryByText(messages.nevermind.message));
 
     expect(props.removeAccount).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
@@ -103,7 +104,7 @@ describe('Confirm Remove Account', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByText('Remove'));
+    fireEvent.click(queryByText(messages.remove.message));
 
     expect(props.removeAccount).toHaveBeenCalledWith(props.account.address);
     expect(props.hideModal).toHaveBeenCalled();

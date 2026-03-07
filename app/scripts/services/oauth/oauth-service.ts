@@ -424,7 +424,7 @@ export default class OAuthService {
     if (process.env.IN_TEST) {
       const { MOCK_AUTH_CONNECTION_ID, MOCK_GROUPED_AUTH_CONNECTION_ID } =
         // Use `require` to make it easier to exclude this test code from the Browserify build.
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
@@ -471,10 +471,9 @@ export default class OAuthService {
     hasEmailMarketingConsent: boolean,
   ): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }
@@ -517,10 +516,9 @@ export default class OAuthService {
 
   async getMarketingConsent(): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }

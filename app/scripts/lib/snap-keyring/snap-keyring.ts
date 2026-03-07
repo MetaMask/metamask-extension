@@ -23,6 +23,7 @@ import {
   getSnapName,
   isMultichainWalletSnap,
 } from '../../../../shared/lib/accounts/snaps';
+import { isFlask } from '../../../../shared/lib/build-types';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -523,11 +524,9 @@ export function snapKeyringBuilder(
     return new SnapKeyring({
       messenger,
       callbacks: new SnapKeyringImpl(messenger, helpers),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       // Enables generic account creation for new chain integration. It's
       // Flask-only since production should use defined account types.
-      isAnyAccountTypeAllowed: true,
-      ///: END:ONLY_INCLUDE_IF
+      isAnyAccountTypeAllowed: isFlask(),
     });
   }) as SnapKeyringBuilder;
 

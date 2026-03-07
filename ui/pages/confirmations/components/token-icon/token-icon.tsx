@@ -12,7 +12,7 @@ import {
 import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useSendTokens } from '../../hooks/send/useSendTokens';
 
-export type TokenIconSize = 'sm' | 'md';
+export type TokenIconSize = 'xs' | 'sm' | 'md';
 
 export type TokenIconProps = {
   chainId: Hex;
@@ -21,13 +21,21 @@ export type TokenIconProps = {
 };
 
 const TOKEN_ICON_SIZE_MAP: Record<TokenIconSize, AvatarTokenSize> = {
+  xs: AvatarTokenSize.Xs,
   sm: AvatarTokenSize.Sm,
   md: AvatarTokenSize.Md,
 };
 
 const NETWORK_BADGE_SIZE_MAP: Record<TokenIconSize, AvatarNetworkSize> = {
+  xs: AvatarNetworkSize.Xs,
   sm: AvatarNetworkSize.Xs,
   md: AvatarNetworkSize.Xs,
+};
+
+const NETWORK_BADGE_STYLE_MAP: Record<TokenIconSize, React.CSSProperties> = {
+  xs: { width: '10px', height: '10px', minWidth: '10px' },
+  sm: {},
+  md: {},
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -57,6 +65,7 @@ export function TokenIcon({
           size={NETWORK_BADGE_SIZE_MAP[size]}
           name={networkConfiguration?.name ?? ''}
           src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+          style={NETWORK_BADGE_STYLE_MAP[size]}
         />
       }
     >

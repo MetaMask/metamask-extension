@@ -5,6 +5,8 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { mockTransactions } from '../../components/app/perps/mocks';
 import PerpsActivityPage from './perps-activity-page';
 
 const mockNavigate = jest.fn();
@@ -20,6 +22,16 @@ jest.mock('react-router-dom', () => ({
 // Mock the perps feature flag selector
 jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsEnabled: jest.fn(),
+}));
+
+// Mock usePerpsTransactionHistory hook to avoid controller dependency
+jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: () => ({
+    transactions: mockTransactions,
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
 }));
 
 const mockGetIsPerpsEnabled = getIsPerpsEnabled as jest.MockedFunction<
@@ -73,10 +85,14 @@ describe('PerpsActivityPage', () => {
     fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
 
     // Use getAllByText since "Trades" appears in both the button and dropdown option
-    expect(screen.getAllByText('Trades').length).toBeGreaterThan(0);
-    expect(screen.getByText('Orders')).toBeInTheDocument();
-    expect(screen.getByText('Funding')).toBeInTheDocument();
-    expect(screen.getByText('Deposits')).toBeInTheDocument();
+    expect(
+      screen.getAllByText(messages.perpsTrades.message).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getByText(messages.perpsOrders.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsFunding.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsDeposits.message),
+    ).toBeInTheDocument();
   });
 
   it('switches between filter options and updates displayed transactions', () => {
@@ -127,7 +143,7 @@ describe('PerpsActivityPage', () => {
   it('renders header with activity title', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    expect(screen.getByText('Activity')).toBeInTheDocument();
+    expect(screen.getByText(messages.activity.message)).toBeInTheDocument();
   });
 
   it('displays the back button with correct aria-label', () => {

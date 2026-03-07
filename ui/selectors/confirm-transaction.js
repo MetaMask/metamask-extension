@@ -7,6 +7,10 @@ import {
   addEth,
 } from '../helpers/utils/confirm-tx.util';
 import {
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
+} from '../../shared/modules/selectors/assets-migration';
+import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
@@ -107,9 +111,10 @@ export const unconfirmedMessagesHashSelector = createSelector(
 export const getUse4ByteResolution = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
-  state.metamask.currentCurrency;
+  getCurrencyRateControllerCurrentCurrency(state);
 export const conversionRateSelector = (state) =>
-  state.metamask.currencyRates[getProviderConfig(state).ticker]?.conversionRate;
+  getCurrencyRateControllerCurrencyRates(state)[getProviderConfig(state).ticker]
+    ?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
 
 const txParamsSelector = createSelector(

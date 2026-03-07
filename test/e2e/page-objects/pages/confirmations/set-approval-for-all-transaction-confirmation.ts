@@ -17,15 +17,15 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
 
     this.setApprovalForAllTitleElement = {
       css: 'h2',
-      text: tEn('setApprovalForAllRedesignedTitle') as string,
+      text: tEn('setApprovalForAllRedesignedTitle'),
     };
     this.setApprovalForAllSubHeadingElement = {
       css: 'p',
-      text: tEn('confirmTitleDescApproveTransaction') as string,
+      text: tEn('confirmTitleDescApproveTransaction'),
     };
     this.revokeSetApprovalForAllTitleElement = {
       css: 'h2',
-      text: tEn('confirmTitleSetApprovalForAllRevokeTransaction') as string,
+      text: tEn('confirmTitleSetApprovalForAllRevokeTransaction'),
     };
   }
 

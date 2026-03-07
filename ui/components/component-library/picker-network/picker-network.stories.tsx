@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
 import {
   Display,
@@ -7,7 +8,6 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { Box } from '../box';
-import README from './README.mdx';
 import { PickerNetwork } from './picker-network';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -19,6 +19,7 @@ import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 export default {
   title: 'Components/ComponentLibrary/PickerNetwork',
   component: PickerNetwork,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

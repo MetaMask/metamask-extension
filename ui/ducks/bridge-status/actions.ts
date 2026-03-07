@@ -30,14 +30,14 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  * @param context
  * @returns
  */
-export const submitBridgeTx = (
+export const submitBridgeTx = async (
   accountAddress: string,
   quote: QuoteResponse & QuoteMetadata,
   isStxSupportedInClient: boolean,
   context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    return dispatch(
+    return await dispatch(
       callBridgeStatusControllerMethod<
         [
           string,

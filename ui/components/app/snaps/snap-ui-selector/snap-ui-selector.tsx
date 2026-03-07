@@ -4,7 +4,7 @@ import React, {
   MouseEvent as ReactMouseEvent,
   CSSProperties,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { State } from '@metamask/snaps-sdk';
 import { isObject } from '@metamask/utils';
 import {

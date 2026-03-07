@@ -8,7 +8,7 @@ import { Driver } from '../../webdriver/driver';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
-const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';
+const ADDRESS_MOCK_RENDERED = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
 const CUSTOM_NAME_MOCK = 'Custom Name';
 const PROPOSED_NAME_MOCK = 'test4.lens';
 
@@ -30,14 +30,9 @@ describe('Petnames - Transactions', function () {
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkNameIsDisplayed(
-          ABBREVIATED_ADDRESS_MOCK,
-          false,
-        );
 
         // Test custom name.
         await confirmation.saveName({
-          value: ABBREVIATED_ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -45,11 +40,10 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkNameIsDisplayed(CUSTOM_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(CUSTOM_NAME_MOCK);
 
         // Test proposed name.
         await confirmation.saveName({
-          value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -57,7 +51,7 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkNameIsDisplayed(PROPOSED_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(PROPOSED_NAME_MOCK);
       },
     );
   });
@@ -79,14 +73,10 @@ describe('Petnames - Transactions', function () {
         const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkNameIsDisplayed(
-          ABBREVIATED_ADDRESS_MOCK,
-          false,
-        );
+        await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED);
 
         // Test custom name.
         await confirmation.saveName({
-          value: ABBREVIATED_ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
 
@@ -96,11 +86,10 @@ describe('Petnames - Transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkNameIsDisplayed(CUSTOM_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(CUSTOM_NAME_MOCK);
 
         // Test proposed name.
         await confirmation.saveName({
-          value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -109,7 +98,7 @@ describe('Petnames - Transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkNameIsDisplayed(PROPOSED_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(PROPOSED_NAME_MOCK);
       },
     );
   });

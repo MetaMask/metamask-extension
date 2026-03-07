@@ -49,16 +49,6 @@ export const mockMaxLeverage: Record<string, number> = {
 export const mockAvailableBalance = 10125.0;
 
 /**
- * Preset percentage buttons for balance slider
- */
-export const BALANCE_PERCENT_PRESETS = [25, 50, 75, 100] as const;
-
-/**
- * Leverage slider step markers
- */
-export const LEVERAGE_PRESETS = [5, 10, 25, 50] as const;
-
-/**
  * Calculate position size from USD amount and price
  *
  * @param usdAmount - Amount in USD

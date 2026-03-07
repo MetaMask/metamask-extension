@@ -64,6 +64,7 @@ const mapStateToProps = (state) => {
 
   return {
     networkConfigurations,
+    petnamesEnabled: Boolean(metamask.petnamesEnabled),
     participateInMetaMetrics: getParticipateInMetaMetrics(state),
     dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,

@@ -52,6 +52,10 @@ import {
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from '../../../shared/modules/selectors/assets-migration';
+import {
   getMultichainBalances,
   getMultichainCoinRates,
   getMultichainNetworkConfigurationsByChainId,
@@ -82,6 +86,7 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -166,7 +171,13 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
     (state: BridgeAppState) =>
       getBridgeFeatureFlags(state).priceImpactThreshold,
   ],
-  (priceImpactThreshold) => priceImpactThreshold,
+  (priceImpactThreshold) => ({
+    ...(priceImpactThreshold ?? {}),
+    // @ts-expect-error - priceImpactThreshold type has not been updated yet
+    warning: priceImpactThreshold?.warning ?? 0.05,
+    // @ts-expect-error - priceImpactThreshold type has not been updated yet
+    error: priceImpactThreshold?.error ?? 0.25,
+  }),
 );
 
 export const getFromChains = createDeepEqualSelector(
@@ -492,8 +503,8 @@ export const getFromTokenConversionRate = createSelector(
     (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
     getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
     getMultichainCoinRates,
-    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
-    (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
+    getTokenRatesControllerMarketData, // rates for non-native evm tokens
+    getCurrencyRateControllerCurrencyRates, // EVM only
   ],
   (
     fromToken,
@@ -649,6 +660,25 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
+export const getPriceImpact = createSelector(
+  [
+    (state: BridgeAppState) =>
+      getBridgeQuotes(state).activeQuote?.quote?.priceData?.priceImpact,
+  ],
+  (priceImpact) => {
+    const priceImpactNumber = Number(priceImpact);
+    if (isNaN(priceImpactNumber)) {
+      return null;
+    }
+    return priceImpactNumber;
+  },
+);
+
+export const getFormattedPriceImpact = createSelector(
+  [getPriceImpact],
+  (priceImpact) => formatPriceImpact(priceImpact),
+);
+
 export const getValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
@@ -662,6 +692,8 @@ export const getValidationErrors = createDeepEqualSelector(
     _getFromNativeBalance,
     getFromTokenBalance,
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
+    getPriceImpact,
+    getPriceImpactThresholds,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -674,6 +706,8 @@ export const getValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
     txAlertStatus,
+    priceImpactNumber,
+    { warning, error },
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
@@ -742,6 +776,14 @@ export const getValidationErrors = createDeepEqualSelector(
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
+      isPriceImpactWarning: Boolean(
+        priceImpactNumber &&
+          priceImpactNumber > warning &&
+          priceImpactNumber <= error,
+      ),
+      isPriceImpactError: Boolean(
+        priceImpactNumber && priceImpactNumber > error,
+      ),
     };
   },
 );
@@ -754,6 +796,9 @@ export const getWarningLabels = createSelector(
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientBalance,
+    isPriceImpactWarning,
+    isPriceImpactError,
+    isTxAlertPresent,
   }) => {
     const warnings: QuoteWarning[] = [];
     isEstimatedReturnLow && warnings.push('low_return');
@@ -762,6 +807,9 @@ export const getWarningLabels = createSelector(
     isInsufficientGasForQuote &&
       warnings.push('insufficient_gas_for_selected_quote');
     isInsufficientBalance && warnings.push('insufficient_balance');
+    isPriceImpactWarning && warnings.push('price_impact');
+    isPriceImpactError && warnings.push('price_impact');
+    isTxAlertPresent && warnings.push('tx_alert');
     return warnings;
   },
 );

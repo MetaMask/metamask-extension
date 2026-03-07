@@ -23,9 +23,6 @@
   "accountSelectionRequired": {
     "message": "Ou bezwen chwazi yon kont!"
   },
-  "activityLog": {
-    "message": "aktivite ki fèt"
-  },
   "addAcquiredTokens": {
     "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
   },
@@ -205,9 +202,6 @@
     "message": "Pòte",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Premye tranzaksyon ou konfime sou rezo a. Klike sou OK pou tounen."
-  },
   "insufficientFunds": {
     "message": "Lajan ensifizan."
   },
@@ -348,12 +342,6 @@
   "rejectAll": {
     "message": "Rejte Tout"
   },
-  "rejectTxsDescription": {
-    "message": "Ou se sou rejte $1 yon anpil nan tranzaksyon yo."
-  },
-  "rejectTxsN": {
-    "message": "Rejete $1 tranzaksyon"
-  },
   "rejected": {
     "message": "Rejete"
   },
@@ -463,23 +451,8 @@
   "transaction": {
     "message": "tranzaksyon yo"
   },
-  "transactionConfirmed": {
-    "message": "Tranzaksyon ou te konfime pou $2."
-  },
-  "transactionCreated": {
-    "message": "Tranzaksyon ou te kreye avèk on valè de $1 pou $2."
-  },
-  "transactionDropped": {
-    "message": "Tranzaksyon ou te tonbe a $2."
-  },
   "transactionError": {
     "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
-  },
-  "transactionSubmitted": {
-    "message": "Tranzaksyon ou te soumèt a $2."
-  },
-  "transactionUpdated": {
-    "message": "Tranzaksyon ou te aktyalize a $2."
   },
   "transfer": {
     "message": "Transfè"
@@ -516,8 +489,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Seed fraz prive ou a"
   }
 }
