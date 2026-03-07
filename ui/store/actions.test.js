@@ -783,6 +783,31 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getTrezorFeatures', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getTrezorFeatures in background', async () => {
+      const mockResponse = {
+        success: true,
+        payload: {
+          model: 'T',
+          unlocked: true,
+        },
+      };
+
+      background.getTrezorFeatures.resolves(mockResponse);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getTrezorFeatures();
+
+      expect(background.getTrezorFeatures.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
   describe('#forgetDevice', () => {
     afterEach(() => {
       sinon.restore();

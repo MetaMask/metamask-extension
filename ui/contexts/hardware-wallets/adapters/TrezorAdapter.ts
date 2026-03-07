@@ -1,9 +1,5 @@
-import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import {
-  getHdPathForHardwareKeyring,
-  getTrezorDeviceStatus,
-} from '../../../store/actions';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { getTrezorFeatures } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
@@ -19,7 +15,6 @@ import {
   subscribeToWebUsbEvents,
 } from '../webConnectionUtils';
 
-const LOG_TAG = '[TrezorAdapter]';
 const TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES = 1024;
 
 /**
@@ -32,7 +27,9 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
   private connected = false;
 
-  private pendingOperation = false;
+  private isConnecting = false;
+
+  private pendingConnection: Promise<void> | null = null;
 
   private unsubscribeUsbEvents: (() => void) | null = null;
 
@@ -70,15 +67,9 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   /**
    * Check if device is currently connected via WebUSB
    */
-  private async checkDeviceConnected(): Promise<boolean> {
+  private async checkDeviceConnected(): Promise<USBDevice | undefined> {
     const devices = await getConnectedTrezorDevices();
-    return devices.length > 0;
-  }
-
-  private async getHdPath(): Promise<string> {
-    const path = await getHdPathForHardwareKeyring(HardwareDeviceNames.trezor);
-    console.log(LOG_TAG, 'Hd path:', path);
-    return path;
+    return devices.length > 0 ? devices[0] : undefined;
   }
 
   /**
@@ -87,54 +78,72 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    *
    */
   async connect(): Promise<void> {
-    console.log(LOG_TAG, 'Connecting to device');
-
-    try {
-      // Step 1: Check WebUSB availability
-      if (!isWebUsbAvailable()) {
-        throw createHardwareWalletError(
-          ErrorCode.ConnectionTransportMissing,
-          HardwareWalletType.Trezor,
-          'WebUSB is not available',
-        );
-      }
-
-      // Step 2: Check if device is physically connected
-      const isDeviceConnected = await this.checkDeviceConnected();
-      if (!isDeviceConnected) {
-        throw createHardwareWalletError(
-          ErrorCode.DeviceDisconnected,
-          HardwareWalletType.Trezor,
-          'Trezor device not found. Please connect your Trezor device.',
-        );
-      }
-
-      // Mark as connected - device is present
-      this.connected = true;
-    } catch (error) {
-      console.error(LOG_TAG, 'Connection error:', error);
-
-      // Clean up on error
-      this.connected = false;
-
-      const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
-      const deviceEvent = getDeviceEventForError(hwError.code);
-
-      this.options.onDeviceEvent({
-        event: deviceEvent,
-        error: hwError,
-      });
-
-      throw hwError;
+    if (this.connected) {
+      return;
     }
+
+    if (this.isConnecting && this.pendingConnection) {
+      try {
+        await this.pendingConnection;
+      } catch {
+        // Ignore pending connection errors and continue with a fresh attempt.
+      }
+
+      if (this.connected) {
+        return;
+      }
+    }
+
+    this.isConnecting = true;
+    this.pendingConnection = (async () => {
+      try {
+        // Step 1: Check WebUSB availability
+        if (!isWebUsbAvailable()) {
+          throw createHardwareWalletError(
+            ErrorCode.ConnectionTransportMissing,
+            HardwareWalletType.Trezor,
+            'WebUSB is not available',
+          );
+        }
+
+        // Step 2: Check if device is physically connected
+        const connectedDevice = await this.checkDeviceConnected();
+        if (!connectedDevice) {
+          throw createHardwareWalletError(
+            ErrorCode.DeviceDisconnected,
+            HardwareWalletType.Trezor,
+            'Trezor device not found. Please connect your Trezor device.',
+          );
+        }
+
+        // Mark as connected - device is present
+        this.connected = true;
+      } catch (error) {
+        // Clean up on error
+        this.connected = false;
+
+        const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
+        const deviceEvent = getDeviceEventForError(hwError.code);
+
+        this.options.onDeviceEvent({
+          event: deviceEvent,
+          error: hwError,
+        });
+
+        throw hwError;
+      } finally {
+        this.isConnecting = false;
+        this.pendingConnection = null;
+      }
+    })();
+
+    return this.pendingConnection;
   }
 
   /**
    * Disconnect from Trezor device
    */
   async disconnect(): Promise<void> {
-    console.log(LOG_TAG, 'Disconnecting');
-
     try {
       this.connected = false;
 
@@ -142,7 +151,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
         event: DeviceEvent.Disconnected,
       });
     } catch (error) {
-      console.error(LOG_TAG, 'Disconnect error:', error);
       this.options.onDisconnect(error);
     }
   }
@@ -158,23 +166,13 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
-    console.log(LOG_TAG, 'Destroying adapter');
-
     // Unsubscribe from WebUSB events
     this.unsubscribeUsbEvents?.();
     this.unsubscribeUsbEvents = null;
 
     this.connected = false;
-    this.pendingOperation = false;
-  }
-
-  /**
-   * Set pending operation state
-   *
-   * @param pending - Whether an operation is pending
-   */
-  setPendingOperation(pending: boolean): void {
-    this.pendingOperation = pending;
+    this.isConnecting = false;
+    this.pendingConnection = null;
   }
 
   /**
@@ -187,33 +185,45 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    *
    * @returns true if device is ready
    */
-  async ensureDeviceReady(options?: EnsureDeviceReadyOptions): Promise<boolean> {
+  async ensureDeviceReady(
+    options?: EnsureDeviceReadyOptions,
+  ): Promise<boolean> {
+    debugger;
     if (!this.isConnected()) {
       await this.connect();
     }
 
     try {
-      console.log(LOG_TAG, 'Verifying device is ready');
+      const connectedDevice = await this.checkDeviceConnected();
+      if (!connectedDevice) {
+        throw createHardwareWalletError(
+          ErrorCode.DeviceDisconnected,
+          HardwareWalletType.Trezor,
+          'Trezor device disconnected. Please reconnect your device.',
+        );
+      }
 
-      // Check if the Trezor Connect session has been established.
-      // This doesn't open a popup - it just checks internal session state.
-      // The actual PIN/passphrase prompts happen during signing operations.
-      const deviceStatus = await getTrezorDeviceStatus();
-
-      console.log(LOG_TAG, 'Trezor device status:', deviceStatus);
-
-      // Check if session exists (indicates Trezor Connect is initialized)
-      if (!deviceStatus?._state?.sessionId) {
+      const featuresResponse = await getTrezorFeatures();
+      console.log('[hw debug] featuresResponse', featuresResponse);
+      if (!isTrezorFeaturesResponse(featuresResponse)) {
         throw createHardwareWalletError(
           ErrorCode.ConnectionClosed,
           HardwareWalletType.Trezor,
-          'Trezor session not established. Please reconnect your device.',
+          'Unable to read Trezor status. Please reconnect your device.',
+        );
+      }
+
+      if (featuresResponse.payload.unlocked === false) {
+        throw createHardwareWalletError(
+          ErrorCode.AuthenticationDeviceLocked,
+          HardwareWalletType.Trezor,
+          'Trezor device is locked. Please unlock your device.',
         );
       }
 
       if (
         options?.preflightMessageBytes &&
-        isTrezorModelOne(deviceStatus) &&
+        isTrezorModelOne(featuresResponse.payload.model, connectedDevice) &&
         options.preflightMessageBytes > TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES
       ) {
         throw createHardwareWalletError(
@@ -230,33 +240,7 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
       return true;
     } catch (error) {
-      console.error(LOG_TAG, 'Error verifying device ready:', error);
-
-      if (error instanceof HardwareWalletError && error.code !== undefined) {
-        // Emit appropriate device events with the properly reconstructed error
-        const deviceEvent = getDeviceEventForError(
-          error.code,
-          DeviceEvent.Disconnected,
-        );
-        this.options.onDeviceEvent({
-          event: deviceEvent,
-          error,
-        });
-
-        // Reset connection state for disconnection-related errors
-        const shouldResetConnection = [
-          ErrorCode.DeviceDisconnected,
-          ErrorCode.ConnectionClosed,
-        ].includes(error.code);
-
-        if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
-          this.connected = false;
-        }
-
-        throw error;
-      }
-
-      // Convert unknown errors to HardwareWalletError
+      debugger;
       const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
       const deviceEvent = getDeviceEventForError(
         hwError.code,
@@ -269,7 +253,11 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       });
 
       // Reset connection state for disconnection-related errors
-      if (deviceEvent === DeviceEvent.Disconnected) {
+      const shouldResetConnection = [
+        ErrorCode.DeviceDisconnected,
+        ErrorCode.ConnectionClosed,
+      ].includes(hwError.code);
+      if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
         this.connected = false;
       }
 
@@ -278,25 +266,51 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   }
 }
 
-function isTrezorModelOne(deviceStatus: unknown): boolean {
-  const status = deviceStatus as {
-    _state?: { features?: { model?: unknown } };
-    features?: { model?: unknown };
-    payload?: { features?: { model?: unknown } };
-  };
-  const model =
-    status?._state?.features?.model ??
-    status?.features?.model ??
-    status?.payload?.features?.model;
-
-  if (typeof model !== 'string') {
+function isTrezorFeaturesResponse(value: unknown): value is {
+  success: true;
+  payload: { unlocked?: boolean | null; model?: string };
+} {
+  if (!value || typeof value !== 'object') {
     return false;
   }
 
-  const normalizedModel = model.toLowerCase();
+  const result = value as {
+    success?: unknown;
+    payload?: { unlocked?: unknown; model?: unknown };
+  };
+
+  if (result.success !== true || !result.payload) {
+    return false;
+  }
+
+  const { unlocked, model } = result.payload;
+  const unlockedIsValid =
+    unlocked === undefined ||
+    unlocked === null ||
+    typeof unlocked === 'boolean';
+  const modelIsValid =
+    model === undefined || model === null || typeof model === 'string';
+
+  return unlockedIsValid && modelIsValid;
+}
+
+function isTrezorModelOne(model: unknown, connectedDevice: USBDevice): boolean {
+  const candidateModel =
+    typeof model === 'string' && model
+      ? model
+      : typeof connectedDevice.productName === 'string'
+        ? connectedDevice.productName
+        : '';
+
+  if (!candidateModel) {
+    return false;
+  }
+
+  const normalizedModel = candidateModel.toLowerCase();
   return (
     normalizedModel === '1' ||
     normalizedModel === 't1b1' ||
+    normalizedModel.includes('trezor one') ||
     normalizedModel.includes('model one')
   );
 }

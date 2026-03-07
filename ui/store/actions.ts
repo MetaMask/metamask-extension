@@ -6194,6 +6194,10 @@ export async function getLedgerPublicKey(
   return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
 }
 
+export async function getTrezorFeatures() {
+  return await submitRequestToBackground('getTrezorFeatures');
+}
+
 /**
  * This method deduplicates error reports to sentry by maintaining a state
  * object 'singleExceptions' in the app slice. The only place this state object
