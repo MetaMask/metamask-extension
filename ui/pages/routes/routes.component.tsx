@@ -233,7 +233,6 @@ const NonEvmBalanceCheck = mmLazy(
   () => import('../nonevm-balance-check/index.tsx'),
 );
 const ShieldPlan = mmLazy(() => import('../shield-plan/index.ts'));
-const PerpsHomePage = mmLazy(() => import('../perps/perps-home-page.tsx'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
 );
