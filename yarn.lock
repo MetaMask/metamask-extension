@@ -5363,7 +5363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^35.0.0, @metamask/accounts-controller@npm:^35.0.2":
+"@metamask/accounts-controller@npm:^35.0.2":
   version: 35.0.2
   resolution: "@metamask/accounts-controller@npm:35.0.2"
   dependencies:
