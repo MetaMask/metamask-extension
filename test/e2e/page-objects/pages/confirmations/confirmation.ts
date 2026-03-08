@@ -5,11 +5,18 @@ import { RawLocator } from '../../common';
 class Confirmation {
   protected driver: Driver;
 
-  private confirmationHeadingTitle: RawLocator;
+  private accountAddressDetails: RawLocator = {
+    tag: 'p',
+    text: 'Account address',
+  };
 
-  private footerCancelButton: RawLocator;
+  private confirmationHeadingTitle: RawLocator = {
+    text: 'Confirmation Dialog',
+  };
 
-  private footerConfirmButton: RawLocator;
+  private footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
+
+  private footerConfirmButton = '[data-testid="confirm-footer-button"]';
 
   private formComboFieldInputSelector = '.form-combo-field input';
 
@@ -21,40 +28,33 @@ class Confirmation {
 
   private formComboFieldSelector = '.form-combo-field';
 
-  private headerAccountDetailsButton: RawLocator;
+  private headerAccountDetailsButton =
+    '[data-testid="header-info__account-details-button"]';
 
   private inlineAlertButton = '[data-testid="inline-alert"]';
 
+  private addressDisplaySelector =
+    '[data-testid="recipient-address"] [data-testid="confirm-info-row-display-name"]';
+
   private nameSelector = '.name';
 
-  private navigationTitle: RawLocator;
+  private navigationTitle = '[data-testid="confirm-page-nav-position"]';
 
-  private nextPageButton: RawLocator;
+  private nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
 
-  private previousPageButton: RawLocator;
+  private previousPageButton =
+    '[data-testid="confirm-nav__previous-confirmation"]';
 
-  private rejectAllButton: RawLocator;
+  private rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
 
   private saveButtonSelector = { text: 'Save', tag: 'button' };
 
-  private scrollToBottomButton: RawLocator;
+  private scrollToBottomButton = '.confirm-scroll-to-bottom__button';
 
   private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-
-    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
-    this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
-    this.footerConfirmButton = '[data-testid="confirm-footer-button"]';
-    this.headerAccountDetailsButton =
-      '[data-testid="header-info__account-details-button"]';
-    this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
-    this.nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
-    this.previousPageButton =
-      '[data-testid="confirm-nav__previous-confirmation"]';
-    this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
-    this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -86,6 +86,7 @@ class Confirmation {
       this.headerAccountDetailsButton,
     );
     await accountDetailsButton.sendKeys(Key.RETURN);
+    await this.driver.waitForSelector(this.accountAddressDetails);
   }
 
   async clickFooterCancelButton() {
@@ -184,6 +185,13 @@ class Confirmation {
     });
   }
 
+  async checkAddressIsDisplayed(address: string): Promise<void> {
+    await this.driver.findElement({
+      css: '[data-testid="confirm-info-row-display-name"]',
+      text: address,
+    });
+  }
+
   async clickName(value: string): Promise<void> {
     console.log(`Clicking on name: ${value}`);
     await this.driver.clickElement({
@@ -197,16 +205,19 @@ class Confirmation {
     name,
     proposedName,
   }: {
-    value: string;
+    value?: string;
     name?: string;
     proposedName?: string;
   }): Promise<void> {
-    await this.clickName(value);
-    console.log(
-      `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
-    );
+    if (value) {
+      await this.driver.clickElement({
+        text: value,
+      });
+    } else {
+      await this.driver.clickElement(this.addressDisplaySelector);
+    }
+    console.log(`Saving name: ${name}, proposedName: ${proposedName}`);
     await this.driver.clickElement(this.formComboFieldSelector);
-
     if (proposedName) {
       await this.driver.clickElement({
         css: this.formComboFieldOptionPrimarySelector,

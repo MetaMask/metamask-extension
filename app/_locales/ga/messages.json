@@ -934,9 +934,6 @@
   "bridgePriceImpact": {
     "message": "Tionchar praghais"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Léiríonn tionchar praghais an chaoi a mbíonn tionchar ag do bhabhtáil ar phraghas an mhargaidh. Mura bhfuil go leor agat le haghaidh gáis, úsáidtear cuid de do chomharthaí chun táillí a chlúdach, rud a mhéadaíonn tionchar praghais. Ní shocraíonn ná ní rialaíonn MetaMask é seo."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tionchar Praghsanna"
   },
@@ -7021,9 +7018,6 @@
   },
   "viewDetails": {
     "message": "Féach sonraí"
-  },
-  "viewMore": {
-    "message": "Féach níos mó"
   },
   "viewOnBlockExplorer": {
     "message": "Féach ar an iniúchóir bloc"

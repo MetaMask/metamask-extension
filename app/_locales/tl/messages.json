@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Epekto ng presyo"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Sinasalamin ng epekto ng presyo kung paanong naapektuhan ng iyong swap ang presyong merkado. Kung wala kang sapat para sa gas, gagamitin ang ilan sa iyong token para sa pagbabayad, na magpapataas ng price impact. Hindi ang MetaMask ang nagtatakda kumokontrol nito."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Epekto ng presyo"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Tuklasin ang crypto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Tuklasin ang mga stock at commodity"
-  },
   "perpsFees": {
     "message": "Mga Bayarin"
   },
@@ -5396,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
-  },
-  "perpsOrderAmount": {
-    "message": "Halaga ng Order"
   },
   "perpsOrders": {
     "message": "Mga Order"
@@ -5546,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
-  },
-  "perpsYourOrders": {
-    "message": "Ang mga order mo"
-  },
-  "perpsYourPositions": {
-    "message": "Mga position mo"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -8809,9 +8791,6 @@
   },
   "viewDetails": {
     "message": "Tingnan ang mga detalye"
-  },
-  "viewMore": {
-    "message": "Tingnan Pa"
   },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"
