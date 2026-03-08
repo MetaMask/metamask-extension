@@ -356,6 +356,55 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
 </div>
 `;
 
+exports[`BridgeInputGroup should render popular tokens 2`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+  },
+]
+`;
+
 exports[`BridgeInputGroup should render source networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
@@ -884,7 +933,57 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should search for tokens 6`] = `
+exports[`BridgeInputGroup should search for tokens 4`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
+`;
+
+exports[`BridgeInputGroup should search for tokens 5`] = `
 <div
   class="mm-modal"
   data-testid="bridge-asset-picker-modal"
@@ -1231,4 +1330,54 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
     tabindex="0"
   />
 </div>
+`;
+
+exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
 `;

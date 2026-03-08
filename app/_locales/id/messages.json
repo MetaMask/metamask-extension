@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Dampak harga"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Dampak harga mencerminkan swap Anda memengaruhi harga pasar. Jika kekurangan gas, sebagian token Anda akan digunakan untuk membayar biaya, yang meningkatkan dampak harga. MetaMask tidak mengatur atau mengontrol hal ini."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Dampak harga"
   },

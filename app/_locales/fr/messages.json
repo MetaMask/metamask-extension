@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impact sur les prix"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "L’impact sur le prix reflète la manière dont votre swap affecte le prix du marché. Si vous n’avez pas assez de gaz, certains de vos jetons sont utilisés pour couvrir les frais, ce qui augmente l’impact sur le prix. MetaMask ne définit ni ne contrôle cet impact."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impact sur les prix"
   },

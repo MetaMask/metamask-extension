@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Fiyat etkisi"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Fiyat etkisi, takas işleminizin piyasa fiyatını nasıl etkilediğini yansıtır. Gaz için yeterli token'iniz yoksa ücretleri karşılamak için token'lerinizden bazıları kullanılır ve bu da fiyat etkisini artırır. MetaMask'in bunun üzerinde ayarlama veya kontrol yetkisi yoktur."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Fiyat etkisi"
   },
