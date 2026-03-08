@@ -1618,7 +1618,7 @@ Performance Checks (React Components):
 - **General Coding:** [.cursor/rules/coding-guidelines/RULE.md](./.cursor/rules/coding-guidelines/RULE.md)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
 
-### Agent Standards
+### Non-EVM Swaps/Bridge Agent Entrypoints
 
 - **Non-EVM Swaps/Bridge Standard:** [`docs/add-non-evm-swaps-bridge-network.md`](./docs/add-non-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding non-EVM bridge or swaps support with code-gate and LaunchDarkly rollout requirements.
 - **OpenAI/Codex Skill:** [`.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
