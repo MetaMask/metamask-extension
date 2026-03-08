@@ -663,6 +663,35 @@ module.exports = {
       },
     },
     /**
+     * Type-level spec files (compile-time assertions, no runtime code)
+     * Excludes e2e test files.
+     */
+    {
+      files: ['**/*.spec.ts'],
+      excludedFiles: ['test/e2e/**'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            selector: 'typeLike',
+            format: ['PascalCase'],
+            leadingUnderscore: 'allow',
+            filter: { regex: '^Describe_', match: false },
+          },
+          {
+            selector: 'typeLike',
+            format: null,
+            filter: { regex: '^Describe_', match: true },
+          },
+          {
+            selector: 'typeProperty',
+            format: ['camelCase', 'PascalCase'],
+          },
+        ],
+      },
+    },
+    /**
      * TypeScript declaration files.
      *
      * TODO: Move this to `@metamask/eslint-config-typescript`
