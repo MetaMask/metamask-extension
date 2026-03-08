@@ -21,7 +21,7 @@ type ModuleWithDefaultExport<Component extends AnyComponent = AnyComponent> = {
  * Structural type for extracting a component's display name,
  * including through HOC `.WrappedComponent` chains.
  */
-type ComponentLike = {
+type WrappableComponent = {
   name?: string;
   displayName?: string;
   /**
@@ -29,7 +29,7 @@ type ComponentLike = {
    * Recursive but safe as only one level is ever accessed.
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  WrappedComponent?: ComponentLike;
+  WrappedComponent?: WrappableComponent;
 };
 
 /**
@@ -206,7 +206,7 @@ function convertToDefaultExportModule<
   }
 
   // If there's a wrapped component, we don't want to see the name reported as `withRouter(Connect(AAA))` we want just `AAA`
-  const defaultExport = importedModule.default as ComponentLike;
+  const defaultExport = importedModule.default as WrappableComponent;
   const componentName =
     defaultExport.WrappedComponent?.name ||
     defaultExport.name ||
