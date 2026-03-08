@@ -763,6 +763,11 @@ export const routeConfig = [
     authenticated: true,
     basicFunctionalityRequired: false,
   }),
+  // Catch-all so the data router never throws a 404 error boundary.
+  // With useRoutes(), no match returned null and the shell kept rendering.
+  // This preserves that: the Routes shell renders with empty content,
+  // giving ConfirmationHandler a chance to navigate to the right route.
+  { path: '*', element: null },
 ];
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
