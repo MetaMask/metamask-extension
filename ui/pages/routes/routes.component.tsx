@@ -763,13 +763,6 @@ export const routeConfig = [
     authenticated: true,
     basicFunctionalityRequired: false,
   }),
-  // Catch-all: redirect unmatched URLs to home. With the data router,
-  // unmatched paths trigger a 404 error boundary instead of rendering
-  // null like useRoutes() did. This preserves the old graceful behavior.
-  {
-    path: '*',
-    element: <Navigate to={DEFAULT_ROUTE} replace />,
-  },
 ];
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

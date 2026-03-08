@@ -63,6 +63,12 @@ const router = createHashRouter([
     children: [
       {
         element: <Routes />,
+        // When no child route matches, the data router triggers a 404 error
+        // boundary. Render the same Routes shell so the app chrome stays
+        // visible and ConfirmationHandler can navigate to the correct route
+        // (mirrors the old useRoutes() behavior which returned null on
+        // no match instead of throwing).
+        errorElement: <Routes />,
         children: routeConfig,
       },
     ],
