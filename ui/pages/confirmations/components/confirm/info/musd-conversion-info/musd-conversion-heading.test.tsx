@@ -6,15 +6,16 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import { MusdConversionHeading } from './musd-conversion-heading';
 
 jest.mock('../../../../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, values?: (string | React.ReactNode)[]) => {
-    const translations: Record<string, string> = {
-      musdConvertAndGetBonus: 'Convert and get 3%',
-      musdBonusExplanation: `You will receive a ${values?.[0] ?? ''}% bonus. ${typeof values?.[1] === 'string' ? values[1] : 'Terms apply.'}`,
-      musdTermsApply: 'Terms apply.',
-      info: 'Info',
-    };
-    return translations[key] ?? key;
-  },
+  useI18nContext:
+    () => (key: string, values?: (string | React.ReactNode)[]) => {
+      const translations: Record<string, string> = {
+        musdConvertAndGetBonus: 'Convert and get 3%',
+        musdBonusExplanation: `You will receive a ${String(values?.[0] ?? '')}% bonus. ${typeof values?.[1] === 'string' ? values[1] : 'Terms apply.'}`,
+        musdTermsApply: 'Terms apply.',
+        info: 'Info',
+      };
+      return translations[key] ?? key;
+    },
 }));
 
 jest.mock('../../../../../../components/app/musd/constants', () => ({
