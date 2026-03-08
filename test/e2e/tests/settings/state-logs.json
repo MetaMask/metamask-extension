@@ -903,7 +903,6 @@
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
     "rewardsSubscriptions": {},
-    "rewardsSubscriptionTokens": {},
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "boolean",
     "segmentApiCalls": {},

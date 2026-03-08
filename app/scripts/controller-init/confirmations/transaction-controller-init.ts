@@ -17,8 +17,6 @@ import {
   TransactionPayPublishHook,
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
-import { NetworkClientId } from '@metamask/network-controller';
-import { toHex } from '@metamask/controller-utils';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
@@ -346,19 +344,6 @@ function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
 }
 
-async function getNextNonce(
-  transactionController: TransactionController,
-  address: string,
-  networkClientId: NetworkClientId,
-): Promise<Hex> {
-  const nonceLock = await transactionController.getNonceLock(
-    address,
-    networkClientId,
-  );
-  nonceLock.releaseLock();
-  return toHex(nonceLock.nextNonce);
-}
-
 export async function publishHook({
   flatState,
   initMessenger,
@@ -399,8 +384,6 @@ export async function publishHook({
         transactionController,
       ),
       messenger: initMessenger,
-      getNextNonce: (address, networkClientId) =>
-        getNextNonce(transactionController, address, networkClientId),
     }).getHook();
 
     const result = await hook(transactionMeta, signedTx);

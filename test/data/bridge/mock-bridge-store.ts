@@ -713,6 +713,12 @@ export const createBridgeMockStore = ({
               name: 'Ethereum',
             },
           ],
+          priceImpactThreshold: {
+            gasless: 0.055,
+            normal: 0.055,
+            warning: 0.055,
+            error: 0.251,
+          },
         },
       },
       ...bridgeStateOverrides,
