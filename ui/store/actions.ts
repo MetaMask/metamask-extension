@@ -1485,7 +1485,7 @@ export function connectHardware(
 }
 
 export function unlockHardwareWalletAccounts(
-  indexes: string[],
+  indexes: number[],
   deviceName: HardwareDeviceNames,
   hdPath: string,
   hdPathDescription: string,

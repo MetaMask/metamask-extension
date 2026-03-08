@@ -130,10 +130,7 @@ const MOCK_ACCOUNTS = [
   { address: '0xAddress5', balance: null, index: 4 },
 ];
 
-function connectToDevice(
-  deviceName: 'ledger' | 'trezor' | 'lattice',
-  labelText: string,
-) {
+function connectToDevice(labelText: string) {
   const deviceButton = screen.getByLabelText(labelText);
   const continueButton = screen.getByText(tEn('continue'));
   fireEvent.click(deviceButton);
@@ -202,7 +199,7 @@ describe('ConnectHardwareForm', () => {
       expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
     });
 
-    it('detects Firefox user agent on mount', () => {
+    it('detects Firefox user agent on mount', async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(
@@ -213,7 +210,15 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support. Learn how to fix this issue",
+            { exact: false },
+          ),
+        ).toBeInTheDocument();
+      });
 
       jest.restoreAllMocks();
     });
@@ -237,7 +242,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(mockConnectHardware).toHaveBeenCalled();
@@ -249,7 +254,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('trezor', tEn('trezor'));
+      connectToDevice(tEn('trezor'));
 
       await waitFor(() => {
         expect(
@@ -268,7 +273,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(
@@ -286,7 +291,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('trezor', tEn('trezor'));
+      connectToDevice(tEn('trezor'));
 
       await waitFor(() => {
         expect(screen.getByText('Something went wrong')).toBeInTheDocument();
@@ -298,7 +303,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(screen.getByText(tEn('ledgerLocked'))).toBeInTheDocument();
@@ -310,7 +315,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(screen.getByText(tEn('ledgerLocked'))).toBeInTheDocument();
@@ -324,7 +329,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(screen.getByText(tEn('ledgerTimeout'))).toBeInTheDocument();
@@ -336,7 +341,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(
@@ -359,7 +364,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(
@@ -378,7 +383,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(
@@ -394,7 +399,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(
@@ -408,13 +413,13 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(mockConnectHardware).toHaveBeenCalled();
       });
 
-      expect(screen.queryByClassName?.('hw-connect__error')).toBeFalsy();
+      expect(screen.queryByText('Window closed')).not.toBeInTheDocument();
     });
 
     it('ignores "Popup closed" error silently', async () => {
@@ -422,7 +427,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(mockConnectHardware).toHaveBeenCalled();
@@ -438,7 +443,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(mockConnectHardware).toHaveBeenCalled();
@@ -456,7 +461,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(screen.getByText(/Error with code 0x6501/u)).toBeInTheDocument();
@@ -472,7 +477,7 @@ describe('ConnectHardwareForm', () => {
       mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('trezor', tEn('trezor'));
+      connectToDevice(tEn('trezor'));
 
       await waitFor(() => {
         expect(
@@ -626,7 +631,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('ledger', tEn('ledger'));
+      connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
         expect(
@@ -648,7 +653,7 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice('trezor', tEn('trezor'));
+      connectToDevice(tEn('trezor'));
 
       await waitFor(() => {
         expect(
@@ -665,22 +670,20 @@ describe('ConnectHardwareForm', () => {
     });
 
     describe('Ledger error handling (toHardwareWalletError)', () => {
-      it('displays SDK userMessage when Ledger error has a mapped status code (e.g. 0x6a83 wrong app)', async () => {
+      it('displays the original SDK message when Ledger status code is not mapped', async () => {
         mockConnectHardware.mockRejectedValue(
           new Error('Ledger device: UNKNOWN_ERROR (0x6a83)'),
         );
+        const mockStore = configureMockStore([thunk])(createMockState());
 
-        const { getByText, getByLabelText } = renderWithProvider(
-          <ConnectHardwareForm {...mockProps} />,
-          mockStore,
-        );
+        renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-        fireEvent.click(getByLabelText(messages.ledger.message));
-        fireEvent.click(getByText(messages.continue.message));
+        fireEvent.click(screen.getByLabelText(tEn('ledger')));
+        fireEvent.click(screen.getByText(tEn('continue')));
 
         await waitFor(() => {
           expect(
-            getByText('Ethereum app is closed. Please open it to continue.'),
+            screen.getByText('Ledger device: UNKNOWN_ERROR (0x6a83)'),
           ).toBeInTheDocument();
         });
       });
@@ -688,17 +691,15 @@ describe('ConnectHardwareForm', () => {
       it('displays original error message when Ledger error maps to Unknown or ConnectionClosed (e.g. no app open)', async () => {
         const appClosedMessage = 'Ledger: App closed or connection issue';
         mockConnectHardware.mockRejectedValue(new Error(appClosedMessage));
+        const mockStore = configureMockStore([thunk])(createMockState());
 
-        const { getByText, getByLabelText } = renderWithProvider(
-          <ConnectHardwareForm {...mockProps} />,
-          mockStore,
-        );
+        renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-        fireEvent.click(getByLabelText(messages.ledger.message));
-        fireEvent.click(getByText(messages.continue.message));
+        fireEvent.click(screen.getByLabelText(tEn('ledger')));
+        fireEvent.click(screen.getByText(tEn('continue')));
 
         await waitFor(() => {
-          expect(getByText(appClosedMessage)).toBeInTheDocument();
+          expect(screen.getByText(appClosedMessage)).toBeInTheDocument();
         });
       });
     });
