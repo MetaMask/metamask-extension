@@ -89,7 +89,7 @@
     "lint:changelog": "auto-changelog validate --prettier",
     "lint:changelog:rc": "auto-changelog validate --prettier --rc",
     "lint:debug": "DEBUG=eslint:cli-engine yarn lint",
-    "lint:eslint": "eslint . --ext js,ts,tsx,snap --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
+    "lint:eslint": "ESLINT_USE_FLAT_CONFIG=true eslint . --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:eslint:fix": "yarn lint:eslint --fix --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:lockfile:dedupe": "yarn dedupe --check",
     "lint:lockfile:dedupe:fix": "yarn dedupe",

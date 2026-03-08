@@ -156,6 +156,7 @@ function main(): void {
       [eslintBin, ...eslintArgsWithDelimiter, ...fileChunk],
       {
         stdio: 'inherit',
+        env: { ...process.env, ESLINT_USE_FLAT_CONFIG: 'true' },
       },
     );
 
