@@ -1,4 +1,5 @@
 import type React from 'react';
+import type { IsEquivalent } from '../../../shared/types/type-level-utils';
 import type { Expect } from '../../../shared/types/type-test-utils';
 import type { AnyComponent, InferComponent } from './mm-lazy';
 
@@ -52,7 +53,7 @@ type Describe_ConcreteTypeArguments = [
    * Default takes precedence over named
    */
   Expect<
-    InferComponent<{ default: ButtonComponent; Other: ModalComponent }>,
+    InferComponent<{ default: ButtonComponent; Named: ModalComponent }>,
     ButtonComponent
   >,
 
@@ -126,25 +127,6 @@ type Describe_NonComponentFunctionExports = [
  * Resolves to `never` when `convertToDefaultExportModule` would throw at
  * runtime — no default export and not exactly one named export.
  */
-
-/**
- * Pre-resolve to avoid "excessively deep" in `Expect`'s constraint checker.
- * Inlining `InferComponent<..., true>` directly into `Expect` causes the
- * full `IsUnion → IsSingleNamedExport` expansion inside the mutual-extends
- * bound, exceeding TypeScript's depth limit.
- */
-type StrictDefaultPrecedence = InferComponent<
-  { default: ButtonComponent; Other: ModalComponent },
-  true
->;
-type StrictDefaultPrecedenceCheck = [StrictDefaultPrecedence] extends [
-  ButtonComponent,
-]
-  ? [ButtonComponent] extends [StrictDefaultPrecedence]
-    ? true
-    : false
-  : false;
-
 type Describe_StrictMode = [
   /**
    * Default export passes through unchanged
@@ -157,9 +139,21 @@ type Describe_StrictMode = [
   Expect<InferComponent<{ MyModal: ModalComponent }, true>, ModalComponent>,
 
   /**
-   * Default takes precedence even with multiple named exports
+   * Default takes precedence even with multiple named exports.
    */
-  Expect<StrictDefaultPrecedenceCheck>,
+  Expect<
+    IsEquivalent<
+      InferComponent<
+        {
+          default: ButtonComponent;
+          NamedA: ModalComponent;
+          NamedB: ModalComponent;
+        },
+        true
+      >,
+      ButtonComponent
+    >
+  >,
 
   /**
    * Single non-component named export falls back to `AnyComponent`
