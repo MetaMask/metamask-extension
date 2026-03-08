@@ -42,7 +42,8 @@ export function mmLazy<ImportFn extends DynamicImportType>(
     const startTime = Date.now();
 
     const importedModule = await fn();
-    const { componentName, component } = parseImportedComponent(importedModule);
+    const { componentName, component } =
+      convertToDefaultExportModule(importedModule);
 
     // Only trace load time of lazy-loaded components if the manifestFlag is set, and then do it by Math.random probability
     if (lazyLoadSubSampleRate && Math.random() < lazyLoadSubSampleRate) {
@@ -59,12 +60,16 @@ export function mmLazy<ImportFn extends DynamicImportType>(
   });
 }
 
-// There can be a lot of different types here, and we're basically doing type-checking in the code,
-// so I don't think TypeScript safety on `importedModule` is worth it in this function
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+/**
+ * Coerces input modules into a default export module with a single named export keyed by component name.
+ * This enables the output to be used with React.lazy which requires a default export.
+ *
+ * @param importedModule - The imported module to coerce.
+ * @returns The component name and component.
+ * @throws An error if the module has multiple named exports.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parseImportedComponent(importedModule: any): {
+function convertToDefaultExportModule(importedModule: any): {
   componentName: string; // TODO: in many circumstances, the componentName gets minified
   component: ModuleWithDefaultExport;
 } {
