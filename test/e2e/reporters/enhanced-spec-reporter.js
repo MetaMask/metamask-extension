@@ -1,5 +1,4 @@
 // test/e2e/reporters/enhanced-spec-reporter.js
-require('ts-node').register({ transpileOnly: true });
 const { inherits } = require('util');
 const Spec = require('mocha/lib/reporters/spec');
 const { getBooleanFlag } = require('../../../shared/lib/common-utils');
