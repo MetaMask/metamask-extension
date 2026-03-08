@@ -36,7 +36,7 @@ type WrappableComponent = {
  * Resolves to `Value` only if it extends `AnyComponent` and is not `never`,
  * otherwise falls back to `AnyComponent`.
  */
-type AssertComponent<Value> = [Value] extends [never]
+export type AssertComponent<Value> = [Value] extends [never]
   ? AnyComponent
   : Value extends AnyComponent
     ? Value

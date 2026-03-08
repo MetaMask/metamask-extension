@@ -1,7 +1,8 @@
 import type React from 'react';
 import type { IsEquivalent } from '../../../shared/types/type-level-utils';
 import type { Expect } from '../../../shared/types/type-test-utils';
-import type { AnyComponent, InferComponent } from './mm-lazy';
+import type { AnyComponent, AssertComponent, InferComponent } from './mm-lazy';
+import { mmLazy } from './mm-lazy';
 
 /**
  * Fixtures
@@ -13,7 +14,7 @@ type ModalProps = { isOpen: boolean };
 type ModalComponent = React.FC<ModalProps>;
 
 /**
- * Type-level tests for InferComponent.
+ * Type-level tests for `InferComponent`.
  *
  * Each tuple element is a compile-time assertion via `Expect`.
  * A type error here means `InferComponent` resolved incorrectly.
@@ -178,4 +179,41 @@ type Describe_StrictMode = [
    * Empty module → never (runtime throws)
    */
   Expect<InferComponent<Record<never, never>, true>, never>,
+];
+
+/**
+ * `AssertComponent` helper
+ *
+ * Verifies the guard type in isolation: preserves specificity for
+ * valid components, returns `AnyComponent` for non-components and never.
+ */
+type Describe_AssertComponent = [
+  Expect<AssertComponent<ButtonComponent>, ButtonComponent>,
+  Expect<AssertComponent<never>, AnyComponent>,
+  Expect<AssertComponent<string>, AnyComponent>,
+  Expect<AssertComponent<AnyComponent>, AnyComponent>,
+];
+
+/**
+ * Generic (uninstantiated) type parameter
+ *
+ * `mmLazy` with an explicit type argument preserves the component type.
+ * Without one (uninstantiated generic), `InferComponent` cannot resolve
+ * to a specific component — it must remain valid for all `Module`
+ * satisfying `Record<PropertyKey, unknown>`, so it degrades to
+ * `AnyComponent`. This is a consequence of parametric polymorphism.
+ */
+type Describe_GenericTypeParameter = [
+  /**
+   * Explicit type arg preserves component through `LazyExoticComponent`
+   */
+  Expect<
+    ReturnType<typeof mmLazy<{ default: ButtonComponent }>>,
+    React.LazyExoticComponent<ButtonComponent>
+  >,
+
+  /**
+   * Uninstantiated generic degrades to `AnyComponent`
+   */
+  Expect<ReturnType<typeof mmLazy>, React.LazyExoticComponent<AnyComponent>>,
 ];
