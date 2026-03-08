@@ -182,39 +182,42 @@ function convertToDefaultExportModule<
   componentName: string; // TODO: in many circumstances, the componentName gets minified
   component: ModuleWithDefaultExport<Component>;
 } {
-  // If there's no default export
-  if (!importedModule.default) {
-    const keys = Object.keys(importedModule);
+  // If there's a default export
+  if ('default' in importedModule && importedModule.default) {
+    // If there's a wrapped component, we don't want to see the name reported as `withRouter(Connect(AAA))` we want just `AAA`
+    const defaultExport = importedModule.default as WrappableComponent;
+    const componentName =
+      defaultExport.WrappedComponent?.name ||
+      defaultExport.name ||
+      defaultExport.displayName ||
+      'Unknown';
 
-    // If there's only one named export
-    if (keys.length === 1) {
-      const componentName = keys[0];
-
-      return {
-        componentName,
-        // Force the component to be the default export
-        component: {
-          default: importedModule[componentName] as Component,
-        },
-      };
-    }
-
-    // If there are multiple named exports, this isn't good for tree-shaking, so throw an error
-    throw new Error(
-      'mmLazy: You cannot lazy-load a component when there are multiple exported components in one file',
-    );
+    return {
+      componentName,
+      component: {
+        ...importedModule,
+        default: importedModule.default as Component,
+      },
+    };
   }
 
-  // If there's a wrapped component, we don't want to see the name reported as `withRouter(Connect(AAA))` we want just `AAA`
-  const defaultExport = importedModule.default as WrappableComponent;
-  const componentName =
-    defaultExport.WrappedComponent?.name ||
-    defaultExport.name ||
-    defaultExport.displayName ||
-    'Unknown';
+  const keys = Object.keys(importedModule);
 
-  return {
-    componentName,
-    component: importedModule as ModuleWithDefaultExport<Component>,
-  };
+  // If there's only one named export
+  if (keys.length === 1) {
+    const componentName = keys[0];
+
+    return {
+      componentName,
+      // Force the component to be the default export
+      component: {
+        default: importedModule[componentName] as Component,
+      },
+    };
+  }
+
+  // If there are multiple named exports, this isn't good for tree-shaking, so throw an error
+  throw new Error(
+    'mmLazy: You cannot lazy-load a component when there are multiple exported components in one file',
+  );
 }
