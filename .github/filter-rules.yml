@@ -29,7 +29,7 @@ test_files: &test_files
 config_files: &config_files
   - '.eslint*'
   - 'eslint.config.js'
-  - 'prettier.config.js'
+  - '.oxfmtrc.json'
   - 'stylelint.config.js'
   - 'tailwind.config.js'
   - 'sonar-project.properties'
