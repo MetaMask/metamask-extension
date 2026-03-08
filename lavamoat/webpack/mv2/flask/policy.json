@@ -4340,6 +4340,45 @@
         "string.prototype.matchall>es-abstract>is-callable": true
       }
     },
+    "framer-motion": {
+      "globals": {
+        "Element": true,
+        "IntersectionObserver": true,
+        "MouseEvent": true,
+        "PointerEvent": true,
+        "SVGElement": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "document": true,
+        "getComputedStyle": true,
+        "matchMedia": true,
+        "onmousedown": true,
+        "onpointerdown": true,
+        "ontouchstart": true,
+        "pageYOffset": true,
+        "process": true,
+        "requestAnimationFrame": true,
+        "require": true,
+        "scrollTo": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "framer-motion>framesync": true,
+        "framer-motion>hey-listen": true,
+        "framer-motion>popmotion": true,
+        "process": true,
+        "react": true,
+        "framer-motion>style-value-types": true,
+        "tslib": true
+      }
+    },
+    "framer-motion>framesync": {
+      "globals": {
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      }
+    },
     "fuse.js": {
       "globals": {
         "console": true,
@@ -4486,6 +4525,11 @@
     "he": {
       "globals": {
         "define": true
+      }
+    },
+    "framer-motion>hey-listen": {
+      "globals": {
+        "console": true
       }
     },
     "@toruslabs/eccrypto>elliptic>hmac-drbg": {
@@ -5074,6 +5118,14 @@
         "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
+      }
+    },
+    "framer-motion>popmotion": {
+      "packages": {
+        "framer-motion>framesync": true,
+        "framer-motion>hey-listen": true,
+        "framer-motion>style-value-types": true,
+        "tslib": true
       }
     },
     "@material-ui/core>popper.js": {
