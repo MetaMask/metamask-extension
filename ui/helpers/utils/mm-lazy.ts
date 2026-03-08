@@ -145,7 +145,7 @@ export function mmLazy<
 >(fn: () => Promise<Module>): React.LazyExoticComponent<Component> {
   return React.lazy(async () => {
     // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
-    const startTime = Date.now();
+    const startTime = performance.now();
 
     const importedModule = await fn();
     const { componentName, component } =
