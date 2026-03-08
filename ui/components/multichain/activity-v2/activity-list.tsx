@@ -2,7 +2,10 @@ import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
-import type { Transaction } from '@metamask/keyring-api';
+import {
+  type Transaction,
+  TransactionType as KeyringTransactionType,
+} from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
@@ -12,6 +15,7 @@ import { selectLocalTransactions } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import { selectSwapReceiveTxHashes } from '../../../ducks/bridge-status/selectors';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
@@ -76,6 +80,7 @@ export const ActivityList = ({ filter }: Props) => {
   const nonEvmTransactions = useSelector(
     selectCurrentAccountNonEvmTransactions,
   );
+  const swapReceiveTxHashes = useSelector(selectSwapReceiveTxHashes);
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
@@ -116,6 +121,17 @@ export const ActivityList = ({ filter }: Props) => {
       );
     }
 
+    if (swapReceiveTxHashes.size > 0) {
+      filteredNonEvmTransactions = filteredNonEvmTransactions.filter((tx) => {
+        if (tx.type !== KeyringTransactionType.Receive) {
+          return true;
+        }
+
+        const normalizedTxId = tx.id?.toLowerCase();
+        return !(normalizedTxId && swapReceiveTxHashes.has(normalizedTxId));
+      });
+    }
+
     // Merge all three types by time
     const mergedByTime = mergeAllTransactionsByTime(
       filteredLocalTransactions,
@@ -124,7 +140,14 @@ export const ActivityList = ({ filter }: Props) => {
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
+  }, [
+    data,
+    nonEvmTransactions,
+    localTransactions,
+    enabledNetworks,
+    filter,
+    swapReceiveTxHashes,
+  ]);
 
   const [scrollMargin, setScrollMargin] = useState(0);
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
-import { isCrossChain } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 import { Text } from '@metamask/design-system-react';
+import { isAsyncSwap } from '../../../../shared/lib/bridge-status/utils';
 import {
   useMultichainTransactionDisplay,
   KEYRING_TRANSACTION_STATUS_KEY,
@@ -31,13 +31,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
     useMultichainTransactionDisplay(transaction);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
-  if (
-    matchedBridgeHistoryItem &&
-    isCrossChain(
-      matchedBridgeHistoryItem.quote?.srcChainId,
-      matchedBridgeHistoryItem.quote?.destChainId,
-    )
-  ) {
+  if (matchedBridgeHistoryItem && isAsyncSwap(matchedBridgeHistoryItem)) {
     return (
       <LegacyMultichainBridgeListItem
         transaction={transaction}

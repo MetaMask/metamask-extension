@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { render, screen } from '@testing-library/react';
+import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 import { ActivityList } from './activity-list';
 
 const mockUseVirtualizer = jest.fn();
@@ -69,11 +70,13 @@ mockUseVirtualizer.mockReturnValue(defaultVirtualizer);
 
 function createStore({
   nonEvmTransactions = {},
+  txHistory = {},
 }: {
   nonEvmTransactions?: Record<
     string,
     Record<string, { transactions: unknown[] }>
   >;
+  txHistory?: Record<string, unknown>;
 } = {}) {
   return configureMockStore()({
     metamask: {
@@ -97,6 +100,7 @@ function createStore({
       enabledNetworkMap: {
         eip155: { '0x1': true },
         solana: { 'solana:mainnet': true },
+        tron: { 'tron:728126428': true },
       },
       internalAccounts: {
         selectedAccount: '1',
@@ -104,7 +108,7 @@ function createStore({
           '1': {
             address: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
             id: '1',
-            scopes: ['eip155:1', 'solana:mainnet'],
+            scopes: ['eip155:1', 'solana:mainnet', 'tron:728126428'],
             type: 'eip155:eoa',
           },
         },
@@ -116,6 +120,17 @@ function createStore({
       nonEvmTransactions,
       smartTransactionsState: { smartTransactions: {} },
       transactions: [],
+      txHistory,
+      remoteFeatureFlags: {
+        solanaAccounts: {
+          enabled: true,
+          minimumVersion: '0.0.0',
+        },
+        tronAccounts: {
+          enabled: true,
+          minimumVersion: '0.0.0',
+        },
+      },
     },
   });
 }
@@ -602,5 +617,61 @@ describe('ActivityList', () => {
     );
 
     expect(screen.getByTestId('local-item')).toBeInTheDocument();
+  });
+
+  it('filters duplicate receive rows for async non-evm swaps', () => {
+    const tronSwapTx = {
+      chain: 'tron:728126428',
+      id: 'tron-swap-source',
+      timestamp: 1735689601,
+      type: KeyringTransactionType.Swap,
+    };
+    const tronReceiveTx = {
+      chain: 'tron:728126428',
+      id: 'ABC123',
+      timestamp: 1735689602,
+      type: KeyringTransactionType.Receive,
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [] },
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    enableVisibleVirtualItems();
+
+    const store = createStore({
+      nonEvmTransactions: {
+        '1': {
+          'tron:728126428': {
+            transactions: [tronSwapTx, tronReceiveTx],
+          },
+        },
+      },
+      txHistory: {
+        'tron-swap-source': {
+          account: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          quote: {
+            srcChainId: 'tron:728126428',
+            destChainId: 'tron:728126428',
+          },
+          status: {
+            destChain: {
+              txHash: '0xabc123',
+            },
+          },
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+
+    expect(screen.getAllByTestId('non-evm-item')).toHaveLength(1);
   });
 });

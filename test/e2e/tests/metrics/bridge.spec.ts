@@ -24,6 +24,60 @@ const quote = {
   toChain: 'Linea',
 };
 
+type AccountHardwareType = 'Ledger' | 'Trezor' | 'QR Hardware' | 'GridPlus';
+
+type BridgeMetricsEvent = {
+  event?: string;
+  properties: {
+    is_hardware_wallet?: boolean | null;
+    account_hardware_type?: AccountHardwareType | null;
+    [key: string]: unknown;
+  };
+};
+
+const ACCOUNT_HARDWARE_TYPES = new Set<AccountHardwareType>([
+  'Ledger',
+  'Trezor',
+  'QR Hardware',
+  'GridPlus',
+]);
+
+const assertHardwareWalletSync = (event: BridgeMetricsEvent) => {
+  // The extension branch is intentionally staying on the released core package
+  // for now. Once the bridge-controller bump lands, this helper will validate
+  // the new property wherever it is emitted.
+  if (
+    !Object.prototype.hasOwnProperty.call(
+      event.properties,
+      'account_hardware_type',
+    )
+  ) {
+    return;
+  }
+
+  const { is_hardware_wallet: isHardwareWallet, account_hardware_type } =
+    event.properties;
+
+  if (isHardwareWallet === true) {
+    assert.ok(
+      Boolean(
+        account_hardware_type &&
+          ACCOUNT_HARDWARE_TYPES.has(account_hardware_type),
+      ),
+      `${event.event} should include a supported account_hardware_type when is_hardware_wallet is true`,
+    );
+    return;
+  }
+
+  if (isHardwareWallet === false) {
+    assert.strictEqual(
+      account_hardware_type,
+      null,
+      `${event.event} should set account_hardware_type to null when is_hardware_wallet is false`,
+    );
+  }
+};
+
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000);
   it('Execute multiple bridge transactions', async function () {
@@ -90,6 +144,9 @@ describe('Bridge tests', function (this: Suite) {
         );
         // The flow above navigates twice to the bridge page, so we expect 2 events
         assert.ok(swapBridgePageViewed.length === 2);
+        swapBridgePageViewed.forEach((event) =>
+          assertHardwareWalletSync(event as BridgeMetricsEvent),
+        );
         assert.ok(
           swapBridgePageViewed[0].properties.token_address_source ===
             'eip155:1/slip44:60' &&
@@ -143,6 +200,9 @@ describe('Bridge tests', function (this: Suite) {
 
         // Quotes can be requested while test is waiting for ui updates, so we expect at least 2 events
         assert.ok(swapBridgeQuotesRequested.length >= 2);
+        swapBridgeQuotesRequested.forEach((event) =>
+          assertHardwareWalletSync(event as BridgeMetricsEvent),
+        );
         const firstQuoteRequest = swapBridgeQuotesRequested.find((event) => {
           return (
             event.properties.chain_id_source === 'eip155:1' &&
@@ -163,6 +223,9 @@ describe('Bridge tests', function (this: Suite) {
         );
         // The flow receives 2 quotes, so we expect 2 events
         assert.ok(crossChainQuotesReceived.length === 2);
+        crossChainQuotesReceived.forEach((event) =>
+          assertHardwareWalletSync(event as BridgeMetricsEvent),
+        );
         assert.ok(
           crossChainQuotesReceived[0].properties.chain_id_source ===
             'eip155:1' &&
@@ -180,6 +243,9 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         assert.ok(unifiedSwapBridgeSubmitted.length === 1);
+        assertHardwareWalletSync(
+          unifiedSwapBridgeSubmitted[0] as BridgeMetricsEvent,
+        );
         assert.ok(
           unifiedSwapBridgeSubmitted[0].properties.action_type ===
             'swapbridge-v1' &&
@@ -309,6 +375,9 @@ describe('Bridge tests', function (this: Suite) {
           EventTypes.SwapBridgeCompleted,
         );
         assert.ok(swapBridgeCompletedEvents.length === 1);
+        assertHardwareWalletSync(
+          swapBridgeCompletedEvents[0] as BridgeMetricsEvent,
+        );
         assert.ok(
           swapBridgeCompletedEvents[0].properties.action_type ===
             'swapbridge-v1' &&

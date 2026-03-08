@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Transaction } from '@metamask/keyring-api';
-import { isCrossChain } from '@metamask/bridge-controller';
 import { MultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import MultichainBridgeTransactionDetailsModal from '../../app/multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
+import { isAsyncSwap } from '../../../../shared/lib/bridge-status/utils';
 
 type Props = {
   transaction: Transaction;
@@ -14,12 +14,8 @@ type Props = {
 export const NonEvmDetailsModal = ({ transaction, onClose }: Props) => {
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const bridgeHistoryItem = bridgeHistoryItems[transaction.id];
-  const { quote } = bridgeHistoryItem ?? {};
 
-  if (
-    bridgeHistoryItem &&
-    isCrossChain(quote?.srcChainId, quote?.destChainId)
-  ) {
+  if (bridgeHistoryItem && isAsyncSwap(bridgeHistoryItem)) {
     return (
       <MultichainBridgeTransactionDetailsModal
         transaction={transaction}

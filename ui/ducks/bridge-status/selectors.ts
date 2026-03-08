@@ -61,6 +61,39 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
+const addNormalizedTxHash = (txHashes: Set<string>, txHash: string) => {
+  const normalizedTxHash = txHash.toLowerCase();
+  txHashes.add(normalizedTxHash);
+
+  if (normalizedTxHash.startsWith('0x')) {
+    txHashes.add(normalizedTxHash.slice(2));
+  }
+};
+
+/**
+ * Returns a Set of destination tx hashes from known async swaps and bridges.
+ * Used to filter duplicate receive transactions in the activity list.
+ *
+ * @param state - the state object
+ * @returns Set of destination tx hashes
+ */
+export const selectSwapReceiveTxHashes = createSelector(
+  selectBridgeHistoryForAccountGroup,
+  (bridgeHistory): Set<string> => {
+    const receiveTxHashes = new Set<string>();
+
+    Object.values(bridgeHistory).forEach((historyItem) => {
+      const destTxHash = historyItem.status?.destChain?.txHash;
+
+      if (destTxHash) {
+        addNormalizedTxHash(receiveTxHashes, destTxHash);
+      }
+    });
+
+    return receiveTxHashes;
+  },
+);
+
 // eslint-disable-next-line jsdoc/require-param
 /**
  * @deprecated use selectBridgeHistoryItemForTransactionHash instead

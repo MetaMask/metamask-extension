@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, type ReactNode } from 'react';
 import type { Transaction } from '@metamask/keyring-api';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
+  isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import {
@@ -37,6 +38,8 @@ import {
   ButtonLinkSize,
   AvatarNetwork,
   AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
 } from '../../component-library';
 import {
   MetaMetricsEventCategory,
@@ -61,6 +64,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import {
+  isAsyncSwap,
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
@@ -70,6 +74,30 @@ type MultichainBridgeTransactionDetailsModalProps = {
   transaction: Transaction;
   bridgeHistoryItem: BridgeHistoryItem;
   onClose: () => void;
+};
+
+type RouteDetailRowProps = {
+  label: string;
+  value: string;
+  icon: ReactNode;
+};
+
+const RouteDetailRow = ({ label, value, icon }: RouteDetailRowProps) => {
+  return (
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.center}
+    >
+      <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+        {label}
+      </Text>
+      <Box display={Display.Flex} gap={2} alignItems={AlignItems.center}>
+        {icon}
+        <Text variant={TextVariant.bodyMd}>{value}</Text>
+      </Box>
+    </Box>
+  );
 };
 
 const MultichainBridgeTransactionDetailsModal = ({
@@ -90,14 +118,23 @@ const MultichainBridgeTransactionDetailsModal = ({
   )?.asset;
   // --- End direct extraction ---
 
+  const isAsyncTronSwap =
+    isAsyncSwap(bridgeHistoryItem) &&
+    !isCrossChain(quote.srcChainId, quote.destChainId);
+  const isAsyncTransactionComplete = isBridgeComplete(bridgeHistoryItem);
+  const isAsyncTransactionFailed = isBridgeFailed(
+    transaction,
+    bridgeHistoryItem,
+  );
+
   // Determine display status text and color based on finalDisplayStatusKey
   let displayStatus = t('bridgeStatusInProgress');
   let statusColor = TextColor.primaryDefault;
 
-  if (isBridgeComplete(bridgeHistoryItem)) {
+  if (isAsyncTransactionComplete) {
     displayStatus = t('bridgeStatusComplete');
     statusColor = TextColor.successDefault;
-  } else if (isBridgeFailed(transaction, bridgeHistoryItem)) {
+  } else if (isAsyncTransactionFailed) {
     displayStatus = t('bridgeStatusFailed');
     statusColor = TextColor.errorDefault;
   }
@@ -184,6 +221,33 @@ const MultichainBridgeTransactionDetailsModal = ({
   const sourceNetworkImage = srcNetwork?.chainId
     ? MULTICHAIN_TOKEN_IMAGE_MAP[srcNetwork.chainId]
     : undefined;
+  const sourceRouteName = sourceNetworkNickname ?? srcNetwork?.name ?? '';
+  const destNetworkName =
+    (destNetwork?.chainId
+      ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork.chainId]
+      : undefined) ?? '';
+  const destNetworkImage =
+    destNetwork?.isEvm && destNetwork.chainId
+      ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+          formatChainIdToHex(destNetwork.chainId)
+        ] || ''
+      : (destNetwork?.chainId &&
+          MULTICHAIN_TOKEN_IMAGE_MAP[destNetwork.chainId]) ||
+        '';
+  const transactionDetailsTitle = isAsyncTronSwap
+    ? t('swapDetailsTitle')
+    : t('bridgeDetailsTitle');
+  const routeSectionTitle = isAsyncTronSwap
+    ? t(
+        isAsyncTransactionComplete
+          ? 'bridgeTxDetailsSwapped'
+          : 'bridgeTxDetailsSwapping',
+      )
+    : t(
+        isAsyncTransactionComplete
+          ? 'bridgeTxDetailsBridged'
+          : 'bridgeTxDetailsBridging',
+      );
 
   return (
     <Modal
@@ -204,7 +268,7 @@ const MultichainBridgeTransactionDetailsModal = ({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {t('bridgeDetailsTitle')}
+            {transactionDetailsTitle}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
@@ -331,91 +395,81 @@ const MultichainBridgeTransactionDetailsModal = ({
               <Divider />
             </Box>
 
-            {/* Bridging Section */}
+            {/* Route Section */}
             <Box marginBottom={4}>
               <Text
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
                 marginBottom={2}
               >
-                {t('bridging')}
+                {routeSectionTitle}
               </Text>
-
-              {/* From section with source chain details */}
               <Box
                 display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-                alignItems={AlignItems.center}
-                marginBottom={2}
+                flexDirection={FlexDirection.Column}
+                gap={2}
               >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('from')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  gap={2}
-                  alignItems={AlignItems.center}
-                >
-                  <AvatarNetwork
-                    size={AvatarNetworkSize.Sm}
-                    className="multichain-bridge-transaction-details-modal__network-badge"
-                    name={sourceNetworkNickname ?? ''}
-                    src={sourceNetworkImage ?? ''}
-                    borderColor={BorderColor.backgroundDefault}
-                  />
-                  <Text variant={TextVariant.bodyMd}>
-                    {sourceNetworkNickname}
-                  </Text>
-                </Box>
-              </Box>
-
-              {/* To section with destination chain details */}
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-                alignItems={AlignItems.center}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('to')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  gap={2}
-                  alignItems={AlignItems.center}
-                >
-                  <AvatarNetwork
-                    size={AvatarNetworkSize.Sm}
-                    className="multichain-bridge-transaction-details-modal__network-badge"
-                    name={
-                      destNetwork?.chainId
-                        ? (NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                            destNetwork?.chainId
-                          ] ?? '')
-                        : ''
-                    }
-                    src={
-                      destNetwork?.isEvm
-                        ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                            formatChainIdToHex(destNetwork?.chainId)
-                          ] || ''
-                        : (destNetwork?.chainId &&
-                            MULTICHAIN_TOKEN_IMAGE_MAP[destNetwork.chainId]) ||
-                          ''
-                    }
-                    borderColor={BorderColor.backgroundDefault}
-                  />
-                  <Text variant={TextVariant.bodyMd}>
-                    {destNetwork?.chainId
-                      ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork.chainId]
-                      : ''}
-                  </Text>
-                </Box>
+                {isAsyncTronSwap ? (
+                  <>
+                    <RouteDetailRow
+                      label={t('from')}
+                      value={quote.srcAsset.symbol ?? quote.srcAsset.name ?? ''}
+                      icon={
+                        <AvatarToken
+                          size={AvatarTokenSize.Sm}
+                          name={
+                            quote.srcAsset.symbol ?? quote.srcAsset.name ?? ''
+                          }
+                          src={quote.srcAsset.iconUrl ?? ''}
+                        />
+                      }
+                    />
+                    <RouteDetailRow
+                      label={t('to')}
+                      value={
+                        quote.destAsset.symbol ?? quote.destAsset.name ?? ''
+                      }
+                      icon={
+                        <AvatarToken
+                          size={AvatarTokenSize.Sm}
+                          name={
+                            quote.destAsset.symbol ?? quote.destAsset.name ?? ''
+                          }
+                          src={quote.destAsset.iconUrl ?? ''}
+                        />
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <RouteDetailRow
+                      label={t('from')}
+                      value={sourceRouteName}
+                      icon={
+                        <AvatarNetwork
+                          size={AvatarNetworkSize.Sm}
+                          className="multichain-bridge-transaction-details-modal__network-badge"
+                          name={sourceRouteName}
+                          src={sourceNetworkImage ?? ''}
+                          borderColor={BorderColor.backgroundDefault}
+                        />
+                      }
+                    />
+                    <RouteDetailRow
+                      label={t('to')}
+                      value={destNetworkName}
+                      icon={
+                        <AvatarNetwork
+                          size={AvatarNetworkSize.Sm}
+                          className="multichain-bridge-transaction-details-modal__network-badge"
+                          name={destNetworkName}
+                          src={destNetworkImage}
+                          borderColor={BorderColor.backgroundDefault}
+                        />
+                      }
+                    />
+                  </>
+                )}
               </Box>
             </Box>
 
@@ -468,7 +522,7 @@ const MultichainBridgeTransactionDetailsModal = ({
               </Box>
 
               {/* Destination Amount - Show only when truly complete */}
-              {isBridgeComplete(bridgeHistoryItem) &&
+              {isAsyncTransactionComplete &&
                 (status.destChain?.amount ?? quote.destTokenAmount) &&
                 quote.destAsset.symbol && (
                   <Box

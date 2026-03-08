@@ -68,7 +68,7 @@ describe('NonEvmDetailsModal', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the generic modal when bridge history is same-chain (swap)', () => {
+  it('renders the generic modal when bridge history is same-chain on EVM', () => {
     renderWithStore({
       'tx-1': {
         quote: { srcChainId: '0x1', destChainId: '0x1' },
@@ -76,6 +76,21 @@ describe('NonEvmDetailsModal', () => {
     });
     expect(
       screen.getByTestId('multichain-transaction-details-modal'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the async swap modal when bridge history is same-chain on Tron', () => {
+    renderWithStore({
+      'tx-1': {
+        quote: {
+          srcChainId: 'tron:728126428',
+          destChainId: 'tron:728126428',
+        },
+      },
+    });
+
+    expect(
+      screen.getByTestId('multichain-bridge-transaction-details-modal'),
     ).toBeInTheDocument();
   });
 });

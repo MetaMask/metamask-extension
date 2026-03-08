@@ -4,8 +4,9 @@ import { capitalize } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { StatusTypes } from '@metamask/bridge-controller';
+import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import {
+  isAsyncSwap,
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
@@ -51,8 +52,8 @@ type MultichainBridgeTransactionListItemProps = {
 };
 
 /**
- * Renders a transaction list item for multichain bridge operations (Solana, Bitcoin, etc.),
- * displaying progress across source and destination chains.
+ * Renders a transaction list item for multichain async bridge and swap operations,
+ * displaying progress across the source and destination lifecycle steps.
  *
  * @param options0 - Component props
  * @param options0.transaction - The transaction data to display
@@ -70,6 +71,12 @@ const MultichainBridgeTransactionListItem: React.FC<
 
   const { type, from } = transaction;
   const sourceAsset = from?.[0]?.asset;
+  const isAsyncTronSwap =
+    isAsyncSwap(bridgeHistoryItem) &&
+    !isCrossChain(
+      bridgeHistoryItem.quote.srcChainId,
+      bridgeHistoryItem.quote.destChainId,
+    );
 
   const isBridgeFullyComplete = isBridgeComplete(bridgeHistoryItem);
   const isBridgeFailedOrSourceFailed = isBridgeFailed(
@@ -108,9 +115,21 @@ const MultichainBridgeTransactionListItem: React.FC<
       ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork.chainId]
       : undefined) ?? destNetwork?.chainId;
 
-  const title = displayChainName
-    ? `${t('bridgeTo')} ${displayChainName}`
-    : capitalize(type);
+  const title = (() => {
+    if (isAsyncTronSwap) {
+      const { srcAsset, destAsset } = bridgeHistoryItem.quote;
+      if (srcAsset.symbol && destAsset.symbol) {
+        return t('swapTokenToToken', [srcAsset.symbol, destAsset.symbol]);
+      }
+      return t('swap');
+    }
+
+    if (displayChainName) {
+      return `${t('bridgeTo')} ${displayChainName}`;
+    }
+
+    return capitalize(type);
+  })();
 
   return (
     <ActivityListItem
@@ -135,7 +154,11 @@ const MultichainBridgeTransactionListItem: React.FC<
           positionObj={{ right: -4, top: -4 }}
         >
           <TransactionIcon
-            category={TransactionGroupCategory.bridge}
+            category={
+              isAsyncTronSwap
+                ? TransactionGroupCategory.swap
+                : TransactionGroupCategory.bridge
+            }
             status={
               KEYRING_TRANSACTION_STATUS_KEY[transaction.status] ??
               TransactionStatus.Submitted
