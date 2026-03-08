@@ -1,6 +1,6 @@
 ---
 name: add-non-evm-swaps-bridge-network
-description: Implements and reviews non-EVM network support for the extension Swaps/Bridge client using the canonical repository standard. Use when adding or updating bridge/swaps support for Tron, Bitcoin, or other non-EVM networks across bridge constants, account selectors, destination account checks, address validation, send type handling, or LaunchDarkly plus code-gate rollout.
+description: Implement and review non-EVM network support for the extension Swaps/Bridge client using the canonical repository standard. Use for tasks that add or modify bridge or swaps support for Tron, Bitcoin, or other non-EVM networks across bridge constants, account selectors, destination account checks, address validation, send type resolution, or rollout gating.
 ---
 
 # Add Non-EVM Swaps/Bridge Network
