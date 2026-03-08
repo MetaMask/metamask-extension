@@ -670,7 +670,15 @@ module.exports = {
       files: ['**/*.spec.ts'],
       excludedFiles: ['test/e2e/**'],
       rules: {
-        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            vars: 'all',
+            args: 'after-used',
+            ignoreRestSiblings: true,
+            varsIgnorePattern: '^Describe_',
+          },
+        ],
         '@typescript-eslint/naming-convention': [
           'error',
           {
