@@ -5,11 +5,13 @@ import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- required due to contravariant parameter bound
 type AnyComponent = React.ComponentType<any>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DynamicImportType = () => Promise<any>;
-export type ModuleWithDefaultExport<
-  Component extends AnyComponent = AnyComponent,
-> = {
+/**
+ * Structural type for a module with a default export.
+ * This enables the output to be used with `React.lazy` which requires a default export
+ * and also allows for named exports to be used as the component.
+ * @template Component - The component type, inferred from the module.
+ */
+type ModuleWithDefaultExport<Component extends AnyComponent = AnyComponent> = {
   default: Component;
 };
 
@@ -29,16 +31,61 @@ type ComponentLike = {
 };
 
 /**
- * Infers the component type from a dynamic import function.
- * If the import returns a module with a `default` export that is a ComponentType,
- * the component type (including its props) is preserved.
+ * Resolves to `Value` only if it extends `AnyComponent` and is not `never`,
+ * otherwise falls back to `AnyComponent`.
  */
-type InferComponent<ImportFn extends DynamicImportType> =
-  Awaited<ReturnType<ImportFn>> extends {
-    default: infer Comp extends AnyComponent;
-  }
-    ? Comp
+type AssertComponent<Value> = [Value] extends [never]
+  ? AnyComponent
+  : Value extends AnyComponent
+    ? Value
     : AnyComponent;
+
+/**
+ * Extracts the React component type from a dynamically imported module.
+ *
+ * Handles default exports, single named exports, and nested default exports caused by
+ * double-wrapping that TypeScript's generic inference produces for `import()` expressions
+ * (where `Module` is inferred as `{ default: <module namespace> }` rather
+ * than the module namespace itself).
+ *
+ * @template Module - The module object type, typically inferred from `() => import('...')`.
+ */
+export type InferComponent<
+  Module extends Record<PropertyKey, unknown> = Record<never, never>,
+  /**
+   * The value of `module.default`. `never` if there is no default export.
+   */
+  DefaultExport = Module extends { default: infer Value } ? Value : never,
+  /**
+   * Whether a default export is present.
+   */
+  IsDefaultExport = [DefaultExport] extends [never] ? false : true,
+  /**
+   * Unwraps one additional `default` level to handle inference of
+   * double-wrapped module namespaces e.g. `connect()`, `compose()`.
+   */
+  NestedDefaultExport = DefaultExport extends { default: infer Value }
+    ? Value
+    : never,
+  /**
+   * Resolves the component from the default export path.
+   */
+  FromDefaultExport = DefaultExport extends AnyComponent
+    ? DefaultExport
+    : AssertComponent<NestedDefaultExport>,
+  /**
+   * Extracts the single component-assignable value from named exports.
+   */
+  FromNamedExport = AssertComponent<
+    Extract<Module[keyof Module], AnyComponent>
+  >,
+  /**
+   * The inferred component type.
+   */
+  InferredComponent = IsDefaultExport extends true
+    ? FromDefaultExport
+    : FromNamedExport,
+> = InferredComponent;
 
 // This only has to happen once per app load, so do it outside a function
 const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
@@ -48,12 +95,27 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
  * 1. Sentry tracing for how long it takes to load the component (not render, just load)
  * 2. React.lazy can only deal with default exports, but the wrapper can handle named exports too
  *
+ * For typed modules (`.ts`/`.tsx`), component props are fully inferred.
+ * For untyped modules (`.js` without declarations), `Module` is inferred
+ * as `any` and the return type loses specificity. Provide an explicit type
+ * argument to restore type safety:
+ *
+ * @example
+ * ```typescript
+ * // Typed module — props inferred automatically
+ * const MyPage = mmLazy(() => import('./MyPage'));
+ *
+ * // Untyped .js module — narrow with explicit type argument
+ * const LegacyPage = mmLazy<{ default: React.ComponentType<Props> }>(
+ *   () => import('./LegacyPage.js'),
+ * );
+ * ```
  * @param fn - an import of the form `() => import('AAA')`
  */
-export function mmLazy<ImportFn extends DynamicImportType>(
-  fn: ImportFn,
-): React.LazyExoticComponent<InferComponent<ImportFn>> {
-  type Component = InferComponent<ImportFn>;
+export function mmLazy<Module extends Record<PropertyKey, unknown>>(
+  fn: () => Promise<Module>,
+): React.LazyExoticComponent<InferComponent<Module>> {
+  type Component = InferComponent<Module>;
   return React.lazy(async () => {
     // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
     const startTime = Date.now();
