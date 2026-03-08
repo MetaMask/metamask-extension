@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impact sur les prix"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "L’impact sur le prix reflète la manière dont votre swap affecte le prix du marché. Si vous n’avez pas assez de gaz, certains de vos jetons sont utilisés pour couvrir les frais, ce qui augmente l’impact sur le prix. MetaMask ne définit ni ne contrôle cet impact."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impact sur les prix"
   },
@@ -1605,9 +1602,6 @@
   },
   "connectAccount": {
     "message": "Connecter le compte"
-  },
-  "connectAccountOrCreate": {
-    "message": "Connecter un compte ou en créer un nouveau"
   },
   "connectAccounts": {
     "message": "Connecter les comptes"
@@ -2188,9 +2182,6 @@
   "descriptionFromSnap": {
     "message": "Description provenant de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Tout désélectionner"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Aucun compte admissible n’a été trouvé"
@@ -3528,9 +3519,6 @@
   },
   "l2FeeTooltip": {
     "message": "Frais de gaz L2"
-  },
-  "lastConnected": {
-    "message": "Dernière connexion"
   },
   "lastSold": {
     "message": "Dernière vente"
@@ -5280,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Prix d’ouverture"
   },
-  "perpsExploreCrypto": {
-    "message": "Découvrez les cryptomonnaies"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Découvrez les actions et les matières premières"
-  },
   "perpsFees": {
     "message": "Frais"
   },
@@ -5402,9 +5384,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Médiane des prix externes communiqués par les validateurs, utilisée pour calculer le taux de financement"
-  },
-  "perpsOrderAmount": {
-    "message": "Montant de l’ordre"
   },
   "perpsOrders": {
     "message": "Ordres"
@@ -5552,12 +5531,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirer"
-  },
-  "perpsYourOrders": {
-    "message": "Vos ordres"
-  },
-  "perpsYourPositions": {
-    "message": "Vos positions"
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
@@ -6429,12 +6402,6 @@
   "selectAccountToConnect": {
     "message": "Sélectionner un compte à connecter"
   },
-  "selectAccounts": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser avec ce snap"
-  },
   "selectAll": {
     "message": "Tout sélectionner"
   },
@@ -6473,9 +6440,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Compte différent sélectionné"
-  },
-  "selectingAllWillAllow": {
-    "message": "En sélectionnant tout, vous autorisez ce site à voir tous vos comptes actuels. Assurez-vous de bien avoir confiance en ce site."
   },
   "send": {
     "message": "Envoyer"
@@ -8824,9 +8788,6 @@
   },
   "viewDetails": {
     "message": "Afficher les détails"
-  },
-  "viewMore": {
-    "message": "Afficher plus"
   },
   "viewOnBlockExplorer": {
     "message": "Afficher sur l’explorateur de blocs"

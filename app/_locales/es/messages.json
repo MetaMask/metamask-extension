@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impacto sobre el precio"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "El impacto en el precio refleja cómo tu canje afecta el precio de mercado. Si no tienes suficiente para gas, algunos de tus tokens se usan para cubrir tarifas, lo que aumenta el impacto en el precio. MetaMask no lo establece ni lo controla."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impacto sobre el precio"
   },
@@ -1605,9 +1602,6 @@
   },
   "connectAccount": {
     "message": "Conectar cuenta"
-  },
-  "connectAccountOrCreate": {
-    "message": "Conectar cuenta o crear nueva"
   },
   "connectAccounts": {
     "message": "Conectar cuentas"
@@ -2188,9 +2182,6 @@
   "descriptionFromSnap": {
     "message": "Descripción de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Deseleccionar todo"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No se encontraron cuentas elegibles"
@@ -3528,9 +3519,6 @@
   },
   "l2FeeTooltip": {
     "message": "Tarifa de gas L2"
-  },
-  "lastConnected": {
-    "message": "Última conexión"
   },
   "lastSold": {
     "message": "Última venta"
@@ -5280,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Precio de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explora criptomonedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explora acciones y materias primas"
-  },
   "perpsFees": {
     "message": "Tarifas"
   },
@@ -5405,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "La mediana de los precios externos informados por los validadores, utilizada para calcular la tasa de financiación"
-  },
-  "perpsOrderAmount": {
-    "message": "Monto de la orden"
   },
   "perpsOrders": {
     "message": "Órdenes"
@@ -5555,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirar"
-  },
-  "perpsYourOrders": {
-    "message": "Tus órdenes"
-  },
-  "perpsYourPositions": {
-    "message": "Tus posiciones"
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
@@ -6432,12 +6405,6 @@
   "selectAccountToConnect": {
     "message": "Seleccione una cuenta para conectarse"
   },
-  "selectAccounts": {
-    "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
-  },
-  "selectAccountsForSnap": {
-    "message": "Seleccione la(s) cuenta(s) para usar con este snap"
-  },
   "selectAll": {
     "message": "Seleccionar todo"
   },
@@ -6476,9 +6443,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Se seleccionó una cuenta distinta"
-  },
-  "selectingAllWillAllow": {
-    "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
   },
   "send": {
     "message": "Enviar"
@@ -8827,9 +8791,6 @@
   },
   "viewDetails": {
     "message": "Ver detalles"
-  },
-  "viewMore": {
-    "message": "Ver más"
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"

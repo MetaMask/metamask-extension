@@ -40,7 +40,9 @@ class AccountDetailsModal extends Confirmation {
   }
 
   async clickAccountDetailsModalCloseButton() {
-    await this.driver.clickElement(this.accountDetailsModalCloseButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.accountDetailsModalCloseButton,
+    );
   }
 
   async assertHeaderInfoBalance(balance: string) {

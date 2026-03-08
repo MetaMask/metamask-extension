@@ -4,8 +4,8 @@
  * This directory contains E2E test utilities and helpers for the Perps trading feature.
  *
  * WebSocket and HTTP mocks for Hyperliquid are configured in:
- * - mock-e2e.js: WebSocket forward (wss://api.hyperliquid.xyz/ws -> ws://localhost:8088)
- * - websocket-perps-mocks.ts: Message handlers for Hyperliquid subscription types
+ * - mock-e2e.js: WebSocket forward (wss://api.hyperliquid.xyz/ws -> ws://localhost:8090)
+ * - websocket/perps-mocks.ts: Message handlers for Hyperliquid subscription types
  * - mock-e2e.js: HTTP mocks for api.hyperliquid.xyz/info and /exchange
  *
  * When PerpsController makes real Hyperliquid calls from the background, these
@@ -16,7 +16,6 @@
 
 /** Hash to show the Perps tab on the account overview (home). Tab is controlled by search param. */
 export const PERPS_TAB_HASH = '#/?tab=perps';
-export const PERPS_HOME_ROUTE = '#/perps/home';
 
 /** Base route for Perps market detail. Append encoded symbol, e.g. PERPS_MARKET_DETAIL_ROUTE + '/AVAX' */
 export const PERPS_MARKET_DETAIL_ROUTE = '#/perps/market';

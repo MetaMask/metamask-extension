@@ -8,6 +8,7 @@ import {
   isLikelyCommentLine,
   isInsideMultilineBlockComment,
   indicesOf,
+  detectMapLocationFromContentscript,
   discoverWebpackBundles,
   validateBundle,
   main,
@@ -137,19 +138,88 @@ describe('sourcemap-validator', () => {
     });
   });
 
+  describe('detectMapLocationFromContentscript', () => {
+    it('returns sibling when contentscript ends with sourceMappingURL comment', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-sibling-'),
+      );
+
+      try {
+        const chromeScriptsDir = join(fixtureDir, 'dist', 'chrome', 'scripts');
+        await mkdir(chromeScriptsDir, { recursive: true });
+        await writeFile(
+          join(chromeScriptsDir, 'contentscript.js'),
+          [
+            '(function(){',
+            '  throw new Error("x");',
+            '})();',
+            '//# sourceMappingURL=contentscript.js.map',
+          ].join('\n'),
+        );
+
+        const mapLocation = await detectMapLocationFromContentscript(
+          join(fixtureDir, 'dist', 'chrome'),
+        );
+        assert.strictEqual(mapLocation, 'sibling');
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('returns sourcemaps when contentscript does not end with sourceMappingURL comment', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-sourcemaps-'),
+      );
+
+      try {
+        const chromeScriptsDir = join(fixtureDir, 'dist', 'chrome', 'scripts');
+        await mkdir(chromeScriptsDir, { recursive: true });
+        await writeFile(
+          join(chromeScriptsDir, 'contentscript.js'),
+          '(function(){ throw new Error("x"); })();',
+        );
+
+        const mapLocation = await detectMapLocationFromContentscript(
+          join(fixtureDir, 'dist', 'chrome'),
+        );
+        assert.strictEqual(mapLocation, 'sourcemaps');
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('throws when contentscript does not exist', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-missing-'),
+      );
+
+      try {
+        await assert.rejects(
+          () =>
+            detectMapLocationFromContentscript(
+              join(fixtureDir, 'dist', 'chrome'),
+            ),
+          /Cannot auto-detect source map location/u,
+        );
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+  });
+
   describe('discoverWebpackBundles', () => {
     // With cwd = DIST_FIXTURE, discoverWebpackBundles() scans dist/chrome and
     // asserts on labels. Required fixtures: background.abc123.js+.map (label
     // includes 'background'), ui.def456.js+.map ('ui'), scripts/contentscript.js+.map ('contentscript').
     it('returns empty array when dist/chrome does not exist', async () => {
       mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles();
+      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling' });
       assert.strictEqual(pairs.length, 0);
     });
 
     it('finds .js files that have a .map sibling', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles();
+      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling' });
       assert.ok(pairs.length >= 2);
       assert.ok(pairs.some((p) => p.label.includes('background')));
       assert.ok(pairs.some((p) => p.label.includes('ui')));
@@ -160,8 +230,58 @@ describe('sourcemap-validator', () => {
 
     it('scans subdirectories (e.g. scripts/)', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles();
+      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling' });
       assert.ok(pairs.some((p) => p.label.includes('contentscript')));
+    });
+
+    it('finds maps under dist/sourcemaps when sibling maps are missing', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-relocated-maps-'),
+      );
+      try {
+        const chromeScriptsDir = join(fixtureDir, 'dist', 'chrome', 'scripts');
+        const sourcemapsScriptsDir = join(
+          fixtureDir,
+          'dist',
+          'sourcemaps',
+          'scripts',
+        );
+        await mkdir(chromeScriptsDir, { recursive: true });
+        await mkdir(sourcemapsScriptsDir, { recursive: true });
+
+        await writeFile(
+          join(chromeScriptsDir, 'contentscript.js'),
+          'throw new Error("x");',
+        );
+        await writeFile(
+          join(sourcemapsScriptsDir, 'contentscript.js.map'),
+          '{}',
+        );
+
+        mock.method(process, 'cwd', () => fixtureDir, { times: Infinity });
+        const siblingPairs = await discoverWebpackBundles({
+          mapLocation: 'sibling',
+        });
+        assert.strictEqual(siblingPairs.length, 0);
+
+        const pairs = await discoverWebpackBundles({
+          mapLocation: 'sourcemaps',
+        });
+        assert.strictEqual(pairs.length, 1);
+        assert.strictEqual(pairs[0].label, 'scripts/contentscript.js');
+        assert.strictEqual(
+          pairs[0].mapPath,
+          join(sourcemapsScriptsDir, 'contentscript.js.map'),
+        );
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('does not include sibling maps when map location is sourcemaps', async () => {
+      mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
+      const pairs = await discoverWebpackBundles({ mapLocation: 'sourcemaps' });
+      assert.strictEqual(pairs.length, 0);
     });
   });
 
@@ -375,7 +495,7 @@ describe('sourcemap-validator', () => {
       );
     });
 
-    it('returns false and logs when result.source is null for a code line (missing source for position)', async () => {
+    it('skips unmapped code positions (minification coverage gaps) instead of failing', async () => {
       const bundle = 'line1\n  throw new Error("x");\nline3';
       const gen = new SourceMapGenerator({ file: 'out.js' });
       gen.setSourceContent('src.ts', '  throw new Error("x");');
@@ -389,7 +509,10 @@ describe('sourcemap-validator', () => {
       const mapPath = join(tmpDir, 'missing-source.js.map');
       await writeFile(jsPath, bundle);
       await writeFile(mapPath, mapJson);
-      mock.method(console, 'log', noop);
+      const logs: string[] = [];
+      mock.method(console, 'log', (...args: unknown[]) => {
+        logs.push(args.map((a) => String(a)).join(' '));
+      });
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
       const ok = await validateBundle({
@@ -397,7 +520,11 @@ describe('sourcemap-validator', () => {
         mapPath,
         label: 'missing-source.js',
       });
-      assert.strictEqual(ok, false);
+      assert.strictEqual(ok, true);
+      assert.ok(
+        logs.some((l) => l.includes('skipped') && l.includes('unmapped')),
+        'should log that unmapped positions were skipped',
+      );
     });
 
     it('skips comment lines when result.source is null (no false failure)', async () => {
@@ -546,8 +673,8 @@ describe('sourcemap-validator', () => {
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'error', noop);
       mock.method(console, 'log', noop);
-      await main();
-      assert.ok(exitMock.mock.calls.length >= 1);
+      await main({ mapLocation: 'sibling' });
+      assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
 
@@ -560,8 +687,8 @@ describe('sourcemap-validator', () => {
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'error', noop);
       mock.method(console, 'log', noop);
-      await main();
-      assert.ok(exitMock.mock.calls.length >= 1);
+      await main({ mapLocation: 'sibling' });
+      assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
 
@@ -594,8 +721,8 @@ describe('sourcemap-validator', () => {
       mock.method(console, 'log', noop);
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
-      await main();
-      assert.ok(exitMock.mock.calls.length >= 1);
+      await main({ mapLocation: 'sibling' });
+      assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
   });

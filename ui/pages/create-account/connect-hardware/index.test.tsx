@@ -663,5 +663,44 @@ describe('ConnectHardwareForm', () => {
         screen.getByText(tEn('ledgerAccountRestriction')),
       ).toBeInTheDocument();
     });
+
+    describe('Ledger error handling (toHardwareWalletError)', () => {
+      it('displays SDK userMessage when Ledger error has a mapped status code (e.g. 0x6a83 wrong app)', async () => {
+        mockConnectHardware.mockRejectedValue(
+          new Error('Ledger device: UNKNOWN_ERROR (0x6a83)'),
+        );
+
+        const { getByText, getByLabelText } = renderWithProvider(
+          <ConnectHardwareForm {...mockProps} />,
+          mockStore,
+        );
+
+        fireEvent.click(getByLabelText(messages.ledger.message));
+        fireEvent.click(getByText(messages.continue.message));
+
+        await waitFor(() => {
+          expect(
+            getByText('Ethereum app is closed. Please open it to continue.'),
+          ).toBeInTheDocument();
+        });
+      });
+
+      it('displays original error message when Ledger error maps to Unknown or ConnectionClosed (e.g. no app open)', async () => {
+        const appClosedMessage = 'Ledger: App closed or connection issue';
+        mockConnectHardware.mockRejectedValue(new Error(appClosedMessage));
+
+        const { getByText, getByLabelText } = renderWithProvider(
+          <ConnectHardwareForm {...mockProps} />,
+          mockStore,
+        );
+
+        fireEvent.click(getByLabelText(messages.ledger.message));
+        fireEvent.click(getByText(messages.continue.message));
+
+        await waitFor(() => {
+          expect(getByText(appClosedMessage)).toBeInTheDocument();
+        });
+      });
+    });
   });
 });
