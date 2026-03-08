@@ -137,10 +137,8 @@ export type BenchmarkSummary = {
   exclusionRatePassed: boolean;
   /** Percentage of runs that were excluded (0-1) */
   exclusionRate: number;
-  /** List of threshold violations (if any thresholds configured) */
-  thresholdViolations?: ThresholdViolation[];
-  /** Whether all thresholds passed (no 'fail' violations) */
-  thresholdsPassed?: boolean;
+  thresholdViolations: ThresholdViolation[];
+  thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
 };

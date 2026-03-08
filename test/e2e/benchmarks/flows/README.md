@@ -77,21 +77,28 @@ await timer.measure(async () => {
 });
 ```
 
-**Threshold Validation:**
+**Threshold Validation (mandatory):**
 
-Thresholds are configured separately in `test/e2e/benchmarks/utils/constants.ts` for statistical validation after multiple iterations. Each timer can have P75 and P95 thresholds with warn/fail levels:
+Every benchmark **must** have a threshold entry in `THRESHOLD_REGISTRY` inside `test/e2e/benchmarks/utils/constants.ts`. Thresholds are validated after collecting statistics from all iterations.
+
+To add thresholds for a new benchmark:
+
+1. Define a constant named after the file in UPPER_SNAKE_CASE (e.g. `my-benchmark.ts` -> `MY_BENCHMARK`)
+2. Add it to the `THRESHOLD_REGISTRY` entries
 
 ```typescript
-export const MY_BENCHMARK_THRESHOLDS: ThresholdConfig = {
+const MY_BENCHMARK: ThresholdConfig = {
   myTimerId: {
-    p75: { warn: 1000, fail: 1500 }, // 75th percentile thresholds (ms)
-    p95: { warn: 2000, fail: 3000 }, // 95th percentile thresholds (ms)
-    ciMultiplier: DEFAULT_CI_MULTIPLIER, // 1.5x multiplier for CI environments
+    p75: { warn: 1000, fail: 1500 },
+    p95: { warn: 2000, fail: 3000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
+
+// Then add MY_BENCHMARK to the THRESHOLD_REGISTRY entries
 ```
 
-Thresholds are validated by the benchmark runner after collecting statistics from all iterations. This approach is more reliable than per-run validation for performance testing.
+The constant name is auto-converted to the file name (`MY_BENCHMARK` -> `my-benchmark`).
 
 ### 3. Add to a preset (optional)
 
