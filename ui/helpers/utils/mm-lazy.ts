@@ -98,18 +98,18 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
  *
  * For typed modules (`.ts`/`.tsx`), component props are fully inferred.
  * For untyped modules (`.js` without declarations), `Module` is inferred
- * as `any` and the return type loses specificity. Provide an explicit type
- * argument to restore type safety:
+ * as `any` and the return type degrades to `AnyComponent`. Cast the
+ * result to restore type safety:
  *
  * @example
  * ```typescript
  * // Typed module — props inferred automatically
  * const MyPage = mmLazy(() => import('./MyPage'));
  *
- * // Untyped .js module — narrow with explicit type argument
- * const LegacyPage = mmLazy<{ default: React.ComponentType<Props> }>(
+ * // Untyped .js module — cast to narrow the return type
+ * const LegacyPage = mmLazy(
  *   () => import('./LegacyPage.js'),
- * );
+ * ) as React.LazyExoticComponent<React.ComponentType<Props>>;
  * ```
  * @param fn - an import of the form `() => import('AAA')`
  */
