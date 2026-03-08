@@ -62,6 +62,30 @@ const getTimerColor = (timeInSeconds: number) => {
   return TextColor.textAlternative;
 };
 
+const QUOTE_CARD_SKELETON_ROWS = [
+  { labelWidth: 92, valueWidth: 132 },
+  { labelWidth: 80, valueWidth: 64 },
+  { labelWidth: 88, valueWidth: 56 },
+  { labelWidth: 108, valueWidth: 120 },
+] as const;
+
+export const MultichainBridgeQuoteCardSkeleton = () => {
+  return (
+    <Column gap={2} data-testid="multichain-bridge-quote-card-loading">
+      {QUOTE_CARD_SKELETON_ROWS.map(({ labelWidth, valueWidth }, index) => (
+        <Row
+          key={`${labelWidth}-${valueWidth}-${index}`}
+          justifyContent={JustifyContent.spaceBetween}
+          data-testid="multichain-bridge-quote-card-loading-row"
+        >
+          <Skeleton width={labelWidth} height={16} />
+          <Skeleton width={valueWidth} height={16} />
+        </Row>
+      ))}
+    </Column>
+  );
+};
+
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
   onOpenRecipientModal,

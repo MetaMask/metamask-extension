@@ -14,6 +14,7 @@ import {
   TextFieldType,
   ButtonLink,
 } from '../../../components/component-library';
+import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
@@ -31,7 +32,6 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  getBridgeQuotes,
   getFromTokenBalance,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -60,6 +60,7 @@ export const BridgeInputGroup = ({
   disabledChainId,
   containerProps = {},
   isDestination,
+  showAmountSkeleton = false,
 }: {
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
@@ -73,6 +74,7 @@ export const BridgeInputGroup = ({
   onBlockExplorerClick?: (token: BridgeToken) => void;
   networks: BridgeNetwork[];
   containerProps?: React.ComponentProps<typeof Column>;
+  showAmountSkeleton?: boolean;
 } & Pick<
   React.ComponentProps<typeof BridgeAssetPicker>,
   | 'header'
@@ -83,7 +85,6 @@ export const BridgeInputGroup = ({
 >) => {
   const t = useI18nContext();
 
-  const { isLoading } = useSelector(getBridgeQuotes);
   const { isInsufficientBalance, isEstimatedReturnLow } =
     useSelector(getValidationErrors);
   const currency = useSelector(getCurrentCurrency);
@@ -102,6 +103,9 @@ export const BridgeInputGroup = ({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
+  const shouldShowAmountSkeleton = Boolean(
+    showAmountSkeleton && isAmountReadOnly,
+  );
 
   useEffect(() => {
     if (!isAmountReadOnly && inputRef.current) {
@@ -158,66 +162,75 @@ export const BridgeInputGroup = ({
   return (
     <Column gap={1} {...containerProps}>
       <Row gap={4}>
-        <TextField
-          inputProps={{
-            disableStateStyles: true,
-            textAlign: TextAlign.Start,
-            style: {
-              fontWeight: 400,
-              fontSize: Math.max(
-                14, // Minimum font size
-                36 * // Maximum font size
-                  // Up to 9 characters, use 36px
-                  (9 /
-                    // Otherwise, shrink the font size down to 14
-                    Math.max(
-                      9,
-                      (amountFieldProps?.value ?? '').toString().length,
-                    )),
-              ),
-              transition: 'font-size 0.1s',
-              padding: 0,
-            },
-          }}
-          style={{
-            minWidth: 96,
-            maxWidth: 190,
-            opacity:
-              isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
-          }}
-          display={Display.Flex}
-          inputRef={inputRef}
-          type={TextFieldType.Text}
-          className="amount-input"
-          placeholder="0"
-          onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-            if (e) {
-              // Only allow numbers and at most one decimal point
-              if (
-                e.key === '.' &&
-                amountFieldProps.value?.toString().includes('.')
-              ) {
-                e.preventDefault();
-              } else if (!/^[\d.]{1}$/u.test(e.key)) {
-                e.preventDefault();
+        {shouldShowAmountSkeleton ? (
+          <Skeleton
+            width={128}
+            height={40}
+            data-testid={`${amountFieldProps.testId}-loading-skeleton`}
+            style={{ minWidth: 96, maxWidth: 190 }}
+          />
+        ) : (
+          <TextField
+            inputProps={{
+              disableStateStyles: true,
+              textAlign: TextAlign.Start,
+              style: {
+                fontWeight: 400,
+                fontSize: Math.max(
+                  14, // Minimum font size
+                  36 * // Maximum font size
+                    // Up to 9 characters, use 36px
+                    (9 /
+                      // Otherwise, shrink the font size down to 14
+                      Math.max(
+                        9,
+                        (amountFieldProps?.value ?? '').toString().length,
+                      )),
+                ),
+                transition: 'font-size 0.1s',
+                padding: 0,
+              },
+            }}
+            style={{
+              minWidth: 96,
+              maxWidth: 190,
+              opacity:
+                isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
+            }}
+            display={Display.Flex}
+            inputRef={inputRef}
+            type={TextFieldType.Text}
+            className="amount-input"
+            placeholder="0"
+            onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e) {
+                // Only allow numbers and at most one decimal point
+                if (
+                  e.key === '.' &&
+                  amountFieldProps.value?.toString().includes('.')
+                ) {
+                  e.preventDefault();
+                } else if (!/^[\d.]{1}$/u.test(e.key)) {
+                  e.preventDefault();
+                }
               }
-            }
-          }}
-          onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-            e.preventDefault();
-            const cleanedValue = sanitizeAmountInput(
-              e.clipboardData.getData('text'),
-            );
-            onAmountChange?.(cleanedValue ?? '');
-          }}
-          onChange={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const cleanedValue = sanitizeAmountInput(e.target.value);
-            onAmountChange?.(cleanedValue ?? '');
-          }}
-          {...amountFieldProps}
-        />
+            }}
+            onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+              e.preventDefault();
+              const cleanedValue = sanitizeAmountInput(
+                e.clipboardData.getData('text'),
+              );
+              onAmountChange?.(cleanedValue ?? '');
+            }}
+            onChange={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const cleanedValue = sanitizeAmountInput(e.target.value);
+              onAmountChange?.(cleanedValue ?? '');
+            }}
+            {...amountFieldProps}
+          />
+        )}
         <BridgeAssetPicker
           disabledChainId={disabledChainId}
           selectedAsset={token}
@@ -250,9 +263,6 @@ export const BridgeInputGroup = ({
           textAlign={TextAlign.End}
           ellipsis
         >
-          {isAmountReadOnly && isLoading && amountFieldProps.value === '0'
-            ? t('bridgeCalculatingAmount')
-            : undefined}
           {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
         </Text>
         {!isAmountReadOnly && balanceAmount && token && (

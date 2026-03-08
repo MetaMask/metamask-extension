@@ -55,14 +55,12 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
   IconColor,
   JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -71,7 +69,6 @@ import {
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
 import { getDefaultToToken, isNetworkAdded } from '../../../ducks/bridge/utils';
-import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getCurrentKeyring } from '../../../selectors';
@@ -83,7 +80,10 @@ import {
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
-import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
+import {
+  MultichainBridgeQuoteCard,
+  MultichainBridgeQuoteCardSkeleton,
+} from '../quotes/multichain-bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
@@ -608,6 +608,7 @@ const PrepareBridgePage = ({
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
+            showAmountSkeleton={isInitialQuoteLoading}
             buttonProps={{ testId: 'bridge-destination-button' }}
             onBlockExplorerClick={(token) => {
               setBlockExplorerToken(token);
@@ -619,18 +620,22 @@ const PrepareBridgePage = ({
         </Column>
 
         {/* Quote details - displayed below the swap form */}
-        {!wasTxDeclined && unvalidatedQuote && (
+        {(isInitialQuoteLoading || (!wasTxDeclined && unvalidatedQuote)) && (
           <Column paddingInline={4} gap={2}>
-            <MultichainBridgeQuoteCard
-              onOpenRecipientModal={() =>
-                setIsDestinationAccountPickerOpen(true)
-              }
-              onOpenPriceImpactWarningModal={() =>
-                togglePriceImpactModalWithVariant('quote-card')
-              }
-              onOpenSlippageModal={onOpenSettings}
-              selectedDestinationAccount={selectedDestinationAccount}
-            />
+            {isInitialQuoteLoading ? (
+              <MultichainBridgeQuoteCardSkeleton />
+            ) : (
+              <MultichainBridgeQuoteCard
+                onOpenRecipientModal={() =>
+                  setIsDestinationAccountPickerOpen(true)
+                }
+                onOpenPriceImpactWarningModal={() =>
+                  togglePriceImpactModalWithVariant('quote-card')
+                }
+                onOpenSlippageModal={onOpenSettings}
+                selectedDestinationAccount={selectedDestinationAccount}
+              />
+            )}
           </Column>
         )}
 
@@ -651,29 +656,15 @@ const PrepareBridgePage = ({
             </Column>
           )}
 
-        <Column
-          justifyContent={
-            isInitialQuoteLoading
-              ? JustifyContent.center
-              : JustifyContent.flexEnd
-          }
-          width={BlockSize.Full}
-          height={BlockSize.Full}
-          gap={3}
-          paddingInline={4}
-          paddingBottom={4}
-        >
-          {isInitialQuoteLoading ? (
-            <Column alignItems={AlignItems.center}>
-              <Text
-                textAlign={TextAlign.Center}
-                color={TextColor.textAlternative}
-              >
-                {t('swapFetchingQuotes')}
-              </Text>
-              <MascotBackgroundAnimation height="64" width="64" />
-            </Column>
-          ) : (
+        {!isInitialQuoteLoading && (
+          <Column
+            justifyContent={JustifyContent.flexEnd}
+            width={BlockSize.Full}
+            height={BlockSize.Full}
+            gap={3}
+            paddingInline={4}
+            paddingBottom={4}
+          >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
                 if (!quoteParams) {
@@ -707,8 +698,8 @@ const PrepareBridgePage = ({
                 togglePriceImpactModalWithVariant('submit-cta')
               }
             />
-          )}
-        </Column>
+          </Column>
+        )}
       </Column>
 
       {/** Alert banners */}
