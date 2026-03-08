@@ -24,7 +24,6 @@ import {
   BorderColor,
   JustifyContent,
   TextVariant,
-  SEVERITIES,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
@@ -71,14 +70,14 @@ export const BridgeTransactionSettingsModal = ({
     }
   }, [slippage, shouldShowAutoOption, isOpen]);
 
-  const getNotificationConfig = () => {
-    if (slippageValue === undefined) {
-      return null;
-    }
-
-    if (slippageValue < 0.5) {
+  const getNotificationConfig = (): {
+    severity: BannerAlertSeverity;
+    text: string;
+    title: string;
+  } | null => {
+    if (slippageValue !== undefined && slippageValue < 0.5) {
       return {
-        severity: SEVERITIES.WARNING,
+        severity: BannerAlertSeverity.Warning,
         text: t('swapSlippageLowDescription', [slippageValue]),
         title: t('swapSlippageLowTitle'),
       };
@@ -116,7 +115,7 @@ export const BridgeTransactionSettingsModal = ({
   const notificationConfig = getNotificationConfig();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="bridge-settings-modal">
+    <Modal isOpen={true} onClose={onClose} className="bridge-settings-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -233,7 +232,7 @@ export const BridgeTransactionSettingsModal = ({
           {notificationConfig && (
             <Box marginTop={5}>
               <BannerAlert
-                severity={notificationConfig.severity as BannerAlertSeverity}
+                severity={notificationConfig.severity}
                 title={notificationConfig.title}
                 titleProps={{ 'data-testid': 'swaps-banner-title' }}
               >
