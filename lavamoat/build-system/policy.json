@@ -5017,6 +5017,14 @@
         "util.promisify": true
       }
     },
+    "pathmodify": {
+      "builtin": {
+        "util.deprecate": true
+      },
+      "packages": {
+        "pathmodify>readable-stream": true
+      }
+    },
     "gulp-livereload>event-stream>pause-stream": {
       "packages": {
         "browserify>JSONStream>through": true
@@ -5629,6 +5637,27 @@
         "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>string_decoder": true,
         "@storybook/react>util-deprecate": true
+      }
+    },
+    "pathmodify>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter.listenerCount": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "readable-stream-2>core-util-is": true,
+        "pumpify>inherits": true,
+        "pathmodify>readable-stream>isarray": true,
+        "pathmodify>readable-stream>string_decoder": true
       }
     },
     "browserify>read-only-stream>readable-stream": {
@@ -7020,6 +7049,11 @@
     "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>string_decoder": {
       "packages": {
         "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>safe-buffer": true
+      }
+    },
+    "pathmodify>readable-stream>string_decoder": {
+      "builtin": {
+        "buffer.Buffer": true
       }
     },
     "browserify>read-only-stream>readable-stream>string_decoder": {

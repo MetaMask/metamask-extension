@@ -105,6 +105,8 @@ ignores:
   - '@metamask/permissions-kernel-snap'
   # perps poc
   - '@metamask/perps-controller'
+  # import aliases (not real packages)
+  - '~'
 
 # files depcheck should not parse
 ignorePatterns:

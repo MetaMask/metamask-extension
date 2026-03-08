@@ -693,6 +693,7 @@
     "nyc": "^15.1.0",
     "octokit": "^4.1.3",
     "path-browserify": "^1.0.1",
+    "pathmodify": "^0.5.0",
     "postcss": "^8.4.32",
     "postcss-discard-font-face": "^3.0.0",
     "postcss-loader": "^8.1.1",
