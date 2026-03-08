@@ -1,4 +1,9 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 
 export type AnimatedRef = {
   triggerExit: (onComplete: () => void) => void;

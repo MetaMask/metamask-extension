@@ -124,9 +124,11 @@ const CrossChainSwap = () => {
     };
 
     if (animatedRef.current) {
-      animatedRef.current.triggerExit(() => void doNavigate());
+      animatedRef.current.triggerExit(() => {
+        doNavigate().catch(() => undefined);
+      });
     } else {
-      void doNavigate();
+      doNavigate().catch(() => undefined);
     }
   };
 
