@@ -98,6 +98,7 @@ import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
+import { BridgePriceImpactWarningModal } from './bridge-price-impact-modal';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -366,6 +367,11 @@ const PrepareBridgePage = ({
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
 
+  const [priceImpactModalVariant, togglePriceImpactModalWithVariant] =
+    useState<
+      React.ComponentProps<typeof BridgePriceImpactWarningModal>['variant']
+    >(null);
+
   const getFromInputHeader = () => {
     return t('swapSelectToken');
   };
@@ -384,6 +390,13 @@ const PrepareBridgePage = ({
         }}
         selectedAccount={selectedDestinationAccount}
         onClose={() => setIsDestinationAccountPickerOpen(false)}
+      />
+
+      <BridgePriceImpactWarningModal
+        variant={priceImpactModalVariant}
+        onClose={() => {
+          togglePriceImpactModalWithVariant(null);
+        }}
       />
 
       <Column className="prepare-bridge-page" gap={4}>
@@ -612,6 +625,9 @@ const PrepareBridgePage = ({
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }
+              onOpenPriceImpactWarningModal={() =>
+                togglePriceImpactModalWithVariant('quote-card')
+              }
               onOpenSlippageModal={onOpenSettings}
               selectedDestinationAccount={selectedDestinationAccount}
             />
@@ -686,6 +702,9 @@ const PrepareBridgePage = ({
               }
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
+              }
+              onOpenPriceImpactWarningModal={() =>
+                togglePriceImpactModalWithVariant('submit-cta')
               }
             />
           )}

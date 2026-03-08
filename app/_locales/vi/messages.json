@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Tác động giá"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Tác động giá phản ánh giao dịch hoán đổi của bạn ảnh hưởng đến giá thị trường như thế nào. Nếu bạn không có đủ phí gas, một phần token của bạn sẽ được dùng để trả phí, điều này làm tăng tác động giá. MetaMask không thiết lập hoặc kiểm soát điều này."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tác động giá"
   },

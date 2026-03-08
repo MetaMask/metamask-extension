@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impacto sobre el precio"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "El impacto en el precio refleja cómo tu canje afecta el precio de mercado. Si no tienes suficiente para gas, algunos de tus tokens se usan para cubrir tarifas, lo que aumenta el impacto en el precio. MetaMask no lo establece ni lo controla."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impacto sobre el precio"
   },

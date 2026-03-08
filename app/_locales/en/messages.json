@@ -1113,11 +1113,26 @@
   "bridgePriceImpact": {
     "message": "Price impact"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Price impact reflects how your swap affects the market price. If you don't have enough for gas, some of your tokens are used to cover fees, which raises price impact. MetaMask doesn't set or control this."
+  "bridgePriceImpactHigh": {
+    "message": "High price impact"
+  },
+  "bridgePriceImpactHighDescription": {
+    "message": "Because of your trade size and available liquidity, you'll get about $1 less than the market price. This is already factored into your quote."
+  },
+  "bridgePriceImpactNormalDescription": {
+    "message": "This is how your trade changes the market price of a token. It depends on the trade size, availale liquidity, and provider fees. MetaMask doesn't control price impact."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Price impact"
+  },
+  "bridgePriceImpactVeryHigh": {
+    "message": "Very high price impact"
+  },
+  "bridgePriceImpactVeryHighDescription": {
+    "message": "You'll lose approximately $1 of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate."
+  },
+  "bridgePriceImpactWarningAriaLabel": {
+    "message": "Read price impact warning details"
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
@@ -5921,6 +5936,9 @@
   },
   "privateNetwork": {
     "message": "Private network"
+  },
+  "proceed": {
+    "message": "Proceed"
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
