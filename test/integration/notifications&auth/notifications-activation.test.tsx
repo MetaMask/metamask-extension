@@ -68,7 +68,7 @@ describe('Notifications Activation', () => {
   });
 
   afterEach(() => {
-    window.history.pushState({}, '', '/'); // return to homescreen
+    window.location.hash = '#/'; // return to homescreen
   });
 
   const clickElement = async (testId: string) => {
