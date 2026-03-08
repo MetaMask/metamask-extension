@@ -6,6 +6,7 @@ import {
   Outlet,
   RouterProvider,
   createHashRouter,
+  useRouteError,
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
@@ -24,6 +25,20 @@ import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
+
+/**
+ * Error boundary for the data router. When a route component throws,
+ * createHashRouter catches it internally instead of letting it reach the
+ * React class component boundary. This renders the same ErrorPage used by
+ * the class boundary, and reports to Sentry.
+ */
+function RouteErrorBoundary() {
+  const error = useRouteError();
+
+  captureException(error);
+
+  return <ErrorPage error={error} />;
+}
 
 /**
  * Root layout route element containing all context providers.
@@ -60,9 +75,11 @@ function AppProviders() {
 const router = createHashRouter([
   {
     element: <AppProviders />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         element: <Routes />,
+        errorElement: <RouteErrorBoundary />,
         children: routeConfig,
       },
     ],
