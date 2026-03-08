@@ -1,6 +1,5 @@
 /**
- * Type-level utilities and compile-time assertions
- * for use in `*.spec.ts` type-level tests.
+ * Compile-time assertions for use in `*.spec.ts` type-level tests.
  *
  * @example
  * ```typescript
@@ -11,6 +10,8 @@
  * ```
  */
 
+import type { IsNever } from './type-level-utils';
+
 /**
  * Uninhabitable branded type used by {@link Expect} to force compile errors.
  */
@@ -18,39 +19,6 @@
 type _ = {
   readonly _: unique symbol;
 };
-
-/**
- * Resolves to `true` if `Type` is `any`, otherwise `false`.
- */
-export type IsAny<Type> = 0 extends 1 & Type ? true : false;
-
-/**
- * Resolves to `true` if `Type` is `never`, otherwise `false`.
- *
- * Wraps in a tuple to prevent distributive conditional evaluation.
- *
- * @see {@link https://gist.github.com/MajorLift/1cf2f949dbe973a6178dd7ad4bcc7612}
- */
-export type IsNever<Type> = [Type] extends [never] ? true : false;
-
-/**
- * Resolves to `true` if `TypeA` and `TypeB` are mutually assignable,
- * otherwise `false`.
- *
- * Guards against `any` by detecting it explicitly first
- * (the naive `[A, B] extends [B, A]` check returns true if either input is `any`).
- *
- * @template TypeA - The type to check.
- * @template TypeB - The type to check.
- */
-export type IsEquivalent<TypeA, TypeB> =
-  IsAny<TypeA> extends true
-    ? IsAny<TypeB>
-    : IsAny<TypeB> extends true
-      ? false
-      : [TypeA, TypeB] extends [TypeB, TypeA]
-        ? true
-        : false;
 
 /**
  * Compile-time assertion. Produces a type error when `TypeX` does not
