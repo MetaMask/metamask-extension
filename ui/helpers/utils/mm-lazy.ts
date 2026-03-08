@@ -1,14 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- required due to contravariant parameter bound
+type AnyComponent = React.ComponentType<any>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DynamicImportType = () => Promise<any>;
 export type ModuleWithDefaultExport<
-  Component extends React.ComponentType<any> = React.ComponentType,
+  Component extends AnyComponent = AnyComponent,
 > = {
   default: Component;
+};
+
+/**
+ * Structural type for extracting a component's display name,
+ * including through HOC `.WrappedComponent` chains.
+ */
+type ComponentLike = {
+  name?: string;
+  displayName?: string;
+  /**
+   * React HOC static property.
+   * Recursive but safe as only one level is ever accessed.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  WrappedComponent?: ComponentLike;
 };
 
 /**
@@ -18,10 +35,10 @@ export type ModuleWithDefaultExport<
  */
 type InferComponent<ImportFn extends DynamicImportType> =
   Awaited<ReturnType<ImportFn>> extends {
-    default: infer Comp extends React.ComponentType<any>;
+    default: infer Comp extends AnyComponent;
   }
     ? Comp
-    : React.ComponentType;
+    : AnyComponent;
 
 // This only has to happen once per app load, so do it outside a function
 const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
@@ -68,25 +85,26 @@ export function mmLazy<ImportFn extends DynamicImportType>(
  * @returns The component name and component.
  * @throws An error if the module has multiple named exports.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function convertToDefaultExportModule(importedModule: any): {
+function convertToDefaultExportModule(
+  importedModule: Record<PropertyKey, unknown>,
+): {
   componentName: string; // TODO: in many circumstances, the componentName gets minified
   component: ModuleWithDefaultExport;
 } {
-  let componentName: string;
-
   // If there's no default export
   if (!importedModule.default) {
     const keys = Object.keys(importedModule);
 
     // If there's only one named export
     if (keys.length === 1) {
-      componentName = keys[0];
+      const componentName = keys[0];
 
       return {
         componentName,
         // Force the component to be the default export
-        component: { default: importedModule[componentName] },
+        component: {
+          default: importedModule[componentName],
+        } as ModuleWithDefaultExport,
       };
     }
 
@@ -96,16 +114,16 @@ function convertToDefaultExportModule(importedModule: any): {
     );
   }
 
-  if (importedModule.default.WrappedComponent) {
-    // If there's a wrapped component, we don't want to see the name reported as `withRouter(Connect(AAA))` we want just `AAA`
-    componentName = importedModule.default.WrappedComponent.name;
-  } else {
-    componentName =
-      importedModule.default.name || importedModule.default.displayName;
-  }
+  // If there's a wrapped component, we don't want to see the name reported as `withRouter(Connect(AAA))` we want just `AAA`
+  const defaultExport = importedModule.default as ComponentLike;
+  const componentName =
+    defaultExport.WrappedComponent?.name ||
+    defaultExport.name ||
+    defaultExport.displayName ||
+    'Unknown';
 
   return {
     componentName,
-    component: importedModule,
+    component: importedModule as ModuleWithDefaultExport,
   };
 }
