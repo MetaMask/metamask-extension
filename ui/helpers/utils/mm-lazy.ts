@@ -9,6 +9,7 @@ type AnyComponent = React.ComponentType<any>;
  * Structural type for a module with a default export.
  * This enables the output to be used with `React.lazy` which requires a default export
  * and also allows for named exports to be used as the component.
+ *
  * @template Component - The component type, inferred from the module.
  */
 type ModuleWithDefaultExport<Component extends AnyComponent = AnyComponent> = {
@@ -122,7 +123,7 @@ export function mmLazy<Module extends Record<PropertyKey, unknown>>(
 
     const importedModule = await fn();
     const { componentName, component } =
-      convertToDefaultExportModule(importedModule);
+      convertToDefaultExportModule<Component>(importedModule);
 
     // Only trace load time of lazy-loaded components if the manifestFlag is set, and then do it by Math.random probability
     if (lazyLoadSubSampleRate && Math.random() < lazyLoadSubSampleRate) {
@@ -135,7 +136,7 @@ export function mmLazy<Module extends Record<PropertyKey, unknown>>(
       endTrace({ name: TraceName.LazyLoadComponent });
     }
 
-    return component as ModuleWithDefaultExport<Component>;
+    return component;
   });
 }
 
@@ -147,11 +148,13 @@ export function mmLazy<Module extends Record<PropertyKey, unknown>>(
  * @returns The component name and component.
  * @throws An error if the module has multiple named exports.
  */
-function convertToDefaultExportModule(
+function convertToDefaultExportModule<
+  Component extends AnyComponent = AnyComponent,
+>(
   importedModule: Record<PropertyKey, unknown>,
 ): {
   componentName: string; // TODO: in many circumstances, the componentName gets minified
-  component: ModuleWithDefaultExport;
+  component: ModuleWithDefaultExport<Component>;
 } {
   // If there's no default export
   if (!importedModule.default) {
@@ -165,8 +168,8 @@ function convertToDefaultExportModule(
         componentName,
         // Force the component to be the default export
         component: {
-          default: importedModule[componentName],
-        } as ModuleWithDefaultExport,
+          default: importedModule[componentName] as Component,
+        },
       };
     }
 
@@ -186,6 +189,6 @@ function convertToDefaultExportModule(
 
   return {
     componentName,
-    component: importedModule as ModuleWithDefaultExport,
+    component: importedModule as ModuleWithDefaultExport<Component>,
   };
 }
