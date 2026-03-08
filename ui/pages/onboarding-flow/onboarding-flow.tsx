@@ -92,10 +92,12 @@ import OnboardingDownloadApp from './download-app/download-app';
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
 // to import Flask-only code and fail.
-const ExperimentalArea = mmLazy(
+const ExperimentalArea = mmLazy<{
+  default: React.ComponentType<{ redirectTo: string }>;
+}>(
   // eslint-disable-next-line import/extensions, import/no-useless-path-segments -- these are needed for mmLazy
   () => import('../../components/app/flask/experimental-area/index.js'),
-) as React.ComponentType<{ redirectTo: string }>;
+);
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>

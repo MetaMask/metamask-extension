@@ -7,7 +7,7 @@ import {
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
-import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 
 export type SettingsV2MenuListItem = {
   id: string;
@@ -60,8 +60,6 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     path: ASSETS_ROUTE,
     labelKey: 'assets',
     iconName: IconName.Dollar,
-    component: mmLazy(
-      (() => import('./assets-tab/index.ts')) as unknown as DynamicImportType,
-    ),
+    component: mmLazy(() => import('./assets-tab/index.ts')),
   },
 ];

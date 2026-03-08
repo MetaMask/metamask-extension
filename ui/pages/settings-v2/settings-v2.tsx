@@ -39,7 +39,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
-import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
@@ -47,10 +47,7 @@ import {
 } from './settings-registry';
 
 const CurrencySubPage = mmLazy(
-  (() =>
-    import(
-      './assets-tab/currency-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./assets-tab/currency-sub-page.tsx'),
 );
 
 // Get the first tab's component for rendering at the settings root (like Settings V1)
