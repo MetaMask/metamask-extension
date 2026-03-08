@@ -5,7 +5,7 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
 type DynamicImportType = () => Promise<any>;
-export type ModuleWithDefaultType<
+export type ModuleWithDefaultExport<
   Component extends React.ComponentType<any> = React.ComponentType,
 > = {
   default: Component;
@@ -55,7 +55,7 @@ export function mmLazy<ImportFn extends DynamicImportType>(
       endTrace({ name: TraceName.LazyLoadComponent });
     }
 
-    return component as ModuleWithDefaultType<Component>;
+    return component as ModuleWithDefaultExport<Component>;
   });
 }
 
@@ -66,7 +66,7 @@ export function mmLazy<ImportFn extends DynamicImportType>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseImportedComponent(importedModule: any): {
   componentName: string; // TODO: in many circumstances, the componentName gets minified
-  component: ModuleWithDefaultType;
+  component: ModuleWithDefaultExport;
 } {
   let componentName: string;
 
