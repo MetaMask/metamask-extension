@@ -1,9 +1,10 @@
 import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import type { IsNever, IsUnion } from '../../../shared/types/type-level-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- required due to contravariant parameter bound
-type AnyComponent = React.ComponentType<any>;
+export type AnyComponent = React.ComponentType<any>;
 
 /**
  * Structural type for a module with a default export.
@@ -50,9 +51,14 @@ type AssertComponent<Value> = [Value] extends [never]
  * than the module namespace itself).
  *
  * @template Module - The module object type, typically inferred from `() => import('...')`.
+ * @template Strict - When `true`, resolves to `never` for modules that would
+ * cause `convertToDefaultExportModule` to throw at runtime (no default export
+ * and not exactly one named export). Defaults to `false` for best-effort
+ * inference with `AnyComponent` fallback.
  */
 export type InferComponent<
   Module extends Record<PropertyKey, unknown> = Record<never, never>,
+  Strict extends boolean = false,
   /**
    * The value of `module.default`. `never` if there is no default export.
    */
@@ -60,7 +66,9 @@ export type InferComponent<
   /**
    * Whether a default export is present.
    */
-  IsDefaultExport = [DefaultExport] extends [never] ? false : true,
+  HasDefaultExport extends boolean = [DefaultExport] extends [never]
+    ? false
+    : true,
   /**
    * Unwraps one additional `default` level to handle inference of
    * double-wrapped module namespaces e.g. `connect()`, `compose()`.
@@ -75,15 +83,30 @@ export type InferComponent<
     ? DefaultExport
     : AssertComponent<NestedDefaultExport>,
   /**
-   * Extracts the single component-assignable value from named exports.
+   * Non-default named keys, used only in strict mode to detect the throw case.
    */
-  FromNamedExport = AssertComponent<
-    Extract<Module[keyof Module], AnyComponent>
-  >,
+  NamedKeys extends PropertyKey = Exclude<keyof Module, 'default'>,
+  /**
+   * Whether the module has exactly one non-default named export.
+   */
+  IsSingleNamedExport extends boolean = IsNever<NamedKeys> extends true
+    ? false
+    : IsUnion<NamedKeys> extends true
+      ? false
+      : true,
+  /**
+   * Extracts the single component-assignable value from named exports.
+   * In strict mode, resolves to `never` when there is not exactly one named export.
+   */
+  FromNamedExport = Strict extends true
+    ? IsSingleNamedExport extends true
+      ? AssertComponent<Extract<Module[keyof Module], AnyComponent>>
+      : never
+    : AssertComponent<Extract<Module[keyof Module], AnyComponent>>,
   /**
    * The inferred component type.
    */
-  InferredComponent = IsDefaultExport extends true
+  InferredComponent = HasDefaultExport extends true
     ? FromDefaultExport
     : FromNamedExport,
 > = InferredComponent;
@@ -111,12 +134,15 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
  *   () => import('./LegacyPage.js'),
  * ) as React.LazyExoticComponent<React.ComponentType<Props>>;
  * ```
+ * @template Module - The module object type, typically inferred from `() => import('...')`.
  * @param fn - an import of the form `() => import('AAA')`
+ * @returns A lazy-loaded component.
+ * @throws An error if the module has no default export or more than one named export.
  */
-export function mmLazy<Module extends Record<PropertyKey, unknown>>(
-  fn: () => Promise<Module>,
-): React.LazyExoticComponent<InferComponent<Module>> {
-  type Component = InferComponent<Module>;
+export function mmLazy<
+  Module extends Record<PropertyKey, unknown>,
+  Component extends AnyComponent = InferComponent<Module, true>,
+>(fn: () => Promise<Module>): React.LazyExoticComponent<Component> {
   return React.lazy(async () => {
     // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
     const startTime = Date.now();

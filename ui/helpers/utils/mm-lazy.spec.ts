@@ -1,9 +1,6 @@
 import type React from 'react';
 import type { Expect } from '../../../shared/types/type-test-utils';
-import type { InferComponent } from './mm-lazy';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyComponent = React.ComponentType<any>;
+import type { AnyComponent, InferComponent } from './mm-lazy';
 
 /**
  * Fixtures
@@ -120,4 +117,71 @@ type Describe_NestedUnwrap = [
  */
 type Describe_NonComponentFunctionExports = [
   Expect<InferComponent<{ util: () => string }>, AnyComponent>,
+];
+
+/**
+ * Strict mode (`InferComponent<Module, true>`)
+ *
+ * Mirrors `MMLazyLoadableComponent` (alias for `InferComponent<Module, true>`).
+ * Resolves to `never` when `convertToDefaultExportModule` would throw at
+ * runtime — no default export and not exactly one named export.
+ */
+
+/**
+ * Pre-resolve to avoid "excessively deep" in `Expect`'s constraint checker.
+ * Inlining `InferComponent<..., true>` directly into `Expect` causes the
+ * full `IsUnion → IsSingleNamedExport` expansion inside the mutual-extends
+ * bound, exceeding TypeScript's depth limit.
+ */
+type StrictDefaultPrecedence = InferComponent<
+  { default: ButtonComponent; Other: ModalComponent },
+  true
+>;
+type StrictDefaultPrecedenceCheck = [StrictDefaultPrecedence] extends [
+  ButtonComponent,
+]
+  ? [ButtonComponent] extends [StrictDefaultPrecedence]
+    ? true
+    : false
+  : false;
+
+type Describe_StrictMode = [
+  /**
+   * Default export passes through unchanged
+   */
+  Expect<InferComponent<{ default: ButtonComponent }, true>, ButtonComponent>,
+
+  /**
+   * Single named export passes through
+   */
+  Expect<InferComponent<{ MyModal: ModalComponent }, true>, ModalComponent>,
+
+  /**
+   * Default takes precedence even with multiple named exports
+   */
+  Expect<StrictDefaultPrecedenceCheck>,
+
+  /**
+   * Single non-component named export falls back to `AnyComponent`
+   * (`IsSingleNamedExport` is `true`, `AssertComponent` handles the fallback)
+   */
+  Expect<InferComponent<{ helper: string }, true>, AnyComponent>,
+
+  /**
+   * Mixed named exports without default → never (runtime throws)
+   */
+  Expect<
+    InferComponent<{ helper: string; Page: ButtonComponent }, true>,
+    never
+  >,
+
+  /**
+   * Multiple non-component exports without default → never
+   */
+  Expect<InferComponent<{ count: number; label: string }, true>, never>,
+
+  /**
+   * Empty module → never (runtime throws)
+   */
+  Expect<InferComponent<Record<never, never>, true>, never>,
 ];
