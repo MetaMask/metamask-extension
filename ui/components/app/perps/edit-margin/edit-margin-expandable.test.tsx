@@ -332,6 +332,37 @@ describe('EditMarginExpandable', () => {
       });
     });
 
+    it('shows inline margin error by default when toast flag prop is omitted', async () => {
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+        error: 'Insufficient balance',
+      });
+
+      const {
+        isPerpsInAppToastsEnabled: _isPerpsInAppToastsEnabled,
+        ...propsWithoutToastFlag
+      } = defaultProps;
+
+      renderWithProvider(
+        <EditMarginExpandable {...propsWithoutToastFlag} isExpanded />,
+        mockStore,
+      );
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '100' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Add Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Insufficient balance')).toBeInTheDocument();
+      });
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalled();
+    });
+
     it('uses fallback margin adjustment description when backend returns no margin error', async () => {
       mockSubmitRequestToBackground.mockResolvedValueOnce({
         success: false,

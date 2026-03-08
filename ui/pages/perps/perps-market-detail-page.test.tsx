@@ -247,6 +247,13 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
     });
 
+    it('renders return using percent semantics from controller values', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
     it('shows handed-off perps toast and clears route state', () => {
       mockUseLocation.mockReturnValue({
         pathname: '/perps/market/ETH',

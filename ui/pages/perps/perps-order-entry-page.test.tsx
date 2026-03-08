@@ -666,6 +666,35 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
+    it('converts ROE percent values for close subtitle fallback', async () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: [
+          {
+            ...mockPositions[0],
+            marginUsed: '0',
+            unrealizedPnl: 'not-a-number',
+            returnOnEquity: '0.8',
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastDescription: 'Your PnL is 0.80%',
+        }),
+      });
+    });
+
     it('calls updatePositionTPSL when in modify mode', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({

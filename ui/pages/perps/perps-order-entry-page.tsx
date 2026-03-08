@@ -472,8 +472,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     } else {
       const returnOnEquity = parseFloat(position.returnOnEquity);
       if (!Number.isNaN(returnOnEquity)) {
-        pnlRatio =
-          Math.abs(returnOnEquity) > 1 ? returnOnEquity / 100 : returnOnEquity;
+        // Controller/mobile ROE is a percent value (e.g. 15.79), while formatter expects a ratio.
+        pnlRatio = returnOnEquity / 100;
       }
     }
 

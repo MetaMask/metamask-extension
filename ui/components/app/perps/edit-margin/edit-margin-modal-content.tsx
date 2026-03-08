@@ -84,7 +84,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSaveRef,
   onSaveEnabledChange,
   onSavingChange,
-  isPerpsInAppToastsEnabled = true,
+  isPerpsInAppToastsEnabled = false,
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();

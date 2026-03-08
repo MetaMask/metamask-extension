@@ -38,7 +38,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   account,
   currentPrice,
   isExpanded,
-  isPerpsInAppToastsEnabled = true,
+  isPerpsInAppToastsEnabled = false,
   onToggle,
 }) => {
   const t = useI18nContext();

@@ -42,7 +42,7 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
   account,
   currentPrice,
   mode,
-  isPerpsInAppToastsEnabled = true,
+  isPerpsInAppToastsEnabled = false,
 }) => {
   const t = useI18nContext();
   const title = mode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
