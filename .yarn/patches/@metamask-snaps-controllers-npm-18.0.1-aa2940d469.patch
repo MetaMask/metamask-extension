@@ -1,0 +1,22 @@
+diff --git a/dist/services/AbstractExecutionService.cjs b/dist/services/AbstractExecutionService.cjs
+index 8710d44d94a71a34c4db576511325f4174756b26..0ae6e3b05b034a10a0d112e3a1739010d7188c85 100644
+--- a/dist/services/AbstractExecutionService.cjs
++++ b/dist/services/AbstractExecutionService.cjs
+@@ -242,7 +242,7 @@ class AbstractExecutionService {
+         const request = {
+             jsonrpc: '2.0',
+             method: 'executeSnap',
+-            params: { snapId, sourceCode, endowments },
++            params: Object.fromEntries(Object.entries({ snapId, sourceCode, endowments }).filter(([_, v]) => v !== undefined)),
+             id: (0, nanoid_1.nanoid)(),
+         };
+         (0, utils_1.assertIsJsonRpcRequest)(request);
+@@ -281,7 +281,7 @@ class AbstractExecutionService {
+                 snapId,
+                 origin,
+                 handler,
+-                request: request,
++                request: Object.fromEntries(Object.entries(request).filter(([_, v]) => v !== undefined)),
+             },
+         });
+     }
