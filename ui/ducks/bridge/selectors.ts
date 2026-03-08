@@ -725,40 +725,40 @@ export const getValidationErrors = createDeepEqualSelector(
       isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
-          isValidQuoteRequest(quoteRequest) &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
+        isValidQuoteRequest(quoteRequest) &&
+        quotesLastFetchedMs &&
+        !isLoading &&
+        quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
-          !activeQuote &&
-          validatedSrcAmount &&
-          fromToken &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(minimumBalanceToUse)
-                .lte(validatedSrcAmount)
-            : new BigNumber(nativeBalance).lte(0)),
+        !activeQuote &&
+        validatedSrcAmount &&
+        fromToken &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(minimumBalanceToUse)
+              .lte(validatedSrcAmount)
+          : new BigNumber(nativeBalance).lte(0)),
       ),
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
         nativeBalance &&
-          activeQuote &&
-          fromToken &&
-          fromTokenInputValue &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(activeQuote.totalNetworkFee.amount)
-                .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceToUse)
-                .lte(0)
-            : new BigNumber(nativeBalance).lte(
-                activeQuote.totalNetworkFee.amount,
-              )),
+        activeQuote &&
+        fromToken &&
+        fromTokenInputValue &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(activeQuote.totalNetworkFee.amount)
+              .sub(activeQuote.sentAmount.amount)
+              .sub(minimumBalanceToUse)
+              .lte(0)
+          : new BigNumber(nativeBalance).lte(
+              activeQuote.totalNetworkFee.amount,
+            )),
       ),
       isInsufficientBalance:
         validatedSrcAmount &&
@@ -778,8 +778,8 @@ export const getValidationErrors = createDeepEqualSelector(
           : false,
       isPriceImpactWarning: Boolean(
         priceImpactNumber &&
-          priceImpactNumber > warning &&
-          priceImpactNumber <= error,
+        priceImpactNumber > warning &&
+        priceImpactNumber <= error,
       ),
       isPriceImpactError: Boolean(
         priceImpactNumber && priceImpactNumber > error,

@@ -20,7 +20,7 @@ export type AccountsState = {
 export function isBitcoinAccount(account: InternalAccount) {
   return Boolean(
     account &&
-      Object.values(BtcAccountType).includes(account.type as BtcAccountType),
+    Object.values(BtcAccountType).includes(account.type as BtcAccountType),
   );
 }
 

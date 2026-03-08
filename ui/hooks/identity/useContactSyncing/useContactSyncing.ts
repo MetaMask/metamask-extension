@@ -33,11 +33,11 @@ export const useShouldDispatchContactSyncing = () => {
 
   const shouldDispatchContactSyncing: boolean = Boolean(
     basicFunctionality &&
-      isBackupAndSyncEnabled &&
-      isContactSyncingEnabled &&
-      isUnlocked &&
-      isSignedIn &&
-      completedOnboarding,
+    isBackupAndSyncEnabled &&
+    isContactSyncingEnabled &&
+    isUnlocked &&
+    isSignedIn &&
+    completedOnboarding,
   );
 
   return shouldDispatchContactSyncing;

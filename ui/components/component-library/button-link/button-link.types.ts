@@ -16,8 +16,10 @@ export enum ButtonLinkSize {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface ButtonLinkStyleUtilityProps
-  extends Omit<ButtonBaseStyleUtilityProps, 'size'> {
+export interface ButtonLinkStyleUtilityProps extends Omit<
+  ButtonBaseStyleUtilityProps,
+  'size'
+> {
   /**
    * Boolean to change button type to Danger when true
    */

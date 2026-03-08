@@ -22,11 +22,11 @@ import { TokenListControllerInit } from './token-list-controller-init';
 
 jest.mock('@metamask/assets-controllers', () => {
   return {
-    TokenListController: jest.fn().mockImplementation(function (this: {
-      initialize: jest.Mock;
-    }) {
-      this.initialize = jest.fn().mockResolvedValue(undefined);
-    }),
+    TokenListController: jest
+      .fn()
+      .mockImplementation(function (this: { initialize: jest.Mock }) {
+        this.initialize = jest.fn().mockResolvedValue(undefined);
+      }),
   };
 });
 

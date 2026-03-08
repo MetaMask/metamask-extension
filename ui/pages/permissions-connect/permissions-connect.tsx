@@ -231,7 +231,7 @@ function PermissionsConnect() {
     | undefined;
   const isRequestingAccounts = Boolean(
     permissions?.[Caip25EndowmentPermissionName] &&
-      !isRequestApprovalPermittedChains,
+    !isRequestApprovalPermittedChains,
   );
 
   const targetSubjectMetadataFromSelector = useSelector((state) =>

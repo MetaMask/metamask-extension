@@ -208,10 +208,10 @@ export const getSmartTransactionsEnabled = (
     ];
   return Boolean(
     getChainSupportsSmartTransactions(state, chainId) &&
-      getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
-      supportedAccount &&
-      smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness,
+    getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
+    supportedAccount &&
+    smartTransactionsFeatureFlagEnabled &&
+    smartTransactionsLiveness,
   );
 };
 

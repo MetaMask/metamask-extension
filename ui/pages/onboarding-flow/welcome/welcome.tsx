@@ -108,7 +108,7 @@ export default function OnboardingWelcome() {
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
     animationCompleted?.MetamaskWordMarkAnimation ||
-      process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
   );
 
   // In test environments or when returning from another page, skip animations

@@ -120,8 +120,8 @@ export const useNetworkManagerInitialTab = () => {
       return subset.every((x) => supersetSet.has(x));
     };
 
-    const enabledNetworksCaipIds = allEnabledNetworksForAllNamespaces.map(
-      (c) => (isStrictHexString(c) ? toEvmCaipChainId(c) : (c as CaipChainId)),
+    const enabledNetworksCaipIds = allEnabledNetworksForAllNamespaces.map((c) =>
+      isStrictHexString(c) ? toEvmCaipChainId(c) : (c as CaipChainId),
     );
 
     const featuredNetworksCaipIds = FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN.map(

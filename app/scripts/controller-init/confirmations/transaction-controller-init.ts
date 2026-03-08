@@ -88,9 +88,9 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
     getSavedGasFees: (chainId) => {
-      return preferencesController().state.advancedGasFee[
-        chainId
-      ] as unknown as SavedGasFees | undefined;
+      return preferencesController().state.advancedGasFee[chainId] as unknown as
+        | SavedGasFees
+        | undefined;
     },
     getSimulationConfig: async (url, opts) => {
       const getToken = () =>

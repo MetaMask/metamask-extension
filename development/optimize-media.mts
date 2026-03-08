@@ -71,18 +71,18 @@ async function optimizeImage(filePath: string, fix = true) {
     if (supportedFileFormats.includes(fileInfo.format)) {
       const { size: originalSize } = await stat(filePath);
       const optimizedBuffer = await sharp(filePath, {
-          // default is `false`, which makes sharp only read the first frame of
-          // an animated image :facepalm:
-          animated: true,
-        })
-          .toFormat(fileInfo.format, {
-            compressionLevel: 9,
-            // 6 is max for webp,
-            effort: fileInfo.format === 'webp' ? 6 : 10,
-            quality: 100,
-            lossless: true,
-          } satisfies SupportedSharpFileOptions)
-          .toBuffer();
+        // default is `false`, which makes sharp only read the first frame of
+        // an animated image :facepalm:
+        animated: true,
+      })
+        .toFormat(fileInfo.format, {
+          compressionLevel: 9,
+          // 6 is max for webp,
+          effort: fileInfo.format === 'webp' ? 6 : 10,
+          quality: 100,
+          lossless: true,
+        } satisfies SupportedSharpFileOptions)
+        .toBuffer();
 
       if (optimizedBuffer.byteLength < originalSize) {
         // if we saved some bytes, write the optimized image back to disk

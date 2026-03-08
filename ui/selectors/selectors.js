@@ -3289,9 +3289,7 @@ export const getIsDefiPositionsEnabled = createSelector(
   (remoteFeatureFlags) =>
     Boolean(
       remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
-        DEFAULT_FEATURE_FLAG_VALUES[
-          FeatureFlagNames.AssetsDefiPositionsEnabled
-        ],
+      DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
     ),
 );
 
@@ -3507,8 +3505,8 @@ export const getUpdatedAndSortedAccounts = createSelector(
       .filter((account) =>
         Boolean(
           account &&
-            pinnedAddresses.includes(account.address) &&
-            !hiddenAddresses?.includes(account.address),
+          pinnedAddresses.includes(account.address) &&
+          !hiddenAddresses?.includes(account.address),
         ),
       );
 
