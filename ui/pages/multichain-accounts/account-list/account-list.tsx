@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -24,7 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Animated } from '../../../components/ui/animated';
+import { Animated, type AnimatedRef } from '../../../components/ui/animated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import {
@@ -120,8 +120,18 @@ export const AccountList = () => {
     setIsAddWalletModalOpen(false);
   }, [setIsAddWalletModalOpen]);
 
+  const animatedRef = useRef<AnimatedRef>(null);
+
+  const handleBack = useCallback(() => {
+    if (animatedRef.current) {
+      animatedRef.current.triggerExit(() => navigate(PREVIOUS_ROUTE));
+    } else {
+      navigate(PREVIOUS_ROUTE);
+    }
+  }, [navigate]);
+
   return (
-    <Animated>
+    <Animated ref={animatedRef}>
       <Page className="account-list-page">
         <Header
           textProps={{
@@ -132,7 +142,7 @@ export const AccountList = () => {
               size={ButtonIconSize.Md}
               ariaLabel={t('back')}
               iconName={IconName.ArrowLeft}
-              onClick={() => navigate(PREVIOUS_ROUTE)}
+              onClick={handleBack}
             />
           }
         >

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -40,7 +40,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
-import { Animated } from '../../components/ui/animated';
+import { Animated, type AnimatedRef } from '../../components/ui/animated';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -109,21 +109,31 @@ const CrossChainSwap = () => {
   // Sets tx alerts for the active quote
   useTxAlerts();
 
-  const redirectToDefaultRoute = async () => {
-    await resetControllerAndInputStates();
-    if (isFromTransactionShield) {
-      navigate(TRANSACTION_SHIELD_ROUTE);
+  const animatedRef = useRef<AnimatedRef>(null);
+
+  const redirectToDefaultRoute = () => {
+    const doNavigate = async () => {
+      await resetControllerAndInputStates();
+      if (isFromTransactionShield) {
+        navigate(TRANSACTION_SHIELD_ROUTE);
+      } else {
+        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+      }
+      dispatch(clearSwapsState());
+      await dispatch(resetBackgroundSwapsState());
+    };
+
+    if (animatedRef.current) {
+      animatedRef.current.triggerExit(() => void doNavigate());
     } else {
-      navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+      void doNavigate();
     }
-    dispatch(clearSwapsState());
-    await dispatch(resetBackgroundSwapsState());
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   return (
-    <Animated>
+    <Animated ref={animatedRef}>
       <Page className="bridge__container">
         <Header
           textProps={{ variant: TextVariant.headingSm }}
