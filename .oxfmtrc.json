@@ -29,6 +29,8 @@
     "/test/e2e/tests/phishing-controller/mock-page-with-iframe-but-disable-early-detection/index.html",
     "/test/e2e/tests/phishing-controller/mock-page-with-iframe/index.html",
     "/test/e2e/tests/phishing-controller/mock-page-with-disallowed-iframe/index.html",
-    "/app/html/partials/partial-head.html"
+    "/app/html/partials/partial-head.html",
+    ".github/**",
+    ".storybook/**"
   ]
 }
