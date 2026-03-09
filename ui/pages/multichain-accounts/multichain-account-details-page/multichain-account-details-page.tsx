@@ -71,9 +71,7 @@ export const MultichainAccountDetailsPage = () => {
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
   const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
-  const isRemovable =
-    wallet?.type !== AccountWalletType.Entropy &&
-    wallet?.type !== AccountWalletType.Snap;
+  const isRemovable = wallet?.type !== AccountWalletType.Entropy;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
