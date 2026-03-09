@@ -119,6 +119,8 @@ export type OrderEntryProps = {
   midPrice?: number;
   /** Callback when user changes order type (Market/Limit) */
   onOrderTypeChange?: (orderType: OrderType) => void;
+  /** Callback when add-funds icon is pressed in the amount input */
+  onAddFunds?: () => void;
 };
 
 /**
@@ -151,6 +153,8 @@ export type AmountInputProps = {
   asset: string;
   /** Current asset price for token conversion */
   currentPrice: number;
+  /** Callback when add-funds icon is pressed */
+  onAddFunds?: () => void;
 };
 
 /**
