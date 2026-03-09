@@ -238,5 +238,19 @@ describe('Info', () => {
         screen.getByTestId('custom-amount-info-skeleton'),
       ).toBeInTheDocument();
     });
+
+    it('renders send skeleton when loader is Send', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({
+        loader: ConfirmationLoader.Send,
+      });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('confirmation__send_info_skeleton'),
+      ).toBeInTheDocument();
+    });
   });
 });
