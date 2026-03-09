@@ -5875,9 +5875,6 @@
   "removeAccount": {
     "message": "Hesabı kaldır"
   },
-  "removeAccountDescription": {
-    "message": "Bu hesap cüzdanınızdan kaldırılacak. Devam etmeden önce lütfen orijinal Gizli Kurtarma İfadenizin veya içe aktarılan bu hesabın özel anahtarının sizde bulunduğundan emin olun. Hesap açılır menüsünden hesapları içe aktarabilir veya tekrar hesap oluşturabilirsiniz. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Kaldırmadan önce bu hesap için Gizli Kurtarma İfadenizin veya özel anahtarınızın olduğundan emin olun.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

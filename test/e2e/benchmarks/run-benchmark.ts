@@ -79,7 +79,7 @@ const PRESETS: Record<string, string[]> = {
   ],
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
-    'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
+    'test/e2e/playwright/benchmark/dapp-page-load-benchmark.spec.ts',
   ],
 };
 

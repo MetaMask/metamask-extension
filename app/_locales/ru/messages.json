@@ -5875,9 +5875,6 @@
   "removeAccount": {
     "message": "Удалить счет"
   },
-  "removeAccountDescription": {
-    "message": "Этот счет будет удален из вашего кошелька. Прежде чем продолжить, убедитесь, что у вас есть исходная секретная фраза для восстановления или закрытый ключ для этого импортированного счета. Вы можете импортировать или создать счета снова из раскрывающегося списка счетов. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Перед удалением убедитесь, что у вас есть секретная фраза для восстановления или закрытый ключ для этого счета.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

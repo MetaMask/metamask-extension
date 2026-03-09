@@ -5872,9 +5872,6 @@
   "removeAccount": {
     "message": "Suprimer le compte"
   },
-  "removeAccountDescription": {
-    "message": "Ce compte sera supprimé de votre portefeuille. Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée d’origine pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu déroulant des comptes. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée de ce compte avant de le supprimer.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
