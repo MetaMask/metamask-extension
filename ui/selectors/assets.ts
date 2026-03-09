@@ -1464,7 +1464,7 @@ export const selectAccountSupportsEnabledNetworks = createSelector(
   },
 );
 
-export const getAssetsBySelectedAccountGroupWithTronResources =
+export const getAssetsBySelectedAccountGroupWithTronSpecialAssets =
   createDeepEqualSelector(
     getStateForAssetSelector,
     (assetListState: AssetListState) =>

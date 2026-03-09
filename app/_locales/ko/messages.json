@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "가격 영향"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "가격 영향은 스왑이 시장 가격에 미치는 영향을 반영합니다. 가스비가 충분하지 않으면 일부 토큰이 수수료를 충당하는 데 사용되어 가격 영향이 증가합니다. MetaMask는 이를 설정하거나 제어하지 않습니다."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "가격 영향"
   },
@@ -5880,9 +5877,6 @@
   },
   "removeAccount": {
     "message": "계정 제거"
-  },
-  "removeAccountDescription": {
-    "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 계정의 원래 비밀복구구문이나 개인 키를 가지고 있는지 확인하세요. 계정 드롭다운에서 계정을 다시 가져오거나 생성할 수 있습니다. "
   },
   "removeAccountModalBannerDescription": {
     "message": "이 계정을 제거하기 전에 비밀복구구문 또는 개인 키를 반드시 확보하세요.",
