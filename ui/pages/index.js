@@ -61,9 +61,14 @@ class Index extends PureComponent {
                       <MetamaskNotificationsProvider>
                         <ShieldSubscriptionProvider>
                           <RiveWasmProvider>
-                            <DesignerMode>
+                            {process.env
+                              .ENABLE_SETTINGS_PAGE_DEV_OPTIONS ? (
+                              <DesignerMode>
+                                <Routes />
+                              </DesignerMode>
+                            ) : (
                               <Routes />
-                            </DesignerMode>
+                            )}
                           </RiveWasmProvider>
                         </ShieldSubscriptionProvider>
                       </MetamaskNotificationsProvider>
