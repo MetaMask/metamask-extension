@@ -6,8 +6,27 @@ import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../
 import { Expiry } from './expiry';
 
 describe('Expiry', () => {
+  const mockDecodedPermission = {
+    expiry: 1234567890 + 86400,
+    origin: 'https://metamask.github.io',
+    permission: {
+      type: 'erc20-token-stream',
+      isAdjustmentAllowed: false,
+      data: {
+        tokenAddress: '0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A',
+        initialAmount: '0x1234',
+        maxAmount: '0x5678',
+        amountPerSecond: '0x9abc',
+        startTime: 1234567890,
+      },
+      justification: 'Test justification',
+    },
+    chainId: '0x1',
+    to: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829',
+  } as const;
+
   const getMockStore = () => {
-    const state = getMockTypedSignPermissionConfirmState();
+    const state = getMockTypedSignPermissionConfirmState(mockDecodedPermission);
     return configureMockStore([])(state);
   };
 
@@ -17,7 +36,7 @@ describe('Expiry', () => {
 
   describe('with expiry timestamp', () => {
     it('renders DateAndTimeRow with the expiry timestamp', () => {
-      const expiry = 1234567890 + 86400; // 1 day later
+      const expiry = 1234567890 + 86400;
       const { container } = renderWithConfirmContextProvider(
         <Expiry expiry={expiry} />,
         getMockStore(),
@@ -25,12 +44,11 @@ describe('Expiry', () => {
 
       expect(container).toBeInTheDocument();
       expect(container.textContent).toContain('Expiration');
-      // DateAndTimeRow should format the date
       expect(container.textContent).not.toContain('Never expires');
     });
 
     it('displays formatted date for valid timestamp', () => {
-      const expiry = 1609459200; // Jan 1, 2021 00:00:00 UTC
+      const expiry = 1609459200;
       const { container } = renderWithConfirmContextProvider(
         <Expiry expiry={expiry} />,
         getMockStore(),
@@ -53,32 +71,21 @@ describe('Expiry', () => {
       expect(container.textContent).toContain('Expiration');
       expect(container.textContent).toContain('Never expires');
     });
-
-    it('uses ConfirmInfoRow instead of DateAndTimeRow', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Expiry expiry={null} />,
-        getMockStore(),
-      );
-
-      expect(container).toBeInTheDocument();
-      expect(container.textContent).toContain('Never expires');
-    });
   });
 
   describe('edge cases', () => {
-    it('handles zero timestamp as truthy (displays as date)', () => {
+    it('handles zero timestamp', () => {
       const { container } = renderWithConfirmContextProvider(
         <Expiry expiry={0} />,
         getMockStore(),
       );
 
       expect(container).toBeInTheDocument();
-      // Zero is falsy in JavaScript, so should show "Never expires"
       expect(container.textContent).toContain('Never expires');
     });
 
     it('handles very large timestamps', () => {
-      const expiry = 9999999999; // Far future timestamp
+      const expiry = 9999999999;
       const { container } = renderWithConfirmContextProvider(
         <Expiry expiry={expiry} />,
         getMockStore(),
