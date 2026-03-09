@@ -73,6 +73,18 @@ describe('fetchErc20DecimalsOrThrow', () => {
     );
   });
 
+  it('should throw an error when token details result is undefined', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue(
+      undefined,
+    );
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow(
+      `Unable to resolve token decimals for address ${MOCK_ADDRESS} on chain ${MOCK_CHAIN_ID}`,
+    );
+  });
+
   it('should return the decimals for a given token address', async () => {
     (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({
       decimals: MOCK_DECIMALS,

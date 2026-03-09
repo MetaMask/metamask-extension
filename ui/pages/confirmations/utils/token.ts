@@ -141,7 +141,14 @@ export const fetchErc20DecimalsOrThrow = async (
     undefined,
     undefined,
     chainId,
-  )) as TokenDetailsERC20;
+  )) as TokenDetailsERC20 | undefined | null;
+
+  if (!result) {
+    throw new Error(
+      `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
+    );
+  }
+
   const { decimals: decStr } = result;
   const decimals = parseTokenDetailDecimals(decStr);
 
