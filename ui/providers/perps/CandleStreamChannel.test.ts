@@ -51,7 +51,7 @@ describe('CandleStreamChannel', () => {
   });
 
   describe('subscribe', () => {
-    it('calls perpsActivateStreaming on first subscriber', () => {
+    it('calls perpsActivateCandleStream on first subscriber', () => {
       const cb = jest.fn();
       channel.subscribe({
         symbol: 'BTC',
@@ -60,13 +60,11 @@ describe('CandleStreamChannel', () => {
       });
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsActivateStreaming',
+        'perpsActivateCandleStream',
         [
           expect.objectContaining({
-            candle: expect.objectContaining({
-              symbol: 'BTC',
-              interval: CandlePeriod.OneHour,
-            }),
+            symbol: 'BTC',
+            interval: CandlePeriod.OneHour,
           }),
         ],
       );
@@ -138,7 +136,7 @@ describe('CandleStreamChannel', () => {
       expect(cb).not.toHaveBeenCalled();
     });
 
-    it('passes duration in perpsActivateStreaming call', () => {
+    it('passes duration in perpsActivateCandleStream call', () => {
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
@@ -147,10 +145,12 @@ describe('CandleStreamChannel', () => {
       });
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsActivateStreaming',
+        'perpsActivateCandleStream',
         [
           expect.objectContaining({
-            candle: expect.objectContaining({ duration: TimeDuration.OneDay }),
+            symbol: 'BTC',
+            interval: CandlePeriod.OneHour,
+            duration: TimeDuration.OneDay,
           }),
         ],
       );
@@ -169,15 +169,16 @@ describe('CandleStreamChannel', () => {
       mockSubmitRequestToBackground.mockClear();
 
       unsubscribe();
+      // disconnect() calls perpsDeactivateCandleStream (1 call)
 
-      // Re-subscribe — should activate streaming again
+      // Re-subscribe — should activate streaming again (1 call)
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
 
     it('does not re-activate when other subscribers remain', () => {
@@ -734,7 +735,7 @@ describe('CandleStreamChannel', () => {
       channel.reconnect();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsActivateStreaming',
+        'perpsActivateCandleStream',
         expect.anything(),
       );
     });
