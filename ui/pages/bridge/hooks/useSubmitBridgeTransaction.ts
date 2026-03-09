@@ -168,6 +168,11 @@ export default function useSubmitBridgeTransaction() {
         });
         return;
       }
+      navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+        replace: true,
+        state: { stayOnHomePage: true },
+      });
+      return;
     } finally {
       setIsSubmitting(false);
     }

@@ -19,6 +19,7 @@ import {
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as sharedSelectors from '../../../../shared/modules/selectors';
+import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
@@ -162,6 +163,7 @@ const makeWrapper =
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
+const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 
 setBackgroundConnection({
   submitTx: submitTxSpy,
@@ -176,6 +178,13 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       jest.clearAllMocks();
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(true);
+      captureExceptionSpy.mockReturnValue(undefined);
+      setBackgroundConnection({
+        submitTx: submitTxSpy,
+        submitIntent: submitIntentSpy,
+        getStatePatches: jest.fn(),
+        setEnabledAllPopularNetworks: jest.fn(),
+      } as never);
     });
 
     it('executes EVM bridge transaction', async () => {
@@ -341,6 +350,52 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           state: { stayOnHomePage: true },
         },
       );
+    });
+
+    it('routes to activity with replace when non-HW intent submission fails', async () => {
+      const store = makeMockStore();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      try {
+        await setBackgroundConnection({
+          submitTx: submitTxSpy,
+          submitIntent: jest.fn().mockRejectedValue(new Error('submit failed')),
+          getStatePatches: jest.fn(),
+          setEnabledAllPopularNetworks: jest.fn(),
+        } as never);
+        const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+          wrapper: makeWrapper(store),
+        });
+
+        const quoteWithIntent = {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          quote: {
+            ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+            intent: {
+              order: {},
+            },
+          },
+        };
+
+        await act(async () => {
+          await result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            quoteWithIntent as any,
+          );
+        });
+
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?tab=activity`,
+          {
+            replace: true,
+            state: { stayOnHomePage: true },
+          },
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
     });
 
     it('navigates to awaiting signatures for hardware-wallet intent quotes', async () => {
