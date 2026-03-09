@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Bất kỳ khoản phí mạng nào được báo trên màn hình trước đó đều bao gồm cả hai giao dịch và sẽ được chia nhỏ."
   },
-  "bridgeNetCost": {
-    "message": "Chi phí ròng"
-  },
   "bridgeNoMMFee": {
     "message": "Không có phí MM"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 phút",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Cầu nối đến"
@@ -5804,12 +5797,6 @@
   },
   "queued": {
     "message": "Đã đưa vào hàng đợi"
-  },
-  "quotedReceiveAmount": {
-    "message": "Số tiền nhận $1"
-  },
-  "quotedTotalCost": {
-    "message": "Tổng chi phí $1"
   },
   "rank": {
     "message": "Xếp hạng"

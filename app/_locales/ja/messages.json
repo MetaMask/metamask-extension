@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "前の画面のクォートのネットワーク手数料には両方のトランザクションが含まれていて、分割されます。"
   },
-  "bridgeNetCost": {
-    "message": "純コスト"
-  },
   "bridgeNoMMFee": {
     "message": "MM手数料なし"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1を$2にスワップしています",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "ブリッジ先:"
@@ -5798,12 +5791,6 @@
   },
   "queued": {
     "message": "キュー待ち"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1の受取額"
-  },
-  "quotedTotalCost": {
-    "message": "$1の合計コスト"
   },
   "rank": {
     "message": "ランキング"

@@ -925,9 +925,6 @@
   "bridgeGasFeesSplit": {
     "message": "Áirítear an dá idirbheart in aon táille líonra a luadh ar an scáileán roimhe seo agus roinnfear í."
   },
-  "bridgeNetCost": {
-    "message": "Costas glan"
-  },
   "bridgeNoMMFee": {
     "message": "Gan aon táille MM"
   },
@@ -988,10 +985,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Ag malartú $1 ar $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 nóiméad",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Droichead go"
@@ -4758,12 +4751,6 @@
   },
   "queued": {
     "message": "Sa scuaine"
-  },
-  "quotedReceiveAmount": {
-    "message": "Méid faighte $1"
-  },
-  "quotedTotalCost": {
-    "message": "Costas iomlán $1"
   },
   "rank": {
     "message": "Céim"

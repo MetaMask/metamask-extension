@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Biaya jaringan yang dikuotasi di layar sebelumnya mencakup kedua transaksi dan akan dibagi."
   },
-  "bridgeNetCost": {
-    "message": "Biaya bersih"
-  },
   "bridgeNoMMFee": {
     "message": "Tidak ada biaya MM"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Menukar $1 dengan $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 mnt",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Bridge ke"
@@ -5804,12 +5797,6 @@
   },
   "queued": {
     "message": "Antrean"
-  },
-  "quotedReceiveAmount": {
-    "message": "Jumlah $1 yang diterima"
-  },
-  "quotedTotalCost": {
-    "message": "Biaya total $1"
   },
   "rank": {
     "message": "Peringkat"
