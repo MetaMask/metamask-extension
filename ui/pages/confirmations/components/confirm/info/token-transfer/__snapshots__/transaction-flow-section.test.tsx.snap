@@ -7,13 +7,13 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
     data-testid="confirmation__transaction-flow"
   >
     <div
-      class="mm-box mm-box--padding-right-2 mm-box--display-flex mm-box--flex-direction-column"
+      class="flex flex-col pr-2"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mm-box"
+          class=""
           style="flex: 1; min-width: 0;"
         >
           <div
@@ -36,7 +36,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="mm-box w-full"
+              class="w-full"
               data-testid="sender-address"
             >
               <div
@@ -113,13 +113,13 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-top-1 mm-box--margin-bottom-1 mm-box--margin-left-2"
+        class="mt-1 mb-1 ml-2"
       />
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mm-box"
+          class=""
           style="flex: 1; min-width: 0;"
         >
           <div
@@ -142,7 +142,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="mm-box w-full"
+              class="w-full"
               data-testid="recipient-address"
             >
               <div
