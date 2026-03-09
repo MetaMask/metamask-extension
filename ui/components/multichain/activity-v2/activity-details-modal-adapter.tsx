@@ -3,22 +3,22 @@ import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import { Hex } from 'viem';
+import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
+import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
+import { useGetTitle } from './hooks';
+import { resolveTransactionType } from './helpers';
 import type {
   TransactionViewModel,
   TransactionGroup,
-} from '../../../../shared/lib/multichain/types';
-import { TransactionDetailsModal as LegacyTransactionDetailsModal } from '../../../pages/confirmations/components/activity';
-import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
-import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import { getStatusKey } from '../../../helpers/utils/transactions.util';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
-import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
-import { getSelectedAddress } from '../../../selectors/selectors';
-import { formatUnits } from '../../../../shared/lib/unit';
-import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
-import { useGetTitle } from './hooks';
-import { resolveTransactionType } from './helpers';
+} from '~/shared/lib/multichain/types';
+import { TransactionDetailsModal as LegacyTransactionDetailsModal } from '~/ui/pages/confirmations/components/activity';
+import { PAY_TRANSACTION_TYPES } from '~/ui/pages/confirmations/constants/pay';
+import { useTransactionDisplayData } from '~/ui/hooks/useTransactionDisplayData';
+import { getStatusKey } from '~/ui/helpers/utils/transactions.util';
+import { formatDateWithYearContext } from '~/ui/helpers/utils/util';
+import { getSelectedAddress } from '~/ui/selectors/selectors';
+import { formatUnits } from '~/shared/lib/unit';
+import { useBridgeActivityData } from '~/ui/hooks/bridge/useBridgeActivityData';
 
 // eslint-disable-next-line no-empty-function
 const noop = () => {};

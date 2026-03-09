@@ -2,23 +2,23 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import type { CaipChainId } from '@metamask/utils';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { calculateFiatFromMarketRates } from './helpers';
+import type { ActivityListFilter } from './helpers';
+import { useI18nContext } from '~/ui/hooks/useI18nContext';
 import type {
   Token,
   TransactionViewModel,
-} from '../../../../shared/lib/multichain/types';
-import { selectMarketRates } from '../../../selectors/activity';
-import { selectEvmAddress } from '../../../selectors/accounts';
-import { getUseExternalServices } from '../../../selectors';
-import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
-import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
-import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
-import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
-import { queries } from '../../../helpers/queries';
-import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
-import { calculateFiatFromMarketRates } from './helpers';
-import type { ActivityListFilter } from './helpers';
+} from '~/shared/lib/multichain/types';
+import { selectMarketRates } from '~/ui/selectors/activity';
+import { selectEvmAddress } from '~/ui/selectors/accounts';
+import { getUseExternalServices } from '~/ui/selectors';
+import { parseApprovalTransactionData } from '~/shared/modules/transaction.utils';
+import { selectTransactions } from '~/shared/lib/multichain/transformations';
+import { SET_APPROVAL_FOR_ALL } from '~/shared/constants/transaction';
+import { selectEnabledNetworksAsCaipChainIds } from '~/ui/selectors/multichain/networks';
+import { selectRequiredTransactionHashes } from '~/ui/selectors/transactionController';
+import { queries } from '~/ui/helpers/queries';
+import { useBridgeActivityData } from '~/ui/hooks/bridge/useBridgeActivityData';
 
 function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();

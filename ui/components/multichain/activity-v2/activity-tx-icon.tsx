@@ -1,8 +1,8 @@
 import React from 'react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
-import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import { TransactionGroupCategory } from '~/shared/constants/transaction';
+import type { TransactionViewModel } from '~/shared/lib/multichain/types';
 
 function getIconCategory(tx: TransactionViewModel) {
   const { transactionCategory } = tx;

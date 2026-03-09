@@ -2,12 +2,6 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
-import type {
-  Token,
-  TransactionGroup,
-  TransactionViewModel,
-} from '../../../../shared/lib/multichain/types';
 import {
   getPrimaryAmount,
   calculateFiatFromMarketRates,
@@ -18,6 +12,12 @@ import {
   matchesLocalTransaction,
   matchesNonEvmTransaction,
 } from './helpers';
+import { NATIVE_TOKEN_ADDRESS } from '~/shared/constants/transaction';
+import type {
+  Token,
+  TransactionGroup,
+  TransactionViewModel,
+} from '~/shared/lib/multichain/types';
 
 const ethToken: Token = {
   address: NATIVE_TOKEN_ADDRESS,

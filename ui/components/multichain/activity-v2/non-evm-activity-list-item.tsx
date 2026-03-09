@@ -4,18 +4,18 @@ import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api
 import { isCrossChain } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 import { Text } from '@metamask/design-system-react';
-import {
-  useMultichainTransactionDisplay,
-  KEYRING_TRANSACTION_STATUS_KEY,
-} from '../../../hooks/useMultichainTransactionDisplay';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
-import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import LegacyMultichainBridgeListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
+import { selectBridgeHistoryForAccountGroup } from '~/ui/ducks/bridge-status/selectors';
+import { TransactionGroupCategory } from '~/shared/constants/transaction';
+import {
+  useMultichainTransactionDisplay,
+  KEYRING_TRANSACTION_STATUS_KEY,
+} from '~/ui/hooks/useMultichainTransactionDisplay';
 
 type Props = {
   transaction: Transaction;
