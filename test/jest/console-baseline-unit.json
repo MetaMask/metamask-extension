@@ -2982,6 +2982,21 @@
     "ui/pages/confirmations/utils/confirm.test.ts": {
       "error: Failed to detect if URL": 1
     },
+    "ui/pages/contacts/add-contact-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/contacts/components/contact-list-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/contacts/components/contacts-empty-state.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/contacts/components/delete-contact-modal.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/contacts/edit-contact-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/core/defi-referral-consent/defi-referral-consent.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
