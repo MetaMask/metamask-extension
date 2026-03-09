@@ -2,6 +2,8 @@ const { strict: assert } = require('assert');
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
+const SnapPrivacyWarning =
+  require('../page-objects/pages/dialog/snap-privacy-warning').default;
 const { withFixtures, getEventPayloads } = require('../helpers');
 const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
@@ -231,6 +233,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const snapPrivacyWarning = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarning.scrollToBottomAndAccept();
+
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -346,6 +351,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const snapPrivacyWarningRejected = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarningRejected.scrollToBottomAndAccept();
+
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -437,6 +445,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const snapPrivacyWarningFailed = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarningFailed.scrollToBottomAndAccept();
+
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -523,6 +534,9 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const snapPrivacyWarningUninstall = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarningUninstall.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -658,6 +672,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const snapPrivacyWarningUpdate = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarningUpdate.scrollToBottomAndAccept();
+
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -715,6 +732,9 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask popup and update
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const snapPrivacyWarningUpdateConfirm = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarningUpdateConfirm.scrollToBottomAndAccept();
 
         // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
@@ -823,6 +843,11 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const snapPrivacyWarningUpdateRejectedFirst = new SnapPrivacyWarning(
+          driver,
+        );
+        await snapPrivacyWarningUpdateRejectedFirst.scrollToBottomAndAccept();
+
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -880,6 +905,9 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask popup and update
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const snapPrivacyWarningUpdateRejected = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarningUpdateRejected.scrollToBottomAndAccept();
 
         // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
@@ -975,6 +1003,9 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const snapPrivacyWarningUpdateFailed = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarningUpdateFailed.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({

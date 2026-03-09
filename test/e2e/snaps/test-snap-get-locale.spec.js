@@ -1,6 +1,8 @@
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
+const SnapPrivacyWarning =
+  require('../page-objects/pages/dialog/snap-privacy-warning').default;
 
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const { withFixtures } = require('../helpers');
@@ -45,6 +47,9 @@ describe('Test Snap Get Locale', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const snapPrivacyWarning = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarning.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({

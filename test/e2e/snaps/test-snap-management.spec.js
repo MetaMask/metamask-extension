@@ -2,6 +2,8 @@ const { withFixtures } = require('../helpers');
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
+const SnapPrivacyWarning =
+  require('../page-objects/pages/dialog/snap-privacy-warning').default;
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
@@ -43,6 +45,9 @@ describe('Test Snap Management', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const snapPrivacyWarning = new SnapPrivacyWarning(driver);
+        await snapPrivacyWarning.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.clickElement({
