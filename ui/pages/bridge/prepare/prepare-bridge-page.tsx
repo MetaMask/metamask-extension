@@ -594,17 +594,20 @@ const PrepareBridgePage = ({
             }}
             networks={toChains}
             amountInFiat={
-              activeQuote?.toTokenAmount?.valueInCurrency ?? undefined
+              unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined
             }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: activeQuote?.toTokenAmount?.amount
-                ? formatTokenAmount(locale, activeQuote.toTokenAmount.amount)
+              value: unvalidatedQuote?.toTokenAmount?.amount
+                ? formatTokenAmount(
+                    locale,
+                    unvalidatedQuote.toTokenAmount.amount,
+                  )
                 : '0',
               autoFocus: false,
-              className: activeQuote?.toTokenAmount?.amount
+              className: unvalidatedQuote?.toTokenAmount?.amount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
