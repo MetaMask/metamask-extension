@@ -117,13 +117,8 @@ export type PreferencesControllerState = Omit<
   | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
   | 'smartAccountOptIn'
-  | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
   | 'tokenNetworkFilter'
-  // TODO: Remove identies, lostIdentities and selectedAddress from here once the state type is updated in core
-  | 'identities'
-  | 'lostIdentities'
-  | 'selectedAddress'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
