@@ -2,7 +2,10 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { WINDOW_TITLES } from '../../constants';
+import {
+  SECOND_NODE_NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
@@ -83,7 +86,7 @@ describe('Remove Network:', function (this: Suite) {
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
-                    networkClientId: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+                    networkClientId: SECOND_NODE_NETWORK_CLIENT_ID,
                     type: RpcEndpointType.Custom,
                     url: 'http://localhost:8546',
                   },
@@ -96,7 +99,7 @@ describe('Remove Network:', function (this: Suite) {
               },
             },
             networksMetadata: {
-              '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
+              [SECOND_NODE_NETWORK_CLIENT_ID]: {
                 EIPS: {},
                 status: NetworkStatus.Available,
               },

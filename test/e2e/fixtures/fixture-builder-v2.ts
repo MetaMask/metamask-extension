@@ -37,6 +37,8 @@ import {
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
   NETWORK_CLIENT_ID,
+  SECOND_NODE_NETWORK_CLIENT_ID,
+  THIRD_NODE_NETWORK_CLIENT_ID,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import defaultFixtureJson from './default-fixture.json';
@@ -269,7 +271,7 @@ class FixtureBuilderV2 {
 
   withNetworkControllerDoubleNode(): this {
     const secondNodeChainId = '0x53a';
-    const secondNodeClientId = '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
+    const secondNodeClientId = SECOND_NODE_NETWORK_CLIENT_ID;
 
     // Enable the new chain in NetworkEnablementController so
     // CAIP-25 connect flow includes it in the permission scopes.
@@ -308,7 +310,7 @@ class FixtureBuilderV2 {
 
   withNetworkControllerTripleNode(): this {
     const thirdNodeChainId = '0x3e8';
-    const thirdNodeClientId = 'a3460c52-12ee-4267-9be6-1503095a587e';
+    const thirdNodeClientId = THIRD_NODE_NETWORK_CLIENT_ID;
 
     // Enable the third chain (see withNetworkControllerDoubleNode for context)
     this.withNetworkEnablementController({
@@ -430,7 +432,7 @@ class FixtureBuilderV2 {
     return this.withSelectedNetworkController({
       domains: {
         [DAPP_URL]: LOCALHOST_NETWORK_CLIENT_ID,
-        [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+        [DAPP_ONE_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
       },
     });
   }
