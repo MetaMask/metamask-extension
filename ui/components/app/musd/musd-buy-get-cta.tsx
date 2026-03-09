@@ -10,26 +10,23 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import type { ChainId } from '../../../../shared/constants/network';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
   Box,
-  ButtonPrimary,
-  ButtonPrimarySize,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  FontWeight,
   Text,
-} from '../../component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import type { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -187,20 +184,17 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
 
   return (
     <Box
-      as="a"
-      onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      onClick={(e?: React.MouseEvent) => {
         e?.preventDefault();
         handleClick();
       }}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       paddingTop={2}
       paddingBottom={2}
       paddingLeft={4}
       paddingRight={4}
-      width={BlockSize.Full}
-      className="hover:bg-hover cursor-pointer"
+      className="musd-buy-get-cta hover:bg-hover cursor-pointer"
       style={{ height: ASSET_CELL_HEIGHT }}
       data-testid="multichain-token-list-button"
     >
@@ -211,40 +205,40 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
               size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkIcon}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderWidth={2}
+              className="musd-buy-get-cta__avatar-network"
             />
           ) : undefined
         }
-        marginRight={4}
-        style={{ alignSelf: 'center' }}
+        className="musd-buy-get-cta__badge"
         data-testid="musd-buy-get-cta-icon"
       >
         <AvatarToken name="mUSD" src={musdIconUrl} />
       </BadgeWrapper>
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        style={{ flexGrow: 1, overflow: 'hidden' }}
+        flexDirection={BoxFlexDirection.Column}
+        className="musd-buy-get-cta__text"
       >
-        <Text variant={TextVariant.bodyMdMedium}>{ctaText}</Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {ctaText}
+        </Text>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {subtitleText}
         </Text>
       </Box>
 
-      <ButtonPrimary
-        size={ButtonPrimarySize.Sm}
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Sm}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
           e.preventDefault();
           handleClick();
         }}
-        style={{ flexShrink: 0 }}
+        className="musd-buy-get-cta__button"
       >
         {ctaText}
-      </ButtonPrimary>
+      </Button>
     </Box>
   );
 };
