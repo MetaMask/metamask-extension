@@ -14,7 +14,9 @@
  */
 
 import React from 'react';
-import { DesignerModeProvider, useDesignerModeEnabled } from './designer-mode-context';
+import { useSelector } from 'react-redux';
+import { getDesignerModeEnabled } from '../../../selectors/selectors';
+import { DesignerModeProvider } from './designer-mode-context';
 import { DesignerModeOverlay } from './designer-mode-overlay';
 import { DesignerModePanel } from './designer-mode-panel';
 import { DesignerModeToggle } from './designer-mode-toggle';
@@ -29,7 +31,7 @@ type DesignerModeProps = {
  * Inner component that checks if designer mode is enabled in settings
  */
 function DesignerModeContent({ showToggle }: { showToggle: boolean }) {
-  const isEnabled = useDesignerModeEnabled();
+  const isEnabled = useSelector(getDesignerModeEnabled);
 
   if (!isEnabled) {
     return null;
@@ -62,9 +64,6 @@ export { DesignerModeProvider } from './designer-mode-context';
 export {
   useDesignerMode,
   useDesignerModeOptional,
-  useDesignerModeEnabled,
-  getDesignerModeEnabled,
-  setDesignerModeEnabled,
 } from './designer-mode-context';
 export { DesignerModeOverlay } from './designer-mode-overlay';
 export { DesignerModePanel } from './designer-mode-panel';

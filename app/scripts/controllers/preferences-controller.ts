@@ -137,6 +137,7 @@ export type PreferencesControllerState = Omit<
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   currentLocale: string;
+  designerModeEnabled: boolean;
   dismissSeedBackUpReminder: boolean;
   enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
@@ -178,6 +179,7 @@ export const getDefaultPreferencesControllerState =
     ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
     currentLocale: '',
+    designerModeEnabled: false,
     dismissSeedBackUpReminder: false,
     enableMV3TimestampSave: true,
     featureFlags: {},
@@ -276,6 +278,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   currentLocale: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  designerModeEnabled: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -1008,6 +1016,12 @@ export class PreferencesController extends BaseController<
   setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
     this.update((state) => {
       state.manageInstitutionalWallets = manageInstitutionalWallets;
+    });
+  }
+
+  setDesignerModeEnabled(value: boolean): void {
+    this.update((state) => {
+      state.designerModeEnabled = value;
     });
   }
 

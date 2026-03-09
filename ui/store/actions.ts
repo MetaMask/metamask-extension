@@ -4432,6 +4432,14 @@ export function resetWallet(restoreOnly = false) {
   };
 }
 
+export function setDesignerModeEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setDesignerModeEnabled', [value]);
+  };
+}
+
 export function setServiceWorkerKeepAlivePreference(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

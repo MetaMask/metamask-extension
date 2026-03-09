@@ -1931,6 +1931,10 @@ export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
 
+export function getDesignerModeEnabled(state) {
+  return state.metamask.designerModeEnabled;
+}
+
 export function getUSDConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.usdConversionRate;

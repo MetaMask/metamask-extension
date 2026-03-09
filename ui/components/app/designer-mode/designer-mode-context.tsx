@@ -17,8 +17,6 @@ import type {
 } from './designer-mode.types';
 import { extractElementInfo, formatForClipboard } from './designer-mode.utils';
 
-const DESIGNER_MODE_ENABLED_KEY = 'metamask-designer-mode-enabled';
-
 const initialState: DesignerModeState = {
   isActive: false,
   hoveredElement: null,
@@ -31,58 +29,6 @@ const initialState: DesignerModeState = {
 const DesignerModeContext = createContext<DesignerModeContextValue | null>(
   null,
 );
-
-/**
- * Check if designer mode is enabled in settings (localStorage)
- */
-export function getDesignerModeEnabled(): boolean {
-  try {
-    return localStorage.getItem(DESIGNER_MODE_ENABLED_KEY) === 'true';
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Set whether designer mode is enabled in settings
- */
-export function setDesignerModeEnabled(enabled: boolean): void {
-  try {
-    localStorage.setItem(DESIGNER_MODE_ENABLED_KEY, String(enabled));
-    // Dispatch a custom event so components can react to the change
-    window.dispatchEvent(
-      new CustomEvent('designer-mode-enabled-changed', { detail: enabled }),
-    );
-  } catch {
-    // Ignore localStorage errors
-  }
-}
-
-/**
- * Hook to get and react to designer mode enabled state from settings
- */
-export function useDesignerModeEnabled(): boolean {
-  const [isEnabled, setIsEnabled] = useState(getDesignerModeEnabled);
-
-  useEffect(() => {
-    const handleChange = (event: CustomEvent<boolean>) => {
-      setIsEnabled(event.detail);
-    };
-
-    window.addEventListener(
-      'designer-mode-enabled-changed',
-      handleChange as EventListener,
-    );
-    return () => {
-      window.removeEventListener(
-        'designer-mode-enabled-changed',
-        handleChange as EventListener,
-      );
-    };
-  }, []);
-
-  return isEnabled;
-}
 
 export function useDesignerMode(): DesignerModeContextValue {
   const context = useContext(DesignerModeContext);

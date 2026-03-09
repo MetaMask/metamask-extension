@@ -35,12 +35,9 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getRemoteFeatureFlags } from '../../../selectors';
+import { getRemoteFeatureFlags, getDesignerModeEnabled } from '../../../selectors';
 import { ConfirmationsDeveloperOptions } from '../../confirmations/components/developer/confirmations-developer-options';
-import {
-  getDesignerModeEnabled,
-  setDesignerModeEnabled,
-} from '../../../components/app/designer-mode';
+import { setDesignerModeEnabled } from '../../../store/actions';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
@@ -64,9 +61,7 @@ const DeveloperOptionsTab = () => {
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
-  const [isDesignerModeEnabled, setIsDesignerModeEnabled] = useState(
-    getDesignerModeEnabled,
-  );
+  const isDesignerModeEnabled = useSelector(getDesignerModeEnabled);
 
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
@@ -110,9 +105,7 @@ const DeveloperOptionsTab = () => {
   };
 
   const handleToggleDesignerMode = (value: boolean): void => {
-    const newValue = !value;
-    setDesignerModeEnabled(newValue);
-    setIsDesignerModeEnabled(newValue);
+    dispatch(setDesignerModeEnabled(!value));
   };
 
   const renderAnnouncementReset = () => {

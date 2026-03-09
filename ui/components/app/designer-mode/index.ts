@@ -3,9 +3,6 @@ export {
   DesignerModeProvider,
   useDesignerMode,
   useDesignerModeOptional,
-  useDesignerModeEnabled,
-  getDesignerModeEnabled,
-  setDesignerModeEnabled,
 } from './designer-mode-context';
 export { DesignerModeOverlay } from './designer-mode-overlay';
 export { DesignerModePanel } from './designer-mode-panel';
