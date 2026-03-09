@@ -30,6 +30,7 @@ export type EntryDescriptionNormalized = { import?: string[] } & Omit<
 
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
+const SOURCEMAPS_DIRECTORY = 'sourcemaps';
 
 /**
  * Adds the given asset to the zip file
@@ -268,8 +269,11 @@ export class ManifestPlugin<Z extends boolean> {
   ): void {
     // we need to wait to delete assets until after we've zipped them all
     const assetDeletions = new Set<string>();
+    const moveSourceMapsToDedicatedDirectory =
+      compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
     const assetEntries = Object.entries(assets);
+
     browsers.forEach((browser) => {
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
       compilation.emitAsset(
@@ -280,17 +284,34 @@ export class ManifestPlugin<Z extends boolean> {
           contentType: 'application/json',
         },
       );
-      for (const [name, asset] of assetEntries) {
-        // move the assets to their final browser-relative locations
-        const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
+    });
+
+    for (const [name, asset] of assetEntries) {
+      // move the assets to their final browser-relative locations
+      const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
+      const isSourceMapAsset =
+        moveSourceMapsToDedicatedDirectory && name.endsWith('.map');
+
+      if (isSourceMapAsset) {
+        compilation.emitAsset(
+          path.posix.join(SOURCEMAPS_DIRECTORY, name),
+          asset,
+          assetDetails.info,
+        );
+        assetDeletions.add(name);
+        continue;
+      }
+
+      browsers.forEach((browser) => {
         compilation.emitAsset(
           path.posix.join(browser, name),
           asset,
           assetDetails.info,
         );
-        assetDeletions.add(name);
-      }
-    });
+      });
+      assetDeletions.add(name);
+    }
+
     // delete the assets after we've zipped them all
     assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
   }

@@ -1,7 +1,15 @@
+export { PerpsBalanceDropdown } from './perps-balance-dropdown';
+export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
 export { PerpsTabView } from './perps-tab-view';
 export { PerpsTutorialModal } from './perps-tutorial-modal';
+export { PerpsWatchlist } from './perps-watchlist';
+export { PerpsPositionsOrders } from './perps-positions-orders';
+export type { PerpsPositionsOrdersProps } from './perps-positions-orders';
+export { PerpsExploreMarkets } from './perps-explore-markets';
+export type { PerpsExploreMarketsProps } from './perps-explore-markets';
+export { PerpsSupportLearn } from './perps-support-learn';
 export {
   getDisplayName,
   getPositionDirection,
@@ -19,9 +27,32 @@ export {
   isCryptoMarket,
 } from './utils';
 
-// Edit Margin expandable
-export { EditMarginExpandable } from './edit-margin';
-export type { EditMarginExpandableProps } from './edit-margin';
+// Edit Margin
+export {
+  EditMarginExpandable,
+  EditMarginModal,
+  EditMarginModalContent,
+} from './edit-margin';
+export type {
+  EditMarginExpandableProps,
+  EditMarginModalProps,
+  EditMarginModalContentProps,
+} from './edit-margin';
+
+// Close Position
+export { ClosePositionModal } from './close-position';
+export type { ClosePositionModalProps } from './close-position';
+
+// Reverse Position
+export { ReversePositionModal } from './reverse-position';
+export type { ReversePositionModalProps } from './reverse-position';
+
+// Update TP/SL
+export { UpdateTPSLModal, UpdateTPSLModalContent } from './update-tpsl';
+export type {
+  UpdateTPSLModalProps,
+  UpdateTPSLModalContentProps,
+} from './update-tpsl';
 
 // Order Entry components
 export { OrderEntry } from './order-entry';

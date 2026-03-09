@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Dampak harga"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Dampak harga mencerminkan swap Anda memengaruhi harga pasar. Jika kekurangan gas, sebagian token Anda akan digunakan untuk membayar biaya, yang meningkatkan dampak harga. MetaMask tidak mengatur atau mengontrol hal ini."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Dampak harga"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Harga masuk"
   },
-  "perpsExploreCrypto": {
-    "message": "Jelajahi kripto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Jelajahi saham dan komoditas"
-  },
   "perpsFees": {
     "message": "Biaya"
   },
@@ -5396,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Nilai median dari harga eksternal yang dilaporkan oleh validator, digunakan untuk menghitung tingkat pendanaan"
-  },
-  "perpsOrderAmount": {
-    "message": "Jumlah Order"
   },
   "perpsOrders": {
     "message": "Order"
@@ -5546,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Tarik"
-  },
-  "perpsYourOrders": {
-    "message": "Order Anda"
-  },
-  "perpsYourPositions": {
-    "message": "Posisi Anda"
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
