@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Potrebno je da izaberete nalog!"
   },
-  "activityLog": {
-    "message": "dnevnik aktivnosti"
-  },
   "addAcquiredTokens": {
     "message": "Dodajte stečene tokene koristeći MetaMask."
   },
@@ -299,9 +296,6 @@
     "message": "Увезени",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Vašu početnu transakciju je potvrdila mreža. Kliknite OK da biste se vratili."
-  },
   "insufficientBalance": {
     "message": "Nedovoljno sredstava."
   },
@@ -478,12 +472,6 @@
   "rejectAll": {
     "message": "Odbacite sve"
   },
-  "rejectTxsDescription": {
-    "message": "Upravo ćete odbaciti sve transakcije od $1."
-  },
-  "rejectTxsN": {
-    "message": "Odbijte transakcije od $1"
-  },
   "rejected": {
     "message": "Odbijeno"
   },
@@ -492,9 +480,6 @@
   },
   "removeAccount": {
     "message": "Уклањање налога"
-  },
-  "removeAccountDescription": {
-    "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
   },
   "required": {
     "message": "Obavezno"
@@ -581,9 +566,6 @@
   "speedUpCancellation": {
     "message": "Ubrzajte ovo otkazivanje"
   },
-  "speedUpTransaction": {
-    "message": "Ubrzajte ovu transakciju"
-  },
   "stateLogError": {
     "message": "Greška u preuzimanju evidencija stanja"
   },
@@ -626,38 +608,11 @@
   "transaction": {
     "message": "transakcija"
   },
-  "transactionCancelAttempted": {
-    "message": "Pokušano je otkazivanje transakcije sa naknadom za gas od $1 do $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcija je uspešno otkazana sa $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcija je potvrđena na $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcija je kreirana sa vrednošću od $1 na $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcija je pala na $2."
-  },
   "transactionError": {
     "message": "Greška prilikom transakcije. Izuzetak ubačen u kod ugovora."
   },
   "transactionErrorNoContract": {
     "message": "Pokušavamo da pozovemo funkciju preko ne-ugovorne adrese."
-  },
-  "transactionErrored": {
-    "message": "Transakcija je naišla na grešku"
-  },
-  "transactionResubmitted": {
-    "message": "Transakcija je ponovo prosleđena sa naknadom za gas povećanom sa $1 na $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcija je podnešena sa gas naknadom od $1 na $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcija je ažurirana na $2."
   },
   "transfer": {
     "message": "Prenos"
@@ -703,8 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
   }
 }

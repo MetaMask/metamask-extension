@@ -175,9 +175,6 @@
   "activityEmptyDescription": {
     "message": "Níl aon rud le feiceáil go fóill. Seiceáil an taiscéalaí le haghaidh gníomhaíochta níos déanaí."
   },
-  "activityLog": {
-    "message": "Log gníomhaíochta"
-  },
   "add": {
     "message": "Cuir leis"
   },
@@ -260,9 +257,6 @@
   },
   "addIPFSGateway": {
     "message": "Cuir do gheata IPFS is fearr leat leis"
-  },
-  "addImportAccount": {
-    "message": "Cuir cuntas nó sparán crua-earraí leis"
   },
   "addMemo": {
     "message": "Cuir meamram leis"
@@ -567,10 +561,6 @@
   },
   "allowNotifications": {
     "message": "Ceadaigh fógraí"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Ceadaigh $1 le tarraingt siar agus le caitheamh suas go dtí an méid seo a leanas:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Méid"
@@ -943,9 +933,6 @@
   },
   "bridgePriceImpact": {
     "message": "Tionchar praghais"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Léiríonn tionchar praghais an chaoi a mbíonn tionchar ag do bhabhtáil ar phraghas an mhargaidh. Mura bhfuil go leor agat le haghaidh gáis, úsáidtear cuid de do chomharthaí chun táillí a chlúdach, rud a mhéadaíonn tionchar praghais. Ní shocraíonn ná ní rialaíonn MetaMask é seo."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tionchar Praghsanna"
@@ -1394,9 +1381,6 @@
   "connectAccount": {
     "message": "Ceangail cuntas"
   },
-  "connectAccountOrCreate": {
-    "message": "Ceangail cuntas nó cruthaigh ceann nua"
-  },
   "connectAccounts": {
     "message": "Ceangail cuntais"
   },
@@ -1671,9 +1655,6 @@
   "customSlippage": {
     "message": "Saincheaptha"
   },
-  "customSpendLimit": {
-    "message": "Teorainn caiteachais saincheaptha"
-  },
   "customToken": {
     "message": "Comhartha saincheaptha"
   },
@@ -1911,9 +1892,6 @@
   "descriptionFromSnap": {
     "message": "Cur síos ó $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Díroghnaigh gach rud"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Ní bhfuarthas aon chuntais incháilithe"
@@ -2182,9 +2160,6 @@
   "editNonceMessage": {
     "message": "Is gné ardteicneolaíochta í seo, bain úsáid as go cúramach."
   },
-  "editPermission": {
-    "message": "Cead eagarthóireachta"
-  },
   "editPermissions": {
     "message": "Ceadanna a chur in eagar"
   },
@@ -2268,9 +2243,6 @@
   },
   "enterChainId": {
     "message": "Cuir isteach ID Slabhra"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Cuir isteach uasteorainn caiteachais"
   },
   "enterNetworkName": {
     "message": "Cuir isteach uasteorainn caiteachais"
@@ -2884,9 +2856,6 @@
     "message": "Ní féidir le MetaMask ceangal leis an óstach blockchain. Athbhreithnigh cúiseanna féideartha $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Deimhníodh d’idirbheart tosaigh ag an líonra. Cliceáil Ceart go leor chun filleadh ar ais."
-  },
   "insightsFromSnap": {
     "message": "Léargais ó $1",
     "description": "$1 represents the name of the snap"
@@ -3058,9 +3027,6 @@
   "l2FeeTooltip": {
     "message": "Táille gáis L2"
   },
-  "lastConnected": {
-    "message": "Ceangailte go deireanach"
-  },
   "lastSold": {
     "message": "Díolta go deireanach"
   },
@@ -3219,9 +3185,6 @@
   "lock": {
     "message": "Glasáil"
   },
-  "lockMetaMask": {
-    "message": "Glasáil"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
   },
@@ -3281,10 +3244,6 @@
   },
   "makeAnotherSwap": {
     "message": "Cruthaigh malartú nua"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Bí cinnte nach bhfuil aon duine ag féachaint",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
     "message": "Bainistigh socruithe réamhshocraithe"
@@ -4675,9 +4634,6 @@
   "productAnnouncements": {
     "message": "Fógraí táirgí"
   },
-  "proposedApprovalLimit": {
-    "message": "Teorainn cheadaithe atá beartaithe"
-  },
   "provide": {
     "message": "Cuir ar fáil"
   },
@@ -4864,18 +4820,6 @@
   "rejectAll": {
     "message": "Diúltaigh do gach rud"
   },
-  "rejectRequestsDescription": {
-    "message": "Tá tú ar tí $1 iarratas a dhiúltú i mbaisc."
-  },
-  "rejectRequestsN": {
-    "message": "Diúltaigh $1 iarratas"
-  },
-  "rejectTxsDescription": {
-    "message": "Tá tú ar tí idirbhearta $1 a dhiúltú i mbaisc."
-  },
-  "rejectTxsN": {
-    "message": "Diúltaigh idirbhearta $1"
-  },
   "rejected": {
     "message": "Diúltaithe"
   },
@@ -4884,9 +4828,6 @@
   },
   "removeAccount": {
     "message": "Bain cuntas"
-  },
-  "removeAccountDescription": {
-    "message": "Bainfear an cuntas seo as do sparán. Déan cinnte go bhfuil an Frása Aisghabhála Rúnda bunaidh nó an eochair phríobháideach agat don chuntas allmhairithe seo sula leanann tú ar aghaidh. Is féidir leat cuntais a allmhairiú nó a chruthú arís ón roghchlár anuas cuntais."
   },
   "removeAccountModalBannerDescription": {
     "message": "Cinntigh go bhfuil an Frása Aisghabhála Rúnda nó an eochair phríobháideach agat don chuntas seo sula mbaintear é.",
@@ -5019,17 +4960,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Tugann an $1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Is $1 é MetaMask. Ciallaíonn sé sin gur leatsa d’SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "rochtain iomlán ar do sparán agus ar do chistí."
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "sparán neamhchoimeádta"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5043,10 +4974,6 @@
   "revealSeedWordsWarning": {
     "message": "Cinntigh nach bhfuil aon duine ag féachaint ar do scáileán. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Ní iarrfaidh Tacaíocht MetaMask seo choíche.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Nocht ábhar íogair"
@@ -5244,12 +5171,6 @@
   "selectAccountToConnect": {
     "message": "Roghnaigh cuntas le ceangal"
   },
-  "selectAccounts": {
-    "message": "Roghnaigh an cuntas/na cuntais le húsáid ar an suíomh seo"
-  },
-  "selectAccountsForSnap": {
-    "message": "Roghnaigh an cuntas/na cuntais le húsáid leis an snap seo"
-  },
   "selectAll": {
     "message": "Roghnaigh gach rud"
   },
@@ -5288,9 +5209,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Cuntas difriúil roghnaithe"
-  },
-  "selectingAllWillAllow": {
-    "message": "Trí gach ceann a roghnú, beidh an suíomh seo in ann do chuntais reatha go léir a fheiceáil. Déan cinnte go bhfuil muinín agat as an suíomh seo."
   },
   "send": {
     "message": "Seol"
@@ -5667,21 +5585,6 @@
   "simulationErrorMessageV2": {
     "message": "Ní raibh muid in ann gás a mheas. D’fhéadfadh earráid a bheith sa chonradh agus d’fhéadfadh teip a bheith ar an idirbheart seo."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Caoinfhulaingt sleamhnáin"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Socraigh difríocht atá tú sásta léi le haghaidh athruithe ar an iarmhéid. Ní rachaidh idirbhearta tríd má tá an difríocht níos airde."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Athruithe ar an iarmhéid a fhorfheidhmiú"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Chun do chuid airgid a choinneáil slán, ní rachaidh an t-idirbheart seo ar aghaidh mura n-athraíonn an t-iarmhéid nó mura gcomhlíontar an lamháltas sciorrtha."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Socruithe idirbhirt"
-  },
   "simulationsSettingDescription": {
     "message": "Cas air seo chun athruithe ar iarmhéid idirbheart agus sínithe a mheas sula ndeimhníonn tú iad. Ní ráthaíonn sé seo a dtoradh deiridh. $1"
   },
@@ -5809,12 +5712,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Ní bheidh an cuntas seo ar fáil lena úsáid i MetaMask a thuilleadh."
-  },
-  "snapAccounts": {
-    "message": "Snapanna Cuntais"
-  },
-  "snapAccountsDescription": {
-    "message": "Cuntais atá faoi rialú Snaps tríú páirtí."
   },
   "snapConnectTo": {
     "message": "Ceangail le $1",
@@ -6010,25 +5907,6 @@
   },
   "speedUpTooltipText": {
     "message": "Táille nua gáis"
-  },
-  "speedUpTransaction": {
-    "message": "Luasaigh an t-idirbheart seo"
-  },
-  "spendLimitInsufficient": {
-    "message": "Teorainn caiteachais neamhleor"
-  },
-  "spendLimitInvalid": {
-    "message": "Teorainn caiteachais neamhbhailí; ní mór gur uimhir dhearfach í"
-  },
-  "spendLimitPermission": {
-    "message": "Cead teorainn caiteachais"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Teorainn caiteachais iarrtha ag $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Teorainn caiteachais ró-mhór"
   },
   "spender": {
     "message": "Caiteoir"
@@ -6807,18 +6685,6 @@
   "transaction": {
     "message": "idirbheart"
   },
-  "transactionCancelAttempted": {
-    "message": "Rinneadh iarracht an t-idirbheart a chealú le táille gáis mheasta de $1 ag $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Cealaíodh an t-idirbheart go rathúil ag $2"
-  },
-  "transactionConfirmed": {
-    "message": "Idirbheart deimhnithe ag $2."
-  },
-  "transactionCreated": {
-    "message": "Cruthaíodh idirbheart le luach $1 ag $2."
-  },
   "transactionDataFunction": {
     "message": "Feidhm"
   },
@@ -6828,17 +6694,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Méid + táillí"
   },
-  "transactionDropped": {
-    "message": "Thit an t-idirbheart ag $2."
-  },
   "transactionError": {
     "message": "Earráid idirbhirt. Caitheadh ​​eisceacht i gcód an chonartha."
   },
   "transactionErrorNoContract": {
     "message": "Ag iarraidh glaoch ar fheidhm ar sheoladh neamhchonarthach."
-  },
-  "transactionErrored": {
-    "message": "Tharla earráid san idirbheart."
   },
   "transactionFlowNetwork": {
     "message": "Líonra"
@@ -6871,24 +6731,15 @@
   "transactionIncludesTypes": {
     "message": "Áirítear leis an idirbheart seo: $1."
   },
-  "transactionResubmitted": {
-    "message": "Idirbheart athsheolta agus táille gáis mheasta méadaithe go $1 ag $2"
-  },
   "transactionSettings": {
     "message": "Socruithe idirbhirt"
   },
   "transactionShield": {
     "message": "Sciath Idirbhirt"
   },
-  "transactionSubmitted": {
-    "message": "Idirbheart curtha isteach le táille gáis mheasta de $1 ag $2."
-  },
   "transactionTotalGasFee": {
     "message": "Táille iomlán gáis",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Idirbheart nuashonraithe ag $2."
   },
   "transactions": {
     "message": "Idirbhearta"
@@ -7165,9 +7016,6 @@
   "viewDetails": {
     "message": "Féach sonraí"
   },
-  "viewMore": {
-    "message": "Féach níos mó"
-  },
   "viewOnBlockExplorer": {
     "message": "Féach ar an iniúchóir bloc"
   },
@@ -7324,9 +7172,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Do Rún Aisghabhála Frása"
   },
   "yourTransactionConfirmed": {
     "message": "Idirbheart deimhnithe cheana féin"

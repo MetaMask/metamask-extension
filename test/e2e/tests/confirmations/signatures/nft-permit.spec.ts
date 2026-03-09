@@ -5,25 +5,19 @@ import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApprovedWithDecoding,
   mockSignatureRejectedWithDecoding,
-  scrollAndConfirmAndAssertConfirm,
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertPastedAddress,
-  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  initializePages,
-  openDappAndTriggerDeploy,
-  SignatureType,
-  triggerSignature,
 } from './signature-helpers';
 
 describe('Confirmation Signature - NFT Permit', function (this: Suite) {
@@ -37,26 +31,27 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
-        await initializePages(driver);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await openDappAndTriggerDeploy(driver);
-        await driver.delay(1000);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await scrollAndConfirmAndAssertConfirm(driver);
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.delay(1000);
-        await triggerSignature(SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await clickHeaderInfoBtn(driver);
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await assertAccountDetailsMetrics(
           driver,
@@ -89,23 +84,24 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new PermitConfirmation(driver);
-        await openDappAndTriggerDeploy(driver);
-        await driver.delay(1000);
+        const testDapp = new TestDapp(driver);
+
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.delay(1000);
-        await triggerSignature(SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -141,8 +137,6 @@ async function assertInfoValues(driver: Driver) {
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   const testDapp = new TestDapp(driver);
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
   await testDapp.checkSuccessSign721Permit(publicAddress);
   await testDapp.verifySign721PermitResult(

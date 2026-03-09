@@ -13,8 +13,16 @@ const {
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
+const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
+const {
+  ACCOUNT_ACTIVITY_WS_PORT,
+} = require('./websocket/account-activity-mocks');
+const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+const {
+  getProductionRemoteFlagApiResponse,
+} = require('./feature-flags/feature-flag-registry');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -182,6 +190,22 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  // remote feature flags — production-accurate defaults from the registry
+  // FF will apply to all environments: rc, prod and dev
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: getProductionRemoteFlagApiResponse(),
+      };
+    });
 
   // Subscriptions Polling Get Subscriptions
   await server
@@ -900,30 +924,6 @@ async function setupMocking(
     };
   });
 
-  // Mock Rive animation files to prevent loading errors in e2e tests
-  // These animations are loaded during onboarding flow
-  await server
-    .forGet(/.*\/images\/riv_animations\/rive\.wasm/u)
-    .thenCallback(() => {
-      // Return empty ArrayBuffer for WASM file
-      return {
-        statusCode: 200,
-        headers: { 'content-type': 'application/wasm' },
-        body: Buffer.alloc(0),
-      };
-    });
-
-  await server
-    .forGet(/.*\/images\/riv_animations\/.*\.riv/u)
-    .thenCallback(() => {
-      // Return empty binary for .riv animation files
-      return {
-        statusCode: 200,
-        headers: { 'content-type': 'application/octet-stream' },
-        body: Buffer.alloc(0),
-      };
-    });
-
   // Price API: Spot prices for native token (ETH)
   // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
   // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
@@ -1049,6 +1049,12 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
+  // Override notification list with empty response to prevent unread dot
+  // Notification-specific tests re-register this endpoint via testSpecificMock
+  await server
+    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
+
   // Identity APIs
   await mockIdentityServices(server);
 
@@ -1057,44 +1063,6 @@ async function setupMocking(
       statusCode: 404,
     };
   });
-
-  // remote feature flags
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          { feature1: true },
-          { feature2: false },
-          {
-            feature3: [
-              {
-                value: 'valueA',
-                name: 'groupA',
-                scope: { type: 'threshold', value: 0.3 },
-              },
-              {
-                value: 'valueB',
-                name: 'groupB',
-                scope: { type: 'threshold', value: 0.5 },
-              },
-              {
-                scope: { type: 'threshold', value: 1 },
-                value: 'valueC',
-                name: 'groupC',
-              },
-            ],
-          },
-        ],
-      };
-    });
 
   // On Ramp Content
   const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
@@ -1141,6 +1109,20 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(ACCOUNTS_API_TOKENS),
+      };
+    });
+
+  // Accounts API: transactions
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          data: [],
+          pageInfo: { hasNextPage: false, count: 0 },
+        },
       };
     });
 
@@ -1218,7 +1200,89 @@ async function setupMocking(
     .matching((req) =>
       /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
     )
-    .thenForwardTo('ws://localhost:8088');
+    .thenForwardTo(`ws://localhost:${SOLANA_WS_PORT}`);
+
+  /**
+   * Backend WebSocket (AccountActivity, etc.)
+   * Forward gateway WebSocket connections to local mock server
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) =>
+      /^wss:\/\/gateway\.api\.cx\.metamask\.io\//u.test(req.url),
+    )
+    .thenForwardTo(`ws://localhost:${ACCOUNT_ACTIVITY_WS_PORT}`);
+
+  /**
+   * Hyperliquid Perps Websocket
+   * Redirect Hyperliquid API WebSocket calls to local mock server for E2E tests.
+   * Used when PerpsController makes real Hyperliquid calls (e.g. from background).
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) => /^wss:\/\/api\.hyperliquid\.xyz\/ws/u.test(req.url))
+    .thenForwardTo(`ws://localhost:${PERPS_WS_PORT}`);
+
+  /**
+   * Hyperliquid REST API mocks for Perps E2E tests.
+   * When PerpsController makes REST calls to api.hyperliquid.xyz, return mock data.
+   * Reads request body via mockttp's req.body.getJson()/getText() and parses safely.
+   */
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/info$/u)
+    .thenCallback(async (req) => {
+      let type;
+      const { body } = req;
+      if (body) {
+        let parsed = null;
+        const json = await body.getJson().catch(() => undefined);
+        if (json !== undefined && json !== null && typeof json === 'object') {
+          parsed = json;
+        }
+        if (parsed === null) {
+          const raw = await body.getText().catch(() => '');
+          if (raw && typeof raw === 'string' && raw.trim() !== '') {
+            try {
+              parsed = JSON.parse(raw);
+            } catch {
+              parsed = null;
+            }
+          }
+        }
+        if (parsed !== null && typeof parsed === 'object') {
+          const { type: parsedType, method: parsedMethod } = parsed;
+          type = parsedType ?? parsedMethod;
+        }
+      }
+      if (type === 'meta') {
+        return {
+          statusCode: 200,
+          json: {
+            universe: [
+              {
+                name: 'BTC',
+                szDecimals: 5,
+                maxLeverage: 50,
+              },
+            ],
+          },
+        };
+      }
+      if (type === 'allMids') {
+        return {
+          statusCode: 200,
+          json: { mids: { BTC: '50000', ETH: '3000' } },
+        };
+      }
+      return { statusCode: 200, json: {} };
+    });
+
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { status: 'ok', response: { type: 'order', data: {} } },
+    }));
 
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);

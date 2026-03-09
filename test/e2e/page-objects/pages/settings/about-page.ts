@@ -8,19 +8,9 @@ class AboutPage {
     tag: 'h4',
   };
 
-  private readonly metaMaskHeaderText = {
-    text: 'MetaMask is designed and built around the world.',
-    tag: 'div',
-  };
+  private readonly metaMaskLogo = '.info-tab__logo';
 
-  private readonly metaMaskVersionHeader = {
-    text: 'MetaMask Version',
-    css: '.info-tab__version-header',
-  };
-
-  private readonly metaMaskVersionNumber = {
-    css: '.info-tab__version-number',
-  };
+  private readonly metaMaskVersionNumber = '.info-tab__version-number';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -30,8 +20,8 @@ class AboutPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.aboutPageTitle,
-        this.metaMaskHeaderText,
-        this.metaMaskVersionHeader,
+        this.metaMaskLogo,
+        this.metaMaskVersionNumber,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for About page to be loaded', e);
@@ -48,7 +38,7 @@ class AboutPage {
   async checkMetaMaskVersionNumber(version: string): Promise<void> {
     console.log('Checking displayed MetaMask version is ', version);
     await this.driver.waitForSelector({
-      css: this.metaMaskVersionNumber.css,
+      css: this.metaMaskVersionNumber,
       text: version,
     });
   }

@@ -2,20 +2,17 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 async function mockTokenList(mockServer: Mockttp) {
   return await mockServer
@@ -32,7 +29,7 @@ describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -73,8 +70,8 @@ describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry on a different network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.LINEA_MAINNET)
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -90,7 +87,6 @@ describe('Address Book', function (this: Suite) {
           })
           .withEnabledNetworks({
             eip155: {
-              '0x539': true,
               '0xe708': true,
             },
           })
@@ -99,10 +95,10 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        const networkSelector = new NetworkManager(driver);
-        await networkSelector.selectNetworkByChainId('0xe708');
+        // Start on Linea
+        await loginWithBalanceValidation(driver);
 
+        // Send transaction on Localhost
         await createInternalTransaction({
           driver,
           chainId: '0x539',
@@ -112,6 +108,12 @@ describe('Address Book', function (this: Suite) {
         });
 
         await new TransactionConfirmation(driver).clickFooterConfirmButton();
+
+        // Select Linea to check the Activity list
+        const networkSelector = new NetworkManager(driver);
+        await networkSelector.openNetworkManager();
+        await networkSelector.selectTab('Custom');
+        await networkSelector.selectNetworkByName('Localhost 8545');
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
@@ -181,7 +183,7 @@ describe('Address Book', function (this: Suite) {
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -224,7 +226,7 @@ describe('Address Book', function (this: Suite) {
   it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
