@@ -141,14 +141,9 @@ export const useBridgeNavigation = () => {
    * Navigates to the hw transaction signing page.
    */
   const navigateToHwSigningPage = useCallback(() => {
-    navigate(
-      {
-        pathname: `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-      },
-      {
-        state,
-      },
-    );
+    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`, {
+      state,
+    });
   }, [state]);
 
   /**

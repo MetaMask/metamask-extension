@@ -275,9 +275,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            {
-              "pathname": "/cross-chain/swaps/awaiting-signatures",
-            },
+            "/cross-chain/swaps/awaiting-signatures",
             {
               "state": {},
             },
