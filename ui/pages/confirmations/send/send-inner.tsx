@@ -18,7 +18,6 @@ import { Loader } from '../components/send/loader';
 import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
-import { Animated } from '../../../components/ui/animated';
 
 const SendContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -70,7 +69,7 @@ export const SendInner = () => {
   }
 
   return (
-    <Animated>
+    <>
       {currentPage === SendPages.ASSET && (
         <SendContainer>
           <Asset />
@@ -81,6 +80,6 @@ export const SendInner = () => {
           <AmountRecipient />
         </SendContainer>
       )}
-    </Animated>
+    </>
   );
 };

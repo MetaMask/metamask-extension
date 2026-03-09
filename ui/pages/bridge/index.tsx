@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -37,7 +37,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
-import { Animated, type AnimatedRef } from '../../components/ui/animated';
+import { navigateBack } from '../../components/ui/animated';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -104,8 +104,6 @@ const CrossChainSwap = () => {
   // Sets tx alerts for the active quote
   useTxAlerts();
 
-  const animatedRef = useRef<AnimatedRef>(null);
-
   const redirectToDefaultRoute = () => {
     const doNavigate = async () => {
       await resetControllerAndInputStates();
@@ -116,79 +114,73 @@ const CrossChainSwap = () => {
       }
     };
 
-    if (animatedRef.current) {
-      animatedRef.current.triggerExit(() => {
-        doNavigate().catch(() => undefined);
-      });
-    } else {
+    navigateBack(() => {
       doNavigate().catch(() => undefined);
-    }
+    });
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   return (
-    <Animated ref={animatedRef}>
-      <Page className="bridge__container">
-        <Header
-          textProps={{ variant: TextVariant.headingSm }}
-          startAccessory={
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('back')}
-              onClick={redirectToDefaultRoute}
-            />
-          }
-          endAccessory={
-            <ButtonIcon
-              iconName={IconName.Setting}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('settings')}
-              data-testid="bridge__header-settings-button"
-              onClick={() => {
-                setIsSettingsModalOpen(true);
-              }}
-            />
-          }
-        >
-          {t('swap')}
-        </Header>
-        <Content padding={0}>
-          <Routes>
-            <Route
-              path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
-              element={
-                <>
-                  <BridgeTransactionSettingsModal
-                    isOpen={isSettingsModalOpen}
-                    onClose={() => {
-                      setIsSettingsModalOpen(false);
-                    }}
-                  />
-                  <PrepareBridgePage
-                    onOpenSettings={() => setIsSettingsModalOpen(true)}
-                  />
-                </>
-              }
-            />
-            <Route
-              path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-              element={
-                <>
-                  <Content>
-                    <AwaitingSignatures />
-                  </Content>
-                  <Footer>
-                    <AwaitingSignaturesCancelButton />
-                  </Footer>
-                </>
-              }
-            />
-          </Routes>
-        </Content>
-      </Page>
-    </Animated>
+    <Page className="bridge__container">
+      <Header
+        textProps={{ variant: TextVariant.headingSm }}
+        startAccessory={
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('back')}
+            onClick={redirectToDefaultRoute}
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            iconName={IconName.Setting}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('settings')}
+            data-testid="bridge__header-settings-button"
+            onClick={() => {
+              setIsSettingsModalOpen(true);
+            }}
+          />
+        }
+      >
+        {t('swap')}
+      </Header>
+      <Content padding={0}>
+        <Routes>
+          <Route
+            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => {
+                    setIsSettingsModalOpen(false);
+                  }}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+        </Routes>
+      </Content>
+    </Page>
   );
 };
 

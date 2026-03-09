@@ -15,16 +15,15 @@ import {
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
-import { useAnimatedExit } from '../../../../../components/ui/animated';
+import { navigateBack } from '../../../../../components/ui/animated';
 
 export const Header = () => {
   const t = useI18nContext();
   const { goToPreviousPage } = useNavigateSendPage();
-  const triggerExit = useAnimatedExit();
 
   const handleBack = useCallback(() => {
-    triggerExit(goToPreviousPage);
-  }, [triggerExit, goToPreviousPage]);
+    navigateBack(goToPreviousPage);
+  }, [goToPreviousPage]);
 
   return (
     <Box

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -24,7 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Animated, type AnimatedRef } from '../../../components/ui/animated';
+import { navigateBack } from '../../../components/ui/animated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import {
@@ -120,112 +120,104 @@ export const AccountList = () => {
     setIsAddWalletModalOpen(false);
   }, [setIsAddWalletModalOpen]);
 
-  const animatedRef = useRef<AnimatedRef>(null);
-
   const handleBack = useCallback(() => {
-    if (animatedRef.current) {
-      animatedRef.current.triggerExit(() => navigate(PREVIOUS_ROUTE));
-    } else {
-      navigate(PREVIOUS_ROUTE);
-    }
+    navigateBack(() => navigate(PREVIOUS_ROUTE));
   }, [navigate]);
 
   return (
-    <Animated ref={animatedRef}>
-      <Page className="account-list-page">
-        <Header
-          textProps={{
-            variant: TextVariant.headingSm,
-          }}
-          startAccessory={
-            <ButtonIcon
-              size={ButtonIconSize.Md}
-              ariaLabel={t('back')}
-              iconName={IconName.ArrowLeft}
-              onClick={handleBack}
-            />
-          }
+    <Page className="account-list-page">
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            ariaLabel={t('back')}
+            iconName={IconName.ArrowLeft}
+            onClick={handleBack}
+          />
+        }
+      >
+        {t('accounts')}
+      </Header>
+      <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
+        <Box
+          flexDirection={FlexDirection.Column}
+          paddingTop={1}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={2}
         >
-          {t('accounts')}
-        </Header>
-        <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
-          <Box
-            flexDirection={FlexDirection.Column}
-            paddingTop={1}
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={2}
-          >
-            <TextFieldSearch
-              size={TextFieldSearchSize.Lg}
-              placeholder={t('searchYourAccounts')}
-              value={searchPattern}
-              onChange={onSearchBarChange}
-              clearButtonOnClick={() => setSearchPattern('')}
-              width={BlockSize.Full}
-              borderWidth={0}
-              backgroundColor={BackgroundColor.backgroundMuted}
-              borderRadius={BorderRadius.LG}
-              data-testid="multichain-account-list-search"
+          <TextFieldSearch
+            size={TextFieldSearchSize.Lg}
+            placeholder={t('searchYourAccounts')}
+            value={searchPattern}
+            onChange={onSearchBarChange}
+            clearButtonOnClick={() => setSearchPattern('')}
+            width={BlockSize.Full}
+            borderWidth={0}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            borderRadius={BorderRadius.LG}
+            data-testid="multichain-account-list-search"
+          />
+        </Box>
+        <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
+          {hasFilteredWallets ? (
+            <MultichainAccountList
+              wallets={filteredWallets}
+              selectedAccountGroups={[selectedAccountGroup]}
+              isInSearchMode={Boolean(searchPattern)}
+              displayWalletHeader={hasMultipleWallets}
+              showConnectionStatus={permittedAccounts.length > 0}
+              showDefaultAddress={showDefaultAddress}
             />
-          </Box>
-          <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
-            {hasFilteredWallets ? (
-              <MultichainAccountList
-                wallets={filteredWallets}
-                selectedAccountGroups={[selectedAccountGroup]}
-                isInSearchMode={Boolean(searchPattern)}
-                displayWalletHeader={hasMultipleWallets}
-                showConnectionStatus={permittedAccounts.length > 0}
-                showDefaultAddress={showDefaultAddress}
-              />
-            ) : (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                width={BlockSize.Full}
-                height={BlockSize.Full}
+          ) : (
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              width={BlockSize.Full}
+              height={BlockSize.Full}
+            >
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
               >
-                <Text
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMdMedium}
-                >
-                  {t('noAccountsFound')}
-                </Text>
-              </Box>
-            )}
-          </ScrollContainer>
-        </div>
-        <Footer className="shadow-sm">
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={handleOpenAddWalletModal}
-            isDisabled={isAccountTreeSyncingInProgress}
-            isFullWidth
-            data-testid="account-list-add-wallet-button"
-          >
-            <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
-              {isAccountTreeSyncingInProgress && (
-                <Icon
-                  className="add-multichain-account__icon-box__icon-loading"
-                  name={IconName.Loading}
-                  color={IconColor.IconMuted}
-                  size={IconSize.Lg}
-                />
-              )}
-              <Text variant={TextVariant.bodyMdMedium}>
-                {addWalletButtonLabel}
+                {t('noAccountsFound')}
               </Text>
             </Box>
-          </Button>
-        </Footer>
-        <AddWalletModal
-          isOpen={isAddWalletModalOpen}
-          onClose={handleCloseAddWalletModal}
-        />
-      </Page>
-    </Animated>
+          )}
+        </ScrollContainer>
+      </div>
+      <Footer className="shadow-sm">
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          onClick={handleOpenAddWalletModal}
+          isDisabled={isAccountTreeSyncingInProgress}
+          isFullWidth
+          data-testid="account-list-add-wallet-button"
+        >
+          <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
+            {isAccountTreeSyncingInProgress && (
+              <Icon
+                className="add-multichain-account__icon-box__icon-loading"
+                name={IconName.Loading}
+                color={IconColor.IconMuted}
+                size={IconSize.Lg}
+              />
+            )}
+            <Text variant={TextVariant.bodyMdMedium}>
+              {addWalletButtonLabel}
+            </Text>
+          </Box>
+        </Button>
+      </Footer>
+      <AddWalletModal
+        isOpen={isAddWalletModalOpen}
+        onClose={handleCloseAddWalletModal}
+      />
+    </Page>
   );
 };
