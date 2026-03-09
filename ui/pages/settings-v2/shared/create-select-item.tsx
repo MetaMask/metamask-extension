@@ -9,7 +9,7 @@ type TranslateFunction = ReturnType<typeof useI18nContext>;
 
 export type SelectItemConfig = {
   name: string;
-  labelKey: string;
+  titleKey: string;
   valueSelector: (state: MetaMaskReduxState) => string;
   /** Optional formatter to transform the value. Receives translation function for i18n. */
   formatValue?: (value: string, t: TranslateFunction) => string | ReactNode;
@@ -36,7 +36,7 @@ export const createSelectItem = (config: SelectItemConfig): React.FC => {
 
     return (
       <SettingsSelectItem
-        label={t(config.labelKey)}
+        label={t(config.titleKey)}
         value={displayValue}
         onPress={handlePress}
       />

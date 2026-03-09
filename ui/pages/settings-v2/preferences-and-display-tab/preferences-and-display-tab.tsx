@@ -25,7 +25,7 @@ const localeMap = new Map(locales.map(({ code, name }) => [code, name]));
 
 const ThemeItem = createSelectItem({
   name: 'ThemeItem',
-  labelKey: 'theme',
+  titleKey: 'theme',
   valueSelector: getTheme,
   formatValue: (theme, t) =>
     t(THEME_LABEL_MAP[theme as ThemeType] ?? THEME_LABEL_MAP[ThemeType.os]),
@@ -34,7 +34,7 @@ const ThemeItem = createSelectItem({
 
 const LanguageItem = createSelectItem({
   name: 'LanguageItem',
-  labelKey: 'language',
+  titleKey: 'language',
   valueSelector: (state: MetaMaskReduxState) => state.metamask.currentLocale,
   formatValue: (locale) => localeMap.get(locale) ?? locale,
   route: LANGUAGE_ROUTE,
