@@ -70,9 +70,7 @@ const store = configureMockStore()({
 
 function renderHook<Result>(callback: () => Result) {
   return renderHookBase(callback, {
-    wrapper: ({ children }) => (
-      <Provider store={store}>{children}</Provider>
-    ),
+    wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
   });
 }
 
