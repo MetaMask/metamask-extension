@@ -106,7 +106,7 @@ const metadata = {
   rewardsSubscriptionTokens: {
     includeInStateLogs: false,
     persist: true,
-    includeInDebugSnapshot: true,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   rewardsEnabled: {
@@ -243,6 +243,140 @@ export class RewardsController extends BaseController<
   #isBitcoinDisabled: () => boolean;
 
   #isTronDisabled: () => boolean;
+
+  #reauthPromises: Map<string, Promise<void>> = new Map();
+
+  /**
+   * Perform silent re-authentication for a given subscription ID.
+   * Clears the stale token, tries the active account first, then falls back
+   * to iterating all linked software accounts.
+   *
+   * @param subscriptionId - The subscription ID to re-authenticate for
+   */
+  async #performReauthForSubscription(subscriptionId: string): Promise<void> {
+    this.#removeSubscriptionToken(subscriptionId);
+
+    // Fetch all accounts once; used by both the active-account fast-path and
+    // the linked-accounts fallback below.
+    const allAccounts = await this.messenger.call(
+      'AccountsController:listMultichainAccounts',
+    );
+
+    // Fast path: if the rewards active account owns this subscription, try it
+    // first.  We look it up by its stored CAIP account ID rather than by
+    // getSelectedMultichainAccount so that a wallet-UI account switch cannot
+    // cause us to authenticate the wrong account.
+    if (this.state.rewardsActiveAccount?.subscriptionId === subscriptionId) {
+      const rewardsActiveAccountCaipId =
+        this.state.rewardsActiveAccount.account;
+      const activeAccount = allAccounts.find((acc: InternalAccount) => {
+        const accCaipId = this.convertInternalAccountToCaipAccountId(acc);
+        return accCaipId === rewardsActiveAccountCaipId;
+      }) as InternalAccount | undefined;
+
+      if (activeAccount && !isHardwareAccount(activeAccount)) {
+        log.debug(
+          'RewardsController: Attempting reauth with active account after 403',
+        );
+        const result = await this.performSilentAuth(
+          activeAccount,
+          false,
+          false,
+        );
+        if (!result) {
+          throw new Error(
+            `Reauth failed for subscription ID: ${subscriptionId}`,
+          );
+        }
+        return;
+      }
+      // Fall through: the rewards active account is a hardware wallet or was
+      // not found in the accounts list — try all linked accounts below.
+    }
+
+    // Active account can't sign (e.g. hardware wallet) or doesn't match —
+    // find any software account linked to this subscription.
+    const allLinkedAccounts = Object.values(this.state.rewardsAccounts).filter(
+      (acc) => acc.subscriptionId === subscriptionId,
+    );
+
+    if (allLinkedAccounts.length > 0) {
+      for (const linkedAccount of allLinkedAccounts) {
+        const intAccount = allAccounts.find((acc: InternalAccount) => {
+          const accCaipId = this.convertInternalAccountToCaipAccountId(acc);
+          return accCaipId === linkedAccount.account && !isHardwareAccount(acc);
+        });
+        if (intAccount) {
+          log.debug(
+            'RewardsController: Attempting reauth with linked account after 403',
+          );
+          const result = await this.performSilentAuth(
+            intAccount as InternalAccount,
+            false,
+            false,
+          );
+          if (!result) {
+            throw new Error(
+              `Reauth failed for subscription ID: ${subscriptionId}`,
+            );
+          }
+          return;
+        }
+      }
+    }
+
+    throw new Error(
+      `No signable account found for subscription ID: ${subscriptionId}`,
+    );
+  }
+
+  /**
+   * Wrap a data service call with automatic re-authentication on 403 errors.
+   * Coalesces concurrent reauth attempts and retries the original call once on success.
+   *
+   * @param fn - The function to execute
+   * @param subscriptionId - The subscription ID used to look up the account for reauth
+   */
+  async #withAuthRetry<TResult>(
+    fn: () => Promise<TResult>,
+    subscriptionId: string,
+  ): Promise<TResult> {
+    try {
+      return await fn();
+    } catch (error) {
+      if (!(error instanceof AuthorizationFailedError)) {
+        throw error;
+      }
+
+      if (this.#reauthPromises.has(subscriptionId)) {
+        log.debug(
+          'RewardsController: 403 detected, reauth already in progress for subscription',
+          subscriptionId,
+        );
+      } else {
+        log.debug(
+          'RewardsController: 403 detected, initiating reauth for subscription',
+          subscriptionId,
+        );
+        const promise = this.#performReauthForSubscription(
+          subscriptionId,
+        ).finally(() => {
+          this.#reauthPromises.delete(subscriptionId);
+        });
+        this.#reauthPromises.set(subscriptionId, promise);
+      }
+
+      try {
+        await this.#reauthPromises.get(subscriptionId);
+      } catch (reauthError) {
+        this.invalidateSubscriptionCache(subscriptionId);
+        this.invalidateSubscriptionAndAccounts(subscriptionId);
+        throw reauthError;
+      }
+
+      return await fn();
+    }
+  }
 
   /**
    * Calculate tier status and next tier information
@@ -797,6 +931,12 @@ export class RewardsController extends BaseController<
   #storeSubscriptionToken(subscriptionId: string, token: string): void {
     this.update((state: RewardsControllerState) => {
       state.rewardsSubscriptionTokens[subscriptionId] = token;
+    });
+  }
+
+  #removeSubscriptionToken(subscriptionId: string): void {
+    this.update((state: RewardsControllerState) => {
+      delete state.rewardsSubscriptionTokens[subscriptionId];
     });
   }
 
@@ -1501,108 +1641,32 @@ export class RewardsController extends BaseController<
       },
       fetchFresh: async () => {
         try {
-          const subscriptionToken = this.#getSubscriptionToken(subscriptionId);
-          if (!subscriptionToken) {
-            throw new AuthorizationFailedError(
-              `No subscription token found for subscription ID: ${subscriptionId}`,
+          const seasonState = await this.#withAuthRetry(() => {
+            const subscriptionToken =
+              this.#getSubscriptionToken(subscriptionId);
+            if (!subscriptionToken) {
+              throw new AuthorizationFailedError(
+                `No subscription token found for subscription ID: ${subscriptionId}`,
+              );
+            }
+            return this.messenger.call(
+              'RewardsDataService:getSeasonStatus',
+              seasonId,
+              subscriptionToken,
             );
-          }
-          // Now fetch season status (balance, currentTierId, etc.)
-          const seasonState = await this.messenger.call(
-            'RewardsDataService:getSeasonStatus',
-            seasonId,
-            subscriptionToken,
-          );
-          // Combine all data into SeasonStatusDto
+          }, subscriptionId);
           const seasonStatus = this.convertToSeasonStatusDto(
             season,
             seasonState,
           );
           return this.#convertSeasonStatusToSubscriptionState(seasonStatus);
         } catch (error) {
-          if (error instanceof AuthorizationFailedError) {
-            // Attempt to reauth with a valid account.
-            try {
-              const account = await this.messenger.call(
-                'AccountsController:getSelectedMultichainAccount',
-              );
-
-              if (
-                this.state.rewardsActiveAccount?.subscriptionId ===
-                  subscriptionId &&
-                !isHardwareAccount(account as InternalAccount)
-              ) {
-                await this.performSilentAuth(account, false, false); // try and auth.
-              } else if (
-                this.state.rewardsAccounts &&
-                Object.values(this.state.rewardsAccounts).length > 0
-              ) {
-                const accountForSub = Object.values(
-                  this.state.rewardsAccounts,
-                ).find((acc) => acc.subscriptionId === subscriptionId);
-                if (accountForSub) {
-                  const accounts = await this.messenger.call(
-                    'AccountsController:listMultichainAccounts',
-                  );
-                  const { convertInternalAccountToCaipAccountId } = this;
-                  const intAccountForSub = accounts.find(
-                    (acc: InternalAccount) => {
-                      const accCaipId =
-                        convertInternalAccountToCaipAccountId(acc);
-                      return (
-                        accCaipId === accountForSub.account &&
-                        !isHardwareAccount(acc)
-                      );
-                    },
-                  );
-                  if (intAccountForSub) {
-                    await this.performSilentAuth(
-                      intAccountForSub as InternalAccount,
-                      false,
-                      false,
-                    );
-                  }
-                }
-              }
-              // Fetch season status again
-              const subscriptionToken =
-                this.#getSubscriptionToken(subscriptionId);
-              if (!subscriptionToken) {
-                throw new Error(
-                  `No subscription token found for subscription ID: ${subscriptionId}`,
-                );
-              }
-              // Now fetch season status (balance, currentTierId, etc.)
-              const seasonState = await this.messenger.call(
-                'RewardsDataService:getSeasonStatus',
-                season.id,
-                subscriptionToken,
-              );
-              // Combine all data into SeasonStatusDto
-              const seasonStatus = this.convertToSeasonStatusDto(
-                season,
-                seasonState,
-              );
-              return this.#convertSeasonStatusToSubscriptionState(seasonStatus);
-            } catch {
-              log.error(
-                'RewardsController: Failed to reauth with a valid account after 403 error',
-                error instanceof Error ? error.message : String(error),
-              );
-              this.invalidateSubscriptionCache(subscriptionId);
-              this.invalidateAccountsAndSubscriptions();
-              throw error;
-            }
-          } else if (error instanceof SeasonNotFoundError) {
+          if (error instanceof SeasonNotFoundError) {
             this.update((state: RewardsControllerState) => {
               state.rewardsSeasons = {};
             });
             throw error;
           }
-          log.error(
-            'RewardsController: Failed to get season status:',
-            error instanceof Error ? error.message : String(error),
-          );
           throw error;
         }
       },
@@ -1617,21 +1681,43 @@ export class RewardsController extends BaseController<
     return result;
   }
 
-  invalidateAccountsAndSubscriptions() {
+  invalidateSubscriptionAndAccounts(subscriptionId: string): void {
     this.update((state: RewardsControllerState) => {
-      if (state.rewardsActiveAccount) {
+      delete state.rewardsSubscriptions[subscriptionId];
+
+      Object.entries(state.rewardsAccounts).forEach(
+        ([caipAccount, accountState]) => {
+          if (accountState.subscriptionId === subscriptionId) {
+            state.rewardsAccounts[caipAccount as CaipAccountId] = {
+              ...accountState,
+              hasOptedIn: false,
+              subscriptionId: null,
+              perpsFeeDiscount: null,
+              lastPerpsDiscountRateFetched: null,
+              lastFreshOptInStatusCheck: null,
+            };
+          }
+        },
+      );
+
+      if (state.rewardsActiveAccount?.subscriptionId === subscriptionId) {
         state.rewardsActiveAccount = {
           ...state.rewardsActiveAccount,
           hasOptedIn: false,
           subscriptionId: null,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
           lastFreshOptInStatusCheck: null,
-          account: state.rewardsActiveAccount.account, // Ensure account is always present (never undefined)
         };
       }
-      state.rewardsAccounts = {};
-      state.rewardsSubscriptions = {};
-      state.rewardsSubscriptionTokens = {};
+
+      delete state.rewardsSubscriptionTokens[subscriptionId];
     });
+
+    log.debug(
+      'RewardsController: Invalidated subscription and accounts',
+      subscriptionId,
+    );
   }
 
   /**
@@ -1666,8 +1752,12 @@ export class RewardsController extends BaseController<
     for (const accountToTry of sortedAccounts) {
       try {
         optinResult = await this.#optIn(accountToTry, referralCode);
-      } catch {
-        // Allow one failure to pass through
+      } catch (error) {
+        // Hardware wallet errors must propagate — the user explicitly interacted with their device
+        if (isHardwareAccount(accountToTry)) {
+          throw error;
+        }
+        // Allow one failure to pass through for non-hardware accounts
       }
 
       if (optinResult) {

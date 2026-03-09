@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Należy wybrać konto!"
   },
-  "activityLog": {
-    "message": "dziennik aktywności"
-  },
   "addAcquiredTokens": {
     "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
   },
@@ -302,9 +299,6 @@
     "message": "Zaimportowane",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Twoja transakcja została potwierdzona w sieci. Kliknij OK żeby wrócić."
-  },
   "insufficientBalance": {
     "message": "Niewystarczające saldo."
   },
@@ -481,12 +475,6 @@
   "rejectAll": {
     "message": "Odrzuć wszystkie"
   },
-  "rejectTxsDescription": {
-    "message": "Zamierzasz odrzucić wiele ($1) transakcji jednocześnie."
-  },
-  "rejectTxsN": {
-    "message": "Odrzuć transakcje ($1)"
-  },
   "rejected": {
     "message": "Odrzucone"
   },
@@ -495,9 +483,6 @@
   },
   "removeAccount": {
     "message": "Usuń konto"
-  },
-  "removeAccountDescription": {
-    "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
   },
   "required": {
     "message": "Wymagane"
@@ -584,9 +569,6 @@
   "speedUpCancellation": {
     "message": "Przyśpiesz anulowanie"
   },
-  "speedUpTransaction": {
-    "message": "Przyśpiesz transakcję"
-  },
   "stateLogError": {
     "message": "Błąd podczas pobierania logów stanów."
   },
@@ -626,38 +608,11 @@
   "transaction": {
     "message": "transakcja"
   },
-  "transactionCancelAttempted": {
-    "message": "Podjęto próbę anulowania transakcji z opłatą za gaz w wysokości $1 – $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcja została anulowana pomyślnie – $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcja została potwierdzona o $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcja o wartości $1 została utworzona o $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcja odrzucona – $2."
-  },
   "transactionError": {
     "message": "Błąd transakcji. Wyjątek w kodzie kontraktu."
   },
   "transactionErrorNoContract": {
     "message": "Próba wywołania funkcji na adresie, który nie jest adresem kontraktu."
-  },
-  "transactionErrored": {
-    "message": "Wystąpił błąd podczas wykonywania transakcji."
-  },
-  "transactionResubmitted": {
-    "message": "Transakcja wysłana ponownie z opłatą za gaz podwyższoną do $1 – $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcja wykonana z opłatą za gaz w wysokości $1 – $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcja zaktualizowana – $2."
   },
   "transfer": {
     "message": "Przelew"
@@ -703,8 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Twoja prywatna fraza seed"
   }
 }

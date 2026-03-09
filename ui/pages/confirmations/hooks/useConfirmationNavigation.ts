@@ -26,6 +26,7 @@ import {
 export enum ConfirmationLoader {
   Default = 'default',
   CustomAmount = 'customAmount',
+  Send = 'send',
 }
 
 const CONNECT_APPROVAL_TYPES = [

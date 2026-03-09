@@ -1,0 +1,563 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: -0.1 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: 0 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: 0.001 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: undefined 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal quote-card should render when there is a price impact warning or error: 0.07 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal bridge-price-impact-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+              >
+                <svg
+                  class="inline-block w-8 h-8 text-warning-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 17q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.713S12.283 15 12 15s-.52.096-.712.287S11 15.717 11 16s.096.52.288.712.429.288.712.288m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+                High price impact
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <p
+              class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              Because of your trade size and available liquidity, you'll get about 7.0% less than the market price. This is already factored into your quote.
+            </p>
+          </div>
+          <div
+            class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            >
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Got it
+                </span>
+              </button>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
+exports[`BridgePriceImpactModal quote-card should render when there is a price impact warning or error: 0.27 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal bridge-price-impact-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+              >
+                <svg
+                  class="inline-block w-8 h-8 text-error-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
+                  />
+                </svg>
+                Very high price impact
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <p
+              class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              You'll lose approximately 27% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
+            </p>
+          </div>
+          <div
+            class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            >
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Got it
+                </span>
+              </button>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
+exports[`BridgePriceImpactModal submit-cta should disable the submit button when submission is in progress 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal bridge-price-impact-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+              >
+                <svg
+                  class="inline-block w-8 h-8 text-error-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
+                  />
+                </svg>
+                Very high price impact
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                disabled=""
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <p
+              class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              You'll lose approximately 90% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
+            </p>
+          </div>
+          <div
+            class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            >
+              <button
+                aria-busy="true"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full text-default bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default cursor-not-allowed"
+                disabled=""
+                role="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="absolute inline-flex items-center"
+                >
+                  <svg
+                    class="inline-block w-4 h-4 mr-2 animate-spin text-inherit"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 22q-2.05 0-3.875-.787c-1.825-.788-2.28-1.242-3.187-2.15s-1.625-1.971-2.15-3.188S2 13.367 2 12q0-2.075.788-3.887c.788-1.812 1.241-2.267 2.15-3.175s1.97-1.625 3.187-2.15S10.633 2 12 2q.424 0 .713.288c.289.288.287.429.287.712s-.096.52-.287.713S12.283 4 12 4Q8.675 4 6.338 6.338C4 8.676 4 9.783 4 12q0 3.325 2.338 5.663C8.676 20 9.783 20 12 20q3.325 0 5.663-2.337C20 15.326 20 14.217 20 12q0-.424.288-.712C20.576 11 20.717 11 21 11s.52.096.713.288.287.429.287.712q0 2.05-.787 3.875c-.788 1.825-1.242 2.28-2.15 3.188s-1.967 1.625-3.175 2.15S13.383 22 12 22"
+                    />
+                  </svg>
+                  <span
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  />
+                </span>
+                <span
+                  class="invisible inline-flex items-center"
+                >
+                  Proceed
+                </span>
+                <span
+                  aria-atomic="true"
+                  aria-live="polite"
+                  class="sr-only"
+                >
+                  Loading
+                </span>
+              </button>
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                disabled=""
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Cancel
+                </span>
+              </button>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
+exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0.001 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0.07 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0.24 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: undefined 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
+exports[`BridgePriceImpactModal submit-cta should render when there is a price impact error 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal bridge-price-impact-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+              >
+                <svg
+                  class="inline-block w-8 h-8 text-error-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
+                  />
+                </svg>
+                Very high price impact
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <p
+              class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              You'll lose approximately 90% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
+            </p>
+          </div>
+          <div
+            class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            >
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Proceed
+                </span>
+              </button>
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Cancel
+                </span>
+              </button>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;

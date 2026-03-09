@@ -129,6 +129,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
+  getEip7702SupportedChains,
 } from '../../shared/lib/eip7702-support-utils';
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import { captureException } from '../../shared/lib/sentry';
@@ -206,7 +207,10 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
-import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import {
   toHardwareWalletError,
   // eslint-disable-next-line import/no-restricted-paths
@@ -311,6 +315,7 @@ import {
 import {
   AssetsContractControllerInit,
   AssetsControllerInit,
+  ClientControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -380,7 +385,6 @@ import { ConnectivityControllerInit } from './controller-init/connectivity';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
-import { SwapsControllerInit } from './controller-init/swaps-controller-init';
 import { BridgeControllerInit } from './controller-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './controller-init/preferences-controller-init';
@@ -605,7 +609,6 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
-      SwapsController: SwapsControllerInit,
       BridgeController: BridgeControllerInit,
       BridgeStatusController: BridgeStatusControllerInit,
       NftController: NftControllerInit,
@@ -659,6 +662,8 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
+      // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
+      ClientController: ClientControllerInit,
       ...(shouldInitAssetsController
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -720,7 +725,6 @@ export default class MetamaskController extends EventEmitter {
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
       controllersByName.SmartTransactionsController;
-    this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
     this.backendWebSocketService = controllersByName.BackendWebSocketService;
@@ -873,6 +877,8 @@ export default class MetamaskController extends EventEmitter {
         'NotificationServicesController:getState',
         'TokenBalancesController:getState',
         'MultichainBalancesController:getState',
+        'RemoteFeatureFlagController:getState',
+        'AssetsController:getState',
       ],
     });
 
@@ -1146,8 +1152,25 @@ export default class MetamaskController extends EventEmitter {
           throw rpcErrors.methodNotSupported('No permission type provided');
         }
 
-        for (const param of params) {
-          const permissionType = param?.permission?.type;
+        const supportedChains = getEip7702SupportedChains(
+          this.remoteFeatureFlagController.state,
+        ).map((chainId) => chainId.toLowerCase());
+
+        const unsupportedChains = params
+          .filter(
+            ({ chainId }) => !supportedChains.includes(chainId?.toLowerCase()),
+          )
+          .map(({ chainId }) => chainId);
+
+        if (unsupportedChains.length > 0) {
+          throw rpcErrors.methodNotSupported(
+            `wallet_requestExecutionPermissions is not supported on chains '${unsupportedChains.join(', ')}'`,
+          );
+        }
+
+        for (const { permission } of params) {
+          const permissionType = permission?.type;
+
           if (!enabledTypes.includes(permissionType)) {
             throw rpcErrors.methodNotSupported(
               `Permission type '${permissionType ?? 'unknown'}' is not enabled`,
@@ -1219,7 +1242,6 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
-      SwapsController: this.swapsController,
       BridgeController: this.bridgeController,
       BridgeStatusController: this.bridgeStatusController,
       EnsController: this.ensController,
@@ -1356,7 +1378,6 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController,
       ),
       this.signatureController.resetState.bind(this.signatureController),
-      this.swapsController.resetState.bind(this.swapsController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
@@ -2510,12 +2531,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setAddSnapAccountEnabled.bind(
           preferencesController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -2979,18 +2998,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
-      setEnableEnforcedSimulations:
-        appStateController.setEnableEnforcedSimulations.bind(
-          appStateController,
-        ),
-      setEnableEnforcedSimulationsForTransaction:
-        appStateController.setEnableEnforcedSimulationsForTransaction.bind(
-          appStateController,
-        ),
-      setEnforcedSimulationsSlippageForTransaction:
-        appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
-          appStateController,
-        ),
       setHasShownMultichainAccountsIntroModal:
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
@@ -3011,6 +3018,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
       setPendingShieldCohort:
         appStateController.setPendingShieldCohort.bind(appStateController),
+      setPendingRedirectRoute:
+        appStateController.setPendingRedirectRoute.bind(appStateController),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
@@ -3229,96 +3238,6 @@ export default class MetamaskController extends EventEmitter {
       updateInterfaceState: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapInterfaceController:updateInterfaceState',
-      ),
-
-      // swaps
-      fetchAndSetQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:fetchAndSetQuotes',
-      ),
-      setSelectedQuoteAggId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSelectedQuoteAggId',
-      ),
-      resetSwapsState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:resetSwapsState',
-      ),
-      setSwapsTokens: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTokens',
-      ),
-      clearSwapsQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:clearSwapsQuotes',
-      ),
-      setApproveTxId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setApproveTxId',
-      ),
-      setTradeTxId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setTradeTxId',
-      ),
-      setSwapsTxGasPrice: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxGasPrice',
-      ),
-      setSwapsTxGasLimit: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxGasLimit',
-      ),
-      setSwapsTxMaxFeePerGas: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxMaxFeePerGas',
-      ),
-      setSwapsTxMaxFeePriorityPerGas: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxMaxFeePriorityPerGas',
-      ),
-      safeRefetchQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:safeRefetchQuotes',
-      ),
-      stopPollingForQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:stopPollingForQuotes',
-      ),
-      setBackgroundSwapRouteState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setBackgroundSwapRouteState',
-      ),
-      resetPostFetchState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:resetPostFetchState',
-      ),
-      setSwapsErrorKey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsErrorKey',
-      ),
-      setInitialGasEstimate: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setInitialGasEstimate',
-      ),
-      setCustomApproveTxData: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setCustomApproveTxData',
-      ),
-      setSwapsLiveness: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsLiveness',
-      ),
-      setSwapsFeatureFlags: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsFeatureFlags',
-      ),
-      setSwapsUserFeeLevel: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsUserFeeLevel',
-      ),
-      setSwapsQuotesPollingLimitEnabled: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsQuotesPollingLimitEnabled',
       ),
 
       // Bridge
@@ -3763,7 +3682,7 @@ export default class MetamaskController extends EventEmitter {
 
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
 
     const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
 
@@ -3886,7 +3805,7 @@ export default class MetamaskController extends EventEmitter {
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[chainId]?.data || {};
 
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
 
@@ -4091,9 +4010,6 @@ export default class MetamaskController extends EventEmitter {
       fetchAllSeedPhrasesSuccess = true;
 
       return allSeedPhrases;
-    } catch (error) {
-      log.error('error while fetching all seed phrases', error);
-      throw error;
     } finally {
       this.metaMetricsController.bufferedEndTrace?.({
         name: TraceName.OnboardingFetchSrps,
@@ -5429,13 +5345,19 @@ export default class MetamaskController extends EventEmitter {
         };
       },
     );
-    // Select the account
-    this.preferencesController.setSelectedAddress(unlockedAccount);
 
     const accounts = this.accountsController.listAccounts();
 
-    const { identities } = this.preferencesController.state;
-    return { unlockedAccount, identities, accounts };
+    const internalAccount =
+      this.accountsController.getAccountByAddress(unlockedAccount);
+
+    if (internalAccount) {
+      this.accountsController.setSelectedAccount(internalAccount.id);
+    } else {
+      throw new Error(`No account found for address: ${unlockedAccount}`);
+    }
+
+    return { unlockedAccount, accounts };
   }
 
   //
@@ -5489,7 +5411,13 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
-      this.preferencesController.setSelectedAddress(addedAccountAddress);
+      const internalAccount =
+        this.accountsController.getAccountByAddress(addedAccountAddress);
+      if (internalAccount) {
+        this.accountsController.setSelectedAccount(internalAccount.id);
+      } else {
+        throw new Error(`No account found for address: ${addedAccountAddress}`);
+      }
     }
 
     return addedAccountAddress;
@@ -5886,9 +5814,18 @@ export default class MetamaskController extends EventEmitter {
   async _updateDefiReferralUrl(partner, tabId) {
     try {
       const { url } = await browser.tabs.get(tabId);
-      const { search } = new URL(url || '');
-      const newUrl = `${partner.referralUrl}${search}`;
-      await browser.tabs.update(tabId, { url: newUrl });
+      const currentUrl = new URL(url || '');
+      const referralUrl = new URL(partner.referralUrl);
+
+      // Preserve (or update) existing params and add referral params
+      const mergedParams = new URLSearchParams(currentUrl.search);
+      for (const [key, value] of referralUrl.searchParams) {
+        mergedParams.set(key, value);
+      }
+
+      // Apply merged params to the referral URL
+      referralUrl.search = mergedParams.toString();
+      await browser.tabs.update(tabId, { url: referralUrl.toString() });
     } catch (error) {
       log.error(
         `Failed to update URL to ${partner.name} referral page: `,
@@ -6000,8 +5937,16 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldSelectAccount) {
-      // set new account as selected
-      this.preferencesController.setSelectedAddress(importedAccountAddress);
+      const account = this.accountsController.getAccountByAddress(
+        importedAccountAddress,
+      );
+      if (account) {
+        this.accountsController.setSelectedAccount(account.id);
+      } else {
+        throw new Error(
+          `No account found for address: ${importedAccountAddress}`,
+        );
+      }
     }
   }
 
@@ -8203,6 +8148,8 @@ export default class MetamaskController extends EventEmitter {
   set isClientOpen(open) {
     this._isClientOpen = open;
 
+    this.controllerMessenger.call('ClientController:setUiOpen', open);
+
     const { isUnlocked } = this.controllerMessenger.call(
       'KeyringController:getState',
     );
@@ -8930,7 +8877,7 @@ export default class MetamaskController extends EventEmitter {
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
     const metamaskState = this.getState();
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens({ metamask: metamaskState });
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens =
       allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];

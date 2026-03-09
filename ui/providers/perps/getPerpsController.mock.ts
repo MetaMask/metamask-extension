@@ -15,6 +15,7 @@
 import type { Store } from 'redux';
 import type { MetaMaskReduxState } from '../../store/store';
 import { mockPositions } from '../../components/app/perps/mocks';
+import { getPerpsStreamManager } from './PerpsStreamManager';
 import type { OrderParams } from '@metamask/perps-controller';
 import {
   AccountState,
@@ -225,6 +226,8 @@ class MockPerpsController {
 
   /**
    * Place a new order
+   * On success, updates the stream: replaces any existing position with the same
+   * symbol (so one position per symbol) and pushes the new position so the UI updates immediately.
    *
    * @param params - OrderParams from PerpsController (symbol, isBuy, size, orderType, etc.)
    */
@@ -234,10 +237,60 @@ class MockPerpsController {
     { success: true; orderId: string } | { success: false; error: string }
   > {
     console.log('[MockPerpsController] Placing order:', params);
-    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const streamManager = getPerpsStreamManager();
+    const currentPositions = streamManager.positions.getCachedData();
+    const newPosition = this.buildPositionFromOrderParams(params);
+    const otherPositions = currentPositions.filter(
+      (p) => p.symbol !== params.symbol,
+    );
+    streamManager.pushPositionsWithOverrides([...otherPositions, newPosition]);
+
     return {
       success: true,
       orderId: `mock-order-${Date.now()}`,
+    };
+  }
+
+  /**
+   * Build a minimal Position from order params for stream update (mock only).
+   * Sanitizes numeric values to avoid Infinity/NaN which can cause console errors in the UI.
+   * @param params
+   */
+  private buildPositionFromOrderParams(params: OrderParams): Position {
+    const sizeNum = Number.parseFloat(params.size);
+    const safeSize = Number.isFinite(sizeNum) && sizeNum > 0 ? sizeNum : 1;
+    const signedSize = params.isBuy ? safeSize : -safeSize;
+    const rawLeverage = params.leverage ?? 0;
+    const leverage: number =
+      Number.isFinite(rawLeverage) && rawLeverage > 0 ? rawLeverage : 5;
+    const rawPrice = params.currentPrice ?? 0;
+    const entryPrice: number =
+      Number.isFinite(rawPrice) && rawPrice > 0 ? rawPrice : 50;
+    const positionValue = Math.abs(signedSize) * entryPrice;
+
+    return {
+      symbol: params.symbol,
+      size: String(signedSize),
+      entryPrice: String(entryPrice),
+      positionValue: positionValue.toFixed(2),
+      unrealizedPnl: '0.00',
+      marginUsed: (positionValue / leverage).toFixed(2),
+      leverage: {
+        type: 'isolated',
+        value: leverage,
+        rawUsd: (positionValue / leverage).toFixed(2),
+      },
+      liquidationPrice: (entryPrice * 0.9).toFixed(2),
+      maxLeverage: 20,
+      returnOnEquity: '0.00',
+      cumulativeFunding: {
+        allTime: '0.00',
+        sinceOpen: '0.00',
+        sinceChange: '0.00',
+      },
+      takeProfitCount: 0,
+      stopLossCount: 0,
     };
   }
 

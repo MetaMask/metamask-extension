@@ -1,5 +1,6 @@
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { handleFetch } from '@metamask/controller-utils';
+import { BridgeClientId } from '@metamask/bridge-controller';
 import { trace } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { ControllerInitFunction } from './types';
@@ -23,6 +24,7 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
   const controller = new BridgeStatusController({
     messenger: controllerMessenger,
     state: persistedState.BridgeStatusController,
+    clientId: BridgeClientId.EXTENSION,
     fetchFn: async (url, requestOptions) => {
       return await handleFetch(url, {
         method: 'GET',
