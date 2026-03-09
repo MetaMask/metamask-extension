@@ -5,6 +5,65 @@ import {
   TrezorAction,
 } from '../../shared/constants/offscreen-communication';
 
+let trezorInitialized = false;
+let trezorInitInProgress: Promise<void> | null = null;
+let trezorDeviceListenerRegistered = false;
+
+function registerTrezorDeviceListener() {
+  if (trezorDeviceListenerRegistered) {
+    return;
+  }
+
+  TrezorConnectSDK.on(DEVICE_EVENT, (event) => {
+    if (event.type !== DEVICE.CONNECT) {
+      return;
+    }
+
+    if (event.payload.features?.model) {
+      chrome.runtime.sendMessage({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.trezorDeviceConnect,
+        payload: {
+          model: event.payload.features.model,
+          minorVersion: event.payload.features.minor_version,
+        },
+      });
+    }
+  });
+
+  trezorDeviceListenerRegistered = true;
+}
+
+async function initializeTrezorConnect(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params: any,
+) {
+  if (trezorInitialized) {
+    return;
+  }
+
+  if (trezorInitInProgress) {
+    await trezorInitInProgress;
+    return;
+  }
+
+  registerTrezorDeviceListener();
+
+  trezorInitInProgress = TrezorConnectSDK.init({
+    ...params,
+    env: 'webextension',
+  }).then(() => {
+    trezorInitialized = true;
+  });
+
+  try {
+    await trezorInitInProgress;
+  } finally {
+    trezorInitInProgress = null;
+  }
+}
+
 /**
  * This listener is used to listen for messages targeting the Trezor Offscreen
  * handler. Each package sent has an action that is used to determine what calls
@@ -32,29 +91,18 @@ export default function init() {
 
       switch (msg.action) {
         case TrezorAction.init:
-          TrezorConnectSDK.on(DEVICE_EVENT, (event) => {
-            if (event.type !== DEVICE.CONNECT) {
-              return;
-            }
-
-            if (event.payload.features?.model) {
-              chrome.runtime.sendMessage({
-                target: OffscreenCommunicationTarget.extension,
-                event: OffscreenCommunicationEvents.trezorDeviceConnect,
+          initializeTrezorConnect(msg.params)
+            .then(() => {
+              sendResponse();
+            })
+            .catch((error) => {
+              sendResponse({
+                success: false,
                 payload: {
-                  model: event.payload.features.model,
-                  minorVersion: event.payload.features.minor_version,
+                  error: error instanceof Error ? error.message : String(error),
                 },
               });
-            }
-          });
-
-          TrezorConnectSDK.init({
-            ...msg.params,
-            env: 'webextension',
-          }).then(() => {
-            sendResponse();
-          });
+            });
 
           break;
 
@@ -63,6 +111,8 @@ export default function init() {
           // This method is not well documented, but the code it calls can be seen
           // here: https://github.com/trezor/connect/blob/dec4a56af8a65a6059fb5f63fa3c6690d2c37e00/src/js/iframe/builder.js#L181
           TrezorConnectSDK.dispose();
+          trezorInitialized = false;
+          trezorInitInProgress = null;
 
           sendResponse();
 

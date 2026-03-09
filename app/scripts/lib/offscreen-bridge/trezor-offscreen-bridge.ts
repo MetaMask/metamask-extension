@@ -19,6 +19,9 @@ import {
   TrezorAction,
 } from '../../../../shared/constants/offscreen-communication';
 
+let trezorBridgeInitPromise: Promise<void> | null = null;
+let trezorBridgeInitialized = false;
+
 /**
  * This class is used as a custom bridge for the Trezor connection. Every
  * hardware wallet keyring also requires a bridge that has a known interface
@@ -34,11 +37,13 @@ export class TrezorOffscreenBridge implements TrezorBridge {
 
   minorVersion: number | undefined;
 
-  async init(
-    settings: {
-      manifest: Manifest;
-    } & Partial<ConnectSettings>,
-  ) {
+  #deviceConnectListenerRegistered = false;
+
+  #registerDeviceConnectListener() {
+    if (this.#deviceConnectListenerRegistered) {
+      return;
+    }
+
     chrome.runtime.onMessage.addListener((message) => {
       if (
         message.target === OffscreenCommunicationTarget.extension &&
@@ -49,7 +54,29 @@ export class TrezorOffscreenBridge implements TrezorBridge {
       }
     });
 
-    return new Promise<void>((resolve) => {
+    this.#deviceConnectListenerRegistered = true;
+  }
+
+  async init(
+    settings: {
+      manifest: Manifest;
+    } & Partial<ConnectSettings>,
+  ) {
+    this.#registerDeviceConnectListener();
+
+    if (trezorBridgeInitialized) {
+      console.debug('[TrezorBridge] init guarded: already initialized');
+      return;
+    }
+
+    if (trezorBridgeInitPromise) {
+      console.debug('[TrezorBridge] init guarded: init already in progress');
+      await trezorBridgeInitPromise;
+      return;
+    }
+
+    console.debug('[TrezorBridge] init starting');
+    trezorBridgeInitPromise = new Promise<void>((resolve) => {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
@@ -60,7 +87,15 @@ export class TrezorOffscreenBridge implements TrezorBridge {
           resolve();
         },
       );
+    }).then(() => {
+      trezorBridgeInitialized = true;
     });
+
+    try {
+      await trezorBridgeInitPromise;
+    } finally {
+      trezorBridgeInitPromise = null;
+    }
   }
 
   async dispose() {
@@ -71,6 +106,8 @@ export class TrezorOffscreenBridge implements TrezorBridge {
           action: TrezorAction.dispose,
         },
         () => {
+          trezorBridgeInitialized = false;
+          trezorBridgeInitPromise = null;
           resolve();
         },
       );
