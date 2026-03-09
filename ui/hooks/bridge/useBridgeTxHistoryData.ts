@@ -12,7 +12,10 @@ import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 import { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { MetaMaskReduxState } from '../../selectors';
-import { selectBridgeHistoryItemByHash } from '../../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryItemByHash,
+  selectLocalTxForTxHash,
+} from '../../ducks/bridge-status/selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -42,16 +45,26 @@ export function useBridgeTxHistoryData({
 
   const txMeta = transactionGroup?.initialTransaction ?? transactionViewData;
 
+  const localTx = useSelector((state: MetaMaskReduxState) =>
+    selectLocalTxForTxHash(state, txMeta?.hash),
+  );
   const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
     selectBridgeHistoryItemByHash(state, txMeta?.hash),
   );
+  const isApprovalTransaction =
+    Boolean(bridgeHistoryItem) &&
+    (bridgeHistoryItem?.approvalTxId === localTx?.id ||
+      bridgeHistoryItem?.approvalTxId === txMeta?.id);
+  const displayBridgeHistoryItem = isApprovalTransaction
+    ? undefined
+    : bridgeHistoryItem;
 
-  const isBridgeFailed = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
+  const isBridgeFailed = displayBridgeHistoryItem
+    ? displayBridgeHistoryItem?.status.status === StatusTypes.FAILED
     : null;
 
   const shouldShowBridgeTxDetails =
-    bridgeHistoryItem ||
+    displayBridgeHistoryItem ||
     txMeta?.type === TransactionType.bridge ||
     txMeta?.type === TransactionType.swap;
 
@@ -65,8 +78,8 @@ export function useBridgeTxHistoryData({
 
   return {
     // By complete, this means BOTH source and dest tx are confirmed
-    isBridgeComplete: bridgeHistoryItem
-      ? isBridgeComplete(bridgeHistoryItem)
+    isBridgeComplete: displayBridgeHistoryItem
+      ? isBridgeComplete(displayBridgeHistoryItem)
       : null,
     isBridgeFailed,
     showBridgeTxDetails: shouldShowBridgeTxDetails

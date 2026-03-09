@@ -5,10 +5,16 @@ import {
   act,
   renderHook as renderHookBase,
 } from '@testing-library/react-hooks';
+import thunk from 'redux-thunk';
+import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
+import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import {
   useGetTitle,
   usePrefetchTransactions,
@@ -28,6 +34,13 @@ jest.mock('../../../helpers/queries', () => ({
   queries: {
     transactions: (...args: unknown[]) => mockQueriesTransactions(...args),
   },
+}));
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate,
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -594,5 +607,61 @@ describe('Query hooks', () => {
     expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
       queryOptions,
     );
+  });
+});
+
+describe('useBridgeTxHistoryData', () => {
+  const middleware = [thunk];
+
+  const bridgeStore = configureMockStore(middleware)(
+    createBridgeMockStore({
+      metamaskStateOverrides: {
+        transactions: [
+          {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: mockBridgeTxData.bridgeHistoryItem.approvalTxId,
+            hash: '0xapprovalhash',
+            type: TransactionType.tokenMethodApprove,
+            status: TransactionStatus.confirmed,
+          },
+        ],
+      },
+      bridgeStatusStateOverrides: {
+        txHistory: {
+          intentOrderUid: {
+            ...mockBridgeTxData.bridgeHistoryItem,
+            approvalTxId: mockBridgeTxData.bridgeHistoryItem.approvalTxId,
+            status: {
+              ...mockBridgeTxData.bridgeHistoryItem.status,
+              status: StatusTypes.FAILED,
+            },
+          },
+        },
+      },
+    }),
+  );
+
+  it('does not treat completed approval txs as failed bridge rows', () => {
+    const { result } = renderHookBase(
+      () =>
+        useBridgeTxHistoryData({
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: '0xapprovalhash-1',
+            hash: '0xapprovalhash',
+            type: TransactionType.tokenMethodApprove,
+            status: TransactionStatus.confirmed,
+          } as never,
+        }),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={bridgeStore}>{children}</Provider>
+        ),
+      },
+    );
+
+    expect(result.current.isBridgeFailed).toBeNull();
+    expect(result.current.isBridgeComplete).toBeNull();
+    expect(result.current.showBridgeTxDetails).toBeUndefined();
   });
 });
