@@ -1,6 +1,5 @@
 import React, { ComponentType } from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import { Meta, StoryObj } from '@storybook/react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -88,20 +87,18 @@ const meta: Meta<StoryArgs> = {
         context.args?.transaction ?? defaultTransaction;
       return (
         <Provider store={store}>
-          <MemoryRouter initialEntries={['/']}>
-            <ConfirmContextProvider
-              currentConfirmationOverride={mockCurrentConfirmation}
-            >
-              <MockTransactionModalProvider>
-                <GasFeeContextProvider
-                  transaction={transaction}
-                  editGasMode={editGasMode}
-                >
-                  <Story />
-                </GasFeeContextProvider>
-              </MockTransactionModalProvider>
-            </ConfirmContextProvider>
-          </MemoryRouter>
+          <ConfirmContextProvider
+            currentConfirmationOverride={mockCurrentConfirmation}
+          >
+            <MockTransactionModalProvider>
+              <GasFeeContextProvider
+                transaction={transaction}
+                editGasMode={editGasMode}
+              >
+                <Story />
+              </GasFeeContextProvider>
+            </MockTransactionModalProvider>
+          </ConfirmContextProvider>
         </Provider>
       );
     },
