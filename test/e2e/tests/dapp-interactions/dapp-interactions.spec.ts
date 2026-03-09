@@ -1,3 +1,4 @@
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
@@ -13,11 +14,25 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import { Driver } from '../../webdriver/driver';
 import {
   lockAndWaitForLoginPage,
   loginWithBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
+
+async function mockNotificationsEndpoint(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+  ];
+}
 
 describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
@@ -65,9 +80,16 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        testSpecificMock: mockNotificationsEndpoint,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -85,6 +107,17 @@ describe('Dapp interactions', function () {
           driver,
         );
         await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          'Account 1',
+        ]);
+
+        // Wait until last request happens in the connect screen to ensure is ready
+        const [notificationsEndpoint] = mockedEndpoints;
+        await driver.wait(async () => {
+          const isPending = await notificationsEndpoint.isPending();
+          return isPending === false;
+        }, driver.timeout);
+
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);

@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Επίδραση στην τιμή"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Η επίδραση στην τιμή αντικατοπτρίζει πώς η ανταλλαγή σας επηρεάζει την τιμή της αγοράς. Αν δεν έχετε αρκετά για τα τέλη συναλλαγών, μέρος των token σας χρησιμοποιείται για την κάλυψη των τελών, γεγονός που αυξάνει την επίδραση στην τιμή. Το MetaMask δεν ορίζει ούτε ελέγχει αυτήν τη διαδικασία."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Επίδραση στην τιμή"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Τιμή εισόδου"
   },
-  "perpsExploreCrypto": {
-    "message": "Εξερευνήστε τα κρυπτονομίσματα"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Εξερευνήστε μετοχές και εμπορεύματα"
-  },
   "perpsFees": {
     "message": "Τέλη"
   },
@@ -5396,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Η διάμεσος των εξωτερικών τιμών που αναφέρονται από τους επικυρωτές, η οποία χρησιμοποιείται για τον υπολογισμό του ποσοστού χρηματοδότησης"
-  },
-  "perpsOrderAmount": {
-    "message": "Ποσό εντολής"
   },
   "perpsOrders": {
     "message": "Εντολές"
@@ -5546,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Ανάληψη"
-  },
-  "perpsYourOrders": {
-    "message": "Οι εντολές σας"
-  },
-  "perpsYourPositions": {
-    "message": "Οι θέσεις σας"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
