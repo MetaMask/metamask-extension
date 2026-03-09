@@ -78,29 +78,41 @@ export const DappConnectionControlBar: React.FC = () => {
   );
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
-  const firstPermittedAddress = useMemo(() => {
-    if (permittedAccounts.length === 0) {
-      return undefined;
-    }
-    try {
-      return parseCaipAccountId(permittedAccounts[0]).address;
-    } catch {
-      return undefined;
-    }
+  const allPermittedAddresses = useMemo(() => {
+    return permittedAccounts
+      .map((caipId) => {
+        try {
+          return parseCaipAccountId(caipId).address;
+        } catch {
+          return undefined;
+        }
+      })
+      .filter((addr): addr is string => Boolean(addr));
   }, [permittedAccounts]);
 
+  const activePermittedAddress = useMemo(() => {
+    if (allPermittedAddresses.length === 0) {
+      return undefined;
+    }
+    const selectedAddr = selectedInternalAccount?.address?.toLowerCase();
+    const match = selectedAddr
+      ? allPermittedAddresses.find((a) => a.toLowerCase() === selectedAddr)
+      : undefined;
+    return match ?? allPermittedAddresses[0];
+  }, [allPermittedAddresses, selectedInternalAccount]);
+
   const connectedAccountByAddress = useSelector((state) =>
-    firstPermittedAddress
+    activePermittedAddress
       ? getInternalAccountByAddress(
           state as Parameters<typeof getInternalAccountByAddress>[0],
-          firstPermittedAddress,
+          activePermittedAddress,
         )
       : undefined,
   );
 
   const connectedAccountAddresses = useMemo(
-    () => (firstPermittedAddress ? [firstPermittedAddress] : []),
-    [firstPermittedAddress],
+    () => (activePermittedAddress ? [activePermittedAddress] : []),
+    [activePermittedAddress],
   );
   const connectedAccountGroups = useSelector((state) =>
     connectedAccountAddresses.length > 0
