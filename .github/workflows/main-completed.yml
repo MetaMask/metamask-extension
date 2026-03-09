@@ -1,4 +1,36 @@
-# Skeleton
+# Automatic retry for failed Main workflow runs.
+#
+# This workflow handles two retry scenarios:
+#
+# 1. Merge queue (automatic):
+#    When a job fails in the merge queue, this workflow reruns the failed
+#    jobs automatically. The merge queue slot stays open because the
+#    required "All jobs pass" check (via Checks API) is only created once
+#    retries are exhausted. This prevents cascade failures where all
+#    queued PRs behind the failing one would have to be re-tested.
+#
+# 2. Pull requests (retry-ci label):
+#    When a PR has the `retry-ci` label and Main fails, this workflow
+#    removes the label and reruns failed jobs. This replaces the old
+#    main-retry.yml dispatch pattern.
+#
+# How it works:
+#   - Triggered by `workflow_run` on every Main completion (including reruns).
+#   - For successes or events with no retry logic, this workflow skips
+#     (job-level `if`). The `all-jobs-pass` job in main.yml handles those.
+#   - For failures that qualify for retry, it calls `gh run rerun --failed`.
+#     The rerun triggers a new Main completion, which fires workflow_run
+#     again — no polling needed.
+#
+# Branch protection:
+#   The required check is "All jobs pass" (created via Checks API in main.yml).
+#   The native job is named "All jobs pass (initiator)" to avoid collision.
+#   "Do not require status checks on creation" must be enabled so that
+#   events where this workflow skips still pass.
+#
+# TODO(POC): This workflow currently retries ALL failures unconditionally.
+#   Before production use, add logic to classify failures as retryable
+#   (e.g., e2e tests) vs non-retryable (e.g., lint, build).
 
 name: Main Completed
 
@@ -10,7 +42,77 @@ on:
 jobs:
   retry-merge-queue:
     name: Retry merge queue
+    # Automatic retry for merge_group failures within the retry window.
+    # The attempt cap (< 3) must stay in sync with the `run_attempt > 2`
+    # threshold in all-jobs-pass's check creation condition in main.yml.
+    if: >-
+      ${{
+        github.event.workflow_run.event == 'merge_group' &&
+        github.event.workflow_run.conclusion == 'failure' &&
+        github.event.workflow_run.run_attempt < 3
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MAIN_RUN_ID: ${{ github.event.workflow_run.id }}
+      REPO: ${{ github.repository }}
     steps:
-      - run: echo "Skeleton workflow"
+      - name: Log failed jobs
+        run: |
+          echo "Main failed in merge queue (run $MAIN_RUN_ID)."
+          echo "Failed jobs:"
+          gh run view "$MAIN_RUN_ID" --repo "$REPO" --json jobs \
+            --jq '.jobs[] | select(.conclusion == "failure") | "  \(.name)"' \
+            || echo "  (could not fetch jobs)"
+
+      - name: Rerun failed jobs
+        run: |
+          echo "Rerunning failed jobs..."
+          gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
+          echo "Rerun triggered."
+
+  retry-pr:
+    name: Retry PR (retry-ci label)
+    # Retry PR failures when the retry-ci label is present.
+    # Skip forks — they don't have permission to rerun or edit labels.
+    if: >-
+      ${{
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.conclusion == 'failure' &&
+        github.event.workflow_run.head_repository.full_name == github.event.workflow_run.repository.full_name
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MAIN_RUN_ID: ${{ github.event.workflow_run.id }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Check for retry-ci label and rerun
+        run: |
+          # Find the PR for this branch
+          PR_NUMBER=$(gh pr list --repo "$REPO" --head "$HEAD_BRANCH" --json number --jq '.[0].number')
+          if [[ -z "$PR_NUMBER" || "$PR_NUMBER" == "null" ]]; then
+            echo "Could not determine PR number for branch $HEAD_BRANCH. Skipping."
+            exit 0
+          fi
+
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
+          if [[ "${CURRENT_LABELS}" != *"retry-ci"* ]]; then
+            echo "No retry-ci label on PR #$PR_NUMBER. Skipping."
+            exit 0
+          fi
+
+          echo "Found retry-ci label on PR #$PR_NUMBER. Removing label..."
+          gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
+
+          echo "Rerunning failed jobs..."
+          gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
+          echo "Rerun triggered."
