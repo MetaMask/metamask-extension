@@ -142,7 +142,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
         "value": "0x00",
       },
     },
-    false,
+    true,
     {
       "best_quote_provider": "lifi_across",
       "can_submit": true,
@@ -294,7 +294,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
         "value": "0x11c37937e08000",
       },
     },
-    false,
+    true,
     {
       "best_quote_provider": "lifi_across",
       "can_submit": true,

@@ -108,8 +108,16 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
 });
 
 jest.mock('../../../../shared/modules/selectors', () => {
+  const smartTransactions = jest.requireActual(
+    '../../../../shared/modules/selectors/smart-transactions',
+  );
+  const { getHardwareWalletType } = jest.requireActual(
+    '../../../../ui/selectors/selectors',
+  );
+
   return {
-    getIsSmartTransaction: jest.fn(() => false),
+    ...smartTransactions,
+    getHardwareWalletType,
     isHardwareWallet: jest.fn(() => false),
   };
 });
