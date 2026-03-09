@@ -56,6 +56,8 @@ export function useBridgeTxHistoryData({
     (state: MetaMaskReduxState) =>
       selectBridgeHistoryForOriginalTxMetaId(state, txMeta?.id),
   );
+  // Intent bridge history is keyed by order UID, so activity rows need a
+  // fallback lookup by the original tx meta id instead of tx hash alone.
   const bridgeHistoryItem =
     bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
   const isApprovalTransaction =

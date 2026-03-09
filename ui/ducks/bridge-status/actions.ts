@@ -22,13 +22,13 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
 };
 
 /**
- * Submit a solana bridge or swap transaction using the bridge status controller
+ * Submit a bridge or swap quote using the bridge status controller.
  *
- * @param accountAddress
- * @param quote
- * @param isStxSupportedInClient
- * @param context
- * @returns
+ * @param accountAddress - Account submitting the quote.
+ * @param quote - Quote payload forwarded to the bridge status controller.
+ * @param isStxSupportedInClient - Whether STX is enabled for the client.
+ * @param context - Metrics context captured when quotes were received.
+ * @returns A thunk that dispatches the `submitTx` bridge status action.
  */
 export const submitBridgeTx = (
   accountAddress: string,
