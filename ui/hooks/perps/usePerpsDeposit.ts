@@ -56,7 +56,9 @@ export function usePerpsDeposit() {
     setIsLoading(true);
 
     try {
-      const networkClientId = findNetworkClientIdByChainId(CHAIN_IDS.ARBITRUM);
+      const networkClientId = await findNetworkClientIdByChainId(
+        CHAIN_IDS.ARBITRUM,
+      );
 
       const transferData = generateERC20TransferData(
         HYPERLIQUID_BRIDGE_ADDRESS,

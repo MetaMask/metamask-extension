@@ -12,7 +12,6 @@ export type PerpsDepositConfirmationResponse = {
 };
 
 export type PerpsDepositConfirmationOptions = {
-  returnTo?: string;
   onCreated?: (transactionId: string) => void;
   navigateOnCreate?: boolean;
 };
@@ -28,14 +27,13 @@ export type PerpsDepositConfirmationResult = {
  * Encapsulates:
  * - transaction construction (perpsDeposit tx)
  * - optional routing into confirmations with the custom amount loader
- * - optional return routing after confirmation completes/cancels via router state
  *
  * @param options
  */
 export function usePerpsDepositConfirmation(
   options: PerpsDepositConfirmationOptions = {},
 ): PerpsDepositConfirmationResult {
-  const { returnTo, onCreated, navigateOnCreate = true } = options;
+  const { onCreated, navigateOnCreate = true } = options;
   const navigate = useNavigate();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,15 +64,10 @@ export function usePerpsDepositConfirmation(
           loader: ConfirmationLoader.CustomAmount,
         }).toString();
 
-        navigate(
-          {
-            pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-            search,
-          },
-          {
-            state: returnTo ? { returnTo } : undefined,
-          },
-        );
+        navigate({
+          pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+          search,
+        });
       }
 
       onCreated?.(transactionId);
@@ -92,7 +85,6 @@ export function usePerpsDepositConfirmation(
     navigate,
     navigateOnCreate,
     onCreated,
-    returnTo,
     selectedAccount?.address,
   ]);
 

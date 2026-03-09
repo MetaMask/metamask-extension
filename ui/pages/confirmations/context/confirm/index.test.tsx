@@ -1,18 +1,13 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 
-import {
-  DEFAULT_ROUTE,
-  PERPS_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
-let mockLocationState: unknown;
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ state: mockLocationState }),
 }));
 
 let mockCurrentConfirmation: unknown = { id: 'mock-confirmation' };
@@ -29,13 +24,10 @@ import { ConfirmContextProvider } from '.';
 describe('ConfirmContextProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockLocationState = undefined;
     mockCurrentConfirmation = { id: 'mock-confirmation' };
   });
 
-  it('navigates to returnTo when confirmation disappears', async () => {
-    mockLocationState = { returnTo: PERPS_ROUTE };
-
+  it('navigates to Activity tab when confirmation disappears', async () => {
     const { rerender } = render(
       <ConfirmContextProvider>
         <div />
@@ -43,105 +35,6 @@ describe('ConfirmContextProvider', () => {
     );
 
     expect(mockNavigate).not.toHaveBeenCalled();
-
-    mockCurrentConfirmation = undefined;
-    rerender(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ROUTE, {
-        replace: true,
-      });
-    });
-  });
-
-  it('falls back to Activity when no returnTo is provided', async () => {
-    const { rerender } = render(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
-
-    mockCurrentConfirmation = undefined;
-    rerender(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-        },
-      );
-    });
-  });
-
-  it('falls back to Activity when returnTo is outside allowed perps routes', async () => {
-    mockLocationState = { returnTo: '/settings' };
-
-    const { rerender } = render(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
-
-    mockCurrentConfirmation = undefined;
-    rerender(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-        },
-      );
-    });
-  });
-
-  it('falls back to Activity when returnTo is malformed', async () => {
-    mockLocationState = { returnTo: 'https://example.com' };
-
-    const { rerender } = render(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
-
-    mockCurrentConfirmation = undefined;
-    rerender(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-        },
-      );
-    });
-  });
-
-  it('falls back to Activity when returnTo is not a string', async () => {
-    mockLocationState = { returnTo: 1234 };
-
-    const { rerender } = render(
-      <ConfirmContextProvider>
-        <div />
-      </ConfirmContextProvider>,
-    );
 
     mockCurrentConfirmation = undefined;
     rerender(

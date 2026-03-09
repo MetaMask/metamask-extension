@@ -27,12 +27,11 @@ describe('usePerpsDepositTrigger', () => {
     const onCreated = jest.fn();
 
     const { result } = renderHookWithProvider(
-      () => usePerpsDepositTrigger({ returnTo: '/perps/home', onCreated }),
+      () => usePerpsDepositTrigger({ onCreated }),
       mockState,
     );
 
     expect(mockUsePerpsDepositConfirmation).toHaveBeenCalledWith({
-      returnTo: '/perps/home',
       onCreated,
       navigateOnCreate: true,
     });

@@ -33,7 +33,7 @@ describe('usePerpsDepositConfirmation', () => {
     });
 
     const { result } = renderHookWithProvider(
-      () => usePerpsDepositConfirmation({ returnTo: '/perps/home' }),
+      () => usePerpsDepositConfirmation(),
       mockState,
     );
 
@@ -44,15 +44,10 @@ describe('usePerpsDepositConfirmation', () => {
     });
 
     expect(mockCreatePerpsDepositTransaction).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith(
-      {
-        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
-        search: `loader=${ConfirmationLoader.CustomAmount}`,
-      },
-      {
-        state: { returnTo: '/perps/home' },
-      },
-    );
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
+      search: `loader=${ConfirmationLoader.CustomAmount}`,
+    });
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
   });
 

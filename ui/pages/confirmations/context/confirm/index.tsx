@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { usePrevious } from '../../../../hooks/usePrevious';
@@ -19,20 +19,6 @@ export type ConfirmContextType = {
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
 };
-
-type ConfirmLocationState = {
-  returnTo?: string;
-};
-
-const SAFE_RETURN_TO_ROUTE_REGEX = /^\/perps(?:\/|$)/u;
-
-function getSafeReturnToRoute(returnTo?: string): string | undefined {
-  if (typeof returnTo !== 'string') {
-    return undefined;
-  }
-
-  return SAFE_RETURN_TO_ROUTE_REGEX.test(returnTo) ? returnTo : undefined;
-}
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
   undefined,
@@ -47,21 +33,19 @@ export const ConfirmContextProvider: React.FC<{
   const { currentConfirmation } = useCurrentConfirmation(confirmationId);
   useSyncConfirmPath(currentConfirmation);
   const navigate = useNavigate();
-  const location = useLocation();
   const previousConfirmation = usePrevious(currentConfirmation);
 
   /**
-   * The hook below takes care of navigating to the home page when the confirmation not acted on by user
-   * but removed by us, this can happen in cases like when dapp changes network.
+   * Navigate to the Activity tab when a confirmation disappears without
+   * explicit user action (e.g. dapp changes network). Per-type routing
+   * after user-initiated confirm/cancel is handled elsewhere (e.g.
+   * useShieldConfirm, usePerpsConfirm inside useTransactionConfirm).
    */
   useEffect(() => {
     if (previousConfirmation && !currentConfirmation) {
-      const locationState = location.state as ConfirmLocationState | null;
-      const fallbackRoute = `${DEFAULT_ROUTE}?tab=activity`;
-      const safeReturnToRoute = getSafeReturnToRoute(locationState?.returnTo);
-      navigate(safeReturnToRoute ?? fallbackRoute, { replace: true });
+      navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
-  }, [previousConfirmation, currentConfirmation, navigate, location.state]);
+  }, [previousConfirmation, currentConfirmation, navigate]);
 
   const value = useMemo(
     () => ({

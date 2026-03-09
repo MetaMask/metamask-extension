@@ -15,7 +15,6 @@ type UsePerpsDepositTriggerOptions = Omit<
  * Encapsulates:
  * - transaction construction (perpsDeposit tx)
  * - routing into confirmations with the custom amount loader
- * - optional return routing after confirmation completes/cancels via router state
  *
  * @param options
  */
