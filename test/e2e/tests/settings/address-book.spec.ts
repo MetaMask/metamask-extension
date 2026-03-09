@@ -201,7 +201,6 @@ describe('Address Book', function (this: Suite) {
           existingContactName: 'Test Name 1',
           newContactName: 'Test Name Edit',
           newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
-          newNetwork: 'Sepolia',
         });
         await contactsPage.checkContactDisplayed({
           contactName: 'Test Name Edit',

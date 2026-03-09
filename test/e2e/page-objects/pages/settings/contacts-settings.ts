@@ -7,7 +7,8 @@ import { Driver } from '../../../webdriver/driver';
 class ContactsSettings {
   private readonly driver: Driver;
 
-  private readonly addContactButton = '[data-testid="contacts-add-contact-button"]';
+  private readonly addContactButton =
+    '[data-testid="contacts-add-contact-button"]';
 
   private readonly confirmAddContactButton = {
     testId: 'page-container-footer-next',
@@ -19,7 +20,8 @@ class ContactsSettings {
 
   private readonly contactListItem = '[data-testid="contact-list-item"]';
 
-  private readonly contactListItemLabel = '[data-testid="contact-list-item-label"]';
+  private readonly contactListItemLabel =
+    '[data-testid="contact-list-item-label"]';
 
   private readonly contactListItemAddress =
     '[data-testid="contact-list-item-address"]';
@@ -47,6 +49,8 @@ class ContactsSettings {
   private readonly editContactNicknameInput = '#edit-contact-nickname';
 
   private readonly editContactAddressInput = '#edit-contact-address';
+
+  private readonly editContactMemoInput = '#edit-contact-memo';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -134,24 +138,24 @@ class ContactsSettings {
   }
 
   /**
-   * Edits a contact in the address book.
+   * Edits a contact in the address book (name, address, and optional memo; network is read-only and not editable).
    *
    * @param params - The parameters object
    * @param params.existingContactName - The name of the contact to edit.
    * @param params.newContactName - The new name of the contact.
    * @param params.newContactAddress - The new address of the contact.
-   * @param params.newNetwork - The new network for the contact (optional).
+   * @param params.newContactMemo - Optional new memo for the contact.
    */
   async editContact({
     existingContactName,
     newContactName,
     newContactAddress,
-    newNetwork,
+    newContactMemo,
   }: {
     existingContactName: string;
     newContactName: string;
     newContactAddress: string;
-    newNetwork?: string;
+    newContactMemo?: string;
   }): Promise<void> {
     console.log('Editing contact on contacts page');
     await this.driver.findScrollToAndClickElement({
@@ -161,12 +165,8 @@ class ContactsSettings {
     await this.driver.clickElement(this.editContactButton);
     await this.driver.fill(this.editContactNicknameInput, newContactName);
     await this.driver.fill(this.editContactAddressInput, newContactAddress);
-
-    if (newNetwork) {
-      await this.driver.clickElement(this.networkSelector);
-      await this.driver.clickElement({
-        text: newNetwork,
-      });
+    if (newContactMemo !== undefined) {
+      await this.driver.fill(this.editContactMemoInput, newContactMemo);
     }
 
     await this.driver.clickElementAndWaitToDisappear(

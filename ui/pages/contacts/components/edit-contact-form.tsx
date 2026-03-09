@@ -9,6 +9,8 @@ import {
   AvatarNetworkSize,
   BadgeWrapper,
   Box,
+  BoxBackgroundColor,
+  BoxBorderColor,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -25,15 +27,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
   FormTextFieldSize,
-  SelectButton,
-  SelectButtonSize,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { ContactNetworks } from './contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -71,10 +70,8 @@ export function EditContactForm({
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);
   const [memo, setMemo] = useState(initialMemo);
-  const [selectedChainId, setSelectedChainId] = useState(contactChainId);
   const [nameError, setNameError] = useState('');
   const [addressError, setAddressError] = useState('');
-  const [showNetworkModal, setShowNetworkModal] = useState(false);
 
   const validateName = (nameValue: string) => {
     if (nameValue === initialName) {
@@ -90,25 +87,25 @@ export function EditContactForm({
   };
 
   const selectedNetwork =
-    networks && selectedChainId
-      ? (networks as Record<string, { name?: string }>)[selectedChainId]
+    networks && contactChainId
+      ? (networks as Record<string, { name?: string }>)[contactChainId]
       : undefined;
   const selectedNetworkName =
     selectedNetwork?.name ??
-    (selectedChainId
-      ? `${t('unknownNetworkForGatorPermissions')} (${selectedChainId})`
+    (contactChainId
+      ? `${t('unknownNetworkForGatorPermissions')} (${contactChainId})`
       : t('networkTabCustom'));
+
   const isUnchanged =
     contactName === initialName &&
     newAddress === address &&
-    selectedChainId === contactChainId &&
     memo === initialMemo;
   const isSaveDisabled =
     !contactName.trim() ||
     Boolean(nameError) ||
     Boolean(addressError) ||
     isUnchanged;
-  const isChainChanged = selectedChainId !== contactChainId;
+
   const handleSubmit = async () => {
     if (newAddress && newAddress !== address) {
       const valid =
@@ -124,17 +121,7 @@ export function EditContactForm({
           newAddress,
           contactName || initialName,
           memo,
-          selectedChainId,
-        ),
-      );
-    } else if (isChainChanged) {
-      await dispatch(removeFromAddressBook(contactChainId, address));
-      await dispatch(
-        addToAddressBook(
-          address,
-          contactName || initialName,
-          memo,
-          selectedChainId,
+          contactChainId,
         ),
       );
     } else {
@@ -143,14 +130,14 @@ export function EditContactForm({
           address,
           contactName || initialName,
           memo,
-          selectedChainId,
+          contactChainId,
         ),
       );
     }
     trackEvent({
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactUpdated,
-      properties: { chain_id: selectedChainId },
+      properties: { chain_id: contactChainId },
       sensitiveProperties: { contact_address: newAddress },
     });
     onSuccess();
@@ -249,39 +236,31 @@ export function EditContactForm({
             >
               {t('network')}
             </Text>
-            <SelectButton
-              size={SelectButtonSize.Lg}
-              isBlock
-              backgroundColor={BackgroundColor.backgroundMuted}
-              borderColor={BorderColor.borderDefault}
-              borderRadius={BorderRadius.XL}
-              startAccessory={
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  src={
-                    selectedChainId
-                      ? getImageForChainId(selectedChainId) || undefined
-                      : undefined
-                  }
-                  name={selectedNetworkName}
-                />
-              }
-              onClick={() => setShowNetworkModal(true)}
-              data-testid="network-selector"
-              className="rounded-xl"
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              padding={4}
+              backgroundColor={BoxBackgroundColor.BackgroundMuted}
+              borderColor={BoxBorderColor.BorderDefault}
+              className="rounded-xl border"
+              style={{ cursor: 'not-allowed' }}
             >
-              {selectedNetworkName}
-            </SelectButton>
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                src={
+                  contactChainId
+                    ? getImageForChainId(contactChainId) || undefined
+                    : undefined
+                }
+                name={selectedNetworkName}
+              />
+              <Box marginLeft={2}>
+                <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+                  {selectedNetworkName}
+                </Text>
+              </Box>
+            </Box>
           </Box>
-
-          {showNetworkModal && (
-            <ContactNetworks
-              isOpen
-              onClose={() => setShowNetworkModal(false)}
-              selectedChainId={selectedChainId}
-              onSelect={(chainId: string) => setSelectedChainId(chainId)}
-            />
-          )}
         </Box>
       </Box>
 
