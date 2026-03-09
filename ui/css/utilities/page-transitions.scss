@@ -1,10 +1,12 @@
+/* Specs */
 :root {
   --page-transition-duration: 180ms;
-  --page-transition-ease-out: cubic-bezier(0.4, 0, 0.2, 1); /* Enter: decelerates into place */
-  --page-transition-ease-in: cubic-bezier(0.4, 0, 1, 1); /* Exit: accelerates out */
+  --page-transition-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --page-transition-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --page-scale-distance: 0.97;
 }
 
-/* Make size changes instant (don't animate layout shifts) */
+/* Clip overflow and make size changes instant (don't animate height) */
 ::view-transition-group(root) {
   overflow: hidden;
   animation-duration: 0s;
@@ -21,11 +23,7 @@
   mix-blend-mode: normal;
 }
 
-/*
- * Forward (home → page):
- *   old (home) = fade out only
- *   new (page) = fade in + scale up
- */
+/* Forward: old fades out, new fades in + scale up */
 :root[data-page-transition='forward']::view-transition-old(root) {
   animation: fade-out var(--page-transition-duration) var(--page-transition-ease-in) both;
 }
@@ -34,11 +32,7 @@
   animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
 }
 
-/*
- * Back (page → home):
- *   old (page) = fade out + scale down
- *   new (home) = fade in only
- */
+/* Back: old fades out + scale down, new fades in */
 :root[data-page-transition='back']::view-transition-old(root) {
   animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
 }
@@ -60,7 +54,7 @@
 @keyframes page-enter {
   from {
     opacity: 0;
-    transform: scale(0.97);
+    transform: scale(var(--page-scale-distance));
   }
 
   to {
@@ -77,7 +71,7 @@
 
   to {
     opacity: 0;
-    transform: scale(0.97);
+    transform: scale(var(--page-scale-distance));
   }
 }
 

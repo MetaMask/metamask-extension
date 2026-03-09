@@ -37,7 +37,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
-import { navigateBack } from '../../components/ui/animated';
+import { transitionBack } from '../../components/ui/transition';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -114,7 +114,7 @@ const CrossChainSwap = () => {
       }
     };
 
-    navigateBack(() => {
+    transitionBack(() => {
       doNavigate().catch(() => undefined);
     });
   };
@@ -130,6 +130,8 @@ const CrossChainSwap = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={redirectToDefaultRoute}
           />
         }

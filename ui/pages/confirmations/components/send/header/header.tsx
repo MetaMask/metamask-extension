@@ -15,14 +15,14 @@ import {
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
-import { navigateBack } from '../../../../../components/ui/animated';
+import { transitionBack } from '../../../../../components/ui/transition';
 
 export const Header = () => {
   const t = useI18nContext();
   const { goToPreviousPage } = useNavigateSendPage();
 
   const handleBack = useCallback(() => {
-    navigateBack(goToPreviousPage);
+    transitionBack(goToPreviousPage);
   }, [goToPreviousPage]);
 
   return (

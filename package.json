@@ -430,7 +430,6 @@
     "extension-port-stream": "^5.0.3",
     "fast-json-patch": "^3.1.1",
     "fast-json-stable-stringify": "^2.1.0",
-    "framer-motion": "^6.5.1",
     "fuse.js": "^3.2.0",
     "he": "^1.2.0",
     "human-standard-token-abi": "^2.0.0",

@@ -23,7 +23,7 @@ import { getMultichainAccountGroupById } from '../../../selectors/multichain-acc
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
-import { navigateBack } from '../../../components/ui/animated';
+import { transitionBack } from '../../../components/ui/transition';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -104,7 +104,7 @@ export const MultichainAccountAddressListPage = ({
   }, []);
 
   const handleBack = useCallback(() => {
-    navigateBack(() => navigate(PREVIOUS_ROUTE));
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
   }, [navigate]);
 
   return (
@@ -136,6 +136,7 @@ export const MultichainAccountAddressListPage = ({
         </Box>
       </Content>
 
+      {/* QR Code Modal */}
       {selectedQRData && (
         <AddressQRCodeModal
           isOpen={isQRModalOpen}

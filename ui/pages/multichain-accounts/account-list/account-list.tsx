@@ -24,7 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { navigateBack } from '../../../components/ui/animated';
+import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import {
@@ -121,7 +121,7 @@ export const AccountList = () => {
   }, [setIsAddWalletModalOpen]);
 
   const handleBack = useCallback(() => {
-    navigateBack(() => navigate(PREVIOUS_ROUTE));
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
   }, [navigate]);
 
   return (
