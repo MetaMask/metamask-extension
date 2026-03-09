@@ -155,11 +155,12 @@ async function closeExtraWindowHandles(webDriver) {
  *
  * @param {import('./webdriver/driver').Driver} driver - The Driver wrapper.
  * @param {ThenableWebDriver} webDriver - The raw Selenium WebDriver instance.
- * @param {string} extensionId - The extension's Chrome ID.
+ * @param {string} extensionUrl - The full extension origin
+ *   (e.g. `chrome-extension://<id>` or `moz-extension://<uuid>`).
  */
-async function clearExtensionStateAndReload(driver, webDriver, extensionId) {
+async function clearExtensionStateAndReload(driver, webDriver, extensionUrl) {
   // Navigate to an extension page so we have access to the extension APIs.
-  await webDriver.get(`chrome-extension://${extensionId}/home.html`);
+  await webDriver.get(`${extensionUrl}/home.html`);
 
   // Open a blank tab *before* we clear+reload (the extension page will
   // die once runtime.reload() fires).
@@ -212,7 +213,7 @@ async function clearExtensionStateAndReload(driver, webDriver, extensionId) {
  *
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
- * @returns {Promise<{ driver: ThenableWebDriver, extensionId: string } | undefined>}
+ * @returns {Promise<{ driver: ThenableWebDriver, extensionId: string, extensionUrl: string } | undefined>}
  */
 async function withFixtures(options, testSuite) {
   const {
@@ -491,16 +492,17 @@ async function withFixtures(options, testSuite) {
       const browser = process.env.SELENIUM_BROWSER;
       extensionId = effectiveExistingDriver.extensionId;
       webDriver = effectiveExistingDriver.driver;
+      const reusedExtensionUrl = effectiveExistingDriver.extensionUrl;
       driver = new Driver({
         driver: webDriver,
         browser,
-        extensionUrl: `chrome-extension://${extensionId}`,
+        extensionUrl: reusedExtensionUrl,
         timeout: driverOptions?.timeOut,
         disableServerMochaToBackground,
       });
 
       await closeExtraWindowHandles(webDriver);
-      await clearExtensionStateAndReload(driver, webDriver, extensionId);
+      await clearExtensionStateAndReload(driver, webDriver, reusedExtensionUrl);
     } else {
       const wd = await buildWebDriver({
         ...driverOptions,
@@ -716,7 +718,11 @@ async function withFixtures(options, testSuite) {
   // When keepBrowserRunning is true, persist the browser session in module
   // state so the next withFixtures call automatically reuses it.
   if (keepBrowserRunning && webDriver) {
-    _persistedBrowserState = { driver: webDriver, extensionId };
+    _persistedBrowserState = {
+      driver: webDriver,
+      extensionId,
+      extensionUrl: driver.extensionUrl,
+    };
     return _persistedBrowserState;
   }
   _persistedBrowserState = null;
