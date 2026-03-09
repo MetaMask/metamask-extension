@@ -517,9 +517,6 @@
     "ui/components/app/perps/hooks/usePerpsDepositConfirmation.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/perps/hooks/usePerpsDepositTrigger.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/perps/order-card/order-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
