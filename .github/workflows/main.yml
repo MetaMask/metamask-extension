@@ -655,11 +655,29 @@ jobs:
 
           echo "Regression validation triggered successfully"
 
+  # TODO(POC): Remove this job once merge-queue-validator is promoted to production.
+  # This job deliberately fails on attempt 1 in the merge queue so we can
+  # verify that the Main Completed workflow retries it, allowing the PR to
+  # merge on attempt 2.
+  merge-queue-test-fail:
+    name: Merge queue test fail
+    if: ${{ github.event_name == 'merge_group' && github.run_attempt == 1 }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Deliberate failure on attempt 1
+        run: |
+          echo "This job fails deliberately on attempt 1 to test merge queue retry."
+          echo "run_attempt=${{ github.run_attempt }}"
+          exit 1
+
   all-jobs-pass:
-    name: All jobs pass
+    name: All jobs pass (initiator)
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    permissions:
+      checks: write
     # We list every job we want to validate in `needs`, because `needs` only contains results for jobs explicitly
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.
@@ -702,6 +720,7 @@ jobs:
       - build-source-map-explorer
       - build-lavamoat-viz
       - trigger-regression-validation
+      - merge-queue-test-fail # TODO(POC): Remove once merge-queue-validator is promoted to production
     steps:
       - name: Check that all jobs have passed
         env:
@@ -741,6 +760,33 @@ jobs:
 
           echo "All required jobs either passed or were skipped"
 
+      # Create the required "All jobs pass" check via Checks API.
+      # On merge_group failures within the retry window, skip — the Main
+      # Completed workflow will rerun failed jobs and a later attempt's
+      # all-jobs-pass will create the check. Once retries are exhausted
+      # (attempt > MAX_RETRIES), always create the check regardless of outcome.
+      - name: Create 'All jobs pass' check
+        if: ${{ !failure() || github.event_name != 'merge_group' || github.run_attempt > 2 }}
+        uses: actions/github-script@v7
+        env:
+          CHECK_CONCLUSION: ${{ job.status == 'success' && 'success' || 'failure' }}
+        with:
+          script: |
+            const conclusion = process.env.CHECK_CONCLUSION;
+            const result = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'All jobs pass',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion,
+              output: {
+                title: conclusion === 'success' ? 'All jobs passed' : 'Some jobs failed',
+                summary: `Main workflow ${conclusion}. [View run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`,
+              },
+            });
+            core.info(`Created 'All jobs pass' check ${result.data.id}: ${conclusion}`);
+
       - name: Log merge group failure
         if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
         uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
@@ -758,43 +804,3 @@ jobs:
       - all-jobs-pass
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit
-
-  check-retry-ci:
-    name: Check for retry-ci label and retry
-    if: >-
-      ${{
-        !cancelled() &&
-        needs.all-jobs-pass.result == 'failure' &&
-        github.event_name == 'pull_request' &&
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
-      }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    needs:
-      - all-jobs-pass
-      - publish-prerelease
-    env:
-      GH_TOKEN: ${{ github.token }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      REPO: ${{ github.repository }}
-    permissions:
-      actions: write
-      pull-requests: write
-    steps:
-      - name: Check if this PR has a retry-ci label
-        run: |
-          # We cannot use github.event.pull_request.labels here, because it will be stale on a re-run
-          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
-
-          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
-            echo "This PR has a retry-ci label, removing the label..."
-            gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
-
-            echo "Retrying failed jobs..."
-
-            # We cannot use `gh run rerun` here, because this workflow is still running,
-            # so we must run main-retry.yml, which in turn runs `gh run rerun`
-            gh workflow run main-retry.yml --repo "$REPO" -f run-id="$RUN_ID" -f pr-number="$PR_NUMBER"
-          else
-            echo "This PR does not have a retry-ci label, not retrying."
-          fi
