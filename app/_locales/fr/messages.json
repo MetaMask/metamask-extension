@@ -8396,14 +8396,8 @@
   "tokensInCollection": {
     "message": "Jetons dans la collection"
   },
-  "tooltipSatusConnected": {
-    "message": "connecté"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Connecté"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "non connecté"
   },
   "total": {
     "message": "Total"

@@ -8393,14 +8393,8 @@
   "tokensInCollection": {
     "message": "コレクションのトークン"
   },
-  "tooltipSatusConnected": {
-    "message": "接続済み"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "接続済み"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "未接続"
   },
   "total": {
     "message": "合計"

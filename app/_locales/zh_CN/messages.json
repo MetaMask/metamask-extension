@@ -8393,14 +8393,8 @@
   "tokensInCollection": {
     "message": "收藏品中的代币"
   },
-  "tooltipSatusConnected": {
-    "message": "已连接"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "已连接"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "未连接"
   },
   "total": {
     "message": "共计"

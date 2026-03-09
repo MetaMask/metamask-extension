@@ -8399,14 +8399,8 @@
   "tokensInCollection": {
     "message": "Token στη συλλογή"
   },
-  "tooltipSatusConnected": {
-    "message": "συνδεδεμένο"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Συνδεδεμένο"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "μη συνδεδεμένο"
   },
   "total": {
     "message": "Σύνολο"

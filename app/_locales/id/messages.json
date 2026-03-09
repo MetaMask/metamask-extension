@@ -8399,14 +8399,8 @@
   "tokensInCollection": {
     "message": "Token dalam koleksi"
   },
-  "tooltipSatusConnected": {
-    "message": "terhubung"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Terhubung"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "tidak terhubung"
   },
   "total": {
     "message": "Total"
