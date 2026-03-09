@@ -104,6 +104,9 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
                   className="snap-privacy-warning__content__scroll-button"
                   data-testid="snap-privacy-warning-scroll"
                   iconName={IconName.Arrow2Down}
+                  iconProps={{
+                    'data-testid': 'snap-privacy-warning-scroll-down-arrow',
+                  }}
                   backgroundColor={BackgroundColor.infoDefault}
                   color={IconColor.primaryInverse}
                   onClick={scrollToBottom}

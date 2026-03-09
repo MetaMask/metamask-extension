@@ -1,6 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
+import SnapPrivacyWarning from '../pages/dialog/snap-privacy-warning';
 import { TestSnaps, buttonLocator } from '../pages/test-snaps';
 import { WINDOW_TITLES } from '../../constants';
 
@@ -32,6 +33,8 @@ export async function openTestSnapClickButtonAndInstall(
   await testSnaps.openPage(url);
   await testSnaps.scrollAndClickButton(buttonName);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const snapPrivacyWarning = new SnapPrivacyWarning(driver);
+  await snapPrivacyWarning.scrollToBottomAndAccept();
   await snapInstall.checkPageIsLoaded();
   await snapInstall.clickConnectButton();
   await snapInstall.clickConfirmButton();
