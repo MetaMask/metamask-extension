@@ -70,7 +70,9 @@ const store = configureMockStore()({
 
 function renderHook<Result>(callback: () => Result) {
   return renderHookBase(callback, {
-    wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    wrapper: ({ children }) => (
+      <Provider store={store}>{children}</Provider>
+    ),
   });
 }
 
@@ -670,7 +672,7 @@ describe('useBridgeTxHistoryData', () => {
   });
 
   it('uses originalTransactionId lookup for intent transactions without treating them as approvals', () => {
-    const store = configureMockStore(middleware)(
+    const intentStore = configureMockStore(middleware)(
       createBridgeMockStore({
         bridgeStatusStateOverrides: {
           txHistory: {
@@ -701,7 +703,7 @@ describe('useBridgeTxHistoryData', () => {
         }),
       {
         wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
+          <Provider store={intentStore}>{children}</Provider>
         ),
       },
     );

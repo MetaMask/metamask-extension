@@ -126,9 +126,13 @@ describe('transaction-details', () => {
       expect(
         getByText(messages.bridgeDetailsTitle.message),
       ).toBeInTheDocument();
-      expect(getByText('You received')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeTxDetailsYouReceived.message),
+      ).toBeInTheDocument();
       expect(getByText('1.981 USDC on')).toBeInTheDocument();
-      expect(getByText('Status')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeTxDetailsStatus.message),
+      ).toBeInTheDocument();
       expect(getByText('complete')).toBeInTheDocument();
     });
 
