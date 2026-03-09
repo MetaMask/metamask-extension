@@ -1,10 +1,31 @@
 /**
- * Shared benchmark configuration constants.
+ * Shared benchmark configuration constants and types.
  * These are the single source of truth consumed by:
  * - test/e2e/benchmarks/  (benchmark runner)
  * - development/metamaskbot-build-announce/  (PR comment builder)
  * - .github/workflows/run-benchmarks.yml  (CI matrix — must be updated manually)
  */
+
+export type StatisticalResult = {
+  [key: string]: number;
+};
+
+export type Persona = 'standard' | 'powerUser';
+
+export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
+
+export type BenchmarkResults = {
+  testTitle: string;
+  persona: Persona;
+  benchmarkType?: BenchmarkType;
+  mean: StatisticalResult;
+  min: StatisticalResult;
+  max: StatisticalResult;
+  stdDev: StatisticalResult;
+  p75: StatisticalResult;
+  p95: StatisticalResult;
+};
+
 export const BENCHMARK_PLATFORMS = {
   CHROME: 'chrome',
   FIREFOX: 'firefox',
