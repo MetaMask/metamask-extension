@@ -634,15 +634,8 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: AssetsControllerState }) =>
       state.metamask?.assetsPrice ?? {},
-    getCurrencyRateControllerCurrentCurrency,
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    currencyRates,
-    assetsInfo,
-    assetsPrice,
-    currentCurrency,
-  ) => {
+  (isAssetsUnifyStateEnabled, currencyRates, assetsInfo, assetsPrice) => {
     if (!isAssetsUnifyStateEnabled) {
       return currencyRates;
     }
@@ -665,7 +658,8 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       if (
         metadata.type !== 'native' ||
         assetType.chain.namespace !== KnownCaipNamespace.Eip155 ||
-        !price
+        !price ||
+        price.assetPriceType !== 'fungible'
       ) {
         continue;
       }
@@ -673,8 +667,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       result[metadata.symbol] = {
         conversionDate: price.lastUpdated / 1000,
         conversionRate: price.price,
-        // This cannot be populated unless the selected currency is already USD
-        usdConversionRate: currentCurrency === 'usd' ? price.price : null,
+        usdConversionRate: price.usdPrice,
       };
     }
 

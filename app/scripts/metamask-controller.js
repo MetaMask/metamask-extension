@@ -2470,13 +2470,22 @@ export default class MetamaskController extends EventEmitter {
       deFiPositionsController,
       multichainAssetsRatesController,
       staticAssetsController,
+      assetsController,
     } = this;
 
     return {
       // etc
-      setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
-        currencyRateController,
-      ),
+      setCurrentCurrency: (currencyCode) => {
+        currencyRateController.setCurrentCurrency.bind(currencyRateController)(
+          currencyCode,
+        );
+
+        if (assetsController) {
+          assetsController.setSelectedCurrency.bind(assetsController)(
+            currencyCode,
+          );
+        }
+      },
       // @deprecated Use setAvatarType instead
       setUseBlockie: preferencesController.setUseBlockie.bind(
         preferencesController,
