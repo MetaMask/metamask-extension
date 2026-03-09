@@ -1,14 +1,14 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import { Box } from '../../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../../../helpers/constants/design-system';
+import { FlexDirection } from '../../../../../../helpers/constants/design-system';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoRowAddressDisplay } from '../../../../../../components/app/confirm/info/row/address-display';
@@ -65,15 +65,10 @@ export const TransactionFlowSection = () => {
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        paddingRight={2}
-      >
+      <Box flexDirection={BoxFlexDirection.Column} paddingRight={2}>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={2}
         >
           <Box style={{ flex: 1, minWidth: 0 }}>
@@ -113,9 +108,8 @@ export const TransactionFlowSection = () => {
         />
 
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={2}
         >
           <Box style={{ flex: 1, minWidth: 0 }}>
