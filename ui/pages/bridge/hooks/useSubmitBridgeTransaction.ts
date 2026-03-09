@@ -100,7 +100,7 @@ export default function useSubmitBridgeTransaction() {
       );
     }
 
-    if (hardwareWalletUsed && !intentData) {
+    if (hardwareWalletUsed) {
       const {
         quote: { requestId },
       } = quoteResponse;

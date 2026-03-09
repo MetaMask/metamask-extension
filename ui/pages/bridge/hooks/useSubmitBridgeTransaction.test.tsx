@@ -274,7 +274,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
     });
 
-    it('does not navigate to awaiting signatures for hardware-wallet intent quotes', async () => {
+    it('navigates to awaiting signatures for hardware-wallet intent quotes', async () => {
       const store = makeMockStore();
       isHardwareWalletSpy.mockImplementation(() => true);
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
@@ -298,10 +298,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         quoteWithIntent as any,
       );
 
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(
-        expect.stringContaining(
-          `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-        ),
+      const {
+        quote: { requestId },
+      } = quoteWithIntent;
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
+          requestId,
+        )}`,
       );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
