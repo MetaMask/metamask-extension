@@ -9018,6 +9018,9 @@
   "useMultiAccountBalanceCheckerSettingDescription": {
     "message": "Get faster balance updates by batching account balance requests. This lets us fetch your account balances together, so you get quicker updates for an improved experience. When this feature is off, third parties may be less likely to associate your accounts with each other."
   },
+  "useMultiAccountBalanceCheckerSettingDescriptionV2": {
+    "message": "Sends balance updates for all your accounts at once. Allows for a faster and overall better experience managing multiple accounts."
+  },
   "useNftDetection": {
     "message": "Autodetect NFTs"
   },
