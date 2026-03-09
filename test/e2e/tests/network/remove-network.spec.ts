@@ -1,6 +1,10 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import {
+  NetworkStatus,
+  RpcEndpointType,
+} from '@metamask/network-controller';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -17,33 +21,10 @@ describe('Remove Network:', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains([
-            '0x539',
-            '0x53a',
-          ])
-          .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                chainId: '0x53a',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Localhost 8546',
-                rpcPrefs: {},
-                rpcUrl: 'http://localhost:8546',
-                ticker: 'ETH',
-              },
-            },
-            selectedNetworkClientId: 'networkConfigurationId',
+        fixtures: new FixtureBuilderV2()
+          .withNetworkControllerDoubleNode()
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1337, 1338],
           })
           .build(),
         localNodeOptions: [
@@ -94,41 +75,44 @@ describe('Remove Network:', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains([
-            '0x539',
-            '0x53a',
-          ])
+        fixtures: new FixtureBuilderV2()
           .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+            networkConfigurationsByChainId: {
+              '0x53a': {
+                blockExplorerUrls: [],
                 chainId: '0x53a',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Localhost 8546',
-                rpcPrefs: {},
-                rpcUrl: 'http://localhost:8546',
-                ticker: 'ETH',
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8546',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId:
+                      '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://localhost:8546',
+                  },
+                  {
+                    networkClientId:
+                      '2ce66016-8aab-47df-b27f-318c80865eb1',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8546',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
+                EIPS: {},
+                status: NetworkStatus.Available,
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                chainId: '0x53a',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                nickname: 'Localhost 8546 alternative',
-                rpcPrefs: {},
-                rpcUrl: 'http://127.0.0.1:8546',
-                ticker: 'ETH',
+                EIPS: {},
+                status: NetworkStatus.Available,
               },
             },
-            selectedNetworkClientId: 'networkConfigurationId',
+          })
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1337, 1338],
           })
           .build(),
         localNodeOptions: [

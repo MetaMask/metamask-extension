@@ -1,6 +1,6 @@
 import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
@@ -13,9 +13,9 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
           {
@@ -91,12 +91,11 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withPermissionControllerConnectedToTestDappWithChains([
-            '0x539',
-            '0x53a',
-          ])
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1337, 1338],
+          })
           .build(),
         localNodeOptions: [
           {

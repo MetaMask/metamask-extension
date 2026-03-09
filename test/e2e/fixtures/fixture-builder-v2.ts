@@ -4,6 +4,7 @@ import type { AddressBookControllerState } from '@metamask/address-book-controll
 import type { CurrencyRateState } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
@@ -77,6 +78,11 @@ class FixtureBuilderV2 {
                           GENERIC  CONTROLLER METHODS
      ==================================================================
   */
+  withAccountsController(data: Partial<AccountsControllerState>): this {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -84,11 +90,6 @@ class FixtureBuilderV2 {
       };
     }
     merge(this.fixture.data.AddressBookController, data);
-    return this;
-  }
-
-  withAccountsController(data: Partial<AccountsControllerState>): this {
-    merge(this.fixture.data.AccountsController, data);
     return this;
   }
 
@@ -135,6 +136,13 @@ class FixtureBuilderV2 {
     },
   ): this {
     merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  withSelectedNetworkController(
+    data: Partial<SelectedNetworkControllerState>,
+  ): this {
+    merge(this.fixture.data.SelectedNetworkController, data);
     return this;
   }
 
@@ -312,7 +320,7 @@ class FixtureBuilderV2 {
   }
 
   withPermissionControllerConnectedToTestDapp({
-    account = '',
+    account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
     useLocalhostHostname = false,
     numberOfDapps = 1,
     chainIds = [1337],
@@ -329,9 +337,7 @@ class FixtureBuilderV2 {
       );
     }
 
-    const selectedAccount = account
-      ? account.toLowerCase()
-      : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+    const selectedAccount = account.toLowerCase();
 
     const dappUrls = [
       useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
@@ -393,6 +399,15 @@ class FixtureBuilderV2 {
   ): this {
     return this.withNetworkController({
       selectedNetworkClientId: networkClientId,
+    });
+  }
+
+  withSelectedNetworkControllerPerDomain(): this {
+    return this.withSelectedNetworkController({
+      domains: {
+        [DAPP_URL]: LOCALHOST_NETWORK_CLIENT_ID,
+        [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+      },
     });
   }
 

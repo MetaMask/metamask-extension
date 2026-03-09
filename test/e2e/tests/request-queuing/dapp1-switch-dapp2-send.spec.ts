@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -19,7 +19,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
