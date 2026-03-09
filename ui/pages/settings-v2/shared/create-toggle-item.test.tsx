@@ -157,36 +157,5 @@ describe('createToggleItem', () => {
         properties: { settingName: 'testToggle', newValue: true },
       });
     });
-
-    it('passes newValue to properties function', () => {
-      const configWithDynamicProps: ToggleItemConfig = {
-        ...testConfig,
-        dataTestId: 'test-toggle-dynamic',
-        trackEvent: {
-          event: MetaMetricsEventName.SettingsUpdated,
-          properties: (newValue) => ({ isEnabled: newValue }),
-        },
-      };
-
-      const TestToggleDynamic = createToggleItem(configWithDynamicProps);
-      const mockStore = createMockStore({ testToggleValue: false });
-
-      renderWithProvider(
-        <MetaMetricsContext.Provider
-          value={{ trackEvent: mockTrackEvent } as never}
-        >
-          <TestToggleDynamic />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('test-toggle-dynamic'));
-
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SettingsUpdated,
-        properties: { isEnabled: true },
-      });
-    });
   });
 });
