@@ -7,6 +7,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenPeriodicDetails } from './erc20-token-periodic-details';
 import { formatPeriodDuration } from './typed-sign-permission-util';
+import { TestErrorBoundary } from './test-error-boundary';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
@@ -139,15 +140,28 @@ describe('Erc20TokenPeriodicDetails', () => {
         new Error('Unable to resolve token decimals'),
       );
 
-      expect(() =>
-        renderWithConfirmContextProvider(
-          <Erc20TokenPeriodicDetails {...defaultProps} />,
-          getMockStore(),
-        ),
-      ).toThrow();
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TestErrorBoundary>
+          <Erc20TokenPeriodicDetails {...defaultProps} />
+        </TestErrorBoundary>,
+        getMockStore(),
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('error-boundary')).toBeInTheDocument();
+        expect(getByTestId('error-boundary')).toHaveTextContent(
+          'Unable to resolve token decimals',
+        );
+      });
+
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20DecimalsOrThrow.mockResolvedValue(2);
     });
   });
 
+  // Tests that intentionally throw may still log "Error: Uncaught [Error ...]";
+  // see console baseline "Test errors: Uncaught Errors" for this file.
   describe('error handling', () => {
     it('throws error when start time is missing', () => {
       const permissionWithoutStartTime = {

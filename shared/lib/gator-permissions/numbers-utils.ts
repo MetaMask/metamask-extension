@@ -22,13 +22,14 @@ export const DEFAULT_TOKEN_AMOUNT_FORMAT_OPTIONS: Intl.NumberFormatOptions = {
  * @param decimals - The number of decimals to shift the value by (undefined if decimals could not be resolved)
  * @returns The decimal value, or raw units if decimals is undefined
  */
-export function getDecimalizedHexValue(
+export function formatDecimalShiftedValue(
   value: Hex,
-  decimals: number | undefined,
+  decimals: number | null,
 ): string {
-  if (decimals === undefined) {
+  const valueDec = new Numeric(value, 16).toBase(10);
+  if (!decimals) {
     // Return raw units when decimals cannot be resolved
-    return new Numeric(value, 16).toBase(10).toString();
+    return valueDec.toString();
   }
-  return new Numeric(value, 16).toBase(10).shiftedBy(decimals).toString();
+  return valueDec.shiftedBy(decimals).toString();
 }

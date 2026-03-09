@@ -34,7 +34,7 @@ import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
   convertAmountPerSecondToAmountPerPeriod,
-  getDecimalizedHexValue,
+  formatDecimalShiftedValue,
   extractExpiryToReadableDate,
   GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
@@ -44,6 +44,7 @@ import { getPendingRevocations } from '../../../../../selectors/gator-permission
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import { Skeleton } from '../../../../component-library/skeleton';
+import { Hex } from '@metamask/utils';
 
 // Shared row style for permission details
 const rowStyle = { flex: '1', alignSelf: 'center' } as const;
@@ -219,6 +220,34 @@ export const ReviewGatorPermissionItem = ({
     [t],
   );
 
+  const formatValueAsRatePerSecond = useCallback((value: Hex | null | undefined) => {
+    if (!value) {
+      return 'Unknown';
+    }
+
+    const { symbol, decimals } = tokenMetadata;
+
+    if (decimals === null) {
+      return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec (raw units)`;
+    }
+
+    return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec`;
+  }, [tokenMetadata]);
+
+  const formatValue = useCallback((value: Hex | null | undefined) => {
+    if (!value) {
+      return 'Unknown';
+    }
+
+    const { symbol, decimals } = tokenMetadata;
+
+    if (decimals === null) {
+      return `${formatDecimalShiftedValue(value, decimals)} ${symbol} (raw units)`;
+    }
+
+    return `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
+  }, [tokenMetadata]);
+
   /**
    * Returns the token stream permission details
    *
@@ -229,19 +258,15 @@ export const ReviewGatorPermissionItem = ({
     (
       permission: NativeTokenStreamPermission | Erc20TokenStreamPermission,
     ): PermissionDetails => {
-      const { symbol, decimals } = tokenMetadata;
       const amountPerPeriod = convertAmountPerSecondToAmountPerPeriod(
         permission.data.amountPerSecond,
         'weekly',
       );
 
-      const decimalsNotice =
-        decimals === undefined ? ' (raw units - decimals unavailable)' : '';
-
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value: `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}${decimalsNotice}`,
+          value: formatValue(amountPerPeriod),
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -252,20 +277,12 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
-            value: `${getDecimalizedHexValue(
-              permission.data.initialAmount || '0x0',
-              decimals,
-            )} ${symbol}${decimalsNotice}`,
+            value: formatValue(permission.data.initialAmount),
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value: permission.data.maxAmount
-              ? `${getDecimalizedHexValue(
-                  permission.data.maxAmount,
-                  decimals,
-                )} ${symbol}${decimalsNotice}`
-              : t('unlimited'),
+            value: formatValue(permission.data.maxAmount),
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -283,10 +300,7 @@ export const ReviewGatorPermissionItem = ({
           },
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
-            value: `${getDecimalizedHexValue(
-              permission.data.amountPerSecond,
-              decimals,
-            )} ${symbol}/sec${decimalsNotice}`,
+            value: formatValueAsRatePerSecond(permission.data.amountPerSecond),
             testId: 'review-gator-permission-stream-rate',
           },
         },
@@ -312,10 +326,7 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'amount',
-          value: `${getDecimalizedHexValue(
-            permission.data.periodAmount,
-            decimals,
-          )} ${symbol}${decimalsNotice}`,
+          value: formatValue(permission.data.periodAmount),
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {

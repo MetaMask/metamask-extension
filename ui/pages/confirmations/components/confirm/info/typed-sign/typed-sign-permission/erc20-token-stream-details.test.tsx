@@ -6,6 +6,7 @@ import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
+import { TestErrorBoundary } from './test-error-boundary';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
@@ -154,6 +155,9 @@ describe('Erc20TokenStreamDetails', () => {
     });
   });
 
+  // These tests intentionally throw; React may still log "Error: Uncaught [Error ...]"
+  // before the error boundary catches it, so the console baseline "Test errors: Uncaught Errors"
+  // for this file is expected to include those counts.
   describe('error handling', () => {
     it('throws error when start time is missing', () => {
       const permissionWithoutStartTime = {
@@ -182,18 +186,30 @@ describe('Erc20TokenStreamDetails', () => {
         new Error('Unable to resolve token decimals'),
       );
 
-      expect(() =>
-        renderWithConfirmContextProvider(
-          <Erc20TokenStreamDetails {...defaultProps} />,
-          getMockStore(),
-        ),
-      ).toThrow();
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TestErrorBoundary>
+          <Erc20TokenStreamDetails {...defaultProps} />
+        </TestErrorBoundary>,
+        getMockStore(),
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('error-boundary')).toBeInTheDocument();
+        expect(getByTestId('error-boundary')).toHaveTextContent(
+          'Unable to resolve token decimals',
+        );
+      });
+
+      // Restore default mock so later tests get resolved decimals
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20DecimalsOrThrow.mockResolvedValue(2);
     });
   });
 
   describe('edge cases', () => {
     it('handles very large amounts', async () => {
-      const permissionWithLargeAmounts = {
+      const permissionWithLargeAmounts: Erc20TokenStreamPermission = {
         ...mockPermission,
         data: {
           ...mockPermission.data,
@@ -201,7 +217,8 @@ describe('Erc20TokenStreamDetails', () => {
           maxAmount: '0xffffffffffffffffffffffffffffffffffffffff',
           amountPerSecond: '0xffffffffffffffffffffffffffffffffffffffff',
         },
-      } as Erc20TokenStreamPermission;
+      };
+
       const { detailsSection } = await renderAndGetSections({
         ...defaultProps,
         permission: permissionWithLargeAmounts,

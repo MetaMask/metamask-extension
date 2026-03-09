@@ -385,7 +385,7 @@ describe('useGatorPermissionTokenInfo', () => {
       await waitForNextUpdate();
 
       expect(result.current.tokenInfo?.symbol).toBe('Unknown Token');
-      expect(result.current.tokenInfo?.decimals).toBe(18);
+      expect(result.current.tokenInfo?.decimals).toBe(null);
       expect(result.current.error).toBeInstanceOf(Error);
       expect(result.current.error?.message).toBe('On-chain Error');
     });
@@ -402,7 +402,7 @@ describe('useGatorPermissionTokenInfo', () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.tokenInfo).toMatchObject({
         symbol: 'Unknown Token',
-        decimals: 18,
+        decimals: null,
         chainId: mockChainId,
       });
     });
@@ -417,7 +417,7 @@ describe('useGatorPermissionTokenInfo', () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.tokenInfo).toMatchObject({
         symbol: 'Unknown Token',
-        decimals: 18,
+        decimals: null,
         chainId: '0x0',
       });
     });
