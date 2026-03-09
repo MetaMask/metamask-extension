@@ -845,6 +845,9 @@ export const getWarningLabels = (
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientBalance,
+    isPriceImpactWarning,
+    isPriceImpactError,
+    isTxAlertPresent,
     isStockMarketClosed,
   } = getValidationErrors(state, currentTimeInMs);
   const warnings: (QuoteWarning | 'market_closed')[] = [];
@@ -854,6 +857,9 @@ export const getWarningLabels = (
   isInsufficientGasForQuote &&
     warnings.push('insufficient_gas_for_selected_quote');
   isInsufficientBalance && warnings.push('insufficient_balance');
+  isPriceImpactWarning && warnings.push('price_impact');
+  isPriceImpactError && warnings.push('price_impact');
+  isTxAlertPresent && warnings.push('tx_alert');
   isStockMarketClosed && warnings.push('market_closed');
   return warnings;
 };
