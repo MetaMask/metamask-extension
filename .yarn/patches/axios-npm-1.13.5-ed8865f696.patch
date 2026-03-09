@@ -1,0 +1,37 @@
+diff --git a/PATCH.txt b/PATCH.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..51e174fc437f4de9be0239c862f1903712cfb293
+--- /dev/null
++++ b/PATCH.txt
+@@ -0,0 +1,13 @@
++This patch ensures that the browser CommonJS bundle is used in Browserify builds.
++
++Prior to `axios@1.13.3`, the `main` entry of `package.json` was set to `index.js`, which was the
++ESM source. But in `axios@1.13.3`, this was updated to point at the Node.js bundle in
++this PR: https://github.com/axios/axios/pull/5756/changes
++
++This effectively resulted in the Node.js bundle being used instead of the ESM source.
++
++To fix this, it has been updated to use the CommonJS browser bundle, which is better suited for
++Browserify anyway (it doesn't support ESM, `axios` needed to be transpiled before).
++
++We can drop this patch when we stop using Browserify, or when Axios fixes this problem (see this
++issue: https://github.com/axios/axios/issues/7357)
+diff --git a/package.json b/package.json
+index 8dc8bb9efc517b1605608e3c56401da75ddbc9f6..57df1d57c56a649d1395e529e1e26c2aedb3cb10 100644
+--- a/package.json
++++ b/package.json
+@@ -149,11 +149,13 @@
+     "typescript": "^4.9.5"
+   },
+   "browser": {
++    "./dist/node/axios.cjs": "./dist/browser/axios.cjs",
+     "./lib/adapters/http.js": "./lib/helpers/null.js",
+     "./lib/platform/node/index.js": "./lib/platform/browser/index.js",
+     "./lib/platform/node/classes/FormData.js": "./lib/helpers/null.js"
+   },
+   "react-native": {
++    "./dist/node/axios.cjs": "./dist/browser/axios.cjs",
+     "./lib/adapters/http.js": "./lib/helpers/null.js",
+     "./lib/platform/node/index.js": "./lib/platform/browser/index.js",
+     "./lib/platform/node/classes/FormData.js": "./lib/helpers/null.js"

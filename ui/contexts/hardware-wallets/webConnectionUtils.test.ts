@@ -15,15 +15,11 @@ import {
   getConnectedLedgerDevices,
   getConnectedTrezorDevices,
   getConnectedDevices,
-  isDeviceConnected,
-  isHardwareWalletConnected,
-  getDeviceId,
-  getHardwareWalletDeviceId,
   subscribeToWebHidEvents,
   subscribeToWebUsbEvents,
 } from './webConnectionUtils';
 
-// Default device IDs for testing
+// Default device identifiers for testing
 const DEFAULT_LEDGER_VENDOR_ID = Number(LEDGER_USB_VENDOR_ID);
 const DEFAULT_TREZOR_VENDOR_ID = TREZOR_USB_VENDOR_IDS[0].vendorId;
 const DEFAULT_TREZOR_PRODUCT_ID = TREZOR_USB_VENDOR_IDS[0].productId;
@@ -700,148 +696,6 @@ describe('webConnectionUtils', () => {
       );
 
       expect(result).toEqual([]);
-    });
-  });
-
-  describe('isDeviceConnected', () => {
-    it('returns true when Ledger devices are connected and no specific device ID is provided', async () => {
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        createMockHIDDevice(),
-      ]);
-
-      const result = await isDeviceConnected();
-
-      expect(result).toBe(true);
-    });
-
-    it('returns false when no Ledger devices are connected and no specific device ID is provided', async () => {
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([]);
-
-      const result = await isDeviceConnected();
-
-      expect(result).toBe(false);
-    });
-
-    it('returns true when specific device ID matches connected device', async () => {
-      const deviceId = '1';
-      const device: MockHIDDevice = createMockHIDDevice();
-      device.productId = Number(deviceId);
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        device,
-      ]);
-
-      const result = await isDeviceConnected(deviceId);
-
-      expect(result).toBe(true);
-    });
-
-    it('returns false when specific device ID does not match any connected device', async () => {
-      const deviceId = '999';
-      const device: MockHIDDevice = createMockHIDDevice();
-      device.productId = 1;
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        device,
-      ]);
-
-      const result = await isDeviceConnected(deviceId);
-
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('isHardwareWalletConnected', () => {
-    it('returns true when devices are connected and no specific device ID is provided', async () => {
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        createMockHIDDevice(),
-      ]);
-
-      const result = await isHardwareWalletConnected(HardwareWalletType.Ledger);
-
-      expect(result).toBe(true);
-    });
-
-    it('returns false when no devices are connected and no specific device ID is provided', async () => {
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([]);
-
-      const result = await isHardwareWalletConnected(HardwareWalletType.Ledger);
-
-      expect(result).toBe(false);
-    });
-
-    it('returns true when specific device ID matches connected device', async () => {
-      const deviceId = '1';
-      const device: MockHIDDevice = createMockHIDDevice();
-      device.productId = Number(deviceId);
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        device,
-      ]);
-
-      const result = await isHardwareWalletConnected(
-        HardwareWalletType.Ledger,
-        deviceId,
-      );
-
-      expect(result).toBe(true);
-    });
-
-    it('returns false when specific device ID does not match any connected device', async () => {
-      const deviceId = '999';
-      const device: MockHIDDevice = createMockHIDDevice();
-      device.productId = 1;
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        device,
-      ]);
-
-      const result = await isHardwareWalletConnected(
-        HardwareWalletType.Ledger,
-        deviceId,
-      );
-
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('getDeviceId', () => {
-    it('returns product ID of first connected Ledger device', async () => {
-      const device: MockHIDDevice = createMockHIDDevice();
-      device.productId = 123;
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        device,
-      ]);
-
-      const result = await getDeviceId();
-
-      expect(result).toBe('123');
-    });
-
-    it('returns null when no Ledger devices are connected', async () => {
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([]);
-
-      const result = await getDeviceId();
-
-      expect(result).toBe(null);
-    });
-  });
-
-  describe('getHardwareWalletDeviceId', () => {
-    it('returns product ID of first connected device for wallet type', async () => {
-      const device: MockHIDDevice = createMockHIDDevice();
-      device.productId = 456;
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
-        device,
-      ]);
-
-      const result = await getHardwareWalletDeviceId(HardwareWalletType.Ledger);
-
-      expect(result).toBe('456');
-    });
-
-    it('returns null when no devices are connected for wallet type', async () => {
-      (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([]);
-
-      const result = await getHardwareWalletDeviceId(HardwareWalletType.Ledger);
-
-      expect(result).toBe(null);
     });
   });
 

@@ -18,6 +18,9 @@ package
 .idea
 .sublime-project
 
+# LLMs
+.claude/*.local.*
+
 *.bak
 
 # VIM
@@ -50,8 +53,8 @@ notes.txt
 .nyc_output
 
 # MetaMask configuration
-.metamaskrc
-.metamaskprodrc
+/.metamaskrc
+/.metamaskprodrc
 
 # Customized manifest configuration
 .manifest-overrides*.json

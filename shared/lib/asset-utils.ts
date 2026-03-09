@@ -11,6 +11,7 @@ import {
   KnownCaipNamespace,
   numberToHex,
 } from '@metamask/utils';
+import log from 'loglevel';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
@@ -18,13 +19,13 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { Asset } from '@metamask/assets-controllers';
+
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
-  TRON_RESOURCE_SYMBOLS_SET,
-  TronResourceSymbol,
+  TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
+  type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
@@ -88,17 +89,25 @@ export const getAssetImageUrl = (
   assetId: CaipAssetType | Hex | string,
   chainId: CaipChainId | Hex,
 ) => {
-  const assetIdInCaip = toAssetId(assetId, chainId);
-  if (!assetIdInCaip) {
+  try {
+    const assetIdInCaip = toAssetId(assetId, chainId);
+    if (!assetIdInCaip) {
+      return undefined;
+    }
+    const normalizedAssetId = (
+      isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
+    ).replaceAll(':', '/');
+    return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
+      normalizedAssetId
+    }.png`;
+  } catch (error) {
+    log.error('Failed to get asset image URL', {
+      error: error instanceof Error ? error.message : String(error),
+      assetId,
+      chainId,
+    });
     return undefined;
   }
-  const normalizedAssetId = (
-    isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
-  ).replaceAll(':', '/');
-
-  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
-    normalizedAssetId
-  }.png`;
 };
 
 export type AssetMetadata = {
@@ -253,22 +262,26 @@ export const isEvmChainId = (chainId: CaipChainId | Hex) => {
 };
 
 /**
- * Checks if the given assetId is a Tron resource
+ * Checks if the given CAIP asset ID represents a Tron special asset
+ * (resources, staking state, etc.) that should be filtered out from
+ * user-facing asset lists.
  *
- * @param asset - The assetId to check.
- * @returns `true` if the assetId is a Tron resource, `false` otherwise.
+ * @param assetId - The CAIP asset ID to check.
+ * @returns `true` if the asset is a Tron special asset, `false` otherwise.
  */
-export const isTronResource = (asset: Asset): boolean => {
-  if (!isCaipAssetType(asset.assetId)) {
+export const isTronSpecialAsset = (
+  assetId: CaipAssetType | string | undefined,
+): boolean => {
+  if (!assetId || !isCaipAssetType(assetId)) {
     return false;
   }
-  const { chain } = parseCaipAssetType(asset.assetId);
+  const { chain, assetNamespace, assetReference } = parseCaipAssetType(assetId);
 
   if (chain.namespace !== KnownCaipNamespace.Tron) {
     return false;
   }
 
-  return TRON_RESOURCE_SYMBOLS_SET.has(
-    asset.symbol?.toLowerCase() as TronResourceSymbol,
+  return TRON_SPECIAL_ASSET_CAIP_TYPES_SET.has(
+    `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };

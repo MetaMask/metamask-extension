@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -242,13 +241,18 @@ export function isOriginContractAddress(to, sendTokenAddress) {
   return to.toLowerCase() === sendTokenAddress.toLowerCase();
 }
 
-// Takes wei Hex, returns wei BN, even if input is null
+// Takes wei hex, returns wei bigint, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new BN(0, 16);
+    return 0n;
   }
+
   const stripped = stripHexPrefix(balance);
-  return new BN(stripped, 16);
+  if (!stripped) {
+    return 0n;
+  }
+
+  return BigInt(`0x${stripped}`);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -544,6 +548,12 @@ export const toHumanReadableTime = (t, milliseconds) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
+
+  if (milliseconds < 1000) {
+    const decimalSeconds = (milliseconds / 1000).toFixed(1);
+    return t('gasTimingSecondsShort', [decimalSeconds]);
+  }
+
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);

@@ -116,6 +116,55 @@ describe('transaction-pay utils', () => {
         false,
       );
     });
+
+    it('returns true when nested transaction type matches', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.tokenMethodTransfer },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(
+        hasTransactionType(transactionMeta, [
+          TransactionType.tokenMethodApprove,
+        ]),
+      ).toBe(true);
+    });
+
+    it('returns false when neither top-level nor nested types match', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [{ type: TransactionType.tokenMethodTransfer }],
+      } as unknown as TransactionMeta;
+
+      expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
+        false,
+      );
+    });
+
+    it('returns true for top-level type even with nested transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.swap,
+        nestedTransactions: [{ type: TransactionType.tokenMethodTransfer }],
+      } as unknown as TransactionMeta;
+
+      expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
+        true,
+      );
+    });
+
+    it('returns false when nestedTransactions is empty', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [],
+      } as unknown as TransactionMeta;
+
+      expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
+        false,
+      );
+    });
   });
 
   describe('getTokenTransferData', () => {
@@ -215,10 +264,14 @@ describe('transaction-pay utils', () => {
   });
 
   describe('getAvailableTokens', () => {
-    it('filters out non-ERC20 tokens', () => {
+    it('filters out NFT tokens but keeps native and ERC20', () => {
       const tokens = [
-        createMockAsset({ standard: AssetStandard.Native }),
+        createMockAsset({
+          standard: AssetStandard.Native,
+          address: '0xnative',
+        }),
         createMockAsset({ standard: AssetStandard.ERC721 }),
+        createMockAsset({ standard: AssetStandard.ERC1155 }),
         createMockAsset({
           standard: AssetStandard.ERC20,
           address: TOKEN_ADDRESS_MOCK,
@@ -227,8 +280,11 @@ describe('transaction-pay utils', () => {
 
       const result = getAvailableTokens({ tokens });
 
-      expect(result).toHaveLength(1);
-      expect(result[0].address).toBe(TOKEN_ADDRESS_MOCK);
+      expect(result).toHaveLength(2);
+      expect(result.map((t) => t.address)).toStrictEqual([
+        '0xnative',
+        TOKEN_ADDRESS_MOCK,
+      ]);
     });
 
     it('filters out tokens without eip155 account type', () => {

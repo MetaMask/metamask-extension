@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Musíte si vybrať účet!"
   },
-  "activityLog": {
-    "message": "protokol aktivity"
-  },
   "addAcquiredTokens": {
     "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
   },
@@ -289,9 +286,6 @@
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Sieť potvrdila vašu iniciálnu transakciu. Ak sa chcete vrátiť späť, kliknite na OK."
-  },
   "insufficientBalance": {
     "message": "Nedostatočný zostatok."
   },
@@ -388,9 +382,6 @@
   "next": {
     "message": "Další"
   },
-  "noConversionRateAvailable": {
-    "message": "Nie je k dispozícii žiadna sadzba konverzie"
-  },
   "noWebcamFound": {
     "message": "Webová kamera vášho počítača sa nenašla. Skúste znova."
   },
@@ -461,12 +452,6 @@
   },
   "rejectAll": {
     "message": "Odmietnuť všetko"
-  },
-  "rejectTxsDescription": {
-    "message": " Chystáte sa hromadne odmietnuť $1 transakcie."
-  },
-  "rejectTxsN": {
-    "message": "Odmietnuť $1 transakcie "
   },
   "rejected": {
     "message": "Odmítnuto"
@@ -565,9 +550,6 @@
   "speedUpCancellation": {
     "message": "Urýchlite toto zrušenie"
   },
-  "speedUpTransaction": {
-    "message": "Urýchliť túto transakciu"
-  },
   "stateLogError": {
     "message": "Chyba během získávání stavových protokolů."
   },
@@ -607,38 +589,11 @@
   "transaction": {
     "message": "transakcia"
   },
-  "transactionCancelAttempted": {
-    "message": "Pokus o zrušenie transakcie s poplatkom GAS z $1 na $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcia bola úspešne zrušená na $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcia potvrdená na $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcia bola vytvorená s hodnotou $1 na $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcia klesla na $2."
-  },
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
   },
   "transactionErrorNoContract": {
     "message": "Pokúša sa zavolať funkciu na nezmluvnú adresu."
-  },
-  "transactionErrored": {
-    "message": "Pri transakcii sa vyskytla chyba."
-  },
-  "transactionResubmitted": {
-    "message": "Transakcia znovu odoslaná s poplatkom za GAS zvýšeným na $1 na $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcia bola odoslaná s poplatkom za GAS z  $1 na $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcia bola aktualizovaná na $2."
   },
   "transfer": {
     "message": "Prevod"
@@ -684,8 +639,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša súkromná seed fráza"
   }
 }

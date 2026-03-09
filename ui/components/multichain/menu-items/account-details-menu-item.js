@@ -54,7 +54,7 @@ export const AccountDetailsMenuItem = ({
   return (
     <MenuItem
       onClick={handleNavigation}
-      iconName={IconName.ScanBarcode}
+      iconNameLegacy={IconName.ScanBarcode}
       data-testid="account-list-menu-details"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

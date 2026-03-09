@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Unatakiwa kuchagua akaunti!"
   },
-  "activityLog": {
-    "message": "kumbukumbu ya shughuli"
-  },
   "addAcquiredTokens": {
     "message": "Ongeza vianzio ulivyopata kwa kutumia MetaMask"
   },
@@ -293,9 +290,6 @@
     "message": "Zilizoingizwa",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Muamala wako wa awali ulithibitishwa na mtandao. Bofya SWA ili urudi nyuma."
-  },
   "insufficientBalance": {
     "message": "Salio halitoshi."
   },
@@ -395,9 +389,6 @@
   "next": {
     "message": "Inayofuata"
   },
-  "noConversionRateAvailable": {
-    "message": "Hakuna Kiwango cha Ubadilishaji"
-  },
   "noWebcamFound": {
     "message": "Kamera yako ya kumpyuta haikupatikana. Tafadhali jaribu tena."
   },
@@ -471,12 +462,6 @@
   },
   "rejectAll": {
     "message": "Kataa Zote"
-  },
-  "rejectTxsDescription": {
-    "message": "Unakaribia kukataa miamala $1kwa mafungu."
-  },
-  "rejectTxsN": {
-    "message": "Kataa $1 miamala"
   },
   "rejected": {
     "message": "Imekataliwa"
@@ -575,9 +560,6 @@
   "speedUpCancellation": {
     "message": "Ongeza kasi ya ubatilishaji huu"
   },
-  "speedUpTransaction": {
-    "message": "Ongeza kasi ya muamala huu"
-  },
   "stateLogError": {
     "message": "Hitilafu imetokea kurejesha kumbukumbu za hali."
   },
@@ -623,38 +605,11 @@
   "transaction": {
     "message": "muamala"
   },
-  "transactionCancelAttempted": {
-    "message": "Jaribio la kubatilisha muamala ukiwa na ada ya gesi ya  $1 mnamo $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Muamala umefanikiwa kubatilishwa mnamo $2"
-  },
-  "transactionConfirmed": {
-    "message": "Muamala umethibitishwa mnamo $2."
-  },
-  "transactionCreated": {
-    "message": "Muamala umeanzishwa kwa thamani ya $1 mnamo$2."
-  },
-  "transactionDropped": {
-    "message": "Muamala umedondoswa mnamo $2."
-  },
   "transactionError": {
     "message": "Hitilafu ya muamala. Kighairi kimerushwa kwenye msimbo wa mkataba."
   },
   "transactionErrorNoContract": {
     "message": "Inajaribu kuita shughuli kwenye anwani isiyo ya mkataba."
-  },
-  "transactionErrored": {
-    "message": "Muamala umepata hitilafu."
-  },
-  "transactionResubmitted": {
-    "message": "Muamala umewasilishwa tena ukiwa na ada ya gesi iliyoongezeka hadi $1 manamo $2"
-  },
-  "transactionSubmitted": {
-    "message": "Muamala umewasilishwa ukiwa na ada ya gesi ya$1 mnamo $2."
-  },
-  "transactionUpdated": {
-    "message": "Muamala umesasishwa mnamo $2."
   },
   "transfer": {
     "message": "Kutuma"
@@ -700,8 +655,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Kirai chako kianzio cha binafsi"
   }
 }

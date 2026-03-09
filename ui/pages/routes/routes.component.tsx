@@ -1,10 +1,16 @@
 /* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable import/extensions */
-import classnames from 'classnames';
+import classnames from 'clsx';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import {
+  useRoutes,
+  useLocation,
+  useNavigationType,
+  Navigate,
+  Outlet,
+} from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -44,9 +50,9 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
+  BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
-  SMART_ACCOUNT_UPDATE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
@@ -63,17 +69,17 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  CONTACTS_ROUTE,
+  SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
-  ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
@@ -91,9 +97,7 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import {
@@ -106,9 +110,7 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferen
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -116,21 +118,19 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
-///: END:ONLY_INCLUDE_IF
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { PerpsControllerProvider } from '../../providers/perps';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
 import { type Confirmation } from '../confirmations/types/confirm';
-import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -142,6 +142,9 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
+import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
+import { contactsRoutes } from '../contacts';
+import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -162,7 +165,7 @@ const UnlockPage = mmLazy(
 );
 const RestoreVaultPage = mmLazy(
   (() =>
-    import('../keychains/restore-vault.js')) as unknown as DynamicImportType,
+    import('../keychains/restore-vault.tsx')) as unknown as DynamicImportType,
 );
 const ImportSrpPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
@@ -170,17 +173,21 @@ const ImportSrpPage = mmLazy(
     import('../multi-srp/import-srp/index.ts')) as unknown as DynamicImportType,
 );
 const RevealSeedConfirmation = mmLazy(
-  (() => import('../keychains/reveal-seed.js')) as unknown as DynamicImportType,
+  (() =>
+    import('../keychains/reveal-seed.tsx')) as unknown as DynamicImportType,
 );
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,
 );
-const NotificationsSettings = mmLazy(
-  (() =>
-    import(
-      '../notifications-settings/index.js'
-    )) as unknown as DynamicImportType,
+
+const SettingsV2 = mmLazy(
+  (() => import('../settings-v2/index.ts')) as unknown as DynamicImportType,
 );
+
+const NotificationsSettingsRedirect = () => (
+  <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
+);
+
 const NotificationDetails = mmLazy(
   (() =>
     import('../notification-details/index.js')) as unknown as DynamicImportType,
@@ -299,6 +306,13 @@ const DeepLink = mmLazy(
   (() => import('../deep-link/deep-link.tsx')) as unknown as DynamicImportType,
 );
 
+const BasicFunctionalityOff = mmLazy(
+  (() =>
+    import(
+      '../basic-functionality-required/basic-functionality-required.tsx'
+    )) as unknown as DynamicImportType,
+);
+
 const MultichainAccountDetailsPage = mmLazy(
   (() =>
     import(
@@ -323,10 +337,6 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
-const PerpsHomePage = mmLazy(
-  (() =>
-    import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
-);
 const PerpsMarketDetailPage = mmLazy(
   (() =>
     import(
@@ -341,6 +351,38 @@ const PerpsActivityPage = mmLazy(
   (() =>
     import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
 );
+const PerpsOrderEntryPage = mmLazy(
+  (() =>
+    import(
+      '../perps/perps-order-entry-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+
+// Perps pages wrapped with PerpsControllerProvider
+const WrappedPerpsMarketDetailPage = () => (
+  <PerpsControllerProvider>
+    <PerpsMarketDetailPage />
+  </PerpsControllerProvider>
+);
+
+const WrappedMarketListView = () => (
+  <PerpsControllerProvider>
+    <MarketListView />
+  </PerpsControllerProvider>
+);
+
+const WrappedPerpsActivityPage = () => (
+  <PerpsControllerProvider>
+    <PerpsActivityPage />
+  </PerpsControllerProvider>
+);
+
+const WrappedPerpsOrderEntryPage = () => (
+  <PerpsControllerProvider>
+    <PerpsOrderEntryPage />
+  </PerpsControllerProvider>
+);
+
 // End Lazy Routes
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -373,7 +415,7 @@ export default function Routes() {
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
   const currentCurrency = useAppSelector(
-    (state) => state.metamask.currentCurrency,
+    getCurrencyRateControllerCurrentCurrency,
   );
   const os = useAppSelector((state) => state.metamask.browserEnvironment?.os);
   const browser = useAppSelector(
@@ -408,14 +450,12 @@ export default function Routes() {
     (state) => state.metamask.currentExtensionPopupId,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
     (state) => state.appState.showKeyringRemovalSnapModal,
   );
   const pendingConfirmations = useAppSelector(getUnapprovedConfirmations);
   const hideShowKeyringSnapRemovalResultModal = () =>
     dispatch(hideKeyringRemovalResultModal());
-  ///: END:ONLY_INCLUDE_IF
 
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
@@ -504,309 +544,393 @@ export default function Routes() {
         path: `${ONBOARDING_ROUTE}/*`,
         component: OnboardingFlow,
         layout: LegacyLayout,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: LOCK_ROUTE,
         component: Lock,
         layout: LegacyLayout,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: UNLOCK_ROUTE,
         component: UnlockPage,
         layout: LegacyLayout,
         initialized: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: DEEP_LINK_ROUTE,
         component: DeepLink,
         layout: LegacyLayout,
+        basicFunctionalityRequired: false,
+      }),
+      createRouteWithLayout({
+        path: BASIC_FUNCTIONALITY_OFF_ROUTE,
+        component: BasicFunctionalityOff,
+        layout: LegacyLayout,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: RESTORE_VAULT_ROUTE,
         component: RestoreVaultPage,
         layout: LegacyLayout,
-      }),
-      createRouteWithLayout({
-        path: SMART_ACCOUNT_UPDATE,
-        component: SmartAccountUpdate,
-        layout: LegacyLayout,
-        authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
         component: RevealSeedConfirmation,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: IMPORT_SRP_ROUTE,
         component: ImportSrpPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${SETTINGS_ROUTE}/*`,
         component: Settings,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: NOTIFICATIONS_SETTINGS_ROUTE,
-        component: NotificationsSettings,
+        path: `${SETTINGS_V2_ROUTE}/*`,
+        component: SettingsV2,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
+      }),
+      createRouteWithLayout({
+        path: '/notifications/settings',
+        component: NotificationsSettingsRedirect,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openNotificationsPage',
       }),
       createRouteWithLayout({
         path: `${NOTIFICATIONS_ROUTE}/:uuid`,
         component: NotificationDetails,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openNotificationsPage',
       }),
       createRouteWithLayout({
         path: NOTIFICATIONS_ROUTE,
         component: Notifications,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openNotificationsPage',
       }),
+      {
+        path: CONTACTS_ROUTE,
+        element: (
+          <RootLayout>
+            <Authenticated>
+              <Outlet />
+            </Authenticated>
+          </RootLayout>
+        ),
+        children: contactsRoutes,
+      },
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSnapsPage',
       }),
       createRouteWithLayout({
         path: `${SNAPS_VIEW_ROUTE}/*`,
         component: SnapView,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSnapsPage',
       }),
       createRouteWithLayout({
         path: `${SEND_ROUTE}/:page?`,
         component: SendPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
         component: ConfirmDecryptMessage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
         component: ConfirmEncryptionPublicKey,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         component: Confirm,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`,
+        path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
         component: CrossChainSwapTxDetails,
         layout: LegacyLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSwapsPage',
       }),
       createRouteWithLayout({
         path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
         component: CrossChainSwap,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSwapsPage',
       }),
       createRouteWithLayout({
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
         component: ConfirmAddSuggestedTokenPage,
         layout: LegacyLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
         component: ConfirmAddSuggestedNftPage,
         layout: LegacyLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
         component: ConfirmationPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${NEW_ACCOUNT_ROUTE}/*`,
         component: CreateAccountPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${CONNECT_ROUTE}/:id/*`,
         component: PermissionsConnect,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${ASSET_ROUTE}/image/:asset/:id`,
         component: NftFullImage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${ASSET_ROUTE}/:chainId/:asset/:id`,
         component: Asset,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${ASSET_ROUTE}/:chainId/:asset/`,
         component: Asset,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${ASSET_ROUTE}/:chainId`,
         component: Asset,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${DEFI_ROUTE}/:chainId/:protocolId`,
         component: DeFiPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openDefiPage',
       }),
       createRouteWithLayout({
         path: PERMISSIONS,
         component: PermissionsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: GATOR_PERMISSIONS,
         component: GatorPermissionsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${TOKEN_TRANSFER_ROUTE}/:origin`,
         component: GatorPermissionsTokenTransferPermissionsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: TOKEN_TRANSFER_ROUTE,
         component: GatorPermissionsTokenTransferPermissionsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`,
         component: GatorPermissionsReviewPermissionsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
         component: GatorPermissionsReviewPermissionsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${REVIEW_PERMISSIONS}/:origin`,
         component: MultichainReviewPermissions,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: ACCOUNT_LIST_PAGE_ROUTE,
         component: AccountList,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`,
         component: MultichainAccountAddressListPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`,
         component: MultichainAccountPrivateKeyListPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: ADD_WALLET_PAGE_ROUTE,
         component: AddWalletPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`,
         component: MultichainAccountDetailsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
         component: SmartAccountPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`,
         component: WalletDetailsPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
         path: NONEVM_BALANCE_CHECK_ROUTE,
         component: NonEvmBalanceCheck,
         layout: LegacyLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openCreateSnapAccountPage',
       }),
       createRouteWithLayout({
         path: SHIELD_PLAN_ROUTE,
         component: ShieldPlan,
         layout: LegacyLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openTransactionShieldPage',
       }),
       createRouteWithLayout({
         path: REWARDS_ROUTE,
         component: RewardsPage,
         layout: RootLayout,
         authenticated: true,
-      }),
-      createRouteWithLayout({
-        path: PERPS_HOME_ROUTE,
-        component: PerpsHomePage,
-        layout: RootLayout,
-        authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openRewardsPage',
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-        component: PerpsMarketDetailPage,
+        component: WrappedPerpsMarketDetailPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
+      }),
+      createRouteWithLayout({
+        path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+        component: WrappedPerpsOrderEntryPage,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: PERPS_ACTIVITY_ROUTE,
-        component: PerpsActivityPage,
+        component: WrappedPerpsActivityPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: PERPS_MARKET_LIST_ROUTE,
-        component: MarketListView,
+        component: WrappedMarketListView,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: DEFAULT_ROUTE,
         component: Home,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityRequired: false,
       }),
     ],
     [],
@@ -857,13 +981,11 @@ export default function Routes() {
   const isLoadingShown =
     isLoading &&
     completedOnboarding &&
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     !pendingConfirmations.some(
       (confirmation: Confirmation) =>
         confirmation.type ===
         SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ) &&
-    ///: END:ONLY_INCLUDE_IF
     // In the redesigned screens, we hide the general loading spinner and the
     // loading states are on a component by component basis.
     !isCorrectApprovalType &&
@@ -905,16 +1027,12 @@ export default function Routes() {
           onClose={() => dispatch(hideDeprecatedNetworkModal())}
         />
       ) : null}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-        isShowKeyringSnapRemovalResultModal && (
-          <KeyringSnapRemovalResult
-            isOpen={isShowKeyringSnapRemovalResultModal}
-            onClose={hideShowKeyringSnapRemovalResultModal}
-          />
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {isShowKeyringSnapRemovalResultModal && (
+        <KeyringSnapRemovalResult
+          isOpen={isShowKeyringSnapRemovalResultModal}
+          onClose={hideShowKeyringSnapRemovalResultModal}
+        />
+      )}
 
       {showMultichainIntroModal ? (
         <MultichainAccountIntroModalContainer

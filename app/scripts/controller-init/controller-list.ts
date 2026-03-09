@@ -30,6 +30,7 @@ import {
   TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
+import { AssetsController } from '@metamask/assets-controller';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
@@ -84,6 +85,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ClientController } from '@metamask/client-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
@@ -91,7 +93,6 @@ import {
 } from '@metamask/profile-metrics-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
-import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
@@ -123,6 +124,7 @@ export type Controller =
   | AppMetadataController
   | ApprovalController
   | AppStateController
+  | AssetsController
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
@@ -185,7 +187,6 @@ export type Controller =
   | SnapsNameProvider
   | SubjectMetadataController
   | SubscriptionService
-  | SwapsController
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -206,6 +207,7 @@ export type Controller =
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService
+  | ClientController
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
@@ -224,10 +226,12 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
+  AssetsController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
   ClaimsController['state'] &
+  ClientController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -269,7 +273,6 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
   SubscriptionController['state'] &
-  SwapsController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &

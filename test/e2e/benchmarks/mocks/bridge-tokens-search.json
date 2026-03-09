@@ -1,0 +1,32 @@
+{
+  "data": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chainId": "eip155:1",
+      "assetId": "eip155:1/slip44:60",
+      "symbol": "ETH",
+      "decimals": 18,
+      "name": "Ethereum"
+    },
+    {
+      "address": "0xacA92E438df0B2401fF60dA7E4337B687a2435DA",
+      "chainId": "eip155:1",
+      "assetId": "eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da",
+      "symbol": "MUSD",
+      "decimals": 6,
+      "name": "MetaMask USD"
+    },
+    {
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "chainId": "eip155:1",
+      "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USD Coin"
+    }
+  ],
+  "pageInfo": {
+    "hasNextPage": false,
+    "endCursor": null
+  }
+}

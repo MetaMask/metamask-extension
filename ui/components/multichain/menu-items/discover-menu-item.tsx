@@ -57,7 +57,7 @@ export const DiscoverMenuItem = ({
 
   return (
     <MenuItem
-      iconName={IconName.Export}
+      iconNameLegacy={IconName.Export}
       onClick={() => handlePortfolioOnClick()}
       data-testid="portfolio-menu-item"
     >

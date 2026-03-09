@@ -5,6 +5,7 @@ import {
   PRODUCT_TYPES,
   StartSubscriptionRequest,
   Subscription,
+  SubscriptionServiceError,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import {
@@ -24,10 +25,6 @@ import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-// TODO: Migrate to shared directory and remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
-import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
   formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
@@ -45,8 +42,6 @@ import {
   getShieldSubscription,
 } from '../../../../shared/lib/shield';
 import { SHIELD_ERROR } from '../../../../shared/modules/shield';
-import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
-import { createSentryError } from '../../../../shared/modules/error';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -74,18 +69,14 @@ export class SubscriptionService {
 
   #webAuthenticator: WebAuthenticator;
 
-  #captureException: (error: unknown) => void;
-
   constructor({
     messenger,
     platform,
     webAuthenticator,
-    captureException = sentryCaptureException,
   }: SubscriptionServiceOptions) {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
-    this.#captureException = captureException;
 
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
@@ -146,12 +137,7 @@ export class SubscriptionService {
 
       return subscriptions;
     } catch (error) {
-      this.#captureException(
-        createSentryError(
-          'Failed to update subscription card payment method',
-          error as Error,
-        ),
-      );
+      log.error('Failed to update subscription card payment method', error);
       throw error;
     }
   }
@@ -176,12 +162,7 @@ export class SubscriptionService {
 
       return subscriptions;
     } catch (error) {
-      this.#captureException(
-        createSentryError(
-          'Failed to update subscription crypto payment method',
-          error as Error,
-        ),
-      );
+      log.error('Failed to update subscription crypto payment method', error);
       throw error;
     }
   }
@@ -213,11 +194,22 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
+        // Set pending redirect so the UI navigates back to shield plan page if user abandons checkout
+        this.#messenger.call('AppStateController:setPendingRedirectRoute', {
+          path: '/shield-plan',
+        });
+
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
           cancelUrl,
         });
+
+        // Clear pending redirect on successful checkout
+        this.#messenger.call(
+          'AppStateController:setPendingRedirectRoute',
+          null,
+        );
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)
@@ -266,12 +258,7 @@ export class SubscriptionService {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
 
-      this.#captureException(
-        createSentryError(
-          'Failed to start subscription with card',
-          error as Error,
-        ),
-      );
+      log.error('Failed to start subscription with card', error);
       throw error;
     }
   }
@@ -327,13 +314,6 @@ export class SubscriptionService {
       );
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
-
-      this.#captureException(
-        createSentryError(
-          'Failed to submit sponsorship intent',
-          error as Error,
-        ),
-      );
     }
   }
 
@@ -367,13 +347,6 @@ export class SubscriptionService {
       }
     } catch (err) {
       log.error('Failed to link reward to existing subscription', err);
-
-      this.#captureException(
-        createSentryError(
-          'Failed to link reward to existing subscription',
-          err as Error,
-        ),
-      );
     }
   }
 
@@ -520,6 +493,9 @@ export class SubscriptionService {
       log.error('Error on Shield subscription approval transaction', error);
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
+      const cause =
+        error instanceof SubscriptionServiceError ? error.cause : undefined;
+
       if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {
         // If there is an active subscription, we can assume this is a Payment Method Change request
         this.#trackPaymentMethodChangeRequestEvent(
@@ -528,6 +504,7 @@ export class SubscriptionService {
           txMeta,
           {
             error: errorMessage,
+            cause: cause?.message ?? '',
           },
         );
       } else {
@@ -538,6 +515,7 @@ export class SubscriptionService {
           txMeta,
           {
             error: errorMessage,
+            cause: cause?.message ?? '',
           },
         );
       }
@@ -548,21 +526,19 @@ export class SubscriptionService {
         PRODUCT_TYPES.SHIELD,
       );
 
-      this.#captureException(
-        createSentryError(
-          'Error on Shield subscription approval transaction',
-          error as Error,
-        ),
-      );
+      // Surface subscription error to UI
+      const subscriptionErrorMessage = cause?.message ?? errorMessage;
+      this.#messenger.call('AppStateController:setShieldSubscriptionError', {
+        message: subscriptionErrorMessage,
+      });
+
       throw error;
     }
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
-    const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
     const uiState = {
       metamask: {
-        ...swapsControllerState,
         ...this.#messenger.call('AccountsController:getState'),
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
@@ -575,36 +551,6 @@ export class SubscriptionService {
     const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
 
     return isSendBundleSupportedChain && isSmartTransaction;
-  }
-
-  // Deprecated: remove in follow-up clean up task
-  // Clean-up task https://consensyssoftware.atlassian.net/browse/STX-371
-  async #getSwapsFeatureFlagsFromNetwork(): Promise<
-    SwapsControllerState | undefined
-  > {
-    const swapsControllerState = this.#messenger.call(
-      'SwapsController:getState',
-    );
-    const { swapsFeatureFlags } = swapsControllerState.swapsState;
-    try {
-      if (!swapsFeatureFlags || Object.keys(swapsFeatureFlags).length === 0) {
-        const updatedSwapsFeatureFlags = await fetchSwapsFeatureFlags();
-        if (!updatedSwapsFeatureFlags) {
-          return swapsControllerState;
-        }
-        return {
-          ...swapsControllerState,
-          swapsState: {
-            ...swapsControllerState.swapsState,
-            swapsFeatureFlags: updatedSwapsFeatureFlags,
-          },
-        };
-      }
-    } catch (error) {
-      log.error('Failed to fetch swaps feature flags', error);
-      return swapsControllerState;
-    }
-    return swapsControllerState;
   }
 
   #getAccountTypeAndCategoryForMetrics() {
@@ -653,6 +599,15 @@ export class SubscriptionService {
       );
       return hasAccountOptedIn ? primaryCaipAccountId : undefined;
     } catch (error) {
+      if (
+        error instanceof Error &&
+        // if the error is because the current season metadata is not found, return undefined
+        error.message.includes(
+          'No valid season metadata could be found for type',
+        )
+      ) {
+        return undefined;
+      }
       log.warn('Failed to get reward season metadata', error);
       return undefined;
     }
@@ -733,7 +688,9 @@ export class SubscriptionService {
 
       const { pendingShieldCohort, shieldSubscriptionMetricsProps } =
         this.#messenger.call('AppStateController:getState');
-      if (isPostTxTransaction && !pendingShieldCohort) {
+      const hasSetPostTxPendingCohort =
+        pendingShieldCohort === COHORT_NAMES.POST_TX;
+      if (isPostTxTransaction && !hasSetPostTxPendingCohort) {
         this.#messenger.call(
           'AppStateController:setPendingShieldCohort',
           COHORT_NAMES.POST_TX,
@@ -759,10 +716,6 @@ export class SubscriptionService {
       }
     } catch (error) {
       log.error('Failed to assign post tx cohort', error);
-
-      this.#captureException(
-        createSentryError('Failed to assign post tx cohort', error as Error),
-      );
     }
   }
 

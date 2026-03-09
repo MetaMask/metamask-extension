@@ -51,6 +51,7 @@ jobs:
       QUICKNODE_POLYGON_URL: ${{ secrets.QUICKNODE_POLYGON_URL }}
       QUICKNODE_SEI_URL: ${{ secrets.QUICKNODE_SEI_URL }}
       QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
+      QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -64,15 +65,14 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0
-          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-dist-browserify
           name: build-dist-browserify
@@ -81,7 +81,7 @@ jobs:
         run: yarn sentry:publish --dist-directory build-dist-browserify/dist
 
       - name: Download artifact 'build-dist-mv2-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-dist-mv2-browserify
           name: build-dist-mv2-browserify
@@ -90,7 +90,7 @@ jobs:
         run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-browserify/dist
 
       - name: Download artifact 'build-flask-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-flask-browserify
           name: build-flask-browserify
@@ -99,7 +99,7 @@ jobs:
         run: yarn sentry:publish --build-type flask --dist-directory build-flask-browserify/dist
 
       - name: Download artifact 'build-flask-mv2-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-flask-mv2-browserify
           name: build-flask-mv2-browserify

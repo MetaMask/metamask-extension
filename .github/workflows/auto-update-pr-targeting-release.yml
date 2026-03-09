@@ -20,7 +20,7 @@ jobs:
     steps:
       # We don't want to use action-checkout-and-setup here because it forces `yarn --immutable`
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Set up Node.js
         if: ${{ steps.prevent-loops.outputs.stop_loop != 'true' }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: yarn

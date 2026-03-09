@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
@@ -14,6 +15,8 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { DesignerMode } from '../components/app/designer-mode';
+import { queryClient } from '../contexts/query-client';
+import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -56,24 +59,28 @@ class Index extends PureComponent {
             <LegacyMetaMetricsProvider>
               <I18nProvider>
                 <LegacyI18nProvider>
-                  <AssetPollingProvider>
-                    <MetamaskIdentityProvider>
-                      <MetamaskNotificationsProvider>
-                        <ShieldSubscriptionProvider>
-                          <RiveWasmProvider>
-                            {process.env
-                              .ENABLE_SETTINGS_PAGE_DEV_OPTIONS ? (
-                              <DesignerMode>
-                                <Routes />
-                              </DesignerMode>
-                            ) : (
-                              <Routes />
-                            )}
-                          </RiveWasmProvider>
-                        </ShieldSubscriptionProvider>
-                      </MetamaskNotificationsProvider>
-                    </MetamaskIdentityProvider>
-                  </AssetPollingProvider>
+                  <QueryClientProvider client={queryClient}>
+                    <AssetPollingProvider>
+                      <MetamaskIdentityProvider>
+                        <MetamaskNotificationsProvider>
+                          <HardwareWalletErrorProvider>
+                            <ShieldSubscriptionProvider>
+                              <RiveWasmProvider>
+                                {process.env
+                                  .ENABLE_SETTINGS_PAGE_DEV_OPTIONS ? (
+                                  <DesignerMode>
+                                    <Routes />
+                                  </DesignerMode>
+                                ) : (
+                                  <Routes />
+                                )}
+                              </RiveWasmProvider>
+                            </ShieldSubscriptionProvider>
+                          </HardwareWalletErrorProvider>
+                        </MetamaskNotificationsProvider>
+                      </MetamaskIdentityProvider>
+                    </AssetPollingProvider>
+                  </QueryClientProvider>
                 </LegacyI18nProvider>
               </I18nProvider>
             </LegacyMetaMetricsProvider>

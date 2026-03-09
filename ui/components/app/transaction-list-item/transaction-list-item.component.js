@@ -1,19 +1,18 @@
 /* eslint-disable import/no-duplicates */
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  CHAIN_IDS,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import CancelSpeedupPopover from '../cancel-speedup-popover';
+import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
@@ -21,7 +20,6 @@ import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
-  BackgroundColor,
   Color,
   Display,
   FontWeight,
@@ -30,13 +28,7 @@ import {
   FlexDirection,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
-  Box,
-  Text,
-} from '../../component-library';
+import { Box, Text } from '../../component-library';
 
 import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import {
@@ -59,16 +51,14 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import { abortTransactionSigning } from '../../../store/actions';
+import { selectBridgeHistoryItemByHash } from '../../../ducks/bridge-status/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
 } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../shared/constants/network';
 import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
+import { ChainBadge } from '../chain-badge/chain-badge';
 import { mapTransactionTypeToCategory } from './helpers';
 
 function TransactionListItemInner({
@@ -91,30 +81,20 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-    showBridgeTxDetails,
-    isBridgeFailed,
-  } = useBridgeTxHistoryData({
-    transactionGroup,
-    isEarliestNonce,
-  });
+  const { isBridgeComplete, showBridgeTxDetails, isBridgeFailed } =
+    useBridgeTxHistoryData({
+      transactionGroup,
+    });
+  const bridgeTxHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemByHash(
+      state,
+      transactionGroup.initialTransaction.hash,
+    ),
+  );
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
     bridgeTxHistoryItem;
-
-  const getTestNetworkBackgroundColor = (networkId) => {
-    switch (true) {
-      case networkId === CHAIN_IDS.GOERLI:
-        return BackgroundColor.goerli;
-      case networkId === CHAIN_IDS.SEPOLIA:
-        return BackgroundColor.sepolia;
-      default:
-        return undefined;
-    }
-  };
 
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
@@ -305,24 +285,9 @@ function TransactionListItemInner({
         className={className}
         title={title}
         icon={
-          <BadgeWrapper
-            display={Display.Block}
-            badge={
-              <AvatarNetwork
-                className="activity-tx__network-badge"
-                data-testid="activity-tx-network-badge"
-                size={AvatarNetworkSize.Xs}
-                name={NETWORK_TO_NAME_MAP[badgeChainId]}
-                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[badgeChainId]}
-                borderColor={BackgroundColor.backgroundDefault}
-                borderWidth={2}
-                backgroundColor={getTestNetworkBackgroundColor(badgeChainId)}
-              />
-            }
-            style={{ alignSelf: 'center' }}
-          >
+          <ChainBadge chainId={badgeChainId}>
             <TransactionIcon category={category} status={displayedStatusKey} />
-          </BadgeWrapper>
+          </ChainBadge>
         }
         subtitle={
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
@@ -411,7 +376,6 @@ function TransactionListItemInner({
             onRetry={retryTransaction}
             // showRetry={showRetry}
             showSpeedUp={isSpeedUpButtonVisible}
-            isEarliestNonce={isEarliestNonce}
             onCancel={cancelTransaction}
             transactionStatus={() => (
               <TransactionStatusLabel
@@ -470,10 +434,7 @@ const TransactionListItem = (props) => {
       />
       {supportsEIP1559 && (
         <>
-          <CancelSpeedupPopover
-            transaction={transaction}
-            editGasMode={editGasMode}
-          />
+          <CancelSpeedup transaction={transaction} editGasMode={editGasMode} />
           <EditGasFeePopover
             transaction={transaction}
             editGasMode={editGasMode}
@@ -490,6 +451,8 @@ const TransactionListItem = (props) => {
 
 TransactionListItem.propTypes = {
   transactionGroup: PropTypes.object.isRequired,
+  isEarliestNonce: PropTypes.bool,
+  chainId: PropTypes.string,
 };
 
 export default TransactionListItem;

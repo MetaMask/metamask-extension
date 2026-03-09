@@ -11,7 +11,6 @@ import {
   Text,
 } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
-import { IconColor, TextColor } from '../../../helpers/constants/design-system';
 
 export const NetworkListItemMenu = ({
   anchorElement,
@@ -25,37 +24,49 @@ export const NetworkListItemMenu = ({
 }) => {
   const t = useI18nContext();
 
-  const popoverDialogRef = useRef(null);
+  // Create refs for each menu item
+  const discoverRef = useRef(null);
+  const editRef = useRef(null);
+  const deleteRef = useRef(null);
 
-  const getLastMenuItem = useCallback(() => {
-    if (!popoverDialogRef.current) {
-      return null;
+  // Determine which menu item is last based on what's rendered
+  const getLastMenuItemRef = useCallback(() => {
+    if (onDeleteClick) {
+      return deleteRef;
     }
-    const menuItems =
-      popoverDialogRef.current.querySelectorAll('button.menu-item');
-    return menuItems.length > 0 ? menuItems[menuItems.length - 1] : null;
-  }, []);
+    if (onEditClick) {
+      return editRef;
+    }
+    if (onDiscoverClick) {
+      return discoverRef;
+    }
+    return null;
+  }, [onDeleteClick, onEditClick, onDiscoverClick]);
 
   // Handle Tab key press for accessibility - close popover on last MenuItem
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === 'Tab') {
-        const lastMenuItem = getLastMenuItem();
-        if (event.target === lastMenuItem) {
+        const lastMenuItemRef = getLastMenuItemRef();
+        if (
+          lastMenuItemRef?.current &&
+          event.target === lastMenuItemRef.current
+        ) {
           // If Tab is pressed at the last item, close popover and focus to next element in DOM
           onClose();
         }
       }
     },
-    [onClose, getLastMenuItem],
+    [onClose, getLastMenuItemRef],
   );
 
   const menuContent = (
-    <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
+    <div onKeyDown={handleKeyDown}>
       <Box>
         {onDiscoverClick ? (
           <MenuItem
-            iconName={IconName.Eye}
+            ref={discoverRef}
+            iconNameLegacy={IconName.Eye}
             onClick={(e) => {
               e.stopPropagation();
               onDiscoverClick();
@@ -67,7 +78,8 @@ export const NetworkListItemMenu = ({
         ) : null}
         {onEditClick ? (
           <MenuItem
-            iconName={IconName.Edit}
+            ref={editRef}
+            iconNameLegacy={IconName.Edit}
             onClick={(e) => {
               e.stopPropagation();
               onEditClick();
@@ -79,15 +91,15 @@ export const NetworkListItemMenu = ({
         ) : null}
         {onDeleteClick ? (
           <MenuItem
-            iconName={IconName.Trash}
-            iconColor={IconColor.errorDefault}
+            ref={deleteRef}
+            iconNameLegacy={IconName.Trash}
             onClick={(e) => {
               e.stopPropagation();
               onDeleteClick();
             }}
             data-testid="network-list-item-options-delete"
           >
-            <Text color={TextColor.errorDefault}>{t('delete')}</Text>
+            <Text>{t('delete')}</Text>
           </MenuItem>
         ) : null}
       </Box>

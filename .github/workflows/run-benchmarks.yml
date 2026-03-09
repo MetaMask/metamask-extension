@@ -8,16 +8,21 @@ on:
     secrets:
       INFURA_PROJECT_ID:
         required: true
+      TEST_SRP_2:
+        required: false
+        description: Required for userJourneyAccountManagement (import-srp-home). 12-word seed phrase.
 
 env:
   COMMANDS: |
     {
-      "standardHome": "yarn test:e2e:benchmark --preset standardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2",
-      "powerUserHome": "yarn test:e2e:benchmark --preset powerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2",
-      "userActions": "yarn test:e2e:benchmark --preset userActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2",
-      "performanceOnboardingNew": "yarn test:e2e:benchmark --preset performanceOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingNew.json --retries 2",
-      "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2",
-      "performanceLogin": "yarn test:e2e:benchmark --preset performanceLogin --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceLogin.json --retries 2"
+      "startupStandardHome": "yarn test:e2e:benchmark --preset startupStandardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupStandardHome.json --retries 2",
+      "startupPowerUserHome": "yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2",
+      "interactionUserActions": "yarn test:e2e:benchmark --preset interactionUserActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-interactionUserActions.json --retries 2",
+      "userJourneyOnboardingImport": "yarn test:e2e:benchmark --preset userJourneyOnboardingImport --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingImport.json --retries 2",
+      "userJourneyOnboardingNew": "yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingNew.json --retries 2",
+      "userJourneyAssets": "yarn test:e2e:benchmark --preset userJourneyAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAssets.json --retries 2",
+      "userJourneyTransactions": "yarn test:e2e:benchmark --preset userJourneyTransactions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyTransactions.json --retries 2",
+      "userJourneyAccountManagement": "yarn test:e2e:benchmark --preset userJourneyAccountManagement --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAccountManagement.json --retries 2"
     }
 
 jobs:
@@ -33,22 +38,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # PowerUser + UserActions benchmarks run on all 4 browser/buildType combinations
+        # Preset names are defined in test/e2e/benchmarks/utils/constants.ts
+        # and must be kept in sync here manually.
+        #
+        # Startup + Interaction benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
-        pageType: [standardHome, powerUserHome, userActions]
-        # New added performance benchmarks only run on Chrome + Browserify to reduce CI runtime
+        pageType:
+          [startupStandardHome, startupPowerUserHome, interactionUserActions]
+        # User journey benchmarks run on Chrome + Browserify (every trigger)
         include:
-          # TODO: Re-enable performanceOnboardingImport once account list loading is fixed
           - browser: chrome
             buildType: browserify
-            pageType: performanceOnboardingNew
+            pageType: userJourneyOnboardingImport
           - browser: chrome
             buildType: browserify
-            pageType: performanceAssets
+            pageType: userJourneyOnboardingNew
           - browser: chrome
             buildType: browserify
-            pageType: performanceLogin
+            pageType: userJourneyAssets
+          - browser: chrome
+            buildType: browserify
+            pageType: userJourneyTransactions
+          - browser: chrome
+            buildType: browserify
+            pageType: userJourneyAccountManagement
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -56,21 +70,24 @@ jobs:
       ARTIFACT_NAME: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      # GITHUB_REF_NAME is used by mock-config.ts to determine if mocks should be used
+      # For PRs: use head_ref (source branch), for pushes: use ref_name (target branch)
+      GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
     continue-on-error: true
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore .metamask folder
         id: restore-metamask
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .metamask
           key: .metamask-${{ hashFiles('yarn.lock') }}
@@ -81,7 +98,7 @@ jobs:
         run: yarn mm-foundryup
 
       - name: Download artifact '${{ env.ARTIFACT_NAME }}'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ${{ env.ARTIFACT_NAME }}
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
@@ -110,6 +127,95 @@ jobs:
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
             --browser ${{ matrix.browser }} \
             --buildType ${{ matrix.buildType }}
+
+      - name: Upload '${{ env.OUTPUT_NAME }}' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+
+  # Webpack user journey benchmarks - only on push to main/release branches.
+  # Compares webpack vs browserify performance before releasing webpack to production.
+  benchmarks-webpack-perf:
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        pageType:
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
+    name: chrome-webpack-${{ matrix.pageType }}
+    env:
+      SELENIUM_BROWSER: chrome
+      HEADLESS: false
+      ARTIFACT_NAME: build-test-webpack
+      OUTPUT_NAME: benchmark-chrome-webpack-${{ matrix.pageType }}.json
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
+    continue-on-error: true
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v5
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
+        run: yarn mm-foundryup
+
+      - name: Download artifact '${{ env.ARTIFACT_NAME }}'
+        uses: actions/download-artifact@v7
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.builds-from-run }}
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Install AWS CLI (needed in the container)
+        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
+
+      - name: Run the benchmark
+        run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], 'chrome', 'webpack') }}
+
+      - name: Send benchmark results to Sentry
+        if: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+        env:
+          GH_HEAD_REF: ${{ github.head_ref }}
+          GH_REF_NAME: ${{ github.ref_name }}
+        run: |
+          export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
+          yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
+            --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
+            --browser chrome \
+            --buildType webpack
 
       - name: Upload '${{ env.OUTPUT_NAME }}' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}

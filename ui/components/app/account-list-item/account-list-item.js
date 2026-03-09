@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Identicon from '../../ui/identicon';
+import { AvatarBaseSize } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../preferred-avatar';
 import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -27,12 +28,9 @@ export default function AccountListItem({
       data-testid="account-list-item"
       onClick={() => handleClick?.({ name, address, balance })}
     >
-      <div className="account-list-item__top-row">
-        <Identicon
-          address={address}
-          className="account-list-item__identicon"
-          diameter={18}
-        />
+      <div className="account-list-item__top-row items-center gap-2">
+        <PreferredAvatar address={address} size={AvatarBaseSize.Sm} />
+
         <div className="account-list-item__account-name">{name || address}</div>
         {icon ? (
           <div

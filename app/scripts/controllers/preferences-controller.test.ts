@@ -15,9 +15,12 @@ import {
 } from '@metamask/messenger';
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { mockNetworkState } from '../../../test/stub/networks';
-import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  ThemeType,
+} from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
+import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -26,23 +29,6 @@ import {
   PreferencesController,
   ReferralStatus,
 } from './preferences-controller';
-
-const NETWORK_CONFIGURATION_DATA = mockNetworkState(
-  {
-    id: 'test-networkConfigurationId-1',
-    rpcUrl: 'https://testrpc.com',
-    chainId: CHAIN_IDS.GOERLI,
-    blockExplorerUrl: 'https://etherscan.io',
-    nickname: '0X5',
-  },
-  {
-    id: 'test-networkConfigurationId-2',
-    rpcUrl: 'http://localhost:8545',
-    chainId: '0x539',
-    ticker: 'ETH',
-    nickname: 'Localhost 8545',
-  },
-).networkConfigurationsByChainId;
 
 const setupController = ({
   state,
@@ -66,19 +52,9 @@ const setupController = ({
     actions: [
       'AccountsController:getAccountByAddress',
       'AccountsController:setAccountName',
-      'AccountsController:getSelectedAccount',
-      'AccountsController:setSelectedAccount',
-      'NetworkController:getState',
     ],
-    events: ['AccountsController:stateChange'],
   });
 
-  messenger.registerActionHandler(
-    'NetworkController:getState',
-    jest.fn().mockReturnValue({
-      networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
-    }),
-  );
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,
@@ -171,192 +147,6 @@ describe('preferences controller', () => {
       controller.setCurrentLocale('ja');
       const { currentLocale } = controller.state;
       expect(currentLocale).toStrictEqual('ja');
-    });
-  });
-
-  describe('setAccountLabel', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    const mockName = 'mockName';
-    const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-    const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-
-    it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      let [firstAccount, secondAccount] = accountsController.listAccounts();
-      const { identities } = controller.state;
-      const firstPreferenceAccount = identities[firstAccount.address];
-      const secondPreferenceAccount = identities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
-      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
-
-      controller.setAccountLabel(firstAccount.address, mockName);
-
-      // refresh state after state changed
-
-      [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities: updatedIdentities } = controller.state;
-
-      const updatedFirstPreferenceAccount =
-        updatedIdentities[firstAccount.address];
-      const updatedSecondPreferenceAccount =
-        updatedIdentities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(
-        updatedFirstPreferenceAccount.name,
-      );
-      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
-      expect(secondAccount.metadata.name).toBe(
-        updatedSecondPreferenceAccount.name,
-      );
-    });
-
-    it('updating name from accounts controller updates the name in preferences controller', () => {
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      let [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities } = controller.state;
-
-      const firstPreferenceAccount = identities[firstAccount.address];
-      const secondPreferenceAccount = identities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
-      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
-
-      accountsController.setAccountName(firstAccount.id, mockName);
-      // refresh state after state changed
-
-      [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities: updatedIdentities } = controller.state;
-
-      const updatedFirstPreferenceAccount =
-        updatedIdentities[firstAccount.address];
-      const updatedSecondPreferenceAccount =
-        updatedIdentities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(
-        updatedFirstPreferenceAccount.name,
-      );
-      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
-      expect(secondAccount.metadata.name).toBe(
-        updatedSecondPreferenceAccount.name,
-      );
-    });
-  });
-
-  describe('setSelectedAddress', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      const selectedAccount = accountsController.getSelectedAccount();
-
-      const { selectedAddress } = controller.state;
-
-      expect(selectedAddress).toBe(selectedAccount.address);
-
-      controller.setSelectedAddress(secondAddress);
-      // refresh state after state changed
-
-      const { selectedAddress: updatedSelectedAddress } = controller.state;
-
-      const updatedSelectedAccount = accountsController.getSelectedAccount();
-
-      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
-
-      expect(controller.getSelectedAddress()).toBe(secondAddress);
-    });
-
-    it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      const selectedAccount = accountsController.getSelectedAccount();
-      const accounts = accountsController.listAccounts();
-
-      const { selectedAddress } = controller.state;
-
-      expect(selectedAddress).toBe(selectedAccount.address);
-
-      accountsController.setSelectedAccount(accounts[1].id);
-      // refresh state after state changed
-
-      const { selectedAddress: updatedSelectedAddress } = controller.state;
-
-      const updatedSelectedAccount = accountsController.getSelectedAccount();
-
-      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
     });
   });
 
@@ -533,39 +323,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('AccountsController:stateChange subscription', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    it('sync the identities with the accounts in the accounts controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      const accounts = accountsController.listAccounts();
-
-      const { identities } = controller.state;
-
-      expect(accounts.map((account) => account.address)).toStrictEqual(
-        Object.keys(identities),
-      );
-    });
-  });
-
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -710,6 +467,8 @@ describe('preferences controller', () => {
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         useSidePanelAsDefault: false,
+        showDefaultAddress: false,
+        defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -718,7 +477,6 @@ describe('preferences controller', () => {
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
-        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -741,6 +499,8 @@ describe('preferences controller', () => {
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         useSidePanelAsDefault: false,
+        showDefaultAddress: false,
+        defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -750,7 +510,6 @@ describe('preferences controller', () => {
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
-        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -890,19 +649,20 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
             "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": false,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
             "skipDeepLinkInterstitial": false,
-            "smartAccountOptIn": true,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "tokenNetworkFilter": {},
@@ -949,32 +709,31 @@ describe('preferences controller', () => {
           "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
-          "identities": {},
           "ipfsGateway": "dweb.link",
           "isIpfsGatewayEnabled": true,
           "isMultiAccountBalancesEnabled": true,
           "knownMethodData": {},
           "ledgerTransportType": "u2f",
-          "lostIdentities": {},
           "manageInstitutionalWallets": false,
           "openSeaEnabled": true,
           "overrideContentSecurityPolicyHeader": true,
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
             "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": false,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
             "skipDeepLinkInterstitial": false,
-            "smartAccountOptIn": true,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "tokenNetworkFilter": {},
@@ -987,10 +746,11 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "asterdex": {},
+            "gmx": {},
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
-          "selectedAddress": "",
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1033,32 +793,31 @@ describe('preferences controller', () => {
           "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
-          "identities": {},
           "ipfsGateway": "dweb.link",
           "isIpfsGatewayEnabled": true,
           "isMultiAccountBalancesEnabled": true,
           "knownMethodData": {},
           "ledgerTransportType": "u2f",
-          "lostIdentities": {},
           "manageInstitutionalWallets": false,
           "openSeaEnabled": true,
           "overrideContentSecurityPolicyHeader": true,
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
             "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": false,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
             "skipDeepLinkInterstitial": false,
-            "smartAccountOptIn": true,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "tokenNetworkFilter": {},
@@ -1071,10 +830,11 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "asterdex": {},
+            "gmx": {},
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
-          "selectedAddress": "",
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1117,32 +877,31 @@ describe('preferences controller', () => {
           "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
-          "identities": {},
           "ipfsGateway": "dweb.link",
           "isIpfsGatewayEnabled": true,
           "isMultiAccountBalancesEnabled": true,
           "knownMethodData": {},
           "ledgerTransportType": "u2f",
-          "lostIdentities": {},
           "manageInstitutionalWallets": false,
           "openSeaEnabled": true,
           "overrideContentSecurityPolicyHeader": true,
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
             "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": false,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
             "skipDeepLinkInterstitial": false,
-            "smartAccountOptIn": true,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
             "tokenNetworkFilter": {},
@@ -1155,10 +914,11 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "asterdex": {},
+            "gmx": {},
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
-          "selectedAddress": "",
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1291,6 +1051,8 @@ describe('preferences controller', () => {
                 [testAccount1]: ReferralStatus.Declined,
                 [testAccount2]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1313,6 +1075,8 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [testAccount1]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1352,6 +1116,8 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1373,6 +1139,8 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Approved,
               },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
             },
           },
         });
@@ -1391,32 +1159,112 @@ describe('preferences controller', () => {
         expect(
           controller.state.referrals[DefiReferralPartner.Hyperliquid],
         ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.GMX],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.AsterDEX],
+        ).toStrictEqual({});
       });
 
-      it('deep merges referrals state to preserve new partners when existing user state is missing them', () => {
+      it('deep merges referrals state to add new partners while preserving existing data', () => {
+        // Simulate old user state that only has Hyperliquid
         const existingUserState = {
           referrals: {
             [DefiReferralPartner.Hyperliquid]: {
               '0x123': ReferralStatus.Approved,
-            } as Record<`0x${string}`, ReferralStatus>,
+            },
           },
         };
 
         const { controller } = setupController({
-          state: existingUserState as Partial<PreferencesControllerState>,
+          state:
+            existingUserState as unknown as Partial<PreferencesControllerState>,
         });
 
-        // Existing Hyperliquid data should be preserved
-        expect(
-          controller.state.referrals[DefiReferralPartner.Hyperliquid],
-        ).toStrictEqual({
-          '0x123': ReferralStatus.Approved,
-        });
-
+        // All partners from the enum should be present and correctly initialized
         Object.values(DefiReferralPartner).forEach((partnerId) => {
-          expect(controller.state.referrals[partnerId]).toBeDefined();
+          expect(controller.state.referrals[partnerId]).toStrictEqual(
+            partnerId === DefiReferralPartner.Hyperliquid
+              ? { '0x123': ReferralStatus.Approved }
+              : {},
+          );
         });
       });
+    });
+  });
+
+  describe('resetState', () => {
+    it('resets the preferences state to the default values', () => {
+      const { controller } = setupController({
+        state: {
+          currentLocale: 'ja',
+          useBlockie: true,
+          theme: ThemeType.dark,
+          knownMethodData: { '0x12345678': 'transfer' },
+          advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
+          preferences: {
+            autoLockTimeLimit: undefined,
+            avatarType: 'jazzicon',
+            showExtensionInFullSizeView: true,
+            privacyMode: true,
+            showFiatInTestnets: true,
+            showTestNetworks: true,
+            smartTransactionsMigrationApplied: false,
+            smartTransactionsOptInStatus: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
+            useSidePanelAsDefault: false,
+            showDefaultAddress: false,
+            defaultAddressScope: 'eip155',
+            hideZeroBalanceTokens: true,
+            petnamesEnabled: false,
+            skipDeepLinkInterstitial: false,
+            dismissSmartAccountSuggestionEnabled: false,
+            featureNotificationsEnabled: true,
+            showConfirmationAdvancedDetails: true,
+            showMultiRpcModal: false,
+            showNativeTokenAsMainBalance: true,
+            tokenSortConfig: {
+              key: 'tokenFiatAmount',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            tokenNetworkFilter: {},
+          },
+        },
+      });
+
+      // Verify state was customized
+      expect(controller.state.currentLocale).toBe('ja');
+      expect(controller.state.useBlockie).toBe(true);
+      expect(controller.state.theme).toBe(ThemeType.dark);
+
+      controller.resetState();
+
+      // Verify state was reset to defaults
+      expect(controller.state.currentLocale).toBe(FALLBACK_LOCALE);
+      expect(controller.state.useBlockie).toBe(false);
+      expect(controller.state.theme).toBe(ThemeType.os);
+      expect(controller.state.knownMethodData).toStrictEqual({});
+      expect(controller.state.advancedGasFee).toStrictEqual({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+      expect(controller.state.preferences.privacyMode).toBe(false);
+      expect(controller.state.preferences.showFiatInTestnets).toBe(false);
+      expect(controller.state.preferences.showTestNetworks).toBe(false);
+      expect(controller.state.preferences.hideZeroBalanceTokens).toBe(false);
+      expect(controller.state.preferences.petnamesEnabled).toBe(true);
+      expect(controller.state.preferences.featureNotificationsEnabled).toBe(
+        false,
+      );
+      expect(controller.state.preferences.showConfirmationAdvancedDetails).toBe(
+        false,
+      );
+      expect(controller.state.preferences.showNativeTokenAsMainBalance).toBe(
+        true,
+      );
+      expect(controller.state.preferences.autoLockTimeLimit).toBe(
+        DEFAULT_AUTO_LOCK_TIME_LIMIT,
+      );
     });
   });
 });

@@ -3,11 +3,11 @@ import { Mockttp } from 'mockttp';
 import { emptyHtmlPage } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
@@ -25,7 +25,7 @@ describe('Linea Network Discover Button', function (this: Suite) {
   it('should locate the Discover button and navigate to the correct URL when clicking the Discover button', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
@@ -40,7 +40,8 @@ describe('Linea Network Discover Button', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // Open network dropdown
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         // Search for Linea
         const selectNetworkDialog = new SelectNetwork(driver);

@@ -10,6 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import HoldToRevealButton from './hold-to-reveal-button';
 
 const mockTrackEvent = jest.fn();
@@ -29,7 +30,7 @@ describe('HoldToRevealButton', () => {
 
     props = {
       onLongPressed: mockOnLongPressed,
-      buttonText: 'Hold to reveal SRP',
+      buttonText: messages.holdToRevealSRP.message,
     };
   });
 
@@ -40,13 +41,13 @@ describe('HoldToRevealButton', () => {
   it('should render a button with label', () => {
     const { getByText } = render(<HoldToRevealButton {...props} />);
 
-    expect(getByText('Hold to reveal SRP')).toBeInTheDocument();
+    expect(getByText(messages.holdToRevealSRP.message)).toBeInTheDocument();
   });
 
   it('should render a button when mouse is down and up', () => {
     const { getByText } = render(<HoldToRevealButton {...props} />);
 
-    const button = getByText('Hold to reveal SRP');
+    const button = getByText(messages.holdToRevealSRP.message);
 
     fireEvent.mouseDown(button);
 
@@ -65,17 +66,21 @@ describe('HoldToRevealButton', () => {
       mockStore,
     );
 
-    const button = getByText('Hold to reveal SRP');
+    const button = getByText(messages.holdToRevealSRP.message);
 
     fireEvent.mouseDown(button);
-    const circleLocked = queryByLabelText('hold to reveal circle locked');
+    const circleLocked = queryByLabelText(
+      messages.holdToRevealLockedLabel.message,
+    );
 
     await waitFor(() => {
       expect(circleLocked).toBeInTheDocument();
     });
 
     fireEvent.mouseUp(button);
-    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
+    const circleUnlocked = queryByLabelText(
+      messages.holdToRevealUnlockedLabel.message,
+    );
 
     await waitFor(() => {
       expect(circleUnlocked).not.toBeInTheDocument();
@@ -90,14 +95,18 @@ describe('HoldToRevealButton', () => {
       mockStore,
     );
 
-    const button = getByText('Hold to reveal SRP');
+    const button = getByText(messages.holdToRevealSRP.message);
 
     fireEvent.pointerDown(button);
 
-    const circleLocked = getByLabelText('hold to reveal circle locked');
+    const circleLocked = getByLabelText(
+      messages.holdToRevealLockedLabel.message,
+    );
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
+    const circleUnlocked = queryByLabelText(
+      messages.holdToRevealUnlockedLabel.message,
+    );
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {

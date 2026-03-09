@@ -1,6 +1,7 @@
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/modules/selectors';
+import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -13,6 +14,11 @@ jest.mock('../../../store/controller-actions/transaction-controller', () => ({
 
 jest.mock('../../../../shared/modules/selectors');
 
+jest.mock('../../../ducks/bridge/selectors', () => ({
+  ...jest.requireActual('../../../ducks/bridge/selectors'),
+  getIsStxEnabled: jest.fn(),
+}));
+
 const renderUseGasIncluded7702 = (
   params: Parameters<typeof useGasIncluded7702>[0],
   mockStoreOverrides?: Record<string, unknown>,
@@ -20,7 +26,7 @@ const renderUseGasIncluded7702 = (
   return renderHookWithProvider(
     () => useGasIncluded7702(params),
     mockStoreOverrides ?? {
-      metamask: { preferences: { smartAccountOptIn: true } },
+      metamask: { preferences: {} },
     },
   );
 };
@@ -32,12 +38,16 @@ describe('useGasIncluded7702', () => {
   const mockIsAtomicBatchSupported = jest.requireMock(
     '../../../store/controller-actions/transaction-controller',
   ).isAtomicBatchSupported;
-  const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
+  const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
+  const mockGetGaslessBridgeWith7702Enabled = jest.mocked(
+    getGaslessBridgeWith7702EnabledForChain,
+  );
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    mockGetIsSmartTransaction.mockReturnValue(false);
+    mockGetIsStxEnabled.mockReturnValue(false);
+    mockGetGaslessBridgeWith7702Enabled.mockReturnValue(false);
   });
 
   afterEach(() => {
@@ -45,7 +55,7 @@ describe('useGasIncluded7702', () => {
   });
 
   it('returns false and skips checks when send bundle supported AND Smart Transactions enabled', () => {
-    mockGetIsSmartTransaction.mockReturnValue(true);
+    mockGetIsStxEnabled.mockReturnValue(true);
 
     const { result } = renderUseGasIncluded7702({
       isSwap: true,
@@ -60,7 +70,7 @@ describe('useGasIncluded7702', () => {
   });
 
   it('proceeds with checks when send bundle supported BUT Smart Transactions disabled', async () => {
-    mockGetIsSmartTransaction.mockReturnValue(false);
+    mockGetIsStxEnabled.mockReturnValue(false);
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderUseGasIncluded7702({
@@ -79,7 +89,9 @@ describe('useGasIncluded7702', () => {
     expect(result.current).toBe(true);
   });
 
-  it('returns false when isSwap is false', () => {
+  it('returns false when isSwap is false and gaslessBridgeWith7702Enabled is false', () => {
+    mockGetGaslessBridgeWith7702Enabled.mockReturnValue(false);
+
     const { result } = renderUseGasIncluded7702({
       isSwap: false,
       selectedAccount: { address: '0x123' },
@@ -89,6 +101,40 @@ describe('useGasIncluded7702', () => {
 
     expect(result.current).toBe(false);
     expect(mockIsRelaySupported).not.toHaveBeenCalled();
+  });
+
+  it('proceeds with relay check when isSwap is true regardless of gaslessBridgeWith7702Enabled value', async () => {
+    mockGetGaslessBridgeWith7702Enabled.mockReturnValue(true);
+    mockIsRelaySupported.mockResolvedValue(true);
+
+    const { result, waitForNextUpdate } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
+
+    await waitForNextUpdate();
+
+    expect(result.current).toBe(true);
+    expect(mockIsRelaySupported).toHaveBeenCalledWith('0x1');
+  });
+
+  it('returns true when isSwap is false and gaslessBridgeWith7702Enabled is true and relay supported', async () => {
+    mockGetGaslessBridgeWith7702Enabled.mockReturnValue(true);
+    mockIsRelaySupported.mockResolvedValue(true);
+
+    const { result, waitForNextUpdate } = renderUseGasIncluded7702({
+      isSwap: false,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
+
+    await waitForNextUpdate();
+
+    expect(result.current).toBe(true);
+    expect(mockIsRelaySupported).toHaveBeenCalledWith('0x1');
   });
 
   it('returns false when selectedAccount is null', () => {
@@ -103,7 +149,7 @@ describe('useGasIncluded7702', () => {
     expect(mockIsRelaySupported).not.toHaveBeenCalled();
   });
 
-  it('returns false when fromChain is null', () => {
+  it('returns false when fromChain is null and does not call selectors with a chainId', () => {
     const { result } = renderUseGasIncluded7702({
       isSwap: true,
       selectedAccount: { address: '0x123' },
@@ -113,6 +159,34 @@ describe('useGasIncluded7702', () => {
 
     expect(result.current).toBe(false);
     expect(mockIsRelaySupported).not.toHaveBeenCalled();
+    expect(mockGetGaslessBridgeWith7702Enabled).not.toHaveBeenCalled();
+  });
+
+  it('returns false for non-EVM chain IDs and skips relay check', () => {
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' },
+      isSendBundleSupportedForChain: false,
+    });
+
+    expect(result.current).toBe(false);
+    expect(mockIsRelaySupported).not.toHaveBeenCalled();
+  });
+
+  it('passes the correct hex chainId to selectors', () => {
+    renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
+
+    expect(mockGetGaslessBridgeWith7702Enabled).toHaveBeenCalledWith(
+      expect.anything(),
+      '0x1',
+    );
+    expect(mockGetIsStxEnabled).toHaveBeenCalled();
   });
 
   it('returns true when relay is supported', async () => {
@@ -179,18 +253,20 @@ describe('useGasIncluded7702', () => {
     );
   });
 
-  it('handles case-insensitive chainId comparison', async () => {
+  it('converts decimal chainId to hex before calling isRelaySupported', async () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderUseGasIncluded7702({
       isSwap: true,
       selectedAccount: { address: '0x123' },
-      fromChain: { chainId: '0x1' },
+      fromChain: { chainId: '10' },
       isSendBundleSupportedForChain: false,
     });
 
     await waitForNextUpdate();
+
     expect(result.current).toBe(true);
+    expect(mockIsRelaySupported).toHaveBeenCalledWith('0xa');
   });
 
   describe('Race condition handling', () => {
@@ -314,7 +390,7 @@ describe('useGasIncluded7702', () => {
           initialProps: {
             children: { address: addresses[0], chainId: chainIds[0] },
           },
-          state: { metamask: { preferences: { smartAccountOptIn: true } } },
+          state: { metamask: { preferences: {} } },
         },
       );
 

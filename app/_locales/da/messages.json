@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du skal vælge en konto!"
   },
-  "activityLog": {
-    "message": "aktivitetslog"
-  },
   "addAcquiredTokens": {
     "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
   },
@@ -299,9 +296,6 @@
     "message": "Importeret",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Din indledende transaktion blev bekræftet af netværket. Klik OK for at gå tilbage."
-  },
   "insufficientBalance": {
     "message": "Utilstrækkelig balance."
   },
@@ -401,9 +395,6 @@
   "next": {
     "message": "Næste"
   },
-  "noConversionRateAvailable": {
-    "message": "Ingen tilgængelig omregningskurs"
-  },
   "noWebcamFound": {
     "message": "Din computers webkamera blev ikke fundet. Prøv venligst igen."
   },
@@ -474,12 +465,6 @@
   },
   "rejectAll": {
     "message": "Afvis Alle"
-  },
-  "rejectTxsDescription": {
-    "message": "Du er ved at batchafvise $1-transaktioner."
-  },
-  "rejectTxsN": {
-    "message": "Afvis $1 transaktioner"
   },
   "rejected": {
     "message": "Afvist"
@@ -575,9 +560,6 @@
   "speedUpCancellation": {
     "message": "Gør denne annullering hurtigere"
   },
-  "speedUpTransaction": {
-    "message": "Gør denne transaktion hurtigere"
-  },
   "stateLogError": {
     "message": "Fejl ved hentning af tilstandslogfiler."
   },
@@ -614,38 +596,11 @@
   "transaction": {
     "message": "transaktion"
   },
-  "transactionCancelAttempted": {
-    "message": "Forsøgt annullering af transaktion med brændstofgebyr $1 på $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaktionen blev annulleret ved $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaktion på $2 bekræftet."
-  },
-  "transactionCreated": {
-    "message": "Transaktion oprettet med en værdi på $1 til $2."
-  },
-  "transactionDropped": {
-    "message": "Transaktionen droppet til $2."
-  },
   "transactionError": {
     "message": "Transaktionsfejl. Undtagelse smidt i kontraktskode."
   },
   "transactionErrorNoContract": {
     "message": "Forsøger at hidkalde en funktion på en ikke-kontrakt adresse."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen stødte på en fejl."
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion genindsendt med brændstofgebyr forøget til $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transaktion indsendt med brændstofgebyr på $1 til $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaktion opdateret til $2."
   },
   "transfer": {
     "message": "Overfør"
@@ -691,8 +646,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private seed-sætning"
   }
 }

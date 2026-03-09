@@ -84,7 +84,6 @@ const mockGetSmartTransactionsState = jest.fn();
 const mockCheckoutSessionUrl = 'https://mocked-checkout-session-url';
 const mockStartShieldSubscriptionWithCard = jest.fn();
 const mockGetSubscriptions = jest.fn();
-const mockGetSwapsControllerState = jest.fn();
 const mockGetNetworkControllerState = jest.fn();
 const mockGetRemoteFeatureFlagState = jest.fn();
 const mockGetAppStateControllerState = jest.fn();
@@ -96,6 +95,8 @@ const mockGetHasAccountOptedIn = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 const mockClearLastSelectedPaymentMethod = jest.fn();
+const mockSetPendingRedirectRoute = jest.fn();
+const mockSetShieldSubscriptionError = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -127,10 +128,6 @@ rootMessenger.registerActionHandler(
 rootMessenger.registerActionHandler(
   'SubscriptionController:getSubscriptions',
   mockGetSubscriptions,
-);
-rootMessenger.registerActionHandler(
-  'SwapsController:getState',
-  mockGetSwapsControllerState,
 );
 rootMessenger.registerActionHandler(
   'NetworkController:getState',
@@ -176,6 +173,14 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:clearLastSelectedPaymentMethod',
   mockClearLastSelectedPaymentMethod,
 );
+rootMessenger.registerActionHandler(
+  'AppStateController:setPendingRedirectRoute',
+  mockSetPendingRedirectRoute,
+);
+rootMessenger.registerActionHandler(
+  'AppStateController:setShieldSubscriptionError',
+  mockSetShieldSubscriptionError,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -194,10 +199,11 @@ rootMessenger.delegate({
     'PreferencesController:getState',
     'AccountsController:getState',
     'SmartTransactionsController:getState',
-    'SwapsController:getState',
     'NetworkController:getState',
     'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
+    'AppStateController:setPendingRedirectRoute',
+    'AppStateController:setShieldSubscriptionError',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
     'KeyringController:getState',
@@ -214,12 +220,10 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: jest.fn(),
 };
 const mockPlatform = new ExtensionPlatform();
-const mockCaptureException = jest.fn();
 const subscriptionService = new SubscriptionService({
   messenger,
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
-  captureException: mockCaptureException,
 });
 // Mock environment variables
 const originalEnv = process.env;
@@ -316,6 +320,12 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     expect(mockPlatform.openTab).toHaveBeenCalledWith({
       url: mockCheckoutSessionUrl,
     });
+
+    expect(mockSetPendingRedirectRoute).toHaveBeenCalledTimes(2);
+    expect(mockSetPendingRedirectRoute).toHaveBeenNthCalledWith(1, {
+      path: '/shield-plan',
+    });
+    expect(mockSetPendingRedirectRoute).toHaveBeenNthCalledWith(2, null);
   });
 
   it('should include the reward account id if the primary account is opted in to rewards and the season is active', async () => {
@@ -385,6 +395,30 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       successUrl: MOCK_REDIRECT_URI,
       cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
       rewardSubscriptionId: undefined,
+    });
+
+    expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
+    expect(mockGetHasAccountOptedIn).not.toHaveBeenCalled();
+  });
+
+  it('should not include the reward account id when getSeasonMetadata throws season not found error', async () => {
+    mockGetRewardSeasonMetadata.mockRestore();
+    mockGetRewardSeasonMetadata.mockRejectedValueOnce(
+      new Error('No valid season metadata could be found for type: current'),
+    );
+
+    await subscriptionService.startSubscriptionWithCard({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+    });
+
+    expect(mockStartShieldSubscriptionWithCard).toHaveBeenCalledWith({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+      successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
     });
 
     expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
@@ -512,9 +546,6 @@ describe('SubscriptionService - handlePostTransaction', () => {
     mockGetPreferencesState.mockReturnValueOnce({
       preferences: MOCK_STATE.preferences,
     });
-    mockGetSwapsControllerState.mockReturnValueOnce({
-      swapsState: MOCK_STATE.swapsState,
-    });
     mockGetTransactions.mockReturnValueOnce([]);
     mockGetNetworkControllerState.mockReturnValueOnce({
       networkConfigurationsByChainId: MOCK_STATE.networkConfigurationsByChainId,
@@ -587,6 +618,32 @@ describe('SubscriptionService - handlePostTransaction', () => {
       MOCK_REWARD_ACCOUNT_ID,
     );
   });
+
+  it('should set shield API error when payerAddressAlreadyUsed error occurs', async () => {
+    mockSubmitShieldSubscriptionCryptoApproval.mockRejectedValueOnce(
+      new Error(SHIELD_ERROR.payerAddressAlreadyUsed),
+    );
+
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: false,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+
+    await expect(
+      // @ts-expect-error mock tx meta
+      subscriptionService.handlePostTransaction(txMeta),
+    ).rejects.toThrow(SHIELD_ERROR.payerAddressAlreadyUsed);
+
+    expect(mockSetShieldSubscriptionError).toHaveBeenCalledWith({
+      message: SHIELD_ERROR.payerAddressAlreadyUsed,
+    });
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
+    );
+  });
 });
 
 describe('SubscriptionService - linkRewardToExistingSubscription', () => {
@@ -657,6 +714,21 @@ describe('SubscriptionService - linkRewardToExistingSubscription', () => {
     expect(mockLinkRewards).not.toHaveBeenCalled();
   });
 
+  it('should not link the reward when getSeasonMetadata throws season not found error', async () => {
+    mockGetRewardSeasonMetadata.mockRestore();
+    mockGetRewardSeasonMetadata.mockRejectedValueOnce(
+      new Error('No valid season metadata could be found for type: current'),
+    );
+
+    await subscriptionService.linkRewardToExistingSubscription(
+      MOCK_SHIELD_SUBSCRIPTION_ID,
+      MOCK_REWARD_POINTS,
+    );
+
+    expect(mockLinkRewards).not.toHaveBeenCalled();
+    expect(mockGetHasAccountOptedIn).not.toHaveBeenCalled();
+  });
+
   it('should not link the reward to the existing subscription if user is not opted in to rewards', async () => {
     mockGetHasAccountOptedIn.mockRestore();
     mockGetHasAccountOptedIn.mockResolvedValueOnce(false);
@@ -708,9 +780,6 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     });
     mockGetPreferencesState.mockReturnValueOnce({
       preferences: MOCK_STATE.preferences,
-    });
-    mockGetSwapsControllerState.mockReturnValueOnce({
-      swapsState: MOCK_STATE.swapsState,
     });
     mockGetTransactions.mockReturnValueOnce([]);
     mockGetNetworkControllerState.mockReturnValueOnce({
@@ -778,49 +847,6 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     await subscriptionService.submitSubscriptionSponsorshipIntent(MOCK_TX_META);
 
     expect(mockSubmitSponsorshipIntents).not.toHaveBeenCalled();
-  });
-
-  it('should fetch swaps feature flags if not available and submit sponsorship intent', async () => {
-    mockGetSwapsControllerState.mockRestore();
-    fetchMock.mockRestore();
-
-    mockGetSwapsControllerState.mockReturnValueOnce({
-      swapsState: {
-        swapsFeatureFlags: {},
-      },
-    });
-    const MOCK_SWAPS_FEATURE_FLAGS = {
-      ethereum: {
-        extensionActive: true,
-        mobileActive: false,
-        smartTransactions: {
-          expectedDeadline: 45,
-          maxDeadline: 150,
-          extensionReturnTxHashAsap: false,
-          extensionActive: true,
-        },
-      },
-    };
-    fetchMock
-      .mockResolvedValueOnce({
-        json: async () => MOCK_SWAPS_FEATURE_FLAGS,
-        ok: true,
-      } as Response)
-      .mockResolvedValueOnce({
-        json: async () => ({
-          '1': MAINNET_BASE,
-        }),
-        ok: true,
-      } as Response);
-
-    // @ts-expect-error mock tx meta
-    await subscriptionService.submitSubscriptionSponsorshipIntent(MOCK_TX_META);
-
-    expect(mockSubmitSponsorshipIntents).toHaveBeenCalledWith({
-      chainId: '0x1',
-      address: MOCK_STATE.internalAccounts.selectedAccount,
-      products: [PRODUCT_TYPES.SHIELD],
-    });
   });
 
   it('should handle sponsorship intent submission error', async () => {

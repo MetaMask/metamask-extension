@@ -40,11 +40,6 @@ export type Token = (BaseToken | NonEvmBaseToken) & {
   name?: string;
 };
 
-// Token with balance and optional display values
-export type TokenWithBalance = Omit<BaseToken, 'chainId' | 'decimals'> &
-  TokenDisplayValues &
-  Omit<TokenBalanceValues, 'balance'>;
-
 // Token display information (UI-related properties)
 export type TokenDisplayInfo = TokenDisplayValues & {
   title: string;
