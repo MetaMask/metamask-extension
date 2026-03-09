@@ -299,9 +299,6 @@
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
-  },
   "insufficientBalance": {
     "message": "Liian pieni saldo."
   },
@@ -481,12 +478,6 @@
   "rejectAll": {
     "message": "Hylkää kaikki"
   },
-  "rejectTxsDescription": {
-    "message": "Olet kieltäytymässä yhteensä $1 maksusiirrosta samalla kertaa."
-  },
-  "rejectTxsN": {
-    "message": "Hylkää $1 maksusiirtoa"
-  },
   "rejected": {
     "message": "Hylätty"
   },
@@ -495,9 +486,6 @@
   },
   "removeAccount": {
     "message": "Poista tili"
-  },
-  "removeAccountDescription": {
-    "message": "Tämä tili poistetaan kukkarostasi. Varmistathan ennen kuin jatkat, että sinulla on alkuperäinen salausteksti tai yksityinen avain tätä tuotua tiliä varten. Voit tuoda tai luoda tilejä uudestaan tilin pudotusvalikosta."
   },
   "required": {
     "message": "Pakollinen"
@@ -679,8 +667,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sinun yksityinen siemenlauseesi"
   }
 }

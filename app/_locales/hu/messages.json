@@ -299,9 +299,6 @@
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
-  },
   "insufficientBalance": {
     "message": "Fedezethiány."
   },
@@ -481,12 +478,6 @@
   "rejectAll": {
     "message": "Mindet elutasít"
   },
-  "rejectTxsDescription": {
-    "message": "Ezáltal kötegben utasítja el a(z) $1 tranzakciókat."
-  },
-  "rejectTxsN": {
-    "message": "$1 tranzakciók elutasítása"
-  },
   "rejected": {
     "message": "Elutasítva"
   },
@@ -495,9 +486,6 @@
   },
   "removeAccount": {
     "message": "Fiók eltávolítása"
-  },
-  "removeAccountDescription": {
-    "message": "Ez a fiók el lesz távolítva pénztárcádból. A folytatás előtt győződj meg róla, hogy rendelkezésedre áll az eredeti kulcsszólánc vagy titkos kulcs. A fiók legördülő menüjéből újból importálhatsz vagy létrehozhatsz fiókokat. "
   },
   "required": {
     "message": "Kötelező"
@@ -676,8 +664,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Az ön privát seed mondata"
   }
 }

@@ -299,9 +299,6 @@
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "ನಿಮ್ಮ ಆರಂಭಿಕ ವಹಿವಾಟನ್ನು ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಖಚಿತಪಡಿಸಲಾಗಿದೆ. ಹಿಂತಿರುಗಲು ಸರಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
-  },
   "insufficientBalance": {
     "message": "ಸಾಕಷ್ಟು ಮೊಬಲಗು ಇಲ್ಲ."
   },
@@ -484,12 +481,6 @@
   "rejectAll": {
     "message": "ಎಲ್ಲವನ್ನೂ ತಿರಸ್ಕರಿಸಿ"
   },
-  "rejectTxsDescription": {
-    "message": "ನೀವು $1 ವಹಿವಾಟುಗಳನ್ನು ಬ್ಯಾಚ್ ತಿರಸ್ಕರಿಸಲಿರುವಿರಿ."
-  },
-  "rejectTxsN": {
-    "message": "$1 ವಹಿವಾಟುಗಳನ್ನು ತಿರಸ್ಕರಿಸಿ"
-  },
   "rejected": {
     "message": "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
   },
@@ -498,9 +489,6 @@
   },
   "removeAccount": {
     "message": "ಖಾತೆಯನ್ನು ತೆಗೆದುಹಾಕಿ"
-  },
-  "removeAccountDescription": {
-    "message": "ಈ ಖಾತೆಯನ್ನು ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ದಯವಿಟ್ಟು ಮುಂದುವರಿಯುವ ಮೊದಲು ಈ ಆಮದು ಖಾತೆಗಾಗಿ ನೀವು ಸೀಡ್ ಫ್ರೇಸ್ ಅಥವಾ ಖಾಸಗಿ ಕೀಯನ್ನು ಹೊಂದಿರುವಿರಾ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಖಾತೆಯ ಡ್ರಾಪ್-ಡೌನ್‌ನಿಂದ ನೀವು ಮತ್ತೆ ಖಾತೆಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಬಹುದು ಅಥವಾ ರಚಿಸಬಹುದು."
   },
   "required": {
     "message": "ಅಗತ್ಯವಿದೆ"
@@ -682,8 +670,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
   }
 }

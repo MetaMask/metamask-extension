@@ -6,7 +6,10 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { AssetsControllerState } from '@metamask/assets-controller';
+import {
+  AssetsControllerState,
+  FungibleAssetPrice,
+} from '@metamask/assets-controller';
 import {
   AccountTrackerControllerState,
   MultichainAssetsControllerState,
@@ -15,10 +18,15 @@ import {
   Token,
   TokenBalancesControllerState,
   TokensControllerState,
+  MultichainAssetsRatesControllerState,
+  CurrencyRateState,
+  MarketDataDetails,
+  TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { NetworkState } from '@metamask/network-controller';
 import { decimalToPrefixedHex } from '../conversion.utils';
 import {
   ASSETS_UNIFY_STATE_FLAG,
@@ -26,6 +34,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../lib/assets-unify-state/remote-feature-flag';
+import { AssetType } from '../../constants/transaction';
 import { createDeepEqualSelector } from './selector-creators';
 
 // Old state controllers and fields status
@@ -598,6 +607,234 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
   MultichainBalancesControllerState,
   'balances'
 >;
+
+export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: CurrencyRateState }) => state.metamask?.currentCurrency,
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.selectedCurrency,
+  ],
+  (isAssetsUnifyStateEnabled, currentCurrency, selectedCurrency) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return currentCurrency;
+    }
+
+    return selectedCurrency;
+  },
+) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+
+// Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
+export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: CurrencyRateState }) =>
+      state.metamask?.currencyRates ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsPrice ?? {},
+    getCurrencyRateControllerCurrentCurrency,
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    currencyRates,
+    assetsInfo,
+    assetsPrice,
+    currentCurrency,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return currencyRates;
+    }
+
+    const result: CurrencyRateState['currencyRates'] = {};
+
+    // Sorting just to ensure that we process mainnet (eip155:1) first
+    for (const [assetId, metadata] of Object.entries(assetsInfo).toSorted(
+      (a, b) => a[0].localeCompare(b[0]),
+    )) {
+      // Skip if we already have an entry for this symbol
+      if (result[metadata.symbol]) {
+        continue;
+      }
+
+      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const price = assetsPrice[assetId];
+
+      // Skip if not a native asset, not evm or no price for that asset
+      if (
+        metadata.type !== 'native' ||
+        assetType.chain.namespace !== KnownCaipNamespace.Eip155 ||
+        !price
+      ) {
+        continue;
+      }
+
+      result[metadata.symbol] = {
+        conversionDate: price.lastUpdated / 1000,
+        conversionRate: price.price,
+        // This cannot be populated unless the selected currency is already USD
+        usdConversionRate: currentCurrency === 'usd' ? price.price : null,
+      };
+    }
+
+    return result;
+  },
+) as unknown as ControllerStateSelector<CurrencyRateState, 'currencyRates'>;
+
+// ChainId (hex) -> TokenAddress (hex checksummed) -> MarketData
+export const getTokenRatesControllerMarketData = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: TokenRatesControllerState }) =>
+      state.metamask?.marketData ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsPrice ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsInfo ?? {},
+    getCurrencyRateControllerCurrencyRates,
+    (state: { metamask: NetworkState }) =>
+      state.metamask?.networkConfigurationsByChainId ?? {},
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    marketData,
+    assetsPrice,
+    assetsInfo,
+    currencyRates,
+    networkConfigurationsByChainId,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return marketData;
+    }
+
+    const result: TokenRatesControllerState['marketData'] = {};
+
+    for (const [assetId, price] of Object.entries(assetsPrice) as [
+      CaipAssetType,
+      FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
+    ][]) {
+      const assetType = parseCaipAssetType(assetId);
+      const metadata = assetsInfo[assetId];
+      if (
+        !metadata ||
+        assetType.chain.namespace !== KnownCaipNamespace.Eip155
+      ) {
+        continue;
+      }
+
+      const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
+      const nativeAssetSymbol =
+        networkConfigurationsByChainId[hexChainId]?.nativeCurrency ??
+        AssetType.native;
+
+      const assetAddress = toChecksumHexAddress(
+        metadata.type === 'native'
+          ? getNativeTokenAddress(hexChainId)
+          : assetType.assetReference,
+      ) as Hex;
+
+      const nativeCurrencyRate =
+        currencyRates[nativeAssetSymbol]?.conversionRate;
+      if (!nativeCurrencyRate) {
+        continue;
+      }
+
+      const convertToNativeCurrency = (amount: number | undefined) => {
+        return amount === undefined ? undefined : amount / nativeCurrencyRate;
+      };
+
+      result[hexChainId] ??= {};
+      result[hexChainId][assetAddress] = {
+        id: price.id,
+        price: convertToNativeCurrency(price.price),
+        marketCap: convertToNativeCurrency(price.marketCap),
+        allTimeHigh: convertToNativeCurrency(price.allTimeHigh),
+        allTimeLow: convertToNativeCurrency(price.allTimeLow),
+        totalVolume: convertToNativeCurrency(price.totalVolume),
+        high1d: convertToNativeCurrency(price.high1d),
+        low1d: convertToNativeCurrency(price.low1d),
+        circulatingSupply: price.circulatingSupply,
+        dilutedMarketCap: convertToNativeCurrency(price.dilutedMarketCap),
+        marketCapPercentChange1d: price.marketCapPercentChange1d,
+        priceChange1d: price.priceChange1d,
+        pricePercentChange1h: price.pricePercentChange1h,
+        pricePercentChange1d: price.pricePercentChange1d,
+        pricePercentChange7d: price.pricePercentChange7d,
+        pricePercentChange14d: price.pricePercentChange14d,
+        pricePercentChange30d: price.pricePercentChange30d,
+        pricePercentChange200d: price.pricePercentChange200d,
+        pricePercentChange1y: price.pricePercentChange1y,
+        chainId: hexChainId,
+        tokenAddress: assetAddress,
+        assetId,
+        currency: nativeAssetSymbol,
+      } as MarketDataDetails;
+    }
+
+    return result;
+  },
+) as unknown as ControllerStateSelector<
+  TokenRatesControllerState,
+  'marketData'
+>;
+
+export const getMultichainAssetsRatesControllerConversionRates =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: { metamask: MultichainAssetsRatesControllerState }) =>
+        state.metamask.conversionRates ?? {},
+      (state: { metamask: AssetsControllerState }) =>
+        state.metamask.assetsPrice ?? {},
+    ],
+    (isAssetsUnifyStateEnabled, conversionRates, assetsPrice) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return conversionRates;
+      }
+
+      const result: MultichainAssetsRatesControllerState['conversionRates'] =
+        {};
+
+      for (const [assetId, assetPrice] of Object.entries(assetsPrice) as [
+        CaipAssetType,
+        FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
+      ][]) {
+        const assetType = parseCaipAssetType(assetId);
+        if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
+        result[assetId] = {
+          rate: `${assetPrice.price}`,
+          conversionTime: assetPrice.lastUpdated,
+          expirationTime: undefined,
+          marketData: {
+            fungible: true,
+            allTimeHigh: `${assetPrice.allTimeHigh}`,
+            allTimeLow: `${assetPrice.allTimeLow}`,
+            circulatingSupply: `${assetPrice.circulatingSupply}`,
+            marketCap: `${assetPrice.marketCap}`,
+            totalVolume: `${assetPrice.totalVolume}`,
+            pricePercentChange: {
+              PT1H: assetPrice.pricePercentChange1h as number,
+              P1D: assetPrice.pricePercentChange1d as number,
+              P7D: assetPrice.pricePercentChange7d as number,
+              P14D: assetPrice.pricePercentChange14d as number,
+              P30D: assetPrice.pricePercentChange30d as number,
+              P200D: assetPrice.pricePercentChange200d as number,
+              P1Y: assetPrice.pricePercentChange1y as number,
+            },
+          },
+        };
+      }
+
+      return result;
+    },
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsRatesControllerState,
+    'conversionRates'
+  >;
 
 function parseBalanceWithDecimals(
   balanceString: string,

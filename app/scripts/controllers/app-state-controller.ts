@@ -60,6 +60,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
@@ -150,6 +151,11 @@ export type AppStateControllerState = {
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
+  /**
+   * The pending redirect route to be applied after the default page is loaded.
+   * If this is set, next time default page is loaded, the redirect will be applied.
+   */
+  pendingRedirectRoute: PendingRedirectRoute | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -207,6 +213,11 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
+export type AppStateControllerSetPendingRedirectRouteAction = {
+  type: 'AppStateController:setPendingRedirectRoute';
+  handler: AppStateController['setPendingRedirectRoute'];
+};
+
 export type AppStateControllerSetShieldSubscriptionErrorAction = {
   type: 'AppStateController:setShieldSubscriptionError';
   handler: AppStateController['setShieldSubscriptionError'];
@@ -221,6 +232,7 @@ export type AppStateControllerActions =
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetShieldSubscriptionErrorAction;
 
 /**
@@ -337,6 +349,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
+  pendingRedirectRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
@@ -685,6 +698,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  pendingRedirectRoute: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   pendingShieldCohort: {
     includeInStateLogs: true,
     persist: true,
@@ -818,6 +837,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setPendingShieldCohort',
       this.setPendingShieldCohort.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setPendingRedirectRoute',
+      this.setPendingRedirectRoute.bind(this),
     );
 
     this.messenger.registerActionHandler(
@@ -1689,6 +1713,17 @@ export class AppStateController extends BaseController<
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  /**
+   * Sets the pending redirect route to be applied after the default page is loaded.
+   *
+   * @param route - The pending redirect route.
+   */
+  setPendingRedirectRoute(route: PendingRedirectRoute | null): void {
+    this.update((state) => {
+      state.pendingRedirectRoute = route;
     });
   }
 

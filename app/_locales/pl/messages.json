@@ -299,9 +299,6 @@
     "message": "Zaimportowane",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Twoja transakcja została potwierdzona w sieci. Kliknij OK żeby wrócić."
-  },
   "insufficientBalance": {
     "message": "Niewystarczające saldo."
   },
@@ -478,12 +475,6 @@
   "rejectAll": {
     "message": "Odrzuć wszystkie"
   },
-  "rejectTxsDescription": {
-    "message": "Zamierzasz odrzucić wiele ($1) transakcji jednocześnie."
-  },
-  "rejectTxsN": {
-    "message": "Odrzuć transakcje ($1)"
-  },
   "rejected": {
     "message": "Odrzucone"
   },
@@ -492,9 +483,6 @@
   },
   "removeAccount": {
     "message": "Usuń konto"
-  },
-  "removeAccountDescription": {
-    "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
   },
   "required": {
     "message": "Wymagane"
@@ -670,8 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Twoja prywatna fraza seed"
   }
 }

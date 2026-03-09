@@ -299,9 +299,6 @@
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "העסקה הראשונית שלך אושרה על ידי הרשת. לחצ/י על אישור כדי לחזור."
-  },
   "insufficientBalance": {
     "message": "יתרה לא מספיקה."
   },
@@ -481,12 +478,6 @@
   "rejectAll": {
     "message": "דחה הכל"
   },
-  "rejectTxsDescription": {
-    "message": "הנך עומד/ת לדחות קבוצת עסקאות $1."
-  },
-  "rejectTxsN": {
-    "message": "דחה $1 עסקאות "
-  },
   "rejected": {
     "message": "נדחה"
   },
@@ -495,9 +486,6 @@
   },
   "removeAccount": {
     "message": "הסר חשבון"
-  },
-  "removeAccountDescription": {
-    "message": "חשבון זה יוסר מארנקך. יש לוודא שיש לך את ה-seed phrase המקורי או המפתח האישי לחשבון מיובא זה לפני שתמשיך/י. באפשרותך ליבוא או לפתוח חשבונות שוב מהתפריט הנפתח של החשבון."
   },
   "required": {
     "message": "נדרש"
@@ -679,8 +667,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "ה-seed phrase הפרטי שלך"
   }
 }

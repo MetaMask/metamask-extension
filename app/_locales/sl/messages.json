@@ -293,9 +293,6 @@
     "message": "Uvoženo",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Vaša prvotna transakcija je bila potrjena. Pritisnite V redu in se vrnite nazaj."
-  },
   "insufficientBalance": {
     "message": "Nezadostno ravnovesje."
   },
@@ -472,12 +469,6 @@
   "rejectAll": {
     "message": "Zavrni vse"
   },
-  "rejectTxsDescription": {
-    "message": "Zavrnili boste $1 transakcij."
-  },
-  "rejectTxsN": {
-    "message": "Zavrni $1 transakcij"
-  },
   "rejected": {
     "message": "Zavrnjeno"
   },
@@ -486,9 +477,6 @@
   },
   "removeAccount": {
     "message": "Izbriši račun"
-  },
-  "removeAccountDescription": {
-    "message": "Ta račun bo izbrisan. Prepričajte se, da imate seed phase ali zasebni ključ tega računa, da ga boste lahko kasneje obnovili. "
   },
   "required": {
     "message": "Zahtevano"
@@ -670,8 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za uporabo te funkcije boste potrebovali dostop do kamere."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaš zasebni seed phrase"
   }
 }
