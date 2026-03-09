@@ -90,10 +90,8 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
-  const { isEstimatedReturnLow } = useSelector(
-    getValidationErrors,
-    shallowEqual,
-  );
+  const { isEstimatedReturnLow, isPriceImpactWarning, isPriceImpactError } =
+    useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
   const gasFeesSponsoredNetworkEnabled = useSelector(
