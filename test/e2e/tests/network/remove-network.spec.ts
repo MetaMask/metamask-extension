@@ -1,9 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  NetworkStatus,
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -86,14 +83,12 @@ describe('Remove Network:', function (this: Suite) {
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
-                    networkClientId:
-                      '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+                    networkClientId: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
                     type: RpcEndpointType.Custom,
                     url: 'http://localhost:8546',
                   },
                   {
-                    networkClientId:
-                      '2ce66016-8aab-47df-b27f-318c80865eb1',
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
                     type: RpcEndpointType.Custom,
                     url: 'http://127.0.0.1:8546',
                   },
