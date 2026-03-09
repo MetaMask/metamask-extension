@@ -34,12 +34,12 @@ import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  HARDWARE_WALLET_ACCOUNT_ID,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
   NETWORK_CLIENT_ID,
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
-  TREZOR_ACCOUNT_ID,
   TREZOR_ADDRESS,
   TREZOR_VAULT,
 } from '../constants';
@@ -239,8 +239,8 @@ class FixtureBuilderV2 {
               },
             },
           },
-          '221ecb67-0d29-4c04-83b2-dff07c263634': {
-            id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+          [HARDWARE_WALLET_ACCOUNT_ID]: {
+            id: HARDWARE_WALLET_ACCOUNT_ID,
             address: ledgerAddressLower,
             options: {},
             methods: [
@@ -263,7 +263,7 @@ class FixtureBuilderV2 {
             },
           },
         },
-        selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
       },
     });
     return this;
@@ -466,8 +466,8 @@ class FixtureBuilderV2 {
               },
             },
           },
-          [TREZOR_ACCOUNT_ID]: {
-            id: TREZOR_ACCOUNT_ID,
+          [HARDWARE_WALLET_ACCOUNT_ID]: {
+            id: HARDWARE_WALLET_ACCOUNT_ID,
             address: TREZOR_ADDRESS,
             options: {},
             methods: [
@@ -490,7 +490,7 @@ class FixtureBuilderV2 {
             },
           },
         },
-        selectedAccount: TREZOR_ACCOUNT_ID,
+        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
       },
     }).withKeyringController({ vault: TREZOR_VAULT });
   }
