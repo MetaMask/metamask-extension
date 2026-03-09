@@ -51,14 +51,14 @@ export const selectLocalTransactions = createSelector(
     const filtered = (transactions ?? []).filter((tx) => {
       const hasNonce = tx.txParams?.nonce !== undefined;
 
+      if (!isFromSelectedAccount(tx, selectedAddress)) {
+        return false;
+      }
+
       // Ensure any externally signed transactions are always included.
       // Such as EIP-7702 gas station and MetaMask Pay.
       if (!hasNonce) {
         return true;
-      }
-
-      if (!isFromSelectedAccount(tx, selectedAddress)) {
-        return false;
       }
 
       if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {

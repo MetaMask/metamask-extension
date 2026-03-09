@@ -9,7 +9,7 @@ jest.mock('../../../../../../hooks/useI18nContext', () => ({
   useI18nContext:
     () => (key: string, values?: (string | React.ReactNode)[]) => {
       const translations: Record<string, string> = {
-        musdConvertAndGetBonus: 'Convert and get 3%',
+        musdConvertAndGetBonus: `Convert and get ${String(values?.[0] ?? '$1')}%`,
         musdBonusExplanation: `You will receive a ${String(values?.[0] ?? '')}% bonus. ${typeof values?.[1] === 'string' ? values[1] : 'Terms apply.'}`,
         musdTermsApply: 'Terms apply.',
         info: 'Info',

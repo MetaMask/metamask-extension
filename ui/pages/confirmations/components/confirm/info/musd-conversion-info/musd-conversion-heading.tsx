@@ -62,7 +62,7 @@ export const MusdConversionHeading: React.FC = () => {
         textAlign={TextAlign.Center}
         data-testid="musd-conversion-heading-title"
       >
-        {t('musdConvertAndGetBonus')}
+        {t('musdConvertAndGetBonus', [String(MUSD_CONVERSION_APY)])}
       </Text>
 
       <Box style={{ position: 'absolute', right: 16 }}>
