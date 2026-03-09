@@ -5880,9 +5880,6 @@
   "removeAccount": {
     "message": "Alisin ang account"
   },
-  "removeAccountDescription": {
-    "message": "Aalisin ang account na ito sa wallet mo. Tiyakin na mayroon ka ng orihinal na Lihim na Parirala sa Pagbawi o pribadong key para sa in-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa muli ng mga account mula sa account drop-down. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Tiyaking mayroon kang Lihim na Parirala sa Pagbawi o pribadong key para sa account na ito bago alisin.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

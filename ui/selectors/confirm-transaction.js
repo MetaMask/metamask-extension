@@ -88,26 +88,6 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     ...unapprovedTypedMessages,
   }),
 );
-
-export const unconfirmedMessagesHashSelector = createSelector(
-  unapprovedPersonalMsgsSelector,
-  unapprovedDecryptMsgsSelector,
-  unapprovedEncryptionPublicKeyMsgsSelector,
-  unapprovedTypedMessagesSelector,
-  (
-    unapprovedPersonalMsgs = {},
-    unapprovedDecryptMsgs = {},
-    unapprovedEncryptionPublicKeyMsgs = {},
-    unapprovedTypedMessages = {},
-  ) => {
-    return {
-      ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
-      ...unapprovedEncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
-    };
-  },
-);
 export const getUse4ByteResolution = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
@@ -116,16 +96,6 @@ export const conversionRateSelector = (state) =>
   getCurrencyRateControllerCurrencyRates(state)[getProviderConfig(state).ticker]
     ?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
-
-const txParamsSelector = createSelector(
-  txDataSelector,
-  (txData) => (txData && txData.txParams) || {},
-);
-
-export const tokenAddressSelector = createSelector(
-  txParamsSelector,
-  (txParams) => txParams && txParams.to,
-);
 
 export const transactionFeeSelector = function (state, txData) {
   const currentCurrency = currentCurrencySelector(state);
@@ -273,11 +243,6 @@ export function selectTransactionAvailableBalance(
 
   return accounts[sender]?.balance;
 }
-
-export function selectIsMaxValueEnabled(state, transactionId) {
-  return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
-}
-
 const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
 
 export function selectMaxValueModeForTransaction(state, transactionId) {

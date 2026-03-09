@@ -1,22 +1,18 @@
 import { Nft } from '@metamask/assets-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  Box,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../../../../../shared/modules/string-utils';
-import { Box, Text } from '../../../../../../../components/component-library';
 import { NftItem } from '../../../../../../../components/multichain/nft-item';
 import { getNFTsByChainId } from '../../../../../../../ducks/metamask/metamask';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
 import {
   getNftImage,
   getNftImageAlt,
@@ -26,6 +22,7 @@ import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useNftImageUrl } from '../../../../../hooks/useNftImageUrl';
 import { ellipsify } from '../../../../../send-utils/send.utils';
 import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 export const generateTokenIdDisplay = (tokenId: string) => {
   if (tokenId.length >= 10) {
@@ -100,34 +97,24 @@ const NFTSendHeading = () => {
   );
 
   const TokenName = (
-    <Text
-      variant={TextVariant.headingLg}
-      color={TextColor.inherit}
-      marginTop={3}
-      textAlign={TextAlign.Center}
-    >
-      {assetName}
-    </Text>
+    <Box paddingBottom={1}>
+      <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
+        {assetName}
+      </Text>
+    </Box>
   );
 
   const TokenID = (
-    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+    <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
       {tokenIdDisplay}
     </Text>
   );
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      padding={4}
-    >
-      {TokenImage}
+    <SendHeadingLayout image={TokenImage}>
       {TokenName}
       {TokenID}
-    </Box>
+    </SendHeadingLayout>
   );
 };
 

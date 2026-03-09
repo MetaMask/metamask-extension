@@ -487,9 +487,6 @@
   "removeAccount": {
     "message": "Poista tili"
   },
-  "removeAccountDescription": {
-    "message": "Tämä tili poistetaan kukkarostasi. Varmistathan ennen kuin jatkat, että sinulla on alkuperäinen salausteksti tai yksityinen avain tätä tuotua tiliä varten. Voit tuoda tai luoda tilejä uudestaan tilin pudotusvalikosta."
-  },
   "required": {
     "message": "Pakollinen"
   },

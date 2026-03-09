@@ -5880,9 +5880,6 @@
   "removeAccount": {
     "message": "Eliminar cuenta"
   },
-  "removeAccountDescription": {
-    "message": "Esta cuenta se eliminará de su billetera. Antes de continuar, asegúrese de que dispone de la frase secreta de recuperación original o de la clave privada de esta cuenta importada. Puede importar o volver a crear cuentas desde el menú desplegable de cuentas. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Asegúrate de tener la frase secreta de recuperación o la clave privada de esta cuenta antes de eliminarla.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
