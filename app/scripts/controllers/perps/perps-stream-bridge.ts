@@ -65,27 +65,36 @@ export class PerpsStreamBridge {
     // Set before registering so synchronous initial callbacks from subscribeTo* see isActive and deliver snapshots
     this.#activated = true;
 
-    // Register each perps subscription individually so that if one throws, th unsub functions already returned by earlier calls are safely stored and can be cleaned up by a subsequent destroy()
-    this.#staticUnsubs.push(
-      controller.subscribeToPositions({
-        callback: (data: unknown) => this.#emit('positions', data),
-      }),
-    );
-    this.#staticUnsubs.push(
-      controller.subscribeToOrders({
-        callback: (data: unknown) => this.#emit('orders', data),
-      }),
-    );
-    this.#staticUnsubs.push(
-      controller.subscribeToAccount({
-        callback: (data: unknown) => this.#emit('account', data),
-      }),
-    );
-    this.#staticUnsubs.push(
-      controller.subscribeToOrderFills({
-        callback: (data: unknown) => this.#emit('fills', data),
-      }),
-    );
+    try {
+      // Register each perps subscription individually so that if one throws, the unsub functions already returned by earlier calls are safely stored and can be cleaned up
+      this.#staticUnsubs.push(
+        controller.subscribeToPositions({
+          callback: (data: unknown) => this.#emit('positions', data),
+        }),
+      );
+      this.#staticUnsubs.push(
+        controller.subscribeToOrders({
+          callback: (data: unknown) => this.#emit('orders', data),
+        }),
+      );
+      this.#staticUnsubs.push(
+        controller.subscribeToAccount({
+          callback: (data: unknown) => this.#emit('account', data),
+        }),
+      );
+      this.#staticUnsubs.push(
+        controller.subscribeToOrderFills({
+          callback: (data: unknown) => this.#emit('fills', data),
+        }),
+      );
+    } catch (error) {
+      this.#activated = false;
+      for (const unsub of this.#staticUnsubs) {
+        this.#callAndClearUnsub(unsub);
+      }
+      this.#staticUnsubs.length = 0;
+      throw error;
+    }
   }
 
   setViewActive(active: boolean): void {
