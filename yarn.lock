@@ -7435,21 +7435,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@metamask/profile-metrics-controller@npm:3.0.1"
+"@metamask/profile-metrics-controller@npm:@metamask-previews/profile-metrics-controller@3.0.1-preview-fb0893ad9":
+  version: 3.0.1-preview-fb0893ad9
+  resolution: "@metamask-previews/profile-metrics-controller@npm:3.0.1-preview-fb0893ad9"
   dependencies:
-    "@metamask/accounts-controller": "npm:^36.0.0"
+    "@metamask/accounts-controller": "npm:^36.0.1"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/controller-utils": "npm:^11.19.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/polling-controller": "npm:^16.0.2"
+    "@metamask/polling-controller": "npm:^16.0.3"
     "@metamask/profile-sync-controller": "npm:^27.1.0"
-    "@metamask/transaction-controller": "npm:^62.17.0"
+    "@metamask/transaction-controller": "npm:^62.20.0"
     "@metamask/utils": "npm:^11.9.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/70a45c52c895ead6edd5dedbb7108094b6455cb3eff48d1e0fdf8c79f368d1a893f070056712aa36a371c6d63e51fbb03618c796a1855bd4e236d56f9816978e
+  checksum: 10/557820ff912f70abb8a92c0e5868322e82b7a1eb7b1114586fce93bee077317fe214fc742b7de5b3e679bab7e1ee10f10886ddef3b49def40fb58635f3fa2451
   languageName: node
   linkType: hard
 
@@ -7472,6 +7472,30 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/4e599cca3b7999c517b906b51cf30470dec9349aa35a94a3a4a5f3847cd6c5bcbb176e8e3b2eeb8ef0ae6b26097920571e9bea8965006d757e9ef2b6898cf671
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@27.1.0-preview-fb0893ad9":
+  version: 27.1.0-preview-fb0893ad9
+  resolution: "@metamask-previews/profile-sync-controller@npm:27.1.0-preview-fb0893ad9"
+  dependencies:
+    "@metamask/address-book-controller": "npm:^7.0.1"
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/keyring-controller": "npm:^25.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/snaps-controllers": "npm:^17.2.0"
+    "@metamask/snaps-sdk": "npm:^10.3.0"
+    "@metamask/snaps-utils": "npm:^11.7.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/e18a19ec85f0eedb3438c0e9df11057078b89606a91aae08738d7b0f2758447577afd2270aceef13dcc124b268db11a6412719a0efa0d3a1fca89aedfb12e551
   languageName: node
   linkType: hard
 
@@ -32992,8 +33016,8 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.39.0"
     "@metamask/preferences-controller": "npm:^21.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
-    "@metamask/profile-metrics-controller": "npm:^3.0.1"
-    "@metamask/profile-sync-controller": "npm:^27.1.0"
+    "@metamask/profile-metrics-controller": "npm:@metamask-previews/profile-metrics-controller@3.0.1-preview-fb0893ad9"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@27.1.0-preview-fb0893ad9"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
