@@ -29,6 +29,7 @@
     "dist:mv2": "ENABLE_MV3=false yarn build dist",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
+    "bundle-vats": "bash scripts/bundle-vats.sh",
     "circular-deps:check": "tsx development/circular-deps.ts check",
     "circular-deps:update": "tsx development/circular-deps.ts update",
     "start:test": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
@@ -263,7 +264,19 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
-    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267"
+    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
+    "@metamask/kernel-browser-runtime": "portal:ocap-kernel/packages/kernel-browser-runtime",
+    "@metamask/kernel-errors": "portal:ocap-kernel/packages/kernel-errors",
+    "@metamask/kernel-platforms": "portal:ocap-kernel/packages/kernel-platforms",
+    "@metamask/kernel-rpc-methods": "portal:ocap-kernel/packages/kernel-rpc-methods",
+    "@metamask/kernel-shims": "portal:ocap-kernel/packages/kernel-shims",
+    "@metamask/kernel-store": "portal:ocap-kernel/packages/kernel-store",
+    "@metamask/kernel-ui": "portal:ocap-kernel/packages/kernel-ui",
+    "@metamask/kernel-utils": "portal:ocap-kernel/packages/kernel-utils",
+    "@metamask/logger": "portal:ocap-kernel/packages/logger",
+    "@metamask/ocap-kernel": "portal:ocap-kernel/packages/ocap-kernel",
+    "@metamask/streams": "portal:ocap-kernel/packages/streams",
+    "@metamask/kernel-cli": "portal:ocap-kernel/packages/kernel-cli"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -713,6 +726,7 @@
     "nyc": "^15.1.0",
     "octokit": "^4.1.3",
     "openai": "^4.73.0",
+    "patch-package": "^8.0.1",
     "path-browserify": "^1.0.1",
     "postcss": "^8.4.32",
     "postcss-discard-font-face": "^3.0.0",
@@ -816,7 +830,8 @@
       "ws>bufferutil": false,
       "ws>utf-8-validate": false,
       "@google/genai>protobufjs": false,
-      "eth-lattice-keyring>gridplus-sdk>secp256k1": false
+      "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
+      "@metamask/kernel-utils": true
     }
   },
   "packageManager": "yarn@4.12.0",

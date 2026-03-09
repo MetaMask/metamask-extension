@@ -86,6 +86,7 @@ import {
 } from './lib/util';
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
+import { setupHostApiProxyBridge } from './lib/offscreen-bridge/host-api-proxy-bridge';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
 
@@ -1429,6 +1430,9 @@ export function setupController(
     requestSafeReload,
     cronjobControllerStorageManager,
   });
+
+  // Set up the host API proxy bridge for the ocap kernel offscreen document
+  setupHostApiProxyBridge(controller.controllerMessenger);
 
   // Wire up the callback to notify the UI when set operations fail
   persistenceManager.setOnSetFailed((errorType) => {

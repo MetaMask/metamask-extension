@@ -20,6 +20,9 @@ import {
   MessagePortDuplexStream,
 } from '@metamask/streams/browser';
 import type { PostMessageTarget } from '@metamask/streams/browser';
+import { makeHostApiProxy } from './services/host-api-proxy';
+import { makeMethodCatalog } from './services/method-catalog';
+import { makeLlmService } from './services/llm-service';
 
 const logger = new Logger('offscreen');
 
@@ -62,6 +65,74 @@ export async function runKernel(): Promise<never> {
     kernelStream.throw(error as Error).catch(logger.error);
   }
 
+  // Register kernel services and launch the capability vendor subcluster
+  try {
+    const hostApiProxy = makeHostApiProxy();
+    const methodCatalog = makeMethodCatalog();
+    const llmService = makeLlmService();
+
+    await E(kernelP).registerKernelServiceObject('hostApiProxy', hostApiProxy);
+    await E(kernelP).registerKernelServiceObject(
+      'methodCatalog',
+      methodCatalog,
+    );
+    await E(kernelP).registerKernelServiceObject('llmService', llmService);
+
+    console.log('~~~ Kernel services registered ~~~');
+
+    // Resolve the bundle path to a full chrome-extension:// URL so the
+    // vat supervisor's fetch() can load it from any extension context.
+    const bundleUrl = chrome.runtime.getURL(
+      'ocap-kernel/vats/capability-vendor/index.bundle',
+    );
+
+    const result = await E(kernelP).launchSubcluster({
+      bootstrap: 'vendor',
+      services: ['hostApiProxy', 'methodCatalog', 'llmService'],
+      vats: {
+        vendor: {
+          bundleSpec: bundleUrl,
+        },
+      },
+    });
+
+    console.log('~~~ Vendor subcluster launched ~~~', result);
+
+    // --- Smoke test: exercise the full vendor pipeline ---
+    const { rootKref } = result;
+
+    // 1. Vend a capability via the admin facet (delegates to public facet)
+    const capRecord = await E(kernelP).queueMessage(
+      rootKref,
+      'vendCapability',
+      ['list accounts'],
+    );
+    console.log('~~~ Vended capability ~~~', capRecord);
+
+    // 2. List capabilities via admin facet
+    const capabilities = await E(kernelP).queueMessage(
+      rootKref,
+      'getCapabilities',
+      [],
+    );
+    console.log('~~~ All capabilities ~~~', capabilities);
+
+    // 3. Extract the capability exo kref from CapData and test it
+    const capExoKref = (capRecord as { slots: string[] }).slots[0];
+    console.log('~~~ Capability exo kref ~~~', capExoKref);
+
+    // 4. Call getAccounts() on the vended capability
+    const accounts = await E(kernelP).queueMessage(
+      capExoKref,
+      'getAccounts',
+      [],
+    );
+    console.log('~~~ getAccounts() result ~~~', accounts);
+    // --- End smoke test ---
+  } catch (serviceError) {
+    console.error('Failed to set up capability vendor:', serviceError);
+  }
+
   const error = new Error('Kernel connection closed unexpectedly');
   try {
     await drainPromise;
@@ -80,9 +151,10 @@ export async function runKernel(): Promise<never> {
 async function makeKernelWorker(): Promise<
   DuplexStream<JsonRpcMessage, JsonRpcMessage>
 > {
-  const worker = new Worker('ocap-kernel/kernel-worker/index.js', {
-    type: 'module',
-  });
+  const worker = new Worker(
+    'ocap-kernel/kernel-worker/index.js?reset-storage=true',
+    { type: 'module' },
+  );
 
   const port = await initializeMessageChannel((message, transfer) =>
     worker.postMessage(message, transfer),

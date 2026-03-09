@@ -216,6 +216,13 @@ const plugins: WebpackPluginInstance[] = [
         ),
         to: 'ocap-kernel/',
       },
+      // Ocap Kernel vat bundles: pre-built via `yarn bundle-vats`
+      {
+        from: join(context, 'offscreen/ocap-kernel/vats/'),
+        to: 'ocap-kernel/vats/',
+        noErrorOnMissing: true,
+        globOptions: { ignore: ['**/*.ts'] },
+      },
       // Ocap Kernel devtools panel: copy HTML files as static assets
       {
         from: join(context, 'devtools/devtools.html'),

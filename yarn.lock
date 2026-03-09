@@ -2015,22 +2015,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chainsafe/libp2p-yamux@patch:@chainsafe/libp2p-yamux@npm%3A7.0.4#~/.yarn/patches/@chainsafe-libp2p-yamux-npm-7.0.4-284c2f6812.patch":
-  version: 7.0.4
-  resolution: "@chainsafe/libp2p-yamux@patch:@chainsafe/libp2p-yamux@npm%3A7.0.4#~/.yarn/patches/@chainsafe-libp2p-yamux-npm-7.0.4-284c2f6812.patch::version=7.0.4&hash=622865"
-  dependencies:
-    "@libp2p/interface": "npm:^2.0.0"
-    "@libp2p/utils": "npm:^6.0.0"
-    get-iterator: "npm:^2.0.1"
-    it-foreach: "npm:^2.0.6"
-    it-pushable: "npm:^3.2.3"
-    it-stream-types: "npm:^2.0.1"
-    race-signal: "npm:^1.1.3"
-    uint8arraylist: "npm:^2.4.8"
-  checksum: 10/2561c7818832987584d0fd025f3c19b962f5ea47a3132e68b2496fd7cebe392c54cbfad0b0abc032f77cae3ff2c93d9fde8fe9c8b5de354517782a0eeb60af40
-  languageName: node
-  linkType: hard
-
 "@chainsafe/netmask@npm:^2.0.0":
   version: 2.0.0
   resolution: "@chainsafe/netmask@npm:2.0.0"
@@ -7245,34 +7229,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.6.0":
-  version: 0.6.1
-  resolution: "@metamask/design-system-react@npm:0.6.1"
-  dependencies:
-    "@metamask/design-system-shared": "npm:^0.1.2"
-    "@metamask/jazzicon": "npm:^2.0.0"
-    "@radix-ui/react-slot": "npm:^1.1.0"
-    blo: "npm:^2.0.0"
-    tailwind-merge: "npm:^2.0.0"
-  peerDependencies:
-    "@metamask/design-system-tailwind-preset": ^0.6.0
-    "@metamask/design-tokens": ^8.1.0
-    "@metamask/utils": ^11.9.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/ce95f6374915fa8cea645c7692afac1cbb2ca9562e87d31d24acc93c57a1ea082b2bccfd568a345a804370af887ffd95f554ba848efe934a783737ee7e4bd590
-  languageName: node
-  linkType: hard
-
-"@metamask/design-system-shared@npm:^0.1.2":
-  version: 0.1.3
-  resolution: "@metamask/design-system-shared@npm:0.1.3"
-  dependencies:
-    "@metamask/utils": "npm:^11.10.0"
-  checksum: 10/6e474dd5d1e45637e51ef1b1656d4717bc71e8a0b52f2822c66182fbde49f53c13a31d52988bb4c7587448d528d6f71bef11c3c4de97d29a353ef6ec59a0d484
-  languageName: node
-  linkType: hard
-
 "@metamask/design-system-shared@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/design-system-shared@npm:0.3.0"
@@ -7987,117 +7943,110 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/kernel-browser-runtime@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/kernel-browser-runtime@npm:0.5.0"
+"@metamask/kernel-browser-runtime@portal:ocap-kernel/packages/kernel-browser-runtime::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-browser-runtime@portal:ocap-kernel/packages/kernel-browser-runtime::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@endo/captp": "npm:^4.4.8"
     "@metamask/json-rpc-engine": "npm:^10.2.0"
-    "@metamask/kernel-errors": "npm:^0.5.0"
-    "@metamask/kernel-platforms": "npm:^0.1.0"
-    "@metamask/kernel-rpc-methods": "npm:^0.5.0"
-    "@metamask/kernel-store": "npm:^0.5.0"
-    "@metamask/kernel-utils": "npm:^0.4.0"
-    "@metamask/logger": "npm:^0.6.0"
-    "@metamask/ocap-kernel": "npm:^0.6.0"
+    "@metamask/kernel-errors": "workspace:^"
+    "@metamask/kernel-platforms": "workspace:^"
+    "@metamask/kernel-rpc-methods": "workspace:^"
+    "@metamask/kernel-store": "workspace:^"
+    "@metamask/kernel-utils": "workspace:^"
+    "@metamask/logger": "workspace:^"
+    "@metamask/ocap-kernel": "workspace:^"
     "@metamask/rpc-errors": "npm:^7.0.3"
-    "@metamask/snaps-utils": "npm:^11.7.1"
-    "@metamask/streams": "npm:^0.5.0"
+    "@metamask/snaps-utils": "npm:^12.1.0"
+    "@metamask/streams": "workspace:^"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.9.0"
     nanoid: "npm:^5.1.5"
     ses: "npm:^1.14.0"
-  checksum: 10/f7f593840233eca472385e6b520d7d7298122dac3360cfc7da9ca7b9b8c20caeda402e06578548ba87dbc7e85d7d11f4625b968b5ed2b201d69c9a40425e96c7
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@metamask/kernel-errors@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/kernel-errors@npm:0.5.0"
+"@metamask/kernel-errors@portal:ocap-kernel/packages/kernel-errors::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-errors@portal:ocap-kernel/packages/kernel-errors::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@libp2p/interface": "npm:2.11.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/c951105957ef60f87e0528069656b9f55160536fcb121bb9991114204cb264e8a47f9b2d4c8ac95b3bec0c8157eab878cc9bc4ae3ad5c613eaf2b5ab36be2d7f
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@metamask/kernel-platforms@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/kernel-platforms@npm:0.1.0"
+"@metamask/kernel-platforms@portal:ocap-kernel/packages/kernel-platforms::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-platforms@portal:ocap-kernel/packages/kernel-platforms::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/superstruct": "npm:^3.2.1"
     ses: "npm:^1.14.0"
-  checksum: 10/6161fa70a316281aaa66132cdaefa835843ea4ea807a9de31f63a80ec1ef3b9e583a4c6d531c6c8881d02b3454b357cb860730c298667cc192b4c3f3b2cc0d3e
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@metamask/kernel-rpc-methods@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/kernel-rpc-methods@npm:0.5.0"
+"@metamask/kernel-rpc-methods@portal:ocap-kernel/packages/kernel-rpc-methods::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-rpc-methods@portal:ocap-kernel/packages/kernel-rpc-methods::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@endo/promise-kit": "npm:^1.1.13"
-    "@metamask/kernel-utils": "npm:^0.4.0"
-    "@metamask/logger": "npm:^0.6.0"
+    "@metamask/kernel-utils": "workspace:^"
+    "@metamask/logger": "workspace:^"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/27ff620c96afc2b579a34b74472e88adeaf5c0f359215bfc60eb8ad6efe667b7a76ff64587d9592d5ecb717f34b5ca63b93cebbccbedd51dc3e3ab03fa965cb9
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@metamask/kernel-shims@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/kernel-shims@npm:0.4.0"
+"@metamask/kernel-shims@portal:ocap-kernel/packages/kernel-shims::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-shims@portal:ocap-kernel/packages/kernel-shims::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@endo/eventual-send": "npm:^1.3.4"
     "@endo/lockdown": "npm:^1.0.18"
     ses: "npm:^1.14.0"
   peerDependencies:
     "@libp2p/webrtc": 5.2.24
-  checksum: 10/711a8b9f5aaa95b811e39f35211d8b40327d1f9f191c81d61fa239e971e973f7d3727a50de8438ac94706f5346a4f92072926c46345e5dd6cc71837cea4c24c7
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@metamask/kernel-store@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/kernel-store@npm:0.5.0"
+"@metamask/kernel-store@portal:ocap-kernel/packages/kernel-store::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-store@portal:ocap-kernel/packages/kernel-store::locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/logger": "npm:^0.6.0"
+    "@metamask/logger": "workspace:^"
     "@sqlite.org/sqlite-wasm": "npm:^3.49.1-build3"
     better-sqlite3: "npm:^12.4.1"
     ses: "npm:^1.14.0"
-  checksum: 10/45f169f5c5c0a3c7eb1a42923bb6de93482b7cab9d142041d0bdb3630b3e6c373fa9229ca22046a17cc0d277c15144b0e7c58db72a47540dacd17b074f0a1e6c
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@metamask/kernel-ui@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/kernel-ui@npm:0.4.0"
+"@metamask/kernel-ui@portal:ocap-kernel/packages/kernel-ui::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-ui@portal:ocap-kernel/packages/kernel-ui::locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/design-system-react": "npm:^0.6.0"
+    "@metamask/design-system-react": "npm:^0.10.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
-    "@metamask/kernel-browser-runtime": "npm:^0.5.0"
-    "@metamask/kernel-rpc-methods": "npm:^0.5.0"
-    "@metamask/kernel-utils": "npm:^0.4.0"
-    "@metamask/logger": "npm:^0.6.0"
-    "@metamask/ocap-kernel": "npm:^0.6.0"
+    "@metamask/kernel-browser-runtime": "workspace:^"
+    "@metamask/kernel-rpc-methods": "workspace:^"
+    "@metamask/kernel-utils": "workspace:^"
+    "@metamask/logger": "workspace:^"
+    "@metamask/ocap-kernel": "workspace:^"
     "@metamask/utils": "npm:^11.9.0"
     tailwindcss: "npm:^3.0.0"
   peerDependencies:
     react: ^18.3.1
     react-dom: ^18.3.1
-  checksum: 10/d21c8157dfb0fa913a69900f8c73560eb61fe9441f521b30ec2ed7e0cbb8bad3a554e974627868889656aebab78c77872b3e70f600c00b9e1f9b9a184ee15c6b
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@metamask/kernel-utils@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/kernel-utils@npm:0.4.0"
+"@metamask/kernel-utils@portal:ocap-kernel/packages/kernel-utils::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/kernel-utils@portal:ocap-kernel/packages/kernel-utils::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@chainsafe/libp2p-noise": "npm:^16.1.3"
-    "@chainsafe/libp2p-yamux": "patch:@chainsafe/libp2p-yamux@npm%3A7.0.4#~/.yarn/patches/@chainsafe-libp2p-yamux-npm-7.0.4-284c2f6812.patch"
+    "@chainsafe/libp2p-yamux": "npm:7.0.4"
     "@endo/captp": "npm:^4.4.8"
     "@endo/errors": "npm:^1.2.13"
     "@endo/exo": "npm:^1.5.12"
@@ -8115,9 +8064,17 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     libp2p: "npm:2.10.0"
     setimmediate: "npm:^1.0.5"
-  checksum: 10/27e511432a2aff9ea720cf808c92eb71396b1ca8a8595cb65545bcae2b43ea482a5fbcc55670eb7abff03bf6d6967d34b15679228b91c320ba8749614162de0c
+  peerDependencies:
+    acorn: ^8.15.0
+    patch-package: ^8.0.0
+    vite: ^7.3.0
+  peerDependenciesMeta:
+    acorn:
+      optional: true
+    vite:
+      optional: true
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/key-tree@npm:^10.0.2, @metamask/key-tree@npm:^10.1.1":
   version: 10.1.1
@@ -8308,16 +8265,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logger@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/logger@npm:0.6.0"
+"@metamask/logger@portal:ocap-kernel/packages/logger::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/logger@portal:ocap-kernel/packages/logger::locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/kernel-utils": "npm:^0.4.0"
-    "@metamask/streams": "npm:^0.5.0"
+    "@metamask/kernel-utils": "workspace:^"
+    "@metamask/streams": "workspace:^"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/bcdb47e507a9ab1007b667c8b98a36f9a491b13ba92fcb42b599159bf84281d7cc0f4e0c342d3497107e4f5d58593d03d5fed248cfea9406c76c47585a31d879
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/logging-controller@npm:^7.0.0, @metamask/logging-controller@npm:^7.0.1":
   version: 7.0.1
@@ -8740,14 +8696,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ocap-kernel@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/ocap-kernel@npm:0.6.0"
+"@metamask/ocap-kernel@portal:ocap-kernel/packages/ocap-kernel::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/ocap-kernel@portal:ocap-kernel/packages/ocap-kernel::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@agoric/swingset-liveslots": "npm:0.10.3-u21.0.1"
     "@chainsafe/libp2p-noise": "npm:^16.1.3"
-    "@chainsafe/libp2p-yamux": "patch:@chainsafe/libp2p-yamux@npm%3A7.0.4#~/.yarn/patches/@chainsafe-libp2p-yamux-npm-7.0.4-284c2f6812.patch"
+    "@chainsafe/libp2p-yamux": "npm:7.0.4"
     "@endo/errors": "npm:^1.2.13"
+    "@endo/eventual-send": "npm:^1.3.4"
     "@endo/marshal": "npm:^1.8.0"
     "@endo/pass-style": "npm:^1.6.3"
     "@endo/promise-kit": "npm:^1.1.13"
@@ -8761,14 +8718,14 @@ __metadata:
     "@libp2p/webrtc": "npm:5.2.24"
     "@libp2p/websockets": "npm:9.2.19"
     "@libp2p/webtransport": "npm:5.0.51"
-    "@metamask/kernel-errors": "npm:^0.5.0"
-    "@metamask/kernel-platforms": "npm:^0.1.0"
-    "@metamask/kernel-rpc-methods": "npm:^0.5.0"
-    "@metamask/kernel-store": "npm:^0.5.0"
-    "@metamask/kernel-utils": "npm:^0.4.0"
-    "@metamask/logger": "npm:^0.6.0"
+    "@metamask/kernel-errors": "workspace:^"
+    "@metamask/kernel-platforms": "workspace:^"
+    "@metamask/kernel-rpc-methods": "workspace:^"
+    "@metamask/kernel-store": "workspace:^"
+    "@metamask/kernel-utils": "workspace:^"
+    "@metamask/logger": "workspace:^"
     "@metamask/rpc-errors": "npm:^7.0.3"
-    "@metamask/streams": "npm:^0.5.0"
+    "@metamask/streams": "workspace:^"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.9.0"
     "@multiformats/multiaddr": "npm:^12.4.4"
@@ -8779,9 +8736,8 @@ __metadata:
     ses: "npm:^1.14.0"
     setimmediate: "npm:^1.0.5"
     uint8arrays: "npm:^5.1.0"
-  checksum: 10/1d3393432776536664627821784017efa319713d5d0f67c1093be949743f163c23d5df9fb1814fff398cac395643e4fd82fd4052ac77d96d34bd65f9cb4a676e
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/permission-controller@npm:^12.1.0, @metamask/permission-controller@npm:^12.1.1, @metamask/permission-controller@npm:^12.2.0":
   version: 12.2.0
@@ -9468,7 +9424,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^11.0.0, @metamask/snaps-utils@npm:^11.7.0, @metamask/snaps-utils@npm:^11.7.1":
+"@metamask/snaps-utils@npm:^11.0.0, @metamask/snaps-utils@npm:^11.7.0":
   version: 11.7.1
   resolution: "@metamask/snaps-utils@npm:11.7.1"
   dependencies:
@@ -9499,7 +9455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^12.1.1":
+"@metamask/snaps-utils@npm:^12.1.0, @metamask/snaps-utils@npm:^12.1.1":
   version: 12.1.1
   resolution: "@metamask/snaps-utils@npm:12.1.1"
   dependencies:
@@ -9561,19 +9517,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/streams@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/streams@npm:0.5.0"
+"@metamask/streams@portal:ocap-kernel/packages/streams::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/streams@portal:ocap-kernel/packages/streams::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@endo/promise-kit": "npm:^1.1.13"
     "@endo/stream": "npm:^1.2.13"
-    "@metamask/kernel-errors": "npm:^0.5.0"
-    "@metamask/kernel-utils": "npm:^0.4.0"
+    "@metamask/kernel-errors": "workspace:^"
+    "@metamask/kernel-utils": "workspace:^"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/4a1e0884c66e286874bdedc9fdba77ba4c46bcd625f334f63020323bcff5edb07e31926e6270394670c2b8851611267ac76eddb2ef54731220589cc8d38a32c4
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/subscription-controller@npm:^6.0.0":
   version: 6.0.0
@@ -19572,6 +19527,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yarnpkg/lockfile@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@yarnpkg/lockfile@npm:1.1.0"
+  checksum: 10/cd19e1114aaf10a05126aeea8833ef4ca8af8a46e88e12884f8359d19333fd19711036dbc2698dbe937f81f037070cf9a8da45c2e8c6ca19cafd7d15659094ed
+  languageName: node
+  linkType: hard
+
 "@yarnpkg/parsers@npm:^3.0.0-rc.32":
   version: 3.0.0-rc.48.1
   resolution: "@yarnpkg/parsers@npm:3.0.0-rc.48.1"
@@ -22837,6 +22799,13 @@ __metadata:
   version: 3.3.2
   resolution: "ci-info@npm:3.3.2"
   checksum: 10/a3bf9f4fbbc65f95979ee569b3efb29733c340c96ef30dbf56e55a9ce092415727f5c61befc99d53d104f684b7b66d08ee5cdb28b6862a80d4d26e387558ffc5
+  languageName: node
+  linkType: hard
+
+"ci-info@npm:^3.7.0":
+  version: 3.9.0
+  resolution: "ci-info@npm:3.9.0"
+  checksum: 10/75bc67902b4d1c7b435497adeb91598f6d52a3389398e44294f6601b20cfef32cf2176f7be0eb961d9e085bb333a8a5cae121cb22f81cf238ae7f58eb80e9397
   languageName: node
   linkType: hard
 
@@ -28394,6 +28363,15 @@ __metadata:
     locate-path: "npm:^5.0.0"
     path-exists: "npm:^4.0.0"
   checksum: 10/4c172680e8f8c1f78839486e14a43ef82e9decd0e74145f40707cc42e7420506d5ec92d9a11c22bd2c48fb0c384ea05dd30e10dd152fefeec6f2f75282a8b844
+  languageName: node
+  linkType: hard
+
+"find-yarn-workspace-root@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "find-yarn-workspace-root@npm:2.0.0"
+  dependencies:
+    micromatch: "npm:^4.0.2"
+  checksum: 10/7fa7942849eef4d5385ee96a0a9a5a9afe885836fd72ed6a4280312a38690afea275e7d09b343fe97daf0412d833f8ac4b78c17fc756386d9ebebf0759d707a7
   languageName: node
   linkType: hard
 
@@ -33999,7 +33977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-stable-stringify@npm:1.3.0, json-stable-stringify@npm:^1.0.0, json-stable-stringify@npm:^1.1.1":
+"json-stable-stringify@npm:1.3.0, json-stable-stringify@npm:^1.0.0, json-stable-stringify@npm:^1.0.2, json-stable-stringify@npm:^1.1.1":
   version: 1.3.0
   resolution: "json-stable-stringify@npm:1.3.0"
   dependencies:
@@ -34398,6 +34376,15 @@ __metadata:
   version: 6.0.3
   resolution: "kind-of@npm:6.0.3"
   checksum: 10/5873d303fb36aad875b7538798867da2ae5c9e328d67194b0162a3659a627d22f742fc9c4ae95cd1704132a24b00cae5041fc00c0f6ef937dc17080dc4dbb962
+  languageName: node
+  linkType: hard
+
+"klaw-sync@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "klaw-sync@npm:6.0.0"
+  dependencies:
+    graceful-fs: "npm:^4.1.11"
+  checksum: 10/0da397f8961313c3ef8f79fb63af9002cde5a8fb2aeb1a37351feff0dd6006129c790400c3f5c3b4e757bedcabb13d21ec0a5eaef5a593d59515d4f2c291e475
   languageName: node
   linkType: hard
 
@@ -36184,6 +36171,7 @@ __metadata:
     nyc: "npm:^15.1.0"
     octokit: "npm:^4.1.3"
     openai: "npm:^4.73.0"
+    patch-package: "npm:^8.0.1"
     path-browserify: "npm:^1.0.1"
     pify: "npm:^5.0.0"
     postcss: "npm:^8.4.32"
@@ -38053,7 +38041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"open@npm:^7.3.1":
+"open@npm:^7.3.1, open@npm:^7.4.2":
   version: 7.4.2
   resolution: "open@npm:7.4.2"
   dependencies:
@@ -38765,6 +38753,30 @@ __metadata:
   version: 0.1.1
   resolution: "pascalcase@npm:0.1.1"
   checksum: 10/f83681c3c8ff75fa473a2bb2b113289952f802ff895d435edd717e7cb898b0408cbdb247117a938edcbc5d141020909846cc2b92c47213d764e2a94d2ad2b925
+  languageName: node
+  linkType: hard
+
+"patch-package@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "patch-package@npm:8.0.1"
+  dependencies:
+    "@yarnpkg/lockfile": "npm:^1.1.0"
+    chalk: "npm:^4.1.2"
+    ci-info: "npm:^3.7.0"
+    cross-spawn: "npm:^7.0.3"
+    find-yarn-workspace-root: "npm:^2.0.0"
+    fs-extra: "npm:^10.0.0"
+    json-stable-stringify: "npm:^1.0.2"
+    klaw-sync: "npm:^6.0.0"
+    minimist: "npm:^1.2.6"
+    open: "npm:^7.4.2"
+    semver: "npm:^7.5.3"
+    slash: "npm:^2.0.0"
+    tmp: "npm:^0.2.4"
+    yaml: "npm:^2.2.2"
+  bin:
+    patch-package: index.js
+  checksum: 10/920a9fb0001ea67a66d79ea696e6d74e3040b0f282e09addae913978b6d0e8cb5ef9a4030eb77df8a5497e8822fa8449c2dfdc668ecff7fb9ff8bfef0c897c6e
   languageName: node
   linkType: hard
 
@@ -43666,6 +43678,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"slash@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "slash@npm:2.0.0"
+  checksum: 10/512d4350735375bd11647233cb0e2f93beca6f53441015eea241fe784d8068281c3987fbaa93e7ef1c38df68d9c60013045c92837423c69115297d6169aa85e6
+  languageName: node
+  linkType: hard
+
 "slash@npm:^3.0.0":
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
@@ -45561,6 +45580,13 @@ __metadata:
   version: 0.2.3
   resolution: "tmp@npm:0.2.3"
   checksum: 10/7b13696787f159c9754793a83aa79a24f1522d47b87462ddb57c18ee93ff26c74cbb2b8d9138f571d2e0e765c728fb2739863a672b280528512c6d83d511c6fa
+  languageName: node
+  linkType: hard
+
+"tmp@npm:^0.2.4":
+  version: 0.2.5
+  resolution: "tmp@npm:0.2.5"
+  checksum: 10/dd4b78b32385eab4899d3ae296007b34482b035b6d73e1201c4a9aede40860e90997a1452c65a2d21aee73d53e93cd167d741c3db4015d90e63b6d568a93d7ec
   languageName: node
   linkType: hard
 
@@ -48756,6 +48782,15 @@ __metadata:
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: 10/e088b37b4d4885b70b50c9fa1b7e54bd2e27f5c87205f9deaffd1fb293ab263d9c964feadb9817a7b129a5bf30a06582cb08750f810568ecc14f3cdbabb79cb3
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.2.2":
+  version: 2.8.2
+  resolution: "yaml@npm:2.8.2"
+  bin:
+    yaml: bin.mjs
+  checksum: 10/4eab0074da6bc5a5bffd25b9b359cf7061b771b95d1b3b571852098380db3b1b8f96e0f1f354b56cc7216aa97cea25163377ccbc33a2e9ce00316fe8d02f4539
   languageName: node
   linkType: hard
 

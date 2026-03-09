@@ -1,0 +1,42 @@
+[
+  {
+    "name": "AccountsController:listAccounts",
+    "signature": "() => InternalAccount[]",
+    "description": "Returns the list of all internal accounts in the wallet."
+  },
+  {
+    "name": "AccountsController:getSelectedAccount",
+    "signature": "() => InternalAccount",
+    "description": "Returns the currently selected account."
+  },
+  {
+    "name": "NetworkController:getState",
+    "signature": "() => NetworkState",
+    "description": "Returns the current network controller state including chain configuration."
+  },
+  {
+    "name": "NetworkController:getNetworkClientById",
+    "signature": "(networkClientId: string) => NetworkClient",
+    "description": "Returns a network client instance for the given network client ID."
+  },
+  {
+    "name": "PreferencesController:getState",
+    "signature": "() => PreferencesState",
+    "description": "Returns the current user preferences state."
+  },
+  {
+    "name": "SignatureController:newUnsignedMessage",
+    "signature": "(msgParams: { from: string, data: string }) => Promise<string>",
+    "description": "Initiates a new unsigned message signing request. Returns the message ID."
+  },
+  {
+    "name": "TokensController:getState",
+    "signature": "() => TokensState",
+    "description": "Returns the current tokens controller state including tracked tokens."
+  },
+  {
+    "name": "CurrencyRateController:getState",
+    "signature": "() => CurrencyRateState",
+    "description": "Returns currency conversion rate state."
+  }
+]
