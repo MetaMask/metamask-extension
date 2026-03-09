@@ -858,38 +858,6 @@ export const getWarningLabels = (
   return warnings;
 };
 
-/**
- * Returns only the QuoteWarning labels (excluding RWA-specific warnings
- * like 'market_closed') for use in metrics and submission flows.
- *
- * @param state
- * @param currentTimeInMs
- */
-export const getQuoteWarningLabels = (
-  state: BridgeAppState,
-  currentTimeInMs: number,
-): QuoteWarning[] =>
-  getWarningLabels(state, currentTimeInMs).filter(
-    (w): w is QuoteWarning => w !== 'market_closed',
-  );
-    isPriceImpactWarning,
-    isPriceImpactError,
-    isTxAlertPresent,
-  }) => {
-    const warnings: QuoteWarning[] = [];
-    isEstimatedReturnLow && warnings.push('low_return');
-    isNoQuotesAvailable && warnings.push('no_quotes');
-    isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
-    isInsufficientGasForQuote &&
-      warnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance && warnings.push('insufficient_balance');
-    isPriceImpactWarning && warnings.push('price_impact');
-    isPriceImpactError && warnings.push('price_impact');
-    isTxAlertPresent && warnings.push('tx_alert');
-    return warnings;
-  },
-);
-
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };

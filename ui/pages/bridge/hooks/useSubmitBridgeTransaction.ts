@@ -6,7 +6,11 @@ import {
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  QuoteMetadata,
+  QuoteResponse,
+  QuoteWarning,
+} from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -22,7 +26,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
-  getQuoteWarningLabels,
+  getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -76,7 +80,7 @@ export default function useSubmitBridgeTransaction() {
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
-    (state) => getQuoteWarningLabels(state as BridgeAppState, Date.now()),
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
@@ -137,7 +141,7 @@ export default function useSubmitBridgeTransaction() {
           smartTransactionsEnabled,
           getQuotesReceivedProperties(
             quoteResponse,
-            warnings,
+            warnings as QuoteWarning[],
             true,
             recommendedQuote,
             fromTokenBalanceInUsd,

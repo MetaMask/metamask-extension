@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
@@ -69,12 +69,11 @@ export const BridgeCTAButton = ({
     isTxAlertPresent,
     isTxAlertLoading,
     isStockMarketClosed: isMarketClosed,
+    isPriceImpactError,
   } = useSelector(
     (state) => getValidationErrors(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
-    isPriceImpactError,
-  } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 

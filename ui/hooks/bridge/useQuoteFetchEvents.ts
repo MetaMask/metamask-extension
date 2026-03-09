@@ -4,11 +4,12 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
+  type QuoteWarning,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
   getFromTokenBalanceInUsd,
-  getQuoteWarningLabels,
+  getWarningLabels,
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
@@ -26,7 +27,7 @@ export const useQuoteFetchEvents = () => {
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
   const warnings = useSelector(
-    (state) => getQuoteWarningLabels(state as BridgeAppState, Date.now()),
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
@@ -39,7 +40,7 @@ export const useQuoteFetchEvents = () => {
           UnifiedSwapBridgeEventName.QuotesReceived,
           getQuotesReceivedProperties(
             activeQuote,
-            warnings,
+            warnings as QuoteWarning[],
             isTxSubmittable,
             recommendedQuote,
             fromTokenBalanceInUsd,
