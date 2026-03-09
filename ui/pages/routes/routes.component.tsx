@@ -71,6 +71,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
@@ -140,6 +141,8 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
+import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
+import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
@@ -472,6 +475,17 @@ export const routeConfig = [
     basicFunctionalityOpenPageCtaKey:
       'basicFunctionalityRequired_openNotificationsPage',
   }),
+  {
+    path: CONTACTS_ROUTE,
+    element: (
+      <RootLayout>
+        <Authenticated>
+          <Outlet />
+        </Authenticated>
+      </RootLayout>
+    ),
+    children: contactsRoutes,
+  },
   createRouteWithLayout({
     path: SNAPS_ROUTE,
     component: SnapList,
@@ -924,7 +938,6 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
-
   const renderRoutes = () => {
     const routes = (
       <Suspense fallback={null}>

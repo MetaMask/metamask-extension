@@ -46,45 +46,44 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
               data-testid="account-list-item"
             >
               <div
-                class="account-list-item__top-row"
+                class="account-list-item__top-row items-center gap-2"
               >
                 <div
-                  class=""
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
                 >
                   <div
-                    class="identicon account-list-item__identicon"
-                    style="height: 18px; width: 18px; border-radius: 9px;"
+                    class="flex [&>div]:!rounded-none"
                   >
                     <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 58, 0);"
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
                     >
                       <svg
-                        height="18"
-                        width="18"
+                        height="24"
+                        width="24"
                         x="0"
                         y="0"
                       >
                         <rect
                           fill="#18CDF2"
-                          height="18"
-                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(-0.78629512784545 -2.47821305209537) rotate(328.9 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
                         <rect
                           fill="#035E56"
-                          height="18"
-                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(-13.72384628162403 7.94434640381145) rotate(176.2 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
                         <rect
                           fill="#F26602"
-                          height="18"
-                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(12.50088151366794 -10.65385479224781) rotate(468.9 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
@@ -238,45 +237,44 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
               data-testid="account-list-item"
             >
               <div
-                class="account-list-item__top-row"
+                class="account-list-item__top-row items-center gap-2"
               >
                 <div
-                  class=""
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
                 >
                   <div
-                    class="identicon account-list-item__identicon"
-                    style="height: 18px; width: 18px; border-radius: 9px;"
+                    class="flex [&>div]:!rounded-none"
                   >
                     <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 58, 0);"
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
                     >
                       <svg
-                        height="18"
-                        width="18"
+                        height="24"
+                        width="24"
                         x="0"
                         y="0"
                       >
                         <rect
                           fill="#18CDF2"
-                          height="18"
-                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(-0.78629512784545 -2.47821305209537) rotate(328.9 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
                         <rect
                           fill="#035E56"
-                          height="18"
-                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(-13.72384628162403 7.94434640381145) rotate(176.2 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
                         <rect
                           fill="#F26602"
-                          height="18"
-                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(12.50088151366794 -10.65385479224781) rotate(468.9 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
@@ -428,45 +426,44 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
               data-testid="account-list-item"
             >
               <div
-                class="account-list-item__top-row"
+                class="account-list-item__top-row items-center gap-2"
               >
                 <div
-                  class=""
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
                 >
                   <div
-                    class="identicon account-list-item__identicon"
-                    style="height: 18px; width: 18px; border-radius: 9px;"
+                    class="flex [&>div]:!rounded-none"
                   >
                     <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 58, 0);"
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
                     >
                       <svg
-                        height="18"
-                        width="18"
+                        height="24"
+                        width="24"
                         x="0"
                         y="0"
                       >
                         <rect
                           fill="#18CDF2"
-                          height="18"
-                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(-0.78629512784545 -2.47821305209537) rotate(328.9 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
                         <rect
                           fill="#035E56"
-                          height="18"
-                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(-13.72384628162403 7.94434640381145) rotate(176.2 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />
                         <rect
                           fill="#F26602"
-                          height="18"
-                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
-                          width="18"
+                          height="24"
+                          transform="translate(12.50088151366794 -10.65385479224781) rotate(468.9 12.00000000000000 12.00000000000000)"
+                          width="24"
                           x="0"
                           y="0"
                         />

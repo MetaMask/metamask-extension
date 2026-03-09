@@ -1644,6 +1644,9 @@
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
   },
+  "confirmTitleSending": {
+    "message": "Sending"
+  },
   "confirmTitleSetApprovalForAllRevokeTransaction": {
     "message": "Remove permission"
   },
@@ -1798,6 +1801,12 @@
   },
   "connectionsRemovedModalTitle": {
     "message": "Connections removed"
+  },
+  "contactDeleted": {
+    "message": "Contact deleted"
+  },
+  "contactDetails": {
+    "message": "Contact details"
   },
   "contactUs": {
     "message": "Contact us"
@@ -6103,9 +6112,6 @@
   "removeAccount": {
     "message": "Remove account"
   },
-  "removeAccountDescription": {
-    "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Make sure you have the Secret Recovery Phrase or private key for this account before removing.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -8560,6 +8566,9 @@
   "thirdPartySoftware": {
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
+  },
+  "thisContactWillBeDeleted": {
+    "message": "This contact will be deleted."
   },
   "time": {
     "message": "Time"

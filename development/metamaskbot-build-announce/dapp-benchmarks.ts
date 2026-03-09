@@ -4,7 +4,7 @@ import { mean as calculateMean } from 'lodash';
 import {
   BenchmarkMetrics,
   BenchmarkSummary,
-} from '../../test/e2e/page-objects/benchmark/page-load-benchmark';
+} from '../../test/e2e/page-objects/benchmark/dapp-page-load-benchmark';
 
 export type BenchmarkOutput = {
   /** Timestamp when the benchmark was executed */
@@ -69,9 +69,6 @@ export function aggregateHistoricalBenchmarkData(
 ): BenchmarkOutput {
   // Take the latest N commits (or all if less than N)
   const latestCommits = commitHashes.slice(0, n);
-  console.log(
-    `Processing ${latestCommits.length} commits: ${latestCommits.join(', ')}`,
-  );
 
   // Calculate mean of means for each page and metric
   const aggregatedData: BenchmarkOutput = {
@@ -154,10 +151,10 @@ export function aggregateHistoricalBenchmarkData(
 async function fetchLatestMainBenchmarkData(
   n: number,
 ): Promise<BenchmarkOutput | null> {
+  const url =
+    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/page_load_data.json';
   try {
-    const response = await fetch(
-      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json',
-    );
+    const response = await fetch(url);
 
     if (!response.ok) {
       console.warn(
@@ -167,7 +164,9 @@ async function fetchLatestMainBenchmarkData(
     }
 
     const data: HistoricalBenchmarkData = await response.json();
-    const commitHashes = Object.keys(data).reverse(); // Sort by commit hash, newest first
+    const commitHashes = Object.keys(data)
+      .filter((hash) => data[hash]?.timestamp)
+      .sort((a, b) => data[b].timestamp - data[a].timestamp);
 
     if (commitHashes.length === 0) {
       console.warn('No benchmark data found');
@@ -176,9 +175,6 @@ async function fetchLatestMainBenchmarkData(
 
     // Take the latest N commits (or all if less than N)
     const latestCommits = commitHashes.slice(0, n);
-    console.log(
-      `Processing ${latestCommits.length} commits: ${latestCommits.join(', ')}`,
-    );
 
     return aggregateHistoricalBenchmarkData(latestCommits, data, n);
   } catch (error) {
@@ -527,7 +523,7 @@ export async function getDappBenchmarkComment(): Promise<string | null> {
 
   const filePath = path.join(
     process.cwd(),
-    'test-artifacts/benchmarks/page-load-benchmark-results.json',
+    'test-artifacts/benchmarks/dapp-page-load-benchmark-results.json',
   );
 
   let benchmarkData: BenchmarkOutput | null = null;
@@ -535,9 +531,8 @@ export async function getDappBenchmarkComment(): Promise<string | null> {
   try {
     const fileContent = await fs.readFile(filePath, 'utf8');
     benchmarkData = JSON.parse(fileContent) as BenchmarkOutput;
-    console.log(`Found benchmark results at: ${filePath}`);
-  } catch (error) {
-    console.log(`Could not read benchmark results from: ${filePath}`);
+  } catch {
+    // Benchmark results file not available for this run
   }
 
   if (!benchmarkData) {
@@ -546,6 +541,7 @@ export async function getDappBenchmarkComment(): Promise<string | null> {
   }
 
   benchmarkData.commit = HEAD_COMMIT_HASH;
+
   const referenceData = await fetchLatestMainBenchmarkData(N_COMMITS);
 
   return generateBenchmarkComment(benchmarkData, referenceData);
