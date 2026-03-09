@@ -1,15 +1,15 @@
 import { execSync } from 'child_process';
 import { isMergeInProgress, getPreCommitHookDiff } from './get-diff';
 
-jest.mock('child_process');
-
-const mockExecSync = jest.mocked(execSync);
-
-beforeEach((): void => {
-  mockExecSync.mockClear();
-});
-
 describe('isMergeInProgress()', (): void => {
+  const mockExecSync = jest.mocked(execSync);
+
+  jest.mock('child_process');
+
+  beforeEach((): void => {
+    mockExecSync.mockClear();
+  });
+
   it('returns true when MERGE_HEAD exists', (): void => {
     mockExecSync.mockReturnValueOnce(Buffer.from('abc123'));
 
