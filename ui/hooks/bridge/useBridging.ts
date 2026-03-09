@@ -82,7 +82,7 @@ const useBridging = () => {
         }),
       );
 
-      const queryParams = [];
+      const queryParams: string[] = [];
       const navigationState: Partial<Record<'srcToken', MinimalAsset>> = {};
 
       const assetId =
@@ -128,6 +128,7 @@ const useBridging = () => {
       );
     },
     [
+      dispatch,
       navigate,
       lastSelectedChainId,
       fromChain?.chainId,
