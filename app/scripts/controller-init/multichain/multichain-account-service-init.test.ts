@@ -92,6 +92,7 @@ describe('MultichainAccountServiceInit', () => {
         providers: expect.any(Array),
         providerConfigs: expect.any(Object),
         config: expect.any(Object),
+        ensureOnboardingComplete: requestMock.ensureOnboardingComplete,
       });
     });
 

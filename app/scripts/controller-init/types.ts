@@ -86,6 +86,11 @@ export type ControllerInitRequest<
   encryptor: Encryptor;
 
   /**
+   * Returns a promise that resolves when onboarding has been completed.
+   */
+  ensureOnboardingComplete: () => Promise<void>;
+
+  /**
    * The extension browser API.
    */
   extension: Browser;
