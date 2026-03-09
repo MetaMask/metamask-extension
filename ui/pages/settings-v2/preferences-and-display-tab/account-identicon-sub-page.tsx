@@ -23,19 +23,14 @@ import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes
 import { getPreferences } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AVATAR_OPTIONS, getAvatarVariant } from './account-identicon-utils';
+import { AVATAR_OPTIONS } from './account-identicon-utils';
 
 const AccountIdenticonSubPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { avatarType, useBlockie } = useSelector(getPreferences);
+  const { avatarType } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-
-  const currentVariant = getAvatarVariant(
-    avatarType as AvatarAccountVariant | undefined,
-    useBlockie,
-  );
 
   const handleSelect = (value: AvatarAccountVariant) => {
     dispatch(setAvatarType(value));
@@ -45,7 +40,7 @@ const AccountIdenticonSubPage = () => {
   return (
     <Box data-testid="account-identicon-list">
       {AVATAR_OPTIONS.map(({ value, labelKey }) => {
-        const isSelected = value === currentVariant;
+        const isSelected = value === avatarType;
         return (
           <Box
             key={value}

@@ -22,7 +22,7 @@ exports[`PreferencesAndDisplayTab snapshot matches snapshot 1`] = `
           System
         </p>
         <button
-          aria-label="Theme"
+          aria-label="Select Theme"
           class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
         >
           <svg
@@ -50,7 +50,7 @@ exports[`PreferencesAndDisplayTab snapshot matches snapshot 1`] = `
         class="flex flex-row gap-1 items-center"
       >
         <button
-          aria-label="Language"
+          aria-label="Select Language"
           class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
         >
           <svg
@@ -97,7 +97,7 @@ exports[`PreferencesAndDisplayTab snapshot matches snapshot 1`] = `
           </p>
         </div>
         <button
-          aria-label="Account icon"
+          aria-label="Select Account icon"
           class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
         >
           <svg

@@ -1,19 +1,44 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem } from '../shared';
+import { SettingsTab, createToggleItem, createSelectItem } from '../shared';
 import {
   getManageInstitutionalWallets,
   getShowExtensionInFullSizeView,
+  getTheme,
 } from '../../../selectors';
 import {
   setManageInstitutionalWallets,
   setShowExtensionInFullSizeView,
 } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { ThemeItem } from './theme-item';
-import { LanguageItem } from './language-item';
+import { ThemeType } from '../../../../shared/constants/preferences';
+import { THEME_ROUTE, LANGUAGE_ROUTE } from '../../../helpers/constants/routes';
+import type { MetaMaskReduxState } from '../../../store/store';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import locales from '../../../../app/_locales/index.json';
 import { AccountIdenticonItem } from './account-identicon-item';
 import { ShowDefaultAddressItem } from './show-default-address-item';
+import { THEME_LABEL_MAP } from './theme-utils';
+
+const localeMap = new Map(locales.map(({ code, name }) => [code, name]));
+
+const ThemeItem = createSelectItem({
+  name: 'ThemeItem',
+  labelKey: 'theme',
+  valueSelector: getTheme,
+  formatValue: (theme, t) =>
+    t(THEME_LABEL_MAP[theme as ThemeType] ?? THEME_LABEL_MAP[ThemeType.os]),
+  route: THEME_ROUTE,
+});
+
+const LanguageItem = createSelectItem({
+  name: 'LanguageItem',
+  labelKey: 'language',
+  valueSelector: (state: MetaMaskReduxState) => state.metamask.currentLocale,
+  formatValue: (locale) => localeMap.get(locale) ?? locale,
+  route: LANGUAGE_ROUTE,
+});
 
 const ShowExtensionItem = createToggleItem({
   name: 'ShowExtensionItem',

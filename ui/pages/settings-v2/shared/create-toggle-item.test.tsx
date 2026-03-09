@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import type { MetaMaskReduxState } from '../../../store/store';
 import {
@@ -30,8 +31,8 @@ const createMockStore = (overrides = {}) =>
 
 const testConfig: ToggleItemConfig = {
   name: 'TestToggleItem',
-  titleKey: 'cancel',
-  descriptionKey: 'back',
+  titleKey: 'showExtensionInFullSizeView',
+  descriptionKey: 'showExtensionInFullSizeViewDescription',
   selector: (state: MetaMaskReduxState) =>
     (state.metamask as Record<string, unknown>).testToggleValue as boolean,
   action: mockAction,
@@ -49,14 +50,18 @@ describe('createToggleItem', () => {
     const mockStore = createMockStore();
     renderWithProvider(<TestToggleItem />, mockStore);
 
-    expect(screen.getByText('Cancel')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.showExtensionInFullSizeView.message),
+    ).toBeInTheDocument();
   });
 
   it('renders description from translation key', () => {
     const mockStore = createMockStore();
     renderWithProvider(<TestToggleItem />, mockStore);
 
-    expect(screen.getByText('Back')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.showExtensionInFullSizeViewDescription.message),
+    ).toBeInTheDocument();
   });
 
   it('renders toggle with value from selector', () => {

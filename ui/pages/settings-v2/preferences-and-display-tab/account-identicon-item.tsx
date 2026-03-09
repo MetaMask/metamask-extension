@@ -18,22 +18,20 @@ import { ACCOUNT_IDENTICON_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { SettingsSelectItem } from '../shared';
-import { AVATAR_LABEL_MAP, getAvatarVariant } from './account-identicon-utils';
+import { AVATAR_LABEL_MAP } from './account-identicon-utils';
 
 export const AccountIdenticonItem = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { avatarType, useBlockie } = useSelector(getPreferences);
+  const { avatarType } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const handlePress = () => {
     navigate(ACCOUNT_IDENTICON_ROUTE);
   };
 
-  const currentVariant = getAvatarVariant(
-    avatarType as AvatarAccountVariant | undefined,
-    useBlockie,
-  );
+  const currentVariant: AvatarAccountVariant =
+    avatarType ?? AvatarAccountVariant.Maskicon;
   const labelKey = AVATAR_LABEL_MAP[currentVariant];
 
   return (
@@ -60,7 +58,6 @@ export const AccountIdenticonItem = () => {
         </Box>
       }
       onPress={handlePress}
-      ariaLabel={t('accountIdenticon')}
     />
   );
 };

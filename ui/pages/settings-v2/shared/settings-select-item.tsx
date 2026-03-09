@@ -12,21 +12,21 @@ import {
   ButtonIconSize,
   TextColor,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type SettingsSelectItemProps = {
   label: string;
   /** Text value to display, or a ReactNode for custom content (e.g., icon + text) */
   value: string | ReactNode;
   onPress: () => void;
-  ariaLabel: string;
 };
 
 export const SettingsSelectItem = ({
   label,
   value,
   onPress,
-  ariaLabel,
 }: SettingsSelectItemProps) => {
+  const t = useI18nContext();
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -58,7 +58,7 @@ export const SettingsSelectItem = ({
           size={ButtonIconSize.Sm}
           className="text-icon-alternative"
           onClick={onPress}
-          ariaLabel={ariaLabel}
+          ariaLabel={`${t('select')} ${label}`}
         />
       </Box>
     </Box>

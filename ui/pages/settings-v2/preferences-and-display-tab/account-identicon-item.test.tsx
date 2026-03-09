@@ -53,38 +53,17 @@ describe('AccountIdenticonItem', () => {
     expect(screen.getByText(messages.maskicons.message)).toBeInTheDocument();
   });
 
-  it('falls back to blockies when useBlockie is true and avatarType is undefined', () => {
-    const storeWithUseBlockie = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        preferences: {
-          ...mockState.metamask.preferences,
-          avatarType: undefined,
-          useBlockie: true,
-        },
-      },
-    });
-    renderWithProvider(<AccountIdenticonItem />, storeWithUseBlockie);
-
-    expect(screen.getByText(messages.blockies.message)).toBeInTheDocument();
-  });
-
   it('renders navigation button', () => {
     renderWithProvider(<AccountIdenticonItem />, mockStore);
 
-    const button = screen.getByRole('button', {
-      name: messages.accountIdenticon.message,
-    });
+    const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
   });
 
   it('navigates to account identicon page when clicked', () => {
     renderWithProvider(<AccountIdenticonItem />, mockStore);
 
-    const button = screen.getByRole('button', {
-      name: messages.accountIdenticon.message,
-    });
+    const button = screen.getByRole('button');
     fireEvent.click(button);
 
     expect(mockNavigate).toHaveBeenCalledWith(ACCOUNT_IDENTICON_ROUTE);
