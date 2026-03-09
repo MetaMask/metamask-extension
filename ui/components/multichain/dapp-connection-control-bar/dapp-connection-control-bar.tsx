@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { NonEmptyArray } from '@metamask/utils';
+import { NonEmptyArray, parseCaipAccountId } from '@metamask/utils';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   AvatarFavicon,
@@ -23,12 +23,14 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllPermittedAccountsForCurrentTab,
-  getOrderedConnectedAccountsForActiveTab,
+  getInternalAccountByAddress,
   getOriginOfCurrentTab,
   getPermissionSubjects,
+  getSelectedInternalAccount,
   getSubjectMetadata,
 } from '../../../selectors';
 import {
+  getAccountGroupsByAddress,
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
@@ -74,8 +76,39 @@ export const DappConnectionControlBar: React.FC = () => {
       selectedAccountGroupId,
     ),
   );
-  const orderedConnectedAccounts = useSelector(
-    getOrderedConnectedAccountsForActiveTab,
+  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+
+  const firstPermittedAddress = useMemo(() => {
+    if (permittedAccounts.length === 0) {
+      return undefined;
+    }
+    try {
+      return parseCaipAccountId(permittedAccounts[0]).address;
+    } catch {
+      return undefined;
+    }
+  }, [permittedAccounts]);
+
+  const connectedAccountByAddress = useSelector((state) =>
+    firstPermittedAddress
+      ? getInternalAccountByAddress(
+          state as Parameters<typeof getInternalAccountByAddress>[0],
+          firstPermittedAddress,
+        )
+      : undefined,
+  );
+
+  const connectedAccountAddresses = useMemo(
+    () => (firstPermittedAddress ? [firstPermittedAddress] : []),
+    [firstPermittedAddress],
+  );
+  const connectedAccountGroups = useSelector((state) =>
+    connectedAccountAddresses.length > 0
+      ? getAccountGroupsByAddress(
+          state as Parameters<typeof getAccountGroupsByAddress>[0],
+          connectedAccountAddresses,
+        )
+      : [],
   );
 
   const isConnectedToAccountGroup =
@@ -85,9 +118,15 @@ export const DappConnectionControlBar: React.FC = () => {
     );
   const isConnected = isConnectedToAccountGroup || permittedAccounts.length > 0;
 
-  const selectedConnectedAccount = orderedConnectedAccounts?.[0];
-  const selectedAccountName = selectedConnectedAccount?.metadata?.name ?? '';
+  const selectedConnectedAccount =
+    connectedAccountByAddress ?? selectedInternalAccount;
   const selectedAccountAddress = selectedConnectedAccount?.address ?? '';
+  const selectedAccountName = useMemo(() => {
+    if (connectedAccountGroups.length > 0) {
+      return connectedAccountGroups[0].metadata.name;
+    }
+    return selectedConnectedAccount?.metadata?.name ?? '';
+  }, [connectedAccountGroups, selectedConnectedAccount]);
   const selectedAccountLabel = useMemo(() => {
     if (!selectedAccountName) {
       return '';
