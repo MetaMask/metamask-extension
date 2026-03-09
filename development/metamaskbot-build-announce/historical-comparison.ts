@@ -4,7 +4,10 @@
  * Retrieves benchmark data from MetaMask/extension_benchmark_stats
  * and aggregates it into a mean-of-means reference for PR comment comparisons.
  */
-import type { BenchmarkResults } from '../../shared/constants/benchmarks';
+import type {
+  BenchmarkResults,
+  HistoricalBaselineMetrics,
+} from '../../shared/constants/benchmarks';
 
 const STATS_REPO_BASE =
   'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats';
@@ -28,7 +31,10 @@ type HistoricalCommitEntry = {
 
 export type HistoricalPerformanceFile = Record<string, HistoricalCommitEntry>;
 
-export type HistoricalMeanReference = Record<string, Record<string, number>>;
+export type HistoricalBaselineReference = Record<
+  string,
+  Record<string, HistoricalBaselineMetrics>
+>;
 
 // Must specify ?ref=main explicitly — the stats repo's default branch is gh-pages,
 // so an unqualified API call would list gh-pages content instead of main.
@@ -135,7 +141,7 @@ async function listReleaseBranchesByVersion(): Promise<string[]> {
  */
 export async function fetchHistoricalPerformanceData(
   baseBranch: string = process.env.GITHUB_BASE_REF || 'main',
-): Promise<HistoricalMeanReference | null> {
+): Promise<HistoricalBaselineReference | null> {
   const safeBranch = sanitizeBranch(baseBranch);
 
   // 1. Try the target branch first
@@ -173,10 +179,22 @@ export async function fetchHistoricalPerformanceData(
  * @param result - The benchmark entry to read from.
  * @param collected - Mutable accumulator map.
  */
+type CollectedMetricValues = {
+  [K in keyof HistoricalBaselineMetrics]: number[];
+};
+
+function toNumber(value: unknown): number | undefined {
+  if (typeof value === 'number') {
+    return value;
+  }
+  const parsed = parseFloat(String(value));
+  return isNaN(parsed) ? undefined : parsed;
+}
+
 function collectMetrics(
   benchmarkName: string,
   result: Partial<BenchmarkResults>,
-  collected: Record<string, Record<string, number[]>>,
+  collected: Record<string, Record<string, CollectedMetricValues>>,
 ): void {
   if (!result.mean || typeof result.mean !== 'object') {
     return;
@@ -186,49 +204,52 @@ function collectMetrics(
     collected[benchmarkName] = {};
   }
 
-  for (const [metricName, metricValue] of Object.entries(result.mean)) {
-    const numValue =
-      typeof metricValue === 'number'
-        ? metricValue
-        : parseFloat(String(metricValue));
-
-    if (isNaN(numValue)) {
-      continue;
-    }
-
+  for (const metricName of Object.keys(result.mean)) {
     if (!collected[benchmarkName][metricName]) {
-      collected[benchmarkName][metricName] = [];
+      collected[benchmarkName][metricName] = { mean: [], p75: [], p95: [] };
     }
-    collected[benchmarkName][metricName].push(numValue);
+    const bucket = collected[benchmarkName][metricName];
+
+    const meanVal = toNumber(result.mean[metricName]);
+    if (meanVal !== undefined) {
+      bucket.mean.push(meanVal);
+    }
+
+    const p75Val = toNumber(result.p75?.[metricName]);
+    if (p75Val !== undefined) {
+      bucket.p75.push(p75Val);
+    }
+
+    const p95Val = toNumber(result.p95?.[metricName]);
+    if (p95Val !== undefined) {
+      bucket.p95.push(p95Val);
+    }
   }
 }
 
+function average(values: number[]): number {
+  return values.length === 0
+    ? 0
+    : values.reduce((sum, v) => sum + v, 0) / values.length;
+}
+
 /**
- * Aggregates historical benchmark data from the last N commits
- * into a single mean-of-means reference keyed by benchmark name and metric.
- *
- * All presets share the same nested shape (preset → benchmarkName → result),
- * so each child benchmark is collected directly by its name regardless of
- * which preset group it belongs to.
- *
- * Also handles both numeric and string-encoded metric values.
+ * Aggregates historical benchmark data from the most recent commit
+ * into a baseline reference keyed by benchmark name and metric,
+ * with mean, p75, and p95 values.
  *
  * @param data - Full historical data file contents.
  * @returns Aggregated reference map.
  */
 export function aggregateHistoricalData(
   data: HistoricalPerformanceFile,
-): HistoricalMeanReference {
-  // Each benchmark run already samples 5–100 times and computes its own mean/stdDev,
-  // so a single commit's data is statistically sufficient as a baseline.
-  // Sort by timestamp descending so we always pick the most recent entry,
-  // regardless of JSON key order.
+): HistoricalBaselineReference {
   const latestCommits = Object.keys(data)
     .filter((hash) => data[hash]?.timestamp)
     .sort((a, b) => data[b].timestamp - data[a].timestamp)
     .slice(0, 1);
 
-  const collected: Record<string, Record<string, number[]>> = {};
+  const collected: Record<string, Record<string, CollectedMetricValues>> = {};
 
   for (const hash of latestCommits) {
     const commitData = data[hash];
@@ -249,14 +270,38 @@ export function aggregateHistoricalData(
     }
   }
 
-  // Average collected values into the reference map
-  const reference: HistoricalMeanReference = {};
+  const reference: HistoricalBaselineReference = {};
 
   for (const [name, metrics] of Object.entries(collected)) {
     reference[name] = {};
     for (const [metric, values] of Object.entries(metrics)) {
-      reference[name][metric] =
-        values.reduce((sum, v) => sum + v, 0) / values.length;
+      // Skip metrics where we have no valid data (all NaN)
+      if (values.mean.length === 0) {
+        continue;
+      }
+
+      const meanVal = average(values.mean);
+      // Skip if mean itself is NaN
+      if (Number.isNaN(meanVal)) {
+        continue;
+      }
+
+      if (values.p75.length === 0) {
+        console.warn(
+          `No p75 data for ${name}/${metric}, using mean as fallback`,
+        );
+      }
+      if (values.p95.length === 0) {
+        console.warn(
+          `No p95 data for ${name}/${metric}, using mean as fallback`,
+        );
+      }
+
+      reference[name][metric] = {
+        mean: meanVal,
+        p75: values.p75.length > 0 ? average(values.p75) : meanVal,
+        p95: values.p95.length > 0 ? average(values.p95) : meanVal,
+      };
     }
   }
 

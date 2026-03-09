@@ -60,8 +60,8 @@ describe('aggregateHistoricalData', () => {
     // def456 is the last key → most recent when reversed
     const result = aggregateHistoricalData(mockFile);
 
-    expect(result['pageLoad/standardHome']?.uiStartup).toBe(2000);
-    expect(result['pageLoad/standardHome']?.load).toBe(600);
+    expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(2000);
+    expect(result['pageLoad/standardHome']?.load?.mean).toBe(600);
   });
 
   it('returns empty object when data has no commits', () => {
@@ -79,7 +79,7 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/standardHome']?.uiStartup).toBe(1000);
+    expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1000);
   });
 
   it('skips benchmark entries where mean is null or missing', () => {
@@ -98,7 +98,7 @@ describe('aggregateHistoricalData', () => {
     const result = aggregateHistoricalData(data);
 
     expect(result['pageLoad/badEntry']).toBeUndefined();
-    expect(result['pageLoad/goodEntry']?.uiStartup).toBe(800);
+    expect(result['pageLoad/goodEntry']?.uiStartup?.mean).toBe(800);
   });
 
   it('skips NaN metric values', () => {
@@ -115,7 +115,7 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/entry']?.good).toBe(500);
+    expect(result['pageLoad/entry']?.good?.mean).toBe(500);
     expect(result['pageLoad/entry']?.bad).toBeUndefined();
   });
 
@@ -133,7 +133,7 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/entry']?.uiStartup).toBe(1234.5);
+    expect(result['pageLoad/entry']?.uiStartup?.mean).toBe(1234.5);
   });
 });
 
@@ -165,7 +165,7 @@ describe('fetchHistoricalPerformanceData', () => {
     const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
-    expect(result?.['pageLoad/standardHome']?.uiStartup).toBe(2000);
+    expect(result?.['pageLoad/standardHome']?.uiStartup?.mean).toBe(2000);
     // Should fetch the target branch file directly
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining('main/performance_data.json'),
@@ -404,7 +404,7 @@ describe('fetchHistoricalPerformanceData', () => {
     const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
-    expect(result?.['pageLoad/standardHome']?.uiStartup).toBe(2000);
+    expect(result?.['pageLoad/standardHome']?.uiStartup?.mean).toBe(2000);
   });
 
   it('returns null when all branches produce empty aggregation', async () => {
