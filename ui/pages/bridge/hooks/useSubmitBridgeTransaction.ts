@@ -123,6 +123,9 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
           }),
         );
+        if (hardwareWalletUsed) {
+          return;
+        }
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
           replace: true,
           state: { stayOnHomePage: true },

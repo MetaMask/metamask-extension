@@ -307,12 +307,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           requestId,
         )}`,
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: { stayOnHomePage: true },
-        },
+        expect.anything(),
       );
     });
   });
