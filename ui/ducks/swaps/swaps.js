@@ -778,11 +778,8 @@ export const fetchQuotesAndSetQuoteState = (
     const stablecoinsForChain = StablecoinsByChainId[chainId];
     const isStableTokenPair = Boolean(
       stablecoinsForChain &&
-        checkAddressInSetCaseInsensitive(
-          stablecoinsForChain,
-          fromTokenAddress,
-        ) &&
-        checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, fromTokenAddress) &&
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
     );
 
     const slippageForFetch = isStableTokenPair ? Slippage.stable : maxSlippage;

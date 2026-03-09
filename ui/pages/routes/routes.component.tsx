@@ -204,21 +204,15 @@ const SnapView = mmLazy(
 );
 const ConfirmEncryptionPublicKey = mmLazy(
   (() =>
-    import(
-      '../confirm-encryption-public-key/index.js'
-    )) as unknown as DynamicImportType,
+    import('../confirm-encryption-public-key/index.js')) as unknown as DynamicImportType,
 );
 const ConfirmDecryptMessage = mmLazy(
   (() =>
-    import(
-      '../confirm-decrypt-message/index.js'
-    )) as unknown as DynamicImportType,
+    import('../confirm-decrypt-message/index.js')) as unknown as DynamicImportType,
 );
 const Confirm = mmLazy(
   (() =>
-    import(
-      '../confirmations/confirm/confirm.tsx'
-    )) as unknown as DynamicImportType,
+    import('../confirmations/confirm/confirm.tsx')) as unknown as DynamicImportType,
 );
 const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
@@ -234,33 +228,23 @@ const PermissionsConnect = mmLazy(
 );
 const ConfirmAddSuggestedTokenPage = mmLazy(
   (() =>
-    import(
-      '../confirm-add-suggested-token/index.js'
-    )) as unknown as DynamicImportType,
+    import('../confirm-add-suggested-token/index.js')) as unknown as DynamicImportType,
 );
 const ConfirmAddSuggestedNftPage = mmLazy(
   (() =>
-    import(
-      '../confirm-add-suggested-nft/index.js'
-    )) as unknown as DynamicImportType,
+    import('../confirm-add-suggested-nft/index.js')) as unknown as DynamicImportType,
 );
 const ConfirmationPage = mmLazy(
   (() =>
-    import(
-      '../confirmations/confirmation/index.js'
-    )) as unknown as DynamicImportType,
+    import('../confirmations/confirmation/index.js')) as unknown as DynamicImportType,
 );
 const CreateAccountPage = mmLazy(
   (() =>
-    import(
-      '../create-account/create-account.component.js'
-    )) as unknown as DynamicImportType,
+    import('../create-account/create-account.component.js')) as unknown as DynamicImportType,
 );
 const NftFullImage = mmLazy(
   (() =>
-    import(
-      '../../components/app/assets/nfts/nft-details/nft-full-image.tsx'
-    )) as unknown as DynamicImportType,
+    import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx')) as unknown as DynamicImportType,
 );
 const Asset = mmLazy(
   (() => import('../asset/index.js')) as unknown as DynamicImportType,
@@ -271,30 +255,22 @@ const DeFiPage = mmLazy(
 const PermissionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
-    import(
-      '../../components/multichain/pages/permissions-page/permissions-page.js'
-    )) as unknown as DynamicImportType,
+    import('../../components/multichain/pages/permissions-page/permissions-page.js')) as unknown as DynamicImportType,
 );
 const GatorPermissionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-    )) as unknown as DynamicImportType,
+    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx')) as unknown as DynamicImportType,
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
-    )) as unknown as DynamicImportType,
+    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx')) as unknown as DynamicImportType,
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
-    )) as unknown as DynamicImportType,
+    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx')) as unknown as DynamicImportType,
 );
 
 const Home = mmLazy(
@@ -308,30 +284,22 @@ const DeepLink = mmLazy(
 
 const BasicFunctionalityOff = mmLazy(
   (() =>
-    import(
-      '../basic-functionality-required/basic-functionality-required.tsx'
-    )) as unknown as DynamicImportType,
+    import('../basic-functionality-required/basic-functionality-required.tsx')) as unknown as DynamicImportType,
 );
 
 const MultichainAccountDetailsPage = mmLazy(
   (() =>
-    import(
-      '../multichain-accounts/multichain-account-details-page/index.ts'
-    )) as unknown as DynamicImportType,
+    import('../multichain-accounts/multichain-account-details-page/index.ts')) as unknown as DynamicImportType,
 );
 
 const SmartAccountPage = mmLazy(
   (() =>
-    import(
-      '../multichain-accounts/smart-account-page/index.ts'
-    )) as unknown as DynamicImportType,
+    import('../multichain-accounts/smart-account-page/index.ts')) as unknown as DynamicImportType,
 );
 
 const NonEvmBalanceCheck = mmLazy(
   (() =>
-    import(
-      '../nonevm-balance-check/index.tsx'
-    )) as unknown as DynamicImportType,
+    import('../nonevm-balance-check/index.tsx')) as unknown as DynamicImportType,
 );
 
 const ShieldPlan = mmLazy(
@@ -339,9 +307,7 @@ const ShieldPlan = mmLazy(
 );
 const PerpsMarketDetailPage = mmLazy(
   (() =>
-    import(
-      '../perps/perps-market-detail-page.tsx'
-    )) as unknown as DynamicImportType,
+    import('../perps/perps-market-detail-page.tsx')) as unknown as DynamicImportType,
 );
 const MarketListView = mmLazy(
   (() =>
@@ -353,9 +319,7 @@ const PerpsActivityPage = mmLazy(
 );
 const PerpsOrderEntryPage = mmLazy(
   (() =>
-    import(
-      '../perps/perps-order-entry-page.tsx'
-    )) as unknown as DynamicImportType,
+    import('../perps/perps-order-entry-page.tsx')) as unknown as DynamicImportType,
 );
 
 // Perps pages wrapped with PerpsControllerProvider

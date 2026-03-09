@@ -278,9 +278,9 @@ const AddContact = ({
         cancelText={t('cancel')}
         disabled={Boolean(
           addressInputError ||
-            nameInputError ||
-            !validAddress ||
-            !newName.trim(),
+          nameInputError ||
+          !validAddress ||
+          !newName.trim(),
         )}
         onSubmit={async () => {
           await addToAddressBook(newAddress, newName, '', selectedChainId);

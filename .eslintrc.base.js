@@ -80,8 +80,8 @@ module.exports = {
     // if agreeable turned on upstream in @metamask/eslint-config
     'import/no-named-as-default-member': 'off',
 
-    // This is necessary to run eslint on Windows and not get a thousand CRLF errors
-    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    // Formatting is handled by oxfmt, not eslint-plugin-prettier
+    'prettier/prettier': 'off',
 
     '@metamask/design-tokens/color-no-hex': 'error',
     'import/no-restricted-paths': [

@@ -185,7 +185,7 @@ jobs:
         run: |
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome --retries 1
-          yarn lint:prettier:fix
+          yarn lint:format:fix
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}

@@ -260,8 +260,8 @@ export default function EditContact({
             newAddress === address &&
             selectedChainId === contactChainId &&
             newMemo === memo) ||
-            !contactName.trim() ||
-            nameError,
+          !contactName.trim() ||
+          nameError,
         )}
       />
       {showModal && (

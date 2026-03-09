@@ -48,8 +48,8 @@ export default function EditGasDisplay({
 
   const requireDappAcknowledgement = Boolean(
     transaction?.dappSuggestedGasFees &&
-      !dappSuggestedGasFeeAcknowledged &&
-      dappSuggestedAndTxParamGasFeesAreTheSame,
+    !dappSuggestedGasFeeAcknowledged &&
+    dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
   let warningMessage;

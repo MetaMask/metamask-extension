@@ -36,11 +36,11 @@ export const useShouldDispatchAccountSyncing = () => {
 
   const shouldDispatchAccountSyncing: boolean = Boolean(
     basicFunctionality &&
-      isBackupAndSyncEnabled &&
-      isAccountSyncingEnabled &&
-      isUnlocked &&
-      isSignedIn &&
-      completedOnboarding,
+    isBackupAndSyncEnabled &&
+    isAccountSyncingEnabled &&
+    isUnlocked &&
+    isSignedIn &&
+    completedOnboarding,
   );
 
   return shouldDispatchAccountSyncing;

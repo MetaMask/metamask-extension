@@ -164,7 +164,7 @@ export function NftDetailsComponent({
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
-      collection?.floorAsk?.price?.amount?.native,
+    collection?.floorAsk?.price?.amount?.native,
   );
   const hasLastSalePrice = Boolean(
     lastSale?.price?.amount?.usd && lastSale?.price?.amount?.native,

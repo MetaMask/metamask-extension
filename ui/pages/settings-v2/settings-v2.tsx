@@ -48,9 +48,7 @@ import {
 
 const CurrencySubPage = mmLazy(
   (() =>
-    import(
-      './assets-tab/currency-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+    import('./assets-tab/currency-sub-page.tsx')) as unknown as DynamicImportType,
 );
 
 // Get the first tab's component for rendering at the settings root (like Settings V1)
