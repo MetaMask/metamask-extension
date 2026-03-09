@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Preiseinfluss"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Die Preisauswirkung zeigt, wie Ihr Swap den Marktpreis beeinflusst. Sollten Sie nicht genug für Gas haben, wird ein Teil Ihrer Tokens zur Deckung von Gebühren verwendet, was die Preisauswirkung erhöht. MetaMask legt dies nicht fest oder kontrolliert dies."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Preiseinfluss"
   },
