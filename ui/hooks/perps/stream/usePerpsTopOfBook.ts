@@ -91,11 +91,14 @@ export function usePerpsTopOfBook(
       return;
     }
     hasActivated.current = true;
-    submitRequestToBackground('perpsActivateStreaming', [
-      { orderBookSymbol: symbol },
+    submitRequestToBackground('perpsActivateOrderBookStream', [
+      { symbol },
     ]).catch((err) =>
       console.warn('[usePerpsTopOfBook] activate streaming failed:', err),
     );
+    return () => {
+      submitRequestToBackground('perpsDeactivateOrderBookStream', []);
+    };
   }, [symbol]);
 
   // Extract top of book from the orderBook channel data

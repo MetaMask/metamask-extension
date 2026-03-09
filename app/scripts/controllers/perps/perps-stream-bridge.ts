@@ -133,6 +133,61 @@ export class PerpsStreamBridge {
     }
   }
 
+  activatePriceStream(controller: PerpsController, symbols: string[]): void {
+    this.#tearDownChannel('prices');
+    if (symbols.length) {
+      this.#addDynamicSubscription('prices', () =>
+        controller.subscribeToPrices({
+          symbols,
+          callback: (data: unknown) => this.#emit('prices', data),
+        }),
+      );
+    }
+  }
+
+  deactivatePriceStream(): void {
+    this.#tearDownChannel('prices');
+  }
+
+  activateOrderBookStream(controller: PerpsController, symbol: string): void {
+    this.#tearDownChannel('orderBook');
+    if (symbol) {
+      this.#addDynamicSubscription('orderBook', () =>
+        controller.subscribeToOrderBook({
+          symbol,
+          callback: (data: unknown) => this.#emit('orderBook', data),
+        }),
+      );
+    }
+  }
+
+  deactivateOrderBookStream(): void {
+    this.#tearDownChannel('orderBook');
+  }
+
+  activateCandleStream(
+    controller: PerpsController,
+    params: { symbol: string; interval: CandlePeriod; duration?: TimeDuration },
+  ): void {
+    this.#tearDownChannel('candles');
+    if (params.symbol && params.interval) {
+      this.#addDynamicSubscription('candles', () =>
+        controller.subscribeToCandles({
+          ...params,
+          callback: (data: unknown) =>
+            this.#emit('candles', data, {
+              symbol: params.symbol,
+              interval: params.interval,
+            }),
+        }),
+      );
+    }
+  }
+
+  deactivateCandleStream(): void {
+    this.#tearDownChannel('candles');
+  }
+
   get isActive(): boolean {
     return this.#activated && this.#viewActive;
   }
@@ -155,6 +210,14 @@ export class PerpsStreamBridge {
     }
     for (const key of Object.keys(this.#dynamicUnsubs)) {
       delete this.#dynamicUnsubs[key];
+    }
+  }
+
+  #tearDownChannel(channel: 'prices' | 'orderBook' | 'candles'): void {
+    const unsub = this.#dynamicUnsubs[channel];
+    if (unsub) {
+      this.#callAndClearUnsub(unsub);
+      delete this.#dynamicUnsubs[channel];
     }
   }
 

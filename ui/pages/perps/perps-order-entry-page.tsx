@@ -201,8 +201,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
     // Activate background price stream for this symbol
-    submitRequestToBackground('perpsActivateStreaming', [
-      { priceSymbols: [decodedSymbol] },
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: [decodedSymbol] },
     ]).catch(() => {
       // Controller not ready
     });
@@ -224,6 +224,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     });
 
     return () => {
+      submitRequestToBackground('perpsDeactivatePriceStream', []);
       unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
@@ -237,8 +238,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
     // Activate background orderBook stream for this symbol
-    submitRequestToBackground('perpsActivateStreaming', [
-      { orderBookSymbol: decodedSymbol },
+    submitRequestToBackground('perpsActivateOrderBookStream', [
+      { symbol: decodedSymbol },
     ]).catch(() => {
       // Controller not ready
     });
@@ -261,6 +262,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     });
 
     return () => {
+      submitRequestToBackground('perpsDeactivateOrderBookStream', []);
       unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);

@@ -348,8 +348,8 @@ export class CandleStreamChannel {
     // Tell the background to start emitting candle updates for this key.
     // Data arrives via perpsStreamUpdate { channel: 'candles', symbol, interval, data }
     // which is routed to CandleStreamChannel.pushFromBackground().
-    submitRequestToBackground('perpsActivateStreaming', [
-      { candle: { symbol, interval, duration: entry.duration } },
+    submitRequestToBackground('perpsActivateCandleStream', [
+      { symbol, interval, duration: entry.duration },
     ]).catch((err) => {
       console.warn(
         `[CandleStreamChannel] Failed to activate streaming for ${key}:`,
@@ -376,6 +376,7 @@ export class CandleStreamChannel {
       entry.unsubscribeFromSource = null;
     }
     entry.isConnected = false;
+    submitRequestToBackground('perpsDeactivateCandleStream', []);
   }
 
   /**

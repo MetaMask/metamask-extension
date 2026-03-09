@@ -198,7 +198,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [symbol]);
 
   // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
-  // Uses background streaming via perpsActivateStreaming + PerpsStreamManager
+  // Uses background streaming via perpsActivatePriceStream + PerpsStreamManager
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
@@ -209,8 +209,8 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
 
     // Activate background price stream for this symbol
-    submitRequestToBackground('perpsActivateStreaming', [
-      { priceSymbols: [decodedSymbol] },
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: [decodedSymbol] },
     ]).catch(() => {
       // Controller not ready yet, skip silently
     });
@@ -232,6 +232,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     });
 
     return () => {
+      submitRequestToBackground('perpsDeactivatePriceStream', []);
       unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);

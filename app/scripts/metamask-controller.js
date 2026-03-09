@@ -6602,6 +6602,40 @@ export default class MetamaskController extends EventEmitter {
         }
         return 'ok';
       },
+      perpsActivatePriceStream: async ({ symbols }) => {
+        await this.controllerApi.perpsInit();
+        if (perpsController) {
+          perpsStream.activatePriceStream(perpsController, symbols);
+        }
+        return 'ok';
+      },
+      perpsDeactivatePriceStream: () => {
+        perpsStream.deactivatePriceStream();
+      },
+      perpsActivateOrderBookStream: async ({ symbol }) => {
+        await this.controllerApi.perpsInit();
+        if (perpsController) {
+          perpsStream.activateOrderBookStream(perpsController, symbol);
+        }
+        return 'ok';
+      },
+      perpsDeactivateOrderBookStream: () => {
+        perpsStream.deactivateOrderBookStream();
+      },
+      perpsActivateCandleStream: async ({ symbol, interval, duration }) => {
+        await this.controllerApi.perpsInit();
+        if (perpsController) {
+          perpsStream.activateCandleStream(perpsController, {
+            symbol,
+            interval,
+            duration,
+          });
+        }
+        return 'ok';
+      },
+      perpsDeactivateCandleStream: () => {
+        perpsStream.deactivateCandleStream();
+      },
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
