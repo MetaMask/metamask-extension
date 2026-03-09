@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "I-edit ang palayaw"
   },
-  "editAccountName": {
-    "message": "I-edit ang pangalan ng account"
-  },
   "editAccounts": {
     "message": "I-edit ang mga account"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Nakatago"
-  },
-  "hiddenAccounts": {
-    "message": "Nakatagong mga account"
   },
   "hide": {
     "message": "Itago"
@@ -6257,9 +6251,6 @@
   },
   "search": {
     "message": "Maghanap"
-  },
-  "searchAccounts": {
-    "message": "Maghanap ng mga account"
   },
   "searchAnAcccountOrContact": {
     "message": "Maghanap ng account o contact"

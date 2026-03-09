@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Επεξεργασία ψευδωνύμου"
   },
-  "editAccountName": {
-    "message": "Επεξεργασία ονόματος λογαριασμού"
-  },
   "editAccounts": {
     "message": "Επεξεργασία λογαριασμών"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Απόκρυψη"
-  },
-  "hiddenAccounts": {
-    "message": "Κρυφοί λογαριασμοί"
   },
   "hide": {
     "message": "Απόκρυψη"
@@ -6257,9 +6251,6 @@
   },
   "search": {
     "message": "Αναζήτηση"
-  },
-  "searchAccounts": {
-    "message": "Αναζήτηση λογαριασμών"
   },
   "searchAnAcccountOrContact": {
     "message": "Αναζήτηση λογαριασμού ή επαφής"

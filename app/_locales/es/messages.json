@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Editar apodo"
   },
-  "editAccountName": {
-    "message": "Editar el nombre de la cuenta"
-  },
   "editAccounts": {
     "message": "Editar cuentas"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Oculto"
-  },
-  "hiddenAccounts": {
-    "message": "Cuentas ocultas"
   },
   "hide": {
     "message": "Ocultar"
@@ -6257,9 +6251,6 @@
   },
   "search": {
     "message": "Buscar"
-  },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
   },
   "searchAnAcccountOrContact": {
     "message": "Buscar una cuenta o contacto"

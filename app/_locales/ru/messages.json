@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Редактировать псевдоним"
   },
-  "editAccountName": {
-    "message": "Изменить имя счета"
-  },
   "editAccounts": {
     "message": "Изменить счета"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Скрыто"
-  },
-  "hiddenAccounts": {
-    "message": "Скрыть счета"
   },
   "hide": {
     "message": "Скрыть"
@@ -6257,9 +6251,6 @@
   },
   "search": {
     "message": "Поиск"
-  },
-  "searchAccounts": {
-    "message": "Поиск счетов"
   },
   "searchAnAcccountOrContact": {
     "message": "Поиск по аккаунту или контакту"

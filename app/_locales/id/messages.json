@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Edit nama panggilan"
   },
-  "editAccountName": {
-    "message": "Edit nama akun"
-  },
   "editAccounts": {
     "message": "Edit akun"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Tersembunyi"
-  },
-  "hiddenAccounts": {
-    "message": "Akun tersembunyi"
   },
   "hide": {
     "message": "Sembunyikan"
@@ -6257,9 +6251,6 @@
   },
   "search": {
     "message": "Cari"
-  },
-  "searchAccounts": {
-    "message": "Cari akun"
   },
   "searchAnAcccountOrContact": {
     "message": "Cari akun atau kontak"
