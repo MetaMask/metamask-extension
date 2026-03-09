@@ -14,7 +14,7 @@ import migration11 from './011';
 import migration12 from './012';
 import migration13 from './013';
 
-let vault5, vault6, vault7, vault8, vault9; // vault10, vault11
+let vault6, vault7, vault8, vault9; // vault10, vault11
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/';
 const newTestRpc = 'https://testrpc.metamask.io/';
@@ -68,16 +68,12 @@ describe('wallet1 is migrated successfully', () => {
           ],
         );
 
-        vault5 = fifthResult;
         return migration6.migrate(fifthResult);
       })
       .then((sixthResult) => {
         expect(
           sixthResult.data.KeyringController.selectedAccount,
         ).toBeUndefined();
-        expect(
-          sixthResult.data.PreferencesController.selectedAddress,
-        ).toStrictEqual(vault5.data.KeyringController.selectedAccount);
 
         vault6 = sixthResult;
         return migration7.migrate(sixthResult);

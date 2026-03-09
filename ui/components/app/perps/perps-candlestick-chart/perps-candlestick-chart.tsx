@@ -115,6 +115,10 @@ const PerpsCandlestickChart = forwardRef<
     // Edge detection cooldown
     const lastLoadMoreTimeRef = useRef<number>(0);
 
+    // Suppress crosshair callback during our own data updates to avoid update loop:
+    // update()/setData() can cause the library to emit crosshair move → parent setState → re-render → effect runs again.
+    const isApplyingDataUpdateRef = useRef<boolean>(false);
+
     // Track created price line objects for cleanup
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const activePriceLinesRef = useRef<any[]>([]);
@@ -296,7 +300,8 @@ const PerpsCandlestickChart = forwardRef<
 
       // Crosshair move: report hovered candle for OHLCV bar
       chart.subscribeCrosshairMove((param) => {
-        if (!onCrosshairMoveRef.current) {
+        // Skip during our own data updates to prevent loop: update/setData → crosshair → setState → re-render → effect → update
+        if (isApplyingDataUpdateRef.current || !onCrosshairMoveRef.current) {
           return;
         }
 
@@ -350,6 +355,8 @@ const PerpsCandlestickChart = forwardRef<
       if (!seriesRef.current || !chartRef.current || !candleData) {
         return;
       }
+
+      isApplyingDataUpdateRef.current = true;
 
       const { candles } = candleData;
       const currentCount = candles.length;
@@ -430,6 +437,13 @@ const PerpsCandlestickChart = forwardRef<
       // Update tracking refs
       prevCandleCountRef.current = currentCount;
       prevLastCandleTimeRef.current = currentLastTime;
+
+      // Clear flag after chart has applied updates (library may emit crosshair on next frame)
+      const timeoutId = setTimeout(() => {
+        isApplyingDataUpdateRef.current = false;
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
     }, [candleData, selectedPeriod, onPeriodDataRequest]);
 
     // Manage price lines (TP, Entry, SL, etc.)
