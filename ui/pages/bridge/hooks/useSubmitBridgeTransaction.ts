@@ -1,9 +1,9 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
-  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
@@ -17,6 +17,10 @@ import {
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
+import {
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
@@ -71,61 +75,55 @@ export default function useSubmitBridgeTransaction() {
   const warnings = useSelector(getWarningLabels);
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    if (!fromAccount) {
-      throw new Error(
-        'Failed to submit bridge transaction: No selected account',
-      );
+    // Set submitting state before async checks to prevent duplicate submissions.
+    setIsSubmitting(true);
+
+    // Verify HW wallet and network before submitting
+    try {
+      if (isHardwareWalletAccount) {
+        const isDeviceReady = await ensureDeviceReady();
+        if (!isDeviceReady) {
+          throw new Error('Hardware wallet device is not ready');
+        }
+      }
+
+      if (!fromAccount) {
+        throw new Error(
+          'Failed to submit bridge transaction: No selected account',
+        );
+      }
+
+      // If bridging, enable All Networks view so the user can see their bridging activity
+      if (
+        isCrossChain(
+          quoteResponse.quote.srcChainId,
+          quoteResponse.quote.destChainId,
+        )
+      ) {
+        enableMissingNetwork(
+          formatChainIdToCaip(quoteResponse.quote.destChainId),
+        );
+      }
+    } catch {
+      setIsSubmitting(false);
+      return;
     }
 
-    // If bridging, enable All Networks view so the user can see their bridging activity
-    if (
-      isCrossChain(
-        quoteResponse.quote.srcChainId,
-        quoteResponse.quote.destChainId,
-      )
-    ) {
-      enableMissingNetwork(
-        formatChainIdToCaip(quoteResponse.quote.destChainId),
-      );
-    }
-
+    // Navigate to HW signing page
     if (hardwareWalletUsed) {
-      const {
-        quote: { requestId },
-      } = quoteResponse;
-      // Preserve requestId across popup -> fullscreen transitions (QR flow).
-      navigateToHwSigningPage(requestId);
+      navigateToHwSigningPage();
+      setIsSubmitting(false);
     }
 
     // Execute transaction(s)
     try {
-      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
-      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
-
-      if (isNonEvmSource) {
-        // Submit the transaction first, THEN navigate
-        await dispatch(
-          await submitBridgeTx(
-            fromAccount.address,
-            quoteResponse,
-            false,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-            ),
-          ),
-        );
-        navigateToActivityPage();
-        return;
-      }
-
       await dispatch(
         await submitBridgeTx(
           fromAccount.address,
@@ -145,10 +143,10 @@ export default function useSubmitBridgeTransaction() {
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
         navigateToBridgePage();
-      } else {
-        navigateToActivityPage();
+        return;
       }
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
 
     navigateToActivityPage();
@@ -156,5 +154,6 @@ export default function useSubmitBridgeTransaction() {
 
   return {
     submitBridgeTransaction,
+    isSubmitting,
   };
 }

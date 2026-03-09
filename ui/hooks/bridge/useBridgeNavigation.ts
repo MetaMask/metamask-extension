@@ -32,10 +32,11 @@ import {
 } from '../../helpers/constants/routes';
 import { getBridgeState } from '../../ducks/bridge/selectors';
 import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
-import { clearSwapsState } from '../../ducks/swaps/swaps';
-import { resetBackgroundSwapsState } from '../../store/actions';
 import type { BridgeState, BridgeToken } from '../../ducks/bridge/types';
-import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import {
+  trackUnifiedSwapBridgeEvent,
+  resetBridgeControllerAndCache,
+} from '../../ducks/bridge/actions';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -69,7 +70,7 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
  * for the bridge navigation state. The navigation state is used for persisting and restoring data
  * when the user navigates (see usePrefilledQuoteParams hook).
  *
- * @returns a function to navigate to a bridge-related page, and the current navigation state
+ * @returns a function to navigate to a bridge route, and the current navigation state
  */
 export const useBridgeNavigation = () => {
   const navigate = useNavigate();
@@ -77,7 +78,7 @@ export const useBridgeNavigation = () => {
 
   const { search, pathname, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
-    () => maybeState ?? { token: null },
+    () => maybeState ?? {},
     [maybeState],
   );
   const bridgeState = useSelector(getBridgeState);
@@ -87,7 +88,7 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, stayOnHomePage = false) =>
+    (to: To = { pathname }, stayOnHomePage = false) => {
       navigate(to, {
         state: {
           ...state,
@@ -95,8 +96,8 @@ export const useBridgeNavigation = () => {
           token: null,
           stayOnHomePage,
         },
-        replace: true,
-      }),
+      });
+    },
     [state, pathname],
   );
 
@@ -129,22 +130,22 @@ export const useBridgeNavigation = () => {
   /**
    * Navigates to the bridge page.
    * @param token - The token to set after loading the bridge page.
-   * @param searchParams - The search params for deep-link input parameters.
    * @param isEntrypoint - Whether the bridge page is being loaded for the first time.
+   * @param search - The search params for deep-link input parameters.
    */
   const navigateToBridgePage = useCallback(
     (
       params: {
         token: BridgeNavigationOptions['state']['token'];
-        searchParams: string;
+        search: URLSearchParams;
         isEntrypoint: boolean;
       } = {
         token: state?.token,
-        searchParams: new URLSearchParams('').toString(),
+        search: new URLSearchParams(''),
         isEntrypoint: false,
       },
     ) => {
-      const { token, searchParams, isEntrypoint } = params;
+      const { token, search: searchParams, isEntrypoint } = params;
       // Publish PageViewed event on initial page view
       isEntrypoint &&
         dispatch(
@@ -156,7 +157,7 @@ export const useBridgeNavigation = () => {
       navigate(
         {
           pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-          search: searchParams,
+          search: searchParams.toString(),
         },
         {
           state: {
@@ -219,26 +220,12 @@ export const useBridgeNavigation = () => {
 
   /**
    * Navigates to the hw transaction signing page.
-   * @param requestId - The requestId to preserve for the QR wallet flow.
    */
-  const navigateToHwSigningPage = useCallback(
-    (requestId?: string) => {
-      const searchParams = new URLSearchParams('');
-      if (requestId) {
-        searchParams.set('requestId', requestId);
-      }
-      navigate(
-        {
-          pathname: `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-          search: searchParams.toString(),
-        },
-        {
-          state,
-        },
-      );
-    },
-    [state],
-  );
+  const navigateToHwSigningPage = useCallback(() => {
+    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`, {
+      state,
+    });
+  }, [state]);
 
   /**
    * Navigates to the activity page and clears the navigation state.
@@ -256,10 +243,7 @@ export const useBridgeNavigation = () => {
   }, [state]);
 
   const navigateToDefaultRoute = useCallback(async () => {
-    // TODO remove these when swaps codebase is removed
-    dispatch(clearSwapsState());
-    dispatch(resetBackgroundSwapsState());
-
+    dispatch(resetBridgeControllerAndCache());
     const isFromTransactionShield = new URLSearchParams(search || '').get(
       BridgeQueryParams.IsFromTransactionShield,
     );
@@ -278,6 +262,10 @@ export const useBridgeNavigation = () => {
 
   return {
     bridgeState: memoizedBridgeState,
+    /**
+     * The token propagated through the bridge navigation state when the Swap button is clicked
+     * from the asset page
+     */
     token: memoizedToken,
     search,
     resetLocationState,

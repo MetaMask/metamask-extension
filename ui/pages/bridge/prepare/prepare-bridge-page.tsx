@@ -11,6 +11,8 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
+import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -86,19 +88,19 @@ import {
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
-import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
+import { BridgePriceImpactWarningModal } from './bridge-price-impact-modal';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -206,6 +208,8 @@ const PrepareBridgePage = ({
     isDestinationAccountPickerOpen,
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
+
+  useLatestBalance();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -357,6 +361,11 @@ const PrepareBridgePage = ({
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
 
+  const [priceImpactModalVariant, togglePriceImpactModalWithVariant] =
+    useState<
+      React.ComponentProps<typeof BridgePriceImpactWarningModal>['variant']
+    >(null);
+
   const getFromInputHeader = () => {
     return t('swapSelectToken');
   };
@@ -375,6 +384,13 @@ const PrepareBridgePage = ({
         }}
         selectedAccount={selectedDestinationAccount}
         onClose={() => setIsDestinationAccountPickerOpen(false)}
+      />
+
+      <BridgePriceImpactWarningModal
+        variant={priceImpactModalVariant}
+        onClose={() => {
+          togglePriceImpactModalWithVariant(null);
+        }}
       />
 
       <Column className="prepare-bridge-page" gap={4}>
@@ -582,6 +598,9 @@ const PrepareBridgePage = ({
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }
+              onOpenPriceImpactWarningModal={() =>
+                togglePriceImpactModalWithVariant('quote-card')
+              }
               onOpenSlippageModal={onOpenSettings}
               selectedDestinationAccount={selectedDestinationAccount}
             />
@@ -597,6 +616,9 @@ const PrepareBridgePage = ({
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
                 description={t('noOptionsAvailableMessage')}
+                descriptionProps={{
+                  'data-testid': 'bridge-no-options-available',
+                }}
                 textAlign={TextAlign.Left}
               />
             </Column>
@@ -653,6 +675,9 @@ const PrepareBridgePage = ({
               }
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
+              }
+              onOpenPriceImpactWarningModal={() =>
+                togglePriceImpactModalWithVariant('submit-cta')
               }
             />
           )}
@@ -729,6 +754,9 @@ const PrepareBridgePage = ({
                   : 'bridgeValidationInsufficientGasMessage',
                 [ticker],
               )}
+              descriptionProps={{
+                'data-testid': 'bridge-insufficient-gas-for-quote',
+              }}
               textAlign={TextAlign.Left}
               actionButtonLabel={t('buyMoreAsset', [ticker])}
               actionButtonOnClick={() => openBuyCryptoInPdapp()}

@@ -14,6 +14,7 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
+  HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
 import PrepareBridgePage from './prepare-bridge-page';
 
@@ -105,7 +106,9 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -189,7 +192,9 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -253,7 +258,9 @@ describe('PrepareBridgePage', () => {
 
     expect(() =>
       renderWithProvider(
-        <PrepareBridgePage onOpenSettings={jest.fn()} />,
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
         configureStore(mockStore),
       ),
     ).toThrow();
@@ -276,7 +283,9 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
