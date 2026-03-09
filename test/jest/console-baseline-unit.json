@@ -357,10 +357,6 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/connected-status-indicator/connected-status-indicator.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/contact-list/contact-list.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
