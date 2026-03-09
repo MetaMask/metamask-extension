@@ -1991,6 +1991,12 @@
   "customerSupport": {
     "message": "customer support"
   },
+  "customizeTransactionNonce": {
+    "message": "Customize transaction nonce"
+  },
+  "customizeTransactionNonceDescription": {
+    "message": "Set a custom nonce when confirming a transaction. Only change this if you know what you're doing."
+  },
   "customizeYourNotifications": {
     "message": "Customize your notifications"
   },
@@ -7387,18 +7393,6 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
-  "customizeTransactionNonce": {
-    "message": "Customize transaction nonce"
-  },
-  "customizeTransactionNonceDescription": {
-    "message": "Set a custom nonce when confirming a transaction. Only change this if you know what you're doing."
-  },
-  "smartAccountRequestsFromDapps": {
-    "message": "Smart account requests from dapps"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
-  },
   "showLess": {
     "message": "Show less"
   },
@@ -7567,6 +7561,12 @@
   },
   "smartAccountLabel": {
     "message": "Smart Account"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Smart account requests from dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
