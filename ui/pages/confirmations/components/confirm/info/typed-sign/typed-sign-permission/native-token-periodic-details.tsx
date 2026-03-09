@@ -18,6 +18,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { formatPeriodDuration } from './typed-sign-permission-util';
 import { DateAndTimeRow } from './date-and-time-row';
 import { NativeAmountRow } from './native-amount-row';
+import { Expiry } from './expiry';
 
 /**
  * Component for displaying native token periodic permission details.
@@ -73,18 +74,7 @@ export const NativeTokenPeriodicDetails: React.FC<{
         label={t('confirmFieldStartDate')}
       />
 
-      {expiry ? (
-        <DateAndTimeRow
-          timestamp={expiry}
-          label={t('confirmFieldExpiration')}
-        />
-      ) : (
-        <ConfirmInfoRow label={t('confirmFieldExpiration')}>
-          <Text variant={TextVariant.BodyMd}>
-            {t('confirmFieldNeverExpires')}
-          </Text>
-        </ConfirmInfoRow>
-      )}
+      <Expiry expiry={expiry} />
     </ConfirmInfoSection>
   );
 };

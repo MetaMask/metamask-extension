@@ -3,18 +3,15 @@ import React from 'react';
 
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
-import { Text, TextVariant } from '@metamask/design-system-react';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowDivider,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { fetchErc20Decimals } from '../../../../../utils/token';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
+import { Expiry } from './expiry';
 
 /**
  * Component for displaying ERC20 token stream permission details.
@@ -79,18 +76,7 @@ export const Erc20TokenStreamDetails: React.FC<{
           timestamp={startTime}
           label={t('confirmFieldStartDate')}
         />
-        {expiry ? (
-          <DateAndTimeRow
-            timestamp={expiry}
-            label={t('confirmFieldExpiration')}
-          />
-        ) : (
-          <ConfirmInfoRow label={t('confirmFieldExpiration')}>
-            <Text variant={TextVariant.BodyMd}>
-              {t('confirmFieldNeverExpires')}
-            </Text>
-          </ConfirmInfoRow>
-        )}
+        <Expiry expiry={expiry} />
       </ConfirmInfoSection>
 
       <ConfirmInfoSection data-testid="erc20-token-stream-stream-rate-section">

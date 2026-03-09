@@ -4,13 +4,9 @@ import type { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { Text, TextVariant } from '@metamask/design-system-react';
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowDivider,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
 import {
   getNativeTokenInfo,
   MetaMaskReduxState,
@@ -19,6 +15,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../share
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NativeAmountRow } from './native-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
+import { Expiry } from './expiry';
 
 /**
  * Component for displaying native token stream permission details.
@@ -82,18 +79,7 @@ export const NativeTokenStreamDetails: React.FC<{
           timestamp={startTime}
           label={t('confirmFieldStartDate')}
         />
-        {expiry ? (
-          <DateAndTimeRow
-            timestamp={expiry}
-            label={t('confirmFieldExpiration')}
-          />
-        ) : (
-          <ConfirmInfoRow label={t('confirmFieldExpiration')}>
-            <Text variant={TextVariant.BodyMd}>
-              {t('confirmFieldNeverExpires')}
-            </Text>
-          </ConfirmInfoRow>
-        )}
+        <Expiry expiry={expiry} />
       </ConfirmInfoSection>
 
       <ConfirmInfoSection data-testid="native-token-stream-stream-rate-section">

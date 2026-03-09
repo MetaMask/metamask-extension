@@ -1,10 +1,7 @@
 import React from 'react';
 
-import { Text, TextVariant } from '@metamask/design-system-react';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { DateAndTimeRow } from './date-and-time-row';
+import { Expiry } from './expiry';
 
 /**
  * Displays details for the ERC20 token revocation permission.
@@ -17,22 +14,9 @@ import { DateAndTimeRow } from './date-and-time-row';
 export const Erc20TokenRevocationDetails: React.FC<{
   expiry: number | null;
 }> = ({ expiry }) => {
-  const t = useI18nContext();
-
   return (
     <ConfirmInfoSection data-testid="erc20-token-revocation-details-section">
-      {expiry ? (
-        <DateAndTimeRow
-          timestamp={expiry}
-          label={t('confirmFieldExpiration')}
-        />
-      ) : (
-        <ConfirmInfoRow label={t('confirmFieldExpiration')}>
-          <Text variant={TextVariant.BodyMd}>
-            {t('confirmFieldNeverExpires')}
-          </Text>
-        </ConfirmInfoRow>
-      )}
+      <Expiry expiry={expiry} />
     </ConfirmInfoSection>
   );
 };
