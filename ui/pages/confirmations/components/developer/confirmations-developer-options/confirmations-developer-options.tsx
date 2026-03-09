@@ -3,6 +3,7 @@ import React from 'react';
 import { Text } from '../../../../../components/component-library';
 import { TextColor } from '../../../../../helpers/constants/design-system';
 import { MusdConversionButton } from '../musd-conversion-button';
+import { PerpsDepositButton } from '../perps-deposit-button';
 
 export const ConfirmationsDeveloperOptions = () => {
   return (
@@ -22,6 +23,7 @@ export const ConfirmationsDeveloperOptions = () => {
       </Text>
       <div className="settings-page__content-padded">
         <MusdConversionButton />
+        <PerpsDepositButton />
       </div>
     </>
   );
