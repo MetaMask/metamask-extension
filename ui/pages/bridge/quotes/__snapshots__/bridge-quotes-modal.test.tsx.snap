@@ -1,5 +1,183 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal quotes-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Back"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/arrow-left.svg');"
+                />
+              </button>
+            </div>
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              >
+                Select quote
+              </h4>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee.
+            </p>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="overflow: scroll;"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
+              style="position: relative;"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-primary-default"
+                style="position: absolute; left: 4px; top: 4px; height: calc(100% - 8px); width: 4px; border-radius: 8px;"
+              />
+              <div
+                class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  style="white-space: nowrap; flex-shrink: 1; text-overflow: ellipsis;"
+                >
+                  Across
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                  style="white-space: nowrap;"
+                >
+                  13.98 USDC
+                </p>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-stretch mm-box--width-full"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    style="white-space: nowrap;"
+                  >
+                    Total cost: $10.16
+                  </p>
+                  <div
+                    class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-success-muted mm-box--rounded-sm"
+                    style="white-space: nowrap; padding-inline: 6px; padding-top: 0px; padding-bottom: 0px;"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-success-default"
+                    >
+                      Lowest cost
+                    </p>
+                  </div>
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  style="white-space: nowrap;"
+                >
+                  $13.84
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
+              style="position: relative;"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  style="white-space: nowrap; flex-shrink: 1; text-overflow: ellipsis;"
+                >
+                  Celercircle
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                  style="white-space: nowrap;"
+                >
+                  13.8 USDC
+                </p>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-stretch mm-box--width-full"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    style="white-space: nowrap;"
+                  >
+                    Total cost: $10.34
+                  </p>
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  style="white-space: nowrap;"
+                >
+                  $13.66
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
 exports[`BridgeQuotesModal should render the modal 1`] = `
 <body>
   <div
@@ -163,6 +341,180 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 >
                   $13.66
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
+exports[`BridgeQuotesModal should render the modal when exchange rates are not available 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal quotes-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Back"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/arrow-left.svg');"
+                />
+              </button>
+            </div>
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              >
+                Select quote
+              </h4>
+            </div>
+          </header>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee.
+            </p>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="overflow: scroll;"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
+              style="position: relative;"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-primary-default"
+                style="position: absolute; left: 4px; top: 4px; height: calc(100% - 8px); width: 4px; border-radius: 8px;"
+              />
+              <div
+                class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  style="white-space: nowrap; flex-shrink: 1; text-overflow: ellipsis;"
+                >
+                  Across
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                  style="white-space: nowrap;"
+                >
+                  13.98 USDC
+                </p>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-stretch mm-box--width-full"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    style="white-space: nowrap;"
+                  >
+                    Total cost: 0.001 ETH
+                  </p>
+                  <div
+                    class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-success-muted mm-box--rounded-sm"
+                    style="white-space: nowrap; padding-inline: 6px; padding-top: 0px; padding-bottom: 0px;"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-success-default"
+                    >
+                      Lowest cost
+                    </p>
+                  </div>
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  style="white-space: nowrap;"
+                />
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
+              style="position: relative;"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  style="white-space: nowrap; flex-shrink: 1; text-overflow: ellipsis;"
+                >
+                  Celercircle
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                  style="white-space: nowrap;"
+                >
+                  13.8 USDC
+                </p>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-stretch mm-box--width-full"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    style="white-space: nowrap;"
+                  >
+                    Total cost: 0.001 ETH
+                  </p>
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  style="white-space: nowrap;"
+                />
               </div>
             </div>
           </div>
