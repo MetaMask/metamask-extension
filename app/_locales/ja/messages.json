@@ -985,9 +985,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました"
   },
-  "bridgeCalculatingAmount": {
-    "message": "計算中..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
   },

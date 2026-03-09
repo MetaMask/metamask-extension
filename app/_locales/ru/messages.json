@@ -985,9 +985,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ссылка обозревателя блоков скопирована"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Расчет..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Вам нужно будет подтвердить 2 транзакции в Вашем аппаратном кошельке:"
   },

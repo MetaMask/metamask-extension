@@ -985,9 +985,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nakopya ang link ng block explorer"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Kinakalkula..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Kakailanganin mong kumpirmahin ang 2 transaksyon sa iyong hardware wallet:"
   },

@@ -985,9 +985,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Le lien de l’explorateur de blocs a été copié"
   },
-  "bridgeCalculatingAmount": {
-    "message": "En train de calculer…"
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Vous devrez confirmer 2 transactions sur votre portefeuille matériel :"
   },
