@@ -183,14 +183,6 @@ type CollectedMetricValues = {
   [K in keyof HistoricalBaselineMetrics]: number[];
 };
 
-function toNumber(value: unknown): number | undefined {
-  if (typeof value === 'number') {
-    return value;
-  }
-  const parsed = parseFloat(String(value));
-  return isNaN(parsed) ? undefined : parsed;
-}
-
 function collectMetrics(
   benchmarkName: string,
   result: Partial<BenchmarkResults>,
@@ -204,25 +196,25 @@ function collectMetrics(
     collected[benchmarkName] = {};
   }
 
+  const isValidNumber = (val: unknown): val is number =>
+    typeof val === 'number' && !isNaN(val);
+
   for (const metricName of Object.keys(result.mean)) {
     if (!collected[benchmarkName][metricName]) {
       collected[benchmarkName][metricName] = { mean: [], p75: [], p95: [] };
     }
     const bucket = collected[benchmarkName][metricName];
 
-    const meanVal = toNumber(result.mean[metricName]);
-    if (meanVal !== undefined) {
-      bucket.mean.push(meanVal);
+    if (isValidNumber(result.mean[metricName])) {
+      bucket.mean.push(result.mean[metricName]);
     }
 
-    const p75Val = toNumber(result.p75?.[metricName]);
-    if (p75Val !== undefined) {
-      bucket.p75.push(p75Val);
+    if (isValidNumber(result.p75?.[metricName])) {
+      bucket.p75.push(result.p75[metricName]);
     }
 
-    const p95Val = toNumber(result.p95?.[metricName]);
-    if (p95Val !== undefined) {
-      bucket.p95.push(p95Val);
+    if (isValidNumber(result.p95?.[metricName])) {
+      bucket.p95.push(result.p95[metricName]);
     }
   }
 }

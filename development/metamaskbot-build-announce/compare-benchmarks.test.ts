@@ -101,6 +101,32 @@ describe('compare-benchmarks', () => {
       expect(comparison.relativeMetrics[0].baseline).toBe(1400);
     });
 
+    it('resolves page-load baseline by stripping benchmark- prefix from filename', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-browserify-startupStandardHome',
+          data: {
+            standardHome: makeBenchmarkResults({
+              p75: { uiStartup: 1800 },
+              p95: { uiStartup: 2200 },
+              mean: { uiStartup: 1500 },
+            }),
+          },
+        },
+      ];
+
+      const baseline = {
+        'pageLoad/chrome-browserify-startupStandardHome': {
+          uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        },
+      };
+
+      const result = runComparison(benchmarks, baseline);
+      const comparison = result.comparisons[0];
+      expect(comparison.relativeMetrics.length).toBeGreaterThan(0);
+      expect(comparison.relativeMetrics[0].baseline).toBe(1700);
+    });
+
     it('skips entries with no matching threshold config', () => {
       const benchmarks = [
         {

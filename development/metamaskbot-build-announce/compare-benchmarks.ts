@@ -119,7 +119,9 @@ function resolveBaseline(
   entryName: string,
   fileName: string,
 ): HistoricalBaselineReference[string] | undefined {
-  const candidates = [entryName, fileName];
+  const strippedFileName = fileName.replace(/^benchmark-/u, '');
+
+  const candidates = [entryName, strippedFileName, fileName];
 
   for (const candidate of candidates) {
     if (baseline[candidate]) {
