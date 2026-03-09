@@ -54,7 +54,6 @@ import {
   getInternalAccounts,
   getSelectedInternalAccount,
   isSolanaAccount,
-  isTronAccount,
 } from './accounts';
 import {
   getIsMainnet,
