@@ -6,6 +6,7 @@ import {
 import { Transform } from 'readable-stream';
 import { JsonRpcNotification } from '@metamask/utils';
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../../shared/constants/messages';
 import { MessengerSubscriptions } from './MessengerSubscriptions';
 
 const MOCK_STATE_CHANGE = {
@@ -52,7 +53,7 @@ describe('MessengerSubscriptions', () => {
 
     expect(writeSpy).toHaveBeenCalledWith({
       jsonrpc: '2.0',
-      method: 'messengerSubscription',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
       params: [event, [{ foo: 'bar' }, []]],
     });
   });

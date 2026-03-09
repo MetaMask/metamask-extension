@@ -3,8 +3,8 @@ import {
   Json,
   JsonRpcNotification,
 } from '@metamask/utils';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
 import {
-  MESSENGER_SUBSCRIPTION_NOTIFICATION,
   setBackgroundConnection,
   subscribeToMessengerEvent,
 } from './background-connection';

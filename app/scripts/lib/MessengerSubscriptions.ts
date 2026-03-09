@@ -1,6 +1,7 @@
 import { Duplex } from 'readable-stream';
 import { NamespacedName } from '@metamask/messenger';
 import { BaseControllerMessenger } from '../controller-init/types';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../../shared/constants/messages';
 import { isStreamWritable } from './stream-utils';
 
 export class MessengerSubscriptions {
@@ -39,7 +40,7 @@ export class MessengerSubscriptions {
 
       this.#stream.write({
         jsonrpc: '2.0',
-        method: 'messengerSubscription',
+        method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
         params: [event, payload],
       });
     };

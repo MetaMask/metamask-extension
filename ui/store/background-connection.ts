@@ -2,6 +2,7 @@ import { NamespacedName } from '@metamask/messenger';
 import { Json, JsonRpcNotification } from '@metamask/utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,8 +51,6 @@ export async function setBackgroundConnection(
 ) {
   background = backgroundConnection;
 }
-
-export const MESSENGER_SUBSCRIPTION_NOTIFICATION = 'messengerSubscription';
 
 /**
  * Subscribe to a given messenger event emitted by the background.

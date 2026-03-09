@@ -26,6 +26,7 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -44,10 +45,7 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import {
-  setBackgroundConnection,
-  MESSENGER_SUBSCRIPTION_NOTIFICATION,
-} from './store/background-connection';
+import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
