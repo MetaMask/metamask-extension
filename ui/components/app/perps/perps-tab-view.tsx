@@ -5,7 +5,7 @@ import {
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
-import { usePerpsDeposit } from '../../../hooks/perps';
+import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsWatchlist } from './perps-watchlist';
@@ -26,7 +26,7 @@ import {
  * without loading skeletons when switching between views.
  */
 export const PerpsTabView: React.FC = () => {
-  const { triggerDeposit } = usePerpsDeposit();
+  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
   // Use stream hooks for real-time data
   const { positions, isInitialLoading: positionsLoading } =

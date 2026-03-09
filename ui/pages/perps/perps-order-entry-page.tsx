@@ -40,7 +40,8 @@ import {
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility, usePerpsDeposit } from '../../hooks/perps';
+import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
@@ -122,7 +123,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
-  const { triggerDeposit } = usePerpsDeposit();
+  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
