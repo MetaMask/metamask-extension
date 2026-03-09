@@ -324,9 +324,7 @@ function TransactionListItemInner({
             <TransactionStatusLabel
               statusOnly
               isPending={isPending}
-              isEarliestNonce={
-                isEarliestNonce || shouldShowPendingBridgeStatus
-              }
+              isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
               date={date}
               status={displayedStatusKey}

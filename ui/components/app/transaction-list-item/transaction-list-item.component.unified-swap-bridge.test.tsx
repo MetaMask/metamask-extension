@@ -128,7 +128,8 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
                     protocol: 'cowswap',
                   },
                 },
-                originalTransactionId: mockUnifiedSwapTxGroup.initialTransaction.id,
+                originalTransactionId:
+                  mockUnifiedSwapTxGroup.initialTransaction.id,
                 status: {
                   ...mockBridgeTxData.bridgeHistoryItem.status,
                   destChain: {},
