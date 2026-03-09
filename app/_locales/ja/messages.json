@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "プライスインパクト"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "価格への影響には、スワップが市場価格に与える影響が反映されています。ガス代が不足している場合、一部のトークンが手数料の支払いに充てられるため、価格への影響が大きくなります。MetaMaskはこの影響に対して設定や管理を行っていません。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "プライスインパクト"
   },
@@ -1605,9 +1602,6 @@
   },
   "connectAccount": {
     "message": "アカウントの接続"
-  },
-  "connectAccountOrCreate": {
-    "message": "アカウントを接続するか、または新規に作成します"
   },
   "connectAccounts": {
     "message": "アカウントの接続"
@@ -2188,9 +2182,6 @@
   "descriptionFromSnap": {
     "message": "$1からの説明",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "すべての選択を解除"
   },
   "destinationAccountPickerNoEligible": {
     "message": "対象のアカウントが見つかりませんでした"
@@ -3528,9 +3519,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2ガス代"
-  },
-  "lastConnected": {
-    "message": "前回の接続"
   },
   "lastSold": {
     "message": "前回の売却"
@@ -5280,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "エントリー価格"
   },
-  "perpsExploreCrypto": {
-    "message": "仮想通貨を探す"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "株式や商品先物を探す"
-  },
   "perpsFees": {
     "message": "手数料"
   },
@@ -5399,9 +5381,6 @@
   },
   "perpsOpenedLong": {
     "message": "ロングをオープンしました"
-  },
-  "perpsOrderAmount": {
-    "message": "注文金額"
   },
   "perpsOrders": {
     "message": "注文"
@@ -5549,12 +5528,6 @@
   },
   "perpsWithdraw": {
     "message": "出金"
-  },
-  "perpsYourOrders": {
-    "message": "注文一覧"
-  },
-  "perpsYourPositions": {
-    "message": "保有ポジション"
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
@@ -6426,12 +6399,6 @@
   "selectAccountToConnect": {
     "message": "接続するアカウントを選択します"
   },
-  "selectAccounts": {
-    "message": "このサイトに使用するアカウントを選択してください"
-  },
-  "selectAccountsForSnap": {
-    "message": "このsnapで使用するアカウントを選択してください"
-  },
   "selectAll": {
     "message": "すべて選択"
   },
@@ -6470,9 +6437,6 @@
   },
   "selectedAccountMismatch": {
     "message": "別のアカウントが選択されました"
-  },
-  "selectingAllWillAllow": {
-    "message": "すべてを選択すると、このサイトに現在のすべてのアカウントが表示されます。このサイトが信頼できることを確認してください。"
   },
   "send": {
     "message": "送金"
@@ -8820,9 +8784,6 @@
     "message": "連絡先を表示"
   },
   "viewDetails": {
-    "message": "詳細を表示"
-  },
-  "viewMore": {
     "message": "詳細を表示"
   },
   "viewOnBlockExplorer": {

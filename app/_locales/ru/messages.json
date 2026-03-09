@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Влияние на цену"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Влияние на цену отражает, как ваш своп влияет на рыночную цену. Если у вас недостаточно средств для покупки газа, часть ваших токенов используется для покрытия комиссий, что увеличивает влияние на цену. MetaMask не устанавливает и не контролирует это."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Влияние на цену"
   },
@@ -1605,9 +1602,6 @@
   },
   "connectAccount": {
     "message": "Подключить счет"
-  },
-  "connectAccountOrCreate": {
-    "message": "Подключите счет или создайте новый"
   },
   "connectAccounts": {
     "message": "Подключить счета"
@@ -2188,9 +2182,6 @@
   "descriptionFromSnap": {
     "message": "Описание из $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Отменить выбор всего"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Удовлетворяющие требованиям счета не найдены"
@@ -3528,9 +3519,6 @@
   },
   "l2FeeTooltip": {
     "message": "Плата за газ L2"
-  },
-  "lastConnected": {
-    "message": "Последнее подключение"
   },
   "lastSold": {
     "message": "Последняя продажа"
@@ -5280,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Начальная цена"
   },
-  "perpsExploreCrypto": {
-    "message": "Обзор криптовалюты"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Обзор акций и товаров"
-  },
   "perpsFees": {
     "message": "Комиссии"
   },
@@ -5405,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Медианное значение внешних цен, сообщенных валидаторами, используется для расчета ставки финансирования"
-  },
-  "perpsOrderAmount": {
-    "message": "Сумма ордера"
   },
   "perpsOrders": {
     "message": "Ордеры"
@@ -5555,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Вывести средства"
-  },
-  "perpsYourOrders": {
-    "message": "Ваши ордера"
-  },
-  "perpsYourPositions": {
-    "message": "Ваши позиции"
   },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
@@ -6432,12 +6405,6 @@
   "selectAccountToConnect": {
     "message": "Выберите счет для подключения"
   },
-  "selectAccounts": {
-    "message": "Выберите счета(-а) для использования на этом сайте"
-  },
-  "selectAccountsForSnap": {
-    "message": "Выберите счет(-а) для использования с этим snap"
-  },
   "selectAll": {
     "message": "Выбрать все"
   },
@@ -6476,9 +6443,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Выбран другой счет"
-  },
-  "selectingAllWillAllow": {
-    "message": "Выбор всех позволит этому сайту просматривать все ваши текущие счета. Убедитесь, что вы доверяете этому сайту."
   },
   "send": {
     "message": "Отправить"
@@ -8827,9 +8791,6 @@
   },
   "viewDetails": {
     "message": "Просмотр сведений"
-  },
-  "viewMore": {
-    "message": "Больше"
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"

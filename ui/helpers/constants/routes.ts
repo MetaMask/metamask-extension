@@ -12,6 +12,9 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
+export const SETTINGS_V2_ROUTE = '/settings-v2';
+export const ASSETS_ROUTE = '/settings-v2/assets';
+export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
@@ -145,7 +148,6 @@ export const DEFI_ROUTE = '/defi';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
-export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
 export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
@@ -161,7 +163,6 @@ export const ROUTES = [
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
   { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
-  { path: PERPS_HOME_ROUTE, label: 'Perps Home', trackInAnalytics: true },
   {
     path: PERPS_MARKET_LIST_ROUTE,
     label: 'Perps Market List',
@@ -213,6 +214,17 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
+  {
+    path: SETTINGS_V2_ROUTE,
+    label: 'Settings V2 Page',
+    trackInAnalytics: true,
+  },
+  { path: ASSETS_ROUTE, label: 'Assets Settings Page', trackInAnalytics: true },
+  {
+    path: CURRENCY_ROUTE,
+    label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
   {
     path: GENERAL_ROUTE,
     label: 'General Settings Page',

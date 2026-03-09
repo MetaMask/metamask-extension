@@ -316,9 +316,6 @@
   "connect": {
     "message": "Conectar"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar conta ou criar nova"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -922,9 +919,6 @@
   "knownTokenWarning": {
     "message": "Essa ação editará os tokens já listados na sua carteira, que podem ser usado para praticar phishing contra você. Só aprove se você tiver certeza de que quer alterar o que esses tokens representam."
   },
-  "lastConnected": {
-    "message": "Conectado pela última vez em"
-  },
   "learnMore": {
     "message": "mais informações"
   },
@@ -1377,9 +1371,6 @@
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },
-  "selectAccounts": {
-    "message": "Selecione a(s) conta(s) para usar nesse site"
-  },
   "selectAll": {
     "message": "Selecionar tudo"
   },
@@ -1400,9 +1391,6 @@
   },
   "selectType": {
     "message": "Selecione o tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecionar todos permitirá que esse site visualize todas as suas contas atuais. Certifique-se de confiar nesse site."
   },
   "send": {
     "message": "Enviar"
@@ -1877,9 +1865,6 @@
   },
   "viewContact": {
     "message": "Ver contato"
-  },
-  "viewMore": {
-    "message": "Ver mais"
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"

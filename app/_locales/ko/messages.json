@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "가격 영향"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "가격 영향은 스왑이 시장 가격에 미치는 영향을 반영합니다. 가스비가 충분하지 않으면 일부 토큰이 수수료를 충당하는 데 사용되어 가격 영향이 증가합니다. MetaMask는 이를 설정하거나 제어하지 않습니다."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "가격 영향"
   },
@@ -1605,9 +1602,6 @@
   },
   "connectAccount": {
     "message": "계정 연결"
-  },
-  "connectAccountOrCreate": {
-    "message": "계정 연결 또는 새 계정 만들기"
   },
   "connectAccounts": {
     "message": "계정 연결"
@@ -2188,9 +2182,6 @@
   "descriptionFromSnap": {
     "message": "$1 설명",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "모두 선택 해제"
   },
   "destinationAccountPickerNoEligible": {
     "message": "적합한 계정을 찾을 수 없습니다"
@@ -3528,9 +3519,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 가스비"
-  },
-  "lastConnected": {
-    "message": "마지막 연결"
   },
   "lastSold": {
     "message": "최근 매도"
@@ -5280,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "진입 가격"
   },
-  "perpsExploreCrypto": {
-    "message": "암호화폐 살펴보기"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "주식 및 원자재 살펴보기"
-  },
   "perpsFees": {
     "message": "수수료"
   },
@@ -5405,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "밸리데이터가 제공하는 외부 가격의 중앙값이며, 펀딩비를 산정하는 데 사용됩니다"
-  },
-  "perpsOrderAmount": {
-    "message": "주문 금액"
   },
   "perpsOrders": {
     "message": "주문"
@@ -5555,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "출금"
-  },
-  "perpsYourOrders": {
-    "message": "내 주문"
-  },
-  "perpsYourPositions": {
-    "message": "내 포지션"
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
@@ -6432,12 +6405,6 @@
   "selectAccountToConnect": {
     "message": "연결할 계정 선택"
   },
-  "selectAccounts": {
-    "message": "계정 선택"
-  },
-  "selectAccountsForSnap": {
-    "message": "이 스냅을 사용할 계정을 선택하세요"
-  },
   "selectAll": {
     "message": "전체 선택"
   },
@@ -6476,9 +6443,6 @@
   },
   "selectedAccountMismatch": {
     "message": "다른 계정이 선택됨"
-  },
-  "selectingAllWillAllow": {
-    "message": "모두 선택하면 이 사이트에서 회원님의 현재 계정을 모두 볼 수 있습니다. 이 사이트를 신뢰하는지 확인하세요."
   },
   "send": {
     "message": "전송"
@@ -8827,9 +8791,6 @@
   },
   "viewDetails": {
     "message": "세부 정보 보기"
-  },
-  "viewMore": {
-    "message": "더 보기"
   },
   "viewOnBlockExplorer": {
     "message": "블록 탐색기에서 보기"

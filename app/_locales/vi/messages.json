@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Tác động giá"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Tác động giá phản ánh giao dịch hoán đổi của bạn ảnh hưởng đến giá thị trường như thế nào. Nếu bạn không có đủ phí gas, một phần token của bạn sẽ được dùng để trả phí, điều này làm tăng tác động giá. MetaMask không thiết lập hoặc kiểm soát điều này."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tác động giá"
   },
@@ -1605,9 +1602,6 @@
   },
   "connectAccount": {
     "message": "Kết nối tài khoản"
-  },
-  "connectAccountOrCreate": {
-    "message": "Kết nối tài khoản hoặc tạo tài khoản mới"
   },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
@@ -2188,9 +2182,6 @@
   "descriptionFromSnap": {
     "message": "Mô tả từ $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Bỏ chọn tất cả"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Không tìm thấy tài khoản đủ điều kiện"
@@ -3528,9 +3519,6 @@
   },
   "l2FeeTooltip": {
     "message": "Phí gas L2"
-  },
-  "lastConnected": {
-    "message": "Đã kết nối lần cuối"
   },
   "lastSold": {
     "message": "Đã bán gần nhất"
@@ -5280,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Giá vào lệnh"
   },
-  "perpsExploreCrypto": {
-    "message": "Khám phá tiền mã hóa"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Khám phá cổ phiếu và hàng hóa"
-  },
   "perpsFees": {
     "message": "Phí"
   },
@@ -5405,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Giá trung vị từ các nguồn bên ngoài do người xác thực báo cáo, được dùng để tính tỷ lệ tài trợ"
-  },
-  "perpsOrderAmount": {
-    "message": "Số lượng lệnh"
   },
   "perpsOrders": {
     "message": "Lệnh"
@@ -5555,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Rút tiền"
-  },
-  "perpsYourOrders": {
-    "message": "Lệnh của bạn"
-  },
-  "perpsYourPositions": {
-    "message": "Vị thế của bạn"
   },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
@@ -6432,12 +6405,6 @@
   "selectAccountToConnect": {
     "message": "Chọn tài khoản để kết nối"
   },
-  "selectAccounts": {
-    "message": "Chọn (các) tài khoản để sử dụng trên trang web này"
-  },
-  "selectAccountsForSnap": {
-    "message": "Chọn (các) tài khoản để sử dụng với Snap này"
-  },
   "selectAll": {
     "message": "Chọn tất cả"
   },
@@ -6476,9 +6443,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Đã chọn tài khoản khác"
-  },
-  "selectingAllWillAllow": {
-    "message": "Việc chọn tất cả sẽ cho phép trang này xem tất cả các tài khoản hiện tại của bạn. Đảm bảo rằng bạn tin tưởng trang web này."
   },
   "send": {
     "message": "Gửi"
@@ -8827,9 +8791,6 @@
   },
   "viewDetails": {
     "message": "Xem chi tiết"
-  },
-  "viewMore": {
-    "message": "Xem thêm"
   },
   "viewOnBlockExplorer": {
     "message": "Xem trên trình khám phá khối"

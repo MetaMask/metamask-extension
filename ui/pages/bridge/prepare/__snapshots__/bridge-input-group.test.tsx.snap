@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BridgeInputGroup should render destination networks 2`] = `
+exports[`BridgeInputGroup should render destination networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -356,60 +356,56 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render destination networks 3`] = `
+exports[`BridgeInputGroup should render popular tokens 2`] = `
 [
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
       },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
       },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
       },
-      "method": "POST",
-      "signal": AbortSignal {},
+    ],
+    "chainIds": Set {
+      "eip155:1",
     },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
+  },
 ]
 `;
 
-exports[`BridgeInputGroup should render source networks 2`] = `
+exports[`BridgeInputGroup should render source networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -640,59 +636,6 @@ exports[`BridgeInputGroup should render source networks 2`] = `
     </div>
   </div>
 </div>
-`;
-
-exports[`BridgeInputGroup should render source networks 3`] = `
-[
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-]
 `;
 
 exports[`BridgeInputGroup should search for tokens 1`] = `
@@ -990,7 +933,57 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should search for tokens 6`] = `
+exports[`BridgeInputGroup should search for tokens 4`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
+`;
+
+exports[`BridgeInputGroup should search for tokens 5`] = `
 <div
   class="mm-modal"
   data-testid="bridge-asset-picker-modal"
@@ -1337,4 +1330,54 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
     tabindex="0"
   />
 </div>
+`;
+
+exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
 `;

@@ -1,10 +1,11 @@
 import { Driver } from '../../../webdriver/driver';
-import { PERPS_HOME_ROUTE } from '../../../tests/perps/helpers';
+import { PERPS_TAB_HASH } from '../../../tests/perps/helpers';
 
 /**
- * Page object for the Perps Home page.
+ * Page object for the Perps tab (wallet home with perps tab selected).
+ * Content merged from former PerpsHomePage into PerpsTabView.
  *
- * @see ui/pages/perps/perps-home-page.tsx
+ * @see ui/components/app/perps/perps-tab-view.tsx
  */
 export class PerpsHomePage {
   private readonly driver: Driver;
@@ -13,12 +14,12 @@ export class PerpsHomePage {
     testId: 'perps-home-back-button',
   };
 
-  private readonly perpsHomePage = {
-    testId: 'perps-home-page',
+  private readonly perpsTabView = {
+    testId: 'perps-tab-view',
   };
 
-  private readonly perpsHomeSearchButton = {
-    testId: 'perps-home-search-button',
+  private readonly perpsExploreMarketsRow = {
+    testId: 'perps-explore-markets-row',
   };
 
   private readonly perpsPositionsSection = {
@@ -32,18 +33,18 @@ export class PerpsHomePage {
   }
 
   /**
-   * Waits for the Perps Home page to be loaded and visible.
+   * Waits for the Perps tab view to be loaded and visible.
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsHomePage);
+    await this.driver.waitForSelector(this.perpsTabView);
   }
 
   /**
-   * Navigates to the Perps Home route via hash and waits for the page to load.
+   * Navigates to the wallet home with Perps tab selected and waits for the tab view to load.
    */
   async navigateToPerpsHome(): Promise<void> {
     await this.driver.executeScript(
-      `window.location.hash = '${PERPS_HOME_ROUTE}';`,
+      `window.location.hash = '${PERPS_TAB_HASH}';`,
     );
     await this.checkPageIsLoaded();
   }
@@ -56,10 +57,10 @@ export class PerpsHomePage {
   }
 
   /**
-   * Checks that the Perps Home page search button is visible.
+   * Checks that the Explore markets row is visible (entry point to market list).
    */
   async checkSearchButtonIsVisible(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsHomeSearchButton);
+    await this.driver.waitForSelector(this.perpsExploreMarketsRow);
   }
 
   /**
@@ -106,38 +107,43 @@ export class PerpsHomePage {
   }
 
   /**
-   * Waits for the balance section to be visible (empty or with balance).
+   * Waits for the balance dropdown to be visible.
    * @param timeout - Optional timeout in ms for the selector wait.
    */
   async waitForBalanceSection(timeout?: number): Promise<void> {
     await this.driver.waitForSelector(
-      '[data-testid="perps-balance-actions"], [data-testid="perps-balance-actions-empty"]',
+      '[data-testid="perps-balance-dropdown"]',
       { timeout },
     );
   }
 
   /**
-   * Clicks the Add funds button (visible in empty state or when balance exists).
+   * Clicks the Add funds button (opens balance dropdown first, then clicks Add funds).
    */
   async clickAddFunds(): Promise<void> {
     await this.driver.waitForSelector(
-      '[data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]',
+      '[data-testid="perps-balance-dropdown-balance"]',
     );
-    const addFundsButton = await this.driver.findElement(
-      '[data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]',
-    );
-    await this.driver.scrollToElement(addFundsButton);
-    await this.driver.clickElement(
-      '[data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]',
-    );
+    await this.driver.clickElement({
+      testId: 'perps-balance-dropdown-balance',
+    });
+    await this.driver.clickElement({
+      testId: 'perps-balance-dropdown-add-funds',
+    });
   }
 
   /**
-   * Clicks the Withdraw button (visible when account has balance).
+   * Clicks the Withdraw button (opens balance dropdown first, then clicks Withdraw).
    */
   async clickWithdraw(): Promise<void> {
+    await this.driver.waitForSelector(
+      '[data-testid="perps-balance-dropdown-balance"]',
+    );
     await this.driver.clickElement({
-      testId: 'perps-balance-actions-withdraw',
+      testId: 'perps-balance-dropdown-balance',
+    });
+    await this.driver.clickElement({
+      testId: 'perps-balance-dropdown-withdraw',
     });
   }
 
@@ -152,10 +158,10 @@ export class PerpsHomePage {
   }
 
   /**
-   * Clicks the search button in the header (navigates to Market List).
+   * Clicks the Explore markets row (navigates to Market List).
    */
   async clickSearchButton(): Promise<void> {
-    await this.driver.clickElement(this.perpsHomeSearchButton);
+    await this.driver.clickElement(this.perpsExploreMarketsRow);
   }
 
   /**
