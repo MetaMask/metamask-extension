@@ -996,6 +996,20 @@
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
+    "@metamask/transaction-controller>@metamask/gas-fee-controller": {
+      "globals": {
+        "clearInterval": true,
+        "console.error": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/polling-controller": true,
+        "ethereumjs-util>bn.js": true,
+        "uuid": true
+      }
+    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
@@ -1164,6 +1178,13 @@
         "uuid": true
       }
     },
+    "@metamask/transaction-controller>@metamask/nonce-tracker": {
+      "packages": {
+        "@ethersproject/providers": true,
+        "@ngraveio/bc-ur>assert": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": true
+      }
+    },
     "@metamask/notification-services-controller": {
       "globals": {
         "Intl.NumberFormat": true,
@@ -1210,6 +1231,18 @@
         "deep-freeze-strict": true,
         "immer": true,
         "nanoid": true
+      }
+    },
+    "@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "uuid": true
       }
     },
     "@metamask/post-message-stream": {
@@ -1336,8 +1369,37 @@
       }
     },
     "@metamask/transaction-controller": {
+      "globals": {
+        "Buffer.from": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
       "packages": {
-        "@metamask/controller-utils": true
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "ethers>@ethersproject/wallet": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "@metamask/keyring-api>async-mutex": true,
+        "@metamask/transaction-controller>bignumber.js": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-method-registry": true,
+        "webpack>events": true,
+        "lodash": true,
+        "uuid": true
       }
     },
     "@metamask/utils": {
@@ -2161,6 +2223,15 @@
         "setTimeout": true
       }
     },
+    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "tslib": true
+      }
+    },
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
       "packages": {
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
@@ -2223,6 +2294,11 @@
       }
     },
     "@metamask/notification-services-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/transaction-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
