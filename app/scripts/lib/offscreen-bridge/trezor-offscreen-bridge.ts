@@ -1,4 +1,4 @@
-import { TrezorBridge } from '@metamask/eth-trezor-keyring';
+import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
 import type {
   EthereumSignMessage,
   EthereumSignTransaction,
@@ -12,6 +12,7 @@ import type {
   EthereumSignTypedHash,
   Features,
 } from '@trezor/connect-web';
+
 import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
@@ -33,18 +34,18 @@ export class TrezorOffscreenBridge implements TrezorBridge {
 
   minorVersion: number | undefined;
 
-  init(
+  async init(
     settings: {
       manifest: Manifest;
     } & Partial<ConnectSettings>,
   ) {
-    chrome.runtime.onMessage.addListener((msg) => {
+    chrome.runtime.onMessage.addListener((message) => {
       if (
-        msg.target === OffscreenCommunicationTarget.extension &&
-        msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
+        message.target === OffscreenCommunicationTarget.extension &&
+        message.event === OffscreenCommunicationEvents.trezorDeviceConnect
       ) {
-        this.model = msg.payload.model;
-        this.minorVersion = msg.payload.minorVersion;
+        this.model = message.payload.model;
+        this.minorVersion = message.payload.minorVersion;
       }
     });
 
@@ -62,7 +63,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     });
   }
 
-  dispose() {
+  async dispose() {
     return new Promise<void>((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -76,7 +77,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     });
   }
 
-  getPublicKey(params: { path: string; coin: string }) {
+  async getPublicKey(params: { path: string; coin: string }) {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -91,7 +92,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<{ publicKey: string; chainCode: string }>;
   }
 
-  getFeatures() {
+  async getFeatures() {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -105,7 +106,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<Features>;
   }
 
-  ethereumSignTransaction(params: Params<EthereumSignTransaction>) {
+  async ethereumSignTransaction(params: Params<EthereumSignTransaction>) {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -120,7 +121,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<EthereumSignedTx>;
   }
 
-  ethereumSignMessage(params: Params<EthereumSignMessage>) {
+  async ethereumSignMessage(params: Params<EthereumSignMessage>) {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -137,7 +138,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
+  async ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
   ) {
     return new Promise((resolve) => {

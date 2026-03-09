@@ -216,6 +216,7 @@ import type {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import type { Features as TrezorGetFeaturesResponse } from '@trezor/connect-web';
 
 type CustomGasSettings = {
   gas?: string;
@@ -6194,7 +6195,7 @@ export async function getLedgerPublicKey(
   return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
 }
 
-export async function getTrezorFeatures() {
+export async function getTrezorFeatures(): Promise<TrezorGetFeaturesResponse> {
   return await submitRequestToBackground('getTrezorFeatures');
 }
 

@@ -98,15 +98,32 @@ export function buildErrorContent(
       };
 
     // Usually bolos will yield this result
-    case ErrorCode.ConnectionClosed:
-      return {
-        variant: 'recovery',
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryUnlock1'),
-          t('hardwareWalletErrorRecoveryUnlock2'),
-        ],
-      };
+    case ErrorCode.ConnectionClosed: {
+      // No default case, allow it to fall through to unknown error
+      switch (walletType) {
+        case HardwareWalletType.Trezor:
+          return {
+            variant: 'recovery',
+            title: t('hardwareWalletErrorTrezorPopupClosedTitle', [
+              t(walletType),
+            ]),
+            recoveryInstructions: [
+              t('hardwareWalletErrorTrezorPopupClosedDescription'),
+            ],
+          };
+        case HardwareWalletType.Ledger:
+          return {
+            variant: 'recovery',
+            title: t('hardwareWalletErrorTitleConnectYourDevice', [
+              t(walletType),
+            ]),
+            recoveryInstructions: [
+              t('hardwareWalletErrorRecoveryUnlock1'),
+              t('hardwareWalletErrorRecoveryUnlock2'),
+            ],
+          };
+      }
+    }
 
     // Unknown/default
     default:
