@@ -3,42 +3,57 @@
 exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
 <div>
   <div
-    class="mm-box new-external-account-form mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    class="flex flex-col items-center justify-center new-external-account-form"
   >
     <div
-      class="mm-box hw-connect__header mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+      class="flex flex-col items-center hw-connect__header"
     >
       <div
-        class="mm-box hw-connect__header__title-wrapper mm-box--margin-top-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="flex flex-row items-center justify-center mt-4 hw-connect__header__title-wrapper"
       >
-        <h3
-          class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--margin-left-auto mm-box--color-text-default"
+        <div
+          class="ml-auto"
         >
-          Connect a hardware wallet
-        </h3>
+          <h3
+            class="text-default text-s-heading-md leading-s-heading-md tracking-s-heading-md md:text-l-heading-md md:leading-l-heading-md md:tracking-l-heading-md font-bold font-default"
+          >
+            Connect a hardware wallet
+          </h3>
+        </div>
         <button
           aria-label="Close"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default ml-auto"
           data-testid="hardware-connect-close-btn"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/close.svg');"
-          />
+          <svg
+            class="inline-block w-5 h-5 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+            />
+          </svg>
         </button>
       </div>
-      <h5
-        class="mm-box mm-text hw-connect__header__msg mm-text--body-md mm-box--margin-top-5 mm-box--margin-bottom-3 mm-box--color-text-default"
+      <div
+        class="mt-5 mb-3"
       >
-        Select a hardware wallet you would like to use with MetaMask.
-      </h5>
+        <h5
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default hw-connect__header__msg"
+        >
+          Select a hardware wallet you would like to use with MetaMask.
+        </h5>
+      </div>
     </div>
     <div
-      class="mm-box hw-connect__btn-wrapper"
+      class="hw-connect__btn-wrapper"
     >
       <button
-        class="mm-box hw-connect__btn"
+        class="hw-connect__btn"
         data-testid="connect-ledger-btn"
+        type="button"
       >
         <svg
           aria-label="Ledger"
@@ -54,8 +69,9 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
         </svg>
       </button>
       <button
-        class="mm-box hw-connect__btn"
+        class="hw-connect__btn"
         data-testid="connect-trezor-btn"
+        type="button"
       >
         <svg
           aria-label="Trezor"
@@ -90,11 +106,12 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
       </button>
     </div>
     <div
-      class="mm-box hw-connect__btn-wrapper mm-box--margin-top-2"
+      class="mt-2 hw-connect__btn-wrapper"
     >
       <button
-        class="mm-box hw-connect__btn"
+        class="hw-connect__btn"
         data-testid="connect-lattice-btn"
+        type="button"
       >
         <svg
           aria-label="Lattice"
@@ -112,8 +129,9 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
         </svg>
       </button>
       <button
-        class="mm-box hw-connect__btn"
+        class="hw-connect__btn"
         data-testid="connect-qr-btn"
+        type="button"
       >
         <svg
           aria-label="QRCode"
@@ -133,16 +151,25 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
       </button>
     </div>
     <button
-      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled hw-connect__connect-btn mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+      class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default hw-connect__connect-btn"
       disabled=""
+      role="button"
     >
-      Continue
+      <span
+        class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Continue
+      </span>
     </button>
-    <h6
-      class="mm-box mm-text new-external-account-form footer mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--color-text-alternative"
+    <div
+      class="mt-4 new-external-account-form footer"
     >
-      Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with.
-    </h6>
+      <h6
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-center"
+      >
+        Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with.
+      </h6>
+    </div>
   </div>
 </div>
 `;

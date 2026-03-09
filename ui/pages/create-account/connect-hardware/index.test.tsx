@@ -504,7 +504,9 @@ describe('ConnectHardwareForm', () => {
 
     describe('onUnlockAccounts', () => {
       it('disables unlock button when no accounts are selected', () => {
-        const unlockButton = screen.getByText(tEn('unlock'));
+        const unlockButton = screen.getByRole('button', {
+          name: tEn('unlock'),
+        });
         expect(unlockButton).toBeDisabled();
       });
 

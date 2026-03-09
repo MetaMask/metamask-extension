@@ -2,15 +2,24 @@ import classnames from 'clsx';
 import React, { useCallback, useContext, useState } from 'react';
 import { upperFirst } from 'lodash';
 import {
-  Text,
   Box,
-  IconName,
-  ButtonIconSize,
-  ButtonIcon,
   Button,
-  ButtonLink,
   ButtonSize,
   ButtonVariant,
+  ButtonIcon,
+  ButtonIconSize,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  IconName,
+  Text,
+  TextAlign,
+  TextButton,
+  TextColor,
+  TextVariant,
+  FontWeight,
+} from '@metamask/design-system-react';
+import {
   BannerAlert,
   BannerAlertSeverity,
 } from '../../../components/component-library';
@@ -31,16 +40,6 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { openWindow } from '../../../helpers/utils/window';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  FontWeight,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -287,9 +286,9 @@ const SelectHardware = ({
     logo: LogoComponent,
     ariaLabel,
   }: DeviceButtonConfig) => (
-    <Box
-      as="button"
+    <button
       data-testid={testId}
+      type="button"
       className={classnames('hw-connect__btn', {
         selected: selectedDevice === deviceName,
       })}
@@ -297,7 +296,7 @@ const SelectHardware = ({
       key={deviceName}
     >
       <LogoComponent className="hw-connect__btn__img" ariaLabel={ariaLabel} />
-    </Box>
+    </button>
   );
 
   const renderMarketingButtons = (
@@ -306,9 +305,8 @@ const SelectHardware = ({
     tutorialLink: string,
   ) => (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.center}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Center}
       marginBottom={2}
     >
       <Button
@@ -337,11 +335,12 @@ const SelectHardware = ({
   const renderQrBrandSection = (brand: QrBrandConfig) => (
     <>
       <Text
-        as="p"
-        variant={TextVariant.bodyMdBold}
+        asChild
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Bold}
         className="hw-connect__QR-subtitle"
       >
-        {t(brand.labelKey)}
+        <p>{t(brand.labelKey)}</p>
       </Text>
       <Button
         className="hw-connect__external-btn-first"
@@ -402,51 +401,49 @@ const SelectHardware = ({
   );
 
   const renderFooter = () => (
-    <Text
-      color={TextColor.textAlternative}
-      variant={TextVariant.bodySm}
-      textAlign={TextAlign.Center}
-      as="h6"
-      marginTop={4}
-      className="new-external-account-form footer"
-    >
-      {t('hardwareWalletsInfo')}
-    </Text>
+    <Box marginTop={4} className="new-external-account-form footer">
+      <Text
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodySm}
+        textAlign={TextAlign.Center}
+        asChild
+      >
+        <h6>{t('hardwareWalletsInfo')}</h6>
+      </Text>
+    </Box>
   );
 
   const renderUnsupportedBrowser = () => (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
       className="new-external-account-form unsupported-browser"
     >
       <Box
         className="hw-connect"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
       >
-        <Text
-          className="hw-connect__title"
-          variant={TextVariant.headingMd}
-          as="h3"
-          fontWeight={FontWeight.Bold}
-          marginTop={6}
-          marginBottom={3}
-        >
-          {t('browserNotSupported')}
-        </Text>
-        <Text
-          className="hw-connect__msg"
-          variant={TextVariant.bodyMd}
-          as="h5"
-          marginTop={3}
-          marginBottom={5}
-        >
-          {t('chromeRequiredForHardwareWallets')}
-        </Text>
+        <Box marginTop={6} marginBottom={3}>
+          <Text
+            className="hw-connect__title"
+            variant={TextVariant.HeadingMd}
+            asChild
+            fontWeight={FontWeight.Bold}
+          >
+            <h3>{t('browserNotSupported')}</h3>
+          </Text>
+        </Box>
+        <Box marginTop={3} marginBottom={5}>
+          <Text
+            className="hw-connect__msg"
+            variant={TextVariant.BodyMd}
+            asChild
+          >
+            <h5>{t('chromeRequiredForHardwareWallets')}</h5>
+          </Text>
+        </Box>
       </Box>
       <Button
         variant={ButtonVariant.Primary}
@@ -465,9 +462,8 @@ const SelectHardware = ({
   const renderHeader = () => (
     <Box
       className="hw-connect__header"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
     >
       {selectedDevice === HardwareDeviceNames.ledger && !isFirefox && (
         <Box>
@@ -487,13 +483,15 @@ const SelectHardware = ({
             title={t('ledgerFirefoxNotSupportedTitle')}
           >
             {t('ledgerFirefoxNotSupportedDescription1')}
-            <ButtonLink
-              className="hw-connect__href-link"
-              href={ZENDESK_URLS.HARDWARE_CONNECTION_TREZOR_LEDGER}
-              externalLink
-            >
-              {t('ledgerFirefoxNotSupportedLink')}
-            </ButtonLink>
+            <TextButton className="hw-connect__href-link" asChild>
+              <a
+                href={ZENDESK_URLS.HARDWARE_CONNECTION_TREZOR_LEDGER}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('ledgerFirefoxNotSupportedLink')}
+              </a>
+            </TextButton>
             {t('ledgerFirefoxNotSupportedDescription2')}
             <br />
             {t('ledgerFirefoxNotSupportedDescription3')}
@@ -502,40 +500,39 @@ const SelectHardware = ({
       )}
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
         className="hw-connect__header__title-wrapper"
-        marginTop={6}
+        marginTop={4}
       >
-        <Text
-          variant={TextVariant.headingMd}
-          as="h3"
-          fontWeight={FontWeight.Bold}
-          marginLeft="auto"
-        >
-          {t('hardwareWallets')}
-        </Text>
+        <Box className="ml-auto">
+          <Text
+            variant={TextVariant.HeadingMd}
+            asChild
+            fontWeight={FontWeight.Bold}
+          >
+            <h3>{t('hardwareWallets')}</h3>
+          </Text>
+        </Box>
         <ButtonIcon
           iconName={IconName.Close}
           ariaLabel={t('close') as string}
           onClick={onCancel}
           size={ButtonIconSize.Sm}
-          marginLeft="auto"
+          className="ml-auto"
           data-testid="hardware-connect-close-btn"
         />
       </Box>
-
-      <Text
-        className="hw-connect__header__msg"
-        variant={TextVariant.bodyMd}
-        as="h5"
-        marginTop={5}
-        marginBottom={3}
-      >
-        {t('hardwareWalletsMsg')}
-      </Text>
+      <Box marginTop={5} marginBottom={3}>
+        <Text
+          className="hw-connect__header__msg"
+          variant={TextVariant.BodyMd}
+          asChild
+        >
+          <h5>{t('hardwareWalletsMsg')}</h5>
+        </Text>
+      </Box>
     </Box>
   );
 
@@ -548,34 +545,40 @@ const SelectHardware = ({
    */
   const renderDeviceTutorialContent = (config: TutorialStepConfig) => (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
       className="hw-connect"
     >
       <Text
-        as="h3"
-        variant={TextVariant.headingSm}
+        asChild
+        variant={TextVariant.HeadingSm}
         className="hw-connect__title"
       >
-        {t(config.titleKey)}
+        <h3>{t(config.titleKey)}</h3>
       </Text>
       {renderMarketingButtons(
         config.deviceName,
         config.buyLink,
         config.tutorialLink,
       )}
-      <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
-        {t(config.messageKey, [
-          <ButtonLink
-            className="hw-connect__msg-link"
-            href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            externalLink
-            key={`${config.deviceName}-support-link`}
-          >
-            {t('hardwareWalletSupportLinkConversion')}
-          </ButtonLink>,
-        ])}
+      <Text asChild variant={TextVariant.BodyMd} className="hw-connect__msg">
+        <p>
+          {t(config.messageKey, [
+            <TextButton
+              className="hw-connect__msg-link"
+              key={`${config.deviceName}-support-link`}
+              asChild
+            >
+              <a
+                href={ZENDESK_URLS.HARDWARE_CONNECTION}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('hardwareWalletSupportLinkConversion')}
+              </a>
+            </TextButton>,
+          ])}
+        </p>
       </Text>
       <img
         className="hw-connect__step-asset"
@@ -598,14 +601,14 @@ const SelectHardware = ({
     <Box className="hw-tutorial">
       <Box className="hw-connect">
         <Text
-          as="h3"
-          variant={TextVariant.headingSm}
+          asChild
+          variant={TextVariant.HeadingSm}
           className="hw-connect__title"
         >
-          {t('QRHardwareWalletSteps1Title')}
+          <h3>{t('QRHardwareWalletSteps1Title')}</h3>
         </Text>
-        <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
-          {t('QRHardwareWalletSteps1Description')}
+        <Text asChild variant={TextVariant.BodyMd} className="hw-connect__msg">
+          <p>{t('QRHardwareWalletSteps1Description')}</p>
         </Text>
       </Box>
       {QR_BRAND_CONFIG.map((brand) => (
@@ -619,23 +622,30 @@ const SelectHardware = ({
   const renderLedgerLiveStep = () => (
     <Box className="hw-connect">
       <Text
-        as="h3"
-        variant={TextVariant.headingSm}
+        asChild
+        variant={TextVariant.HeadingSm}
         className="hw-connect__title"
       >
-        {t('step1LedgerWallet')}
+        <h3>{t('step1LedgerWallet')}</h3>
       </Text>
-      <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
-        {t('step1LedgerWalletMsg', [
-          <ButtonLink
-            className="hw-connect__msg-link"
-            href={LEDGER_LIVE_APP_URL}
-            externalLink
-            key="ledger-live-app-link"
-          >
-            {t('ledgerLiveApp')}
-          </ButtonLink>,
-        ])}
+      <Text asChild variant={TextVariant.BodyMd} className="hw-connect__msg">
+        <p>
+          {t('step1LedgerWalletMsg', [
+            <TextButton
+              className="hw-connect__msg-link"
+              key="ledger-live-app-link"
+              asChild
+            >
+              <a
+                href={LEDGER_LIVE_APP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('ledgerLiveApp')}
+              </a>
+            </TextButton>,
+          ])}
+        </p>
       </Text>
     </Box>
   );
@@ -667,10 +677,9 @@ const SelectHardware = ({
   const renderConnectScreen = () => (
     <Box
       className="new-external-account-form"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
     >
       {renderHeader()}
       {renderDeviceButtons()}

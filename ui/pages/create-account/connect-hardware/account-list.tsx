@@ -11,26 +11,23 @@ import { upperFirst } from 'lodash';
 import {
   Box,
   Button,
-  ButtonLink,
-  ButtonVariant,
   ButtonSize,
-  Icon,
+  ButtonVariant,
+  ButtonIcon,
+  ButtonIconSize,
+  BoxAlignItems,
+  BoxFlexDirection,
   IconName,
-  IconSize,
-  Label,
   Text,
-} from '../../../components/component-library';
+  TextButton,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { Label } from '../../../components/component-library';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
 import { getURLHostName } from '../../../helpers/utils/util';
 
-import {
-  AlignItems,
-  Display,
-  IconColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
   MetaMetricsEventCategory,
@@ -130,14 +127,14 @@ const AccountList = ({
   const renderHdPathSelector = () => (
     <Box>
       <Text
-        as="h3"
-        variant={TextVariant.headingSm}
+        asChild
+        variant={TextVariant.HeadingSm}
         className="hw-connect__hdPath__title"
       >
-        {t('selectHdPath')}
+        <h3>{t('selectHdPath')}</h3>
       </Text>
-      <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
-        {t('selectPathHelp')}
+      <Text asChild variant={TextVariant.BodyMd} className="hw-connect__msg">
+        <p>{t('selectPathHelp')}</p>
       </Text>
       <Box className="hw-connect__hdPath">
         <Dropdown
@@ -156,19 +153,19 @@ const AccountList = ({
   const renderHeader = () => (
     <Box className="hw-connect">
       <Text
-        as="h3"
-        variant={TextVariant.headingSm}
+        asChild
+        variant={TextVariant.HeadingSm}
         className="hw-connect__unlock-title"
       >
-        {t('selectAnAccount')}
+        <h3>{t('selectAnAccount')}</h3>
       </Text>
       {shouldShowHDPaths ? renderHdPathSelector() : null}
       <Text
-        as="h3"
-        variant={TextVariant.headingSm}
+        asChild
+        variant={TextVariant.HeadingSm}
         className="hw-connect__hdPath__title"
       >
-        {t('selectAnAccount')}
+        <h3>{t('selectAnAccount')}</h3>
       </Text>
     </Box>
   );
@@ -197,8 +194,8 @@ const AccountList = ({
             }
           >
             <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
               className="hw-account-list__item__checkbox"
             >
               <Checkbox
@@ -214,25 +211,25 @@ const AccountList = ({
                 htmlFor={`address-${idx}`}
               >
                 <Text
-                  as="span"
-                  variant={TextVariant.bodySm}
+                  asChild
+                  variant={TextVariant.BodySm}
                   className="hw-account-list__item__index"
                 >
-                  {account.index + 1}
+                  <span>{account.index + 1}</span>
                 </Text>
                 {`${account.address.slice(0, 4)}...${account.address.slice(
                   -4,
                 )}`}
                 <Text
-                  as="span"
-                  variant={TextVariant.bodySm}
+                  asChild
+                  variant={TextVariant.BodySm}
                   className="hw-account-list__item__balance"
                 >
-                  {account.balance}
+                  <span>{account.balance}</span>
                 </Text>
               </Label>
             </Box>
-            <ButtonLink
+            <ButtonIcon
               className="hw-account-list__item__link"
               onClick={() => {
                 trackEvent({
@@ -250,16 +247,13 @@ const AccountList = ({
                   url: accountLink,
                 });
               }}
+              ariaLabel={
+                t('genericExplorerView', [blockExplorerDomain]) as string
+              }
+              iconName={IconName.Export}
+              size={ButtonIconSize.Sm}
               title={t('genericExplorerView', [blockExplorerDomain]) as string}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon
-                name={IconName.Export}
-                size={IconSize.Sm}
-                color={IconColor.iconDefault}
-              />
-            </ButtonLink>
+            />
           </Box>
         );
       })}
@@ -267,23 +261,18 @@ const AccountList = ({
   );
 
   const renderPagination = () => (
-    <Box display={Display.Flex} className="hw-list-pagination">
-      <Button
-        variant={ButtonVariant.Link}
+    <Box flexDirection={BoxFlexDirection.Row} className="hw-list-pagination">
+      <TextButton
         className="hw-list-pagination__button"
-        disabled={isFirstPage}
+        isDisabled={isFirstPage}
         onClick={goToPreviousPage}
         data-testid="hw-list-pagination__prev-button"
       >
         {`< ${t('prev')}`}
-      </Button>
-      <Button
-        variant={ButtonVariant.Link}
-        className="hw-list-pagination__button"
-        onClick={goToNextPage}
-      >
+      </TextButton>
+      <TextButton className="hw-list-pagination__button" onClick={goToNextPage}>
         {`${t('next')} >`}
-      </Button>
+      </TextButton>
     </Box>
   );
 
@@ -295,7 +284,7 @@ const AccountList = ({
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          block
+          isFullWidth
           onClick={onCancel}
         >
           {t('cancel')}
@@ -303,9 +292,9 @@ const AccountList = ({
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          block
+          isFullWidth
           className="new-external-account-form__button unlock"
-          disabled={disabled}
+          isDisabled={disabled}
           onClick={() => onUnlockAccounts(device, selectedPath)}
         >
           {t('unlock')}
@@ -316,12 +305,12 @@ const AccountList = ({
 
   const renderForgetDevice = () => (
     <Box className="hw-forget-device-container">
-      <ButtonLink
+      <TextButton
         data-testid="hardware-forget-device-button"
         onClick={() => onForgetDevice(device, selectedPath)}
       >
         {t('forgetDevice')}
-      </ButtonLink>
+      </TextButton>
     </Box>
   );
 

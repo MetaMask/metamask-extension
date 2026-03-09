@@ -11,6 +11,12 @@ import { upperFirst } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
+import {
+  Box,
+  Text,
+  TextButton,
+  TextColor,
+} from '@metamask/design-system-react';
 import * as actions from '../../../store/actions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { getErrorMessage as toErrorMessage } from '../../../../shared/modules/error';
@@ -36,14 +42,7 @@ import {
   TREZOR_TESTNET_PATH,
   DEVICE_KEYRING_MAP,
 } from '../../../../shared/constants/hardware-wallets';
-import {
-  Button,
-  ButtonVariant,
-  ButtonSize,
-  Text,
-} from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { TextColor } from '../../../helpers/constants/design-system';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
@@ -513,57 +512,62 @@ const ConnectHardwareForm = () => {
       if (device === 'ledger' && isFirefox) {
         return (
           <>
-            <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
-              {t('troubleConnectingToLedgerU2FOnFirefox', [
-                <Button
-                  variant={ButtonVariant.Link}
-                  href={ZENDESK_URLS.HARDWARE_CONNECTION}
-                  size={ButtonSize.Inherit}
-                  key="u2f-error-1"
-                  as="a"
-                  block={false}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('troubleConnectingToLedgerU2FOnFirefox2')}
-                </Button>,
-              ])}
-            </Text>
-            <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
-              {t('troubleConnectingToLedgerU2FOnFirefoxLedgerSolution', [
-                <Button
-                  variant={ButtonVariant.Link}
-                  href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
-                  size={ButtonSize.Inherit}
-                  key="u2f-error-2"
-                  as="a"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2')}
-                </Button>,
-              ])}
-            </Text>
+            <Box marginHorizontal={5} marginBottom={2}>
+              <Text color={TextColor.WarningDefault}>
+                {t('troubleConnectingToLedgerU2FOnFirefox', [
+                  <TextButton key="u2f-error-1" asChild className="inline">
+                    <a
+                      href={ZENDESK_URLS.HARDWARE_CONNECTION}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('troubleConnectingToLedgerU2FOnFirefox2')}
+                    </a>
+                  </TextButton>,
+                ])}
+              </Text>
+            </Box>
+            <Box marginHorizontal={5} marginBottom={2}>
+              <Text color={TextColor.WarningDefault}>
+                {t('troubleConnectingToLedgerU2FOnFirefoxLedgerSolution', [
+                  <TextButton key="u2f-error-2" asChild className="inline">
+                    <a
+                      href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t(
+                        'troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2',
+                      )}
+                    </a>
+                  </TextButton>,
+                ])}
+              </Text>
+            </Box>
           </>
         );
       }
       return (
-        <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
-          {t('troubleConnectingToWallet', [
-            device,
-            <Button
-              variant={ButtonVariant.Link}
-              href={ZENDESK_URLS.HARDWARE_CONNECTION}
-              key="u2f-error-1"
-            >
-              {t('walletConnectionGuide')}
-            </Button>,
-          ])}
-        </Text>
+        <Box marginHorizontal={5} marginBottom={2}>
+          <Text color={TextColor.WarningDefault}>
+            {t('troubleConnectingToWallet', [
+              device,
+              <TextButton key="u2f-error-1" asChild className="inline">
+                <a
+                  href={ZENDESK_URLS.HARDWARE_CONNECTION}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('walletConnectionGuide')}
+                </a>
+              </TextButton>,
+            ])}
+          </Text>
+        </Box>
       );
     }
     return error ? (
-      <Text color={TextColor.errorDefault} className="hw-connect__error">
+      <Text color={TextColor.ErrorDefault} className="hw-connect__error">
         {error}
       </Text>
     ) : null;
