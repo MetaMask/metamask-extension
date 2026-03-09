@@ -166,8 +166,11 @@ export function getVariables(
   // values be JSON stringified, as it JSON.parses them internally.
   const safeVariables: Record<string, string> = {};
   variables.forEach((value, key) => {
-    if (value === null || value === undefined) return;
-    safeVariables[key] = JSON.stringify(value);
+    // this intentionally allows `null`, but omits `undefined`
+    // as this is what the old build system did.
+    if (typeof value !== 'undefined') {
+      safeVariables[key] = JSON.stringify(value);
+    }
   });
 
   // special location for the PPOM_URI, as we don't want to copy the wasm file

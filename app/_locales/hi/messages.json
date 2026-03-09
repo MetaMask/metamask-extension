@@ -5872,9 +5872,6 @@
   "removeAccount": {
     "message": "अकाउंट हटाएं"
   },
-  "removeAccountDescription": {
-    "message": "यह अकाउंट आपके वॉलेट से निकाल दिया जाएगा। कृपया पक्का करें कि जारी रखने से पहले आपके पास इस इम्पोर्टित अकाउंट के लिए ओरिजिनल सीक्रेट रिकवरी फ्रेज या प्राइवेट की (key) है। आप अकाउंट ड्रॉप-डाउन से फिर से अकाउंट इम्पोर्ट कर सकते हैं या बना सकते हैं। "
-  },
   "removeAccountModalBannerDescription": {
     "message": "इस अकाउंट को हटाने से पहले सुनिश्चित करें कि आपके पास इसके लिए सीक्रेट रिकवरी फ्रेज़ या प्राइवेट की (key) है।",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
