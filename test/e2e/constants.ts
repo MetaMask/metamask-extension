@@ -13,6 +13,14 @@ export const LOCAL_NODE_MNEMONIC =
 export const LOCALHOST_NETWORK_CLIENT_ID =
   '3a5eb6f2-cb62-428d-897c-b7ded577d7c2';
 
+/** networkClientId for the second local node (0x53a / Localhost 8546). */
+export const SECOND_NODE_NETWORK_CLIENT_ID =
+  '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
+
+/** networkClientId for the third local node (0x3e8 / Localhost 7777). */
+export const THIRD_NODE_NETWORK_CLIENT_ID =
+  'a3460c52-12ee-4267-9be6-1503095a587e';
+
 /**
  * Network client IDs. Each key maps to the `networkClientId` used inside
  * `NetworkController.networkConfigurationsByChainId`.
