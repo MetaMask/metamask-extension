@@ -2476,14 +2476,10 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       setCurrentCurrency: (currencyCode) => {
-        currencyRateController.setCurrentCurrency.bind(currencyRateController)(
-          currencyCode,
-        );
+        currencyRateController.setCurrentCurrency(currencyCode);
 
         if (assetsController) {
-          assetsController.setSelectedCurrency.bind(assetsController)(
-            currencyCode,
-          );
+          assetsController.setSelectedCurrency(currencyCode);
         }
       },
       // @deprecated Use setAvatarType instead
