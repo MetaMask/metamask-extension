@@ -34,11 +34,14 @@ import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  HARDWARE_WALLET_ACCOUNT_ID,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
   NETWORK_CLIENT_ID,
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
+  TREZOR_ADDRESS,
+  TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import defaultFixtureJson from './default-fixture.json';
@@ -200,71 +203,69 @@ class FixtureBuilderV2 {
 
     this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
-    })
-      .withAccountsController({
-        internalAccounts: {
-          accounts: {
-            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-              options: {
-                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
+    }).withAccountsController({
+      internalAccounts: {
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01JWZDDDB45SRHTRE5KYWZJK9W',
-                  derivationPath: "m/44'/60'/0'/0/0",
-                  groupIndex: 0,
-                },
-              },
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Account 1',
-                importTime: 1724486724986,
-                lastSelected: 1665507600000,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
               },
             },
-            '221ecb67-0d29-4c04-83b2-dff07c263634': {
-              id: '221ecb67-0d29-4c04-83b2-dff07c263634',
-              address: ledgerAddressLower,
-              options: {},
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Ledger 1',
-                importTime: 1724486729079,
-                keyring: {
-                  type: 'Ledger Hardware',
-                },
-                lastSelected: 1724486729083,
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
               },
             },
           },
-          selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+          [HARDWARE_WALLET_ACCOUNT_ID]: {
+            id: HARDWARE_WALLET_ACCOUNT_ID,
+            address: ledgerAddressLower,
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Ledger 1',
+              importTime: 1724486729079,
+              keyring: {
+                type: 'Ledger Hardware',
+              },
+              lastSelected: 1724486729083,
+            },
+          },
         },
-      })
-      .withPreferencesController({});
+        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+      },
+    });
     return this;
   }
 
@@ -426,6 +427,72 @@ class FixtureBuilderV2 {
         showNativeTokenAsMainBalance: false,
       },
     });
+  }
+
+  withTrezorAccount(): this {
+    return this.withAccountsController({
+      internalAccounts: {
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01KGHAX3WXGMX9H76THHSSV553',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHAX3WXGMX9H76THHSSV553',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          [HARDWARE_WALLET_ACCOUNT_ID]: {
+            id: HARDWARE_WALLET_ACCOUNT_ID,
+            address: TREZOR_ADDRESS,
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Trezor 1',
+              importTime: 1724486729079,
+              keyring: {
+                type: 'Trezor Hardware',
+              },
+              lastSelected: 1724486729083,
+            },
+          },
+        },
+        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+      },
+    }).withKeyringController({ vault: TREZOR_VAULT });
   }
 
   withShowNativeTokenAsMainBalanceEnabled(): this {
