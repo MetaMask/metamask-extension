@@ -73,11 +73,17 @@ export const NativeTokenPeriodicDetails: React.FC<{
         label={t('confirmFieldStartDate')}
       />
 
-      {expiry && (
+      {expiry ? (
         <DateAndTimeRow
           timestamp={expiry}
           label={t('confirmFieldExpiration')}
         />
+      ) : (
+        <ConfirmInfoRow label={t('confirmFieldExpiration')}>
+          <Text variant={TextVariant.BodyMd}>
+            {t('confirmFieldNeverExpires')}
+          </Text>
+        </ConfirmInfoRow>
       )}
     </ConfirmInfoSection>
   );

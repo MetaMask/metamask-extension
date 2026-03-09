@@ -4,9 +4,13 @@ import type { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { Text, TextVariant } from '@metamask/design-system-react';
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowDivider,
+} from '../../../../../../../components/app/confirm/info/row';
 import {
   getNativeTokenInfo,
   MetaMaskReduxState,
@@ -78,11 +82,17 @@ export const NativeTokenStreamDetails: React.FC<{
           timestamp={startTime}
           label={t('confirmFieldStartDate')}
         />
-        {expiry && (
+        {expiry ? (
           <DateAndTimeRow
             timestamp={expiry}
             label={t('confirmFieldExpiration')}
           />
+        ) : (
+          <ConfirmInfoRow label={t('confirmFieldExpiration')}>
+            <Text variant={TextVariant.BodyMd}>
+              {t('confirmFieldNeverExpires')}
+            </Text>
+          </ConfirmInfoRow>
         )}
       </ConfirmInfoSection>
 

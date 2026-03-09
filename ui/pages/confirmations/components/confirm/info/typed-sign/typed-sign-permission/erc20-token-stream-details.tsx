@@ -3,8 +3,12 @@ import React from 'react';
 
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
+import { Text, TextVariant } from '@metamask/design-system-react';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowDivider,
+} from '../../../../../../../components/app/confirm/info/row';
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { fetchErc20Decimals } from '../../../../../utils/token';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
@@ -75,11 +79,17 @@ export const Erc20TokenStreamDetails: React.FC<{
           timestamp={startTime}
           label={t('confirmFieldStartDate')}
         />
-        {expiry && (
+        {expiry ? (
           <DateAndTimeRow
             timestamp={expiry}
             label={t('confirmFieldExpiration')}
           />
+        ) : (
+          <ConfirmInfoRow label={t('confirmFieldExpiration')}>
+            <Text variant={TextVariant.BodyMd}>
+              {t('confirmFieldNeverExpires')}
+            </Text>
+          </ConfirmInfoRow>
         )}
       </ConfirmInfoSection>
 
