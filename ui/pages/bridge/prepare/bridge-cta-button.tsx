@@ -40,11 +40,13 @@ export const BridgeCTAButton = ({
   needsDestinationAddress = false,
   onOpenRecipientModal,
   onOpenPriceImpactWarningModal,
+  onOpenMarketClosedModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal?: () => void;
   onOpenPriceImpactWarningModal: () => void;
+  onOpenMarketClosedModal?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -189,14 +191,17 @@ export const BridgeCTAButton = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
+        if (isMarketClosed) {
+          onOpenMarketClosedModal?.();
+          return;
+        }
+
         if (needsDestinationAddress && onOpenRecipientModal) {
           onOpenRecipientModal();
           return;
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
-          // If price impact is too high, open the price impact warning modal and submit
-          // the transaction through the modal.
           if (isPriceImpactError) {
             onOpenPriceImpactWarningModal();
           } else {
@@ -206,7 +211,6 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        isMarketClosed ||
         (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }
