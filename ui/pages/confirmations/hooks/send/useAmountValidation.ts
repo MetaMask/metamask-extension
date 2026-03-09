@@ -61,10 +61,24 @@ export const useAmountValidation = () => {
       return setAndReturnError(undefined);
     }
 
+    // Treat "." or trailing dot (e.g., "0.", "1.") as valid intermediate input
+    let normalizedValue = value;
+    if (value === '.') {
+      normalizedValue = '0';
+    } else if (value.endsWith('.')) {
+      normalizedValue = value.slice(0, -1);
+    }
+
     const validations = [
-      () => validatePositiveNumericString(value, t),
-      () => validateERC1155Balance(asset as Asset, value, t),
-      () => validateTokenBalance(value, rawBalanceNumeric, asset?.decimals, t),
+      () => validatePositiveNumericString(normalizedValue, t),
+      () => validateERC1155Balance(asset as Asset, normalizedValue, t),
+      () =>
+        validateTokenBalance(
+          normalizedValue,
+          rawBalanceNumeric,
+          asset?.decimals,
+          t,
+        ),
       validateNonEvmAmount,
     ];
 
