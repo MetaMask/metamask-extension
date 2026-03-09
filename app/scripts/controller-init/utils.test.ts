@@ -217,9 +217,7 @@ describe('Controller Init Utils', () => {
 
       expect(controllerApi.test1._controllerName).toBe(CONTROLLER_NAME_MOCK);
       expect(controllerApi.test2._controllerName).toBe(CONTROLLER_NAME_MOCK);
-      expect(controllerApi.test3._controllerName).toBe(
-        CONTROLLER_NAME_2_MOCK,
-      );
+      expect(controllerApi.test3._controllerName).toBe(CONTROLLER_NAME_2_MOCK);
     });
 
     it('returns all persisted state entries', () => {
