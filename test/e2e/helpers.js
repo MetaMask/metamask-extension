@@ -129,6 +129,74 @@ function normalizeSmartContracts(smartContract) {
 }
 
 /**
+ * Closes all browser windows/tabs except the first one.
+ * Used when reusing a browser session to clean up leftover tabs from a
+ * previous test.
+ *
+ * @param {ThenableWebDriver} webDriver - The raw Selenium WebDriver instance.
+ */
+async function closeExtraWindowHandles(webDriver) {
+  const allHandles = await webDriver.getAllWindowHandles();
+  if (allHandles.length > 1) {
+    for (let i = 1; i < allHandles.length; i++) {
+      await webDriver.switchTo().window(allHandles[i]);
+      await webDriver.close();
+    }
+    await webDriver.switchTo().window(allHandles[0]);
+  }
+}
+
+/**
+ * Clears all extension storage (local, session, IndexedDB backup, localStorage,
+ * sessionStorage) and reloads the extension in a single atomic operation so the
+ * background script cannot re-persist stale in-memory state.
+ *
+ * Must be called while on an extension page (chrome-extension://…).
+ *
+ * @param {import('./webdriver/driver').Driver} driver - The Driver wrapper.
+ * @param {ThenableWebDriver} webDriver - The raw Selenium WebDriver instance.
+ * @param {string} extensionId - The extension's Chrome ID.
+ */
+async function clearExtensionStateAndReload(driver, webDriver, extensionId) {
+  // Navigate to an extension page so we have access to the extension APIs.
+  await webDriver.get(`chrome-extension://${extensionId}/home.html`);
+
+  // Open a blank tab *before* we clear+reload (the extension page will
+  // die once runtime.reload() fires).
+  const blankHandle = await driver.openNewPage('about:blank');
+  const handles = await webDriver.getAllWindowHandles();
+  const extHandle = handles.find((h) => h !== blankHandle);
+  if (extHandle) {
+    await webDriver.switchTo().window(extHandle);
+  }
+
+  // Clear all extension storage AND reload in one atomic script so the
+  // background has no chance to re-persist its in-memory state between
+  // the clear and the reload.
+  await driver.executeScript(`
+    const b = globalThis.browser ?? globalThis.chrome;
+    try { localStorage.clear(); } catch (_) { /* ignore */ }
+    try { sessionStorage.clear(); } catch (_) { /* ignore */ }
+    Promise.all([
+      b.storage.local.clear(),
+      b.storage.session ? b.storage.session.clear() : Promise.resolve(),
+      new Promise((resolve) => {
+        const req = globalThis.indexedDB.deleteDatabase('metamask-backup');
+        req.onsuccess = resolve;
+        req.onerror = resolve;
+        req.onblocked = resolve;
+      }),
+    ]).then(() => b.runtime.reload());
+  `);
+
+  // Immediately switch to the blank tab (extension page is now dead).
+  await webDriver.switchTo().window(blankHandle);
+
+  // Give the extension time to finish restarting.
+  await driver.delay(2000);
+}
+
+/**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
@@ -431,50 +499,8 @@ async function withFixtures(options, testSuite) {
         disableServerMochaToBackground,
       });
 
-      // Clean up stale windows/tabs from the previous test, keeping only one.
-      const staleHandles = await webDriver.getAllWindowHandles();
-      if (staleHandles.length > 1) {
-        for (let i = 1; i < staleHandles.length; i++) {
-          await webDriver.switchTo().window(staleHandles[i]);
-          await webDriver.close();
-        }
-        await webDriver.switchTo().window(staleHandles[0]);
-      }
-
-      // Reload the extension so it picks up the new fixture state from
-      // the freshly started fixture server.
-      // 1. Navigate to an extension page so we have access to the extension APIs.
-      await webDriver.get(`chrome-extension://${extensionId}/home.html`);
-      // 2. Open a blank tab *before* we clear+reload (the extension page will
-      //    die once runtime.reload() fires).
-      const blankHandle = await driver.openNewPage('about:blank');
-      const handles = await webDriver.getAllWindowHandles();
-      const extHandle = handles.find((h) => h !== blankHandle);
-      if (extHandle) {
-        await webDriver.switchTo().window(extHandle);
-      }
-      // 3. Clear all extension storage AND reload in one atomic script so the
-      //    background has no chance to re-persist its in-memory state between
-      //    the clear and the reload.
-      await driver.executeScript(`
-        const b = globalThis.browser ?? globalThis.chrome;
-        try { localStorage.clear(); } catch (_) { /* ignore */ }
-        try { sessionStorage.clear(); } catch (_) { /* ignore */ }
-        Promise.all([
-          b.storage.local.clear(),
-          b.storage.session ? b.storage.session.clear() : Promise.resolve(),
-          new Promise((resolve) => {
-            const req = globalThis.indexedDB.deleteDatabase('metamask-backup');
-            req.onsuccess = resolve;
-            req.onerror = resolve;
-            req.onblocked = resolve;
-          }),
-        ]).then(() => b.runtime.reload());
-      `);
-      // 4. Immediately switch to the blank tab (extension page is now dead).
-      await webDriver.switchTo().window(blankHandle);
-      // 5. Give the extension time to finish restarting.
-      await driver.delay(2000);
+      await closeExtraWindowHandles(webDriver);
+      await clearExtensionStateAndReload(driver, webDriver, extensionId);
     } else {
       const wd = await buildWebDriver({
         ...driverOptions,
