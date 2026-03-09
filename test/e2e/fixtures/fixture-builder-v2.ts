@@ -273,15 +273,6 @@ class FixtureBuilderV2 {
     const secondNodeChainId = '0x53a';
     const secondNodeClientId = SECOND_NODE_NETWORK_CLIENT_ID;
 
-    // Enable the new chain in NetworkEnablementController so
-    // CAIP-25 connect flow includes it in the permission scopes.
-    // (V1 fixtures ran state migrations that auto-enabled new chains)
-    this.withNetworkEnablementController({
-      enabledNetworkMap: {
-        eip155: { [parseInt(secondNodeChainId, 16)]: true },
-      },
-    });
-
     return this.withNetworkController({
       networkConfigurationsByChainId: {
         [secondNodeChainId]: {
@@ -311,13 +302,6 @@ class FixtureBuilderV2 {
   withNetworkControllerTripleNode(): this {
     const thirdNodeChainId = '0x3e8';
     const thirdNodeClientId = THIRD_NODE_NETWORK_CLIENT_ID;
-
-    // Enable the third chain (see withNetworkControllerDoubleNode for context)
-    this.withNetworkEnablementController({
-      enabledNetworkMap: {
-        eip155: { [parseInt(thirdNodeChainId, 16)]: true },
-      },
-    });
 
     return this.withNetworkControllerDoubleNode().withNetworkController({
       networkConfigurationsByChainId: {
