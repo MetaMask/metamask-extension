@@ -408,7 +408,7 @@ class FixtureBuilderV2 {
   }
 
   withTrezorAccount(): this {
-    return this.withAccountsController({
+    this.withAccountsController({
       internalAccounts: {
         accounts: {
           'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
@@ -472,21 +472,23 @@ class FixtureBuilderV2 {
       },
     })
       .withKeyringController({ vault: TREZOR_VAULT })
-      .withPreferencesController({
-        identities: {
-          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            lastSelected: 1665507600000,
-            name: 'Account 1',
-          },
-          [TREZOR_ADDRESS]: {
-            address: TREZOR_ADDRESS,
-            lastSelected: 1665507800000,
-            name: 'Trezor 1',
-          },
-        } as unknown as PreferencesControllerState['identities'],
-        selectedAddress: TREZOR_ADDRESS,
-      });
+      .withPreferencesController({});
+    merge(this.fixture.data.PreferencesController as Record<string, unknown>, {
+      identities: {
+        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+          address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+          lastSelected: 1665507600000,
+          name: 'Account 1',
+        },
+        [TREZOR_ADDRESS]: {
+          address: TREZOR_ADDRESS,
+          lastSelected: 1665507800000,
+          name: 'Trezor 1',
+        },
+      },
+      selectedAddress: TREZOR_ADDRESS,
+    });
+    return this;
   }
 
   withShowNativeTokenAsMainBalanceEnabled(): this {
