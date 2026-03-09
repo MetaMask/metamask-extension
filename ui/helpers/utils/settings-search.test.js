@@ -36,10 +36,6 @@ const t = (key) => {
       return 'Clear activity and nonce data';
     case 'clearActivityDescription':
       return "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change.";
-    case 'dismissSmartAccountSuggestionEnabledTitle':
-      return 'Dismiss "Switch to Smart Account" suggestion';
-    case 'dismissSmartAccountSuggestionEnabledDescription':
-      return 'Turn this on to dismiss the suggestion to switch to a smart account.';
     case 'showAdvancedGasInlineDescription':
       return 'Select this to show gas price and limit controls directly on the send and confirm screens.';
     case 'showHexData':
@@ -78,8 +74,6 @@ const t = (key) => {
       return 'Contacts';
     case 'notifications':
       return 'Notifications';
-    case 'transactions':
-      return 'Transactions';
     case 'securityAndPrivacy':
       return 'Security & privacy';
     case 'revealSeedWords':
@@ -177,7 +171,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(8);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
     });
 
     it('returns "Backup And Sync" section count', () => {
@@ -190,16 +184,10 @@ describe('Settings Search Utils', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
 
-    it('returns "Transactions" section count', () => {
-      expect(
-        getNumberOfSettingRoutesInTab(t, t('transactions')),
-      ).toStrictEqual(8);
-    });
-
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(19);
+      ).toStrictEqual(22);
     });
 
     it('returns "Network" section count', () => {

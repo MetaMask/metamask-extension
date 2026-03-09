@@ -349,6 +349,58 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderSecurityAlertsToggle() {
+    const { t } = this.context;
+    const { securityAlertsEnabled, hasActiveShieldSubscription } = this.props;
+
+    return (
+      <>
+        <div ref={this.settingsRefs[16]}>
+          <span className="settings-page__security-tab-sub-header">
+            {t('securityAlerts')}
+          </span>
+        </div>
+        <div className="settings-page__content-padded">
+          <Box
+            ref={this.settingsRefs[2]}
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            gap={4}
+          >
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securityAlertsDescription', [
+                  <a
+                    key="learn_more_link"
+                    href={SECURITY_ALERTS_LEARN_MORE_LINK}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {t('learnMoreUpperCase')}
+                  </a>,
+                ])}
+              </div>
+            </div>
+            <div
+              className="settings-page__content-item-col"
+              data-testid="securityAlert"
+            >
+              <ToggleButton
+                value={securityAlertsEnabled}
+                onToggle={this.toggleSecurityAlert.bind(this)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+                disabled={hasActiveShieldSubscription}
+              />
+            </div>
+          </Box>
+        </div>
+      </>
+    );
+  }
+
   renderPhishingDetectionToggle() {
     const { t } = this.context;
     const { usePhishDetect, setUsePhishDetect, hasActiveShieldSubscription } =
@@ -1006,6 +1058,110 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderExternalNameSourcesToggle() {
+    const { t } = this.context;
+    const { useExternalNameSources, setUseExternalNameSources } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[15]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('externalNameSourcesSetting')}</span>
+          <div className="settings-page__content-description">
+            {t('externalNameSourcesSettingDescription')}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useExternalNameSources"
+        >
+          <ToggleButton
+            value={useExternalNameSources}
+            onToggle={(value) => setUseExternalNameSources(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderSimulationsToggle() {
+    const { t } = this.context;
+    const {
+      useTransactionSimulations,
+      setUseTransactionSimulations,
+      hasActiveShieldSubscription,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[17]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('simulationsSettingSubHeader')}</span>
+          <div className="settings-page__content-description">
+            {t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useTransactionSimulations"
+        >
+          <ToggleButton
+            value={useTransactionSimulations}
+            onToggle={(value) => {
+              setUseTransactionSimulations(!value);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            disabled={hasActiveShieldSubscription}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  /**
+   * toggleSecurityAlert
+   *
+   * @param {boolean} oldValue - the current securityAlertEnabled value.
+   */
+  toggleSecurityAlert(oldValue) {
+    const newValue = !oldValue;
+    const { setSecurityAlertsEnabled } = this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        blockaid_alerts_enabled: newValue,
+      },
+    });
+    setSecurityAlertsEnabled(newValue);
+  }
+
   renderUseExternalServices() {
     const { t } = this.context;
     const {
@@ -1182,6 +1338,7 @@ export default class SecurityTab extends PureComponent {
         </span>
         {this.renderSeedWords()}
         {getIsSeedlessOnboardingFeatureEnabled() && this.renderChangePassword()}
+        {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
@@ -1212,6 +1369,7 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
+          {this.renderSimulationsToggle()}
         </div>
 
         <span
@@ -1236,6 +1394,17 @@ export default class SecurityTab extends PureComponent {
           {this.renderNftDetectionToggle()}
         </div>
 
+        {petnamesEnabled && (
+          <>
+            <span className="settings-page__security-tab-sub-header">
+              {this.context.t('settingsSubHeadingSignaturesAndTransactions')}
+            </span>
+            <div className="settings-page__content-padded">
+              {this.renderExternalNameSourcesToggle()}
+            </div>
+          </>
+        )}
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
         </span>
@@ -1247,7 +1416,7 @@ export default class SecurityTab extends PureComponent {
             )}
           />
           {this.renderDataCollectionForMarketing()}
-          <DeleteMetametricsDataButton ref={this.settingsRefs[18]} />
+          <DeleteMetametricsDataButton ref={this.settingsRefs[20]} />
         </div>
       </div>
     );

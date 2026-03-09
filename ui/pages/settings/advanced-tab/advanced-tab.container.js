@@ -5,6 +5,7 @@ import {
   backupUserData,
   setAutoLockTimeLimit,
   setDismissSeedBackUpReminder,
+  setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
@@ -35,6 +36,7 @@ export const mapStateToProps = (state) => {
     showTestNetworks,
     showExtensionInFullSizeView,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    dismissSmartAccountSuggestionEnabled,
   } = getPreferences(state);
 
   return {
@@ -47,6 +49,7 @@ export const mapStateToProps = (state) => {
     autoLockTimeLimit,
     dismissSeedBackUpReminder,
     manageInstitutionalWallets,
+    dismissSmartAccountSuggestionEnabled,
   };
 };
 
@@ -80,6 +83,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setManageInstitutionalWallets: (value) => {
       return dispatch(setManageInstitutionalWallets(value));
+    },
+    setDismissSmartAccountSuggestionEnabled: (value) => {
+      return dispatch(setDismissSmartAccountSuggestionEnabled(value));
     },
   };
 };

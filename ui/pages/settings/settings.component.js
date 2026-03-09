@@ -81,6 +81,7 @@ import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
 import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
+
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
   React.useEffect(() => {
@@ -188,14 +189,8 @@ class SettingsPage extends PureComponent {
       environmentType === ENVIRONMENT_TYPE_POPUP ||
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
     const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-    const isNotificationsSettingsPage = currentPath.startsWith(
-      NOTIFICATIONS_SETTINGS_ROUTE,
-    );
     const isSearchHidden =
-      isRevealSrpListPage ||
-      isPasswordChangePage ||
-      isTransactionShieldPage ||
-      ((isPopup || isSidepanel) && isNotificationsSettingsPage);
+      isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
     return (
       <div

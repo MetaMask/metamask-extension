@@ -99,6 +99,22 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#clear-activity`,
     icon: 'fas fa-sliders-h',
   },
+  // advanced settingsRefs[2]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('smartTransactions'),
+    descriptionMessage: (t) => t('stxOptInSupportedNetworksDescription'),
+    route: `${ADVANCED_ROUTE}#smart-transactions`,
+    icon: 'fas fa-upload',
+  },
+  // advanced settingsRefs[3]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('showHexData'),
+    descriptionMessage: (t) => t('showHexDataDescription'),
+    route: `${ADVANCED_ROUTE}#show-hexdata`,
+    icon: 'fas fa-sliders-h',
+  },
   // advanced settingsRefs[4]
   {
     tabMessage: (t) => t('advanced'),
@@ -322,8 +338,22 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#network-details-check`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[16] - proposed nicknames moved to Transactions
-  // securityAndPrivacy settingsRefs[17] - security alerts moved to Transactions
+  // securityAndPrivacy settingsRefs[16]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('externalNameSourcesSetting'),
+    descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
+    route: `${SECURITY_ROUTE}#proposed-nicknames`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[17]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('securityAlerts'),
+    descriptionMessage: (t) => t('securityAlertsDescription'),
+    route: `${SECURITY_ROUTE}#security-alerts`,
+    icon: 'fa fa-lock',
+  },
   // securityAndPrivacy settingsRefs[18]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
@@ -332,7 +362,14 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[19] - transaction simulations moved to Transactions
+  // securityAndPrivacy settingsRefs[19]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('simulationsSettingSubHeader'),
+    descriptionMessage: (t) => t('simulationsSettingDescription'),
+    route: `${SECURITY_ROUTE}#transaction-simulations`,
+    icon: 'fa fa-lock',
+  },
   // securityAndPrivacy settingsRefs[20]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
