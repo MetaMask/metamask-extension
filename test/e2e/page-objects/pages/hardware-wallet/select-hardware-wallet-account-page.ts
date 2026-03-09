@@ -7,7 +7,9 @@ import { Driver } from '../../../webdriver/driver';
 class SelectHardwareWalletAccountPage {
   protected driver: Driver;
 
-  protected readonly cancelButton = { text: 'Cancel', tag: 'button' };
+  protected readonly cancelButton = {
+    testId: 'connect-hardware-account-list-cancel-btn',
+  };
 
   protected readonly selectAccountPageTitle = {
     text: 'Select an account',
@@ -19,7 +21,9 @@ class SelectHardwareWalletAccountPage {
   protected readonly forgetDeviceButton =
     '[data-testid="hardware-forget-device-button"]';
 
-  protected readonly unlockButton = { text: 'Unlock', tag: 'button' };
+  protected readonly unlockButton = {
+    testId: 'connect-hardware-account-list-unlock-btn',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;

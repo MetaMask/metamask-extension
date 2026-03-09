@@ -282,6 +282,7 @@ const AccountList = ({
     return (
       <Box className="new-external-account-form__buttons">
         <Button
+          data-testid="connect-hardware-account-list-cancel-btn"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           isFullWidth
@@ -290,6 +291,7 @@ const AccountList = ({
           {t('cancel')}
         </Button>
         <Button
+          data-testid="connect-hardware-account-list-unlock-btn"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isFullWidth

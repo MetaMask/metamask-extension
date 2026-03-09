@@ -386,6 +386,7 @@ const SelectHardware = ({
 
   const renderContinueButton = () => (
     <Button
+      data-testid="connect-hardware-continue-btn"
       variant={ButtonVariant.Primary}
       size={ButtonSize.Lg}
       className="hw-connect__connect-btn"
