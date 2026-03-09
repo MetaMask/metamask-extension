@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`NativeTransferInfo renders correctly 1`] = `
 <div>
@@ -15,7 +15,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
       </p>
     </div>
     <div
-      class="flex flex-row items-center"
+      class="flex flex-row items-center justify-between"
     >
       <div
         class="flex flex-col"

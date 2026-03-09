@@ -10,10 +10,10 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
-interface SendHeadingLayoutProps {
+type SendHeadingLayoutProps = {
   children: React.ReactNode;
   image: React.ReactNode;
-}
+};
 
 const SendHeadingLayout = ({ children, image }: SendHeadingLayoutProps) => {
   const t = useI18nContext();

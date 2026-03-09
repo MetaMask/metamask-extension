@@ -91,20 +91,14 @@ const NativeSendHeading = () => {
   const NativeAssetAmount =
     roundedTransferValue === transferValue ? (
       <Box paddingBottom={1}>
-        <Text
-          variant={TextVariant.HeadingLg}
-          color={TextColor.Inherit}
-        >
+        <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
           {`${roundedTransferValue} ${nativeCurrency}`}
         </Text>
       </Box>
     ) : (
       <Tooltip title={transferValue} position="right">
         <Box paddingBottom={1}>
-          <Text
-            variant={TextVariant.HeadingLg}
-            color={TextColor.Inherit}
-          >
+          <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
             {`${roundedTransferValue} ${nativeCurrency}`}
           </Text>
         </Box>
