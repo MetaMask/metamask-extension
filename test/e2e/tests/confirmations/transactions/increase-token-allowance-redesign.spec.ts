@@ -1,4 +1,3 @@
-import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
@@ -21,7 +20,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        testSpecificMock: mocks,
+        testSpecificMock: mocked4BytesIncreaseAllowance,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
@@ -62,7 +61,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        testSpecificMock: mocks,
+        testSpecificMock: mocked4BytesIncreaseAllowance,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
@@ -95,7 +94,3 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     );
   });
 });
-
-async function mocks(server: MockttpServer) {
-  return [await mocked4BytesIncreaseAllowance(server)];
-}
