@@ -163,12 +163,7 @@ export const BridgeQuotesModal = ({
                     />
                   )}
 
-                  <Row
-                    maxWidth={BlockSize.Full}
-                    width={BlockSize.Full}
-                    flexShrink={1}
-                    gap={2}
-                  >
+                  <Row maxWidth={BlockSize.Full} width={BlockSize.Full} gap={2}>
                     {/* PROVIDER NAME */}
                     <Text
                       variant={TextVariant.bodyMd}

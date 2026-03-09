@@ -52,50 +52,25 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               <h4
                 class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
               >
-                Select a quote
+                Select quote
               </h4>
             </div>
           </header>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-1 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-sm-medium mm-box--color-primary-default"
-                >
-                  Net cost
-                </p>
-              </span>
-              <span
-                class="mm-box mm-icon mm-icon--size-xs mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/arrow-2-up.svg');"
-              />
-            </button>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent"
-            >
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-                >
-                  Time
-                </p>
-              </span>
-            </button>
+              Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee.
+            </p>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             style="overflow: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--background-color-primary-muted"
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
               style="position: relative;"
             >
               <div
@@ -103,74 +78,90 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 style="position: absolute; left: 4px; top: 4px; height: calc(100% - 8px); width: 4px; border-radius: 8px;"
               />
               <div
-                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  style="white-space: nowrap; flex-shrink: 1; text-overflow: ellipsis;"
                 >
-                  $0.16
+                  Across
                 </p>
                 <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                  style="white-space: nowrap;"
                 >
-                  $14.00 total cost
-                </p>
-                <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
-                >
-                  $13.84 receive amount
+                  13.98 USDC
                 </p>
               </div>
               <div
-                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full"
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-stretch mm-box--width-full"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
                 >
-                  1 min
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    style="white-space: nowrap;"
+                  >
+                    Total cost: $0.16
+                  </p>
+                  <div
+                    class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-success-muted mm-box--rounded-sm"
+                    style="white-space: nowrap; padding-inline: 6px; padding-top: 0px; padding-bottom: 0px;"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-success-default"
+                    >
+                      Lowest cost
+                    </p>
+                  </div>
+                </div>
                 <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  style="white-space: nowrap;"
                 >
-                  Across
+                  $13.84
                 </p>
               </div>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
               style="position: relative;"
             >
               <div
-                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  style="white-space: nowrap; flex-shrink: 1; text-overflow: ellipsis;"
                 >
-                  $0.34
+                  Celercircle
                 </p>
                 <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                  style="white-space: nowrap;"
                 >
-                  $14.00 total cost
-                </p>
-                <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
-                >
-                  $13.66 receive amount
+                  13.8 USDC
                 </p>
               </div>
               <div
-                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full"
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-stretch mm-box--width-full"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
                 >
-                  26 min
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    style="white-space: nowrap;"
+                  >
+                    Total cost: $0.34
+                  </p>
+                </div>
                 <p
-                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  style="white-space: nowrap;"
                 >
-                  Celercircle
+                  $13.66
                 </p>
               </div>
             </div>
