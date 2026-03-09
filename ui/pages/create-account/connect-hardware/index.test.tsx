@@ -294,7 +294,9 @@ describe('ConnectHardwareForm', () => {
       connectToDevice(tEn('trezor'));
 
       await waitFor(() => {
-        expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+        expect(
+          screen.getByText(tEn('hardwareWalletErrorUnknownErrorTitle')),
+        ).toBeInTheDocument();
       });
     });
 
