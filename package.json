@@ -150,6 +150,8 @@
   "resolutions": {
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "chokidar": "^3.6.0",
+    "@metamask/profile-sync-controller@npm:^27.0.0": "npm:@metamask-previews/profile-sync-controller@27.1.0-preview-fb0893ad9",
+    "@metamask/profile-sync-controller@npm:^27.1.0": "npm:@metamask-previews/profile-sync-controller@27.1.0-preview-fb0893ad9",
     "@types/react": "^17.0.11",
     "bn.js": "^5.2.3",
     "ganache/abstract-level": "1.0.4",
