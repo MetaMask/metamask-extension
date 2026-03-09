@@ -37,8 +37,8 @@ import {
   getAssetsBySelectedAccountGroup,
   getAsset,
   getAllIgnoredAssets,
-  getAssetsBySelectedAccountGroupWithTronResources,
   selectAggregatedBalanceForSelectedAccount,
+  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
 } from './assets';
 
 /**
@@ -1566,10 +1566,10 @@ describe('getAssetsBySelectedAccountGroup', () => {
   });
 });
 
-describe('getAssetsBySelectedAccountGroupWithTronResources', () => {
+describe('getAssetsBySelectedAccountGroupWithTronSpecialAssets', () => {
   beforeEach(() => {
-    getAssetsBySelectedAccountGroupWithTronResources.clearCache();
-    getAssetsBySelectedAccountGroupWithTronResources.memoizedResultFunc.clearCache();
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets.clearCache();
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets.memoizedResultFunc.clearCache();
   });
 
   const mockState = {
@@ -1592,12 +1592,13 @@ describe('getAssetsBySelectedAccountGroupWithTronResources', () => {
     },
   };
 
-  it('calls selector with option to not filter tron resources', () => {
+  it('calls selector with option to not filter tron special assets', () => {
     const selectorMock = jest
       .mocked(selectAssetsBySelectedAccountGroup)
       .mockReturnValue({});
 
-    const result = getAssetsBySelectedAccountGroupWithTronResources(mockState);
+    const result =
+      getAssetsBySelectedAccountGroupWithTronSpecialAssets(mockState);
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask, {
       filterTronStakedTokens: false,

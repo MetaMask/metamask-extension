@@ -1736,6 +1736,78 @@ describe('Bridge selectors', () => {
       expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(null);
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
+
+    // @ts-expect-error: each is a valid test function in jest
+    it.each([
+      {
+        priceImpact: '-0.05',
+        isPriceImpactWarning: false,
+        isPriceImpactError: false,
+      },
+      {
+        priceImpact: '0.055',
+        isPriceImpactWarning: false,
+        isPriceImpactError: false,
+      },
+      {
+        priceImpact: '0.01',
+        isPriceImpactWarning: false,
+        isPriceImpactError: false,
+      },
+      {
+        priceImpact: '0.252',
+        isPriceImpactWarning: false,
+        isPriceImpactError: true,
+      },
+      {
+        priceImpact: '0.9',
+        isPriceImpactWarning: false,
+        isPriceImpactError: true,
+      },
+      {
+        priceImpact: '0.07',
+        isPriceImpactWarning: true,
+        isPriceImpactError: false,
+      },
+      {
+        priceImpact: undefined,
+        isPriceImpactWarning: false,
+        isPriceImpactError: false,
+      },
+    ])(
+      'should return isPriceImpactWarning=$isPriceImpactWarning and isPriceImpactError=$isPriceImpactError when priceImpact=$priceImpact',
+      ({
+        priceImpact,
+        isPriceImpactWarning,
+        isPriceImpactError,
+      }: {
+        priceImpact: string;
+        isPriceImpactWarning: boolean;
+        isPriceImpactError: boolean;
+      }) => {
+        const state = createBridgeMockStore({
+          bridgeStateOverrides: {
+            quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
+              ...quote,
+              quote: {
+                ...quote.quote,
+                priceData: { ...quote.quote.priceData, priceImpact },
+              },
+            })) as unknown as QuoteResponse[],
+            quoteRequest: {
+              srcChainId: 10,
+              srcTokenAddress: zeroAddress(),
+              destChainId: '0x89',
+              destTokenAddress: zeroAddress(),
+            },
+          },
+        });
+        const result = getValidationErrors(state as never);
+
+        expect(result.isPriceImpactWarning).toBe(isPriceImpactWarning);
+        expect(result.isPriceImpactError).toBe(isPriceImpactError);
+      },
+    );
   });
 
   describe('getFromTokenBalance', () => {

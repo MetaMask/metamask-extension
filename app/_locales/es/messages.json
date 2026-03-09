@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impacto sobre el precio"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "El impacto en el precio refleja cómo tu canje afecta el precio de mercado. Si no tienes suficiente para gas, algunos de tus tokens se usan para cubrir tarifas, lo que aumenta el impacto en el precio. MetaMask no lo establece ni lo controla."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impacto sobre el precio"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Precio de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explora criptomonedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explora acciones y materias primas"
-  },
   "perpsFees": {
     "message": "Tarifas"
   },
@@ -5396,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "La mediana de los precios externos informados por los validadores, utilizada para calcular la tasa de financiación"
-  },
-  "perpsOrderAmount": {
-    "message": "Monto de la orden"
   },
   "perpsOrders": {
     "message": "Órdenes"
@@ -5546,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirar"
-  },
-  "perpsYourOrders": {
-    "message": "Tus órdenes"
-  },
-  "perpsYourPositions": {
-    "message": "Tus posiciones"
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."

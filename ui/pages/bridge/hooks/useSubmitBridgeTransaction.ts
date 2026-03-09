@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
-  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
@@ -27,6 +27,10 @@ import {
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
+import {
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
@@ -51,14 +55,10 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
 
   return (
-    // These will be removed when adapters are made for the hardware wallets error management.
-    // Trezor rejection
     (errorMessage.includes('trezor') &&
       (errorMessage.includes('cancelled') ||
         errorMessage.includes('rejected'))) ||
-    // Lattice rejection
     (errorMessage.includes('lattice') && errorMessage.includes('rejected')) ||
-    // Generic hardware wallet rejections
     errorMessage.includes('user rejected') ||
     errorMessage.includes('user cancelled')
   );
@@ -70,52 +70,65 @@ export default function useSubmitBridgeTransaction() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
-
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(getWarningLabels);
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    if (!fromAccount) {
-      throw new Error(
-        'Failed to submit bridge transaction: No selected account',
-      );
+    setIsSubmitting(true);
+
+    try {
+      if (isHardwareWalletAccount) {
+        const isDeviceReady = await ensureDeviceReady();
+        if (!isDeviceReady) {
+          throw new Error('Hardware wallet device is not ready');
+        }
+      }
+
+      if (!fromAccount) {
+        throw new Error(
+          'Failed to submit bridge transaction: No selected account',
+        );
+      }
+
+      if (
+        isCrossChain(
+          quoteResponse.quote.srcChainId,
+          quoteResponse.quote.destChainId,
+        )
+      ) {
+        enableMissingNetwork(
+          formatChainIdToCaip(quoteResponse.quote.destChainId),
+        );
+      }
+    } catch {
+      setIsSubmitting(false);
+      return;
     }
 
     const intentData = quoteResponse.quote.intent;
-
-    // If bridging, enable All Networks view so the user can see their bridging activity
-    if (
-      isCrossChain(
-        quoteResponse.quote.srcChainId,
-        quoteResponse.quote.destChainId,
-      )
-    ) {
-      enableMissingNetwork(
-        formatChainIdToCaip(quoteResponse.quote.destChainId),
-      );
-    }
 
     if (hardwareWalletUsed) {
       const {
         quote: { requestId },
       } = quoteResponse;
-      // Preserve requestId across popup -> fullscreen transitions (QR flow).
       const awaitingUrl = requestId
         ? `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
             requestId,
           )}`
         : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
       navigate(awaitingUrl);
+      setIsSubmitting(false);
     }
 
-    // Execute transaction(s)
     try {
-      // Intent quotes are submitted via the dedicated intent flow.
       if (intentData) {
         await dispatch(
           submitBridgeIntent({
@@ -127,33 +140,6 @@ export default function useSubmitBridgeTransaction() {
           return;
         }
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          replace: true,
-          state: { stayOnHomePage: true },
-        });
-        return;
-      }
-
-      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
-      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
-
-      if (isNonEvmSource) {
-        // Submit the transaction first, THEN navigate
-        await dispatch(
-          submitBridgeTx(
-            fromAccount.address,
-            quoteResponse,
-            false,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-            ),
-          ),
-        );
-        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          replace: true,
           state: { stayOnHomePage: true },
         });
         return;
@@ -180,22 +166,19 @@ export default function useSubmitBridgeTransaction() {
         navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
           replace: true,
         });
-      } else {
-        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          replace: true,
-          state: { stayOnHomePage: true },
-        });
+        return;
       }
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      replace: true,
       state: { stayOnHomePage: true },
     });
   };
 
   return {
     submitBridgeTransaction,
+    isSubmitting,
   };
 }
