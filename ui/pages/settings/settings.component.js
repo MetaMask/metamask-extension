@@ -470,12 +470,13 @@ class SettingsPage extends PureComponent {
       });
     }
 
-    // Developer Options tab - always shown for Designer Mode and other dev tools
-    tabs.splice(-1, 0, {
-      content: t('developerOptions'),
-      icon: <Icon name={IconName.CodeCircle} />,
-      key: DEVELOPER_OPTIONS_ROUTE,
-    });
+    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
+      tabs.splice(-1, 0, {
+        content: t('developerOptions'),
+        icon: <Icon name={IconName.CodeCircle} />,
+        key: DEVELOPER_OPTIONS_ROUTE,
+      });
+    }
 
     return (
       <TabBar
@@ -582,10 +583,13 @@ class SettingsPage extends PureComponent {
           path={toRelativeRoutePath(EXPERIMENTAL_ROUTE, SETTINGS_ROUTE)}
           element={<ExperimentalTab />}
         />
-        <Route
-          path={toRelativeRoutePath(DEVELOPER_OPTIONS_ROUTE, SETTINGS_ROUTE)}
-          element={<DeveloperOptionsTab />}
-        />
+        {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
+          process.env.IN_TEST) && (
+          <Route
+            path={toRelativeRoutePath(DEVELOPER_OPTIONS_ROUTE, SETTINGS_ROUTE)}
+            element={<DeveloperOptionsTab />}
+          />
+        )}
         <Route
           path={toRelativeRoutePath(CONTACT_LIST_ROUTE, SETTINGS_ROUTE)}
           element={<ContactListTab />}

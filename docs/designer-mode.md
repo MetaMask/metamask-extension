@@ -10,7 +10,9 @@ shows the result, and you keep iterating.
 ## Getting Started
 
 1. **Make sure the extension is running** — You need a development build
-   running (`yarn start`) and the extension loaded in Chrome.
+   running (`yarn start`) and the extension loaded in Chrome. Also ensure
+   `ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true` is set in your `.metamaskrc` file
+   so the Developer Options tab is visible.
 2. **Enable Designer Mode** — In the extension, go to **Settings → Developer
    Options** and turn on **Designer Mode**.
 3. **Tell the agent "run designer mode"** — In Cursor, ask the AI agent to
