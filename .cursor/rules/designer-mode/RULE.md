@@ -3,6 +3,7 @@
 ## When to Activate
 
 Activate this workflow when the user says any of:
+
 - "start designer mode"
 - "run designer mode"
 - "listen for design requests"
@@ -12,14 +13,18 @@ Activate this workflow when the user says any of:
 ## Workflow
 
 1. **Start the server** (once, in background with `block_until_ms: 0`):
+
    ```bash
    yarn designer-server
    ```
+
    Wait a few seconds, then read the terminal output to confirm it says
    "Listening on http://localhost:3334".
 
 2. **Tell the user** how to send requests. Print a short message like:
+
    > Designer Mode is ready. In the extension:
+   >
    > 1. Go to Settings → Developer Options and enable Designer Mode
    > 2. Click the 🎨 button or press Ctrl+Shift+D to activate the inspector
    > 3. Click an element, then type a message and hit Send
@@ -39,6 +44,7 @@ Activate this workflow when the user says any of:
 5. **Apply the requested changes** to the source code.
 
 6. **Send a response** to the designer panel:
+
    ```bash
    curl -s -X POST http://localhost:3334/api/response \
      -H "Content-Type: text/plain" \
@@ -54,6 +60,7 @@ again after applying changes. **Every time** you finish steps 4 and 5,
 you MUST run `yarn designer-wait` again. No exceptions.
 
 The correct sequence after every request is:
+
 1. Apply code changes
 2. Send curl response
 3. Run `yarn designer-wait` ← do NOT skip this

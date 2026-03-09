@@ -1644,12 +1644,15 @@ When asked to **"start designer mode"**, **"run designer mode"**,
 follow this loop:
 
 1. Start the relay server (once, in background):
+
    ```bash
    yarn designer-server
    ```
 
 2. Tell the user how to send requests:
+
    > Designer Mode is ready. In the extension:
+   >
    > 1. Go to Settings → Developer Options and enable Designer Mode
    > 2. Click the 🎨 button or press Ctrl+Shift+D to activate the inspector
    > 3. Click an element, then type a message and hit Send
@@ -1659,9 +1662,11 @@ follow this loop:
 
 3. Run `yarn designer-wait` (use `block_until_ms: 600000` so it has time
    to receive the request before being backgrounded):
+
    ```bash
    yarn designer-wait
    ```
+
    This blocks until the designer sends a request, prints the structured
    prompt, and exits.
 
