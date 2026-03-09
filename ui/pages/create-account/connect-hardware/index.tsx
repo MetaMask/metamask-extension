@@ -199,7 +199,6 @@ const ConnectHardwareForm = () => {
     ) => {
       // The actions.ts type declares `page` as string, but the background
       // handler expects a number (0 = first, 1 = next, -1 = previous).
-      // The original JS code always passed numbers.
       try {
         const nextAccounts = (await dispatch(
           actions.connectHardware(
@@ -415,10 +414,19 @@ const ConnectHardwareForm = () => {
           ? (t('hardwareWalletLegacyDescription') as string)
           : '';
 
+      const selectedAccountIndexes = selectedAccounts.filter(
+        (accountIndex) =>
+          Number.isInteger(accountIndex) && Number(accountIndex) >= 0,
+      );
+      if (selectedAccountIndexes.length !== selectedAccounts.length) {
+        setError(t('accountSelectionRequired') as string);
+        return;
+      }
+
       try {
         await dispatch(
           actions.unlockHardwareWalletAccounts(
-            selectedAccounts.map(String),
+            selectedAccountIndexes,
             deviceName as HardwareDeviceNames,
             path || '',
             description,
