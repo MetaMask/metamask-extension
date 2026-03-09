@@ -443,24 +443,38 @@ async function withFixtures(options, testSuite) {
 
       // Reload the extension so it picks up the new fixture state from
       // the freshly started fixture server.
-      // 1. Navigate to an extension page so we can call runtime.reload()
+      // 1. Navigate to an extension page so we have access to the extension APIs.
       await webDriver.get(`chrome-extension://${extensionId}/home.html`);
-      // 2. Open a blank tab to switch to *after* the reload (the extension
-      //    page will become invalid once the runtime restarts).
+      // 2. Open a blank tab *before* we clear+reload (the extension page will
+      //    die once runtime.reload() fires).
       const blankHandle = await driver.openNewPage('about:blank');
-      // 3. Switch back to the extension page to trigger the reload.
       const handles = await webDriver.getAllWindowHandles();
       const extHandle = handles.find((h) => h !== blankHandle);
       if (extHandle) {
         await webDriver.switchTo().window(extHandle);
       }
-      await driver.executeScript(
-        `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
-      );
+      // 3. Clear all extension storage AND reload in one atomic script so the
+      //    background has no chance to re-persist its in-memory state between
+      //    the clear and the reload.
+      await driver.executeScript(`
+        const b = globalThis.browser ?? globalThis.chrome;
+        try { localStorage.clear(); } catch (_) { /* ignore */ }
+        try { sessionStorage.clear(); } catch (_) { /* ignore */ }
+        Promise.all([
+          b.storage.local.clear(),
+          b.storage.session ? b.storage.session.clear() : Promise.resolve(),
+          new Promise((resolve) => {
+            const req = globalThis.indexedDB.deleteDatabase('metamask-backup');
+            req.onsuccess = resolve;
+            req.onerror = resolve;
+            req.onblocked = resolve;
+          }),
+        ]).then(() => b.runtime.reload());
+      `);
       // 4. Immediately switch to the blank tab (extension page is now dead).
       await webDriver.switchTo().window(blankHandle);
       // 5. Give the extension time to finish restarting.
-      await driver.delay(1000);
+      await driver.delay(2000);
     } else {
       const wd = await buildWebDriver({
         ...driverOptions,
