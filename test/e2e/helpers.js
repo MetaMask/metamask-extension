@@ -11,7 +11,7 @@ const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
-const { PAGES } = require('./webdriver/driver');
+const { Driver, PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
@@ -37,6 +37,12 @@ const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
 const dappBasePort = 8080;
+
+// Persisted browser state for reuse across withFixtures calls.
+// When keepBrowserRunning is true (the default), the browser session is stored
+// here so the next withFixtures call automatically reuses it without callers
+// having to pass anything explicitly.
+let _persistedBrowserState = null;
 
 const createDownloadFolder = async (downloadsFolder) => {
   await fs.rm(downloadsFolder, { recursive: true, force: true });
@@ -138,6 +144,7 @@ function normalizeSmartContracts(smartContract) {
  *
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
+ * @returns {Promise<{ driver: ThenableWebDriver, extensionId: string } | undefined>}
  */
 async function withFixtures(options, testSuite) {
   const {
@@ -163,7 +170,29 @@ async function withFixtures(options, testSuite) {
     accountActivityWebSocketSpecificMocks = [],
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
+    keepBrowserRunning = true,
+    existingDriver,
   } = options;
+
+  // Auto-detect an existing browser session from a prior keepBrowserRunning
+  // call. Callers can still pass existingDriver explicitly to override.
+  let effectiveExistingDriver = existingDriver || _persistedBrowserState;
+
+  // If this test specifies custom browser-level options (ignoredConsoleErrors,
+  // driverOptions) that require a fresh browser instance, quit the persisted
+  // session and start from scratch. An explicitly provided existingDriver is
+  // always respected (the caller knows what they're doing).
+  const needsFreshBrowser =
+    ignoredConsoleErrors.length > 0 || Boolean(driverOptions);
+  if (needsFreshBrowser && !existingDriver && _persistedBrowserState) {
+    try {
+      await _persistedBrowserState.driver.quit();
+    } catch {
+      // Browser may already be closed.
+    }
+    _persistedBrowserState = null;
+    effectiveExistingDriver = null;
+  }
 
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
@@ -387,20 +416,70 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    const wd = await buildWebDriver({
-      ...driverOptions,
-      disableServerMochaToBackground,
-    });
+    if (effectiveExistingDriver) {
+      // Reuse an already-running browser session (e.g. from a previous
+      // keepBrowserRunning call or explicitly provided). We build a fresh
+      // Driver wrapper but do NOT launch a new Chrome/Firefox instance.
+      const browser = process.env.SELENIUM_BROWSER;
+      extensionId = effectiveExistingDriver.extensionId;
+      webDriver = effectiveExistingDriver.driver;
+      driver = new Driver({
+        driver: webDriver,
+        browser,
+        extensionUrl: `chrome-extension://${extensionId}`,
+        timeout: driverOptions?.timeOut,
+        disableServerMochaToBackground,
+      });
 
-    driver = wd.driver;
+      // Clean up stale windows/tabs from the previous test, keeping only one.
+      const staleHandles = await webDriver.getAllWindowHandles();
+      if (staleHandles.length > 1) {
+        for (let i = 1; i < staleHandles.length; i++) {
+          await webDriver.switchTo().window(staleHandles[i]);
+          await webDriver.close();
+        }
+        await webDriver.switchTo().window(staleHandles[0]);
+      }
+
+      // Reload the extension so it picks up the new fixture state from
+      // the freshly started fixture server.
+      // 1. Navigate to an extension page so we can call runtime.reload()
+      await webDriver.get(`chrome-extension://${extensionId}/home.html`);
+      // 2. Open a blank tab to switch to *after* the reload (the extension
+      //    page will become invalid once the runtime restarts).
+      const blankHandle = await driver.openNewPage('about:blank');
+      // 3. Switch back to the extension page to trigger the reload.
+      const handles = await webDriver.getAllWindowHandles();
+      const extHandle = handles.find((h) => h !== blankHandle);
+      if (extHandle) {
+        await webDriver.switchTo().window(extHandle);
+      }
+      await driver.executeScript(
+        `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+      );
+      // 4. Immediately switch to the blank tab (extension page is now dead).
+      await webDriver.switchTo().window(blankHandle);
+      // 5. Give the extension time to finish restarting.
+      await driver.delay(1000);
+    } else {
+      const wd = await buildWebDriver({
+        ...driverOptions,
+        disableServerMochaToBackground,
+      });
+
+      driver = wd.driver;
+      extensionId = wd.extensionId;
+      webDriver = driver.driver;
+    }
+
     driver.timeout =
       extendedTimeoutMultiplier > 1
         ? driver.timeout * extendedTimeoutMultiplier
         : driver.timeout;
-    extensionId = wd.extensionId;
-    webDriver = driver.driver;
 
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    // CDP-based log/exception listeners can only be set up for a fresh
+    // browser (the previous CDP targets are gone after an extension reload).
+    if (process.env.SELENIUM_BROWSER === 'chrome' && !effectiveExistingDriver) {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
       await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
     }
@@ -510,6 +589,12 @@ async function withFixtures(options, testSuite) {
 
     throw error;
   } finally {
+    // Clear persisted browser state on failure to prevent cascading issues
+    // in subsequent tests.
+    if (failed) {
+      _persistedBrowserState = null;
+    }
+
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       const shutdownTasks = [fixtureServer.stop()];
 
@@ -523,7 +608,7 @@ async function withFixtures(options, testSuite) {
         shutdownTasks.push(bundlerServer.stop());
       }
 
-      if (webDriver) {
+      if (webDriver && (!keepBrowserRunning || failed)) {
         shutdownTasks.push(driver.quit());
       }
       if (numberOfDapps > 0) {
@@ -587,6 +672,15 @@ async function withFixtures(options, testSuite) {
       }
     }
   }
+
+  // When keepBrowserRunning is true, persist the browser session in module
+  // state so the next withFixtures call automatically reuses it.
+  if (keepBrowserRunning && webDriver) {
+    _persistedBrowserState = { driver: webDriver, extensionId };
+    return _persistedBrowserState;
+  }
+  _persistedBrowserState = null;
+  return undefined;
 }
 
 /**
