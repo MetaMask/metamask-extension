@@ -6,12 +6,7 @@ import { getTheme } from '../../../selectors';
 import { THEME_ROUTE } from '../../../helpers/constants/routes';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { SettingsSelectItem } from '../shared';
-
-const THEME_LABEL_KEYS: Record<ThemeType, string> = {
-  [ThemeType.light]: 'lightTheme',
-  [ThemeType.dark]: 'darkTheme',
-  [ThemeType.os]: 'osTheme',
-};
+import { THEME_LABEL_MAP } from './theme-utils';
 
 export const ThemeItem = () => {
   const t = useI18nContext();
@@ -22,8 +17,7 @@ export const ThemeItem = () => {
     navigate(THEME_ROUTE);
   };
 
-  const themeLabelKey =
-    THEME_LABEL_KEYS[theme] ?? THEME_LABEL_KEYS[ThemeType.os];
+  const themeLabelKey = THEME_LABEL_MAP[theme] ?? THEME_LABEL_MAP[ThemeType.os];
 
   return (
     <SettingsSelectItem

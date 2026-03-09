@@ -25,12 +25,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
-const themeOptions: { value: ThemeType; labelKey: string }[] = [
-  { value: ThemeType.light, labelKey: 'lightTheme' },
-  { value: ThemeType.dark, labelKey: 'darkTheme' },
-  { value: ThemeType.os, labelKey: 'osTheme' },
-];
+import { THEME_OPTIONS } from './theme-utils';
 
 const ThemeSubPage = () => {
   const dispatch = useDispatch();
@@ -54,7 +49,7 @@ const ThemeSubPage = () => {
 
   return (
     <Box>
-      {themeOptions.map(({ value, labelKey }) => {
+      {THEME_OPTIONS.map(({ value, labelKey }) => {
         const isSelected = value === currentTheme;
         return (
           <Box

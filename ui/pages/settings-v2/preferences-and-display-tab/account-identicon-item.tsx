@@ -18,12 +18,7 @@ import { ACCOUNT_IDENTICON_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { SettingsSelectItem } from '../shared';
-
-const AVATAR_LABEL_MAP: Record<AvatarAccountVariant, string> = {
-  [AvatarAccountVariant.Maskicon]: 'maskicons',
-  [AvatarAccountVariant.Jazzicon]: 'jazzicons',
-  [AvatarAccountVariant.Blockies]: 'blockies',
-};
+import { AVATAR_LABEL_MAP, getAvatarVariant } from './account-identicon-utils';
 
 export const AccountIdenticonItem = () => {
   const t = useI18nContext();
@@ -35,13 +30,10 @@ export const AccountIdenticonItem = () => {
     navigate(ACCOUNT_IDENTICON_ROUTE);
   };
 
-  let currentVariant: AvatarAccountVariant = AvatarAccountVariant.Maskicon;
-  if (avatarType !== undefined) {
-    currentVariant = avatarType as AvatarAccountVariant;
-  } else if (useBlockie) {
-    currentVariant = AvatarAccountVariant.Blockies;
-  }
-
+  const currentVariant = getAvatarVariant(
+    avatarType as AvatarAccountVariant | undefined,
+    useBlockie,
+  );
   const labelKey = AVATAR_LABEL_MAP[currentVariant];
 
   return (

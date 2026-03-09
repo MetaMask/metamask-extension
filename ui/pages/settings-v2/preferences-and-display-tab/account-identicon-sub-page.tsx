@@ -23,15 +23,7 @@ import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes
 import { getPreferences } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
-const avatarOptions: {
-  value: AvatarAccountVariant;
-  labelKey: string;
-}[] = [
-  { value: AvatarAccountVariant.Maskicon, labelKey: 'maskicons' },
-  { value: AvatarAccountVariant.Jazzicon, labelKey: 'jazzicons' },
-  { value: AvatarAccountVariant.Blockies, labelKey: 'blockies' },
-];
+import { AVATAR_OPTIONS, getAvatarVariant } from './account-identicon-utils';
 
 const AccountIdenticonSubPage = () => {
   const dispatch = useDispatch();
@@ -40,13 +32,10 @@ const AccountIdenticonSubPage = () => {
   const { avatarType, useBlockie } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
-  // Existing fallback behaviour for useBlockie
-  let currentVariant: AvatarAccountVariant = AvatarAccountVariant.Maskicon;
-  if (avatarType !== undefined) {
-    currentVariant = avatarType as AvatarAccountVariant;
-  } else if (useBlockie) {
-    currentVariant = AvatarAccountVariant.Blockies;
-  }
+  const currentVariant = getAvatarVariant(
+    avatarType as AvatarAccountVariant | undefined,
+    useBlockie,
+  );
 
   const handleSelect = (value: AvatarAccountVariant) => {
     dispatch(setAvatarType(value));
@@ -55,7 +44,7 @@ const AccountIdenticonSubPage = () => {
 
   return (
     <Box data-testid="account-identicon-list">
-      {avatarOptions.map(({ value, labelKey }) => {
+      {AVATAR_OPTIONS.map(({ value, labelKey }) => {
         const isSelected = value === currentVariant;
         return (
           <Box
