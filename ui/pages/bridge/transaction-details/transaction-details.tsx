@@ -29,6 +29,7 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import {
+  selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
   selectLocalTxForTxHash,
   selectReceivedSwapsTokenAmountFromTxMeta,
@@ -107,9 +108,15 @@ const CrossChainSwapTxDetails = () => {
     destNetwork,
   } = useBridgeActivityData({ transaction });
 
-  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+  const bridgeHistoryItemByHash = useSelector((state: MetaMaskReduxState) =>
     selectBridgeHistoryItemByHash(state, srcChainTxMeta?.hash),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForOriginalTxMetaId(state, srcChainTxMeta?.id),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
   const approvalTxMeta = allTransactions.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );

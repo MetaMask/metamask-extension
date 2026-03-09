@@ -95,6 +95,43 @@ describe('transaction-details', () => {
   });
 
   describe('bridge snapshots', () => {
+    it('uses originalTransactionId lookup for intent transaction details', () => {
+      mockLocation.mockReturnValue({
+        pathname: '/cross-chain/tx-details/intent-tx-meta-id',
+        search: '',
+        hash: '',
+        state: {
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.initialTransaction,
+            id: 'intent-tx-meta-id',
+            hash: undefined,
+            transactionCategory: 'BRIDGE_OUT',
+          },
+        },
+        key: 'test-key',
+      } as RouterLocation);
+      mockParams.mockReturnValue({
+        txHash: 'intent-tx-meta-id',
+      });
+
+      const { queryAllByTestId, getByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore(mockBridgeTxData.transactionGroup, 'intent-order-uid', {
+          ...mockBridgeTxData.bridgeHistoryItem,
+          originalTransactionId: 'intent-tx-meta-id',
+        } as never),
+      );
+
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(7);
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(getByText('You received')).toBeInTheDocument();
+      expect(getByText('1.981 USDC on')).toBeInTheDocument();
+      expect(getByText('Status')).toBeInTheDocument();
+      expect(getByText('complete')).toBeInTheDocument();
+    });
+
     it('should render completed bridge tx', () => {
       const { queryAllByTestId, getByText } = renderWithProvider(
         <CrossChainSwapTxDetails />,
@@ -424,7 +461,9 @@ describe('transaction-details', () => {
       queryAllByTestId('transaction-detail-row').forEach((row, i) => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
-      expect(queryByText(messages.bridgeTxDetailsNonce.message)).not.toBeInTheDocument();
+      expect(
+        queryByText(messages.bridgeTxDetailsNonce.message),
+      ).not.toBeInTheDocument();
     });
   });
 });
