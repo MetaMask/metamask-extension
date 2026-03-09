@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
@@ -27,6 +27,11 @@ import {
 import { getCompleteAddressBook } from '../../selectors';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 
 const TOAST_AUTO_HIDE_MS = 2500;
 
@@ -34,15 +39,9 @@ export function ContactsListPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const completeAddressBook = useSelector(getCompleteAddressBook);
   const [showDeletedToast, setShowDeletedToast] = useState(false);
-
-  useEffect(() => {
-    if (location.state?.showContactDeletedToast) {
-      setShowDeletedToast(true);
-      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
-    }
-  }, [location.state?.showContactDeletedToast, navigate]);
 
   const contacts = useMemo(() => {
     const list = (completeAddressBook ?? []).filter(
@@ -52,6 +51,23 @@ export function ContactsListPage() {
       (entry.name ?? '').toLowerCase(),
     );
   }, [completeAddressBook]);
+
+  useEffect(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactsPageViewed,
+      properties: {
+        number_of_contacts: contacts.length,
+      },
+    });
+  }, [trackEvent, contacts.length]);
+
+  useEffect(() => {
+    if (location.state?.showContactDeletedToast) {
+      setShowDeletedToast(true);
+      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
+    }
+  }, [location.state?.showContactDeletedToast, navigate]);
 
   const handleBack = () => {
     navigate(DEFAULT_ROUTE);
@@ -135,7 +151,14 @@ export function ContactsListPage() {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             isFullWidth
-            onClick={() => navigate(CONTACTS_ADD_ROUTE)}
+            onClick={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Contacts,
+                event: MetaMetricsEventName.AddContactClicked,
+                properties: { location: 'contacts_list' },
+              });
+              navigate(CONTACTS_ADD_ROUTE);
+            }}
             data-testid="contacts-add-contact-button"
           >
             {contacts.length === 0 ? `+ ${t('addContact')}` : t('addContact')}

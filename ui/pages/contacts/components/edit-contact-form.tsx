@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AvatarAccount,
@@ -33,7 +33,7 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { ContactNetworks } from '../../settings/contact-list-tab/contact-networks';
+import { ContactNetworks } from './contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -47,6 +47,11 @@ import {
   isValidHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
 import type { EditContactFormProps } from '../contacts.types';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 export function EditContactForm({
   address,
@@ -58,6 +63,7 @@ export function EditContactForm({
 }: EditContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const addressBook = useSelector(getAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
@@ -121,7 +127,6 @@ export function EditContactForm({
           selectedChainId,
         ),
       );
-      onSuccess();
     } else if (isChainChanged) {
       await dispatch(removeFromAddressBook(contactChainId, address));
       await dispatch(
@@ -132,7 +137,6 @@ export function EditContactForm({
           selectedChainId,
         ),
       );
-      onSuccess();
     } else {
       await dispatch(
         addToAddressBook(
@@ -142,8 +146,14 @@ export function EditContactForm({
           selectedChainId,
         ),
       );
-      onSuccess();
     }
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactUpdated,
+      properties: { chain_id: selectedChainId },
+      sensitiveProperties: { contact_address: newAddress },
+    });
+    onSuccess();
   };
 
   return (

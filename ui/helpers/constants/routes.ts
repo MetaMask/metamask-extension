@@ -52,12 +52,7 @@ export const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 export const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
 export const ADD_POPULAR_CUSTOM_NETWORK =
   '/settings/networks/add-popular-custom-network';
-export const CONTACT_LIST_ROUTE = '/settings/contact-list';
-export const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
-export const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
-export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
-
-// Standalone contacts (hamburger menu)
+// Contacts (global menu)
 export const CONTACTS_ROUTE = '/contacts';
 export const CONTACTS_ADD_ROUTE = '/contacts/add';
 export const CONTACTS_VIEW_ROUTE = '/contacts/view';
@@ -279,26 +274,6 @@ export const ROUTES = [
   {
     path: ADD_POPULAR_CUSTOM_NETWORK,
     label: 'Add Network From A List Of Popular Custom Networks',
-    trackInAnalytics: true,
-  },
-  {
-    path: CONTACT_LIST_ROUTE,
-    label: 'Contact List Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONTACT_EDIT_ROUTE}/:address`,
-    label: 'Edit Contact Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: CONTACT_ADD_ROUTE,
-    label: 'Add Contact Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONTACT_VIEW_ROUTE}/:address`,
-    label: 'View Contact Settings Page',
     trackInAnalytics: true,
   },
   {

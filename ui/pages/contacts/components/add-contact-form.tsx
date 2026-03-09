@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useMemo,
   useRef,
+  useContext,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
@@ -35,7 +36,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
-import { ContactNetworks } from '../../settings/contact-list-tab/contact-networks';
+import { ContactNetworks } from './contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import {
   getCurrentChainId,
@@ -63,10 +64,16 @@ import {
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const addressBook = useSelector(getAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
@@ -187,6 +194,11 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       setSelectedAddress('');
       setEnteredDomainName('');
     } else {
+      trackEvent({
+        category: MetaMetricsEventCategory.Contacts,
+        event: MetaMetricsEventName.ContactAddQrScannerClicked,
+        properties: { location: 'add_contact_form' },
+      });
       dispatch(showQrScanner());
     }
   };
@@ -209,6 +221,14 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         typeof selectedChainId === 'string' ? selectedChainId : '',
       ),
     );
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactAdded,
+      properties: {
+        chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
+      },
+      sensitiveProperties: { contact_address: newAddress },
+    });
     onSuccess();
   };
 

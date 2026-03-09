@@ -9,8 +9,8 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { skipOnFirefox } from '../helpers';
@@ -125,9 +125,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI (like the account syncing test does)
-          const settingsPage2 = new SettingsPage(driver);
-          await settingsPage2.goToContactsSettings();
-
+          await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();
 
@@ -271,9 +269,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI to test that syncing works when enabled
-          const settingsPage2 = new SettingsPage(driver);
-          await settingsPage2.goToContactsSettings();
-
+          await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();
           await contactsSettings.addContact(

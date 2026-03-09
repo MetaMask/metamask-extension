@@ -13,7 +13,6 @@ import { UserStorageMockttpController } from '../../../helpers/identity/user-sto
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
 import { completeOnboardFlowIdentity } from '../flows';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 
 import { skipOnFirefox } from '../helpers';
@@ -175,14 +174,11 @@ describe('Contact Syncing - Existing User', function () {
             );
           }, 30000);
 
-          const settingsPage = new SettingsPage(driver);
           const contactsSettings = new ContactsSettings(driver);
 
           // STEP 2: Add new contact
           console.log('STEP 2: Adding new contact...');
-          await header.openSettingsPage();
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToContactsSettings();
+          await header.openContactsPage();
           await contactsSettings.checkPageIsLoaded();
           await contactsSettings.addContact(
             newContact.name,
@@ -236,7 +232,7 @@ describe('Contact Syncing - Existing User', function () {
           console.log('STEP 3: Modifying existing contact...');
 
           // Navigate back to contacts list first
-          await settingsPage.goToContactsSettings();
+          await header.openContactsPage();
           await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.editContact({
@@ -256,7 +252,7 @@ describe('Contact Syncing - Existing User', function () {
 
           // STEP 4: Delete existing contact (Bob)
           console.log('STEP 4: Deleting existing contact...');
-          await settingsPage.goToContactsSettings();
+          await header.openContactsPage();
           await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.deleteContact('Bob Johnson');

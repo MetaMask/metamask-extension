@@ -58,6 +58,8 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
+  private readonly contactsButton = '[data-testid="global-menu-contacts"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -175,6 +177,12 @@ class HeaderNavbar {
     console.log('Open settings page');
     await this.openGlobalMenu();
     await this.driver.clickElement(this.settingsButton);
+  }
+
+  async openContactsPage(): Promise<void> {
+    console.log('Open contacts page');
+    await this.openGlobalMenu();
+    await this.driver.clickElement(this.contactsButton);
   }
 
   async enableNotifications(): Promise<void> {
