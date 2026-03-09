@@ -12,7 +12,6 @@ import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useG
 import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
-import { usePerpsConfirm } from './usePerpsConfirm';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
@@ -83,7 +82,6 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
   } = useShieldConfirm();
-  const { postConfirmRoute } = usePerpsConfirm(transactionMeta);
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
@@ -125,6 +123,5 @@ export function useTransactionConfirm() {
 
   return {
     onTransactionConfirm,
-    postConfirmRoute,
   };
 }
