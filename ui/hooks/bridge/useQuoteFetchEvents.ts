@@ -4,7 +4,6 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
-  type QuoteWarning,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
@@ -40,7 +39,8 @@ export const useQuoteFetchEvents = () => {
           UnifiedSwapBridgeEventName.QuotesReceived,
           getQuotesReceivedProperties(
             activeQuote,
-            warnings as QuoteWarning[],
+            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
+            warnings,
             isTxSubmittable,
             recommendedQuote,
             fromTokenBalanceInUsd,

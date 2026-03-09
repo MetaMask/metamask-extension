@@ -6,11 +6,7 @@ import {
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
-import type {
-  QuoteMetadata,
-  QuoteResponse,
-  QuoteWarning,
-} from '@metamask/bridge-controller';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -141,7 +137,8 @@ export default function useSubmitBridgeTransaction() {
           smartTransactionsEnabled,
           getQuotesReceivedProperties(
             quoteResponse,
-            warnings as QuoteWarning[],
+            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
+            warnings,
             true,
             recommendedQuote,
             fromTokenBalanceInUsd,
