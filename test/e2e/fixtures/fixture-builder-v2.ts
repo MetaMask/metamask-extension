@@ -189,10 +189,9 @@ class FixtureBuilderV2 {
   withEnabledNetworks(
     data: NetworkEnablementControllerState['enabledNetworkMap'],
   ): this {
-    // Clear existing map first – this is a full replacement, not a merge
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
-      {} as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
-    return this.withNetworkEnablementController({ enabledNetworkMap: data });
+      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    return this;
   }
 
   withLedgerAccount(): this {
