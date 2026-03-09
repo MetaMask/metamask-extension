@@ -34,6 +34,7 @@ import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
+  Display,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -62,26 +63,155 @@ const getTimerColor = (timeInSeconds: number) => {
   return TextColor.textAlternative;
 };
 
-const QUOTE_CARD_SKELETON_ROWS = [
-  { labelWidth: 92, valueWidth: 132 },
-  { labelWidth: 80, valueWidth: 64 },
-  { labelWidth: 88, valueWidth: 56 },
-  { labelWidth: 108, valueWidth: 120 },
-] as const;
+const noop = () => undefined;
+
+const QuoteCardSkeletonLabel = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
+  <Skeleton display={Display.InlineFlex}>
+    <Row
+      display={Display.InlineFlex}
+      justifyContent={JustifyContent.flexStart}
+      gap={2}
+    >
+      {children}
+    </Row>
+  </Skeleton>
+);
+
+const QuoteCardSkeletonValue = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
+  <Skeleton display={Display.InlineFlex}>
+    <Row
+      display={Display.InlineFlex}
+      justifyContent={JustifyContent.flexStart}
+      gap={1}
+    >
+      {children}
+    </Row>
+  </Skeleton>
+);
 
 export const MultichainBridgeQuoteCardSkeleton = () => {
+  const t = useI18nContext();
+
   return (
-    <Column gap={2} data-testid="multichain-bridge-quote-card-loading">
-      {QUOTE_CARD_SKELETON_ROWS.map(({ labelWidth, valueWidth }, index) => (
-        <Row
-          key={`${labelWidth}-${valueWidth}-${index}`}
-          justifyContent={JustifyContent.spaceBetween}
-          data-testid="multichain-bridge-quote-card-loading-row"
-        >
-          <Skeleton width={labelWidth} height={16} />
-          <Skeleton width={valueWidth} height={16} />
-        </Row>
-      ))}
+    <Column gap={4} data-testid="multichain-bridge-quote-card-loading">
+      <Row
+        justifyContent={JustifyContent.spaceBetween}
+        data-testid="multichain-bridge-quote-card-loading-row"
+      >
+        <QuoteCardSkeletonLabel>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {t('multichainQuoteCardRateLabel')}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            style={{ width: 32 }}
+          >
+            0:08
+          </Text>
+          <Tooltip
+            title={t('multichainQuoteCardRateLabel')}
+            position={PopoverPosition.TopStart}
+            offset={[-16, 16]}
+          >
+            {t('multichainQuoteCardRateExplanation', ['0'])}
+          </Tooltip>
+        </QuoteCardSkeletonLabel>
+        <QuoteCardSkeletonValue>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            1 ETH = 2,025 USDC
+          </Text>
+          <ButtonIcon
+            iconName={IconName.ArrowRight}
+            size={ButtonIconSize.Sm}
+            color={IconColor.iconAlternative}
+            onClick={noop}
+            ariaLabel={t('moreQuotes')}
+          />
+        </QuoteCardSkeletonValue>
+      </Row>
+      <Row
+        justifyContent={JustifyContent.spaceBetween}
+        data-testid="multichain-bridge-quote-card-loading-row"
+      >
+        <QuoteCardSkeletonLabel>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {t('networkFee')}
+          </Text>
+          <Tooltip
+            title={t('networkFeeExplanationTitle')}
+            position={PopoverPosition.TopStart}
+            offset={[-16, 16]}
+          >
+            {t('networkFeeExplanation')}
+          </Tooltip>
+        </QuoteCardSkeletonLabel>
+        <QuoteCardSkeletonValue>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            $1.29
+          </Text>
+        </QuoteCardSkeletonValue>
+      </Row>
+      <Row
+        justifyContent={JustifyContent.spaceBetween}
+        data-testid="multichain-bridge-quote-card-loading-row"
+      >
+        <QuoteCardSkeletonLabel>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {t('slippage')}
+          </Text>
+          <Tooltip
+            title={t('slippage')}
+            position={PopoverPosition.TopStart}
+            offset={[-16, 16]}
+          >
+            {t('slippageExplanation')}
+          </Tooltip>
+        </QuoteCardSkeletonLabel>
+        <QuoteCardSkeletonValue>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            2%
+          </Text>
+          <ButtonIcon
+            iconName={IconName.Edit}
+            size={ButtonIconSize.Sm}
+            color={IconColor.iconAlternative}
+            onClick={noop}
+            ariaLabel={t('slippageEditAriaLabel')}
+          />
+        </QuoteCardSkeletonValue>
+      </Row>
+      <Row
+        justifyContent={JustifyContent.spaceBetween}
+        data-testid="multichain-bridge-quote-card-loading-row"
+      >
+        <QuoteCardSkeletonLabel>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {t('minimumReceivedLabel')}
+          </Text>
+          <Tooltip
+            style={{ width: 350 }}
+            title={t('minimumReceivedExplanationTitle')}
+            position={PopoverPosition.TopStart}
+            offset={[-48, 16]}
+          >
+            {t('minimumReceivedExplanation')}
+          </Tooltip>
+        </QuoteCardSkeletonLabel>
+        <QuoteCardSkeletonValue>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            9,932 USDC
+          </Text>
+        </QuoteCardSkeletonValue>
+      </Row>
     </Column>
   );
 };
