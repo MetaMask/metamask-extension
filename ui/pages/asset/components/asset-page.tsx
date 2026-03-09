@@ -315,7 +315,11 @@ const AssetPage = ({
           />
         ) : null}
         {tokenAsset ? (
-          <TokenButtons token={tokenAsset} disableSendForNonEvm />
+          <TokenButtons
+            token={tokenAsset}
+            disableSendForNonEvm
+            isMarketClosed={isMarketClosed}
+          />
         ) : null}
         {isMarketClosed && tokenAsset ? (
           <Box marginTop={4}>
