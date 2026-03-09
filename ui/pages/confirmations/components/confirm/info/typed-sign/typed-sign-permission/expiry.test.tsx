@@ -61,8 +61,7 @@ describe('Expiry', () => {
       );
 
       expect(container).toBeInTheDocument();
-      // Should not contain date formatting
-      expect(container.textContent).not.toMatch(/\d{2}\s+\w+\s+\d{4}/u);
+      expect(container.textContent).toContain('Never expires');
     });
   });
 
