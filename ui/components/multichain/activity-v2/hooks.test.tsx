@@ -664,4 +664,43 @@ describe('useBridgeTxHistoryData', () => {
     expect(result.current.isBridgeComplete).toBeNull();
     expect(result.current.showBridgeTxDetails).toBeUndefined();
   });
+
+  it('uses originalTransactionId lookup for intent transactions', () => {
+    const store = configureMockStore(middleware)(
+      createBridgeMockStore({
+        bridgeStatusStateOverrides: {
+          txHistory: {
+            intentOrderUid: {
+              ...mockBridgeTxData.bridgeHistoryItem,
+              originalTransactionId: 'intent-tx-meta-id',
+              status: {
+                ...mockBridgeTxData.bridgeHistoryItem.status,
+                status: StatusTypes.FAILED,
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    const { result } = renderHookBase(
+      () =>
+        useBridgeTxHistoryData({
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: 'intent-tx-meta-id',
+            hash: '0xintenthashwithoutlocalmatch',
+            type: TransactionType.swap,
+            status: TransactionStatus.submitted,
+          } as never,
+        }),
+      {
+        wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      },
+    );
+
+    expect(result.current.isBridgeFailed).toBe(true);
+    expect(result.current.isBridgeComplete).toBe(false);
+    expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+  });
 });

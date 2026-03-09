@@ -13,6 +13,7 @@ import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/route
 import { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { MetaMaskReduxState } from '../../selectors';
 import {
+  selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
   selectLocalTxForTxHash,
 } from '../../ducks/bridge-status/selectors';
@@ -48,9 +49,15 @@ export function useBridgeTxHistoryData({
   const localTx = useSelector((state: MetaMaskReduxState) =>
     selectLocalTxForTxHash(state, txMeta?.hash),
   );
-  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+  const bridgeHistoryItemByHash = useSelector((state: MetaMaskReduxState) =>
     selectBridgeHistoryItemByHash(state, txMeta?.hash),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForOriginalTxMetaId(state, txMeta?.id),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
   const isApprovalTransaction =
     Boolean(bridgeHistoryItem) &&
     (bridgeHistoryItem?.approvalTxId === localTx?.id ||
