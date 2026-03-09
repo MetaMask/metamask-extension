@@ -83,7 +83,8 @@ export const SendContextProvider: React.FC<{
   const updateValue = useCallback(
     (val: string, maxMode?: boolean) => {
       updateMaxValueMode(maxMode ?? false);
-      setValue(val);
+      const normalized = val.endsWith('.') ? val.slice(0, -1) || '0' : val;
+      setValue(normalized);
       // Clear submit error when user changes amount
       if (nonEVMSubmitError) {
         updateNonEVMSubmitError(undefined);
