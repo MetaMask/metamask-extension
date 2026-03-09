@@ -13,8 +13,11 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
 } from '../../shared/constants/network';
 
-// TODO: This is intentionally the old network state, and could be
-// removed if the e2e tests bump `FIXTURE_STATE_METADATA_VERSION` to >= 127
+/**
+ * @deprecated Use `FixtureBuilderV2.withNetworkController()` instead.
+ * This helper produces the legacy flat `networkConfigurations` format (pre-migration 127).
+ * It will be removed once `FixtureBuilder` (legacy) is fully replaced by `FixtureBuilderV2`.
+ */
 export const mockNetworkStateOld = (
   ...networks: {
     id?: string;
