@@ -12,6 +12,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { ChainId } from '../../../../shared/constants/network';
+import { withViewTransition } from '../../ui/animated';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -270,7 +271,7 @@ const CoinButtons = ({
     if (trackingLocation !== 'home') {
       params = { chainId: chainId.toString() };
     }
-    navigateToSendRoute(navigate, params);
+    withViewTransition(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
@@ -331,8 +332,10 @@ const CoinButtons = ({
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+      withViewTransition(() =>
+        navigate(
+          `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+        ),
       );
     } else {
       // Show the traditional receive modal

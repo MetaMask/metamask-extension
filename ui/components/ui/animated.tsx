@@ -4,8 +4,9 @@ import React, {
   useCallback,
   useContext,
   useImperativeHandle,
-  useRef,
 } from 'react';
+import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 
 type TriggerExit = (onComplete: () => void) => void;
 
@@ -20,43 +21,71 @@ export const useAnimatedExit = (): TriggerExit => {
   return ctx ?? ((cb) => cb());
 };
 
+const isTransitionSupported = (): boolean => {
+  if (process.env.IN_TEST) {
+    return false;
+  }
+  if (getBrowserName() === PLATFORM_FIREFOX) {
+    return false;
+  }
+  return Boolean(document.startViewTransition);
+};
+
+// Cache the result so we don't re-evaluate on every render
+const transitionSupported = isTransitionSupported();
+
+/**
+ * Wraps a callback in a View Transition so the browser crossfades
+ * the old and new DOM snapshots. Use this for navigations that
+ * originate from pages that don't have an `<Animated>` wrapper
+ * (e.g. navigating FROM home TO another page).
+ */
+export const withViewTransition = (callback: () => void): void => {
+  if (!transitionSupported) {
+    callback();
+    return;
+  }
+  console.log('>>> [Animated] withViewTransition (forward)');
+  document.documentElement.dataset.pageTransition = 'forward';
+  const transition = document.startViewTransition(callback);
+  transition.finished
+    .then(() => {
+      delete document.documentElement.dataset.pageTransition;
+    })
+    .catch(() => {
+      delete document.documentElement.dataset.pageTransition;
+    });
+};
+
 export const Animated = forwardRef<AnimatedRef, { children: React.ReactNode }>(
   ({ children }, fwdRef) => {
-    const innerRef = useRef<HTMLDivElement>(null);
-
     const triggerExit: TriggerExit = useCallback((onComplete) => {
-      const el = innerRef.current;
-      if (!el) {
+      console.log('>>> [Animated] triggerExit (back)');
+      if (!transitionSupported) {
         onComplete();
         return;
       }
-      el.classList.replace('page-enter-animation', 'page-exit-animation');
-      const style = globalThis.getComputedStyle?.(el);
-      const hasAnimation =
-        style?.animationName && style.animationName !== 'none';
-      if (hasAnimation) {
-        let done = false;
-        const finish = () => {
-          if (done) {
-            return;
-          }
-          done = true;
-          onComplete();
-        };
-        el.addEventListener('animationend', finish, { once: true });
-        setTimeout(finish, 250);
-      } else {
-        onComplete();
-      }
+
+      document.documentElement.dataset.pageTransition = 'back';
+      const transition = document.startViewTransition(onComplete);
+      transition.ready
+        .then(() => console.log('>>> [Animated] transition ready'))
+        .catch(() => undefined);
+      transition.finished
+        .then(() => {
+          delete document.documentElement.dataset.pageTransition;
+          console.log('>>> [Animated] transition finished');
+        })
+        .catch(() => {
+          delete document.documentElement.dataset.pageTransition;
+        });
     }, []);
 
     useImperativeHandle(fwdRef, () => ({ triggerExit }), [triggerExit]);
 
     return (
       <AnimatedContext.Provider value={triggerExit}>
-        <div ref={innerRef} className="page-enter-animation h-full">
-          {children}
-        </div>
+        <div className="h-full">{children}</div>
       </AnimatedContext.Provider>
     );
   },

@@ -13,6 +13,7 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { withViewTransition } from '../../components/ui/animated';
 import {
   getBip44DefaultPairsConfig,
   getFromChain,
@@ -120,9 +121,11 @@ const useBridging = () => {
       }
 
       const url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-      navigate([url, queryParams.join('&')].filter(Boolean).join('?'), {
-        state: navigationState,
-      });
+      withViewTransition(() =>
+        navigate([url, queryParams.join('&')].filter(Boolean).join('?'), {
+          state: navigationState,
+        }),
+      );
     },
     [
       navigate,

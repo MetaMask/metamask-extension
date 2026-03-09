@@ -60,6 +60,7 @@ import {
   ACCOUNT_LIST_PAGE_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../helpers/constants/routes';
+import { withViewTransition } from '../../ui/animated';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
   getShowSupportDataConsentModal,
@@ -199,7 +200,7 @@ export const AppHeaderUnlockedContent = ({
                 name: TraceName.ShowAccountList,
                 op: TraceOperation.AccountUi,
               });
-              navigate(ACCOUNT_LIST_PAGE_ROUTE);
+              withViewTransition(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
                 category: MetaMetricsEventCategory.Navigation,

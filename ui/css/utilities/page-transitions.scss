@@ -1,21 +1,66 @@
 :root {
-  --page-transition-duration: 200ms;
+  --page-transition-duration: 180ms;
   --page-transition-ease-out: cubic-bezier(0.4, 0, 0.2, 1); /* Enter: decelerates into place */
   --page-transition-ease-in: cubic-bezier(0.4, 0, 1, 1); /* Exit: accelerates out */
 }
 
-.page-enter-animation {
-  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out);
+/* Make size changes instant (don't animate layout shifts) */
+::view-transition-group(root) {
+  overflow: hidden;
+  animation-duration: 0s;
 }
 
-.page-exit-animation {
-  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) forwards;
+/* Disable default crossfade blending */
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
+/* Avoid ghosting */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+/*
+ * Forward (home → page):
+ *   old (home) = fade out only
+ *   new (page) = fade in + scale up
+ */
+:root[data-page-transition='forward']::view-transition-old(root) {
+  animation: fade-out var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
+:root[data-page-transition='forward']::view-transition-new(root) {
+  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+/*
+ * Back (page → home):
+ *   old (page) = fade out + scale down
+ *   new (home) = fade in only
+ */
+:root[data-page-transition='back']::view-transition-old(root) {
+  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
+:root[data-page-transition='back']::view-transition-new(root) {
+  animation: fade-in var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes page-enter {
   from {
-    opacity: 0.5;
-    transform: scale(0.98);
+    opacity: 0;
+    transform: scale(0.97);
   }
 
   to {
@@ -31,15 +76,15 @@
   }
 
   to {
-    opacity: 0.5;
-    transform: scale(0.98);
+    opacity: 0;
+    transform: scale(0.97);
   }
 }
 
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .page-enter-animation,
-  .page-exit-animation {
-    animation: none;
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
   }
 }
