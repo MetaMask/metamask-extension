@@ -17,7 +17,6 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
-  TRANSACTIONS_ROUTE,
 } from './routes';
 
 /**
@@ -99,63 +98,6 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('clearActivityDescription'),
     route: `${ADVANCED_ROUTE}#clear-activity`,
     icon: 'fas fa-sliders-h',
-  },
-  // transactions tab
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('simulationsSettingSubHeader'),
-    descriptionMessage: (t) => t('simulationsSettingDescription'),
-    route: `${TRANSACTIONS_ROUTE}#estimate-balance-changes`,
-    iconName: IconName.Setting,
-  },
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('securityAlerts'),
-    descriptionMessage: (t) => t('securityAlertsDescription'),
-    route: `${TRANSACTIONS_ROUTE}#security-alerts`,
-    iconName: IconName.Setting,
-  },
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('smartTransactions'),
-    descriptionMessage: (t) => t('stxOptInSupportedNetworksDescription'),
-    route: `${TRANSACTIONS_ROUTE}#smart-transactions`,
-    iconName: IconName.Setting,
-  },
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('smartAccountRequestsFromDapps'),
-    descriptionMessage: (t) => t('smartAccountRequestsFromDappsDescription'),
-    route: `${TRANSACTIONS_ROUTE}#smart-account-requests-from-dapps`,
-    iconName: IconName.Setting,
-  },
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('externalNameSourcesSetting'),
-    descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
-    route: `${TRANSACTIONS_ROUTE}#proposed-nicknames`,
-    iconName: IconName.Setting,
-  },
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('showHexData'),
-    descriptionMessage: (t) => t('showHexDataDescription'),
-    route: `${TRANSACTIONS_ROUTE}#show-hexdata`,
-    iconName: IconName.Setting,
-  },
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('customizeTransactionNonce'),
-    descriptionMessage: (t) => t('customizeTransactionNonceDescription'),
-    route: `${TRANSACTIONS_ROUTE}#customize-transaction-nonce`,
-    iconName: IconName.Setting,
-  },
-  {
-    tabMessage: (t) => t('transactions'),
-    sectionMessage: (t) => t('dismissSmartAccountSuggestionEnabledTitle'),
-    descriptionMessage: (t) => t('dismissSmartAccountSuggestionEnabledDescription'),
-    route: `${TRANSACTIONS_ROUTE}#dismiss-smart-account-suggestion`,
-    iconName: IconName.Setting,
   },
   // advanced settingsRefs[4]
   {

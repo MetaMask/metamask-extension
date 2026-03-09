@@ -5,6 +5,7 @@ import {
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
   SETTINGS_V2_ROUTE,
+  TRANSACTIONS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
 import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
@@ -41,6 +42,10 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'localCurrency',
     parentPath: ASSETS_ROUTE,
   },
+  [TRANSACTIONS_V2_ROUTE]: {
+    labelKey: 'transactions',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
 };
 
 /**
@@ -62,6 +67,16 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     iconName: IconName.Dollar,
     component: mmLazy(
       (() => import('./assets-tab/index.ts')) as unknown as DynamicImportType,
+    ),
+  },
+  {
+    id: 'transactions',
+    path: TRANSACTIONS_V2_ROUTE,
+    labelKey: 'transactions',
+    iconName: IconName.Setting,
+    component: mmLazy(
+      (() =>
+        import('./transactions-tab/index.ts')) as unknown as DynamicImportType,
     ),
   },
 ];
