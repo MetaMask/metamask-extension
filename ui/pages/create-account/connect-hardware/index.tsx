@@ -414,12 +414,14 @@ const ConnectHardwareForm = () => {
           ? (t('hardwareWalletLegacyDescription') as string)
           : '';
 
-      const selectedAccountIndexes = selectedAccounts.filter(
-        (accountIndex) =>
-          Number.isInteger(accountIndex) && Number(accountIndex) >= 0,
-      );
+      const selectedAccountIndexes = selectedAccounts
+        .filter(
+          (accountIndex) =>
+            Number.isInteger(Number(accountIndex)) && Number(accountIndex) >= 0,
+        )
+        .map(Number);
       if (selectedAccountIndexes.length !== selectedAccounts.length) {
-        setError(t('accountSelectionRequired') as string);
+        setError(t('accountSelectionRequired'));
         return;
       }
 
