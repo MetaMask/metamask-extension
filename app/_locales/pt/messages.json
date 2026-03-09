@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impacto no preço"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "O impacto no preço reflete como sua troca afeta o preço de mercado. Se você não tem o suficiente para a taxa de transação (gas), alguns de seus tokens serão usados para cobrir as taxas, o que eleva o impacto no preço. A MetaMask não define nem controla isso."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impacto no preço"
   },
