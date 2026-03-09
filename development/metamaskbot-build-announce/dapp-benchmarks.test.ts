@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import type {
   BenchmarkMetrics,
   BenchmarkSummary,
-} from '../../test/e2e/page-objects/benchmark/page-load-benchmark';
+} from '../../test/e2e/page-objects/benchmark/dapp-page-load-benchmark';
 import {
   formatTime,
   formatStandardDeviation,

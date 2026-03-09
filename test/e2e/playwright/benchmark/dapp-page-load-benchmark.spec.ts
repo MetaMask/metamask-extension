@@ -1,14 +1,14 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 import { test as pwTest, expect } from '@playwright/test';
-import { PageLoadBenchmark } from '../../page-objects/benchmark/page-load-benchmark';
+import { PageLoadBenchmark } from '../../page-objects/benchmark/dapp-page-load-benchmark';
 import { DAPP_URL } from '../../constants';
 
 pwTest.describe('Page Load Benchmark', () => {
   let benchmark: PageLoadBenchmark;
   const outputPath = path.join(
     process.cwd(),
-    '/test-artifacts/benchmarks/page-load-benchmark-results.json',
+    '/test-artifacts/benchmarks/dapp-page-load-benchmark-results.json',
   );
 
   pwTest.beforeAll(async () => {

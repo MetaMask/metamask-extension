@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "プライスインパクト"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "価格への影響には、スワップが市場価格に与える影響が反映されています。ガス代が不足している場合、一部のトークンが手数料の支払いに充てられるため、価格への影響が大きくなります。MetaMaskはこの影響に対して設定や管理を行っていません。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "プライスインパクト"
   },
@@ -5874,9 +5871,6 @@
   },
   "removeAccount": {
     "message": "アカウントを削除"
-  },
-  "removeAccountDescription": {
-    "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレットリカバリーフレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウントドロップダウンから再度インポートまたは作成できます。"
   },
   "removeAccountModalBannerDescription": {
     "message": "削除する前に、このアカウントのシークレットリカバリーフレーズまたは秘密鍵をお持ちであることを確認してください。",

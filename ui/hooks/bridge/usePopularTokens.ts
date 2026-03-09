@@ -48,6 +48,9 @@ export const usePopularTokens = ({
 
   const { value: tokenList, pending: isTokenListLoading } =
     useAsyncResult(async () => {
+      if (!jwt) {
+        return assetsToInclude;
+      }
       abortControllerRef.current?.abort('Asset balances changed');
       abortControllerRef.current = new AbortController();
       const response = await fetchPopularTokens({

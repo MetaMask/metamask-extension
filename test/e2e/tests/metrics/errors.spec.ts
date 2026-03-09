@@ -1464,6 +1464,8 @@ describe('Sentry errors', function () {
       lastInteractedConfirmationInfo: undefined,
       connectivityStatus: true,
       rewardsPointsEstimateHistory: false,
+      // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
+      rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
     };
     await withFixtures(

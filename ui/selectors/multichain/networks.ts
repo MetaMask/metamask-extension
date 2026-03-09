@@ -67,18 +67,18 @@ export type MultichainNetworkControllerState = {
   metamask: InternalMultichainNetworkState;
 };
 
-export type SelectedNetworkChainIdState = {
+type SelectedNetworkChainIdState = {
   metamask: Pick<
     InternalMultichainNetworkState,
     'selectedMultichainNetworkChainId'
   >;
 };
 
-export type IsEvmSelectedState = {
+type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
 };
 
-export type NetworksWithTransactionActivityByAccountsState = {
+type NetworksWithTransactionActivityByAccountsState = {
   metamask: {
     networksWithTransactionActivity: ActiveNetworksByAddress;
   };
@@ -101,7 +101,7 @@ export type MultichainNetworkConfigState =
 
 // Selectors
 
-export const getIsNonEvmNetworksEnabled = createSelector(
+const getIsNonEvmNetworksEnabled = createSelector(
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
@@ -327,9 +327,6 @@ export const getSelectedMultichainNetworkConfiguration = createSelector(
   },
 );
 
-export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
-  state.metamask.networksWithTransactionActivity;
-
 export const getEnabledNetworksByNamespace = createSelector(
   getEnabledNetworks,
   getSelectedMultichainNetworkChainId,
@@ -524,7 +521,7 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
 );
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
-export type ProviderConfigWithImageUrlAndExplorerUrl = {
+type ProviderConfigWithImageUrlAndExplorerUrl = {
   rpcUrl?: string;
   type: NetworkType;
   chainId: Hex;
