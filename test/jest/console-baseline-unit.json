@@ -399,11 +399,6 @@
       "error: Error: Insufficient number of substitutions": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/modals/confirm-remove-account/confirm-remove-account.test.js": {
-      "React: PropTypes validation failures": 1,
-      "Reselect: Identity function warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/modals/confirm-reset-account/confirm-reset-account.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
