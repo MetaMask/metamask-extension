@@ -1,7 +1,6 @@
 import { submitRequestToBackground } from '../../../../store/background-connection';
 
 export type CreatePerpsDepositTransactionParams = {
-  fromAddress: string;
   amount?: string;
 };
 

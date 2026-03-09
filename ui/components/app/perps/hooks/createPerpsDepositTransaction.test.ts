@@ -19,7 +19,6 @@ describe('createPerpsDepositTransaction', () => {
     mockSubmitRequestToBackground.mockResolvedValue('tx-123');
 
     const result = await createPerpsDepositTransaction({
-      fromAddress: '0xabc123',
       amount: '0.5',
     });
 
@@ -34,9 +33,7 @@ describe('createPerpsDepositTransaction', () => {
     mockSubmitRequestToBackground.mockResolvedValue(null);
 
     await expect(
-      createPerpsDepositTransaction({
-        fromAddress: '0xabc123',
-      }),
+      createPerpsDepositTransaction({}),
     ).rejects.toThrow(
       'Perps deposit transaction was not created by controller deposit flow',
     );

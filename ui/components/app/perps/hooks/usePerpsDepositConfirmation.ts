@@ -55,9 +55,7 @@ export function usePerpsDepositConfirmation(
     setIsLoading(true);
 
     try {
-      const { transactionId } = await createPerpsDepositTransaction({
-        fromAddress: selectedAccount.address,
-      });
+      const { transactionId } = await createPerpsDepositTransaction({});
 
       if (navigateOnCreate) {
         const search = new URLSearchParams({
