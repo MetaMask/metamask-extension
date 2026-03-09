@@ -655,22 +655,6 @@ jobs:
 
           echo "Regression validation triggered successfully"
 
-  # TODO(POC): Remove this job once merge-queue-validator is promoted to production.
-  # This job deliberately fails on attempt 1 in the merge queue so we can
-  # verify that the Main Completed workflow retries it, allowing the PR to
-  # merge on attempt 2.
-  merge-queue-test-fail:
-    name: Merge queue test fail
-    if: ${{ github.event_name == 'merge_group' && github.run_attempt == 1 }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    steps:
-      - name: Deliberate failure on attempt 1
-        run: |
-          echo "This job fails deliberately on attempt 1 to test merge queue retry."
-          echo "run_attempt=${{ github.run_attempt }}"
-          exit 1
-
   all-jobs-pass:
     name: All jobs pass (initiator)
     if: ${{ !cancelled() }}
@@ -720,7 +704,6 @@ jobs:
       - build-source-map-explorer
       - build-lavamoat-viz
       - trigger-regression-validation
-      - merge-queue-test-fail # TODO(POC): Remove once merge-queue-validator is promoted to production
     steps:
       - name: Check that all jobs have passed
         env:

@@ -1,0 +1,77 @@
+{
+  "$comment": "Configuration for classify-failures.mts — determines whether a failed merge queue run should be retried.",
+
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "blockerPatterns": [
+    "^Get workflow",
+    "^Prepare dependencies$",
+    "^repository-health-checks",
+    "^validate-lavamoat-policies"
+  ],
+
+  "defaults": {
+    "$comment": "Jobs not matching any pattern are treated as this category.",
+    "unmatchedCategory": "alwaysRetryable"
+  },
+  "jobClassification": {
+    "alwaysRetryable": {
+      "$comment": "Jobs that are inherently flaky and should always be retried.",
+      "patterns": ["^e2e-", "^prep-e2e"]
+    },
+    "retryableOnTransientError": {
+      "$comment": "Jobs that are normally deterministic but can fail due to infrastructure issues. Retried only if error matches a transient pattern.",
+      "patterns": [
+        "^build-",
+        "^Build lavamoat",
+        "^Build source map",
+        "^Build storybook",
+        "^Build ts migration",
+        "^bundle-size",
+        "^Get workflow",
+        "^Lint workflows",
+        "^Locales changed",
+        "^Prepare dependencies$",
+        "^repository-health-checks",
+        "^sonarcloud",
+        "^Test lint$",
+        "^validate-lavamoat-policies"
+      ]
+    },
+    "usuallyNotFlaky": {
+      "$comment": "Jobs that are usually deterministic and should not be retried unless we have strong evidence of a transient error.",
+      "patterns": ["^Run tests", "^Test storybook"],
+      "transientErrorPatterns": ["Exceeded timeout of \\d+ ms for a test"]
+    },
+    "optional": {
+      "$comment": "Optional jobs that do not need retry.",
+      "patterns": ["^dapp-page-load", "^run-benchmarks"]
+    }
+  },
+
+  "transientErrorPatterns": [
+    "429 Too Many Requests",
+    "502 Bad Gateway",
+    "503 Service Unavailable",
+    "Authentication failed for",
+    "Could not resolve host",
+    "EAI_AGAIN",
+    "ECONNREFUSED",
+    "ECONNRESET",
+    "ENOTFOUND",
+    "ENOMEM",
+    "ESOCKETTIMEDOUT",
+    "ETIMEDOUT",
+    "fatal: unable to access",
+    "heap out of memory",
+    "JavaScript heap out of memory",
+    "net::ERR_",
+    "No space left on device",
+    "npm ERR! network",
+    "OOMKilled",
+    "read ECONNRESET",
+    "resource temporarily unavailable",
+    "socket hang up",
+    "write EPIPE",
+    "Yarn is terminating due to an unexpected empty event loop"
+  ]
+}
