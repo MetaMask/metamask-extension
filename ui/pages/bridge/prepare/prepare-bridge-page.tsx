@@ -95,7 +95,6 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
-import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -372,13 +371,6 @@ const PrepareBridgePage = ({
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
 
-  const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
-  useEffect(() => {
-    if (isStockMarketClosed) {
-      setShowMarketClosedModal(true);
-    }
-  }, [isStockMarketClosed]);
-
   const [priceImpactModalVariant, togglePriceImpactModalWithVariant] =
     useState<
       React.ComponentProps<typeof BridgePriceImpactWarningModal>['variant']
@@ -409,11 +401,6 @@ const PrepareBridgePage = ({
         onClose={() => {
           togglePriceImpactModalWithVariant(null);
         }}
-      />
-
-      <MarketClosedModal
-        isOpen={showMarketClosedModal}
-        onClose={() => setShowMarketClosedModal(false)}
       />
 
       <Column className="prepare-bridge-page" gap={4}>
@@ -651,6 +638,17 @@ const PrepareBridgePage = ({
           </Column>
         )}
 
+        {isStockMarketClosed && (
+          <Column paddingInline={4}>
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              title={t('bridgeMarketClosedTitle')}
+              description={t('bridgeMarketClosedDescription')}
+              textAlign={TextAlign.Left}
+            />
+          </Column>
+        )}
+
         {isNoQuotesAvailable &&
           !isStockMarketClosed &&
           !isQuoteExpired &&
@@ -724,7 +722,6 @@ const PrepareBridgePage = ({
               onOpenPriceImpactWarningModal={() =>
                 togglePriceImpactModalWithVariant('submit-cta')
               }
-              onOpenMarketClosedModal={() => setShowMarketClosedModal(true)}
             />
           )}
         </Column>
