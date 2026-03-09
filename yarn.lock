@@ -33258,7 +33258,6 @@ __metadata:
     nyc: "npm:^15.1.0"
     octokit: "npm:^4.1.3"
     path-browserify: "npm:^1.0.1"
-    pathmodify: "npm:^0.5.0"
     pify: "npm:^5.0.0"
     postcss: "npm:^8.4.32"
     postcss-discard-font-face: "npm:^3.0.0"
@@ -35790,17 +35789,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pathmodify@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "pathmodify@npm:0.5.0"
-  dependencies:
-    readable-stream: "npm:1.x"
-  peerDependencies:
-    browserify: ">=5.1.0"
-  checksum: 10/48cc6345fc534c2d37cf8ad191c7f28663262c71877e62609570d32d3caf2655d1837b10ff90994bc731f581737d486eafeba1ef605627d67b00d1d967ab87ac
-  languageName: node
-  linkType: hard
-
 "pause-stream@npm:0.0.11":
   version: 0.0.11
   resolution: "pause-stream@npm:0.0.11"
@@ -38050,18 +38038,6 @@ __metadata:
     string_decoder: "npm:^1.1.1"
     util-deprecate: "npm:^1.0.1"
   checksum: 10/d9e3e53193adcdb79d8f10f2a1f6989bd4389f5936c6f8b870e77570853561c362bee69feca2bbb7b32368ce96a85504aa4cedf7cf80f36e6a9de30d64244048
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:1.x":
-  version: 1.1.14
-  resolution: "readable-stream@npm:1.1.14"
-  dependencies:
-    core-util-is: "npm:~1.0.0"
-    inherits: "npm:~2.0.1"
-    isarray: "npm:0.0.1"
-    string_decoder: "npm:~0.10.x"
-  checksum: 10/1aa2cf4bd02f9ab3e1d57842a43a413b52be5300aa089ad1f2e3cea00684532d73edc6a2ba52b0c3210d8b57eb20a695a6d2b96d1c6085ee979c6021ad48ad20
   languageName: node
   linkType: hard
 
@@ -41138,7 +41114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string_decoder@npm:0.10, string_decoder@npm:~0.10.x":
+"string_decoder@npm:0.10":
   version: 0.10.31
   resolution: "string_decoder@npm:0.10.31"
   checksum: 10/cc43e6b1340d4c7843da0e37d4c87a4084c2342fc99dcf6563c3ec273bb082f0cbd4ebf25d5da19b04fb16400d393885fda830be5128e1c416c73b5a6165f175

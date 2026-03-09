@@ -21,6 +21,7 @@ module.exports = function (api) {
       },
     ],
     plugins: [
+      path.resolve(__dirname, 'development/build/transforms/import-alias.js'),
       // `browserify` is old and busted, and doesn't support `??=` (and other
       // logical assignment operators). This plugin lets us target es2020-level
       // browsers (except we do still end up with transpiled logical assignment
