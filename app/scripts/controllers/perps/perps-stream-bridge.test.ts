@@ -162,6 +162,51 @@ describe('PerpsStreamBridge', () => {
         bridge.activate(controller2 as unknown as PerpsController),
       ).not.toThrow();
     });
+
+    it('resets #activated and tears down partial subs on subscribe throw so next activate() can retry', () => {
+      const controller = createMockController();
+      const unsubPositions = jest.fn();
+      const unsubOrders = jest.fn();
+      controller.subscribeToPositions.mockReturnValue(unsubPositions);
+      controller.subscribeToOrders.mockReturnValue(unsubOrders);
+      controller.subscribeToAccount.mockImplementation(() => {
+        throw new Error('subscribeToAccount failed');
+      });
+
+      expect(() =>
+        bridge.activate(controller as unknown as PerpsController),
+      ).toThrow('subscribeToAccount failed');
+
+      expect(bridge.isActivated).toBe(false);
+      expect(unsubPositions).toHaveBeenCalledTimes(1);
+      expect(unsubOrders).toHaveBeenCalledTimes(1);
+
+      controller.subscribeToAccount.mockReturnValue(jest.fn());
+      bridge.activate(controller as unknown as PerpsController);
+
+      expect(bridge.isActivated).toBe(true);
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(2);
+      expect(controller.subscribeToAccount).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('isActivated', () => {
+    it('returns false initially', () => {
+      expect(bridge.isActivated).toBe(false);
+    });
+
+    it('returns true after activate()', () => {
+      const controller = createMockController();
+      bridge.activate(controller as unknown as PerpsController);
+      expect(bridge.isActivated).toBe(true);
+    });
+
+    it('returns false after destroy()', () => {
+      const controller = createMockController();
+      bridge.activate(controller as unknown as PerpsController);
+      bridge.destroy();
+      expect(bridge.isActivated).toBe(false);
+    });
   });
 
   describe('setViewActive', () => {
@@ -469,6 +514,205 @@ describe('PerpsStreamBridge', () => {
         expect(priceUnsub).toHaveBeenCalledTimes(1);
         expect(orderBookUnsub).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('activatePriceStream / deactivatePriceStream', () => {
+    it('subscribes to prices and emits on prices channel', () => {
+      const controller = createMockController();
+
+      bridge.activatePriceStream(controller as unknown as PerpsController, [
+        'ETH',
+        'BTC',
+      ]);
+
+      expect(controller.subscribeToPrices).toHaveBeenCalledWith({
+        symbols: ['ETH', 'BTC'],
+        callback: expect.any(Function),
+      });
+      const callback = controller.subscribeToPrices.mock.calls[0][0]
+        .callback as (data: unknown) => void;
+      callback({ price: '100' });
+      expect(emit).toHaveBeenCalledWith('prices', { price: '100' });
+    });
+
+    it('tears down previous price stream before registering new one', () => {
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToPrices.mockReturnValue(unsub);
+
+      bridge.activatePriceStream(controller as unknown as PerpsController, [
+        'ETH',
+      ]);
+      bridge.activatePriceStream(controller as unknown as PerpsController, [
+        'BTC',
+      ]);
+
+      expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not subscribe when symbols is empty', () => {
+      const controller = createMockController();
+
+      bridge.activatePriceStream(controller as unknown as PerpsController, []);
+
+      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
+    });
+
+    it('deactivatePriceStream tears down price subscription', () => {
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToPrices.mockReturnValue(unsub);
+
+      bridge.activatePriceStream(controller as unknown as PerpsController, [
+        'ETH',
+      ]);
+      bridge.deactivatePriceStream();
+
+      expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('deactivatePriceStream is no-op when no price stream active', () => {
+      expect(() => bridge.deactivatePriceStream()).not.toThrow();
+    });
+  });
+
+  describe('activateOrderBookStream / deactivateOrderBookStream', () => {
+    it('subscribes to order book and emits on orderBook channel', () => {
+      const controller = createMockController();
+
+      bridge.activateOrderBookStream(
+        controller as unknown as PerpsController,
+        'ETH',
+      );
+
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        callback: expect.any(Function),
+      });
+      const callback = controller.subscribeToOrderBook.mock.calls[0][0]
+        .callback as (data: unknown) => void;
+      callback({ bids: [], asks: [] });
+      expect(emit).toHaveBeenCalledWith('orderBook', { bids: [], asks: [] });
+    });
+
+    it('tears down previous order book stream before registering new one', () => {
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToOrderBook.mockReturnValue(unsub);
+
+      bridge.activateOrderBookStream(
+        controller as unknown as PerpsController,
+        'ETH',
+      );
+      bridge.activateOrderBookStream(
+        controller as unknown as PerpsController,
+        'BTC',
+      );
+
+      expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not subscribe when symbol is empty', () => {
+      const controller = createMockController();
+
+      bridge.activateOrderBookStream(
+        controller as unknown as PerpsController,
+        '',
+      );
+
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+    });
+
+    it('deactivateOrderBookStream tears down order book subscription', () => {
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToOrderBook.mockReturnValue(unsub);
+
+      bridge.activateOrderBookStream(
+        controller as unknown as PerpsController,
+        'ETH',
+      );
+      bridge.deactivateOrderBookStream();
+
+      expect(unsub).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('activateCandleStream / deactivateCandleStream', () => {
+    it('subscribes to candles with symbol, interval, and optional duration', () => {
+      const controller = createMockController();
+
+      bridge.activateCandleStream(controller as unknown as PerpsController, {
+        symbol: 'ETH',
+        interval: '1h' as never,
+        duration: '1d' as never,
+      });
+
+      expect(controller.subscribeToCandles).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        interval: '1h',
+        duration: '1d',
+        callback: expect.any(Function),
+      });
+      const callback = controller.subscribeToCandles.mock.calls[0][0]
+        .callback as (data: unknown) => void;
+      callback({ o: 100 });
+      expect(emit).toHaveBeenCalledWith(
+        'candles',
+        { o: 100 },
+        {
+          symbol: 'ETH',
+          interval: '1h',
+        },
+      );
+    });
+
+    it('tears down previous candle stream before registering new one', () => {
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToCandles.mockReturnValue(unsub);
+
+      bridge.activateCandleStream(controller as unknown as PerpsController, {
+        symbol: 'ETH',
+        interval: '1h' as never,
+      });
+      bridge.activateCandleStream(controller as unknown as PerpsController, {
+        symbol: 'BTC',
+        interval: '1h' as never,
+      });
+
+      expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not subscribe when symbol or interval is missing', () => {
+      const controller = createMockController();
+
+      bridge.activateCandleStream(controller as unknown as PerpsController, {
+        symbol: '',
+        interval: '1h' as never,
+      });
+      expect(controller.subscribeToCandles).not.toHaveBeenCalled();
+
+      bridge.activateCandleStream(controller as unknown as PerpsController, {
+        symbol: 'ETH',
+        interval: '' as never,
+      });
+      expect(controller.subscribeToCandles).not.toHaveBeenCalled();
+    });
+
+    it('deactivateCandleStream tears down candle subscription', () => {
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToCandles.mockReturnValue(unsub);
+
+      bridge.activateCandleStream(controller as unknown as PerpsController, {
+        symbol: 'ETH',
+        interval: '1h' as never,
+      });
+      bridge.deactivateCandleStream();
+
+      expect(unsub).toHaveBeenCalledTimes(1);
     });
   });
 
