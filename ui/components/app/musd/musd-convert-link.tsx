@@ -9,10 +9,10 @@ import React, { useCallback, useContext } from 'react';
 import type { Hex } from '@metamask/utils';
 import {
   FontWeight,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+} from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -113,18 +113,11 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
       type="button"
       onClick={handleClick}
       data-testid={`musd-convert-link-${chainId}`}
-      style={{
-        cursor: 'pointer',
-        background: 'none',
-        border: 'none',
-        padding: 0,
-        margin: 0,
-        font: 'inherit',
-      }}
+      className="musd-convert-link"
     >
       <Text
-        variant={TextVariant.bodySmMedium}
-        color={TextColor.primaryDefault}
+        variant={TextVariant.BodySm}
+        color={TextColor.PrimaryDefault}
         fontWeight={FontWeight.Medium}
         data-testid="musd-convert-link-text"
       >

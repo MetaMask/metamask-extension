@@ -235,7 +235,7 @@ describe('MusdBuyGetCta', () => {
       );
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
-      expect(screen.getByAltText('mUSD logo')).toBeInTheDocument();
+      expect(screen.getByAltText('mUSD')).toBeInTheDocument();
     });
 
     it('renders network badge when selectedChainId is provided', () => {
@@ -248,7 +248,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(screen.getByAltText('Ethereum Mainnet logo')).toBeInTheDocument();
+      expect(screen.getByAltText('Ethereum Mainnet')).toBeInTheDocument();
     });
 
     it('does not render network badge when selectedChainId is null', () => {
@@ -262,9 +262,7 @@ describe('MusdBuyGetCta', () => {
       );
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
-      expect(
-        screen.queryByAltText('Ethereum Mainnet logo'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByAltText('Ethereum Mainnet')).not.toBeInTheDocument();
     });
   });
 
@@ -295,7 +293,7 @@ describe('MusdBuyGetCta', () => {
       );
 
       const ctaElement = screen.getByTestId('multichain-token-list-button');
-      expect(ctaElement.tagName).toBe('A');
+      expect(ctaElement.tagName).toBe('DIV');
       expect(ctaElement.className).toContain('hover:bg-hover');
     });
   });

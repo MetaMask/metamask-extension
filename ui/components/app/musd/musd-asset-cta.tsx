@@ -14,23 +14,20 @@ import React, { useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
+  FontWeight,
   IconName,
   Text,
-} from '../../component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -144,20 +141,20 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
     return (
       <Box
         data-testid="musd-asset-cta-inline"
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
         paddingLeft={4}
         paddingRight={4}
         paddingTop={2}
         paddingBottom={2}
         onClick={handleConvert}
         className="musd-asset-cta-inline"
-        style={{ cursor: 'pointer' }}
       >
         <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.primaryDefault}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.PrimaryDefault}
         >
           {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
         </Text>
@@ -169,12 +166,10 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
   return (
     <Box
       data-testid="musd-asset-cta"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      borderRadius={BorderRadius.LG}
-      borderColor={BorderColor.borderMuted}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      borderColor={BoxBorderColor.BorderMuted}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="musd-asset-cta"
       onClick={handleConvert}
       onKeyPress={(e: React.KeyboardEvent) => {
@@ -183,61 +178,33 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
         }
       }}
       tabIndex={0}
-      style={{
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        paddingLeft: '16px',
-        paddingRight: '12px',
-        gap: '16px',
-        cursor: 'pointer',
-      }}
     >
       {/* mUSD Icon Container - Left section */}
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.LG}
-        style={{
-          width: '60px',
-          height: '60px',
-          minWidth: '60px',
-          overflow: 'hidden',
-        }}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
+        className="musd-asset-cta__icon"
       >
-        <img
-          src={MUSD_EDUCATION_COIN_IMAGE}
-          alt="mUSD"
-          style={{
-            width: '60px',
-            height: '60px',
-            objectFit: 'cover',
-          }}
-        />
+        <img src={MUSD_EDUCATION_COIN_IMAGE} alt="mUSD" />
       </Box>
 
       {/* Text Content - Center section */}
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        style={{
-          flex: 1,
-          gap: '4px',
-          paddingTop: '16px',
-          paddingBottom: '16px',
-        }}
+        flexDirection={BoxFlexDirection.Column}
+        className="musd-asset-cta__content"
       >
-        <Text variant={TextVariant.bodyMdMedium}>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
         </Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
         </Text>
       </Box>
 
       {/* Dismiss Button - Right section (aligned to top) */}
-      <Box style={{ alignSelf: 'flex-start', marginTop: '16px' }}>
+      <Box className="musd-asset-cta__dismiss">
         <ButtonIcon
           data-testid="musd-asset-cta-dismiss"
           iconName={IconName.Close}
@@ -246,7 +213,7 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
             e.stopPropagation();
             handleDismiss();
           }}
-          ariaLabel={t('dismiss')}
+          ariaLabel={t('dismiss') as string}
         />
       </Box>
     </Box>

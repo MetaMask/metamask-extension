@@ -1,16 +1,19 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
   FontWeight,
+  Icon,
   IconColor,
+  IconName,
+  IconSize,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+} from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -36,14 +39,8 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   return (
-    <Box
-      as="button"
-      backgroundColor={BackgroundColor.backgroundMuted}
-      borderRadius={BorderRadius.SM}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      paddingLeft={2}
-      paddingRight={2}
+    <button
+      type="button"
       data-testid={`staking-entrypoint-${chainId}`}
       tabIndex={0}
       onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -73,20 +70,30 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
           },
         });
       }}
+      className="stakeable-link"
     >
-      <Text
-        variant={TextVariant.bodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.primaryDefault}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
+        paddingLeft={2}
+        paddingRight={2}
+        className="stakeable-link__badge"
       >
-        {t('earn')}
-      </Text>
-      <Icon
-        name={IconName.Stake}
-        size={IconSize.Xs}
-        color={IconColor.primaryDefault}
-        marginLeft={1}
-      />
-    </Box>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.PrimaryDefault}
+        >
+          {t('earn')}
+        </Text>
+        <Icon
+          name={IconName.Stake}
+          size={IconSize.Xs}
+          color={IconColor.PrimaryDefault}
+          className="stakeable-link__icon"
+        />
+      </Box>
+    </button>
   );
 };
