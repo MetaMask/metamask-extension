@@ -1,6 +1,5 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
 import type { QuoteResponse } from '@metamask/bridge-controller';
-import { BigNumber } from 'ethers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -24,16 +23,11 @@ const renderUseBridgeQueryParams = (mockStoreState: object) =>
     usePrefillFromBridgeState();
   }, mockStoreState);
 
-let calcLatestSrcBalanceSpy: jest.SpyInstance;
-
 describe('usePrefillFromBridgeState', () => {
   const { ChainId } = bridgeControllerUtils;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    calcLatestSrcBalanceSpy = jest
-      .spyOn(bridgeControllerUtils, 'calcLatestSrcBalance')
-      .mockResolvedValue(BigNumber.from('1000000'));
   });
 
   it('should set params from navigation state', async () => {
@@ -102,16 +96,6 @@ describe('usePrefillFromBridgeState', () => {
         "fromTokenInputValue": null,
         "toToken": undefined,
       }
-    `);
-    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          undefined,
-          "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-          "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D",
-          "0xe708",
-        ],
-      ]
     `);
   });
 

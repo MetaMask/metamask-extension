@@ -53,12 +53,7 @@ export const useBridgeNavigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {
-    search,
-    pathname,
-    state: maybeState,
-    ...locationProperties
-  } = useLocation();
+  const { search, pathname, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
     () => maybeState ?? {},
     [maybeState],
@@ -124,11 +119,11 @@ export const useBridgeNavigation = () => {
         preventBackNavigation: true,
       },
     ) => {
-      const { token, search, preventBackNavigation } = params;
+      const { token, search: searchParams, preventBackNavigation } = params;
       navigate(
         {
           pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-          search: search.toString(),
+          search: searchParams.toString(),
         },
         {
           state: {

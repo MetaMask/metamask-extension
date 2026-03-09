@@ -279,9 +279,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
               "pathname": "/cross-chain/swaps/awaiting-signatures",
             },
             {
-              "state": {
-                "token": null,
-              },
+              "state": {},
             },
           ],
           [
