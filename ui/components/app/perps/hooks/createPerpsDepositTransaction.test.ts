@@ -32,9 +32,7 @@ describe('createPerpsDepositTransaction', () => {
   it('throws if the background does not return a transaction id', async () => {
     mockSubmitRequestToBackground.mockResolvedValue(null);
 
-    await expect(
-      createPerpsDepositTransaction({}),
-    ).rejects.toThrow(
+    await expect(createPerpsDepositTransaction({})).rejects.toThrow(
       'Perps deposit transaction was not created by controller deposit flow',
     );
 
