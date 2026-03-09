@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { LOCALHOST_NETWORK_CLIENT_ID } from '../../constants';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -157,7 +158,7 @@ describe('Custom RPC history', function (this: Suite) {
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
-                    networkClientId: 'networkConfigurationId',
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
                     type: RpcEndpointType.Custom,
                     url: 'http://localhost:8545',
                   },
@@ -215,7 +216,7 @@ describe('Custom RPC history', function (this: Suite) {
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
-                    networkClientId: 'networkConfigurationId',
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
                     type: RpcEndpointType.Custom,
                     url: 'http://localhost:8545',
                   },
