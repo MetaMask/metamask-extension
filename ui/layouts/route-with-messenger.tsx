@@ -17,6 +17,11 @@ import {
   RouteMessenger,
 } from '../messengers/route-messenger';
 import { useUIMessenger } from '../contexts/ui-messenger';
+import {
+  routeMessengerCapabilities,
+  routeMessengerContexts,
+  routesWithMessengers,
+} from '../contexts/route-messenger-registry';
 
 /**
  * Derives a messenger for a route from the UI messenger.
@@ -72,28 +77,29 @@ function createRouteMessenger({
  * provides it to children via context.
  *
  * @param props - Component props.
- * @param props.actions - Action types to delegate to the route messenger.
- * @param props.events - Event types to delegate to the route messenger.
  * @param props.children - Child components.
+ * @param props.path - The route path.
  */
 export const RouteWithMessenger = ({
-  actions,
-  events,
   children,
+  path,
 }: {
-  actions?: UIMessengerActions['type'][];
-  events?: UIMessengerEvents['type'][];
   children: ReactNode;
+  path: (typeof routesWithMessengers)[number];
 }) => {
   const uiMessenger = useUIMessenger();
+  const messengerCapabilities = routeMessengerCapabilities[path];
+  const RouteSpecificMessengerContext = routeMessengerContexts[path];
 
   const routeMessenger = useMemo(() => {
-    return createRouteMessenger({ uiMessenger, actions, events });
-  }, [uiMessenger, actions, events]);
+    return createRouteMessenger({ ...messengerCapabilities, uiMessenger });
+  }, [uiMessenger, messengerCapabilities]);
 
   return (
     <RouteMessengerContext.Provider value={routeMessenger}>
-      {children}
+      <RouteSpecificMessengerContext.Provider value={routeMessenger}>
+        {children}
+      </RouteSpecificMessengerContext.Provider>
     </RouteMessengerContext.Provider>
   );
 };
