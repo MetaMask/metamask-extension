@@ -1,14 +1,14 @@
 import { providerErrors } from '@metamask/rpc-errors';
 import {
   JustifyContent,
-  SEVERITIES,
+  Severity,
   TextColor,
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
 const PENDING_TX_DROP_NOTICE = {
   id: 'PENDING_TX_DROP_NOTICE',
-  severity: SEVERITIES.WARNING,
+  severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
