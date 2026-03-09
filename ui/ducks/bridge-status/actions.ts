@@ -56,7 +56,5 @@ export const submitBridgeTx = (
 export const submitBridgeIntent = (params: {
   quoteResponse: QuoteResponse & QuoteMetadata;
   accountAddress: string;
-  location?: string;
-  abTests?: Record<string, string>;
 }) =>
   callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
