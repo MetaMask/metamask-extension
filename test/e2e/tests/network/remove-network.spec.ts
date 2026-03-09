@@ -2,10 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import {
-  SECOND_NODE_NETWORK_CLIENT_ID,
-  WINDOW_TITLES,
-} from '../../constants';
+import { SECOND_NODE_NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';

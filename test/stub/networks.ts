@@ -17,6 +17,7 @@ import {
  * @deprecated Use `FixtureBuilderV2.withNetworkController()` instead.
  * This helper produces the legacy flat `networkConfigurations` format (pre-migration 127).
  * It will be removed once `FixtureBuilder` (legacy) is fully replaced by `FixtureBuilderV2`.
+ * @param networks - The network configurations to mock.
  */
 export const mockNetworkStateOld = (
   ...networks: {
