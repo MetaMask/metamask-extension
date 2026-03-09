@@ -21,6 +21,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ORIGIN_METAMASK,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
@@ -108,10 +109,15 @@ export const ConfirmationHandler = () => {
 
   const hasSwapRelatedNavigation = hasBridgeQuotes;
 
+  const hasInternalOriginApprovals = pendingApprovals.some(
+    (approval) => approval.origin === ORIGIN_METAMASK,
+  );
+
   const isFullscreenExemption =
     isFullscreen &&
     !hasAllowedPopupRedirectApprovals &&
-    !hasSwapRelatedNavigation;
+    !hasSwapRelatedNavigation &&
+    !hasInternalOriginApprovals;
 
   // Ported from home.component - componentDidUpdate()
   useEffect(() => {
