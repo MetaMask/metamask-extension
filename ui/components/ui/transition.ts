@@ -10,10 +10,11 @@ const isTransitionSupported = () => {
 };
 
 const transitionSupported = isTransitionSupported();
+type TransitionCallback = () => void | Promise<void>;
 
 const startTransition = (
   direction: 'forward' | 'back',
-  callback: () => void,
+  callback: TransitionCallback,
 ) => {
   if (!transitionSupported) {
     callback();
@@ -26,10 +27,10 @@ const startTransition = (
   });
 };
 
-export const transitionForward = (callback: () => void) => {
+export const transitionForward = (callback: TransitionCallback) => {
   startTransition('forward', callback);
 };
 
-export const transitionBack = (callback: () => void) => {
+export const transitionBack = (callback: TransitionCallback) => {
   startTransition('back', callback);
 };

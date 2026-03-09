@@ -25,20 +25,48 @@ export const ReceiveModal = ({ address, onClose }) => {
   } = useSelector((state) => getInternalAccountByAddress(state, address));
   const data = useMemo(() => ({ data: address }), [address]);
   const dialogRef = useRef(null);
+  const hasClosedRef = useRef(false);
 
   useEffect(() => {
     endTrace({ name: TraceName.ReceiveModal });
   }, []);
 
+  const closeOnce = useCallback(() => {
+    if (hasClosedRef.current) {
+      return;
+    }
+    hasClosedRef.current = true;
+    onClose();
+  }, [onClose]);
+
   const handleClose = useCallback(() => {
     const el = dialogRef.current?.querySelector('.mm-modal-content__dialog');
     if (!el) {
-      onClose();
+      closeOnce();
       return;
     }
-    el.classList.replace('page-enter-animation', 'page-exit-animation');
-    el.addEventListener('animationend', onClose, { once: true });
-  }, [onClose]);
+    const didReplace = el.classList.replace(
+      'page-enter-animation',
+      'page-exit-animation',
+    );
+    if (!didReplace) {
+      closeOnce();
+      return;
+    }
+
+    el.addEventListener('animationend', closeOnce, { once: true });
+    el.addEventListener('animationcancel', closeOnce, { once: true });
+
+    window.requestAnimationFrame(() => {
+      if (typeof el.getAnimations !== 'function') {
+        return;
+      }
+
+      if (el.getAnimations().length === 0) {
+        closeOnce();
+      }
+    });
+  }, [closeOnce]);
 
   return (
     <Modal isOpen onClose={handleClose}>

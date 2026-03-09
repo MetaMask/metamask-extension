@@ -114,9 +114,7 @@ const CrossChainSwap = () => {
       }
     };
 
-    transitionBack(() => {
-      doNavigate().catch(() => undefined);
-    });
+    transitionBack(() => doNavigate().catch(() => undefined));
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
