@@ -7435,9 +7435,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:@metamask-previews/profile-metrics-controller@3.0.1-preview-378ea32e1":
-  version: 3.0.1-preview-378ea32e1
-  resolution: "@metamask-previews/profile-metrics-controller@npm:3.0.1-preview-378ea32e1"
+"@metamask/profile-metrics-controller@npm:@metamask-previews/profile-metrics-controller@3.0.1-preview-d7e023427":
+  version: 3.0.1-preview-d7e023427
+  resolution: "@metamask-previews/profile-metrics-controller@npm:3.0.1-preview-d7e023427"
   dependencies:
     "@metamask/accounts-controller": "npm:^36.0.1"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7449,7 +7449,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^62.20.0"
     "@metamask/utils": "npm:^11.9.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/b1840aba2e3085b8b3a715512bb014711b5b83247089ea805f31dbb0a208d3b82290713cf00ec6b1743cfe4f33f045f41d6eaa1b635687be621808c324c87de4
+  checksum: 10/25230b1ef413ca8eb7bc39ab6bc6e476d4c9f0d8078b74411a92cb5d7b080a9d9165b44d2dc0ed063a1c968561049900588c56e40a6b855eae0da6898118216f
   languageName: node
   linkType: hard
 
@@ -7475,9 +7475,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@27.1.0-preview-378ea32e1":
-  version: 27.1.0-preview-378ea32e1
-  resolution: "@metamask-previews/profile-sync-controller@npm:27.1.0-preview-378ea32e1"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@27.1.0-preview-d7e023427":
+  version: 27.1.0-preview-d7e023427
+  resolution: "@metamask-previews/profile-sync-controller@npm:27.1.0-preview-d7e023427"
   dependencies:
     "@metamask/address-book-controller": "npm:^7.0.1"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7495,7 +7495,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/6e374b1427f0dad49e23558af4cc90b422d7df63c6d8b8367fff0e58f050dbb19349241c62f943808cc19c8b9d13d8a463e2592338967b66b7fdd49dae398fbe
+  checksum: 10/73a0d65567ad21756f7b59ab7809d55c0faa18aaa01f3948805ff5d03bd6e6b400fa4040fda3b412db47bffaa1b4445ea723d658cb7c7ec073da00ac62624cda
   languageName: node
   linkType: hard
 
@@ -32992,8 +32992,8 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.39.0"
     "@metamask/preferences-controller": "npm:^21.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
-    "@metamask/profile-metrics-controller": "npm:@metamask-previews/profile-metrics-controller@3.0.1-preview-378ea32e1"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@27.1.0-preview-378ea32e1"
+    "@metamask/profile-metrics-controller": "npm:@metamask-previews/profile-metrics-controller@3.0.1-preview-d7e023427"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@27.1.0-preview-d7e023427"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
