@@ -9,6 +9,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import {
   account1Short,
   account2Short,
@@ -389,8 +390,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signMsgConfirmation = new SnapSignMessageConfirmation(driver);
+          const txConfirmation = new SnapTransactionConfirmation(driver);
           await signMsgConfirmation.checkPageIsLoaded();
-          await signMsgConfirmation.checkNetworkIsDisplayed('Solana Mainnet');
+          await txConfirmation.checkNetworkIsDisplayed('Solana Mainnet');
         },
       );
     });
