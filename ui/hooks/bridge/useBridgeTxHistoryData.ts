@@ -59,7 +59,7 @@ export function useBridgeTxHistoryData({
   const bridgeHistoryItem =
     bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
   const isApprovalTransaction =
-    Boolean(bridgeHistoryItem) &&
+    Boolean(bridgeHistoryItem?.approvalTxId) &&
     (bridgeHistoryItem?.approvalTxId === localTx?.id ||
       bridgeHistoryItem?.approvalTxId === txMeta?.id);
   const displayBridgeHistoryItem = isApprovalTransaction
@@ -76,7 +76,13 @@ export function useBridgeTxHistoryData({
     txMeta?.type === TransactionType.swap;
 
   const showBridgeTxDetails = useCallback(() => {
-    navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txMeta?.hash}`, {
+    const txIdentifier = txMeta?.hash ?? txMeta?.id;
+
+    if (!txIdentifier) {
+      return;
+    }
+
+    navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txIdentifier}`, {
       state: {
         transaction: txMeta,
       },

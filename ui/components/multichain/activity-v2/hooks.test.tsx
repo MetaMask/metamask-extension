@@ -6,12 +6,16 @@ import {
   renderHook as renderHookBase,
 } from '@testing-library/react-hooks';
 import thunk from 'redux-thunk';
-import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
 import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
@@ -665,7 +669,7 @@ describe('useBridgeTxHistoryData', () => {
     expect(result.current.showBridgeTxDetails).toBeUndefined();
   });
 
-  it('uses originalTransactionId lookup for intent transactions', () => {
+  it('uses originalTransactionId lookup for intent transactions without treating them as approvals', () => {
     const store = configureMockStore(middleware)(
       createBridgeMockStore({
         bridgeStatusStateOverrides: {
@@ -673,6 +677,7 @@ describe('useBridgeTxHistoryData', () => {
             intentOrderUid: {
               ...mockBridgeTxData.bridgeHistoryItem,
               originalTransactionId: 'intent-tx-meta-id',
+              approvalTxId: undefined,
               status: {
                 ...mockBridgeTxData.bridgeHistoryItem.status,
                 status: StatusTypes.FAILED,
@@ -689,18 +694,33 @@ describe('useBridgeTxHistoryData', () => {
           transaction: {
             ...mockBridgeTxData.transactionGroup.primaryTransaction,
             id: 'intent-tx-meta-id',
-            hash: '0xintenthashwithoutlocalmatch',
+            hash: undefined,
             type: TransactionType.swap,
             status: TransactionStatus.submitted,
           } as never,
         }),
       {
-        wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
       },
     );
 
     expect(result.current.isBridgeFailed).toBe(true);
     expect(result.current.isBridgeComplete).toBe(false);
     expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+
+    act(() => result.current.showBridgeTxDetails?.());
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/intent-tx-meta-id`,
+      expect.objectContaining({
+        state: expect.objectContaining({
+          transaction: expect.objectContaining({
+            id: 'intent-tx-meta-id',
+          }),
+        }),
+      }),
+    );
   });
 });
