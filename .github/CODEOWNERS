@@ -168,6 +168,8 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Extension Platform
 .yarnrc.yml                                           @MetaMask/extension-platform
+app/scripts/lib/createMetaRPCHandler.js               @MetaMask/extension-platform
+app/scripts/lib/metaRPCClientFactory.ts               @MetaMask/extension-platform
 
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
@@ -203,10 +205,8 @@ test/e2e/flask/multichain-api                                         @MetaMask/
 app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/wallet-integrations
 app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/wallet-integrations
 app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
-app/scripts/lib/createMetaRPCHandler.js                               @MetaMask/wallet-integrations
 app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
 app/scripts/lib/createDefiReferralMiddleware.ts                @MetaMask/wallet-integrations
-app/scripts/lib/metaRPCClientFactory.ts                               @MetaMask/wallet-integrations
 app/scripts/lib/middleware/                                           @MetaMask/wallet-integrations
 app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations
 app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/wallet-integrations

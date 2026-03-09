@@ -12,6 +12,9 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
+export const SETTINGS_V2_ROUTE = '/settings-v2';
+export const ASSETS_ROUTE = '/settings-v2/assets';
+export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -53,6 +56,12 @@ export const CONTACT_LIST_ROUTE = '/settings/contact-list';
 export const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 export const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
+
+// Standalone contacts (hamburger menu)
+export const CONTACTS_ROUTE = '/contacts';
+export const CONTACTS_ADD_ROUTE = '/contacts/add';
+export const CONTACTS_VIEW_ROUTE = '/contacts/view';
+export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
 export const REVEAL_SRP_LIST_ROUTE =
   '/settings/security-and-privacy/reveal-srp-list';
@@ -144,7 +153,6 @@ export const DEFI_ROUTE = '/defi';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
-export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
 export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
@@ -160,7 +168,6 @@ export const ROUTES = [
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
   { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
-  { path: PERPS_HOME_ROUTE, label: 'Perps Home', trackInAnalytics: true },
   {
     path: PERPS_MARKET_LIST_ROUTE,
     label: 'Perps Market List',
@@ -212,6 +219,17 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
+  {
+    path: SETTINGS_V2_ROUTE,
+    label: 'Settings V2 Page',
+    trackInAnalytics: true,
+  },
+  { path: ASSETS_ROUTE, label: 'Assets Settings Page', trackInAnalytics: true },
+  {
+    path: CURRENCY_ROUTE,
+    label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
   {
     path: GENERAL_ROUTE,
     label: 'General Settings Page',
@@ -281,6 +299,26 @@ export const ROUTES = [
   {
     path: `${CONTACT_VIEW_ROUTE}/:address`,
     label: 'View Contact Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CONTACTS_ROUTE,
+    label: 'Contacts Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CONTACTS_ADD_ROUTE,
+    label: 'Add Contact Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${CONTACTS_VIEW_ROUTE}/:address`,
+    label: 'Contact Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${CONTACTS_EDIT_ROUTE}/:address`,
+    label: 'Edit Contact Page',
     trackInAnalytics: true,
   },
   {

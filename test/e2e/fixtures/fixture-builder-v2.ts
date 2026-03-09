@@ -4,6 +4,7 @@ import type { AddressBookControllerState } from '@metamask/address-book-controll
 import type { CurrencyRateState } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
@@ -36,6 +37,8 @@ import {
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
   NETWORK_CLIENT_ID,
+  SECOND_NODE_NETWORK_CLIENT_ID,
+  THIRD_NODE_NETWORK_CLIENT_ID,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import defaultFixtureJson from './default-fixture.json';
@@ -77,6 +80,11 @@ class FixtureBuilderV2 {
                           GENERIC  CONTROLLER METHODS
      ==================================================================
   */
+  withAccountsController(data: Partial<AccountsControllerState>): this {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -84,11 +92,6 @@ class FixtureBuilderV2 {
       };
     }
     merge(this.fixture.data.AddressBookController, data);
-    return this;
-  }
-
-  withAccountsController(data: Partial<AccountsControllerState>): this {
-    merge(this.fixture.data.AccountsController, data);
     return this;
   }
 
@@ -117,6 +120,13 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNetworkEnablementController(
+    data: Partial<NetworkEnablementControllerState>,
+  ): this {
+    merge(this.fixture.data.NetworkEnablementController, data);
+    return this;
+  }
+
   withOnboardingController(data: Partial<OnboardingControllerState>): this {
     merge(this.fixture.data.OnboardingController, data);
     return this;
@@ -135,6 +145,13 @@ class FixtureBuilderV2 {
     },
   ): this {
     merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  withSelectedNetworkController(
+    data: Partial<SelectedNetworkControllerState>,
+  ): this {
+    merge(this.fixture.data.SelectedNetworkController, data);
     return this;
   }
 
@@ -247,27 +264,13 @@ class FixtureBuilderV2 {
           selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
         },
       })
-      .withPreferencesController({
-        identities: {
-          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            lastSelected: 1665507600000,
-            name: 'Account 1',
-          },
-          [ledgerAddressLower]: {
-            address: ledgerAddressLower,
-            lastSelected: 1665507800000,
-            name: 'Ledger 1',
-          },
-        } as unknown as PreferencesControllerState['identities'],
-        selectedAddress: ledgerAddressLower,
-      });
+      .withPreferencesController({});
     return this;
   }
 
   withNetworkControllerDoubleNode(): this {
     const secondNodeChainId = '0x53a';
-    const secondNodeClientId = '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
+    const secondNodeClientId = SECOND_NODE_NETWORK_CLIENT_ID;
 
     return this.withNetworkController({
       networkConfigurationsByChainId: {
@@ -297,7 +300,7 @@ class FixtureBuilderV2 {
 
   withNetworkControllerTripleNode(): this {
     const thirdNodeChainId = '0x3e8';
-    const thirdNodeClientId = 'a3460c52-12ee-4267-9be6-1503095a587e';
+    const thirdNodeClientId = THIRD_NODE_NETWORK_CLIENT_ID;
 
     return this.withNetworkControllerDoubleNode().withNetworkController({
       networkConfigurationsByChainId: {
@@ -326,7 +329,7 @@ class FixtureBuilderV2 {
   }
 
   withPermissionControllerConnectedToTestDapp({
-    account = '',
+    account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
     useLocalhostHostname = false,
     numberOfDapps = 1,
     chainIds = [1337],
@@ -343,9 +346,7 @@ class FixtureBuilderV2 {
       );
     }
 
-    const selectedAccount = account
-      ? account.toLowerCase()
-      : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+    const selectedAccount = account.toLowerCase();
 
     const dappUrls = [
       useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
@@ -407,6 +408,15 @@ class FixtureBuilderV2 {
   ): this {
     return this.withNetworkController({
       selectedNetworkClientId: networkClientId,
+    });
+  }
+
+  withSelectedNetworkControllerPerDomain(): this {
+    return this.withSelectedNetworkController({
+      domains: {
+        [DAPP_URL]: LOCALHOST_NETWORK_CLIENT_ID,
+        [DAPP_ONE_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
+      },
     });
   }
 

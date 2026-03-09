@@ -1,20 +1,45 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`NativeTransferInfo renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    class="flex flex-col mb-2 pb-3 px-0"
   >
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+      class="mb-1"
     >
-      E
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Sending
+      </p>
     </div>
-    <h2
-      class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
+    <div
+      class="flex flex-row items-center justify-between"
     >
-      0 ETH
-    </h2>
+      <div
+        class="flex flex-col"
+      >
+        <div
+          class="pb-1"
+        >
+          <h2
+            class="text-inherit text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+          >
+            0 ETH
+          </h2>
+        </div>
+      </div>
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-12 w-12"
+      >
+        <span
+          class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+        >
+          E
+        </span>
+      </div>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"

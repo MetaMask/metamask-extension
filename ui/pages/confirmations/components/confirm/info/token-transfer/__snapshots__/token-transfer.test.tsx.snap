@@ -1,29 +1,46 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`TokenTransferInfo renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-2 mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    class="flex flex-col mb-2 pb-3 px-0"
   >
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+      class="mb-1"
     >
-      ?
-    </div>
-    <div>
-      <div
-        aria-describedby="tippy-tooltip-1"
-        class=""
-        data-original-title="0.000000000000000001"
-        data-tooltipped=""
-        style="display: inline;"
-        tabindex="0"
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        <h2
-          class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
-        >
-          &lt;0.000001 Unknown
-        </h2>
+        Sending
+      </p>
+    </div>
+    <div
+      class="flex flex-row items-center justify-between"
+    >
+      <div
+        class="flex flex-col"
+      >
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="0.000000000000000001"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <h2
+              class="mm-box mm-text mm-text--heading-lg mm-box--padding-bottom-1 mm-box--color-inherit"
+            >
+              &lt;0.000001 Unknown
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+      >
+        ?
       </div>
     </div>
   </div>

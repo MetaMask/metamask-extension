@@ -35,6 +35,7 @@ env:
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
   # For a `push` event, the head commit hash is `github.sha`.
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+  RUN_ID: ${{ github.run_id }}
 
 permissions:
   contents: write # required for releases
@@ -375,21 +376,77 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  page-load-benchmark:
+  dapp-page-load-benchmark:
     needs:
       - get-requirements
       - build-test-browserify
     if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
-    uses: ./.github/workflows/page-load-benchmark.yml
-    secrets:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    uses: ./.github/workflows/dapp-page-load-benchmark.yml
     with:
       browser-loads: 10
       page-loads: 10
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+
+  # Pushes benchmark results (dapp page-load + performance) to extension_benchmark_stats
+  # for historical comparison in PR comments. Runs on main/release/* pushes only.
+  store-benchmark-stats:
+    needs:
+      - get-requirements
+      - run-benchmarks
+      - dapp-page-load-benchmark
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name == 'push' &&
+        (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
+        needs.get-requirements.outputs.needs-benchmarks == 'true' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      OWNER: ${{ github.repository_owner }}
+      BRANCH_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all performance benchmark artifacts
+        id: download-perf-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      - name: Commit performance stats to extension_benchmark_stats
+        if: steps.download-perf-benchmark.outcome == 'success'
+        continue-on-error: true
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: performance
+          BENCHMARK_RESULTS_DIR: benchmark-results
+
+      - name: Download dapp page-load benchmark artifact
+        id: download-dapp-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          name: dapp-page-load-benchmark-results
+          path: test-artifacts/benchmarks/
+
+      - name: Commit dapp page-load stats to extension_benchmark_stats
+        if: steps.download-dapp-benchmark.outcome == 'success'
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: dapp-page-load
+          BENCHMARK_FILE: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
 
   prep-e2e:
     needs:
@@ -479,7 +536,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/source-map-explorer
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/source-map-explorer
           path: build-artifacts/source-map-explorer
 
   build-lavamoat-viz:
@@ -557,7 +614,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/lavamoat-viz
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/lavamoat-viz
           path: build-artifacts/build-viz
 
   publish-prerelease:
@@ -602,7 +659,7 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - run-benchmarks
-      - page-load-benchmark
+      - dapp-page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
@@ -627,7 +684,6 @@ jobs:
       - name: Trigger regression validation in external repo
         env:
           DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
-          RUN_ID: ${{ github.run_id }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
           # Use BRANCH env var which correctly handles both push and pull_request events
@@ -693,7 +749,7 @@ jobs:
       - run-benchmarks
       - run-tests
       - bundle-size
-      - page-load-benchmark
+      - dapp-page-load-benchmark
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
@@ -707,7 +763,6 @@ jobs:
         env:
           NEEDS_JSON: ${{ toJson(needs) }} # This is required for the the job_result lookup and the job_id loop
           BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
-          RUN_ID: ${{ github.run_id }}
         run: |
           # Function to ensure a job's result is either 'success' or 'skipped'
           requireJobSuccessOrSkipped() {
@@ -759,3 +814,43 @@ jobs:
       - all-jobs-pass
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit
+
+  check-retry-ci:
+    name: Check for retry-ci label and retry
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.all-jobs-pass.result == 'failure' &&
+        github.event_name == 'pull_request' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs:
+      - all-jobs-pass
+      - publish-prerelease
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      REPO: ${{ github.repository }}
+    permissions:
+      actions: write
+      pull-requests: write
+    steps:
+      - name: Check if this PR has a retry-ci label
+        run: |
+          # We cannot use github.event.pull_request.labels here, because it will be stale on a re-run
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
+
+          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
+            echo "This PR has a retry-ci label, removing the label..."
+            gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
+
+            echo "Retrying failed jobs..."
+
+            # We cannot use `gh run rerun` here, because this workflow is still running,
+            # so we must run main-retry.yml, which in turn runs `gh run rerun`
+            gh workflow run main-retry.yml --repo "$REPO" -f run-id="$RUN_ID" -f pr-number="$PR_NUMBER"
+          else
+            echo "This PR does not have a retry-ci label, not retrying."
+          fi

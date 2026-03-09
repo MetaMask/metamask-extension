@@ -157,7 +157,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleTpPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*\.?\d*$/u.test(value)) {
+      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onTakeProfitPriceChange('');
@@ -174,7 +174,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleSlPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
+      if (value === '' || /^[\d,]*(?:\.\d*)?$/u.test(value)) {
         onStopLossPriceChange(value);
       }
     },
@@ -195,7 +195,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleSlPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*\.?\d*$/u.test(value)) {
+      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onStopLossPriceChange('');
