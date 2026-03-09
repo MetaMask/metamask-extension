@@ -1,0 +1,16 @@
+# Skeleton
+
+name: Main Completed
+
+on:
+  workflow_run:
+    workflows: ['Main']
+    types: [completed]
+
+jobs:
+  retry-merge-queue:
+    name: Retry merge queue
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: echo "Skeleton workflow"
