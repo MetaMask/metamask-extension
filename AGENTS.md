@@ -1644,28 +1644,47 @@ the source code, hot reload shows the result, and the loop continues.
 
 ### Quick Start (Agent Workflow)
 
-When asked to **"start designer mode"**, **"listen for design requests"**, or
-**"collaborate with the designer"**, follow this loop:
+When asked to **"start designer mode"**, **"run designer mode"**,
+**"listen for design requests"**, or **"collaborate with the designer"**,
+follow this loop:
 
-```bash
-# 1. Start the relay server (run once, keep in background)
-yarn designer-server
+1. Start the relay server (once, in background):
+   ```bash
+   yarn designer-server
+   ```
 
-# 2. Wait for the designer to send a request (blocks until one arrives)
-yarn designer-wait
-```
+2. Tell the user how to send requests:
+   > Designer Mode is ready. In the extension:
+   > 1. Go to Settings → Developer Options and enable Designer Mode
+   > 2. Click the 🎨 button or press Ctrl+Shift+D to activate the inspector
+   > 3. Click an element, then type a message and hit Send
+   >
+   > Waiting for your first request...
+   > Please accept the next command so I can start listening.
 
-3. Read the structured output from `designer-wait` — it contains:
+3. Run `yarn designer-wait` (use `block_until_ms: 600000` so it has time
+   to receive the request before being backgrounded):
+   ```bash
+   yarn designer-wait
+   ```
+   This blocks until the designer sends a request, prints the structured
+   prompt, and exits.
+
+4. Read the structured output — it contains:
    - The selected element (component name, path, test ID, classes)
    - Any inline style/text edits the designer already made
    - The designer's natural-language message (e.g. "make this button red")
-4. Apply the requested changes to the **source code**
-5. Send a response to the designer panel so they know you're done:
+5. Apply the requested changes to the **source code**
+6. Send a response to the designer panel so they know you're done:
    ```bash
    curl -s -X POST http://localhost:3334/api/response -H "Content-Type: text/plain" -d "Done — <brief summary of what you changed>"
    ```
-6. Run `yarn designer-wait` again to receive the next request
-7. Repeat until the designer says "done" or you are told to stop
+7. **IMMEDIATELY run `yarn designer-wait` again** to receive the next request
+8. Repeat until the designer says "done" or you are told to stop
+
+**CRITICAL:** The agent MUST run `yarn designer-wait` again after every
+request. The correct sequence after each request is: apply changes → send
+curl response → run `yarn designer-wait`. Never skip the last step.
 
 ### Architecture
 
@@ -1678,7 +1697,8 @@ Browser (Designer Mode panel)  ──POST──►  localhost:3334  ◄──GET
   browser panel and holds them for the agent CLI.
 - **`yarn designer-wait`** — Blocking CLI. Long-polls the server, prints the
   structured prompt to stdout when a request arrives, then exits. The agent reads
-  stdout and acts on it.
+  stdout and acts on it. Use `block_until_ms: 600000` to avoid premature
+  backgrounding.
 
 ### What the Designer Does
 
@@ -1695,6 +1715,6 @@ Browser (Designer Mode panel)  ──POST──►  localhost:3334  ◄──GET
   agent must apply equivalent changes to the source code for them to persist.
 - The prompt includes a changeset showing what the designer edited (original →
   new values), so the agent knows exactly what to change.
-- The `designer-wait` output is self-documenting — even if you haven't read this
-  section, the prompt tells you what to do and to run `designer-wait` again.
+- Always re-run `yarn designer-wait` after applying changes — this is the most
+  common failure mode.
 - The server defaults to port 3334. Override with `DESIGNER_PORT` env var.

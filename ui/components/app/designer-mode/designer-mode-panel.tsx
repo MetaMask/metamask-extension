@@ -2170,67 +2170,82 @@ function AgentWorkingIndicator() {
     <div
       style={{
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         gap: 8,
-        padding: '6px 8px',
+        padding: '10px 12px',
         backgroundColor: 'rgba(13, 153, 255, 0.06)',
-        borderRadius: 4,
+        borderRadius: 8,
         border: `1px solid rgba(13, 153, 255, 0.15)`,
       }}
     >
-      {/* Pulsing orb */}
-      <div
-        style={{
-          position: 'relative',
-          width: 16,
-          height: 16,
-          flexShrink: 0,
-        }}
-      >
+      {/* Status row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Pulsing orb */}
         <div
           style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            backgroundColor: C.accent,
-            opacity: 0.25,
-            animation: 'designerPulse 1.5s ease-in-out infinite',
+            position: 'relative',
+            width: 14,
+            height: 14,
+            flexShrink: 0,
           }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: 4,
-            left: 4,
-            width: 8,
-            height: 8,
-            borderRadius: '50%',
-            backgroundColor: C.accent,
-            animation: 'designerGlow 1.5s ease-in-out infinite',
-          }}
-        />
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        >
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '50%',
+              backgroundColor: C.accent,
+              opacity: 0.25,
+              animation: 'designerPulse 1.5s ease-in-out infinite',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: 3,
+              left: 3,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: C.accent,
+              animation: 'designerGlow 1.5s ease-in-out infinite',
+            }}
+          />
+        </div>
         <span
           style={{
-            fontSize: 10,
+            fontSize: 11,
             color: C.accent,
-            fontWeight: 500,
+            fontWeight: 600,
             fontFamily: FONT,
           }}
         >
           Agent is working{dots}
         </span>
+      </div>
+
+      {/* Call to action */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '6px 10px',
+          backgroundColor: 'rgba(255, 255, 255, 0.07)',
+          borderRadius: 6,
+        }}
+      >
+        <span style={{ fontSize: 13 }}>👉</span>
         <span
           style={{
-            fontSize: 9,
-            color: C.textTertiary,
+            fontSize: 11,
+            color: C.text,
+            fontWeight: 500,
             fontFamily: FONT,
-            marginTop: 1,
+            lineHeight: 1.4,
           }}
         >
-          Please check your agent for progress and approvals
+          Check your agent for progress and approvals
         </span>
       </div>
 
