@@ -114,8 +114,6 @@ const CrossChainSwap = () => {
       } else {
         navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
       }
-      dispatch(clearSwapsState());
-      await dispatch(resetBackgroundSwapsState());
     };
 
     if (animatedRef.current) {
