@@ -186,71 +186,69 @@ class FixtureBuilderV2 {
 
     this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
-    })
-      .withAccountsController({
-        internalAccounts: {
-          accounts: {
-            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-              options: {
-                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
+    }).withAccountsController({
+      internalAccounts: {
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01JWZDDDB45SRHTRE5KYWZJK9W',
-                  derivationPath: "m/44'/60'/0'/0/0",
-                  groupIndex: 0,
-                },
-              },
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Account 1',
-                importTime: 1724486724986,
-                lastSelected: 1665507600000,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
               },
             },
-            '221ecb67-0d29-4c04-83b2-dff07c263634': {
-              id: '221ecb67-0d29-4c04-83b2-dff07c263634',
-              address: ledgerAddressLower,
-              options: {},
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Ledger 1',
-                importTime: 1724486729079,
-                keyring: {
-                  type: 'Ledger Hardware',
-                },
-                lastSelected: 1724486729083,
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
               },
             },
           },
-          selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+          '221ecb67-0d29-4c04-83b2-dff07c263634': {
+            id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+            address: ledgerAddressLower,
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Ledger 1',
+              importTime: 1724486729079,
+              keyring: {
+                type: 'Ledger Hardware',
+              },
+              lastSelected: 1724486729083,
+            },
+          },
         },
-      })
-      .withPreferencesController({});
+        selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+      },
+    });
     return this;
   }
 
@@ -408,7 +406,7 @@ class FixtureBuilderV2 {
   }
 
   withTrezorAccount(): this {
-    this.withAccountsController({
+    return this.withAccountsController({
       internalAccounts: {
         accounts: {
           'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
@@ -470,25 +468,7 @@ class FixtureBuilderV2 {
         },
         selectedAccount: TREZOR_ACCOUNT_ID,
       },
-    })
-      .withKeyringController({ vault: TREZOR_VAULT })
-      .withPreferencesController({});
-    merge(this.fixture.data.PreferencesController as Record<string, unknown>, {
-      identities: {
-        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-          address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-          lastSelected: 1665507600000,
-          name: 'Account 1',
-        },
-        [TREZOR_ADDRESS]: {
-          address: TREZOR_ADDRESS,
-          lastSelected: 1665507800000,
-          name: 'Trezor 1',
-        },
-      },
-      selectedAddress: TREZOR_ADDRESS,
-    });
-    return this;
+    }).withKeyringController({ vault: TREZOR_VAULT });
   }
 
   withShowNativeTokenAsMainBalanceEnabled(): this {
