@@ -1372,38 +1372,6 @@ class Driver {
   }
 
   /**
-   * Attempts to switch to the window/tab with the given title, retrying on failure.
-   * Retries every 500ms for up to 5 seconds.
-   *
-   * @param {string} title - The title of the window or tab to switch to.
-   * @param {number} timeout - Total timeout in milliseconds.
-   * @param {number} interval - Delay between retries in milliseconds.
-   * @returns {Promise<void>} promise that resolves once the switch is complete
-   * @throws {Error} throws an error if no window with the specified title is found after all retries
-   */
-  async switchToWindowWithTitleWithRetry(
-    title,
-    timeout = this.timeout,
-    interval = 1000,
-  ) {
-    const start = Date.now();
-    let lastError;
-    while (Date.now() - start <= timeout) {
-      try {
-        await this.switchToWindowWithTitle(title);
-        return;
-      } catch (e) {
-        lastError = e;
-        console.log(
-          `Switching to window with title: ${title} failed, retrying...`,
-        );
-        await this.delay(interval);
-      }
-    }
-    throw lastError ?? new Error(`No window with title: ${title}`);
-  }
-
-  /**
    * Waits until there is a window/tab with the given title, without changing the current window focus.
    *
    * @param {string} title - The title of the window or tab to wait for.

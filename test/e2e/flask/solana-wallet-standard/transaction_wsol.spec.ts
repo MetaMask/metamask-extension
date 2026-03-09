@@ -38,13 +38,14 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           const sendWSolTest = await testDapp.getSendWSolTest();
           await sendWSolTest.signTransaction();
 
-          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signTxConfirmation = new SnapTransactionConfirmation(driver);
-          await signTxConfirmation.clickFooterConfirmButtonWithoutWait();
-          await driver.delay(1000);
+          let dialogHandle = await driver.getCurrentWindowHandle();
+          await signTxConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
 
-          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
-          await signTxConfirmation.clickFooterConfirmButtonWithoutWait();
+          await driver.waitForWindowToClose(dialogHandle);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await signTxConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
           await testDapp.switchTo();
 
           const signedTransactions = await sendWSolTest.getSignedTransactions();
@@ -56,12 +57,14 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           console.log('2. Send multiple transactions');
           await sendWSolTest.sendTransaction();
 
-          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          dialogHandle = await driver.getCurrentWindowHandle();
           const txConfirmation = new SnapTransactionConfirmation(driver);
-          await txConfirmation.clickFooterConfirmButtonWithoutWait();
+          await txConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
 
-          await driver.switchToWindowWithTitleWithRetry(WINDOW_TITLES.Dialog);
-          await txConfirmation.clickFooterConfirmButtonWithoutWait();
+          await driver.waitForWindowToClose(dialogHandle);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await txConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
           await testDapp.switchTo();
 
           const transactionHashes = await sendWSolTest.getTransactionHashs();
