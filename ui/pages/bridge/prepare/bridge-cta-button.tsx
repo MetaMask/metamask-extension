@@ -30,7 +30,6 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
   ConnectionStatus,
-  useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
@@ -40,10 +39,12 @@ export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
   onOpenRecipientModal,
+  onOpenPriceImpactWarningModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal?: () => void;
+  onOpenPriceImpactWarningModal: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -57,15 +58,8 @@ export const BridgeCTAButton = ({
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
   );
-  const { submitBridgeTransaction } = useSubmitBridgeTransaction();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const mountedRef = useRef(true);
-
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
+  const { submitBridgeTransaction, isSubmitting } =
+    useSubmitBridgeTransaction();
 
   const {
     isNoQuotesAvailable,
@@ -79,13 +73,14 @@ export const BridgeCTAButton = ({
     (state) => getValidationErrors(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
+    isPriceImpactError,
+  } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
 
   const hardwareWalletName = useMemo(
@@ -201,25 +196,12 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
-          // Set submitting state before async checks to prevent duplicate clicks.
-          setIsSubmitting(true);
-
-          try {
-            // Verify hardware wallet device is ready before submitting.
-            if (isHardwareWalletAccount) {
-              const isDeviceReady = await ensureDeviceReady();
-              if (!isDeviceReady) {
-                return;
-              }
-            }
-
-            // We don't need to worry about setting to false if the tx submission succeeds
-            // because we route immediately to Activity list page
+          // If price impact is too high, open the price impact warning modal and submit
+          // the transaction through the modal.
+          if (isPriceImpactError) {
+            onOpenPriceImpactWarningModal();
+          } else {
             await submitBridgeTransaction(activeQuote);
-          } finally {
-            if (mountedRef.current) {
-              setIsSubmitting(false);
-            }
           }
         }
       }}

@@ -91,6 +91,7 @@ import {
   isStockRWAToken,
   isTokenTradingOpenAt,
 } from '../../pages/bridge/hooks/useRWAToken';
+import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -175,7 +176,13 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
     (state: BridgeAppState) =>
       getBridgeFeatureFlags(state).priceImpactThreshold,
   ],
-  (priceImpactThreshold) => priceImpactThreshold,
+  (priceImpactThreshold) => ({
+    ...(priceImpactThreshold ?? {}),
+    // @ts-expect-error - priceImpactThreshold type has not been updated yet
+    warning: priceImpactThreshold?.warning ?? 0.05,
+    // @ts-expect-error - priceImpactThreshold type has not been updated yet
+    error: priceImpactThreshold?.error ?? 0.25,
+  }),
 );
 
 export const getFromChains = createDeepEqualSelector(
@@ -676,6 +683,25 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
+export const getPriceImpact = createSelector(
+  [
+    (state: BridgeAppState) =>
+      getBridgeQuotes(state).activeQuote?.quote?.priceData?.priceImpact,
+  ],
+  (priceImpact) => {
+    const priceImpactNumber = Number(priceImpact);
+    if (isNaN(priceImpactNumber)) {
+      return null;
+    }
+    return priceImpactNumber;
+  },
+);
+
+export const getFormattedPriceImpact = createSelector(
+  [getPriceImpact],
+  (priceImpact) => formatPriceImpact(priceImpact),
+);
+
 const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
@@ -689,6 +715,8 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     _getFromNativeBalance,
     getFromTokenBalance,
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
+    getPriceImpact,
+    getPriceImpactThresholds,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -701,6 +729,8 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
     txAlertStatus,
+    priceImpactNumber,
+    { warning, error },
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
@@ -769,6 +799,14 @@ const _getBaseValidationErrors = createDeepEqualSelector(
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
+      isPriceImpactWarning: Boolean(
+        priceImpactNumber &&
+          priceImpactNumber > warning &&
+          priceImpactNumber <= error,
+      ),
+      isPriceImpactError: Boolean(
+        priceImpactNumber && priceImpactNumber > error,
+      ),
     };
   },
 );
@@ -834,6 +872,23 @@ export const getQuoteWarningLabels = (
   getWarningLabels(state, currentTimeInMs).filter(
     (w): w is QuoteWarning => w !== 'market_closed',
   );
+    isPriceImpactWarning,
+    isPriceImpactError,
+    isTxAlertPresent,
+  }) => {
+    const warnings: QuoteWarning[] = [];
+    isEstimatedReturnLow && warnings.push('low_return');
+    isNoQuotesAvailable && warnings.push('no_quotes');
+    isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
+    isInsufficientGasForQuote &&
+      warnings.push('insufficient_gas_for_selected_quote');
+    isInsufficientBalance && warnings.push('insufficient_balance');
+    isPriceImpactWarning && warnings.push('price_impact');
+    isPriceImpactError && warnings.push('price_impact');
+    isTxAlertPresent && warnings.push('tx_alert');
+    return warnings;
+  },
+);
 
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;

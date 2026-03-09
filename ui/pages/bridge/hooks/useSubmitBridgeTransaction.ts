@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
-  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
@@ -25,6 +25,10 @@ import {
   getQuoteWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
+import {
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
@@ -77,59 +81,55 @@ export default function useSubmitBridgeTransaction() {
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    if (!fromAccount) {
-      throw new Error(
-        'Failed to submit bridge transaction: No selected account',
-      );
+    // Set submitting state before async checks to prevent duplicate submissions.
+    setIsSubmitting(true);
+
+    // Verify HW wallet and network before submitting
+    try {
+      if (isHardwareWalletAccount) {
+        const isDeviceReady = await ensureDeviceReady();
+        if (!isDeviceReady) {
+          throw new Error('Hardware wallet device is not ready');
+        }
+      }
+
+      if (!fromAccount) {
+        throw new Error(
+          'Failed to submit bridge transaction: No selected account',
+        );
+      }
+
+      // If bridging, enable All Networks view so the user can see their bridging activity
+      if (
+        isCrossChain(
+          quoteResponse.quote.srcChainId,
+          quoteResponse.quote.destChainId,
+        )
+      ) {
+        enableMissingNetwork(
+          formatChainIdToCaip(quoteResponse.quote.destChainId),
+        );
+      }
+    } catch {
+      setIsSubmitting(false);
+      return;
     }
 
-    // If bridging, enable All Networks view so the user can see their bridging activity
-    if (
-      isCrossChain(
-        quoteResponse.quote.srcChainId,
-        quoteResponse.quote.destChainId,
-      )
-    ) {
-      enableMissingNetwork(
-        formatChainIdToCaip(quoteResponse.quote.destChainId),
-      );
-    }
-
+    // Navigate to HW signing page
     if (hardwareWalletUsed) {
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      setIsSubmitting(false);
     }
 
     // Execute transaction(s)
     try {
-      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
-      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
-
-      if (isNonEvmSource) {
-        // Submit the transaction first, THEN navigate
-        await dispatch(
-          await submitBridgeTx(
-            fromAccount.address,
-            quoteResponse,
-            false,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-            ),
-          ),
-        );
-        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          state: { stayOnHomePage: true },
-        });
-        return;
-      }
-
       await dispatch(
         await submitBridgeTx(
           fromAccount.address,
@@ -148,13 +148,13 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
-      } else {
-        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          state: { stayOnHomePage: true },
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
+          replace: true,
         });
+        return;
       }
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
@@ -164,5 +164,6 @@ export default function useSubmitBridgeTransaction() {
 
   return {
     submitBridgeTransaction,
+    isSubmitting,
   };
 }
