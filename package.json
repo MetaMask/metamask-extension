@@ -322,7 +322,7 @@
     "@metamask/eth-sig-util": "^8.2.0",
     "@metamask/eth-snap-keyring": "^19.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
-    "@metamask/eth-trezor-keyring": "^9.0.0",
+    "@metamask/eth-trezor-keyring": "npm:@metamask-previews/eth-trezor-keyring@9.0.0-543b4a0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^25.0.0",
     "@metamask/gator-permissions-controller": "^2.0.0",
