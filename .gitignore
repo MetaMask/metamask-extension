@@ -1,6 +1,8 @@
 .yalc
 yalc.lock
 
+/ocap-kernel
+
 npm-debug.log
 yarn-error.log
 node_modules

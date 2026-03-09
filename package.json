@@ -30,6 +30,7 @@
     "dist:mv2": "ENABLE_MV3=false yarn build dist",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
+    "bundle-vats": "bash scripts/bundle-vats.sh",
     "circular-deps:check": "tsx development/circular-deps.ts check",
     "circular-deps:update": "tsx development/circular-deps.ts update",
     "start:test": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
@@ -297,7 +298,21 @@
     "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
-    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
+    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
+    "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
+    "@metamask/multichain-account-service@npm:^7.1.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
+    "@metamask/kernel-browser-runtime": "portal:ocap-kernel/packages/kernel-browser-runtime",
+    "@metamask/kernel-errors": "portal:ocap-kernel/packages/kernel-errors",
+    "@metamask/kernel-platforms": "portal:ocap-kernel/packages/kernel-platforms",
+    "@metamask/kernel-rpc-methods": "portal:ocap-kernel/packages/kernel-rpc-methods",
+    "@metamask/kernel-shims": "portal:ocap-kernel/packages/kernel-shims",
+    "@metamask/kernel-store": "portal:ocap-kernel/packages/kernel-store",
+    "@metamask/kernel-ui": "portal:ocap-kernel/packages/kernel-ui",
+    "@metamask/kernel-utils": "portal:ocap-kernel/packages/kernel-utils",
+    "@metamask/logger": "portal:ocap-kernel/packages/logger",
+    "@metamask/ocap-kernel": "portal:ocap-kernel/packages/ocap-kernel",
+    "@metamask/streams": "portal:ocap-kernel/packages/streams",
+    "@metamask/kernel-cli": "portal:ocap-kernel/packages/kernel-cli"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -761,6 +776,7 @@
     "octokit": "^5.0.5",
     "openai": "^4.73.0",
     "oxfmt": "^0.44.0",
+    "patch-package": "^8.0.1",
     "path-browserify": "^1.0.1",
     "postcss": "^8.5.10",
     "postcss-loader": "^8.2.1",
@@ -864,7 +880,8 @@
       "core-js-pure#3.41.0": true,
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
-      "tsx>esbuild#0.27.7": true
+      "tsx>esbuild#0.27.7": true,
+      "@metamask/kernel-utils": true
     }
   },
   "packageManager": "yarn@4.14.1",
