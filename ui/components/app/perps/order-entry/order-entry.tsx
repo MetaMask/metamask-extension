@@ -54,6 +54,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.midPrice
  * @param props.onOrderTypeChange
  * @param props.onCalculationsChange
+ * @param props.onAddFunds
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -71,6 +72,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   orderType = 'market',
   midPrice,
   onOrderTypeChange,
+  onAddFunds,
 }) => {
   const t = useI18nContext();
 
@@ -260,6 +262,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
+            onAddFunds={onAddFunds}
           />
         )}
 

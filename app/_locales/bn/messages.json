@@ -296,9 +296,6 @@
     "message": "আমদানিকৃত",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "আপনার প্রারম্ভিক লেনদেনটি নেটওয়ার্ক নিশ্চিত করেছিল। ফিরে যেতে ঠিক আছে তে ক্লিক করুন।"
-  },
   "insufficientBalance": {
     "message": "অপর্যাপ্ত ব্যালেন্স৷"
   },
@@ -478,12 +475,6 @@
   "rejectAll": {
     "message": "সব খারিজ করুন"
   },
-  "rejectTxsDescription": {
-    "message": "আপনি $1টি লেনদেন ব্যাচ খারিজ করতে চলেছেন।"
-  },
-  "rejectTxsN": {
-    "message": "$1 লেনদেনগুলি খারিজ করুন"
-  },
   "rejected": {
     "message": "খারিজ করা হয়েছে"
   },
@@ -492,9 +483,6 @@
   },
   "removeAccount": {
     "message": "অ্যাকাউন্ট সরান"
-  },
-  "removeAccountDescription": {
-    "message": "এই অ্যাকাউন্টটি আপনার ওয়ালেট থেকে অপসারণ করা হবে। অবিরত রাখার আগে অনুগ্রহ করে নিশ্চিত করুন যে এই আমদানি করা অ্যাকাউন্টটির জন্য আপনার মূল সীড ফ্রেজ বা গোপন কী আছে। আপনি অ্যাকাউন্ট ড্রপ-ডাউন থেকে অ্যাকাউন্টগুলি আবার আমদানি বা তৈরি করতে পারবেন।"
   },
   "required": {
     "message": "প্রয়োজন"
@@ -676,8 +664,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
   }
 }

@@ -286,9 +286,6 @@
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Sieť potvrdila vašu iniciálnu transakciu. Ak sa chcete vrátiť späť, kliknite na OK."
-  },
   "insufficientBalance": {
     "message": "Nedostatočný zostatok."
   },
@@ -456,12 +453,6 @@
   "rejectAll": {
     "message": "Odmietnuť všetko"
   },
-  "rejectTxsDescription": {
-    "message": " Chystáte sa hromadne odmietnuť $1 transakcie."
-  },
-  "rejectTxsN": {
-    "message": "Odmietnuť $1 transakcie "
-  },
   "rejected": {
     "message": "Odmítnuto"
   },
@@ -470,9 +461,6 @@
   },
   "removeAccount": {
     "message": "Odstrániť účet"
-  },
-  "removeAccountDescription": {
-    "message": "Tento účet bude odstránený z vašej peňaženky. Skôr ako budete pokračovať, skontrolujte, či máte pre tento importovaný účet pôvodnú seed frázu alebo súkromný kľúč. Z rozbaľovacieho menu účtu môžete znova importovať alebo vytvoriť účty."
   },
   "required": {
     "message": "Povinné"
@@ -648,8 +636,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša súkromná seed fráza"
   }
 }

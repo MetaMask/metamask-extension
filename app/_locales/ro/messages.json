@@ -293,9 +293,6 @@
     "message": "Importate",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Tranzacția inițială a fost confirmată de rețea. Clic pe OK pentru a reveni."
-  },
   "insufficientBalance": {
     "message": "Sold insuficient."
   },
@@ -475,12 +472,6 @@
   "rejectAll": {
     "message": "Respingere toate"
   },
-  "rejectTxsDescription": {
-    "message": "Sunteți pe cale să respingeți în grup $1 (de) tranzacții."
-  },
-  "rejectTxsN": {
-    "message": "Respingeți $1 (de) tranzacții"
-  },
   "rejected": {
     "message": "Respins"
   },
@@ -489,9 +480,6 @@
   },
   "removeAccount": {
     "message": "Eliminați contul"
-  },
-  "removeAccountDescription": {
-    "message": "Acest cont va fi eliminat din portofelul dvs. Înainte de a continua, vă rugăm să vă asigurați că aveți expresia seed inițială sau cheia privată pentru acest cont importat. Puteți importa sau crea conturi din nou din meniul derulant al contului."
   },
   "required": {
     "message": "Obligatoriu"
@@ -667,8 +655,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Expresia dvs. seed privată"
   }
 }

@@ -290,9 +290,6 @@
     "message": "Importert",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Din opprinnelige transaksjon ble bekreftet av nettverket. Klikk OK for å gå tilbake."
-  },
   "insufficientBalance": {
     "message": "Utilstrekkelig saldo."
   },
@@ -472,12 +469,6 @@
   "rejectAll": {
     "message": "Avvis alle"
   },
-  "rejectTxsDescription": {
-    "message": "Du er i ferd med å gruppevis avslå transaksjoner på $1."
-  },
-  "rejectTxsN": {
-    "message": "Avslå transaksjoner på $1."
-  },
   "rejected": {
     "message": "Avvist"
   },
@@ -486,9 +477,6 @@
   },
   "removeAccount": {
     "message": "Fjern konto"
-  },
-  "removeAccountDescription": {
-    "message": "Denne kontoen blir fjernet fra lommeboken din. Forsikre deg om at du har den originale mnemoniske gjenopprettingsfrasen eller den private nøkkelen for denne importerte kontoen før du fortsetter. Du kan importere eller opprette kontoer igjen fra nedtrekksmenyen."
   },
   "required": {
     "message": "Påkrevd "
@@ -664,8 +652,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private frøfrase"
   }
 }

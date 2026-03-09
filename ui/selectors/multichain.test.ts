@@ -43,7 +43,6 @@ import {
   getMultichainIsMainnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
-  getMultichainNetworkProviders,
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
@@ -214,16 +213,6 @@ function getTronProviderConfig(): MultichainProviderConfig {
 }
 
 describe('Multichain Selectors', () => {
-  describe('getMultichainNetworkProviders', () => {
-    it('has some providers', () => {
-      const state = getEvmState();
-
-      const networkProviders = getMultichainNetworkProviders(state);
-      expect(Array.isArray(networkProviders)).toBe(true);
-      expect(networkProviders.length).toBeGreaterThan(0);
-    });
-  });
-
   describe('getMultichainNetwork', () => {
     it('returns an EVM network provider if account is EVM', () => {
       const state = getEvmState();

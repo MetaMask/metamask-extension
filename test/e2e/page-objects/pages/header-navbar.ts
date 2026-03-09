@@ -1,49 +1,39 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
+import { regularDelayMs } from '../../helpers';
 
 class HeaderNavbar {
   protected driver: Driver;
 
-  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 
   private readonly accountListPage = '.account-list-page';
+
+  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
+
+  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
+  private readonly connectedSitePopoverNetworkButton =
+    '[data-testid="connected-site-popover-network-button"]';
+
+  private readonly connectionMenu = '[data-testid="connection-menu"]';
+
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
-  private readonly threeDotMenuButton =
-    '[data-testid="account-options-menu-button"]';
-
-  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
-
-  private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
-
-  private readonly openAccountDetailsButton =
-    '[data-testid="account-list-menu-details"]';
-
-  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
-
-  private readonly settingsButton = '[data-testid="global-menu-settings"]';
-
-  private readonly networkPicker = '.mm-picker-network';
-
-  private readonly notificationsButton =
-    '[data-testid="notifications-menu-item"]';
-
-  private readonly notificationCountOption =
-    '[data-testid="global-menu-notification-count"]';
+  private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
 
   private readonly firstTimeTurnOnNotificationsButton =
     '[data-testid="turn-on-notifications-button"]';
 
+  private readonly globalMenuButton =
+    '[data-testid="account-options-menu-button"]';
+
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
+  private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
   private readonly networkAddressesLink =
     '[data-testid="networks-subtitle-test-id"]';
@@ -51,7 +41,22 @@ class HeaderNavbar {
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
-  private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
+  private readonly networkPicker = '.mm-picker-network';
+
+  private readonly notificationCounterMenuIcon = {
+    testId: 'notifications-tag-counter__unread-dot',
+  };
+
+  private readonly notificationCountOption =
+    '[data-testid="global-menu-notification-count"]';
+
+  private readonly notificationsButton =
+    '[data-testid="notifications-menu-item"]';
+
+  private readonly openAccountDetailsButton =
+    '[data-testid="account-list-menu-details"]';
+
+  private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -61,7 +66,7 @@ class HeaderNavbar {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
-        this.threeDotMenuButton,
+        this.globalMenuButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for header navbar to be loaded', e);
@@ -76,7 +81,7 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
     await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
@@ -88,35 +93,40 @@ class HeaderNavbar {
 
   async openAccountDetailsModalDetailsTab(): Promise<void> {
     console.log('Open account details modal');
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
     await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   async openAccountDetailsModal(): Promise<void> {
     console.log('Open account details modal');
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
   }
 
   async openGlobalNetworksMenu(): Promise<void> {
     console.log('Open global menu');
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.globalNetworksMenu);
   }
 
-  async openThreeDotMenu(): Promise<void> {
+  async openGlobalMenu({
+    withNotificationCounter = false,
+  } = {}): Promise<void> {
     console.log('Open account options menu');
-    await this.driver.waitForSelector(this.threeDotMenuButton, {
-      state: 'enabled',
-    });
-    await this.driver.clickElement(this.threeDotMenuButton);
-    await this.driver.waitForElementToStopMoving(this.drawerBackButton);
-  }
-
-  async mouseClickOnThreeDotMenu(): Promise<void> {
-    console.log('Clicking three dot menu using mouse move');
-    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    if (withNotificationCounter) {
+      // To avoid ElementIntercept error because of the notification overlap
+      await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
+    } else {
+      // Sometimes the notification counter briefly appears and disappears overlapping the menu icon
+      await this.driver.assertElementNotPresent(
+        this.notificationCounterMenuIcon,
+        {
+          waitAtLeastGuard: regularDelayMs,
+        },
+      );
+      await this.driver.clickElement(this.globalMenuButton);
+    }
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
@@ -137,7 +147,7 @@ class HeaderNavbar {
     skipSitesNavigation?: boolean;
   }): Promise<void> {
     console.log('Open permissions page in header navbar');
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.allPermissionsButton);
 
     // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
@@ -157,19 +167,19 @@ class HeaderNavbar {
 
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.settingsButton);
   }
 
   async enableNotifications(): Promise<void> {
     console.log('Enabling notifications for the first time');
-    await this.openThreeDotMenu();
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.notificationsButton);
     await this.driver.clickElement(this.firstTimeTurnOnNotificationsButton);
   }
@@ -181,12 +191,12 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.mouseClickOnThreeDotMenu();
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.clickElement(this.notificationsButton);
   }
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.mouseClickOnThreeDotMenu();
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),

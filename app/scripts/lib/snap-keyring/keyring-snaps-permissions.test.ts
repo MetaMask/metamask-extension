@@ -8,6 +8,12 @@ import {
   keyringSnapPermissionsBuilder,
 } from './keyring-snaps-permissions';
 
+// Run these tests as if we were in a Flask build
+jest.mock('../../../../shared/lib/build-types', () => ({
+  ...jest.requireActual('../../../../shared/lib/build-types'),
+  isFlask: jest.fn().mockReturnValue(true),
+}));
+
 const PORTFOLIO_ORIGINS: string[] = [
   'https://app.metamask.io',
   'https://dev.app.metamask.io',

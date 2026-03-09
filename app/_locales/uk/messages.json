@@ -299,9 +299,6 @@
     "message": "Імпортовано",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Ваша початкова транзакція підтверджена мережею. Натисніть ОК для повернення."
-  },
   "insufficientBalance": {
     "message": "Недостатньо коштів"
   },
@@ -484,12 +481,6 @@
   "rejectAll": {
     "message": "Відхилити все"
   },
-  "rejectTxsDescription": {
-    "message": "Ви збираєтеся пакетно відхилити транзакції ($1)."
-  },
-  "rejectTxsN": {
-    "message": "Відхилити транзакції ($1)"
-  },
   "rejected": {
     "message": "Відмовлено"
   },
@@ -498,9 +489,6 @@
   },
   "removeAccount": {
     "message": "Видалення облікового запису"
-  },
-  "removeAccountDescription": {
-    "message": "Цей обліковий запис буде видалено з вашого гаманця. Будь ласка, переконайтесь, що у вас є оригінальна seed-фраза чи секретний ключ для цього облікового запису. Ви можете імпортувати або створювати облікові записи у випадаючому меню вашого облікового запису."
   },
   "required": {
     "message": "Обов'язкове"
@@ -682,8 +670,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ваша секретна seed-фраза"
   }
 }

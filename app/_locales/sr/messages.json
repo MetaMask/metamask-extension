@@ -296,9 +296,6 @@
     "message": "Увезени",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Vašu početnu transakciju je potvrdila mreža. Kliknite OK da biste se vratili."
-  },
   "insufficientBalance": {
     "message": "Nedovoljno sredstava."
   },
@@ -475,12 +472,6 @@
   "rejectAll": {
     "message": "Odbacite sve"
   },
-  "rejectTxsDescription": {
-    "message": "Upravo ćete odbaciti sve transakcije od $1."
-  },
-  "rejectTxsN": {
-    "message": "Odbijte transakcije od $1"
-  },
   "rejected": {
     "message": "Odbijeno"
   },
@@ -489,9 +480,6 @@
   },
   "removeAccount": {
     "message": "Уклањање налога"
-  },
-  "removeAccountDescription": {
-    "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
   },
   "required": {
     "message": "Obavezno"
@@ -670,8 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
   }
 }

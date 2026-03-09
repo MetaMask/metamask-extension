@@ -72,6 +72,25 @@ describe('ConfirmTitle', () => {
     expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
+  it('should not render title skeleton when loader is send', () => {
+    const mockStateWithNoConfirmation = {
+      ...getMockPersonalSignConfirmState(),
+      metamask: {
+        ...getMockPersonalSignConfirmState().metamask,
+        pendingApprovals: {},
+        unapprovedPersonalMsgs: {},
+      },
+    };
+    const mockStore = configureMockStore([])(mockStateWithNoConfirmation);
+    const { container } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+      '/confirm-transaction?loader=send',
+    );
+
+    expect(container.querySelector('.mm-skeleton')).not.toBeInTheDocument();
+  });
+
   it('should render the title and description for a personal signature', () => {
     const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
     const { getByText } = renderWithConfirmContextProvider(
