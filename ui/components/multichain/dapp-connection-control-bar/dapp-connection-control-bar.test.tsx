@@ -16,52 +16,53 @@ const connectedMockState = {
     ...mockState.metamask,
     completedOnboarding: true,
     domains: {
-      'https://metamask.github.io': 'goerli-test-client',
+      'https://metamask.github.io': 'sepolia-test-client',
     },
     networkConfigurationsByChainId: {
       ...mockState.metamask.networkConfigurationsByChainId,
-      '0x5': {
-        chainId: '0x5',
-        name: 'Goerli',
+      '0xaa36a7': {
+        chainId: '0xaa36a7',
+        name: 'Sepolia',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
             type: 'custom',
-            url: 'https://goerli.test',
-            networkClientId: 'goerli-test-client',
+            url: 'https://sepolia.test',
+            networkClientId: 'sepolia-test-client',
           },
         ],
         defaultRpcEndpointIndex: 0,
       },
     },
-    selectedMultichainNetworkChainId: 'eip155:5',
+    selectedMultichainNetworkChainId: 'eip155:11155111',
     isEvmSelected: true,
-    selectedNetworkClientId: 'goerli-test-client',
+    selectedNetworkClientId: 'sepolia-test-client',
     multichainNetworkConfigurationsByChainId: {
       ...mockState.metamask.multichainNetworkConfigurationsByChainId,
-      'eip155:5': {
-        chainId: 'eip155:5',
-        name: 'Goerli',
+      'eip155:11155111': {
+        chainId: 'eip155:11155111',
+        name: 'Sepolia',
         nativeCurrency: 'ETH',
         isEvm: true,
       },
     },
     internalAccounts: {
       accounts: {
-        'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          id: 'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          id: 'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           type: 'eip155:eoa',
           metadata: {
             name: 'Test Account',
             lastSelected: Date.now(),
           },
-          scopes: ['eip155:5'],
+          scopes: ['eip155:11155111'],
           methods: [],
           options: {},
         },
       },
-      selectedAccount: 'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      selectedAccount:
+        'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     },
     accounts: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -89,9 +90,9 @@ const connectedMockState = {
                 value: {
                   requiredScopes: {},
                   optionalScopes: {
-                    'eip155:5': {
+                    'eip155:11155111': {
                       accounts: [
-                        'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
                       ],
                     },
                   },
