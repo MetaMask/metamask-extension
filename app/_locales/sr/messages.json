@@ -481,9 +481,6 @@
   "removeAccount": {
     "message": "Уклањање налога"
   },
-  "removeAccountDescription": {
-    "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
-  },
   "required": {
     "message": "Obavezno"
   },

@@ -1,6 +1,6 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
-import README from "./README.mdx";
+import README from './README.mdx';
 import { Box } from '../box';
 import {
   Display,

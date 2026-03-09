@@ -4,7 +4,7 @@ import type {
   MultichainBalancesControllerState,
   RatesControllerState,
 } from '@metamask/assets-controllers';
-import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { isBtcTestnetAddress } from '@metamask/keyring-utils';
@@ -13,7 +13,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
@@ -85,11 +85,11 @@ export type RatesState = {
   metamask: RatesControllerState;
 };
 
-export type BalancesState = {
+type BalancesState = {
   metamask: MultichainBalancesControllerState;
 };
 
-export type TransactionsState = {
+type TransactionsState = {
   metamask: MultichainTransactionsControllerState;
 };
 
@@ -227,14 +227,6 @@ export function getMultichainCurrencyImage(
   ) as MultichainProviderConfig;
   return provider.rpcPrefs?.imageUrl;
 }
-
-export function getMultichainNativeCurrencyImage(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  return getMultichainCurrencyImage(state, account);
-}
-
 export const makeGetMultichainShouldShowFiatByChainId =
   (chainId: Hex | CaipChainId) =>
   (state: MultichainState, account?: InternalAccount) =>
@@ -303,7 +295,6 @@ export function getMultichainIsMainnet(
 
   return providerConfig.chainId === mainnet;
 }
-
 export function getMultichainIsTestnet(
   state: MultichainState,
   account?: InternalAccount,
@@ -340,36 +331,6 @@ export function getMultichainIsTestnet(
 
 // TODO: Update all references to use asset-migration.ts
 export { getMultiChainBalancesControllerBalances as getMultichainBalances };
-
-export function getMultichainTransactions(
-  state: MultichainState,
-): TransactionsState['metamask']['nonEvmTransactions'] {
-  return state.metamask.nonEvmTransactions;
-}
-
-export function getSelectedAccountMultichainTransactions(
-  state: MultichainState,
-):
-  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
-  | undefined {
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  if (isEvmAccountType(selectedAccount.type)) {
-    return undefined;
-  }
-
-  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id];
-
-  // We need to get the provider config for the selected account to get the correct chainId
-  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  const currentChainId = providerConfig.chainId;
-
-  if (isCaipChainId(currentChainId)) {
-    return transactions?.[currentChainId];
-  }
-
-  return undefined;
-}
 
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
