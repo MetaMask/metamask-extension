@@ -164,7 +164,7 @@ export type TraceRequest = {
    * The name of the trace. Accepts TraceName enum values or a dynamic string
    * (e.g. including the RPC method or messenger action).
    */
-  name: TraceName | (string & {});
+  name: TraceName | (string & Record<never, never>);
 
   /**
    * The parent context of the trace.
