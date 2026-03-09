@@ -4415,7 +4415,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "viem": true,
-        "@metamask/client-mcp-core>zod": true
+        "openai>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -6419,7 +6419,7 @@
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "@metamask/client-mcp-core>zod": {
+    "openai>zod": {
       "globals": {
         "File": true,
         "JSONSchema": true,
