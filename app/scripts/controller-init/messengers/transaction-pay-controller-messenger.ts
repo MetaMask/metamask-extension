@@ -6,6 +6,7 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
+import type { TransactionControllerGetNonceLockAction } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
 
 export function getTransactionPayControllerMessenger(
@@ -54,7 +55,8 @@ export function getTransactionPayControllerMessenger(
 
 type InitMessengerActions =
   | DelegationControllerSignDelegationAction
-  | KeyringControllerSignEip7702AuthorizationAction;
+  | KeyringControllerSignEip7702AuthorizationAction
+  | TransactionControllerGetNonceLockAction;
 
 type InitMessengerEvents = never;
 
@@ -80,6 +82,7 @@ export function getTransactionPayControllerInitMessenger(
     actions: [
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'TransactionController:getNonceLock',
     ],
     events: [],
   });

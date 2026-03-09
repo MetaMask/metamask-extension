@@ -101,7 +101,9 @@ describe('RewardsErrorBanner', () => {
       />,
     );
 
-    const confirmButton = screen.getByRole('button', { name: 'Proceed' });
+    const confirmButton = screen.getByRole('button', {
+      name: messages.proceed.message,
+    });
     expect(confirmButton).toBeInTheDocument();
   });
 

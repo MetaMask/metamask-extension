@@ -1,164 +1,243 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`NativeTransferInfo renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    class="flex flex-col mb-2 pb-3 px-0"
   >
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+      class="mb-1"
     >
-      E
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Sending
+      </p>
     </div>
-    <h2
-      class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
+    <div
+      class="flex flex-row items-center justify-between"
     >
-      0 ETH
-    </h2>
+      <div
+        class="flex flex-col"
+      >
+        <div
+          class="pb-1"
+        >
+          <h2
+            class="text-inherit text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+          >
+            0 ETH
+          </h2>
+        </div>
+      </div>
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-12 w-12"
+      >
+        <span
+          class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+        >
+          E
+        </span>
+      </div>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__transaction-flow"
   >
     <div
-      class="mm-box mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex: 1; flex-direction: column;"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
-          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+          class="mm-box"
+          style="flex: 1; min-width: 0;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--align-items-center"
-            style="flex-shrink: 0;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-            >
-              From
-            </p>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--margin-top-2"
-          data-testid="sender-address"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column; width: 100%;"
           >
             <div
-              class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+              style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="name name__recognized_unsaved"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
+                style="flex-shrink: 0;"
               >
-                <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
-                >
-                  <div
-                    class="flex [&>div]:!rounded-none"
-                  >
-                    <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
-                    >
-                      <svg
-                        height="16"
-                        width="16"
-                        x="0"
-                        y="0"
-                      >
-                        <rect
-                          fill="#18CDF2"
-                          height="16"
-                          transform="translate(-0.52419675189697 -1.65214203473025) rotate(328.9 8.00000000000000 8.00000000000000)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#035E56"
-                          height="16"
-                          transform="translate(-9.14923085441602 5.29623093587430) rotate(176.2 8.00000000000000 8.00000000000000)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#F26602"
-                          height="16"
-                          transform="translate(8.33392100911196 -7.10256986149854) rotate(468.9 8.00000000000000 8.00000000000000)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
                 <p
-                  class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  From Wallet 1
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box w-full mm-box--margin-top-2"
+              data-testid="sender-address"
+            >
+              <div
+                class="flex flex-row gap-2 items-center"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  data-testid="confirm-info-row-display-name"
                 >
                   Account 1
                 </p>
               </div>
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-                style="text-align: right;"
+            </div>
+          </div>
+        </div>
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          style="flex-shrink: 0;"
+        >
+          <div
+            class="flex [&>div]:!rounded-none"
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+            >
+              <svg
+                height="32"
+                width="32"
+                x="0"
+                y="0"
               >
-                Wallet 1
-              </p>
+                <rect
+                  fill="#18CDF2"
+                  height="32"
+                  transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#035E56"
+                  height="32"
+                  transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F26602"
+                  height="32"
+                  transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+              </svg>
             </div>
           </div>
         </div>
       </div>
-      <span
-        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-        style="mask-image: url('./images/icons/arrow-right.svg');"
-      />
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex: 1; flex-direction: column; overflow: hidden;"
+        class="mm-box"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
-          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--align-items-center"
-            style="flex-shrink: 0;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-            >
-              To
-            </p>
-          </div>
-        </div>
-        <div
-          class="mm-box w-full mm-box--margin-top-2"
-          data-testid="recipient-address"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            class="mm-box"
+            style="flex: 1; min-width: 0;"
           >
             <div
-              class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column; width: 100%;"
             >
               <div
-                class="name name__clickable name__missing"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
-                <span
-                  class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
-                <p
-                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
-                  0x2e0D7...5d09B
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    To
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box w-full mm-box--margin-top-2"
+                data-testid="recipient-address"
+              >
+                <div
+                  class="flex flex-row gap-2 items-center"
+                >
+                  <svg
+                    class="inline-block w-4 h-4 text-icon-default"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.95 18q.525 0 .888-.362c.362-.363.362-.538.362-.888s-.12-.646-.362-.887-.538-.363-.888-.363-.646.12-.887.363-.363.537-.363.887.12.646.363.888.537.362.887.362m-.9-3.85h1.85q0-.825.187-1.3c.187-.475.48-.75 1.063-1.3a7.5 7.5 0 0 0 1.025-1.238q.375-.587.375-1.412 0-1.4-1.025-2.15C13.5 6 13.033 6 12.1 6q-1.424 0-2.313.75-.887.75-1.237 1.8l1.65.65q.124-.45.562-.975C11.2 7.7 11.5 7.7 12.1 7.7q.8 0 1.2.437c.4.437.4.613.4.963q0 .5-.3.938t-.75.812q-1.1.975-1.35 1.475c-.25.5-.25.942-.25 1.825M12 22q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.312 17.117 2.787 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                    />
+                  </svg>
+                  <button
+                    class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed"
+                    data-testid="confirm-info-row-display-name"
+                    role="button"
+                  >
+                    <span
+                      class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                    >
+                      0x2e0D7E8c4522…097035d09B
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            style="flex-shrink: 0;"
+          >
+            <div
+              class="flex [&>div]:!rounded-none"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"
+              >
+                <svg
+                  height="32"
+                  width="32"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81420"
+                    height="32"
+                    transform="translate(-5.50523690490468 -5.26512336373754) rotate(385.9 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#E9F500"
+                    height="32"
+                    transform="translate(10.67446940672640 12.42992815919339) rotate(184.5 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FAB300"
+                    height="32"
+                    transform="translate(1.81545519923623 -26.03028190637629) rotate(431.3 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
               </div>
             </div>
           </div>
