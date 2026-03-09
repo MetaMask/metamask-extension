@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { AddNetworkFields } from '@metamask/network-controller';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -40,11 +39,12 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import type { FeaturedNetworkForAdditionalList } from '../../../../selectors/config-registry/config-registry';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
 }: {
-  searchAddNetworkResults: AddNetworkFields[];
+  searchAddNetworkResults: FeaturedNetworkForAdditionalList[];
 }) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -163,6 +163,7 @@ const PopularNetworkList = ({
                 borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
                 src={
+                  network.imageUrl ??
                   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                     network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                   ]

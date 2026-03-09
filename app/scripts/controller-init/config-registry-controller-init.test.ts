@@ -343,6 +343,72 @@ describe('ConfigRegistryControllerInit', () => {
 
       jest.useRealTimers();
     });
+
+    it('does not call controller.update when fetch returns data without chains array', async () => {
+      jest.useFakeTimers();
+      const controllerWithUpdate = mockControllerInstance as unknown as {
+        update: jest.Mock;
+      };
+      controllerWithUpdate.update = jest.fn();
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: true,
+      });
+      spyOnControllerMessengerCall(requestMock).mockImplementation(
+        (action: string) => {
+          if (action === 'ConfigRegistryApiService:fetchConfig') {
+            return Promise.resolve({
+              modified: true,
+              data: {
+                data: { version: '1.0' },
+              },
+              etag: 'x',
+            });
+          }
+          return undefined as never;
+        },
+      );
+
+      ConfigRegistryControllerInit(requestMock);
+      jest.runAllTimers();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(controllerWithUpdate.update).not.toHaveBeenCalled();
+      jest.useRealTimers();
+    });
+
+    it('does not call controller.update when fetch returns data.data.chains not an array', async () => {
+      jest.useFakeTimers();
+      const controllerWithUpdate = mockControllerInstance as unknown as {
+        update: jest.Mock;
+      };
+      controllerWithUpdate.update = jest.fn();
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: true,
+      });
+      spyOnControllerMessengerCall(requestMock).mockImplementation(
+        (action: string) => {
+          if (action === 'ConfigRegistryApiService:fetchConfig') {
+            return Promise.resolve({
+              modified: true,
+              data: {
+                data: { chains: null, version: '1.0' },
+              },
+              etag: 'x',
+            });
+          }
+          return undefined as never;
+        },
+      );
+
+      ConfigRegistryControllerInit(requestMock);
+      jest.runAllTimers();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(controllerWithUpdate.update).not.toHaveBeenCalled();
+      jest.useRealTimers();
+    });
   });
 
   describe('when flag becomes true later (stateChange)', () => {

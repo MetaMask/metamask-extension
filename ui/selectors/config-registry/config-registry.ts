@@ -7,6 +7,14 @@ import type { RegistryNetworkConfig } from '@metamask/config-registry-controller
 import { getRemoteFeatureFlags } from '../remote-feature-flags';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 
+/** Default empty controller state shape for selectFeaturedNetworks. */
+const EMPTY_REGISTRY_CONTROLLER_STATE = {
+  configs: { networks: {} },
+  version: null,
+  lastFetched: null,
+  etag: null,
+} as const;
+
 /**
  * ConfigRegistryController state slice as it appears in the flat metamask state.
  * The controller state is merged into the root by the store's getFlatState().
@@ -46,12 +54,7 @@ function toRegistryControllerState(
   slice: ConfigRegistryStateSlice | undefined,
 ) {
   if (!slice) {
-    return {
-      configs: { networks: {} },
-      version: null,
-      lastFetched: null,
-      etag: null,
-    };
+    return { ...EMPTY_REGISTRY_CONTROLLER_STATE };
   }
   return {
     configs: slice.configs ?? { networks: {} },
@@ -73,21 +76,56 @@ export const getIsConfigRegistryApiEnabled = createSelector(
 type Hex = `0x${string}`;
 
 /**
+ * Returns true if url is a non-empty string and uses an allowed scheme (https).
+ * Rejects empty, non-strings, and non-https URLs to avoid unsafe add-network data.
+ * @param url
+ */
+function isAllowedRpcUrl(url: unknown): url is `https://${string}` {
+  return (
+    typeof url === 'string' &&
+    url.length > 0 &&
+    url.toLowerCase().startsWith('https://')
+  );
+}
+
+/**
+ * Returns true if url is a non-empty string and uses https (for image URLs).
+ * @param url
+ */
+function isAllowedImageUrl(url: unknown): url is `https://${string}` {
+  return isAllowedRpcUrl(url);
+}
+
+/**
+ * Network item for "Additional networks" list. Extends AddNetworkFields with
+ * optional imageUrl from the config registry (validated https only).
+ */
+export type FeaturedNetworkForAdditionalList = AddNetworkFields & {
+  imageUrl?: string;
+};
+
+/**
  * Converts a RegistryNetworkConfig (EVM only) to AddNetworkFields for the add-network flow.
+ * Returns null for non-EVM, missing default RPC, or invalid RPC URL (non-https).
+ * Includes imageUrl when config provides a valid https image URL.
  * @param config
  */
 function registryConfigToAddNetworkFields(
   config: RegistryNetworkConfig,
-): AddNetworkFields | null {
+): FeaturedNetworkForAdditionalList | null {
   const { namespace } = parseCaipChainId(config.chainId as `eip155:${string}`);
   if (namespace !== KnownCaipNamespace.Eip155) {
     return null;
   }
   const reference = config.chainId.split(':')[1];
-  const hexChainId = add0x(Number.parseInt(reference, 10).toString(16)) as Hex;
+  const parsed = Number.parseInt(reference, 10);
+  if (Number.isNaN(parsed) || parsed < 0) {
+    return null;
+  }
+  const hexChainId = add0x(parsed.toString(16)) as Hex;
 
   const defaultRpc = config.rpcProviders?.default;
-  if (!defaultRpc?.url) {
+  if (!defaultRpc || !isAllowedRpcUrl(defaultRpc.url)) {
     return null;
   }
 
@@ -96,13 +134,13 @@ function registryConfigToAddNetworkFields(
     : [];
   const nativeCurrency = config.assets?.native?.symbol ?? 'ETH';
 
-  return {
+  const result: FeaturedNetworkForAdditionalList = {
     chainId: hexChainId,
     name: config.name,
     nativeCurrency,
     rpcEndpoints: [
       {
-        url: defaultRpc.url as `https://${string}`,
+        url: defaultRpc.url,
         type: RpcEndpointType.Custom,
       },
     ],
@@ -110,6 +148,10 @@ function registryConfigToAddNetworkFields(
     blockExplorerUrls: blockExplorerUrls as `https://${string}`[],
     defaultBlockExplorerUrlIndex: blockExplorerUrls.length > 0 ? 0 : undefined,
   };
+  if (config.imageUrl && isAllowedImageUrl(config.imageUrl)) {
+    result.imageUrl = config.imageUrl;
+  }
+  return result;
 }
 
 /**
@@ -121,13 +163,16 @@ function registryConfigToAddNetworkFields(
 export const getFeaturedNetworksForAdditionalList = createSelector(
   getConfigRegistryState,
   getIsConfigRegistryApiEnabled,
-  (configRegistryState, isConfigRegistryEnabled): AddNetworkFields[] => {
+  (
+    configRegistryState,
+    isConfigRegistryEnabled,
+  ): FeaturedNetworkForAdditionalList[] => {
     if (
       !isConfigRegistryEnabled ||
       !configRegistryState?.configs?.networks ||
       Object.keys(configRegistryState.configs.networks).length === 0
     ) {
-      return FEATURED_RPCS;
+      return FEATURED_RPCS as FeaturedNetworkForAdditionalList[];
     }
 
     const registryControllerState =
@@ -135,7 +180,7 @@ export const getFeaturedNetworksForAdditionalList = createSelector(
     const featuredFromRegistry = selectFeaturedNetworks(
       registryControllerState,
     );
-    const evmNetworks: AddNetworkFields[] = [];
+    const evmNetworks: FeaturedNetworkForAdditionalList[] = [];
 
     for (const config of Object.values(featuredFromRegistry)) {
       const fields = registryConfigToAddNetworkFields(config);
@@ -144,6 +189,8 @@ export const getFeaturedNetworksForAdditionalList = createSelector(
       }
     }
 
-    return evmNetworks.length > 0 ? evmNetworks : FEATURED_RPCS;
+    return evmNetworks.length > 0
+      ? evmNetworks
+      : (FEATURED_RPCS as FeaturedNetworkForAdditionalList[]);
   },
 );

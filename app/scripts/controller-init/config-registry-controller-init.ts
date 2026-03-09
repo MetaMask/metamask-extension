@@ -61,8 +61,20 @@ function isConfigRegistryApiEnabled(
 }
 
 /**
+ * Returns whether the controller has any network configs (from persistence or a previous fetch).
+ * @param controller
+ */
+function hasConfigs(controller: ConfigRegistryController): boolean {
+  return Boolean(
+    controller.state.configs?.networks &&
+      Object.keys(controller.state.configs.networks).length > 0,
+  );
+}
+
+/**
  * Runs the initial config registry fetch and applies the result to the controller.
  * Used both at init (when flag is already true) and when the flag turns true later.
+ * Validates API response shape; malformed responses are skipped (no state update).
  *
  * @param controller - ConfigRegistryController instance to update with fetched config.
  * @param controllerMessenger - Messenger that can call ConfigRegistryApiService:fetchConfig.
@@ -82,16 +94,31 @@ function runInitialFetch(
         return;
       }
       const { data } = fetchResult;
-      const apiChains = data.data.chains;
+      const chains = data?.data?.chains;
+      if (!Array.isArray(chains) || chains.length === 0) {
+        log(
+          '[ConfigRegistryControllerInit] Fetch returned no chains array, skipping update',
+        );
+        return;
+      }
       const newConfigs: Record<string, RegistryNetworkConfig> = {};
-      apiChains.forEach((chainConfig: RegistryNetworkConfig) => {
-        const { chainId } = chainConfig;
-        newConfigs[chainId] = chainConfig;
-      });
+      for (const chainConfig of chains) {
+        if (
+          chainConfig &&
+          typeof chainConfig === 'object' &&
+          chainConfig.chainId
+        ) {
+          newConfigs[chainConfig.chainId] =
+            chainConfig as RegistryNetworkConfig;
+        }
+      }
+      if (Object.keys(newConfigs).length === 0) {
+        return;
+      }
       controller.update((state) => {
         const { configs } = state;
         configs.networks = newConfigs;
-        state.version = data.data.version;
+        state.version = data.data?.version ?? null;
         state.lastFetched = Date.now();
         state.etag = fetchResult.etag ?? null;
       });
@@ -129,9 +156,7 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
     state: persistedControllerState,
   });
 
-  const hasPersistedConfigs =
-    controller.state.configs?.networks &&
-    Object.keys(controller.state.configs.networks).length > 0;
+  const hasPersistedConfigs = hasConfigs(controller);
 
   const isConfigRegistryApiEnabledFlag =
     isConfigRegistryApiEnabled(initMessenger);
@@ -152,15 +177,13 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
 
   // When the flag becomes true later (e.g. after remote flags load on first UI open),
   // run the initial fetch and start polling so the dynamic list appears without a refresh.
+  // Subscription is intentionally permanent for the app lifetime and is not unsubscribed.
   if (initMessenger) {
     initMessenger.subscribe('RemoteFeatureFlagController:stateChange', () => {
       if (!isConfigRegistryApiEnabled(initMessenger)) {
         return;
       }
-      const hasConfigs =
-        controller.state.configs?.networks &&
-        Object.keys(controller.state.configs.networks).length > 0;
-      if (hasConfigs) {
+      if (hasConfigs(controller)) {
         return;
       }
       runInitialFetch(

@@ -147,6 +147,64 @@ describe('config-registry selectors', () => {
       const sei = result.find((n) => n.chainId === '0x531');
       expect(sei).toBeDefined();
       expect(sei?.name).toBe('Sei Network');
+      expect(sei?.imageUrl).toBe('https://example.com/sei.png');
+    });
+
+    it('omits imageUrl when registry config has non-https imageUrl', () => {
+      const state: ConfigRegistryTestState = {
+        metamask: {
+          remoteFeatureFlags: { configRegistryApiEnabled: true },
+          configs: {
+            networks: {
+              'eip155:1329': {
+                chainId: 'eip155:1329',
+                name: 'Sei Network',
+                imageUrl: 'http://example.com/sei.png',
+                coingeckoPlatformId: 'sei-network',
+                assets: {
+                  listUrl: '',
+                  native: {
+                    assetId: 'eip155:1329',
+                    imageUrl: '',
+                    name: 'Sei',
+                    symbol: 'SEI',
+                    decimals: 18,
+                    coingeckoCoinId: 'sei-network',
+                  },
+                },
+                rpcProviders: {
+                  default: {
+                    url: 'https://evm-rpc.sei.network',
+                    type: 'custom',
+                    networkClientId: 'evm-sei-1329',
+                  },
+                  fallbacks: [],
+                },
+                blockExplorerUrls: {
+                  default: 'https://seitrace.com',
+                  fallbacks: [],
+                },
+                config: {
+                  isActive: true,
+                  isTestnet: false,
+                  isDefault: false,
+                  isFeatured: true,
+                  isDeprecated: false,
+                  isDeletable: false,
+                  priority: 0,
+                },
+              },
+            },
+          },
+          version: '1',
+          lastFetched: 1,
+          etag: null,
+        },
+      };
+      const result = getFeaturedNetworksForAdditionalList(state);
+      const sei = result.find((n) => n.chainId === '0x531');
+      expect(sei).toBeDefined();
+      expect(sei?.imageUrl).toBeUndefined();
     });
 
     it('returns FEATURED_RPCS when registry has only non-EVM featured networks', () => {
@@ -224,6 +282,44 @@ describe('config-registry selectors', () => {
                 name: 'Testnet No RPC',
                 rpcProviders: {
                   default: { url: '', type: 'custom', networkClientId: 'x' },
+                  fallbacks: [],
+                },
+                config: {
+                  isActive: true,
+                  isTestnet: true,
+                  isDefault: false,
+                  isFeatured: true,
+                  isDeprecated: false,
+                  isDeletable: false,
+                  priority: 0,
+                },
+              } as never,
+            },
+          },
+          version: '1',
+          lastFetched: 1,
+          etag: null,
+        },
+      };
+      const result = getFeaturedNetworksForAdditionalList(state);
+      expect(result).toBe(FEATURED_RPCS);
+    });
+
+    it('returns FEATURED_RPCS when featured EVM network has non-https RPC URL', () => {
+      const state: ConfigRegistryTestState = {
+        metamask: {
+          remoteFeatureFlags: { configRegistryApiEnabled: true },
+          configs: {
+            networks: {
+              'eip155:888': {
+                chainId: 'eip155:888',
+                name: 'Testnet HTTP RPC',
+                rpcProviders: {
+                  default: {
+                    url: 'http://rpc.example.com',
+                    type: 'custom',
+                    networkClientId: 'x',
+                  },
                   fallbacks: [],
                 },
                 config: {

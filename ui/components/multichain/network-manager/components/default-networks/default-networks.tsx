@@ -3,7 +3,10 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
-import { getFeaturedNetworksForAdditionalList } from '../../../../../selectors/config-registry/config-registry';
+import {
+  getFeaturedNetworksForAdditionalList,
+  type FeaturedNetworkForAdditionalList,
+} from '../../../../../selectors/config-registry/config-registry';
 import {
   convertCaipToHexChainId,
   getFilteredFeaturedNetworks,
@@ -345,7 +348,9 @@ const DefaultNetworks = memo(() => {
   // Memoize the additional network list items
   const additionalNetworkListItems = useMemo(() => {
     return featuredNetworksNotYetEnabled.map((network) => {
+      const item = network as FeaturedNetworkForAdditionalList;
       const networkImageUrl =
+        item.imageUrl ??
         CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
           network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
         ];
