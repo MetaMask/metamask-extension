@@ -17,6 +17,15 @@ import CrossChainSwapTxDetails from './transaction-details';
 const mockNavigate = jest.fn();
 const mockLocation = jest.fn();
 const mockParams = jest.fn();
+const getTransactionWithoutNonce = (
+  transaction: TransactionGroup['initialTransaction'],
+) => ({
+  ...transaction,
+  txParams: {
+    ...transaction.txParams,
+    nonce: undefined,
+  },
+});
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -349,6 +358,73 @@ describe('transaction-details', () => {
           ),
         ),
       ).toBeInTheDocument();
+    });
+
+    it('should hide nonce row for intent swap details without nonce', () => {
+      const nonceFreeTransaction = getTransactionWithoutNonce(
+        mockBridgeTxData.transactionGroup.initialTransaction,
+      );
+      mockLocation.mockReturnValue({
+        pathname: `/cross-chain/tx-details/${nonceFreeTransaction.hash}`,
+        search: '',
+        hash: '',
+        state: {
+          transaction: {
+            ...nonceFreeTransaction,
+            transactionCategory: 'BRIDGE_OUT',
+          },
+        },
+        key: 'test-key',
+      } as RouterLocation);
+      mockParams.mockReturnValue({
+        txHash: nonceFreeTransaction.hash,
+      });
+
+      const { queryAllByTestId, queryByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore(
+          {
+            ...mockBridgeTxData.transactionGroup,
+            initialTransaction: {
+              ...nonceFreeTransaction,
+              status: TransactionStatus.approved,
+            },
+            primaryTransaction: {
+              ...getTransactionWithoutNonce(
+                mockBridgeTxData.transactionGroup.primaryTransaction,
+              ),
+              status: TransactionStatus.approved,
+            },
+          },
+          mockBridgeTxData.srcTxMetaId,
+          {
+            ...mockBridgeTxData.bridgeHistoryItem,
+            quote: {
+              ...mockBridgeTxData.bridgeHistoryItem.quote,
+              intent: {
+                protocol: 'cowswap',
+              },
+            },
+            status: {
+              ...mockBridgeTxData.bridgeHistoryItem.status,
+              status: StatusTypes.PENDING,
+            },
+          } as never,
+        ),
+      );
+
+      const expectedRows = [
+        'Statuspending',
+        'BridgingPolygonOP',
+        'Time stamp',
+        'You sent2 USDC onPolygon',
+        'Total gas fee0.00446 POL',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(5);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+      expect(queryByText(messages.bridgeTxDetailsNonce.message)).not.toBeInTheDocument();
     });
   });
 });

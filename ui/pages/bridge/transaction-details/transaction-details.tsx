@@ -452,14 +452,12 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={2}
           >
-            <TransactionDetailRow
-              title={t('bridgeTxDetailsNonce')}
-              value={
-                srcChainTxMeta?.txParams.nonce
-                  ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
-                  : undefined
-              }
-            />
+            {srcChainTxMeta?.txParams.nonce ? (
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsNonce')}
+                value={hexToDecimal(srcChainTxMeta.txParams.nonce)}
+              />
+            ) : null}
           </Box>
         </React.Fragment>
       </Content>
