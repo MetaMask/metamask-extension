@@ -970,9 +970,6 @@
   "removeAccount": {
     "message": "Rimuovi account"
   },
-  "removeAccountDescription": {
-    "message": "Questo account sarà rimosso dal tuo portafoglio. Per favore assicurati che hai la frase seed originale o la chiave privata per questo account importato prima di continuare. Puoi nuovamente importare o creare un account dal menù a tendina. "
-  },
   "required": {
     "message": "Richiesto"
   },
