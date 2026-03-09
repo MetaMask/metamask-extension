@@ -26,6 +26,7 @@ import {
   SNAPS_ROUTE,
   PERMISSIONS,
   GATOR_PERMISSIONS,
+  // CONTACTS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -396,6 +397,13 @@ export function useGlobalMenuSections(
       id: 'global-menu-section-manage',
       title: t('manage'),
       items: [
+        // TODO: Uncomment when we remove the Contacts tab from Settings
+        // {
+        //   id: 'global-menu-contacts',
+        //   iconName: IconName.Book,
+        //   label: t('contacts'),
+        //   to: `${CONTACTS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+        // },
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,

@@ -14,8 +14,6 @@ import {
   AlignItems,
   BackgroundColor,
   Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
@@ -25,6 +23,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 const SendHeading = () => {
   const t = useI18nContext();
@@ -65,7 +64,7 @@ const SendHeading = () => {
 
   const TokenValueSkeleton = (
     <Box display={Display.InlineFlex} alignItems={AlignItems.center} gap={2}>
-      <Skeleton width={40} height={24} />
+      <Skeleton width={40} height={32} />
       {tokenSymbol}
     </Box>
   );
@@ -79,7 +78,7 @@ const SendHeading = () => {
       <Text
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
-        marginTop={3}
+        paddingBottom={1}
       >
         {TokenValueContent}
       </Text>
@@ -88,7 +87,7 @@ const SendHeading = () => {
         <Text
           variant={TextVariant.headingLg}
           color={TextColor.inherit}
-          marginTop={3}
+          paddingBottom={1}
         >
           {TokenValueContent}
         </Text>
@@ -114,18 +113,10 @@ const SendHeading = () => {
   useSendingValueMetric({ transactionMeta, fiatValue });
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      padding={4}
-      marginBottom={2}
-    >
-      {TokenImage}
+    <SendHeadingLayout image={TokenImage}>
       {TokenValue}
       {TokenFiatValue}
-    </Box>
+    </SendHeadingLayout>
   );
 };
 
