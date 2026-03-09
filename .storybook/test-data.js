@@ -394,9 +394,9 @@ const state = {
         '15e69915-2a1a-4019-93b3-916e11fd432f',
       '0xeb9e64b93097bc15f01f13eae97015c57ab64823':
         '784225f4-d30b-4e77-a900-c8bbce735b88',
-      '0x71C7656EC7ab88b098defB751B7401B5f6d8976F':
+      '0x71c7656ec7ab88b098defb751b7401b5f6d8976f':
         'b990b846-b384-4508-93d9-587461f1123e',
-      '0xde939393DDe455081fFb3Dfd027E189919F04BD0':
+      '0xde939393dde455081ffb3dfd027e189919f04bd0':
         '64f9d02e-47e6-4dfd-8232-f3518606cad3',
     },
     internalAccounts: {

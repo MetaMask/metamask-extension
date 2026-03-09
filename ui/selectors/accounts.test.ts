@@ -59,7 +59,7 @@ describe('Accounts Selectors', () => {
           'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
         '0xc42edfcc21ed14dda456aa0756c153f7985d8813':
           '15e69915-2a1a-4019-93b3-916e11fd432f',
-        '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281':
+        '0xca8f1f0245530118d0cf14a06b01daf8f76cf281':
           '694225f4-d30b-4e77-a900-c8bbce735b42',
         '0xeb9e64b93097bc15f01f13eae97015c57ab64823':
           '784225f4-d30b-4e77-a900-c8bbce735b88',
