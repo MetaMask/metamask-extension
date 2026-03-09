@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { getSelectedInternalAccount } from '../../../../selectors';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import { ConfirmationLoader } from '../useConfirmationNavigation';
+import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 
 export type PerpsDepositConfirmationResponse = {

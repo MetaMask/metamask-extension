@@ -2,7 +2,7 @@ import { act } from '@testing-library/react-hooks';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import { ConfirmationLoader } from '../useConfirmationNavigation';
+import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
