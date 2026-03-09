@@ -34,7 +34,6 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           });
 
           // 1. Sign multiple transactions
-          console.log('1. Sign multiple transactions');
           const sendWSolTest = await testDapp.getSendWSolTest();
           await sendWSolTest.signTransaction();
 
@@ -54,7 +53,6 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           assert.ok(signedTransactions[1]);
 
           // 2. Send multiple transactions
-          console.log('2. Send multiple transactions');
           await sendWSolTest.sendTransaction();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

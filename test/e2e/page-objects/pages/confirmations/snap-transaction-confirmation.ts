@@ -13,6 +13,13 @@ class SnapTransactionConfirmation {
     text: 'Confirm',
   };
 
+  private getNetworkDisplayLocator(networkName: string) {
+    return {
+      text: networkName,
+      tag: 'p',
+    };
+  }
+
   private header = {
     text: 'Transaction request',
     tag: 'h2',
@@ -57,10 +64,9 @@ class SnapTransactionConfirmation {
     console.log(
       `Checking network ${networkName} is displayed on snap transaction confirmation page.`,
     );
-    await this.driver.waitForSelector({
-      text: networkName,
-      tag: 'p',
-    });
+    await this.driver.waitForSelector(
+      this.getNetworkDisplayLocator(networkName),
+    );
   }
 
   async checkSecurityAlertsErrorIsDisplayed(): Promise<void> {
