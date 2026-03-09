@@ -2168,8 +2168,7 @@
     },
     "@metamask/snaps-sdk": {
       "globals": {
-        "URL": true,
-        "fetch": true
+        "URL": true
       },
       "packages": {
         "@metamask/rpc-errors": true,
