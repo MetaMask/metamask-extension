@@ -9,6 +9,7 @@ import {
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
   THEME_ROUTE,
+  PRIVACY_ROUTE,
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
 import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
@@ -94,6 +95,15 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
         import(
           './preferences-and-display-tab/index.ts'
         )) as unknown as DynamicImportType,
+    ),
+  },
+  {
+    id: 'privacy',
+    path: PRIVACY_ROUTE,
+    labelKey: 'privacy',
+    iconName: IconName.Lock,
+    component: mmLazy(
+      (() => import('./privacy-tab/index.ts')) as unknown as DynamicImportType,
     ),
   },
 ];

@@ -848,6 +848,10 @@
     "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
+  "basicConfigurationDescriptionV2": {
+    "message": "Includes basic features like token details and gas settings. Keep this feature on for the best experience.  Read our $1 to learn more.",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+  },
   "basicConfigurationLabel": {
     "message": "Basic functionality"
   },
