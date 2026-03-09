@@ -6596,15 +6596,15 @@ export default class MetamaskController extends EventEmitter {
         perpsStream.setViewActive(active);
       },
       perpsActivateStreaming: async (params) => {
-        await this.controllerApi.perpsInit();
-        if (perpsController) {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
           perpsStream.activateStreaming(perpsController, params);
         }
         return 'ok';
       },
       perpsActivatePriceStream: async ({ symbols }) => {
-        await this.controllerApi.perpsInit();
-        if (perpsController) {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
           perpsStream.activatePriceStream(perpsController, symbols);
         }
         return 'ok';
@@ -6613,8 +6613,8 @@ export default class MetamaskController extends EventEmitter {
         perpsStream.deactivatePriceStream();
       },
       perpsActivateOrderBookStream: async ({ symbol }) => {
-        await this.controllerApi.perpsInit();
-        if (perpsController) {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
           perpsStream.activateOrderBookStream(perpsController, symbol);
         }
         return 'ok';
@@ -6623,8 +6623,8 @@ export default class MetamaskController extends EventEmitter {
         perpsStream.deactivateOrderBookStream();
       },
       perpsActivateCandleStream: async ({ symbol, interval, duration }) => {
-        await this.controllerApi.perpsInit();
-        if (perpsController) {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
           perpsStream.activateCandleStream(perpsController, {
             symbol,
             interval,
