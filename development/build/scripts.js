@@ -27,7 +27,6 @@ const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
-const pathmodify = require('pathmodify');
 
 const { streamFlatMap } = require('../stream-flat-map');
 const { isManifestV3 } = require('../../shared/lib/mv3.utils');
@@ -1126,13 +1125,6 @@ function setupSourcemaps(buildConfiguration, { buildTarget }) {
 async function createBundle(buildConfiguration, { reloadOnChange }) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
-
-  bundler.plugin(pathmodify, {
-    mods: [
-      pathmodify.mod.dir('~/ui', path.join(__dirname, '../../ui')),
-      pathmodify.mod.dir('~/shared', path.join(__dirname, '../../shared')),
-    ],
-  });
 
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
