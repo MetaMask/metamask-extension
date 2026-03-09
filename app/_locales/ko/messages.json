@@ -5880,9 +5880,6 @@
   "removeAccount": {
     "message": "계정 제거"
   },
-  "removeAccountDescription": {
-    "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 계정의 원래 비밀복구구문이나 개인 키를 가지고 있는지 확인하세요. 계정 드롭다운에서 계정을 다시 가져오거나 생성할 수 있습니다. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "이 계정을 제거하기 전에 비밀복구구문 또는 개인 키를 반드시 확보하세요.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

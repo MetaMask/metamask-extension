@@ -5874,9 +5874,6 @@
   "removeAccount": {
     "message": "删除账户"
   },
-  "removeAccountDescription": {
-    "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
-  },
   "removeAccountModalBannerDescription": {
     "message": "删除之前，请确保您拥有此账户的私钥助记词或私钥。",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

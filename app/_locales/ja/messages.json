@@ -5874,9 +5874,6 @@
   "removeAccount": {
     "message": "アカウントを削除"
   },
-  "removeAccountDescription": {
-    "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレットリカバリーフレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウントドロップダウンから再度インポートまたは作成できます。"
-  },
   "removeAccountModalBannerDescription": {
     "message": "削除する前に、このアカウントのシークレットリカバリーフレーズまたは秘密鍵をお持ちであることを確認してください。",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

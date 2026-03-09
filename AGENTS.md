@@ -25,6 +25,10 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 7. **NEVER modify git config** or run destructive git operations
 8. **NEVER commit** unless explicitly requested by user
 9. **NEVER stage changes** unless explicitly requested by user
+10. **WHEN asked to commit, use Conventional Commits** format for commit messages
+11. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
+12. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
+13. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
 
 ### Comprehensive Guidelines Location
 
@@ -1072,11 +1076,46 @@ function transformData(state: any): void {
 
 **Reference:** Follow the [PR template](https://github.com/MetaMask/metamask-extension/blob/main/.github/pull-request-template.md) when creating pull requests.
 
+### Default Agent Commit/Push/PR Flow (When Requested)
+
+Execute only the steps that correspond to what the user explicitly requested. Do not perform additional steps (e.g., do not push or open a PR if the user only asked to commit).
+
+#### When asked to **commit**
+
+1. Run `yarn lint:changed:fix` before creating the commit.
+2. Stage only files relevant to the requested change.
+3. Create a commit using Conventional Commits format: `<type>(optional-scope): <summary>`.
+
+#### When asked to **push**
+
+Complete all steps for **commit** above, then:
+
+4. Push the current branch to `origin`.
+
+#### When asked to **open a PR**
+
+Complete all steps for **push** above, then:
+
+5. Open a **draft** PR with:
+   - A Conventional Commits PR title (normally matching the commit summary).
+   - A PR body based on `.github/pull-request-template.md`.
+   - Any non-applicable template section commented out as a full block, including the section heading, for example:
+
+```markdown
+<!--
+## **Screenshots/Recordings**
+### **Before**
+### **After**
+-->
+```
+
+6. Do not mark the PR as "Ready for review" unless explicitly requested.
+
 **PR Title Format:**
 
 - Clear and descriptive
 - Will be used in squash commit message
-- Example: "Add token validation for custom networks"
+- Example: "feat(networks): add token validation for custom networks"
 
 **Description Section:**
 
@@ -1132,6 +1171,7 @@ function transformData(state: any): void {
 - Link to commits that address feedback (e.g., "Fixed in abc1234")
 - **Avoid rebasing after receiving comments** (makes review harder)
 - Push new commits instead of amending
+- If the Conventional Commit type in the PR's title is `chore`, please evaluate if `chore` is truly the best choice. We also have two custom types: `bump` (for package updates) and `release` (for tasks on a release branch and tasks that are all about getting a release ready).
 
 ### Before Merging
 

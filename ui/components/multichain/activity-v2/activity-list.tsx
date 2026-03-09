@@ -16,6 +16,7 @@ import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain'
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
+import { noAdjustmentsScroll } from '../../ui/virtualized-list/virtualized-list';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
@@ -143,6 +144,8 @@ export const ActivityList = ({ filter }: Props) => {
     },
     overscan: 5,
     scrollMargin,
+    initialOffset: scrollContainerRef?.current?.scrollTop,
+    scrollToFn: noAdjustmentsScroll,
   });
 
   const virtualItems = virtualizer.getVirtualItems();

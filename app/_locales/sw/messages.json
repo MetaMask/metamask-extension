@@ -472,9 +472,6 @@
   "removeAccount": {
     "message": "Ondoa akaunti"
   },
-  "removeAccountDescription": {
-    "message": "Akaunti hii itaondolewa kwenye waleti yako. Tafadhali hakikisha una kirai kianzio cha asili au ufunguo binafsi kwa akaunti hii iliyohamishwa kabla ya kuendelea. Unaweza kuhamisha au kufungua akaunti tena kutoka kwenye menyu ya akaunti."
-  },
   "required": {
     "message": "Inahitajika"
   },
