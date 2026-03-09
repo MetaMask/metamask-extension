@@ -1,15 +1,14 @@
 # Automatic retry for failed Main workflow runs.
 #
-# This workflow handles two retry scenarios:
+# This workflow handles two retry modes:
 #
-# 1. Merge queue (label-gated, with classification report):
-#    When a job fails in the merge queue, this workflow classifies the
-#    failures as retryable or non-retryable and writes a report to the
-#    step summary. Currently EXPERIMENTAL: retry only happens if the
-#    source PR has the `retry-ci` label (which is then removed).
-#    Once promoted, the retry will be gated on the classification decision.
+# 1. Automatic (classification-gated):
+#    For merge_group and push-to-main/stable failures, this workflow
+#    classifies jobs as retryable or non-retryable and writes a report
+#    to the step summary. If all failures are retryable, it automatically
+#    reruns failed jobs. Push events to release/* and trigger-ci-* are excluded.
 #
-# 2. Pull requests (retry-ci label):
+# 2. Label-gated (pull requests):
 #    When a PR has the `retry-ci` label and Main fails, this workflow
 #    removes the label and reruns failed jobs.
 #
@@ -35,27 +34,31 @@ on:
     types: [completed]
 
 jobs:
-  retry-merge-queue:
-    name: Retry merge queue
-    # Classify failures and retry if the source PR has the retry-ci label.
+  retry-auto:
+    name: Auto-retry (merge queue & push)
+    # Classify failures and auto-retry if all are retryable.
+    # Applies to merge_group events and push-to-main/stable.
     # The attempt cap (< 3) must stay in sync with the `run_attempt > 2`
     # threshold in all-jobs-pass's check creation condition in main.yml.
     if: >-
       ${{
-        github.event.workflow_run.event == 'merge_group' &&
         github.event.workflow_run.conclusion == 'failure' &&
-        github.event.workflow_run.run_attempt < 3
+        github.event.workflow_run.run_attempt < 3 &&
+        github.event.workflow_run.head_repository.full_name == github.event.workflow_run.repository.full_name &&
+        (
+          github.event.workflow_run.event == 'merge_group'
+          || (github.event.workflow_run.event == 'push'
+              && contains(fromJson('["main","stable"]'), github.event.workflow_run.head_branch))
+        )
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       actions: write
-      pull-requests: write
     env:
       GH_TOKEN: ${{ github.token }}
       GITHUB_TOKEN: ${{ github.token }}
       MAIN_RUN_ID: ${{ github.event.workflow_run.id }}
-      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
       REPO: ${{ github.repository }}
     steps:
       - name: Checkout .github/ directory
@@ -75,30 +78,10 @@ jobs:
         id: classify
         run: node .github/scripts/classify-failures.mts
 
-      - name: Check for retry-ci label and rerun
+      - name: Rerun if retryable
+        if: ${{ steps.classify.outputs.should-retry == 'true' }}
         run: |
-          # Merge queue branches look like "gh-readonly-queue/main/pr-XXXX-SHA".
-          # Extract the PR number from the branch name.
-          PR_NUMBER=$(echo "$HEAD_BRANCH" | grep -oP 'pr-\K[0-9]+' || true)
-
-          if [[ -z "$PR_NUMBER" ]]; then
-            # Fallback: search for the PR by listing open merge queue PRs
-            echo "Could not extract PR number from branch '$HEAD_BRANCH'."
-            echo "No retry-ci label check possible. Skipping retry."
-            exit 0
-          fi
-
-          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
-          if [[ "${CURRENT_LABELS}" != *"retry-ci"* ]]; then
-            echo "No retry-ci label on PR #$PR_NUMBER. Skipping retry."
-            echo "(Classification report was written to step summary.)"
-            exit 0
-          fi
-
-          echo "Found retry-ci label on PR #$PR_NUMBER. Removing label..."
-          gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
-
-          echo "Rerunning failed jobs..."
+          echo "Classification: retryable. Rerunning failed jobs..."
           gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
           echo "Rerun triggered."
 
