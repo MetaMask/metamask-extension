@@ -20,6 +20,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
+import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type {
   Preferences,
@@ -100,6 +101,17 @@ class FixtureBuilderV2 {
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
+  }
+
+  /**
+   * Marks the Snaps install privacy warning as already shown so the UI does
+   * not display it. Use for flows that only test update/reconnect and do not
+   * need the first-time install privacy step.
+   */
+  withSnapsPrivacyWarningAlreadyShown(): this {
+    return this.withAppStateController({
+      snapsInstallPrivacyWarningShown: true,
+    });
   }
 
   withCurrencyController(data: Partial<CurrencyRateState>): this {
@@ -505,9 +517,7 @@ class FixtureBuilderV2 {
     });
   }
 
-  withMetaMetricsController(
-    data: Partial<FixtureType['data']['MetaMetricsController']>,
-  ): this {
+  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
     merge(this.fixture.data.MetaMetricsController, data);
     return this;
   }

@@ -733,9 +733,6 @@ describe('Test Snap Metrics', function () {
         // switch to metamask popup and update
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarningUpdateConfirm = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarningUpdateConfirm.scrollToBottomAndAccept();
-
         // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
@@ -905,9 +902,6 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask popup and update
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const snapPrivacyWarningUpdateRejected = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarningUpdateRejected.scrollToBottomAndAccept();
 
         // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
