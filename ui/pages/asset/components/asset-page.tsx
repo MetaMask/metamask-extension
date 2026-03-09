@@ -54,6 +54,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
@@ -247,7 +248,7 @@ const AssetPage = ({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(DEFAULT_ROUTE)}
+            onClick={() => transitionBack(() => navigate(DEFAULT_ROUTE))}
           />
         </Box>
         {optionsButton}
