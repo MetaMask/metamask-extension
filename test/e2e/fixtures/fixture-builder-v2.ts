@@ -118,6 +118,13 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNetworkEnablementController(
+    data: Partial<NetworkEnablementControllerState>,
+  ): this {
+    merge(this.fixture.data.NetworkEnablementController, data);
+    return this;
+  }
+
   withOnboardingController(data: Partial<OnboardingControllerState>): this {
     merge(this.fixture.data.OnboardingController, data);
     return this;
@@ -180,9 +187,10 @@ class FixtureBuilderV2 {
   withEnabledNetworks(
     data: NetworkEnablementControllerState['enabledNetworkMap'],
   ): this {
+    // Clear existing map first – this is a full replacement, not a merge
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
-      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
-    return this;
+      {} as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    return this.withNetworkEnablementController({ enabledNetworkMap: data });
   }
 
   withLedgerAccount(): this {
@@ -263,6 +271,15 @@ class FixtureBuilderV2 {
     const secondNodeChainId = '0x53a';
     const secondNodeClientId = '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
 
+    // Enable the new chain in NetworkEnablementController so
+    // CAIP-25 connect flow includes it in the permission scopes.
+    // (V1 fixtures ran state migrations that auto-enabled new chains)
+    this.withNetworkEnablementController({
+      enabledNetworkMap: {
+        eip155: { [parseInt(secondNodeChainId, 16)]: true },
+      },
+    });
+
     return this.withNetworkController({
       networkConfigurationsByChainId: {
         [secondNodeChainId]: {
@@ -292,6 +309,13 @@ class FixtureBuilderV2 {
   withNetworkControllerTripleNode(): this {
     const thirdNodeChainId = '0x3e8';
     const thirdNodeClientId = 'a3460c52-12ee-4267-9be6-1503095a587e';
+
+    // Enable the third chain (see withNetworkControllerDoubleNode for context)
+    this.withNetworkEnablementController({
+      enabledNetworkMap: {
+        eip155: { [parseInt(thirdNodeChainId, 16)]: true },
+      },
+    });
 
     return this.withNetworkControllerDoubleNode().withNetworkController({
       networkConfigurationsByChainId: {
