@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   rehydrateBridgeStore,
   resetBridgeControllerAndCache,
@@ -9,7 +10,6 @@ import {
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from './useBridgeNavigation';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 /**
  * This sets the inital state of the bridge page on load.

@@ -215,7 +215,7 @@ export const useBridgeNavigation = () => {
         },
       );
     },
-    [navigate, state, bridgeState],
+    [navigate, state],
   );
 
   /**
