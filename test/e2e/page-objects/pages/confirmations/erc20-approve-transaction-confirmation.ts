@@ -9,6 +9,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   private readonly editSpendingCapIcon: RawLocator =
     '[data-testid="edit-spending-cap-icon"]';
 
+  private readonly revokeTitle = {
+    css: 'h2',
+    text: tEn('confirmTitleRevokeApproveTransaction'),
+  };
+
   private readonly estimatedChangesSection = {
     css: 'p',
     text: tEn('simulationDetailsTitle'),
@@ -103,6 +108,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkSpendingCapSection(): Promise<void> {
     console.log('Verify spending cap section is displayed');
     await this.driver.waitForSelector(this.spendingCapSection);
+  }
+
+  async checkRevokeTitle(): Promise<void> {
+    console.log('Verify revoke title "Remove permission" is displayed');
+    await this.driver.waitForSelector(this.revokeTitle);
   }
 
   /**
