@@ -135,10 +135,6 @@ export function useInsufficientPayTokenBalanceAlert({
       ];
     }
 
-    if (isLoading) {
-      return [];
-    }
-
     if (isInsufficientForFees) {
       return [
         {
@@ -163,7 +159,6 @@ export function useInsufficientPayTokenBalanceAlert({
 
     return [];
   }, [
-    isLoading,
     isInsufficientForInput,
     isInsufficientForFees,
     isInsufficientForSourceNetwork,

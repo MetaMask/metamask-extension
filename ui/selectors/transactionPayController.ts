@@ -19,7 +19,7 @@ export const selectTransactionPayTotalsByTransactionId = createSelector(
 
 export const selectIsTransactionPayLoadingByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
-  (transactionData) => transactionData?.isLoading ?? true,
+  (transactionData) => transactionData?.isLoading ?? false,
 );
 
 export const selectTransactionPayQuotesByTransactionId = createSelector(
