@@ -1,16 +1,17 @@
 import React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useQuery,
-  useQueryClient,
   useInfiniteQuery,
-} from '@tanstack/react-query';
+} from '@metamask-previews/base-data-service';
 import Box from '../../ui/box/box';
 import { Button } from '../../component-library';
+import type { GetActivityResponse } from '../../../../app/scripts/queries/ActivityDataService';
 
 export const TestTab = () => {
   const queryClient = useQueryClient();
 
-  const infiniteQuery = useInfiniteQuery({
+  const infiniteQuery = useInfiniteQuery<GetActivityResponse>({
     queryKey: [
       'ActivityDataService:getActivity',
       '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
