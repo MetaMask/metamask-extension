@@ -43,10 +43,7 @@ export function AccountStatusLayout({
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Start}
         >
-          <Text
-            variant={TextVariant.HeadingLg}
-            className="self-start mb-4"
-          >
+          <Text variant={TextVariant.HeadingLg} className="self-start mb-4">
             {title}
           </Text>
           <Box
