@@ -26,6 +26,7 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -79,7 +80,7 @@ export const connectToBackground = (
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
-    } else {
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,
