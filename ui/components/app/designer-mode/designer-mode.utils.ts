@@ -4,7 +4,6 @@
 
 import type {
   ElementInfo,
-  ElementSnapshot,
   ComponentInfo,
   ComputedStyleInfo,
   DesignTokenInfo,
@@ -507,36 +506,6 @@ ${aiFormat.suggestedChangesFormat}
 }
 
 /**
- * Compute style changes between the original snapshot and the current element
- */
-function computeStyleChanges(
-  originalSnapshot: ElementSnapshot,
-  currentInfo: ElementInfo,
-  editedProperties?: Set<string>,
-): Array<{ property: string; from: string; to: string }> {
-  const changes: Array<{ property: string; from: string; to: string }> = [];
-
-  for (const category of Object.values(currentInfo.styles)) {
-    for (const style of category) {
-      // If editedProperties is provided, only include explicitly edited props
-      if (editedProperties && !editedProperties.has(style.property)) {
-        continue;
-      }
-      const originalValue = originalSnapshot.styles[style.property];
-      if (originalValue && originalValue !== style.value) {
-        changes.push({
-          property: style.property,
-          from: originalValue,
-          to: style.value,
-        });
-      }
-    }
-  }
-
-  return changes;
-}
-
-/**
  * Get the direct text content of an element (excluding children's text)
  */
 export function getDirectTextContent(element: HTMLElement): string {
@@ -553,7 +522,6 @@ export function getDirectTextContent(element: HTMLElement): string {
  */
 export function formatAgentPrompt(
   elementInfo: ElementInfo,
-  _originalSnapshot: ElementSnapshot | null,
   designerMessage: string,
   editLog?: string[],
 ): string {

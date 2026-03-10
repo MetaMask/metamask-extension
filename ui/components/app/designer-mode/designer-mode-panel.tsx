@@ -789,7 +789,6 @@ export function DesignerModePanel() {
     hoveredElement,
     selectedElement,
     isLocked,
-    originalSnapshot,
     editLog,
     clearEditLog,
     toggleDesignerMode,
@@ -892,7 +891,6 @@ export function DesignerModePanel() {
     try {
       const prompt = formatAgentPrompt(
         currentElement,
-        originalSnapshot,
         message,
         editLog,
       );
@@ -921,7 +919,7 @@ export function DesignerModePanel() {
       ]);
     }
     setIsSending(false);
-  }, [agentInput, isLocked, selectedElement, hoveredElement, originalSnapshot, editLog, clearEditLog]);
+  }, [agentInput, isLocked, selectedElement, hoveredElement, editLog, clearEditLog]);
 
   // ── Drag-to-move state ──────────────────────────────────────
   const [position, setPosition] = useState({ x: 8, y: 8 }); // offset from bottom-right
@@ -1007,7 +1005,6 @@ export function DesignerModePanel() {
     try {
       const prompt = formatAgentPrompt(
         elementInfo,
-        originalSnapshot,
         message,
         editLog,
       );
@@ -2129,27 +2126,6 @@ export function DesignerModePanel() {
         </>
       )}
     </div>
-  );
-}
-
-// Small keyboard shortcut badge
-function Kbd({ children }: { children: React.ReactNode }) {
-  return (
-    <kbd
-      style={{
-        display: 'inline-block',
-        backgroundColor: C.input,
-        color: C.textSecondary,
-        padding: '1px 4px',
-        borderRadius: 3,
-        fontSize: 9,
-        fontFamily: MONO,
-        border: `1px solid ${C.divider}`,
-        marginRight: 3,
-      }}
-    >
-      {children}
-    </kbd>
   );
 }
 
