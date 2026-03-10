@@ -51,7 +51,7 @@ export function ViewContactContent({
       flexDirection={BoxFlexDirection.Column}
       padding={4}
       paddingTop={4}
-      paddingBottom={0}
+      paddingBottom={6}
       gap={6}
       className="flex flex-col h-full w-full flex-1 justify-between"
     >
@@ -146,9 +146,7 @@ export function ViewContactContent({
                 iconName={copied ? IconName.CopySuccess : IconName.Copy}
                 size={ButtonIconSize.Sm}
                 iconProps={{
-                  color: copied
-                    ? IconColor.SuccessDefault
-                    : IconColor.IconAlternative,
+                  className: copied ? IconColor.SuccessDefault : undefined,
                 }}
                 onClick={() => handleCopy(checkSummedAddress)}
               />
