@@ -19,6 +19,7 @@ export type SettingsToggleItemProps = {
   containerDataTestId?: string;
   dataTestId: string;
   sectionRef?: React.RefObject<HTMLDivElement>;
+  disabled?: boolean;
 };
 
 export const SettingsToggleItem = ({
@@ -29,6 +30,7 @@ export const SettingsToggleItem = ({
   containerDataTestId,
   dataTestId,
   sectionRef,
+  disabled,
 }: SettingsToggleItemProps) => (
   <Box
     ref={sectionRef}
@@ -50,6 +52,7 @@ export const SettingsToggleItem = ({
           onToggle={onToggle}
           dataTestId={dataTestId}
           containerStyle={{ width: '40px' }}
+          disabled={disabled}
         />
       </div>
     </Box>
