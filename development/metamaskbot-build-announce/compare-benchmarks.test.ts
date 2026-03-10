@@ -37,6 +37,14 @@ describe('compare-benchmarks', () => {
   });
 
   describe('runComparison', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'warn').mockImplementation();
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
     it('passes when results are within thresholds', () => {
       const benchmarks = [
         {
