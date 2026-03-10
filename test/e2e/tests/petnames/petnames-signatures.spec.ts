@@ -4,12 +4,7 @@ import { withSignatureFixtures } from '../confirmations/helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import {
-  DAPP_ONE_URL,
-  DAPP_PATH,
-  NETWORK_CLIENT_ID,
-  WINDOW_TITLES,
-} from '../../constants';
+import { DAPP_ONE_URL, DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
