@@ -54,6 +54,7 @@ jest.mock('../../../../../pages/bridge/hooks/useRWAToken', () => ({
 
 describe('TokenCellTitle', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     mockIsStockToken.mockReturnValue(false);
     mockIsTokenTradingOpen.mockReturnValue(true);
   });
@@ -208,5 +209,182 @@ describe('TokenCellTitle', () => {
     const badge = getByTestId('stock-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveAttribute('data-market-closed', 'true');
+  });
+
+  it('does not render tag when accountType is undefined', () => {
+    const token = createMockToken({ accountType: undefined });
+    const { queryByTestId } = render(<TokenCellTitle token={token} />);
+
+    expect(queryByTestId('tag')).not.toBeInTheDocument();
+  });
+
+  describe('React.memo arePropsEqual', () => {
+    it('skips re-render when all compared props are the same', () => {
+      const rwaData = {
+        instrumentType: 'stock' as const,
+        market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
+        nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+      };
+      const token = createMockToken({ title: 'OUSG', rwaData });
+      const { getByTestId, rerender } = render(<TokenCellTitle token={token} />);
+
+      expect(getByTestId('asset-cell-title')).toHaveTextContent('OUSG');
+
+      const updatedToken = createMockToken({
+        title: 'OUSG',
+        rwaData,
+        symbol: 'CHANGED',
+      });
+      rerender(<TokenCellTitle token={updatedToken} />);
+
+      expect(getByTestId('asset-cell-title')).toHaveTextContent('OUSG');
+    });
+
+    it('re-renders when title changes', () => {
+      const token = createMockToken({ title: 'OUSG' });
+      const { getByTestId, rerender } = render(<TokenCellTitle token={token} />);
+
+      expect(getByTestId('asset-cell-title')).toHaveTextContent('OUSG');
+
+      rerender(<TokenCellTitle token={createMockToken({ title: 'OMMF' })} />);
+
+      expect(getByTestId('asset-cell-title')).toHaveTextContent('OMMF');
+    });
+
+    it('re-renders when rwaData.instrumentType changes', () => {
+      mockIsStockToken.mockReturnValue(true);
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: { instrumentType: 'stock' as const },
+      });
+      const { rerender } = render(<TokenCellTitle token={token} />);
+
+      mockIsStockToken.mockReturnValue(false);
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: { instrumentType: 'fund' as const },
+          })}
+        />,
+      );
+
+      expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('re-renders when rwaData.market.nextOpen changes', () => {
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
+        },
+      });
+      const { rerender } = render(<TokenCellTitle token={token} />);
+
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              market: { nextOpen: '2026-01-02T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('re-renders when rwaData.market.nextClose changes', () => {
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
+        },
+      });
+      const { rerender } = render(<TokenCellTitle token={token} />);
+
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-02T16:00:00Z' },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('re-renders when rwaData.nextPause.start changes', () => {
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+        },
+      });
+      const { rerender } = render(<TokenCellTitle token={token} />);
+
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              nextPause: { start: '2026-07-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('re-renders when rwaData.nextPause.end changes', () => {
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+        },
+      });
+      const { rerender } = render(<TokenCellTitle token={token} />);
+
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-07-02T00:00:00Z' },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('skips re-render when rwaData is undefined for both renders', () => {
+      const token = createMockToken({ title: 'ETH', rwaData: undefined });
+      const { getByTestId, rerender } = render(<TokenCellTitle token={token} />);
+
+      expect(getByTestId('asset-cell-title')).toHaveTextContent('ETH');
+
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({ title: 'ETH', rwaData: undefined, symbol: 'CHANGED' })}
+        />,
+      );
+
+      expect(getByTestId('asset-cell-title')).toHaveTextContent('ETH');
+    });
   });
 });
