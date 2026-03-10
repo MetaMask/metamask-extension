@@ -1,9 +1,9 @@
 import { execSync } from 'child_process';
 import { isMergeInProgress, getPreCommitHookDiff } from './get-diff';
 
-describe('isMergeInProgress()', (): void => {
-  const mockExecSync = jest.mocked(execSync);
+const mockExecSync = jest.mocked(execSync);
 
+describe('isMergeInProgress()', (): void => {
   jest.mock('child_process');
 
   beforeEach((): void => {
