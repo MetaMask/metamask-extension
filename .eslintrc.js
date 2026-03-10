@@ -663,12 +663,10 @@ module.exports = {
       },
     },
     /**
-     * Type-level spec files (compile-time assertions, no runtime code)
-     * Excludes e2e test files.
+     * Proof files for type-level testing (compile-time assertions, no runtime code)
      */
     {
-      files: ['**/*.spec.ts'],
-      excludedFiles: ['test/e2e/**'],
+      files: ['**/*.proof.ts'],
       rules: {
         '@typescript-eslint/no-unused-vars': [
           'error',
