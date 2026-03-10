@@ -64,8 +64,22 @@ export async function loadCurrentBenchmarks(
 }
 
 /**
+ * Converts a camelCase or PascalCase string to kebab-case.
+ * Handles leading uppercase letters without creating a leading hyphen.
+ *
+ * @param str - Input string (e.g., "startupStandardHome" or "SwapPage").
+ * @returns Kebab-case string (e.g., "startup-standard-home" or "swap-page").
+ */
+function toKebabCase(str: string): string {
+  return str
+    .replace(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
+    .replace(/^-/u, '');
+}
+
+/**
  * Resolves the ThresholdConfig for a benchmark.
- * Tries direct match, then strips common prefixes and converts to kebab-case.
+ * Tries direct match, then strips common prefixes (and converts to kebab-case),
+ * then converts original name to kebab-case.
  *
  * @param benchmarkName - Benchmark name (from JSON filename).
  */
@@ -83,15 +97,22 @@ export function resolveThresholdConfig(
   ];
   for (const prefix of prefixes) {
     const stripped = benchmarkName.replace(prefix, '');
-    if (stripped && THRESHOLD_REGISTRY[stripped]) {
-      return THRESHOLD_REGISTRY[stripped];
+    if (stripped) {
+      // Try stripped name directly
+      if (THRESHOLD_REGISTRY[stripped]) {
+        return THRESHOLD_REGISTRY[stripped];
+      }
+      // Try stripped name converted to kebab-case
+      const strippedKebab = toKebabCase(stripped);
+      if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
+        return THRESHOLD_REGISTRY[strippedKebab];
+      }
     }
   }
 
-  const kebab = benchmarkName
-    .replace(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
-    .replace(/^-/u, '');
-  if (THRESHOLD_REGISTRY[kebab]) {
+  // Convert original name to kebab-case
+  const kebab = toKebabCase(benchmarkName);
+  if (kebab && THRESHOLD_REGISTRY[kebab]) {
     return THRESHOLD_REGISTRY[kebab];
   }
 
