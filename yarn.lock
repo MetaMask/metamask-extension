@@ -7738,9 +7738,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^22.6.0":
-  version: 22.6.0
-  resolution: "@metamask/smart-transactions-controller@npm:22.6.0"
+"@metamask/smart-transactions-controller@npm:^22.7.0":
+  version: 22.7.0
+  resolution: "@metamask/smart-transactions-controller@npm:22.7.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -7774,7 +7774,7 @@ __metadata:
       optional: true
     "@metamask/gas-fee-controller":
       optional: true
-  checksum: 10/f8fc9b7b63f343d9e806cec8da14f5419af075aac0d751bff727f6c9380ee28710406a4deae7753bf55155cf0469089b6e1058d02f0e47a2bfbfa3128abb7cba
+  checksum: 10/49acf33fc852c109d2ce821a1a3a702068e8b9cd16b7a457838bb2ae0fce958ea1cc1eaf5395d876f77630939b0c8569b0032754554274bbc88e20d5d0f74de2
   languageName: node
   linkType: hard
 
@@ -33034,7 +33034,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^25.0.0"
     "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.0.3"
-    "@metamask/smart-transactions-controller": "npm:^22.6.0"
+    "@metamask/smart-transactions-controller": "npm:^22.7.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^18.0.1"
