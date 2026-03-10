@@ -25,6 +25,7 @@ import {
   NativeTokenStreamPermission,
   PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
+import { Hex } from '@metamask/utils';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
@@ -44,7 +45,6 @@ import { getPendingRevocations } from '../../../../../selectors/gator-permission
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import { Skeleton } from '../../../../component-library/skeleton';
-import { Hex } from '@metamask/utils';
 
 // Shared row style for permission details
 const rowStyle = { flex: '1', alignSelf: 'center' } as const;
@@ -220,33 +220,39 @@ export const ReviewGatorPermissionItem = ({
     [t],
   );
 
-  const formatValueAsRatePerSecond = useCallback((value: Hex | null | undefined) => {
-    if (!value) {
-      return 'Unknown';
-    }
+  const formatValueAsRatePerSecond = useCallback(
+    (value: Hex | null | undefined) => {
+      if (!value) {
+        return 'Unknown';
+      }
 
-    const { symbol, decimals } = tokenMetadata;
+      const { symbol, decimals } = tokenMetadata;
 
-    if (!decimals) {
-      return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec (raw units)`;
-    }
+      if (!decimals) {
+        return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec (raw units)`;
+      }
 
-    return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec`;
-  }, [tokenMetadata]);
+      return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec`;
+    },
+    [tokenMetadata],
+  );
 
-  const formatValue = useCallback((value: Hex | null | undefined) => {
-    if (!value) {
-      return 'Unknown';
-    }
+  const formatValue = useCallback(
+    (value: Hex | null | undefined) => {
+      if (!value) {
+        return 'Unknown';
+      }
 
-    const { symbol, decimals } = tokenMetadata;
+      const { symbol, decimals } = tokenMetadata;
 
-    if (!decimals) {
-      return `${formatDecimalShiftedValue(value, decimals)} ${symbol} (raw units)`;
-    }
+      if (!decimals) {
+        return `${formatDecimalShiftedValue(value, decimals)} ${symbol} (raw units)`;
+      }
 
-    return `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
-  }, [tokenMetadata]);
+      return `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
+    },
+    [tokenMetadata],
+  );
 
   /**
    * Returns the token stream permission details

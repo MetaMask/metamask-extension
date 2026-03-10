@@ -92,8 +92,8 @@ export function useGatorPermissionTokenInfo(
 
   // Determine whether we should fetch token info
   const shouldFetch = Boolean(
-      !isNativeToken && !cachedOrImportedTokenInfo && tokenAddress && chainId
-    );
+    !isNativeToken && !cachedOrImportedTokenInfo && tokenAddress && chainId,
+  );
 
   // Tier 2 & 3: Fetch using API and on-chain fallback if not in cache/imported (only for ERC-20 tokens)
   const asyncResult = useAsyncResult(async () => {
@@ -144,7 +144,6 @@ export function useGatorPermissionTokenInfo(
         loading: false,
       };
     }
-
 
     // cannot resolve token info, return some placeholder data
     return {

@@ -20,11 +20,7 @@ export const TestErrorBoundary = class extends React.Component<
 
   render() {
     if (this.state.error) {
-      return (
-        <div data-testid="error-boundary">
-          {this.state.error.message}
-        </div>
-      );
+      return <div data-testid="error-boundary">{this.state.error.message}</div>;
     }
     return this.props.children;
   }

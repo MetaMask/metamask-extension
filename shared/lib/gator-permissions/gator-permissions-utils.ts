@@ -407,7 +407,7 @@ export function formatGatorAmountLabel(params: {
         ? `<${formatter.format(threshold)}`
         : formatter.format(numericAmount);
 
-    const note = !tokenDecimals ? ' (raw units)' : '';
+    const note = tokenDecimals ? '' : ' (raw units)';
 
     return `${formattedAmount} ${tokenSymbol} ${frequency}${note}`;
   } catch (error) {
