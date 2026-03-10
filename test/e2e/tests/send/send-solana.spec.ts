@@ -1,4 +1,3 @@
-import HomePage from '../../page-objects/pages/home/homepage';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
@@ -21,8 +20,6 @@ describe('Send Solana', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana via the UI. Enabling it through fixtures causes a redirect
         // back to the default network because the snap is not yet initialized
