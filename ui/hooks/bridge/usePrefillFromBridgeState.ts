@@ -7,8 +7,9 @@ import {
   setFromToken,
   setToToken,
 } from '../../ducks/bridge/actions';
-import { getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from './useBridgeNavigation';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 /**
  * This sets the inital state of the bridge page on load.
@@ -21,6 +22,7 @@ export const usePrefillFromBridgeState = () => {
   const dispatch = useDispatch();
 
   const { activeQuote } = useSelector(getBridgeQuotes);
+  const fromChains = useSelector(getFromChains);
 
   const { resetLocationState, token, bridgeState } = useBridgeNavigation();
 
@@ -39,18 +41,27 @@ export const usePrefillFromBridgeState = () => {
             bridgeState,
           }),
         );
-      // If token object is passed through navigation options, use it
-      const shouldSetFromToken =
-        token &&
-        (bridgeState?.isSrcAssetPickerOpen ||
-          (!bridgeState?.isSrcAssetPickerOpen &&
-            !bridgeState?.isDestAssetPickerOpen));
-      const shouldSetToToken = token && bridgeState?.isDestAssetPickerOpen;
 
-      if (shouldSetFromToken) {
-        dispatch(setFromToken(token));
-      } else if (shouldSetToToken) {
-        dispatch(setToToken(token));
+      // If token object is passed through navigation options, use it
+      if (token) {
+        const isInitialBridgeNavigation =
+          !bridgeState?.isSrcAssetPickerOpen &&
+          !bridgeState?.isDestAssetPickerOpen;
+        const isTokenOnEnabledChain = fromChains.some(
+          (chain) =>
+            formatChainIdToCaip(chain.chainId) ===
+            formatChainIdToCaip(token.chainId),
+        );
+        const shouldSetFromToken =
+          bridgeState?.isSrcAssetPickerOpen ||
+          (isInitialBridgeNavigation && isTokenOnEnabledChain);
+        const shouldSetToToken = bridgeState?.isDestAssetPickerOpen;
+
+        if (shouldSetFromToken) {
+          dispatch(setFromToken(token));
+        } else if (shouldSetToToken) {
+          dispatch(setToToken(token));
+        }
       }
 
       // Clear location state after using it to prevent infinite re-renders

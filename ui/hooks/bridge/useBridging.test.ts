@@ -334,10 +334,21 @@ describe('useBridging', () => {
         '/',
         {
           pathname: BRIDGE_PREPARE_PATH,
-          search: `from=${encodeURIComponent('eip155:1/slip44:60')}`,
+          search: '',
         },
         getNativeAssetForChainId(MultichainNetworks.TRON),
         MetaMetricsSwapsEventSource.TokenView,
+        {
+          token: {
+            address: '0x0000000000000000000000000000000000000000',
+            assetId: 'tron:728126428/slip44:195',
+            chainId: 'tron:728126428',
+            decimals: 6,
+            iconUrl: '',
+            name: 'Tron',
+            symbol: 'TRX',
+          },
+        },
       ],
     ])(
       'should open swap with correct token pair when pathname is %s',
