@@ -17,7 +17,6 @@ import { IconColor } from '../../../../helpers/constants/design-system';
 const POPOVER_STYLE = {
   zIndex: 3,
   backgroundColor: 'var(--color-text-default)',
-  paddingInline: '6px',
   paddingTop: '6px',
   paddingBottom: '6px',
   paddingLeft: '16px',
