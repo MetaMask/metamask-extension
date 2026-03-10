@@ -225,7 +225,7 @@ export function parseArgv(
   if (config.generatePolicy || config.reactCompilerVerbose) {
     effectiveThreads = 0;
   } else if (config.threads === 'auto') {
-    effectiveThreads = resolveAutoThreads();
+    effectiveThreads = preconditions.effectiveThreads;
   } else {
     const t = config.threads;
     if (typeof t !== 'number' || Number.isNaN(t) || t < 0) {
@@ -247,6 +247,7 @@ export function parseArgv(
 
   const resolvedThreads = effectiveThreads;
   const resolvedJobs =
+    // eslint-disable-next-line no-nested-ternary
     effectiveThreads === 0
       ? 0
       : config.jobsPerThread === 'auto'
@@ -436,7 +437,10 @@ function getOptions(
     jobsPerThread: {
       array: false,
       default: 'auto' as 'auto' | number,
-      defaultDescription: `auto (resolved: ${resolveAutoJobs(effectiveThreads)})`,
+      defaultDescription:
+        effectiveThreads === 0
+          ? '0 (thread-loader disabled)'
+          : `auto (resolved: ${resolveAutoJobs(effectiveThreads)})`,
       description:
         'Number of parallel jobs per thread-loader worker. ' +
         '`auto` derives from thread count. Ignored when `threads` is `0`.',

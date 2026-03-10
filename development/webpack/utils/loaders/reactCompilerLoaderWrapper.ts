@@ -100,30 +100,9 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
 
   const result = actualLoader.call(this, source, sourceMap);
 
-  // react-compiler-loader uses this.async() and returns a callback. Restore
-  // getOptions only when that callback is invoked (loader done), not when it
-  // returns. Otherwise async work would see the unpatched getOptions.
-  if (typeof result === 'function') {
-    const asyncCallback = result as (
-      this: ThisParameterType<typeof loader>,
-      err: Error | null,
-      content?: string,
-      sourceMap?: unknown,
-    ) => void;
-    const loaderThis = this;
-    return function wrappedCallback(
-      err: Error | null,
-      content?: string,
-      sourceMap?: unknown,
-    ) {
-      try {
-        return asyncCallback.call(loaderThis, err, content, sourceMap);
-      } finally {
-        loaderThis.getOptions = originalGetOptions;
-      }
-    } as unknown as ReturnType<LoaderDefinitionFunction<LoaderOptions>>;
-  }
-
+  // react-compiler-loader uses this.async() and returns undefined (not a
+  // callback). It reads options synchronously before returning, so restoring
+  // getOptions immediately is correct.
   this.getOptions = originalGetOptions;
   return result;
 };
