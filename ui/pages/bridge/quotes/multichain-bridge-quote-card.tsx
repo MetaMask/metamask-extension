@@ -295,6 +295,7 @@ export const MultichainBridgeQuoteCard = ({
                       : TextColor.textAlternative
                   }
                   style={{ textDecoration: 'line-through' }}
+                  data-testid="network-fees-included-original-amount"
                 >
                   {activeQuote.includedTxFees?.valueInCurrency
                     ? formatNetworkFee(
