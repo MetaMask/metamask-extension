@@ -26,7 +26,15 @@ import {
   CONTACTS_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { getCompleteAddressBook } from '../../selectors';
+import {
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../selectors';
+import { hasDuplicateContacts } from '../../components/app/contact-list/utils';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+} from '../../components/component-library';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -43,7 +51,11 @@ export function ContactsListPage() {
   const location = useLocation();
   const { trackEvent } = useContext(MetaMetricsContext);
   const completeAddressBook = useSelector(getCompleteAddressBook);
+  const internalAccounts = useSelector(getInternalAccounts);
   const [showDeletedToast, setShowDeletedToast] = useState(false);
+  const [showUpdatedToast, setShowUpdatedToast] = useState(false);
+
+  const TOAST_CLEAR_STATE_DELAY_MS = 100;
 
   const contacts = useMemo(() => {
     const list = (completeAddressBook ?? []).filter(
@@ -53,6 +65,15 @@ export function ContactsListPage() {
       (entry.name ?? '').toLowerCase(),
     );
   }, [completeAddressBook]);
+
+  const hasDuplicates = useMemo(
+    () =>
+      Boolean(
+        completeAddressBook?.length &&
+          hasDuplicateContacts(completeAddressBook, internalAccounts ?? []),
+      ),
+    [completeAddressBook, internalAccounts],
+  );
 
   useEffect(() => {
     trackEvent({
@@ -68,17 +89,43 @@ export function ContactsListPage() {
   useEffect(() => {
     if (location.state?.showContactDeletedToast) {
       setShowDeletedToast(true);
-      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
     }
-  }, [location.state?.showContactDeletedToast, navigate]);
+  }, [location.state?.showContactDeletedToast]);
+
+  useEffect(() => {
+    if (location.state?.showContactUpdatedToast) {
+      setShowUpdatedToast(true);
+    }
+  }, [location.state?.showContactUpdatedToast]);
+
+  useEffect(() => {
+    if (!showDeletedToast) return;
+    const id = setTimeout(() => {
+      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
+    }, TOAST_CLEAR_STATE_DELAY_MS);
+    return () => clearTimeout(id);
+  }, [showDeletedToast, navigate]);
+
+  useEffect(() => {
+    if (!showUpdatedToast) return;
+    const id = setTimeout(() => {
+      navigate(CONTACTS_ROUTE, { replace: true, state: {} });
+    }, TOAST_CLEAR_STATE_DELAY_MS);
+    return () => clearTimeout(id);
+  }, [showUpdatedToast, navigate]);
 
   const handleBack = () => {
     navigate(DEFAULT_ROUTE);
   };
 
+  const showDeletedToastNow =
+    showDeletedToast || Boolean(location.state?.showContactDeletedToast);
+  const showUpdatedToastNow =
+    showUpdatedToast || Boolean(location.state?.showContactUpdatedToast);
+
   return (
     <Page data-testid="contacts-page">
-      {showDeletedToast && (
+      {showDeletedToastNow && (
         <ToastContainer>
           <Toast
             startAdornment={
@@ -94,6 +141,25 @@ export function ContactsListPage() {
             borderRadius={BorderRadius.LG}
             textClassName="text-base"
             data-testid="contact-deleted-toast"
+          />
+        </ToastContainer>
+      )}
+      {showUpdatedToastNow && (
+        <ToastContainer>
+          <Toast
+            startAdornment={
+              <Icon
+                name={IconName.CheckBold}
+                color={IconColor.SuccessDefault}
+              />
+            }
+            text={t('contactUpdated')}
+            onClose={() => setShowUpdatedToast(false)}
+            autoHideTime={TOAST_AUTO_HIDE_MS}
+            onAutoHideToast={() => setShowUpdatedToast(false)}
+            borderRadius={BorderRadius.LG}
+            textClassName="text-base"
+            data-testid="contact-updated-toast"
           />
         </ToastContainer>
       )}
@@ -122,11 +188,20 @@ export function ContactsListPage() {
             scrollbarColor: 'var(--color-icon-muted) transparent',
           }}
         >
+          {hasDuplicates && contacts.length > 0 ? (
+            <Box padding={4} paddingTop={0} paddingBottom={0}>
+              <BannerAlert
+                severity={BannerAlertSeverity.Warning}
+                description={t('duplicateContactWarning')}
+                data-testid="duplicate-contact-warning"
+              />
+            </Box>
+          ) : null}
           {contacts.length > 0 ? (
             <Box
               flexDirection={BoxFlexDirection.Column}
               padding={4}
-              paddingTop={0}
+              paddingTop={hasDuplicates ? 4 : 0}
               paddingBottom={4}
             >
               {contacts.map(

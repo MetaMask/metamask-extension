@@ -146,7 +146,9 @@ export function ViewContactContent({
                 iconName={copied ? IconName.CopySuccess : IconName.Copy}
                 size={ButtonIconSize.Sm}
                 iconProps={{
-                  className: copied ? IconColor.SuccessDefault : undefined,
+                  className: copied
+                    ? IconColor.SuccessDefault
+                    : IconColor.IconAlternative,
                 }}
                 onClick={() => handleCopy(checkSummedAddress)}
               />

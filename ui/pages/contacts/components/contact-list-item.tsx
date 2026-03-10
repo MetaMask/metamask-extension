@@ -116,7 +116,9 @@ export function ContactListItem({
         iconName={copied ? IconName.CopySuccess : IconName.Copy}
         size={ButtonIconSize.Md}
         iconProps={{
-          className: copied ? IconColor.SuccessDefault : undefined,
+          className: copied
+            ? IconColor.SuccessDefault
+            : IconColor.IconAlternative,
         }}
         onClick={onCopy}
         data-testid="contact-list-item-copy"

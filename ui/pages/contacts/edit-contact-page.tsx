@@ -84,7 +84,11 @@ export function EditContactPage() {
           initialMemo={memo}
           contactChainId={contactChainId}
           onCancel={() => navigate(`${CONTACTS_VIEW_ROUTE}/${address}`)}
-          onSuccess={() => navigate(CONTACTS_ROUTE)}
+          onSuccess={() =>
+            navigate(CONTACTS_ROUTE, {
+              state: { showContactUpdatedToast: true },
+            })
+          }
         />
       </Content>
     </Page>
