@@ -1,14 +1,11 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
-import { getPerpsStreamManager } from '../../../providers/perps';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
-import { usePerpsDeposit } from '../../../hooks/perps';
+import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsWatchlist } from './perps-watchlist';
@@ -29,29 +26,7 @@ import {
  * without loading skeletons when switching between views.
  */
 export const PerpsTabView: React.FC = () => {
-  const { triggerDeposit } = usePerpsDeposit();
-
-  // Get selected address for stream manager initialization
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
-
-  // Initialize stream manager and prewarm on mount
-  useEffect(() => {
-    if (!selectedAddress) {
-      return;
-    }
-
-    const streamManager = getPerpsStreamManager();
-
-    // Initialize and prewarm
-    streamManager.init(selectedAddress);
-    streamManager.prewarm();
-
-    // Cleanup prewarm on unmount (cache persists!)
-    return () => {
-      streamManager.cleanupPrewarm();
-    };
-  }, [selectedAddress]);
+  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
   // Use stream hooks for real-time data
   const { positions, isInitialLoading: positionsLoading } =
@@ -133,7 +108,6 @@ export const PerpsTabView: React.FC = () => {
 
       {/* Support & Learn */}
       <PerpsSupportLearn />
-
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
     </Box>

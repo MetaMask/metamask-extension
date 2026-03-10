@@ -36,8 +36,10 @@ export const ConfirmContextProvider: React.FC<{
   const previousConfirmation = usePrevious(currentConfirmation);
 
   /**
-   * The hook below takes care of navigating to the home page when the confirmation not acted on by user
-   * but removed by us, this can happen in cases like when dapp changes network.
+   * Navigate to the Activity tab when a confirmation disappears without
+   * explicit user action (e.g. dapp changes network). Per-type routing
+   * after user-initiated confirm/cancel is handled elsewhere (e.g.
+   * useShieldConfirm, usePerpsConfirm inside useTransactionConfirm).
    */
   useEffect(() => {
     if (previousConfirmation && !currentConfirmation) {
