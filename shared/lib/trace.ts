@@ -368,7 +368,7 @@ export function extractTraceContext(params: unknown): {
   traceContext: SerializedTraceContext | undefined;
 } {
   if (!Array.isArray(params) || params.length === 0) {
-    return { cleanParams: params ?? [], traceContext: undefined };
+    return { cleanParams: params, traceContext: undefined };
   }
 
   const lastParam = params[params.length - 1];
