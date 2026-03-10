@@ -3631,6 +3631,9 @@
   "l2FeeTooltip": {
     "message": "L2 gas fee"
   },
+  "language": {
+    "message": "Language"
+  },
   "lastSold": {
     "message": "Last sold"
   },
@@ -5814,6 +5817,9 @@
   },
   "popularNetworks": {
     "message": "Popular networks"
+  },
+  "preferencesAndDisplay": {
+    "message": "Preferences and display"
   },
   "prev": {
     "message": "Prev"
