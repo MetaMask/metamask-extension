@@ -22,6 +22,7 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
 
 export enum ConfirmationLoader {
   Default = 'default',
@@ -100,7 +101,9 @@ export function useConfirmationNavigation() {
     (transactionId: string, options: ConfirmationNavigationOptions = {}) => {
       const params = new URLSearchParams();
 
-      params.set('loader', options.loader ?? ConfirmationLoader.Default);
+      if (options.loader && options.loader !== ConfirmationLoader.Default) {
+        params.set('loader', options.loader);
+      }
 
       if (options.returnTo) {
         params.set('returnTo', options.returnTo);
@@ -204,7 +207,7 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     (searchParams.get('loader') as ConfirmationLoader) ??
     ConfirmationLoader.Default;
 
-  const returnTo = searchParams.get('returnTo') ?? undefined;
+  const returnTo = sanitizeRedirectUrl(searchParams.get('returnTo'));
 
   return {
     loader,
