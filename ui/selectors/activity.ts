@@ -1,8 +1,5 @@
 import { createSelector } from 'reselect';
-import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import {
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,

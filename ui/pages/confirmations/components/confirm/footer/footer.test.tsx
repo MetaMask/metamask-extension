@@ -606,7 +606,7 @@ describe('ConfirmFooter', () => {
     });
   });
 
-  it('renders MusdConversionFooter for musdConversion transaction type', () => {
+  it('renders SingleActionFooter for musdConversion transaction type', () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),

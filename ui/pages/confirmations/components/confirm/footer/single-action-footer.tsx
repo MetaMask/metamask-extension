@@ -1,4 +1,5 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -15,12 +16,13 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { AlertsName } from '../../../hooks/alerts/constants';
 
-type MusdConversionFooterProps = {
-  onSubmit: () => void;
-  isGaslessLoading: boolean;
+type ButtonState = {
+  buttonText: string;
+  isDisabled: boolean;
+  isLoading: boolean;
 };
 
-function useMusdConversionButtonState(isGaslessLoading: boolean) {
+function useMusdConversionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
@@ -88,24 +90,42 @@ function useMusdConversionButtonState(isGaslessLoading: boolean) {
   }, [blockingAlerts, hasAmount, isGaslessLoading, isLoading, t]);
 }
 
-const MusdConversionFooter = ({
+function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
+  const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const musdState = useMusdConversionButtonState(isGaslessLoading);
+
+  if (currentConfirmation?.type === TransactionType.musdConversion) {
+    return musdState;
+  }
+
+  return {
+    buttonText: t('confirm'),
+    isDisabled: false,
+    isLoading: isGaslessLoading,
+  };
+}
+
+type SingleActionFooterProps = {
+  onSubmit: () => void;
+  isGaslessLoading: boolean;
+};
+
+export const SingleActionFooter = ({
   onSubmit,
   isGaslessLoading,
-}: MusdConversionFooterProps) => {
-  const {
-    buttonText,
-    isDisabled,
-    isLoading: isButtonLoading,
-  } = useMusdConversionButtonState(isGaslessLoading);
+}: SingleActionFooterProps) => {
+  const { buttonText, isDisabled, isLoading } =
+    useSingleActionButtonState(isGaslessLoading);
 
   return (
     <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         data-testid="confirm-footer-button"
-        disabled={!isButtonLoading && isDisabled}
-        loading={isButtonLoading}
-        onClick={isButtonLoading ? undefined : onSubmit}
+        disabled={!isLoading && isDisabled}
+        loading={isLoading}
+        onClick={isLoading ? undefined : onSubmit}
         size={ButtonSize.Lg}
       >
         {buttonText}
@@ -113,5 +133,3 @@ const MusdConversionFooter = ({
     </PageFooter>
   );
 };
-
-export default MusdConversionFooter;

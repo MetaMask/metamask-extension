@@ -14,12 +14,12 @@ import {
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-} from '../../../../../../components/component-library';
-import { getAvatarNetworkColor } from '../../../../../../helpers/utils/accounts';
-import { Skeleton } from '../../../../../../components/component-library/skeleton';
-import { useConfirmContext } from '../../../../context/confirm';
-import useConfirmationNetworkInfo from '../../../../hooks/useConfirmationNetworkInfo';
-import { useMerklClaimAmount } from '../../../../hooks/musd/useMerklClaimAmount';
+} from '../../../../../components/component-library';
+import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { useConfirmContext } from '../../../context/confirm';
+import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
+import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
 
 const MUSD_ICON_SRC = './images/musd-icon-no-background-2x.png';
 const MUSD_SYMBOL = 'MUSD';

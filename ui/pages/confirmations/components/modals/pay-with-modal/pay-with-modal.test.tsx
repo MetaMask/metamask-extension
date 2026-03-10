@@ -144,7 +144,7 @@ describe('PayWithModal', () => {
     expect(onCloseMock).toHaveBeenCalled();
   });
 
-  it('filters tokens using getAvailableTokens', () => {
+  it('filters tokens using getAvailableTokens with transactionType and musdTokenFilter', () => {
     renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
 
     expect(getAvailableTokensMock).toHaveBeenCalledWith(
@@ -154,6 +154,8 @@ describe('PayWithModal', () => {
           chainId: CHAIN_ID_MOCK,
         }),
         requiredTokens: [],
+        transactionType: 'simpleSend',
+        musdTokenFilter: expect.any(Function),
       }),
     );
   });

@@ -1,25 +1,25 @@
 import React from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import configureMockStore from 'redux-mock-store';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import * as useTransactionCustomAmountModule from '../../../../hooks/transactions/useTransactionCustomAmount';
-import * as useTransactionCustomAmountAlertsModule from '../../../../hooks/transactions/useTransactionCustomAmountAlerts';
-import * as useAutomaticTransactionPayTokenModule from '../../../../hooks/pay/useAutomaticTransactionPayToken';
-import * as useTransactionPayMetricsModule from '../../../../hooks/pay/useTransactionPayMetrics';
-import * as useTransactionPayAvailableTokensModule from '../../../../hooks/pay/useTransactionPayAvailableTokens';
-import * as useTransactionPayDataModule from '../../../../hooks/pay/useTransactionPayData';
-import * as useTransactionPayTokenModule from '../../../../hooks/pay/useTransactionPayToken';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import * as useTransactionCustomAmountModule from '../../../hooks/transactions/useTransactionCustomAmount';
+import * as useTransactionCustomAmountAlertsModule from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
+import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
+import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
+import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import { MusdConversionInfo } from './musd-conversion-info';
 
-jest.mock('../../../../hooks/transactions/useTransactionCustomAmount');
-jest.mock('../../../../hooks/transactions/useTransactionCustomAmountAlerts');
-jest.mock('../../../../hooks/pay/useAutomaticTransactionPayToken');
-jest.mock('../../../../hooks/pay/useTransactionPayMetrics');
-jest.mock('../../../../hooks/pay/useTransactionPayAvailableTokens');
-jest.mock('../../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../../hooks/pay/useTransactionPayToken');
+jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
+jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
+jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
+jest.mock('../../../hooks/pay/useTransactionPayMetrics');
+jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
+jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useTransactionPayToken');
 
 jest.mock('./musd-override-content', () => ({
   MusdOverrideContent: ({ amountHuman }: { amountHuman: string }) => (
@@ -27,32 +27,32 @@ jest.mock('./musd-override-content', () => ({
   ),
 }));
 
-jest.mock('../../../transactions/custom-amount/custom-amount', () => ({
+jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({ amountFiat }: { amountFiat: string }) => (
     <div data-testid="custom-amount">{amountFiat}</div>
   ),
   CustomAmountSkeleton: () => <div data-testid="custom-amount-skeleton" />,
 }));
-jest.mock('../../../pay-token-amount/pay-token-amount', () => ({
+jest.mock('../../pay-token-amount/pay-token-amount', () => ({
   PayTokenAmount: ({ amountHuman }: { amountHuman: string }) => (
     <div data-testid="pay-token-amount">{amountHuman}</div>
   ),
   PayTokenAmountSkeleton: () => <div data-testid="pay-token-amount-skeleton" />,
 }));
-jest.mock('../../../rows/pay-with-row/pay-with-row', () => ({
+jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
 }));
-jest.mock('../../../rows/bridge-fee-row/bridge-fee-row', () => ({
+jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
   BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
 }));
-jest.mock('../../../rows/bridge-time-row/bridge-time-row', () => ({
+jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
   BridgeTimeRow: () => <div data-testid="bridge-time-row" />,
 }));
-jest.mock('../../../rows/total-row/total-row', () => ({
+jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
-jest.mock('../../../rows/claimable-bonus-row/claimable-bonus-row', () => ({
+jest.mock('../../rows/claimable-bonus-row/claimable-bonus-row', () => ({
   ClaimableBonusRow: () => <div data-testid="claimable-bonus-row" />,
 }));
 

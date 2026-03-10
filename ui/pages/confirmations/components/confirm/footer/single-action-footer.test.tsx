@@ -1,24 +1,32 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import configureMockStore from 'redux-mock-store';
-import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
-import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
+import { TransactionType } from '@metamask/transaction-controller';
+import { DefaultRootState } from 'react-redux';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { AlertsName } from '../../../hooks/alerts/constants';
 import {
   useIsTransactionPayLoading,
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
-import MusdConversionFooter from './musd-conversion-footer';
+import { SingleActionFooter } from './single-action-footer';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 
-const CONFIRMATION_ID = unapprovedPersonalSignMsg.id;
-
-const mockStore = configureMockStore([]);
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => jest.fn(),
+}));
 
 const MOCK_ON_SUBMIT = jest.fn();
+
+function genMusdConversion() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return { ...base, type: TransactionType.musdConversion, origin: 'metamask' };
+}
 
 function render({
   isGaslessLoading = false,
@@ -37,26 +45,29 @@ function render({
     isBlocking?: boolean;
   }[];
 } = {}) {
-  const baseState = getMockPersonalSignConfirmState();
+  const confirmation = genMusdConversion();
+  const baseState = getMockConfirmStateForTransaction(
+    confirmation,
+  ) as DefaultRootState;
 
   const state = {
     ...baseState,
     confirmAlerts: {
-      alerts: { [CONFIRMATION_ID]: alerts },
+      alerts: { [confirmation.id]: alerts },
       confirmed: {},
     },
   };
 
   return renderWithConfirmContextProvider(
-    <MusdConversionFooter
+    <SingleActionFooter
       onSubmit={MOCK_ON_SUBMIT}
       isGaslessLoading={isGaslessLoading}
     />,
-    mockStore(state),
+    configureStore(state),
   );
 }
 
-describe('MusdConversionFooter', () => {
+describe('<SingleActionFooter />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
@@ -69,7 +80,7 @@ describe('MusdConversionFooter', () => {
       ]);
   });
 
-  it('renders the convert button', () => {
+  it('renders the button', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('confirm-footer-button')).toBeInTheDocument();

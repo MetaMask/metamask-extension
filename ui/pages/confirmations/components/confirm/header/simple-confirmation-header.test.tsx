@@ -8,63 +8,40 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import * as ConfirmActions from '../../../hooks/useConfirmActions';
-import { MusdConversionHeader } from './musd-conversion-header';
+import { SimpleConfirmationHeader } from './simple-confirmation-header';
 
-const genMusdConversionConfirmation = () => {
+function genConfirmation(type: TransactionType = TransactionType.musdConversion) {
   const base = genUnapprovedContractInteractionConfirmation({
     chainId: '0x1',
   });
   return {
     ...base,
-    type: TransactionType.musdConversion,
+    type,
     origin: 'metamask',
   };
-};
-
-const getMockMusdConversionConfirmState = () => {
-  return getMockConfirmStateForTransaction(genMusdConversionConfirmation());
-};
-
-const render = (
-  state: DefaultRootState = getMockMusdConversionConfirmState(),
-) => {
-  const store = configureStore(state);
-  return renderWithConfirmContextProvider(<MusdConversionHeader />, store);
-};
+}
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),
 }));
 
-describe('<MusdConversionHeader />', () => {
-  it('should match snapshot', () => {
-    const { container } = render();
+function render(
+  type: TransactionType = TransactionType.musdConversion,
+  state?: DefaultRootState,
+) {
+  const store = configureStore(
+    state ?? getMockConfirmStateForTransaction(genConfirmation(type)),
+  );
+  return renderWithConfirmContextProvider(<SimpleConfirmationHeader />, store);
+}
 
-    expect(container).toMatchSnapshot();
-  });
-
-  it('renders the "Convert and get 3%" title', () => {
-    const { getByTestId } = render();
-
-    expect(getByTestId('musd-conversion-header-title')).toHaveTextContent(
-      'Convert and get 3%',
-    );
-  });
-
+describe('<SimpleConfirmationHeader />', () => {
   it('renders the back button', () => {
     const { getByTestId } = render();
 
     expect(
-      getByTestId('musd-conversion-header-back-button'),
-    ).toBeInTheDocument();
-  });
-
-  it('renders the info button', () => {
-    const { getByTestId } = render();
-
-    expect(
-      getByTestId('musd-conversion-header-info-button'),
+      getByTestId('simple-confirmation-header-back-button'),
     ).toBeInTheDocument();
   });
 
@@ -76,7 +53,7 @@ describe('<MusdConversionHeader />', () => {
     }));
 
     const { getByTestId } = render();
-    fireEvent.click(getByTestId('musd-conversion-header-back-button'));
+    fireEvent.click(getByTestId('simple-confirmation-header-back-button'));
 
     expect(mockOnCancel).toHaveBeenCalledWith({
       location: 'confirmation',
@@ -84,11 +61,31 @@ describe('<MusdConversionHeader />', () => {
     });
   });
 
-  it('shows tooltip when info button is clicked', () => {
-    const { getByTestId } = render();
+  describe('musdConversion type', () => {
+    it('renders the "Convert and get 3%" title', () => {
+      const { getByTestId } = render(TransactionType.musdConversion);
 
-    fireEvent.click(getByTestId('musd-conversion-header-info-button'));
+      expect(
+        getByTestId('simple-confirmation-header-title'),
+      ).toHaveTextContent('Convert and get 3%');
+    });
 
-    expect(getByTestId('musd-conversion-header-tooltip')).toBeInTheDocument();
+    it('renders the mUSD info tooltip as endAccessory', () => {
+      const { getByTestId } = render(TransactionType.musdConversion);
+
+      expect(
+        getByTestId('musd-conversion-header-info-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows tooltip when info button is clicked', () => {
+      const { getByTestId } = render(TransactionType.musdConversion);
+
+      fireEvent.click(getByTestId('musd-conversion-header-info-button'));
+
+      expect(
+        getByTestId('musd-conversion-header-tooltip'),
+      ).toBeInTheDocument();
+    });
   });
 });

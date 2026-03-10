@@ -1562,10 +1562,6 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/confirm/footer/musd-conversion-footer.test.tsx": {
-      "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/confirm/footer/origin-throttle-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1574,6 +1570,10 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/footer/shield-footer-coverage-indicator/shield-footer-coverage-indicator.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/footer/single-action-footer.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1593,7 +1593,7 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/confirm/header/musd-conversion-header.test.tsx": {
+    "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1718,18 +1718,6 @@
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "Test errors: Uncaught Errors": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/confirm/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
-      "Reselect: Identity function warnings": 5,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-heading.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1
-    },
-    "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-info.test.tsx": {
-      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
@@ -2058,6 +2046,15 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
+      "MetaMask: Background connection not initialized": 16,
+      "Reselect: Identity function warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/musd-conversion-info/musd-conversion-info.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },

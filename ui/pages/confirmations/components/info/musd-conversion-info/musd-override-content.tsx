@@ -10,20 +10,20 @@
  */
 
 import React from 'react';
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library';
 import {
   AlignItems,
   Display,
   FlexDirection,
-} from '../../../../../../helpers/constants/design-system';
-import { useTransactionPayAvailableTokens } from '../../../../hooks/pay/useTransactionPayAvailableTokens';
-import { useTransactionPayToken } from '../../../../hooks/pay/useTransactionPayToken';
+} from '../../../../../helpers/constants/design-system';
+import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import {
   ConfirmInfoRowSize,
   PayWithRow,
   PayWithRowSkeleton,
-} from '../../../rows/pay-with-row/pay-with-row';
-import { useCustomAmount } from '../../../../../../hooks/musd/useCustomAmount';
+} from '../../rows/pay-with-row/pay-with-row';
+import { useCustomAmount } from '../../../../../hooks/musd/useCustomAmount';
 import { OutputAmountTag } from './output-amount-tag';
 
 export type MusdOverrideContentProps = {

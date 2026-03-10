@@ -1,9 +1,6 @@
 import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -32,8 +29,6 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const requiredTokens = useTransactionPayRequiredTokens();
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens();
-  const isMusdConversion =
-    currentConfirmation?.type === TransactionType.musdConversion;
 
   const handleClose = useCallback(() => {
     onClose();
@@ -56,21 +51,15 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   );
 
   const tokenFilter = useCallback(
-    (tokens: AssetType[]) => {
-      const availableTokens = getAvailableTokens({
+    (tokens: AssetType[]) =>
+      getAvailableTokens({
         payToken,
         requiredTokens,
         tokens,
-      });
-
-      // Apply mUSD-specific filtering for conversion transactions
-      if (isMusdConversion) {
-        return musdTokenFilter(availableTokens);
-      }
-
-      return availableTokens;
-    },
-    [payToken, requiredTokens, isMusdConversion, musdTokenFilter],
+        transactionType: currentConfirmation?.type,
+        musdTokenFilter,
+      }),
+    [payToken, requiredTokens, currentConfirmation?.type, musdTokenFilter],
   );
 
   return (
