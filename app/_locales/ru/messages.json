@@ -1801,7 +1801,8 @@
     "message": "Разблокирует MetaMask только на этом устройстве."
   },
   "createPasswordDetailsSocial": {
-    "message": "Потеря этого пароля означает потерю доступа к кошельку на всех устройствах, "
+    "message": "Потеря этого пароля означает потерю доступа к кошельку на всех устройствах, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask не может ее сбросить."

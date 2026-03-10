@@ -1801,7 +1801,8 @@
     "message": "Ξεκλειδώνει το MetaMask μόνο σε αυτή τη συσκευή."
   },
   "createPasswordDetailsSocial": {
-    "message": "Η απώλεια αυτού του κωδικού σημαίνει απώλεια πρόσβασης στο πορτοφόλι σε όλες τις συσκευές, "
+    "message": "Η απώλεια αυτού του κωδικού σημαίνει απώλεια πρόσβασης στο πορτοφόλι σε όλες τις συσκευές, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Το MetaMask δεν μπορεί να την επαναφέρει."

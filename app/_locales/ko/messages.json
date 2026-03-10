@@ -1801,7 +1801,8 @@
     "message": "이 기기에서만 MetaMask 잠금해제에 사용됩니다."
   },
   "createPasswordDetailsSocial": {
-    "message": "이 비밀번호를 분실하면 모든 기기에서 지갑에 액세스할 수 없습니다. "
+    "message": "이 비밀번호를 분실하면 모든 기기에서 지갑에 액세스할 수 없습니다. ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask는 비밀번호를 재설정해 드릴 수 없습니다."

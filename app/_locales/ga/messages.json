@@ -1575,7 +1575,8 @@
     "message": "Díghlasálann sé MetaMask ar an ngléas seo amháin."
   },
   "createPasswordDetailsSocial": {
-    "message": "Má chailleann tú an pasfhocal seo, caillfidh tú rochtain ar do sparán ar gach gléas. Stóráil é in áit shábháilte, "
+    "message": "Má chailleann tú an pasfhocal seo, caillfidh tú rochtain ar do sparán ar gach gléas. Stóráil é in áit shábháilte, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Ní féidir le MetaMask é a athshocrú."
