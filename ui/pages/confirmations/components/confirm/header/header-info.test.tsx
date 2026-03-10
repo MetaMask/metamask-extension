@@ -64,7 +64,7 @@ const render = () => {
 };
 
 describe('Header', () => {
-  it('should match snapshot', async () => {
+  it('render matches snapshot', async () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
   });
@@ -81,6 +81,22 @@ describe('Header', () => {
       await waitFor(() => {
         expect(queryByTestId('account-details-modal')).toBeInTheDocument();
         expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
+      });
+    });
+
+    it('displays balance from the confirmation chain for transactions', async () => {
+      const transactionStore = getMockContractInteractionConfirmState();
+      const store = configureStore(transactionStore);
+      const { getByLabelText, queryByTestId } =
+        renderWithConfirmContextProvider(<HeaderInfo />, store);
+
+      fireEvent.click(getByLabelText(messages.accountDetails.message));
+
+      await waitFor(() => {
+        expect(queryByTestId('account-details-modal')).toBeInTheDocument();
+        expect(
+          queryByTestId('confirmation-account-details-modal__account-balance'),
+        ).toBeInTheDocument();
       });
     });
 

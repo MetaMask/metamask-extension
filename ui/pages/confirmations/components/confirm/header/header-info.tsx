@@ -62,7 +62,10 @@ const HeaderInfo = () => {
 
   const t = useI18nContext();
 
-  const { balance: balanceToUse } = useBalance(fromAddress);
+  const { balance: balanceToUse } = useBalance(
+    fromAddress,
+    currentConfirmation?.chainId,
+  );
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
 
