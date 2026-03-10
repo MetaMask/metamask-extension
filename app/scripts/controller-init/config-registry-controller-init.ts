@@ -183,13 +183,12 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
       if (!isConfigRegistryApiEnabled(initMessenger)) {
         return;
       }
-      if (hasConfigs(controller)) {
-        return;
+      if (!hasConfigs(controller)) {
+        runInitialFetch(
+          controller as ControllerWithUpdate,
+          controllerMessenger as unknown as ControllerMessengerWithFetch,
+        );
       }
-      runInitialFetch(
-        controller as ControllerWithUpdate,
-        controllerMessenger as unknown as ControllerMessengerWithFetch,
-      );
       if (!pollingStarted) {
         pollingStarted = true;
         controller.startPolling(null);

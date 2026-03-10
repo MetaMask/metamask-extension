@@ -492,5 +492,40 @@ describe('ConfigRegistryControllerInit', () => {
       );
       jest.useRealTimers();
     });
+
+    it('starts polling when flag becomes true even if persisted configs exist', () => {
+      jest.useFakeTimers();
+      mockControllerInstance.state = {
+        configs: { networks: { 'eip155:1': {} as never } },
+        version: '1',
+        lastFetched: Date.now(),
+        etag: null,
+      };
+      const requestMock = buildInitRequestMock({
+        configRegistryApiEnabled: false,
+      });
+
+      const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+      ConfigRegistryControllerInit(requestMock);
+
+      expect(mockControllerInstance.startPolling).not.toHaveBeenCalled();
+
+      const stateChangeHandler = subscribeSpy.mock.calls.find(
+        (call) => call[0] === 'RemoteFeatureFlagController:stateChange',
+      )?.[1] as () => void;
+      requestMock.initMessenger.call = jest.fn((action: string) => {
+        if (action === 'RemoteFeatureFlagController:getState') {
+          return {
+            remoteFeatureFlags: { configRegistryApiEnabled: true },
+          } as never;
+        }
+        return undefined as never;
+      }) as typeof requestMock.initMessenger.call;
+
+      stateChangeHandler();
+
+      expect(mockControllerInstance.startPolling).toHaveBeenCalledWith(null);
+      jest.useRealTimers();
+    });
   });
 });
