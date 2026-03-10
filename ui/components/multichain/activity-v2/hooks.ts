@@ -62,15 +62,16 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
     [evmAddress, internalTxHashes],
   );
 
-  const options =
+  const queryOptions =
     apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
       accountAddresses,
       networks,
       includeTxMetadata: true,
     });
 
+  // @ts-expect-error apiClient returns v5 types, repo still in v4
   return useInfiniteQuery({
-    ...options,
+    ...queryOptions,
     select: selectFn,
     enabled: Boolean(useExternalServices) && networks.length > 0,
     keepPreviousData: true,
@@ -108,6 +109,7 @@ export function usePrefetchTransactions() {
       return;
     }
 
+    // @ts-expect-error apiClient returns v5 types, repo still in v4
     queryClient.prefetchInfiniteQuery(queryOptions).catch(() => {
       // Prefetch is opportunistic
     });
