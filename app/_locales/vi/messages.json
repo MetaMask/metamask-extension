@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
-  "buildContactList": {
-    "message": "Xây dựng danh sách liên hệ của bạn"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask được thiết kế và xây dựng trên khắp thế giới."
   },

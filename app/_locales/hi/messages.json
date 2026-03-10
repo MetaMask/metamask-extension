@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
   },
-  "buildContactList": {
-    "message": "अपनी कॉन्टेक्ट लिस्ट बनाएं"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask दुनिया भर में डिज़ाइन किया और बनाया गया है।"
   },

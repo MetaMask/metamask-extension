@@ -150,7 +150,7 @@ export function EditContactForm({
   };
 
   return (
-    <Box className="flex h-full w-full flex-col justify-between mb-4 gap-6">
+    <Box className="flex h-full w-full flex-col justify-between gap-6">
       <Box
         className="flex w-full flex-col px-4 pt-4 gap-6"
         flexDirection={BoxFlexDirection.Column}
@@ -278,6 +278,7 @@ export function EditContactForm({
         flexDirection={BoxFlexDirection.Row}
         gap={4}
         padding={4}
+        paddingBottom={6}
         className="flex flex-row"
       >
         <Button

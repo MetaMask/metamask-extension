@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
-  "buildContactList": {
-    "message": "연락처 목록 작성하기"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask는 전 세계적으로 설계 및 구축되어 있습니다."
   },

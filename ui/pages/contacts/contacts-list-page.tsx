@@ -4,7 +4,9 @@ import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
 import {
   Box,
+  BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonVariant,
   ButtonSize,
@@ -115,15 +117,18 @@ export function ContactsListPage() {
       >
         <Box
           flexDirection={BoxFlexDirection.Column}
-          padding={4}
-          paddingTop={0}
           className="multichain-page-content flex min-h-0 flex-1 flex-col overflow-auto"
           style={{
             scrollbarColor: 'var(--color-icon-muted) transparent',
           }}
         >
           {contacts.length > 0 ? (
-            <Box flexDirection={BoxFlexDirection.Column} paddingBottom={4}>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              padding={4}
+              paddingTop={0}
+              paddingBottom={4}
+            >
               {contacts.map(
                 (entry: { address: string; name: string; chainId: string }) => (
                   <ContactListItem
@@ -139,32 +144,50 @@ export function ContactsListPage() {
               )}
             </Box>
           ) : (
-            <ContactsEmptyState />
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
+              className="flex min-h-full flex-1 flex-col items-center justify-center"
+            >
+              <ContactsEmptyState
+                onAddContact={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Contacts,
+                    event: MetaMetricsEventName.AddContactClicked,
+                    properties: { location: 'contacts_list' },
+                  });
+                  navigate(CONTACTS_ADD_ROUTE);
+                }}
+              />
+            </Box>
           )}
         </Box>
-        <Box
-          padding={4}
-          paddingTop={0}
-          marginTop={6}
-          className="shrink-0 bg-background-default"
-        >
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            isFullWidth
-            onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Contacts,
-                event: MetaMetricsEventName.AddContactClicked,
-                properties: { location: 'contacts_list' },
-              });
-              navigate(CONTACTS_ADD_ROUTE);
-            }}
-            data-testid="contacts-add-contact-button"
+        {contacts.length > 0 && (
+          <Box
+            padding={4}
+            paddingBottom={6}
+            paddingTop={0}
+            className="shrink-0 bg-background-default"
           >
-            {contacts.length === 0 ? `+ ${t('addContact')}` : t('addContact')}
-          </Button>
-        </Box>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              isFullWidth
+              onClick={() => {
+                trackEvent({
+                  category: MetaMetricsEventCategory.Contacts,
+                  event: MetaMetricsEventName.AddContactClicked,
+                  properties: { location: 'contacts_list' },
+                });
+                navigate(CONTACTS_ADD_ROUTE);
+              }}
+              data-testid="contacts-add-contact-button"
+            >
+              {t('addContact')}
+            </Button>
+          </Box>
+        )}
       </Box>
     </Page>
   );

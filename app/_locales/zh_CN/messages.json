@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
   },
-  "buildContactList": {
-    "message": "建立您的联系人列表"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
   },

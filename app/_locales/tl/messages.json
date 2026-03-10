@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
   },
-  "buildContactList": {
-    "message": "Buuin ang iyong listahan ng contact"
-  },
   "builtAroundTheWorld": {
     "message": "Ang MetaMask ay dinisenyo at itinatag sa buong mundo."
   },

@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
   },
-  "buildContactList": {
-    "message": "Créez votre liste de contacts"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask est conçu et établi dans le monde entier."
   },

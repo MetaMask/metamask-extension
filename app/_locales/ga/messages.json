@@ -1064,9 +1064,6 @@
   "browserNotSupported": {
     "message": "Ní thacaítear le do bhrabhsálaí..."
   },
-  "buildContactList": {
-    "message": "Tóg do liosta teagmhála"
-  },
   "builtAroundTheWorld": {
     "message": "Tá MetaMask deartha agus tógtha ar fud an domhain."
   },

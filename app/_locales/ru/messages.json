@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
-  "buildContactList": {
-    "message": "Создайте список контактов"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
   },

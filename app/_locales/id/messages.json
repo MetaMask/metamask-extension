@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
   },
-  "buildContactList": {
-    "message": "Buat daftar kontak Anda"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask dirancang dan dibangun di seluruh dunia."
   },

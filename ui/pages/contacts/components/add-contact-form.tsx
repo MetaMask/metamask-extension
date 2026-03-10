@@ -265,6 +265,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           helpText={nameInputError || undefined}
           size={FormTextFieldSize.Lg}
           labelProps={{ marginBottom: 1 }}
+          autoFocus
           textFieldProps={{
             backgroundColor: BackgroundColor.backgroundMuted,
             borderColor: BorderColor.borderDefault,
@@ -376,6 +377,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         flexDirection={BoxFlexDirection.Row}
         gap={4}
         padding={4}
+        paddingBottom={6}
         className="bg-background-default"
       >
         <Button

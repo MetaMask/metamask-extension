@@ -1275,9 +1275,6 @@
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
-  "buildContactList": {
-    "message": "Build your contact list"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
   },

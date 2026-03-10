@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
-  "buildContactList": {
-    "message": "Kişi listenizi oluşturun"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask dünya çapında geliştirilmiş ve yapılmıştır."
   },

@@ -51,6 +51,7 @@ export function ViewContactContent({
       flexDirection={BoxFlexDirection.Column}
       padding={4}
       paddingTop={4}
+      paddingBottom={0}
       gap={6}
       className="flex flex-col h-full w-full flex-1 justify-between"
     >
@@ -144,7 +145,11 @@ export function ViewContactContent({
                 title={copied ? t('copiedExclamation') : t('copyToClipboard')}
                 iconName={copied ? IconName.CopySuccess : IconName.Copy}
                 size={ButtonIconSize.Sm}
-                iconProps={{ className: IconColor.IconAlternative }}
+                iconProps={{
+                  color: copied
+                    ? IconColor.SuccessDefault
+                    : IconColor.IconAlternative,
+                }}
                 onClick={() => handleCopy(checkSummedAddress)}
               />
             </Box>
@@ -222,7 +227,6 @@ export function ViewContactContent({
         gap={4}
         className="flex shrink-0 flex-row"
         paddingTop={4}
-        paddingBottom={4}
       >
         <Button
           variant={ButtonVariant.Secondary}
