@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
 import {
   type CaipAssetType,
   CaipAssetTypeStruct,
@@ -13,13 +12,12 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setEvmBalances,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
+import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -60,46 +58,20 @@ const fetchAssetMetadata = async (
 };
 
 /**
- * This hook is used to set the bridge fromChain, fromToken, fromTokenInputValue,
+ * This sets the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
- * It also clear the search params after setting the values.
+ * It also clears the search params after setting the values.
  */
-export const useBridgeQueryParams = () => {
+export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  /**
-   * @deprecated remove this when GNS references are removed
-   */
-  const currentChainId = useSelector(getMultichainCurrentChainId);
-
-  const { search, pathname, state } = useLocation();
-  const navigate = useNavigate();
+  const { resetSearchParams, search } = useBridgeNavigation();
 
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-
-  // Clean up URL parameters
-  const cleanupUrlParams = useCallback(
-    (paramsToRemove: BridgeQueryParams[]) => {
-      const updatedSearchParams = new URLSearchParams(search);
-      paramsToRemove.forEach((param) => {
-        if (updatedSearchParams.get(param)) {
-          updatedSearchParams.delete(param);
-        }
-      });
-      navigate(
-        {
-          pathname,
-          search: updatedSearchParams.toString(),
-        },
-        { replace: true },
-      );
-    },
-    [search, pathname, navigate],
-  );
 
   const [parsedFromAssetId, setParsedFromAssetId] =
     useState<ReturnType<typeof parseAsset>>(null);
@@ -123,10 +95,10 @@ export const useBridgeQueryParams = () => {
   // are set (once) to prevent infinite re-renders
   useEffect(() => {
     const searchParamsFrom = parseAsset(
-      searchParams.get(BridgeQueryParams.FROM),
+      searchParams.get(BridgeQueryParams.From),
     );
-    const searchParamsTo = parseAsset(searchParams.get(BridgeQueryParams.TO));
-    const searchParamsAmount = searchParams.get(BridgeQueryParams.AMOUNT);
+    const searchParamsTo = parseAsset(searchParams.get(BridgeQueryParams.To));
+    const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
       setParsedToAssetId(searchParamsTo);
@@ -134,10 +106,10 @@ export const useBridgeQueryParams = () => {
       if (searchParamsAmount) {
         setParsedAmount(searchParamsAmount);
       }
-      cleanupUrlParams([
-        BridgeQueryParams.FROM,
-        BridgeQueryParams.TO,
-        BridgeQueryParams.AMOUNT,
+      resetSearchParams([
+        BridgeQueryParams.From,
+        BridgeQueryParams.To,
+        BridgeQueryParams.Amount,
       ]);
 
       // Fetch asset metadata for both tokens in 1 call
@@ -220,19 +192,4 @@ export const useBridgeQueryParams = () => {
       }
     }
   }, [parsedAmount, parsedFromAssetId, assetMetadataByAssetId, fromToken]);
-
-  // Set src token balance after url params are applied
-  // This effect runs on each token change regardless of the url params
-  useEffect(() => {
-    if (fromToken?.assetId) {
-      dispatch(setEvmBalances(fromToken.assetId));
-    }
-  }, [fromToken, fromToken?.assetId, currentChainId]);
-
-  // If srcToken object is passed through navigation options, use it as the fromToken
-  useEffect(() => {
-    if (state?.srcToken) {
-      dispatch(setFromToken(state.srcToken));
-    }
-  }, [state?.srcToken]);
 };

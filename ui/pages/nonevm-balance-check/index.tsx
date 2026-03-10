@@ -19,7 +19,6 @@ import { setSelectedAccount } from '../../store/actions';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
-import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { RampsMetaMaskEntry } from '../../hooks/ramps/useRamps/useRamps';
 import { getLastSelectedNonEvmAccount } from '../../selectors/multichain';
 import {
@@ -36,7 +35,6 @@ const { getExtensionURL } = globalThis.platform;
 const getSwapUrl = (chainId: CaipChainId): string => {
   const query = new URLSearchParams();
   query.set('sourceToken', chainId);
-  query.set(BridgeQueryParams.SWAPS, 'true');
   return getExtensionURL(SWAP_ROUTE, query.toString());
 };
 
