@@ -264,17 +264,26 @@ export function printReport(result: {
     const status = comparison.absoluteFailed ? 'FAIL' : 'PASS';
     console.log(`\n${status}  ${comparison.benchmarkName}\n`);
 
-    const grouped = groupByMetric(comparison);
-
-    if (grouped.length === 0) {
-      console.log('    (no historical baseline data)');
-    }
-
     const failViolations = new Map(
       comparison.absoluteViolations
         .filter((v) => v.severity === ThresholdSeverity.Fail)
         .map((v) => [`${v.metricId}:${v.percentile}`, v]),
     );
+
+    const grouped = groupByMetric(comparison);
+
+    if (grouped.length === 0 && comparison.absoluteViolations.length === 0) {
+      console.log('    (no historical baseline data)');
+    }
+
+    if (grouped.length === 0 && comparison.absoluteViolations.length > 0) {
+      for (const v of comparison.absoluteViolations) {
+        const icon = v.severity === ThresholdSeverity.Fail ? '🔺' : '🟡⬆️';
+        console.log(
+          `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(0)}ms > ${v.threshold}ms`,
+        );
+      }
+    }
 
     for (const entry of grouped) {
       const parts = [entry.p75, entry.p95]

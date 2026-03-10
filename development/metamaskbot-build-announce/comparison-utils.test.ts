@@ -1,4 +1,7 @@
-import type { ThresholdConfig } from '../../shared/constants/benchmarks';
+import type {
+  BenchmarkResults,
+  ThresholdConfig,
+} from '../../shared/constants/benchmarks';
 import { DEFAULT_RELATIVE_THRESHOLDS } from '../../shared/constants/benchmarks';
 
 import {
@@ -233,7 +236,7 @@ describe('benchmark-comparison', () => {
         max: { uiStartup: 2000 },
         stdDev: { uiStartup: 200 },
         p75: { uiStartup: 1800 },
-      };
+      } as BenchmarkResults;
       const baseline = {
         uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
       };

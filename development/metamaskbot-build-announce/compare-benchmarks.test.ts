@@ -391,6 +391,43 @@ describe('compare-benchmarks', () => {
       expect(output).toContain('🔺 p75: 99999ms');
     });
 
+    it('shows absolute violations when no baseline data is available', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'no-baseline-bench',
+            relativeMetrics: [],
+            absoluteViolations: [
+              {
+                metricId: 'uiStartup',
+                percentile: 'p75',
+                value: 9000,
+                threshold: 5000,
+                severity: 'fail',
+              },
+              {
+                metricId: 'uiStartup',
+                percentile: 'p95',
+                value: 6000,
+                threshold: 5500,
+                severity: 'warn',
+              },
+            ],
+            hasRegression: false,
+            hasWarning: true,
+            absoluteFailed: true,
+          },
+        ],
+        anyFailed: true,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('FAIL  no-baseline-bench');
+      expect(output).toContain('🔺 uiStartup (p75): 9000ms > 5000ms');
+      expect(output).toContain('🟡⬆️ uiStartup (p95): 6000ms > 5500ms');
+      expect(output).not.toContain('(no historical baseline data)');
+    });
+
     it('counts warnings for benchmarks with warn-level violations', () => {
       printReport({
         comparisons: [
