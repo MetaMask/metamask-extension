@@ -77,7 +77,7 @@ describe('MetametricsToggleItem', () => {
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('participate-in-metametrics-toggle'),
+      screen.getByTestId('participate-in-meta-metrics-toggle'),
     ).toHaveAttribute('value', 'true');
   });
 
@@ -86,7 +86,7 @@ describe('MetametricsToggleItem', () => {
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('participate-in-metametrics-toggle'),
+      screen.getByTestId('participate-in-meta-metrics-toggle'),
     ).toHaveAttribute('value', 'false');
   });
 
@@ -94,7 +94,7 @@ describe('MetametricsToggleItem', () => {
     const mockStore = createMockStore({ participateInMetaMetrics: false });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('participate-in-metametrics-toggle'));
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-toggle'));
 
     await waitFor(() => {
       expect(mockEnableMetametrics).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('MetametricsToggleItem', () => {
     const mockStore = createMockStore({ participateInMetaMetrics: true });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('participate-in-metametrics-toggle'));
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-toggle'));
 
     await waitFor(() => {
       expect(mockDisableMetametrics).toHaveBeenCalled();
@@ -119,7 +119,7 @@ describe('MetametricsToggleItem', () => {
     });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('participate-in-metametrics-toggle'));
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-toggle'));
 
     await waitFor(() => {
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
@@ -130,7 +130,7 @@ describe('MetametricsToggleItem', () => {
     const mockStore = createMockStore({ useExternalServices: false });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    const toggle = screen.getByTestId('participate-in-metametrics-toggle');
+    const toggle = screen.getByTestId('participate-in-meta-metrics-toggle');
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 });
