@@ -1487,6 +1487,9 @@
   "confirmFieldMaxAllowance": {
     "message": "Max allowance"
   },
+  "confirmFieldNeverExpires": {
+    "message": "Never expires"
+  },
   "confirmFieldPaymaster": {
     "message": "Fee paid by"
   },
