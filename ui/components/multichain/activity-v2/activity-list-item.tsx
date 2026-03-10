@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
-import { useFormatters } from '../../../hooks/useFormatters';
-import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
 import { ActivityTxIcon } from './activity-tx-icon';
+import { useFormatters } from '~/ui/hooks/useFormatters';
+import type { TransactionViewModel } from '~/shared/lib/multichain/types';
+import { getCurrentCurrency } from '~/ui/ducks/metamask/metamask';
+import { useBridgeActivityData } from '~/ui/hooks/bridge/useBridgeActivityData';
 
 type Props = {
   transaction: TransactionViewModel;

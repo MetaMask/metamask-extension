@@ -32,6 +32,8 @@ module.exports = {
     config.node = {
       __filename: true,
     };
+    config.resolve.alias['~/ui'] = path.resolve(__dirname, '../ui');
+    config.resolve.alias['~/shared'] = path.resolve(__dirname, '../shared');
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );

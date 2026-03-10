@@ -1,8 +1,8 @@
 import React from 'react';
 import LegacyTransactionListItem from '../../app/transaction-list-item';
 import SmartTransactionListItem from '../../app/transaction-list-item/smart-transaction-list-item.component';
-import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
-import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
+import { isTransactionEarliestNonce } from '~/ui/hooks/useEarliestNonceByChain';
+import type { TransactionGroup } from '~/shared/lib/multichain/types';
 
 type Props = {
   transactionGroup: TransactionGroup;

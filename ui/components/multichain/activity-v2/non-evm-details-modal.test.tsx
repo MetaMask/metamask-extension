@@ -4,10 +4,10 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { TransactionStatus } from '@metamask/keyring-api';
 import type { Transaction } from '@metamask/keyring-api';
-import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { NonEvmDetailsModal } from './non-evm-details-modal';
+import { selectBridgeHistoryForAccountGroup } from '~/ui/ducks/bridge-status/selectors';
 
-jest.mock('../../../ducks/bridge-status/selectors');
+jest.mock('~/ui/ducks/bridge-status/selectors');
 
 jest.mock('../../app/multichain-transaction-details-modal', () => ({
   MultichainTransactionDetailsModal: () => (

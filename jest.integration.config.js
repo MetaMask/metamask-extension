@@ -13,6 +13,8 @@ module.exports = {
     // Map @metamask/perps-controller to local mock
     '^@metamask/perps-controller$':
       '<rootDir>/ui/__mocks__/perps/perps-controller/index.ts',
+    '^~/ui/(.*)$': '<rootDir>/ui/$1',
+    '^~/shared/(.*)$': '<rootDir>/shared/$1',
   },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2

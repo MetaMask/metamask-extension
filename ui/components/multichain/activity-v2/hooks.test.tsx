@@ -5,15 +5,15 @@ import {
   act,
   renderHook as renderHookBase,
 } from '@testing-library/react-hooks';
-import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
-import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
 import {
   useGetTitle,
   usePrefetchTransactions,
   useTransactionsQuery,
 } from './hooks';
+import type { TransactionViewModel } from '~/shared/lib/multichain/types';
+import { TransactionGroupCategory } from '~/shared/constants/transaction';
+import * as useBridgeActivityDataHook from '~/ui/hooks/bridge/useBridgeActivityData';
+import { ChainInfo } from '~/ui/pages/bridge/utils/tx-details';
 
 const mockUseInfiniteQuery = jest.fn();
 const mockUseQueryClient = jest.fn();
@@ -24,13 +24,13 @@ jest.mock('@tanstack/react-query', () => ({
   useQueryClient: () => mockUseQueryClient(),
 }));
 
-jest.mock('../../../helpers/queries', () => ({
+jest.mock('~/ui/helpers/queries', () => ({
   queries: {
     transactions: (...args: unknown[]) => mockQueriesTransactions(...args),
   },
 }));
 
-jest.mock('../../../hooks/useI18nContext', () => ({
+jest.mock('~/ui/hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: string[]) =>
     args?.length ? `${key}:${args.join(',')}` : key,
 }));

@@ -6,9 +6,9 @@ import type {
   TokenAmount,
   TransactionGroup,
   TransactionViewModel,
-} from '../../../../shared/lib/multichain/types';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
-import { formatUnits } from '../../../../shared/lib/unit';
+} from '~/shared/lib/multichain/types';
+import { NATIVE_TOKEN_ADDRESS } from '~/shared/constants/transaction';
+import { formatUnits } from '~/shared/lib/unit';
 
 export type AssetScope =
   | { kind: 'native'; caipAssetType?: string }

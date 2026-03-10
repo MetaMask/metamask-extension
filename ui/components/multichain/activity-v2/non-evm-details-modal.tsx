@@ -4,7 +4,7 @@ import type { Transaction } from '@metamask/keyring-api';
 import { isCrossChain } from '@metamask/bridge-controller';
 import { MultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import MultichainBridgeTransactionDetailsModal from '../../app/multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
-import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForAccountGroup } from '~/ui/ducks/bridge-status/selectors';
 
 type Props = {
   transaction: Transaction;
