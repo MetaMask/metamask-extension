@@ -185,5 +185,22 @@ describe('Gas utils', () => {
         minMaxPriorityWei,
       );
     });
+
+    it('returns txParams when higher than min and txParams use hex without 0x prefix', () => {
+      // BigNumber(value) infers hex from 0x; hex without prefix also parses.
+      const txParams = {
+        maxFeePerGas: '174876e800', // 100 GWEI, no 0x
+        maxPriorityFeePerGas: '174876e800',
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x104c533c00', // 70 GWEI
+        maxPriorityFeePerGas: '0x2540be400',
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(result.maxFeePerGas).toBe('174876e800');
+      expect(result.maxPriorityFeePerGas).toBe('174876e800');
+    });
   });
 });

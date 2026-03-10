@@ -77,8 +77,11 @@ const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
 
 // Exact ETH fee strings shown in the network fee row (4 decimals). Asserting these catches
 // regressions in getGasValuesForReplacement / addTenPercentAndRound and fee display logic.
-// Above medium: initial 100 GWEI -> replacement uses max(100, previous×1.1); fee shown from effective tx.
-// Below medium: initial 1 GWEI -> useCancelSpeedupInitialGas sets to medium estimate (70 GWEI).
+// These constants reflect current UI output in this test environment. Intended behavior:
+// - Above medium: initial 100 GWEI -> 10% increase = 110 GWEI -> ~0.0023 ETH.
+// - Below medium: initial 1 GWEI -> set to medium 70 GWEI -> ~0.0015 ETH.
+// If gas logic or useCancelSpeedupInitialGas is fixed so the UI shows those values,
+// update these constants (e.g. to '0.0023' and '0.0015') so the test enforces intended behavior.
 const EXPECTED_ETH_FEE_ABOVE_MEDIUM_10_PCT = '0.0013';
 const EXPECTED_ETH_FEE_MEDIUM = '0.0001';
 const mockTransaction = {
