@@ -5940,19 +5940,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/core-backend@npm:6.0.0"
+"@metamask/core-backend@npm:^6.0.0, @metamask/core-backend@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/core-backend@npm:6.1.0"
   dependencies:
-    "@metamask/accounts-controller": "npm:^36.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/accounts-controller": "npm:^37.0.0"
+    "@metamask/controller-utils": "npm:^11.19.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/profile-sync-controller": "npm:^27.1.0"
     "@metamask/utils": "npm:^11.9.0"
     "@tanstack/query-core": "npm:^5.62.16"
     uuid: "npm:^8.3.2"
-  checksum: 10/b663aa0ce78ffd493f556070906d7f008c0bd97ce613445366340fe61c0db4b85ca5ce7153a21fb4358a1b5fac31973b708ecb1795fa13fb1d827f62718eaca8
+  checksum: 10/9271cb7eea6c8122c505b66ebced1861572bd781f4ed294e4d9dc2d9f7f100412f5c44a8e53f9b6dc02aa2801f64daeb9fcc398d19cdb04222ae121438017686
   languageName: node
   linkType: hard
 
@@ -33369,7 +33369,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/core-backend": "npm:^6.0.0"
+    "@metamask/core-backend": "npm:^6.1.0"
     "@metamask/delegation-controller": "npm:^2.0.1"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
