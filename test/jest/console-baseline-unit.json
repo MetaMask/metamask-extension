@@ -2126,10 +2126,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission.test.tsx": {
-      "MetaMask: Background connection not initialized": 64,
-      "React: Act warnings (component updates not wrapped)": 64,
-      "Reselect: Identity function warnings": 6,
-      "Reselect: Input stability warnings": 3,
+      "MetaMask: Background connection not initialized": 6,
+      "React: Act warnings (component updates not wrapped)": 6,
+      "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 6,
       "warn: ⚠️ React Router Future Flag": 2
     },
