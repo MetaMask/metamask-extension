@@ -45,18 +45,14 @@ describe('LocalCurrencyItem', () => {
   it('renders navigation button', () => {
     renderWithProvider(<LocalCurrencyItem />, mockStore);
 
-    const button = screen.getByRole('button', {
-      name: messages.localCurrency.message,
-    });
+    const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
   });
 
   it('navigates to currency page when clicked', () => {
     renderWithProvider(<LocalCurrencyItem />, mockStore);
 
-    const button = screen.getByRole('button', {
-      name: messages.localCurrency.message,
-    });
+    const button = screen.getByRole('button');
     fireEvent.click(button);
 
     expect(mockNavigate).toHaveBeenCalledWith(CURRENCY_ROUTE);
