@@ -47,7 +47,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await assertInfoValues(driver);
 
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         await assertAccountDetailsMetrics(
           driver,
