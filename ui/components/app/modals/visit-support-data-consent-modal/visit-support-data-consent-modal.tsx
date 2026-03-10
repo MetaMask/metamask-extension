@@ -71,7 +71,8 @@ const VisitSupportDataConsentModal: React.FC<
 
       const queryString = queryParams.toString();
       if (queryString) {
-        supportLinkWithUserId += `?${queryString}`;
+        const separator = supportLinkWithUserId.includes('?') ? '&' : '?';
+        supportLinkWithUserId += `${separator}${queryString}`;
       }
 
       trackEvent(

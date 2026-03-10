@@ -758,7 +758,8 @@ export const useHandleSubscriptionSupportAction = () => {
 
     const queryString = queryParams.toString();
     if (queryString) {
-      supportLinkWithUserId += `?${queryString}`;
+      const separator = supportLinkWithUserId.includes('?') ? '&' : '?';
+      supportLinkWithUserId += `${separator}${queryString}`;
     }
 
     openWindow(supportLinkWithUserId);

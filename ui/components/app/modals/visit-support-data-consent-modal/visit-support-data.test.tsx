@@ -93,7 +93,7 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}?metamask_version=MOCK_VERSION&metamask_profile_id=${mockProfileId}&metamask_metametrics_id=${mockMetaMetricsId}&shield_id=${mockShieldCustomerId}`;
+    const expectedUrl = `${SUPPORT_LINK}&metamask_version=MOCK_VERSION&metamask_profile_id=${mockProfileId}&metamask_metametrics_id=${mockMetaMetricsId}&shield_id=${mockShieldCustomerId}`;
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -150,7 +150,7 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}?metamask_version=MOCK_VERSION`;
+    const expectedUrl = `${SUPPORT_LINK}&metamask_version=MOCK_VERSION`;
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
