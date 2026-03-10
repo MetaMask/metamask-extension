@@ -5878,9 +5878,6 @@
   "removeAccount": {
     "message": "Remover conta"
   },
-  "removeAccountDescription": {
-    "message": "Essa conta será removida da sua carteira. Antes de continuar, você precisa garantir que tem a Frase de Recuperação Secreta original ou chave privada para essa conta importada. Você pode importar ou criar contas novamente a partir do menu suspenso da conta. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Certifique-se de ter a Frase de Recuperação Secreta ou a chave privada desta conta antes de removê-la.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
