@@ -93,14 +93,26 @@ export function EditContactForm({
     contactName === initialName &&
     newAddress === address &&
     memo === initialMemo;
+
+  const hasValidAddress =
+    newAddress.trim() &&
+    !isBurnAddress(newAddress) &&
+    isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
+  const addressChanged = newAddress !== address;
   const isSaveDisabled =
     !contactName.trim() ||
     Boolean(nameError) ||
     Boolean(addressError) ||
-    isUnchanged;
+    isUnchanged ||
+    !newAddress.trim() ||
+    (addressChanged && !hasValidAddress);
 
   const handleSubmit = async () => {
-    if (newAddress && newAddress !== address) {
+    if (!newAddress.trim()) {
+      setAddressError(t('invalidAddress'));
+      return;
+    }
+    if (newAddress !== address) {
       const valid =
         !isBurnAddress(newAddress) &&
         isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
@@ -127,6 +139,7 @@ export function EditContactForm({
         ),
       );
     }
+    const savedAddress = newAddress !== address ? newAddress : address;
     trackEvent({
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactUpdated,
@@ -136,7 +149,7 @@ export function EditContactForm({
       },
       sensitiveProperties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        contact_address: newAddress,
+        contact_address: savedAddress,
       },
     });
     onSuccess();

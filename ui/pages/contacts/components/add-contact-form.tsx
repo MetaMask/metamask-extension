@@ -301,7 +301,6 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
               />
             }
             inputProps={{ onPaste: handleAddressPaste }}
-            autoFocus
           />
           {domainResolutions?.length > 0 && (
             <Box marginTop={2}>
