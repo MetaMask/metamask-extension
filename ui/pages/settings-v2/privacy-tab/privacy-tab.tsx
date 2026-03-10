@@ -39,7 +39,11 @@ const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
     component: BatchAccountBalanceRequestsToggleItem,
   },
   { id: 'skip-link-confirmation', component: SkipLinkConfirmationToggleItem },
-  { id: 'metametrics', component: MetametricsToggleItem },
+  {
+    id: 'metametrics',
+    component: MetametricsToggleItem,
+    hasDividerBefore: true,
+  },
   { id: 'data-collection', component: DataCollectionToggleItem },
 ];
 
