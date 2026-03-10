@@ -6,7 +6,6 @@ import {
   SortOrder,
   formatChainIdToCaip,
   getNativeAssetForChainId,
-  RequestStatus,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -16,7 +15,6 @@ import {
   createBridgeMockStore,
   MOCK_BITCOIN_ACCOUNT,
   MOCK_EVM_ACCOUNT,
-  MOCK_EVM_ACCOUNT_2,
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
@@ -2397,10 +2395,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getTopAssetsFromFeatureFlags(
-        state as never,
-        'eip155:1',
-      );
+      const result = getTopAssetsFromFeatureFlags(state as never, 'eip155:1');
       expect(result).toStrictEqual(topAssets);
     });
 
@@ -2417,10 +2412,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getTopAssetsFromFeatureFlags(
-        state as never,
-        'eip155:1',
-      );
+      const result = getTopAssetsFromFeatureFlags(state as never, 'eip155:1');
       expect(result).toBeUndefined();
     });
   });
@@ -2751,10 +2743,7 @@ describe('Bridge selectors', () => {
 
     it('returns null when account is null', () => {
       const state = createBridgeMockStore({});
-      const result = getAccountGroupNameByInternalAccount(
-        state as never,
-        null,
-      );
+      const result = getAccountGroupNameByInternalAccount(state as never, null);
       expect(result).toBeNull();
     });
 
