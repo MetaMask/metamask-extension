@@ -2625,6 +2625,14 @@
         "@noble/hashes": true
       }
     },
+    "viem>ox>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
     "viem>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -5041,7 +5049,7 @@
         "crypto.getRandomValues": true
       },
       "packages": {
-        "viem>@noble/curves": true,
+        "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
       }
