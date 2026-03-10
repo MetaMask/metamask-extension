@@ -31,6 +31,7 @@ import {
   setupLongTaskSentryReporting,
   exposeLongTaskMetricsForTesting,
 } from './helpers/utils/performance-observers';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -84,7 +85,7 @@ export const connectToBackground = (
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
-    } else {
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,
