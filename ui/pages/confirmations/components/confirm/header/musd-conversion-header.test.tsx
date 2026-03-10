@@ -68,7 +68,7 @@ describe('<MusdConversionHeader />', () => {
     ).toBeInTheDocument();
   });
 
-  it('calls onCancel when back button is pressed', () => {
+  it('calls onCancel with navigateBackToPreviousPage when back button is pressed', () => {
     const mockOnCancel = jest.fn();
     jest.spyOn(ConfirmActions, 'useConfirmActions').mockImplementation(() => ({
       onCancel: mockOnCancel,
@@ -80,7 +80,7 @@ describe('<MusdConversionHeader />', () => {
 
     expect(mockOnCancel).toHaveBeenCalledWith({
       location: 'confirmation',
-      navigateBackForSend: true,
+      navigateBackToPreviousPage: true,
     });
   });
 

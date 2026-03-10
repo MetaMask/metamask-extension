@@ -19,6 +19,7 @@ import {
 import { useTransactionPayAvailableTokens } from '../../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../../../../hooks/pay/useTransactionPayToken';
 import {
+  ConfirmInfoRowSize,
   PayWithRow,
   PayWithRowSkeleton,
 } from '../../../rows/pay-with-row/pay-with-row';
@@ -62,7 +63,11 @@ export const MusdOverrideContent: React.FC<MusdOverrideContentProps> = ({
           showBackground={false}
         />
       )}
-      {hasTokens && payToken ? <PayWithRow /> : <PayWithRowSkeleton />}
+      {hasTokens && payToken ? (
+        <PayWithRow variant={ConfirmInfoRowSize.Small} />
+      ) : (
+        <PayWithRowSkeleton />
+      )}
     </Box>
   );
 };

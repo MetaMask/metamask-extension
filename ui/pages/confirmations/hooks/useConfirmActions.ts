@@ -11,12 +11,14 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
+import { useConfirmPreviousNavigation } from './useConfirmPreviousNavigation';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
+  const { navigateBackToPrevious } = useConfirmPreviousNavigation();
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const rejectApproval = useCallback(
@@ -46,9 +48,11 @@ export const useConfirmActions = () => {
     async ({
       location,
       navigateBackForSend = false,
+      navigateBackToPreviousPage = false,
     }: {
       location?: MetaMetricsEventLocation;
       navigateBackForSend?: boolean;
+      navigateBackToPreviousPage?: boolean;
     }) => {
       if (!currentConfirmation) {
         return;
@@ -58,10 +62,14 @@ export const useConfirmActions = () => {
       }
       await rejectApproval({ location });
       resetTransactionState();
+      if (navigateBackToPreviousPage) {
+        navigateBackToPrevious();
+      }
     },
     [
       currentConfirmation,
       navigateBackIfSend,
+      navigateBackToPrevious,
       rejectApproval,
       resetTransactionState,
     ],

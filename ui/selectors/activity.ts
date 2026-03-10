@@ -1,5 +1,8 @@
 import { createSelector } from 'reselect';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
@@ -58,6 +61,15 @@ export const selectLocalTransactions = createSelector(
       // Ensure any externally signed transactions are always included.
       // Such as EIP-7702 gas station and MetaMask Pay.
       if (!hasNonce) {
+        // Temporary fix: mUSD conversion/claim txs have no nonce but DO carry
+        // the user's address in txParams.from, so they must still be scoped to
+        // the selected account. Without this guard they appear under every account.
+        if (
+          tx.type === TransactionType.musdConversion ||
+          tx.type === TransactionType.musdClaim
+        ) {
+          return isFromSelectedAccount(tx, selectedAddress);
+        }
         return true;
       }
 

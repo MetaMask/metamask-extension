@@ -1,23 +1,23 @@
 import React, { useCallback, useRef, useState } from 'react';
 import {
   Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
-  ButtonLink,
-  ButtonLinkSize,
   IconName,
-  Popover,
-  PopoverPosition,
   Text,
-} from '../../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextAlign,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
-} from '../../../../../../helpers/constants/design-system';
+  TextAlign,
+} from '@metamask/design-system-react';
+import {
+  Popover,
+  PopoverPosition,
+} from '../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import {
   MUSD_CONVERSION_APY,
@@ -49,16 +49,16 @@ export const MusdConversionHeading: React.FC = () => {
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
       paddingTop={4}
       paddingBottom={2}
       style={{ position: 'relative' }}
       data-testid="musd-conversion-heading"
     >
       <Text
-        variant={TextVariant.headingLg}
+        variant={TextVariant.HeadingLg}
         textAlign={TextAlign.Center}
         data-testid="musd-conversion-heading-title"
       >
@@ -85,19 +85,22 @@ export const MusdConversionHeading: React.FC = () => {
           data-testid="musd-conversion-heading-tooltip"
         >
           <Box padding={2} style={{ maxWidth: 280 }}>
-            <Text variant={TextVariant.bodySm}>
+            <Text variant={TextVariant.BodySm}>
               {t('musdBonusExplanation', [
                 String(MUSD_CONVERSION_APY),
-                <ButtonLink
+                <TextButton
                   key="terms-link"
-                  size={ButtonLinkSize.Inherit}
-                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
-                  externalLink
-                  color={TextColor.textDefault}
-                  style={{ textDecoration: 'underline' }}
+                  size={TextButtonSize.BodyMd}
+                  asChild
+                  color={TextColor.TextDefault}
                 >
-                  {t('musdTermsApply')}
-                </ButtonLink>,
+                  <a
+                    href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                    style={{ textDecoration: 'underline' }}
+                  >
+                    {t('musdTermsApply')}
+                  </a>
+                </TextButton>,
               ])}
             </Text>
           </Box>

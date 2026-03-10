@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../test/data/confirmations/token-transfer';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import * as ConfirmPreviousNavigation from './useConfirmPreviousNavigation';
 import * as ConfirmSendNavigation from './useConfirmSendNavigation';
 import { useConfirmActions } from './useConfirmActions';
 
@@ -73,5 +74,34 @@ describe('useConfirmActions', () => {
     const result = renderHook();
     result.onCancel({ location: 'dummy' });
     expect(mockNavigateBackIfSend).not.toHaveBeenCalled();
+  });
+
+  it('calls navigateBackToPrevious when navigateBackToPreviousPage is true', async () => {
+    const mockNavigateBackToPrevious = jest.fn();
+    jest
+      .spyOn(ConfirmPreviousNavigation, 'useConfirmPreviousNavigation')
+      .mockReturnValue({
+        navigateBackToPrevious: mockNavigateBackToPrevious,
+      });
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook();
+    await result.onCancel({
+      location: 'dummy',
+      navigateBackToPreviousPage: true,
+    });
+    expect(mockNavigateBackToPrevious).toHaveBeenCalled();
+  });
+
+  it('does not call navigateBackToPrevious by default', async () => {
+    const mockNavigateBackToPrevious = jest.fn();
+    jest
+      .spyOn(ConfirmPreviousNavigation, 'useConfirmPreviousNavigation')
+      .mockReturnValue({
+        navigateBackToPrevious: mockNavigateBackToPrevious,
+      });
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook();
+    await result.onCancel({ location: 'dummy' });
+    expect(mockNavigateBackToPrevious).not.toHaveBeenCalled();
   });
 });

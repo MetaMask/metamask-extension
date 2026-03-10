@@ -10,6 +10,11 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => ({ pathname: '/asset/0x1/0xtest', search: '' }),
+}));
+
 jest.mock('../../../../store/actions', () => ({
   addTransactionAndRouteToConfirmationPage: jest.fn(),
   findNetworkClientIdByChainId: jest.fn(),

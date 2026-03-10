@@ -14,7 +14,7 @@
 
 import { useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -35,6 +35,7 @@ import {
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
 import { ConfirmationLoader } from '../../pages/confirmations/hooks/useConfirmationNavigation';
+import { setConfirmReturnTo } from '../../pages/confirmations/hooks/confirmPreviousNavigation';
 import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../components/app/musd/constants';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
@@ -125,6 +126,7 @@ function findExistingPendingMusdConversion(params: {
 export function useMusdConversion(): UseMusdConversionResult {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [error, setError] = useState<string | null>(null);
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -203,6 +205,7 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       try {
         setError(null);
+        setConfirmReturnTo(location.pathname, location.search);
 
         const existing = findExistingPendingMusdConversion({
           unapprovedTransactions: unapprovedTransactions as Record<

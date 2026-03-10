@@ -1,31 +1,32 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useRef, useState } from 'react';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+  TextButton,
+  TextButtonSize,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import {
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
 } from '../../../../../components/app/musd/constants';
 import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonLink,
-  ButtonLinkSize,
   HeaderBase,
-  IconName,
   Popover,
   PopoverPosition,
-  Text,
 } from '../../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
   Display,
-  IconColor,
   JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
@@ -53,7 +54,7 @@ export const MusdConversionHeader = () => {
   const handleBackButtonClick = useCallback(() => {
     onCancel({
       location: MetaMetricsEventLocation.Confirmation,
-      navigateBackForSend: true,
+      navigateBackToPreviousPage: true,
     });
   }, [onCancel]);
 
@@ -81,11 +82,8 @@ export const MusdConversionHeader = () => {
           iconName={IconName.ArrowLeft}
           ariaLabel={t('back')}
           size={ButtonIconSize.Md}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleBackButtonClick}
           data-testid="musd-conversion-header-back-button"
-          color={IconColor.iconDefault}
         />
       }
       endAccessory={
@@ -97,7 +95,6 @@ export const MusdConversionHeader = () => {
             size={ButtonIconSize.Md}
             onClick={handleInfoClick}
             data-testid="musd-conversion-header-info-button"
-            color={IconColor.iconDefault}
           />
           <Popover
             isOpen={isTooltipOpen}
@@ -119,19 +116,24 @@ export const MusdConversionHeader = () => {
             }}
             data-testid="musd-conversion-header-tooltip"
           >
-            <Text variant={TextVariant.bodyMd} color={TextColor.infoInverse}>
+            <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
               {t('musdBonusExplanation', [
                 String(MUSD_CONVERSION_APY),
-                <ButtonLink
+                <TextButton
                   key="terms-link"
-                  size={ButtonLinkSize.Inherit}
-                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
-                  externalLink
-                  color={TextColor.infoInverse}
-                  style={{ textDecoration: 'underline' }}
+                  size={TextButtonSize.BodyMd}
+                  isInverse
+                  asChild
                 >
-                  {t('musdTermsApply')}
-                </ButtonLink>,
+                  <a
+                    href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'underline' }}
+                  >
+                    {t('musdTermsApply')}
+                  </a>
+                </TextButton>,
               ])}
             </Text>
           </Popover>
@@ -148,8 +150,8 @@ export const MusdConversionHeader = () => {
       }}
     >
       <Text
-        variant={TextVariant.headingSm}
-        color={TextColor.textDefault}
+        variant={TextVariant.HeadingSm}
+        color={TextColor.TextDefault}
         textAlign={TextAlign.Center}
         data-testid="musd-conversion-header-title"
       >

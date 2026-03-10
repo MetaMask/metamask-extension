@@ -15,6 +15,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
+  useLocation: () => ({ pathname: '/asset/0x1/0xtest', search: '' }),
 }));
 
 jest.mock('../../selectors/musd', () => ({

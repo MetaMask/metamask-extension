@@ -4188,7 +4188,7 @@
     "message": "Not now"
   },
   "musdGetBonusPercentage": {
-    "message": "Get $1% bonus",
+    "message": "Get $1% mUSD bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {

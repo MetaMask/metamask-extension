@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
@@ -14,6 +15,7 @@ import {
   MERKL_DISTRIBUTOR_ADDRESS,
 } from '../constants';
 import { fetchMerklRewardsForAsset } from '../merkl-client';
+import { setConfirmReturnTo } from '../../../../pages/confirmations/hooks/confirmPreviousNavigation';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
 
 type UseMerklClaimOptions = {
@@ -39,6 +41,7 @@ export const useMerklClaim = ({
   const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const location = useLocation();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -107,7 +110,8 @@ export const useMerklClaim = ({
         chainId: claimChainId,
       };
 
-      // Create the transaction and navigate to confirmation page.
+      setConfirmReturnTo(location.pathname, location.search);
+
       await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
           networkClientId,

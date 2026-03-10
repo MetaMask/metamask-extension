@@ -19,6 +19,7 @@ jest.mock('../../../../hooks/pay/useTransactionPayToken', () => ({
 }));
 
 jest.mock('../../../rows/pay-with-row/pay-with-row', () => ({
+  ConfirmInfoRowSize: { Small: 'small', Default: 'default' },
   PayWithRow: () => <div data-testid="pay-with-row">PayWithRow</div>,
   PayWithRowSkeleton: () => (
     <div data-testid="pay-with-row-skeleton">PayWithRowSkeleton</div>
