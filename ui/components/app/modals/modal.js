@@ -24,7 +24,6 @@ import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
-import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
 
 import ConfirmDeleteNetwork from './confirm-delete-network';
@@ -105,19 +104,6 @@ const MODALS = {
 
   CONFIRM_RESET_ACCOUNT: {
     contents: <ConfirmResetAccount />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CONFIRM_REMOVE_ACCOUNT: {
-    contents: <ConfirmRemoveAccount />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

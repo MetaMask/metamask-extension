@@ -1110,11 +1110,26 @@
   "bridgePriceImpact": {
     "message": "Price impact"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Price impact reflects how your swap affects the market price. If you don't have enough for gas, some of your tokens are used to cover fees, which raises price impact. MetaMask doesn't set or control this."
+  "bridgePriceImpactHigh": {
+    "message": "High price impact"
+  },
+  "bridgePriceImpactHighDescription": {
+    "message": "Because of your trade size and available liquidity, you'll get about $1 less than the market price. This is already factored into your quote."
+  },
+  "bridgePriceImpactNormalDescription": {
+    "message": "This is how your trade changes the market price of a token. It depends on the trade size, availale liquidity, and provider fees. MetaMask doesn't control price impact."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Price impact"
+  },
+  "bridgePriceImpactVeryHigh": {
+    "message": "Very high price impact"
+  },
+  "bridgePriceImpactVeryHighDescription": {
+    "message": "You'll lose approximately $1 of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate."
+  },
+  "bridgePriceImpactWarningAriaLabel": {
+    "message": "Read price impact warning details"
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
@@ -1629,6 +1644,9 @@
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
   },
+  "confirmTitleSending": {
+    "message": "Sending"
+  },
   "confirmTitleSetApprovalForAllRevokeTransaction": {
     "message": "Remove permission"
   },
@@ -1783,6 +1801,12 @@
   },
   "connectionsRemovedModalTitle": {
     "message": "Connections removed"
+  },
+  "contactDeleted": {
+    "message": "Contact deleted"
+  },
+  "contactDetails": {
+    "message": "Contact details"
   },
   "contactUs": {
     "message": "Contact us"
@@ -5292,6 +5316,15 @@
   "perpsActivity": {
     "message": "Activity"
   },
+  "perpsAddExposure": {
+    "message": "Add exposure"
+  },
+  "perpsAddExposureDescriptionLong": {
+    "message": "Increase the size of your long position"
+  },
+  "perpsAddExposureDescriptionShort": {
+    "message": "Increase the size of your short position"
+  },
   "perpsAddFunds": {
     "message": "Add funds"
   },
@@ -5299,7 +5332,10 @@
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
   "perpsAddMargin": {
-    "message": "Add Margin"
+    "message": "Add margin"
+  },
+  "perpsAddMarginDescription": {
+    "message": "Increase margin to reduce liquidation risk"
   },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
@@ -5313,6 +5349,9 @@
   },
   "perpsAvailableBalance": {
     "message": "Available balance"
+  },
+  "perpsAvailableToClose": {
+    "message": "Available to close"
   },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
@@ -5329,6 +5368,9 @@
   },
   "perpsCloseLong": {
     "message": "Close Long"
+  },
+  "perpsClosePosition": {
+    "message": "Close position"
   },
   "perpsCloseShort": {
     "message": "Close Short"
@@ -5375,11 +5417,11 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Explore crypto"
+  "perpsEstSize": {
+    "message": "Est. size"
   },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explore stocks and commodities"
+  "perpsExploreMarkets": {
+    "message": "Explore markets"
   },
   "perpsFees": {
     "message": "Fees"
@@ -5419,6 +5461,9 @@
   },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
+  },
+  "perpsIncludesPnl": {
+    "message": "includes P&L $1"
   },
   "perpsIncreasedPosition": {
     "message": "Increased position"
@@ -5516,9 +5561,6 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
-  "perpsOrderAmount": {
-    "message": "Order Amount"
-  },
   "perpsOrders": {
     "message": "Orders"
   },
@@ -5527,6 +5569,9 @@
   },
   "perpsPosition": {
     "message": "Position"
+  },
+  "perpsPositionClosedReverseOrderFailed": {
+    "message": "Your position was closed but the reverse order failed. You may need to manually open a new position"
   },
   "perpsPositionSize": {
     "message": "Position Size"
@@ -5537,11 +5582,32 @@
   "perpsRecentActivity": {
     "message": "Recent Activity"
   },
+  "perpsReduceExposure": {
+    "message": "Reduce exposure"
+  },
+  "perpsReduceExposureDescriptionLong": {
+    "message": "Decrease the size of your long position"
+  },
+  "perpsReduceExposureDescriptionShort": {
+    "message": "Decrease the size of your short position"
+  },
   "perpsRemoveMargin": {
-    "message": "Remove Margin"
+    "message": "Remove margin"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Withdraw excess margin from position"
   },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsReversePosition": {
+    "message": "Reverse position"
+  },
+  "perpsReversePositionDescriptionLong": {
+    "message": "Flip your long position to a short"
+  },
+  "perpsReversePositionDescriptionShort": {
+    "message": "Flip your short position to a long"
   },
   "perpsSaveChanges": {
     "message": "Save Changes",
@@ -5552,9 +5618,6 @@
   },
   "perpsSeeAll": {
     "message": "See All"
-  },
-  "perpsSeeAllPerps": {
-    "message": "See all Perps"
   },
   "perpsShort": {
     "message": "Short"
@@ -5691,14 +5754,14 @@
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
+  "perpsWatchlist": {
+    "message": "Watchlist"
+  },
   "perpsWithdraw": {
     "message": "Withdraw"
   },
-  "perpsYourOrders": {
-    "message": "Your orders"
-  },
-  "perpsYourPositions": {
-    "message": "Your positions"
+  "perpsYouWillReceive": {
+    "message": "You'll receive"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -5807,6 +5870,9 @@
   },
   "privateNetwork": {
     "message": "Private network"
+  },
+  "proceed": {
+    "message": "Proceed"
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
@@ -6045,9 +6111,6 @@
   },
   "removeAccount": {
     "message": "Remove account"
-  },
-  "removeAccountDescription": {
-    "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Make sure you have the Secret Recovery Phrase or private key for this account before removing.",
@@ -8504,6 +8567,9 @@
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
+  "thisContactWillBeDeleted": {
+    "message": "This contact will be deleted."
+  },
   "time": {
     "message": "Time"
   },
@@ -8741,6 +8807,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
+  },
+  "trustSignalBlockDescription": {
+    "message": "If you connect to this site, you could lose all your assets."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Malicious site detected"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Connect Anyway"
   },
   "tryAgain": {
     "message": "Try again"

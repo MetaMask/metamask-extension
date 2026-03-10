@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impacto no preço"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "O impacto no preço reflete como sua troca afeta o preço de mercado. Se você não tem o suficiente para a taxa de transação (gas), alguns de seus tokens serão usados para cobrir as taxas, o que eleva o impacto no preço. A MetaMask não define nem controla isso."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impacto no preço"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Preço de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explorar criptomoedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explorar ações e commodities"
-  },
   "perpsFees": {
     "message": "Taxas"
   },
@@ -5396,9 +5387,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "A mediana dos preços externos reportados pelos validadores, utilizada para calcular a taxa de financiamento"
-  },
-  "perpsOrderAmount": {
-    "message": "Valor da ordem"
   },
   "perpsOrders": {
     "message": "Ordens"
@@ -5546,12 +5534,6 @@
   },
   "perpsWithdraw": {
     "message": "Sacar"
-  },
-  "perpsYourOrders": {
-    "message": "Suas ordens"
-  },
-  "perpsYourPositions": {
-    "message": "Suas posições"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
@@ -5895,9 +5877,6 @@
   },
   "removeAccount": {
     "message": "Remover conta"
-  },
-  "removeAccountDescription": {
-    "message": "Essa conta será removida da sua carteira. Antes de continuar, você precisa garantir que tem a Frase de Recuperação Secreta original ou chave privada para essa conta importada. Você pode importar ou criar contas novamente a partir do menu suspenso da conta. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Certifique-se de ter a Frase de Recuperação Secreta ou a chave privada desta conta antes de removê-la.",

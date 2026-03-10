@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "कीमत का प्रभाव"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "प्राइस इम्पैक्ट यह दर्शाता है कि आपका स्वैप मार्केट प्राइस को कैसे प्रभावित करता है। यदि आपके पास गैस के लिए पर्याप्त राशि नहीं है, तो आपकी कुछ टोकन फीस को कवर करने के लिए इस्तेमाल होती हैं, जिससे प्राइस इम्पैक्ट बढ़ जाता है। MetaMask इसे सेट या नियंत्रित नहीं करता।"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "कीमत का प्रभाव"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "एंट्री प्राइस"
   },
-  "perpsExploreCrypto": {
-    "message": "क्रिप्टो एक्सप्लोर करें"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "स्टॉक्स और कमोडिटीज़ एक्सप्लोर करें"
-  },
   "perpsFees": {
     "message": "फीस"
   },
@@ -5390,9 +5381,6 @@
   },
   "perpsOpenedLong": {
     "message": "खुला लॉन्ग"
-  },
-  "perpsOrderAmount": {
-    "message": "ऑर्डर अमाउंट"
   },
   "perpsOrders": {
     "message": "ऑर्डर"
@@ -5540,12 +5528,6 @@
   },
   "perpsWithdraw": {
     "message": "निकालें"
-  },
-  "perpsYourOrders": {
-    "message": "आपके ऑर्डर"
-  },
-  "perpsYourPositions": {
-    "message": "आपकी पोज़िशन्स"
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"
@@ -5889,9 +5871,6 @@
   },
   "removeAccount": {
     "message": "अकाउंट हटाएं"
-  },
-  "removeAccountDescription": {
-    "message": "यह अकाउंट आपके वॉलेट से निकाल दिया जाएगा। कृपया पक्का करें कि जारी रखने से पहले आपके पास इस इम्पोर्टित अकाउंट के लिए ओरिजिनल सीक्रेट रिकवरी फ्रेज या प्राइवेट की (key) है। आप अकाउंट ड्रॉप-डाउन से फिर से अकाउंट इम्पोर्ट कर सकते हैं या बना सकते हैं। "
   },
   "removeAccountModalBannerDescription": {
     "message": "इस अकाउंट को हटाने से पहले सुनिश्चित करें कि आपके पास इसके लिए सीक्रेट रिकवरी फ्रेज़ या प्राइवेट की (key) है।",

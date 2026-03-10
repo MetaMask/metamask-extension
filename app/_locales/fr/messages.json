@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impact sur les prix"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "L’impact sur le prix reflète la manière dont votre swap affecte le prix du marché. Si vous n’avez pas assez de gaz, certains de vos jetons sont utilisés pour couvrir les frais, ce qui augmente l’impact sur le prix. MetaMask ne définit ni ne contrôle cet impact."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impact sur les prix"
   },
@@ -5271,12 +5268,6 @@
   "perpsEntryPrice": {
     "message": "Prix d’ouverture"
   },
-  "perpsExploreCrypto": {
-    "message": "Découvrez les cryptomonnaies"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Découvrez les actions et les matières premières"
-  },
   "perpsFees": {
     "message": "Frais"
   },
@@ -5393,9 +5384,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Médiane des prix externes communiqués par les validateurs, utilisée pour calculer le taux de financement"
-  },
-  "perpsOrderAmount": {
-    "message": "Montant de l’ordre"
   },
   "perpsOrders": {
     "message": "Ordres"
@@ -5543,12 +5531,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirer"
-  },
-  "perpsYourOrders": {
-    "message": "Vos ordres"
-  },
-  "perpsYourPositions": {
-    "message": "Vos positions"
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
@@ -5892,9 +5874,6 @@
   },
   "removeAccount": {
     "message": "Suprimer le compte"
-  },
-  "removeAccountDescription": {
-    "message": "Ce compte sera supprimé de votre portefeuille. Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée d’origine pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu déroulant des comptes. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée de ce compte avant de le supprimer.",

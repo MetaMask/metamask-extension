@@ -484,9 +484,6 @@
   "removeAccount": {
     "message": "Usuń konto"
   },
-  "removeAccountDescription": {
-    "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
-  },
   "required": {
     "message": "Wymagane"
   },

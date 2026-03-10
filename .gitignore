@@ -105,3 +105,5 @@ development/.webpack
 
 # git worktrees
 .worktrees/
+# llm workflow playwright temp files
+temp-llm-workflow-*
