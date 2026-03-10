@@ -137,7 +137,8 @@ export const useMerklClaim = ({
     chainId,
     claimChainId,
     navigate,
-    location,
+    location.pathname,
+    location.search,
   ]);
 
   return {
