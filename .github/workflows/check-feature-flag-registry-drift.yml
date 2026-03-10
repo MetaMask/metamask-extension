@@ -12,6 +12,7 @@ permissions:
 jobs:
   check-feature-flag-registry:
     name: Check feature flag registry against production
+    environment: default-branch
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
