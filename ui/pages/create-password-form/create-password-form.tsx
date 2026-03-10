@@ -1,27 +1,22 @@
 import React, { useState, useContext } from 'react';
 import {
-  IconColor,
-  JustifyContent,
-  AlignItems,
-  TextVariant,
-  TextColor,
-  BlockSize,
-  FlexDirection,
-  Display,
-  BackgroundColor,
-  BorderRadius,
-} from '../../helpers/constants/design-system';
-import {
   Button,
   Box,
+  Text,
+  TextVariant,
+  TextColor,
   ButtonIcon,
   ButtonIconSize,
   IconName,
   ButtonVariant,
   ButtonSize,
-  Text,
   Checkbox,
-} from '../../components/component-library';
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  IconColor,
+} from '@metamask/design-system-react';
 import PasswordForm from '../../components/app/password-form/password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -50,8 +45,10 @@ const CreatePasswordForm = ({
 
   const { trackEvent } = useContext(MetaMetricsContext);
 
-  const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleCreatePassword = async (
+    e?: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e?.preventDefault();
     await onSubmit(password, termsChecked);
   };
 
@@ -88,26 +85,17 @@ const CreatePasswordForm = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
       gap={4}
-      as="form"
-      className="create-password"
+      className="create-password h-full w-full"
       data-testid="create-password"
-      onSubmit={handleCreatePassword}
     >
       <Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
+        <Box justifyContent={BoxJustifyContent.Start} className="mb-4 w-full">
           <ButtonIcon
             iconName={IconName.ArrowLeft}
-            color={loading ? IconColor.iconMuted : IconColor.iconDefault}
+            color={loading ? IconColor.IconMuted : IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
             type="button"
@@ -116,34 +104,28 @@ const CreatePasswordForm = ({
             disabled={loading}
           />
         </Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <Text variant={TextVariant.headingLg} as="h2">
-            {t('createPassword')}
-          </Text>
+        <Box justifyContent={BoxJustifyContent.Start} className="mb-4 w-full">
+          <Text variant={TextVariant.HeadingLg}>{t('createPassword')}</Text>
           {isSocialLoginFlow ? (
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
             >
-              {t('createPasswordDetailsSocial')}
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.warningDefault}
-                as="span"
-              >
-                {t('createPasswordDetailsSocialReset')}
-              </Text>
+              {t('createPasswordDetailsSocial', [
+                <Text
+                  key="create-password-details-social-reset"
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.WarningDefault}
+                  asChild
+                >
+                  <span>{t('createPasswordDetailsSocialReset')}</span>
+                </Text>,
+              ])}
             </Text>
           ) : (
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
             >
               {t('createPasswordDetails')}
             </Text>
@@ -154,31 +136,37 @@ const CreatePasswordForm = ({
           disabled={loading}
         />
         <Box
-          className="create-password__terms-container"
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
+          className="create-password__terms-container rounded-lg"
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Between}
           marginTop={6}
-          backgroundColor={BackgroundColor.backgroundMuted}
+          backgroundColor={BoxBackgroundColor.BackgroundMuted}
           padding={3}
-          borderRadius={BorderRadius.LG}
         >
           <Checkbox
+            id="create-password-terms"
             inputProps={{ 'data-testid': 'create-password-terms' }}
-            alignItems={AlignItems.flexStart}
-            isChecked={termsChecked}
+            className="items-start"
+            isSelected={termsChecked}
             isDisabled={loading}
             onChange={() => {
               setTermsChecked(!termsChecked);
             }}
             label={
-              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                {checkboxLabel}
-                {!isSocialLoginFlow && (
-                  <>
-                    <br />
-                    {createPasswordLink}
-                  </>
-                )}
+              <Text
+                asChild
+                variant={TextVariant.BodySm}
+                color={TextColor.TextDefault}
+              >
+                <span>
+                  {checkboxLabel}
+                  {!isSocialLoginFlow && (
+                    <>
+                      <br />
+                      {createPasswordLink}
+                    </>
+                  )}
+                </span>
               </Text>
             }
           />
@@ -188,13 +176,13 @@ const CreatePasswordForm = ({
         <Button
           data-testid="create-password-submit"
           variant={ButtonVariant.Primary}
-          width={BlockSize.Full}
           size={ButtonSize.Lg}
-          className="create-password__form--submit-button"
+          className="create-password__form--submit-button w-full"
           disabled={
             !password || (!isSocialLoginFlow && !termsChecked) || loading
           }
-          loading={loading}
+          isLoading={loading}
+          onClick={handleCreatePassword}
         >
           {t('createPasswordCreate')}
         </Button>
