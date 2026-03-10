@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { BaseDataService } from '@metamask-previews/base-data-service';
+import { Duration, inMilliseconds } from '@metamask/utils';
 
 const serviceName = 'AssetDataService';
 
@@ -36,6 +37,7 @@ export class AssetDataService extends BaseDataService<
 
         return response.json();
       },
+      staleTime: inMilliseconds(1, Duration.Minute),
     });
   }
 }
