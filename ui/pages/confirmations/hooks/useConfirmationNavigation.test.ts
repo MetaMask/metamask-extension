@@ -519,6 +519,7 @@ describe('useConfirmationNavigationOptions', () => {
 
   it('rejects javascript: protocol scheme', () => {
     const searchParams = new URLSearchParams({
+      // eslint-disable-next-line no-script-url
       returnTo: 'javascript:alert(1)',
     });
 
