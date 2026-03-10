@@ -27,7 +27,7 @@ const createMockStore = (overrides = {}) =>
 
 const testConfig: SelectItemConfig = {
   name: 'TestSelectItem',
-  labelKey: 'theme',
+  titleKey: 'theme',
   valueSelector: (state: MetaMaskReduxState) =>
     (state.metamask as Record<string, unknown>).testSelectValue as string,
   route: '/test-route',
