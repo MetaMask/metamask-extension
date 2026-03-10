@@ -135,4 +135,33 @@ describe('WithdrawFundsModal', () => {
       'Failed',
     );
   });
+
+  it('shows readable message for known withdraw error codes', async () => {
+    mockUsePerpsWithdraw.mockReturnValue({
+      trigger: triggerMock.mockResolvedValue({
+        success: false,
+        error: 'WITHDRAW_ASSET_ID_REQUIRED',
+      }),
+      isLoading: false,
+      error: 'WITHDRAW_ASSET_ID_REQUIRED',
+      resetError: resetErrorMock,
+    });
+
+    renderWithProvider(
+      <WithdrawFundsModal isOpen onClose={onCloseMock} />,
+      mockStore,
+    );
+
+    const input = screen.getByPlaceholderText('0.00') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: '10' } });
+
+    fireEvent.click(screen.getByTestId('perps-withdraw-submit'));
+
+    await waitFor(() => {
+      expect(onCloseMock).not.toHaveBeenCalled();
+    });
+    expect(screen.getByTestId('perps-withdraw-error')).toHaveTextContent(
+      'Withdrawal asset unavailable. Please try again.',
+    );
+  });
 });

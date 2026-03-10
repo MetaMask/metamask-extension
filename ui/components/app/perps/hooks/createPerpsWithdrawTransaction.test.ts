@@ -24,11 +24,19 @@ describe('createPerpsWithdrawTransaction', () => {
 
     const result = await createPerpsWithdrawTransaction({
       amount: '12.5',
+      assetId:
+        'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831/default',
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsWithdraw',
-      [{ amount: '12.5' }],
+      [
+        {
+          amount: '12.5',
+          assetId:
+            'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831/default',
+        },
+      ],
     );
     expect(result).toStrictEqual({
       success: true,
@@ -45,6 +53,8 @@ describe('createPerpsWithdrawTransaction', () => {
     await expect(
       createPerpsWithdrawTransaction({
         amount: '1',
+        assetId:
+          'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831/default',
       }),
     ).rejects.toThrow('withdraw failed');
   });

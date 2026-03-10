@@ -44,6 +44,31 @@ function isAllowedAmountInput(value: string): boolean {
   return /^\d*\.?\d{0,6}$/u.test(value);
 }
 
+const WITHDRAW_ERROR_CODES = {
+  ASSET_ID_REQUIRED: 'WITHDRAW_ASSET_ID_REQUIRED',
+  AMOUNT_REQUIRED: 'WITHDRAW_AMOUNT_REQUIRED',
+  AMOUNT_POSITIVE: 'WITHDRAW_AMOUNT_POSITIVE',
+  INVALID_DESTINATION: 'WITHDRAW_INVALID_DESTINATION',
+} as const;
+
+function getReadableWithdrawError(error: string | null): string | null {
+  if (!error) {
+    return null;
+  }
+
+  switch (error) {
+    case WITHDRAW_ERROR_CODES.ASSET_ID_REQUIRED:
+      return 'Withdrawal asset unavailable. Please try again.';
+    case WITHDRAW_ERROR_CODES.AMOUNT_REQUIRED:
+    case WITHDRAW_ERROR_CODES.AMOUNT_POSITIVE:
+      return 'Enter a valid amount to withdraw.';
+    case WITHDRAW_ERROR_CODES.INVALID_DESTINATION:
+      return 'Invalid withdrawal destination.';
+    default:
+      return error;
+  }
+}
+
 export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
   isOpen,
   onClose,
@@ -119,7 +144,7 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
   }, [amount, validationError, trigger, onClose]);
 
   const submitDisabled = isLoading || !amount || Boolean(validationError);
-  const displayError = validationError ?? error;
+  const displayError = validationError ?? getReadableWithdrawError(error);
 
   return (
     <Modal

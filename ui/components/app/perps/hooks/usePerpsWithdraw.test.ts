@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react-hooks';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { getPerpsWithdrawUsdcAssetId } from '../constants';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 import { usePerpsWithdraw } from './usePerpsWithdraw';
 
@@ -36,9 +37,31 @@ describe('usePerpsWithdraw', () => {
 
     expect(mockCreatePerpsWithdrawTransaction).toHaveBeenCalledWith({
       amount: '10',
+      assetId: getPerpsWithdrawUsdcAssetId(false),
     });
     expect(response).toStrictEqual({ success: true });
     expect(result.current.error).toBeNull();
+  });
+
+  it('uses testnet withdraw asset id when perps testnet is enabled', async () => {
+    mockCreatePerpsWithdrawTransaction.mockResolvedValue({ success: true });
+
+    const { result } = renderHookWithProvider(() => usePerpsWithdraw(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        isTestnet: true,
+      },
+    });
+
+    await act(async () => {
+      await result.current.trigger({ amount: '5' });
+    });
+
+    expect(mockCreatePerpsWithdrawTransaction).toHaveBeenCalledWith({
+      amount: '5',
+      assetId: getPerpsWithdrawUsdcAssetId(true),
+    });
   });
 
   it('surfaces controller error when withdraw fails', async () => {

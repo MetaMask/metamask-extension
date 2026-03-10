@@ -19,6 +19,32 @@ export const HYPERLIQUID_ASSET_ICONS_BASE_URL =
   'https://app.hyperliquid.xyz/coins/';
 
 /**
+ * Mobile-parity Perps withdraw asset configuration.
+ *
+ * Current Perps withdraw flow is USDC-only and requires a CAIP asset ID
+ * when calling controller.withdraw.
+ */
+export const PERPS_WITHDRAW_ASSET_CONFIGS = {
+  usdc: {
+    mainnet:
+      'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831/default',
+    testnet:
+      'eip155:421614/erc20:0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d/default',
+  },
+} as const;
+
+/**
+ * Get the CAIP asset ID used for Perps USDC withdrawals.
+ *
+ * @param isTestnet - Whether Perps is in testnet mode.
+ * @returns CAIP asset ID for USDC on the current Perps network.
+ */
+export const getPerpsWithdrawUsdcAssetId = (isTestnet: boolean): string =>
+  isTestnet
+    ? PERPS_WITHDRAW_ASSET_CONFIGS.usdc.testnet
+    : PERPS_WITHDRAW_ASSET_CONFIGS.usdc.mainnet;
+
+/**
  * General perps display constants
  * Fallback values for when data is unavailable or invalid
  */
