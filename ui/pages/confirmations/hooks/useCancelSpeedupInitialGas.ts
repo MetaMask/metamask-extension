@@ -67,7 +67,7 @@ export function useCancelSpeedupInitialGas({
     const hasEIP1559Gas =
       txParams?.maxFeePerGas &&
       txParams?.maxPriorityFeePerGas &&
-      txParams?.gasLimit;
+      (txParams?.gasLimit || txParams?.gas);
 
     if (
       hasEIP1559Gas &&
