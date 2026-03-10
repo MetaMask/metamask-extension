@@ -1,6 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  type Location as RouterLocation,
+} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -30,28 +34,20 @@ import {
 } from './multichain-account-address-list-page.types';
 
 type MultichainAccountAddressListPageProps = {
-  params?: { accountGroupId: string };
-  location?: {
-    pathname: string;
-    search: string;
-    hash: string;
-    state: unknown;
-    key: string;
-  };
+  location?: RouterLocation;
 };
 
 export const MultichainAccountAddressListPage = ({
-  params: propsParams,
   location: propsLocation,
 }: MultichainAccountAddressListPageProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const hookLocation = useLocation();
-  const hookParams = useParams<{ accountGroupId: string }>();
 
   const location = propsLocation || hookLocation;
-  const { accountGroupId } = propsParams || hookParams;
 
+  const searchParams = new URLSearchParams(location.search);
+  const accountGroupId = searchParams.get('accountGroupId');
   const decodedAccountGroupId = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
     : null;
@@ -62,7 +58,6 @@ export const MultichainAccountAddressListPage = ({
       : null,
   );
 
-  const searchParams = new URLSearchParams(location.search);
   const isReceiveMode =
     searchParams.get(AddressListQueryParams.Source) ===
     AddressListSource.Receive;
