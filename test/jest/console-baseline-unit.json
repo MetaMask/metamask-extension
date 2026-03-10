@@ -1243,7 +1243,6 @@
     "ui/hooks/musd/useMusdConversion.test.ts": {
       "error: [MUSD] Transaction creation failed: Error:": 1,
       "warn: [MUSD] Conversion flow not enabled": 1,
-      "warn: [MUSD] Geo-blocking check still in": 1,
       "warn: [MUSD] User is geo-blocked": 1
     },
     "ui/hooks/musd/useMusdCtaVisibility.test.ts": {
