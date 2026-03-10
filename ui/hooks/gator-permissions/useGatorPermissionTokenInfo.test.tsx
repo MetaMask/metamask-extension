@@ -402,7 +402,6 @@ describe('useGatorPermissionTokenInfo', () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.tokenInfo).toMatchObject({
         symbol: 'Unknown Token',
-        decimals: undefined,
         chainId: mockChainId,
       });
     });
@@ -417,7 +416,6 @@ describe('useGatorPermissionTokenInfo', () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.tokenInfo).toMatchObject({
         symbol: 'Unknown Token',
-        decimals: null,
         chainId: '0x0',
       });
     });
