@@ -21,6 +21,13 @@ export {
   PerpsStreamManager,
 } from './PerpsStreamManager';
 
+// Legacy mock provider + controller (kept for PR 4/5 migration)
+export { getPerpsController } from './getPerpsController.mock';
+export {
+  PerpsControllerProvider,
+  usePerpsController,
+} from './PerpsControllerProvider.mock';
+
 // Data Channel (building block for stream manager)
 export { PerpsDataChannel } from './PerpsDataChannel';
 
