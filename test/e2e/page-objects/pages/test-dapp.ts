@@ -574,6 +574,10 @@ class TestDapp {
     });
   }
 
+  async clickSign721PermitVerifyButton() {
+    await this.driver.clickElement(this.sign721PermitVerifyButton);
+  }
+
   /**
    * Verify the successful signPermit signature.
    *

@@ -149,5 +149,5 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
     '0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780',
   );
   await testDapp.verifySign721PermitResultV('28');
-  await driver.clickElement('#sign721PermitVerify');
+  await testDapp.clickSign721PermitVerifyButton();
 }
