@@ -20,20 +20,3 @@
     align-self: center;
   }
 }
-
-.stakeable-link {
-  cursor: pointer;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  background: none;
-
-  &__badge {
-    border-radius: 4px;
-  }
-
-  &__icon {
-    margin-left: 4px;
-  }
-}
