@@ -933,7 +933,7 @@ export const selectBalanceForAllWallets = createSelector(
       tokensState,
       currencyRateState,
       enabledNetworkMap,
-      networkConfigurationsByChainId,
+      networkConfigurationsByChainId ?? {},
     ),
 );
 
