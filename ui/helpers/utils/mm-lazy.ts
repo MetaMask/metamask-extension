@@ -1,6 +1,11 @@
 import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import {
+  endTrace,
+  getPerformanceTimestamp,
+  trace,
+  TraceName,
+} from '../../../shared/lib/trace';
 import type { IsNever, IsUnion } from '../../../shared/types/type-level-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- required due to contravariant parameter bound
@@ -144,8 +149,8 @@ export function mmLazy<
   Component extends AnyComponent = InferComponent<Module, true>,
 >(fn: () => Promise<Module>): React.LazyExoticComponent<Component> {
   return React.lazy(async () => {
-    // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
-    const startTime = performance.now();
+    // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime.
+    const startTime = getPerformanceTimestamp();
 
     const importedModule = await fn();
     const { componentName, component } =
