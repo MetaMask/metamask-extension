@@ -22,7 +22,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           USD
         </p>
         <button
-          aria-label="Local currency"
+          aria-label="Select Local currency"
           class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
         >
           <svg
