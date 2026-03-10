@@ -3,8 +3,26 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { isStreamWritable } from './stream-utils';
 
 /**
+ * Check if value has the expected trace context shape (traceId + spanId).
+ * Only strip when we're confident it's our injected context, not a legitimate param.
+ *
+ * @param {unknown} value - The _traceContext value to check.
+ * @returns {boolean}
+ */
+function isOurTraceContext(value) {
+  return (
+    value &&
+    typeof value === 'object' &&
+    typeof value._traceId === 'string' &&
+    typeof value._spanId === 'string'
+  );
+}
+
+/**
  * Extract trace context appended by submitRequestToBackground from RPC params.
  * Returns the clean params (without trace context) and the trace context if present.
+ * Only strips when the last param has _traceContext with our expected shape
+ * (_traceId, _spanId) to avoid eating legitimate params.
  *
  * @param {Array} params - RPC call parameters.
  * @returns {{ cleanParams: Array, traceContext: object | undefined }}
@@ -19,7 +37,7 @@ function extractTraceContext(params) {
     lastParam &&
     typeof lastParam === 'object' &&
     lastParam._traceContext &&
-    typeof lastParam._traceContext === 'object'
+    isOurTraceContext(lastParam._traceContext)
   ) {
     return {
       cleanParams: params.slice(0, -1),

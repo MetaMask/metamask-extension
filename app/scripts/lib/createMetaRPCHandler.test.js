@@ -211,5 +211,23 @@ describe('createMetaRPCHandler', () => {
       expect(trace).not.toHaveBeenCalled();
       expect(api.foo).toHaveBeenCalledWith();
     });
+
+    it('does not strip last param when _traceContext has wrong shape (legitimate param preserved)', async () => {
+      const api = {
+        foo: jest.fn().mockReturnValue('result'),
+      };
+      const streamTest = createThoughStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+      const legitimateParam = { _traceContext: { custom: true } };
+
+      await handler({
+        id: 1,
+        method: 'foo',
+        params: ['bar', legitimateParam],
+      });
+
+      expect(trace).not.toHaveBeenCalled();
+      expect(api.foo).toHaveBeenCalledWith('bar', legitimateParam);
+    });
   });
 });

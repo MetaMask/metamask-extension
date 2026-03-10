@@ -1,8 +1,9 @@
 import { Messenger } from '@metamask/messenger';
-import { trace, TraceName } from '../../../shared/lib/trace';
+import { getActiveSpan, trace, TraceName } from '../../../shared/lib/trace';
 import { wrapMessengerWithTracing } from './messenger-tracing';
 
 jest.mock('../../../shared/lib/trace', () => ({
+  getActiveSpan: jest.fn(),
   trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
   TraceName: { MessengerCall: 'Messenger Call' },
 }));
@@ -26,12 +27,29 @@ type TestActions = TestGetStateAction | TestDoWorkAction | TestFailAction;
 
 describe('wrapMessengerWithTracing', () => {
   const traceMock = trace as jest.Mock;
+  const getActiveSpanMock = getActiveSpan as jest.Mock;
 
   beforeEach(() => {
+    getActiveSpanMock.mockReturnValue({}); // Active span present
     traceMock.mockClear();
     traceMock.mockImplementation((_request: unknown, fn: () => unknown) =>
       fn(),
     );
+  });
+
+  it('skips trace when no active span (avoids overhead when tracing disabled)', () => {
+    getActiveSpanMock.mockReturnValue(null);
+    const messenger = new Messenger<'Test', TestActions, never>({
+      namespace: 'Test',
+    });
+    const handler = jest.fn().mockReturnValue('result');
+    messenger.registerActionHandler('Test:getState', handler);
+
+    const wrapped = wrapMessengerWithTracing(messenger);
+    const result = wrapped.call('Test:getState');
+
+    expect(traceMock).not.toHaveBeenCalled();
+    expect(result).toBe('result');
   });
 
   it('wraps messenger.call with tracing', () => {

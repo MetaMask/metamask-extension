@@ -283,6 +283,16 @@ export function endTrace(request: EndTraceRequest): void {
 }
 
 /**
+ * Get the currently active Sentry span, if any.
+ * Used by wrappers to avoid trace overhead when no span is active.
+ *
+ * @returns The active span or null.
+ */
+export function getActiveSpan(): Sentry.Span | null {
+  return sentryGetActiveSpan();
+}
+
+/**
  * Get the serialized trace context from the currently active Sentry span.
  * Used by cross-boundary wrappers to propagate trace context over RPC.
  *
