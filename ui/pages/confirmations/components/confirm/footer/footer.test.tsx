@@ -67,6 +67,10 @@ jest.mock('../../../hooks/useConfirmationNavigation', () => ({
     navigateNext: jest.fn(),
     navigateToId: jest.fn(),
   })),
+  useConfirmationNavigationOptions: jest.fn(() => ({
+    loader: 'default',
+    returnTo: undefined,
+  })),
 }));
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -606,7 +610,7 @@ describe('ConfirmFooter', () => {
     });
   });
 
-  it('renders MusdConversionFooter for musdConversion transaction type', () => {
+  it('renders SingleActionFooter for musdConversion transaction type', () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),

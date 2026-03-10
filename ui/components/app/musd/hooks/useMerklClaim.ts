@@ -1,12 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import {
-  addTransactionAndRouteToConfirmationPage,
+  addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../../store/actions';
 import {
@@ -15,8 +15,7 @@ import {
   MERKL_DISTRIBUTOR_ADDRESS,
 } from '../constants';
 import { fetchMerklRewardsForAsset } from '../merkl-client';
-import { setConfirmReturnTo } from '../../../../pages/confirmations/hooks/confirmPreviousNavigation';
-import type { MetaMaskReduxDispatch } from '../../../../store/store';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 
 type UseMerklClaimOptions = {
   tokenAddress: string;
@@ -40,7 +39,7 @@ export const useMerklClaim = ({
   const [isClaiming, setIsClaiming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -110,14 +109,17 @@ export const useMerklClaim = ({
         chainId: claimChainId,
       };
 
-      setConfirmReturnTo(location.pathname, location.search);
+      const transactionMeta = await addTransaction(txParams, {
+        networkClientId,
+        type: TransactionType.musdClaim,
+      });
 
-      await dispatch(
-        addTransactionAndRouteToConfirmationPage(txParams, {
-          networkClientId,
-          type: TransactionType.musdClaim,
-        }),
-      );
+      navigate({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionMeta.id}`,
+        search: new URLSearchParams({
+          returnTo: location.pathname + location.search,
+        }).toString(),
+      });
     } catch (e) {
       const err = e as Error;
 
@@ -129,7 +131,15 @@ export const useMerklClaim = ({
       setError(err.message);
       setIsClaiming(false);
     }
-  }, [selectedAddress, tokenAddress, chainId, claimChainId, dispatch]);
+  }, [
+    selectedAddress,
+    tokenAddress,
+    chainId,
+    claimChainId,
+    navigate,
+    location.pathname,
+    location.search,
+  ]);
 
   return {
     claimRewards,

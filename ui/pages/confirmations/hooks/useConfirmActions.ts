@@ -2,23 +2,26 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { MetaMetricsEventLocation } from '../../../../shared/constants/metametrics';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   rejectPendingApproval,
   setNextNonce,
   updateCustomNonce,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { useConfirmPreviousNavigation } from './useConfirmPreviousNavigation';
+import { useConfirmationNavigationOptions } from './useConfirmationNavigation';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
-  const { navigateBackToPrevious } = useConfirmPreviousNavigation();
+  const { returnTo } = useConfirmationNavigationOptions();
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const rejectApproval = useCallback(
@@ -63,15 +66,16 @@ export const useConfirmActions = () => {
       await rejectApproval({ location });
       resetTransactionState();
       if (navigateBackToPreviousPage) {
-        navigateBackToPrevious();
+        navigate(returnTo || DEFAULT_ROUTE);
       }
     },
     [
       currentConfirmation,
+      navigate,
       navigateBackIfSend,
-      navigateBackToPrevious,
       rejectApproval,
       resetTransactionState,
+      returnTo,
     ],
   );
 

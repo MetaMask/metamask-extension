@@ -709,9 +709,6 @@
     "ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/multichain-accounts/edit-account-name-modal/edit-account-name-modal.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/multichain-accounts/multichain-account-cell/multichain-account-cell.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -730,10 +727,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-account-network-group-with-default-address/multichain-account-network-group-with-default-address.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/multichain-accounts/multichain-accounts-tree/multichain-accounts-tree.test.tsx": {
-      "React: Missing key props in lists": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-address-rows-hovered-list/default-address.test.tsx": {
@@ -796,12 +789,6 @@
       "MetaMask: Background connection not initialized": 56,
       "React: Act warnings (component updates not wrapped)": 2,
       "React: PropTypes validation failures": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/multichain/account-list-menu/account-list-menu.test.tsx": {
-      "MetaMask: Background connection not initialized": 2,
-      "Reselect: Input stability warnings": 1,
-      "error: Warning: Encountered two children with": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/account-menu/account-menu.test.tsx": {
@@ -1173,13 +1160,16 @@
       "MetaMask: Background connection not initialized": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/hooks/bridge/useBridgeQueryParams.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/hooks/bridge/useBridging.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/bridge/useCountdownTimer.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/hooks/bridge/usePrefillFromBridgeState.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/hooks/bridge/usePrefillFromSearchQuery.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/bridge/useRewards.test.ts": {
@@ -1561,10 +1551,6 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/confirm/footer/musd-conversion-footer.test.tsx": {
-      "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/confirm/footer/origin-throttle-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1573,6 +1559,10 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/footer/shield-footer-coverage-indicator/shield-footer-coverage-indicator.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/footer/single-action-footer.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1592,7 +1582,7 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/confirm/header/musd-conversion-header.test.tsx": {
+    "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1717,18 +1707,6 @@
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "Test errors: Uncaught Errors": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/confirm/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
-      "Reselect: Identity function warnings": 5,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-heading.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1
-    },
-    "ui/pages/confirmations/components/confirm/info/musd-conversion-info/musd-conversion-info.test.tsx": {
-      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
@@ -1919,6 +1897,10 @@
       "Test errors: Uncaught Errors": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/expiry.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/native-token-periodic-details.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "Test errors: Uncaught Errors": 2,
@@ -2052,7 +2034,19 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/info-popover-tooltip/info-popover-tooltip.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1
+    },
     "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
+      "MetaMask: Background connection not initialized": 16,
+      "Reselect: Identity function warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/musd-conversion-info/musd-conversion-info.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2075,7 +2069,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.test.tsx": {
-      "Test errors: Uncaught Errors": 7,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message.test.js": {
@@ -2528,9 +2521,6 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/hooks/useConfirmPreviousNavigation.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/hooks/useConfirmSendNavigation.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2852,10 +2842,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings-v2/assets-tab/autodetect-tokens-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/assets-tab/currency-sub-page.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2863,18 +2849,52 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings-v2/assets-tab/hide-zero-balance-tokens-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/assets-tab/local-currency-item.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings-v2/assets-tab/show-network-token-item.test.tsx": {
+    "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 4,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-sub-page.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/preferences-and-display-tab/language-sub-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/preferences-and-display-tab/preferences-and-display-tab.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/preferences-and-display-tab/show-default-address-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/preferences-and-display-tab/theme-sub-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/basic-functionality-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/data-collection-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/metametrics-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/settings-v2.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/create-select-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/create-toggle-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

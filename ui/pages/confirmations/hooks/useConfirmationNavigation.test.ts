@@ -348,7 +348,7 @@ describe('useConfirmationNavigation', () => {
   });
 
   describe('navigateToTransaction', () => {
-    it('navigates to transaction route without loader param when no options provided', () => {
+    it('navigates to transaction route with empty search when no options provided', () => {
       const result = renderHook(ApprovalType.Transaction);
 
       result.navigateToTransaction('tx-123');
@@ -384,7 +384,36 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-789`,
-        search: 'loader=default',
+        search: '',
+      });
+    });
+
+    it('navigates with only returnTo param when no loader provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-100', {
+        returnTo: '/asset/0x1/0xabc',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-100`,
+        search: 'returnTo=%2Fasset%2F0x1%2F0xabc',
+      });
+    });
+
+    it('navigates with both loader and returnTo params', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-200', {
+        loader: ConfirmationLoader.CustomAmount,
+        returnTo: '/home?tab=tokens',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-200`,
+        search: 'loader=customAmount&returnTo=%2Fhome%3Ftab%3Dtokens',
       });
     });
   });
@@ -428,5 +457,114 @@ describe('useConfirmationNavigationOptions', () => {
     const result = renderOptionsHook(searchParams);
 
     expect(result.loader).toBe(ConfirmationLoader.Default);
+  });
+
+  it('returns returnTo from search params', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: '/asset/0x1/0xabc',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBe('/asset/0x1/0xabc');
+  });
+
+  it('returns undefined returnTo when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBeUndefined();
+  });
+
+  it('rejects protocol-relative returnTo (//evil.com)', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: '//evil.com',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBeUndefined();
+  });
+
+  it('rejects absolute URL returnTo (https://evil.com)', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: 'https://evil.com',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBeUndefined();
+  });
+
+  it('normalizes relative path without leading slash', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: 'some-relative-path',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBe('/some-relative-path');
+  });
+
+  it('rejects returnTo with backslash (browser normalization attack)', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: '/\\evil.com',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBeUndefined();
+  });
+
+  it('rejects javascript: protocol scheme', () => {
+    const searchParams = new URLSearchParams({
+      // eslint-disable-next-line no-script-url
+      returnTo: 'javascript:alert(1)',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBeUndefined();
+  });
+
+  it('rejects data: protocol scheme', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: 'data:text/html,<script>alert(1)</script>',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBeUndefined();
+  });
+
+  it('allows valid internal path with query string', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: '/home?tab=tokens',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBe('/home?tab=tokens');
+  });
+
+  it('strips fragment and credentials from returnTo', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: '/page?q=1#fragment',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBe('/page?q=1');
+  });
+
+  it('returns undefined for bare slash', () => {
+    const searchParams = new URLSearchParams({
+      returnTo: '/',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.returnTo).toBeUndefined();
   });
 });

@@ -161,6 +161,7 @@ describe('PrepareBridgePage', () => {
         fromToken: {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          symbol: 'USDC',
           chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: toAssetId(
             '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -199,8 +200,8 @@ describe('PrepareBridgePage', () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /mUSD/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /UNI/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();

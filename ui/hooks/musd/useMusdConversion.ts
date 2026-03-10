@@ -35,7 +35,6 @@ import {
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
 import { ConfirmationLoader } from '../../pages/confirmations/hooks/useConfirmationNavigation';
-import { setConfirmReturnTo } from '../../pages/confirmations/hooks/confirmPreviousNavigation';
 import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../components/app/musd/constants';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
@@ -200,7 +199,6 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       try {
         setError(null);
-        setConfirmReturnTo(location.pathname, location.search);
 
         const existing = findExistingPendingMusdConversion({
           unapprovedTransactions: unapprovedTransactions as Record<
@@ -260,6 +258,7 @@ export function useMusdConversion(): UseMusdConversionResult {
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
           search: new URLSearchParams({
             loader: ConfirmationLoader.CustomAmount,
+            returnTo: location.pathname + location.search,
           }).toString(),
         });
 
@@ -292,6 +291,8 @@ export function useMusdConversion(): UseMusdConversionResult {
       unapprovedTransactions,
       createConversionTransaction,
       navigate,
+      location.pathname,
+      location.search,
     ],
   );
 

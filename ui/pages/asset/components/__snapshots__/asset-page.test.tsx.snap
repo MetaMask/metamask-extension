@@ -255,13 +255,13 @@ exports[`AssetPage should render a native asset 1`] = `
                   TEST
                 </p>
                 <button
-                  class="stakeable-link"
+                  class="cursor-pointer border-none p-0 m-0 bg-transparent"
                   data-testid="staking-entrypoint-0x1"
                   tabindex="0"
                   type="button"
                 >
                   <div
-                    class="flex flex-row items-center pr-2 pl-2 bg-muted stakeable-link__badge"
+                    class="flex flex-row items-center pr-2 pl-2 bg-muted rounded"
                   >
                     <p
                       class="text-primary-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
@@ -269,7 +269,7 @@ exports[`AssetPage should render a native asset 1`] = `
                       Earn
                     </p>
                     <svg
-                      class="inline-block w-3 h-3 text-primary-default stakeable-link__icon"
+                      class="inline-block w-3 h-3 text-primary-default ml-1"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
