@@ -329,7 +329,6 @@
     "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
-    "rewardsSubscriptionTokens": "object",
     "rewardsSubscriptions": "object",
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": true,

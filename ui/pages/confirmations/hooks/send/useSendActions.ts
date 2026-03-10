@@ -13,6 +13,7 @@ import {
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SendPages } from '../../constants/send';
+import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
 import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
 import { useSendContext } from '../../context/send';
@@ -62,9 +63,12 @@ export const useSendActions = () => {
           value: value as string,
         }),
       );
-      const route = maxValueMode
-        ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
-        : CONFIRM_TRANSACTION_ROUTE;
+      const params = new URLSearchParams();
+      if (maxValueMode) {
+        params.set('maxValueMode', String(maxValueMode));
+      }
+      params.set('loader', ConfirmationLoader.Send);
+      const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
     } else {
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);

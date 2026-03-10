@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "价格影响"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "价格影响反映了您的兑换对市场价格的影响程度。若燃料费不足，系统将自动使用部分代币抵扣手续费，这会进一步推高价格影响。MetaMask 不设定也不控制该机制。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "价格影响"
   },
@@ -2368,9 +2365,6 @@
   "editANickname": {
     "message": "编辑昵称"
   },
-  "editAccountName": {
-    "message": "编辑账户名"
-  },
   "editAccounts": {
     "message": "编辑账户"
   },
@@ -3131,9 +3125,6 @@
   },
   "hidden": {
     "message": "隐藏"
-  },
-  "hiddenAccounts": {
-    "message": "隐藏账户"
   },
   "hide": {
     "message": "隐藏"
@@ -3999,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -5271,12 +5264,6 @@
   "perpsEntryPrice": {
     "message": "入场价格"
   },
-  "perpsExploreCrypto": {
-    "message": "探索加密货币"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "探索股票与大宗商品"
-  },
   "perpsFees": {
     "message": "费用"
   },
@@ -5390,9 +5377,6 @@
   },
   "perpsOpenedLong": {
     "message": "已开设多头仓位"
-  },
-  "perpsOrderAmount": {
-    "message": "订单金额"
   },
   "perpsOrders": {
     "message": "订单"
@@ -5540,12 +5524,6 @@
   },
   "perpsWithdraw": {
     "message": "提取"
-  },
-  "perpsYourOrders": {
-    "message": "您的订单"
-  },
-  "perpsYourPositions": {
-    "message": "您的仓位"
   },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
@@ -5889,9 +5867,6 @@
   },
   "removeAccount": {
     "message": "删除账户"
-  },
-  "removeAccountDescription": {
-    "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
   },
   "removeAccountModalBannerDescription": {
     "message": "删除之前，请确保您拥有此账户的私钥助记词或私钥。",
@@ -6272,9 +6247,6 @@
   },
   "search": {
     "message": "搜索"
-  },
-  "searchAccounts": {
-    "message": "搜索账户"
   },
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"
