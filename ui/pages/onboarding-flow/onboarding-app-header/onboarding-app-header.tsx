@@ -2,6 +2,26 @@ import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Location as RouterLocation } from 'react-router-dom';
 import classnames from 'clsx';
+import {
+  Box,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  Text,
+  TextColor,
+  TextVariant,
+  Icon,
+  IconName,
+  IconColor,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
+  TextColor as LegacyTextColor,
+  TextVariant as LegacyTextVariant,
+  AlignItems,
+  BackgroundColor,
+  BorderColor,
+} from '../../../helpers/constants/design-system';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Dropdown from '../../../components/ui/dropdown';
@@ -10,25 +30,7 @@ import { updateCurrentLocale } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import {
-  BannerTip,
-  Box,
-  Icon,
-  Text,
-  IconName,
-  IconSize,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  JustifyContent,
-  BorderColor,
-  TextColor,
-  TextVariant,
-  IconColor,
-} from '../../../helpers/constants/design-system';
+import { BannerTip } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -73,25 +75,21 @@ export default function OnboardingAppHeader({
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
+      alignItems={BoxAlignItems.Center}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
       padding={4}
-      className={classnames('onboarding-app-header', {
+      className={classnames('onboarding-app-header w-full', {
         'onboarding-app-header--welcome': isWelcomePage,
       })}
     >
       {showLogoAndLocaleDropdown ? (
         <Box
-          display={Display.Flex}
-          width={BlockSize.Full}
           justifyContent={
             pathname === ONBOARDING_WELCOME_ROUTE
-              ? JustifyContent.flexEnd
-              : JustifyContent.spaceBetween
+              ? BoxJustifyContent.End
+              : BoxJustifyContent.Between
           }
-          className="onboarding-app-header__contents"
+          className="onboarding-app-header__contents w-full"
         >
           {pathname !== ONBOARDING_WELCOME_ROUTE && (
             <MetaFoxLogo unsetIconHeight isOnboarding />
@@ -109,8 +107,8 @@ export default function OnboardingAppHeader({
                 title={t('pinMetaMask')}
                 gap={4}
                 titleProps={{
-                  color: TextColor.textDefault,
-                  variant: TextVariant.bodyMdMedium,
+                  color: LegacyTextColor.textDefault,
+                  variant: LegacyTextVariant.bodyMdMedium,
                   paddingRight: 2,
                 }}
                 className="onboarding-app-header__banner-tip"
@@ -118,23 +116,22 @@ export default function OnboardingAppHeader({
                 alignItems={AlignItems.center}
               >
                 <Text
-                  variant={TextVariant.bodySm}
-                  alignItems={AlignItems.center}
-                  color={TextColor.textAlternative}
-                  paddingRight={2}
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                  className="flex items-center pr-2"
                 >
                   {t('pinMetaMaskDescription', [
                     <Icon
                       name={IconName.Extension}
                       key="extension"
-                      color={IconColor.iconDefault}
+                      color={IconColor.IconDefault}
                       size={IconSize.Md}
                       className="onboarding-app-header__banner-tip-icon"
                     />,
                     <Icon
                       name={IconName.Keep}
                       key="keep"
-                      color={IconColor.iconDefault}
+                      color={IconColor.IconDefault}
                       size={IconSize.Md}
                       className="onboarding-app-header__banner-tip-icon"
                     />,
