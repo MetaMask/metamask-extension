@@ -222,11 +222,19 @@ describe('TokenCellTitle', () => {
     it('skips re-render when all compared props are the same', () => {
       const rwaData = {
         instrumentType: 'stock' as const,
-        market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
-        nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+        market: {
+          nextOpen: '2026-01-01T10:00:00Z',
+          nextClose: '2026-01-01T16:00:00Z',
+        },
+        nextPause: {
+          start: '2026-06-01T00:00:00Z',
+          end: '2026-06-02T00:00:00Z',
+        },
       };
       const token = createMockToken({ title: 'OUSG', rwaData });
-      const { getByTestId, rerender } = render(<TokenCellTitle token={token} />);
+      const { getByTestId, rerender } = render(
+        <TokenCellTitle token={token} />,
+      );
 
       expect(getByTestId('asset-cell-title')).toHaveTextContent('OUSG');
 
@@ -242,7 +250,9 @@ describe('TokenCellTitle', () => {
 
     it('re-renders when title changes', () => {
       const token = createMockToken({ title: 'OUSG' });
-      const { getByTestId, rerender } = render(<TokenCellTitle token={token} />);
+      const { getByTestId, rerender } = render(
+        <TokenCellTitle token={token} />,
+      );
 
       expect(getByTestId('asset-cell-title')).toHaveTextContent('OUSG');
 
@@ -277,7 +287,10 @@ describe('TokenCellTitle', () => {
         title: 'OUSG',
         rwaData: {
           instrumentType: 'stock' as const,
-          market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
+          market: {
+            nextOpen: '2026-01-01T10:00:00Z',
+            nextClose: '2026-01-01T16:00:00Z',
+          },
         },
       });
       const { rerender } = render(<TokenCellTitle token={token} />);
@@ -288,7 +301,10 @@ describe('TokenCellTitle', () => {
             title: 'OUSG',
             rwaData: {
               instrumentType: 'stock' as const,
-              market: { nextOpen: '2026-01-02T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
+              market: {
+                nextOpen: '2026-01-02T10:00:00Z',
+                nextClose: '2026-01-01T16:00:00Z',
+              },
             },
           })}
         />,
@@ -302,7 +318,10 @@ describe('TokenCellTitle', () => {
         title: 'OUSG',
         rwaData: {
           instrumentType: 'stock' as const,
-          market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-01T16:00:00Z' },
+          market: {
+            nextOpen: '2026-01-01T10:00:00Z',
+            nextClose: '2026-01-01T16:00:00Z',
+          },
         },
       });
       const { rerender } = render(<TokenCellTitle token={token} />);
@@ -313,7 +332,10 @@ describe('TokenCellTitle', () => {
             title: 'OUSG',
             rwaData: {
               instrumentType: 'stock' as const,
-              market: { nextOpen: '2026-01-01T10:00:00Z', nextClose: '2026-01-02T16:00:00Z' },
+              market: {
+                nextOpen: '2026-01-01T10:00:00Z',
+                nextClose: '2026-01-02T16:00:00Z',
+              },
             },
           })}
         />,
@@ -327,7 +349,10 @@ describe('TokenCellTitle', () => {
         title: 'OUSG',
         rwaData: {
           instrumentType: 'stock' as const,
-          nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+          nextPause: {
+            start: '2026-06-01T00:00:00Z',
+            end: '2026-06-02T00:00:00Z',
+          },
         },
       });
       const { rerender } = render(<TokenCellTitle token={token} />);
@@ -338,7 +363,10 @@ describe('TokenCellTitle', () => {
             title: 'OUSG',
             rwaData: {
               instrumentType: 'stock' as const,
-              nextPause: { start: '2026-07-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+              nextPause: {
+                start: '2026-07-01T00:00:00Z',
+                end: '2026-06-02T00:00:00Z',
+              },
             },
           })}
         />,
@@ -352,7 +380,10 @@ describe('TokenCellTitle', () => {
         title: 'OUSG',
         rwaData: {
           instrumentType: 'stock' as const,
-          nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-06-02T00:00:00Z' },
+          nextPause: {
+            start: '2026-06-01T00:00:00Z',
+            end: '2026-06-02T00:00:00Z',
+          },
         },
       });
       const { rerender } = render(<TokenCellTitle token={token} />);
@@ -363,7 +394,10 @@ describe('TokenCellTitle', () => {
             title: 'OUSG',
             rwaData: {
               instrumentType: 'stock' as const,
-              nextPause: { start: '2026-06-01T00:00:00Z', end: '2026-07-02T00:00:00Z' },
+              nextPause: {
+                start: '2026-06-01T00:00:00Z',
+                end: '2026-07-02T00:00:00Z',
+              },
             },
           })}
         />,
@@ -374,13 +408,19 @@ describe('TokenCellTitle', () => {
 
     it('skips re-render when rwaData is undefined for both renders', () => {
       const token = createMockToken({ title: 'ETH', rwaData: undefined });
-      const { getByTestId, rerender } = render(<TokenCellTitle token={token} />);
+      const { getByTestId, rerender } = render(
+        <TokenCellTitle token={token} />,
+      );
 
       expect(getByTestId('asset-cell-title')).toHaveTextContent('ETH');
 
       rerender(
         <TokenCellTitle
-          token={createMockToken({ title: 'ETH', rwaData: undefined, symbol: 'CHANGED' })}
+          token={createMockToken({
+            title: 'ETH',
+            rwaData: undefined,
+            symbol: 'CHANGED',
+          })}
         />,
       );
 
