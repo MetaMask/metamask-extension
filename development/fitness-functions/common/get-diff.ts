@@ -43,21 +43,8 @@ function runGitCommand(command: string): string {
   return execSync(command, GIT_EXEC_SYNC_OPTIONS).toString().trim();
 }
 
-function isMergeInProgress(): boolean {
-  try {
-    runGitCommand('git rev-parse -q --verify MERGE_HEAD');
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 function getPreCommitHookDiff(): string {
-  if (isMergeInProgress()) {
-    return '';
-  }
-
-  return runGitCommand(`git diff --cached HEAD`);
+  return runGitCommand('git diff --cached HEAD');
 }
 
 function getPrePushHookDiff(): string {
@@ -68,4 +55,4 @@ function getPrePushHookDiff(): string {
   );
 }
 
-export { getDiffByAutomationType, isMergeInProgress, getPreCommitHookDiff };
+export { getDiffByAutomationType };
