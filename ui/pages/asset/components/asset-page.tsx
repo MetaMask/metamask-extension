@@ -170,6 +170,7 @@ const AssetPage = ({
       (!address && !isEvm && item.isNative),
   );
 
+  // Display historical data for non-evm token without a balance
   address = assetWithBalance?.assetId || address;
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';

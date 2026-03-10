@@ -18,7 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ASSET_ROUTE, NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -53,6 +53,7 @@ import {
   CURRENCY_SYMBOLS,
   NON_EVM_CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -125,6 +126,7 @@ export const TokenListItemComponent = ({
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const navigate = useNavigate();
+  const [showTokenInsights, setShowTokenInsights] = useState(false);
 
   const getTokenTitle = () => {
     if (isTitleNetworkName) {
@@ -385,22 +387,7 @@ export const TokenListItemComponent = ({
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               e.preventDefault();
-              const tokenAddress = address ?? '';
-              navigate(
-                `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(tokenAddress)}`,
-                {
-                  state: {
-                    token: {
-                      address: tokenAddress,
-                      symbol: tokenSymbol || title,
-                      name: title,
-                      chainId,
-                      image: tokenImage,
-                      isNative: isNativeCurrency,
-                    },
-                  },
-                },
-              );
+              setShowTokenInsights(true);
             }}
             className="multichain-token-list-item__info-icon"
             color={IconColor.iconAlternative}
@@ -438,6 +425,20 @@ export const TokenListItemComponent = ({
           </ModalContent>
         </Modal>
       ) : null}
+
+      {showTokenInsights && (
+        <TokenInsightsModal
+          isOpen={showTokenInsights}
+          onClose={() => setShowTokenInsights(false)}
+          token={{
+            address,
+            symbol: tokenSymbol || title,
+            name: title,
+            chainId,
+            iconUrl: tokenImage,
+          }}
+        />
+      )}
     </Box>
   );
 };

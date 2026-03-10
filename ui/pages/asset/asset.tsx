@@ -20,7 +20,7 @@ type LocationState = {
     chainId: string;
     image?: string;
     isNative?: boolean;
-    decimals?: number;
+    decimals: number;
   };
 };
 
@@ -48,18 +48,7 @@ const Asset = () => {
   );
 
   // Use token from location state as fallback when user doesn't own the token
-  const token =
-    ownedToken ??
-    (locationState?.token
-      ? {
-          address: locationState.token.address as Hex,
-          symbol: locationState.token.symbol,
-          decimals: locationState.token.decimals ?? 18,
-          image: locationState.token.image,
-          isNative: locationState.token.isNative ?? false,
-          name: locationState.token.name,
-        }
-      : null);
+  const token = ownedToken ?? locationState?.token;
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
