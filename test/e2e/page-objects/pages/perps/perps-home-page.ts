@@ -19,10 +19,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-home-back-button',
   };
 
-  private readonly perpsTabView = {
-    testId: 'perps-tab-view',
-  };
-
   private readonly perpsHomeSearchButton = {
     testId: 'perps-home-search-button',
   };
@@ -33,6 +29,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsRecentActivitySeeAll = {
     testId: 'perps-recent-activity-see-all',
+  };
+
+  private readonly perpsTabView = {
+    testId: 'perps-tab-view',
   };
 
   private readonly perpsTutorialContinueButton = {
