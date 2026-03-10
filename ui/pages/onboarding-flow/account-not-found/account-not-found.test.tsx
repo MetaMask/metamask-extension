@@ -52,7 +52,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
     // should show the correct button
     const loginButton = getByText(messages.accountNotFoundCreateOne.message);
     expect(loginButton).toBeInTheDocument();
-    expect(loginButton.nodeName).toBe('BUTTON');
+    expect(loginButton.nodeName).toBe('SPAN');
   });
 
   it('should navigate to the create-password route when the button is clicked', async () => {

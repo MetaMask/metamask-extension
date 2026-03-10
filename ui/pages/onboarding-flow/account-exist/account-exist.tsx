@@ -5,16 +5,13 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../components/component-library/button';
-import {
+  Text,
+  Box,
   TextVariant,
-  Display,
-  AlignItems,
-  JustifyContent,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_WELCOME_ROUTE,
@@ -118,51 +115,40 @@ export default function AccountExist() {
 
   return (
     <Box
-      className="account-exist"
       data-testid="account-exist"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
+      className="h-full"
       gap={6}
     >
       <Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.flexStart}
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Start}
         >
           <Text
-            variant={TextVariant.headingLg}
-            as="h2"
-            justifyContent={JustifyContent.center}
-            style={{
-              alignSelf: AlignItems.flexStart,
-            }}
-            marginBottom={4}
+            variant={TextVariant.HeadingLg}
+            className="self-start mb-4 text-center"
           >
             {t('accountAlreadyExistsTitle')}
           </Text>
           <Box
-            width={BlockSize.Full}
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            marginBottom={6}
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
+            className="mb-6 w-full"
           >
             <img
               src="images/account-status.png"
               width={276}
               height={276}
               alt={t('accountAlreadyExistsTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
+              className="self-center mx-auto"
             />
           </Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6}>
+          <Text variant={TextVariant.BodyMd} className="mb-6">
             {t('accountAlreadyExistsLoginDescription', [
               userSocialLoginEmail || '-',
             ])}
@@ -171,18 +157,17 @@ export default function AccountExist() {
       </Box>
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        className="w-full"
         gap={4}
       >
         <Button
           data-testid="onboarding-complete-done"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          width={BlockSize.Full}
+          className="w-full"
           onClick={onDone}
         >
           {t('accountAlreadyExistsLogin')}
@@ -191,7 +176,7 @@ export default function AccountExist() {
           data-testid="account-exist-login-with-different-method"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          width={BlockSize.Full}
+          className="w-full"
           onClick={onLoginWithDifferentMethod}
         >
           {t('useDifferentLoginMethod')}
