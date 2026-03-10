@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import { render, screen } from '@testing-library/react';
 import { ActivityList } from './activity-list';
@@ -155,9 +156,11 @@ describe('ActivityList', () => {
     const store = createStore();
 
     render(
-      <Provider store={store}>
-        <ActivityList />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('activity-empty-state')).toBeInTheDocument();
@@ -198,9 +201,11 @@ describe('ActivityList', () => {
     });
 
     render(
-      <Provider store={store}>
-        <ActivityList />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('evm-item')).toBeInTheDocument();
@@ -238,14 +243,16 @@ describe('ActivityList', () => {
     const store = createStore();
 
     render(
-      <Provider store={store}>
-        <ActivityList
-          filter={{
-            chainId: 'eip155:1',
-            assetScope: { kind: 'token', tokenAddress: '0x222' },
-          }}
-        />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList
+            filter={{
+              chainId: 'eip155:1',
+              assetScope: { kind: 'token', tokenAddress: '0x222' },
+            }}
+          />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('activity-empty-state')).toBeInTheDocument();
@@ -308,14 +315,16 @@ describe('ActivityList', () => {
     const store = createStore();
 
     render(
-      <Provider store={store}>
-        <ActivityList
-          filter={{
-            chainId: 'eip155:1',
-            assetScope: { kind: 'token', tokenAddress: '0xusdc' },
-          }}
-        />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList
+            filter={{
+              chainId: 'eip155:1',
+              assetScope: { kind: 'token', tokenAddress: '0xusdc' },
+            }}
+          />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getAllByTestId('evm-item')).toHaveLength(1);
@@ -366,14 +375,16 @@ describe('ActivityList', () => {
     });
 
     render(
-      <Provider store={store}>
-        <ActivityList
-          filter={{
-            chainId: 'eip155:1',
-            assetScope: { kind: 'native' },
-          }}
-        />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList
+            filter={{
+              chainId: 'eip155:1',
+              assetScope: { kind: 'native' },
+            }}
+          />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('evm-item')).toBeInTheDocument();
@@ -446,14 +457,16 @@ describe('ActivityList', () => {
     const store = createStore();
 
     render(
-      <Provider store={store}>
-        <ActivityList
-          filter={{
-            chainId: 'eip155:1',
-            assetScope: { kind: 'native' },
-          }}
-        />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList
+            filter={{
+              chainId: 'eip155:1',
+              assetScope: { kind: 'native' },
+            }}
+          />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getAllByTestId('evm-item')).toHaveLength(1);
@@ -508,17 +521,19 @@ describe('ActivityList', () => {
     });
 
     render(
-      <Provider store={store}>
-        <ActivityList
-          filter={{
-            chainId: 'solana:mainnet',
-            assetScope: {
-              kind: 'native',
-              caipAssetType: 'solana:mainnet/slip44:501',
-            },
-          }}
-        />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList
+            filter={{
+              chainId: 'solana:mainnet',
+              assetScope: {
+                kind: 'native',
+                caipAssetType: 'solana:mainnet/slip44:501',
+              },
+            }}
+          />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('non-evm-item')).toBeInTheDocument();
@@ -563,14 +578,16 @@ describe('ActivityList', () => {
     });
 
     render(
-      <Provider store={store}>
-        <ActivityList
-          filter={{
-            chainId: 'solana:mainnet',
-            assetScope: { kind: 'native' },
-          }}
-        />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList
+            filter={{
+              chainId: 'solana:mainnet',
+              assetScope: { kind: 'native' },
+            }}
+          />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByTestId('non-evm-item')).not.toBeInTheDocument();
@@ -596,9 +613,11 @@ describe('ActivityList', () => {
     const store = createStore();
 
     render(
-      <Provider store={store}>
-        <ActivityList />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <ActivityList />
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('local-item')).toBeInTheDocument();

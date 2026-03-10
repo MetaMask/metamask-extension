@@ -47,6 +47,7 @@ import {
   SNAPS_VIEW_ROUTE,
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  TRANSACTION_DETAILS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
@@ -126,6 +127,7 @@ import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
 import { PerpsControllerProvider } from '../../providers/perps';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
+import TransactionDetailsPage from '../transaction-details/transaction-details-page';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -681,6 +683,13 @@ export default function Routes() {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         component: Confirm,
         layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityRequired: false,
+      }),
+      createRouteWithLayout({
+        path: TRANSACTION_DETAILS_ROUTE,
+        component: TransactionDetailsPage,
+        layout: LegacyLayout,
         authenticated: true,
         basicFunctionalityRequired: false,
       }),

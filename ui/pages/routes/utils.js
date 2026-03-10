@@ -28,6 +28,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  TRANSACTION_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -239,6 +240,19 @@ export function hideAppHeader(props) {
     ),
   );
   if (isSnapsHome) {
+    return true;
+  }
+
+  const isTransactionDetailsPage = Boolean(
+    matchPath(
+      {
+        path: TRANSACTION_DETAILS_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
+  );
+  if (isTransactionDetailsPage) {
     return true;
   }
 

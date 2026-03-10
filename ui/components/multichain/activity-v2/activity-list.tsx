@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
 import type { Transaction } from '@metamask/keyring-api';
@@ -9,12 +10,12 @@ import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 import { selectLocalTransactions } from '../../../selectors/activity';
-import { selectEvmAddress } from '../../../selectors/accounts';
 import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import { TRANSACTION_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
 import { noAdjustmentsScroll } from '../../ui/virtualized-list/virtualized-list';
 import {
@@ -28,10 +29,8 @@ import {
   type ActivityListFilter,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
-import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
-import { NonEvmDetailsModal } from './non-evm-details-modal';
 import { useTransactionsQuery } from './hooks';
 
 const ITEM_HEIGHT = 70;
@@ -43,23 +42,10 @@ type Props = {
 
 export const ActivityList = ({ filter }: Props) => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const scrollContainerRef = useScrollContainer();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
-    null,
-  );
-  const [selectedNonEvmTransaction, setSelectedNonEvmTransaction] =
-    useState<Transaction | null>(null);
 
-  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
-
-  // Clear modal state on account switch
-  useEffect(() => {
-    setIsModalOpen(false);
-    setSelectedItem(null);
-    setSelectedNonEvmTransaction(null);
-  }, [evmAddress]);
 
   // EVM transactions - from API
   const {
@@ -178,19 +164,21 @@ export const ActivityList = ({ filter }: Props) => {
 
   const earliestNonceByChain = useEarliestNonceByChain(localTransactions);
 
-  const handleItemClick = (transaction: TransactionViewModel) => {
-    setSelectedItem(transaction);
-    setIsModalOpen(true);
-  };
+  const handleItemClick = useCallback(
+    (transaction: TransactionViewModel) => {
+      navigate(TRANSACTION_DETAILS_ROUTE, { state: { transaction } });
+    },
+    [navigate],
+  );
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedItem(null);
-  };
-
-  const handleNonEvmModalClose = () => {
-    setSelectedNonEvmTransaction(null);
-  };
+  const handleNonEvmItemClick = useCallback(
+    (transaction: Transaction) => {
+      navigate(TRANSACTION_DETAILS_ROUTE, {
+        state: { nonEvmTransaction: transaction },
+      });
+    },
+    [navigate],
+  );
 
   const renderItem = (item: FlattenedItem) => {
     if (item.type === 'date-header') {
@@ -216,7 +204,7 @@ export const ActivityList = ({ filter }: Props) => {
       return (
         <NonEvmActivityListItem
           transaction={item.transaction}
-          onClick={(tx) => setSelectedNonEvmTransaction(tx)}
+          onClick={handleNonEvmItemClick}
         />
       );
     }
@@ -276,19 +264,6 @@ export const ActivityList = ({ filter }: Props) => {
 
       {!isInitialLoading && flattenedItems.length === 0 && (
         <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
-      )}
-
-      <ActivityDetailsModalAdapter
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        transaction={selectedItem}
-      />
-
-      {selectedNonEvmTransaction && (
-        <NonEvmDetailsModal
-          transaction={selectedNonEvmTransaction}
-          onClose={handleNonEvmModalClose}
-        />
       )}
     </Box>
   );
