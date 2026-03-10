@@ -333,20 +333,12 @@ const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[16]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('externalNameSourcesSetting'),
-    descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
-    route: `${SECURITY_ROUTE}#proposed-nicknames`,
-    icon: 'fa fa-lock',
-  },
-  // securityAndPrivacy settingsRefs[17]
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('securityAlerts'),
     descriptionMessage: (t) => t('securityAlertsDescription'),
     route: `${SECURITY_ROUTE}#security-alerts`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[18]
+  // securityAndPrivacy settingsRefs[17]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('blockaid'),
@@ -354,7 +346,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[19]
+  // securityAndPrivacy settingsRefs[18]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('simulationsSettingSubHeader'),
@@ -362,7 +354,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#transaction-simulations`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[20]
+  // securityAndPrivacy settingsRefs[19]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('dataCollectionForMarketing'),
@@ -370,7 +362,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#dataCollectionForMarketing`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[21]
+  // securityAndPrivacy settingsRefs[20]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('deleteMetaMetricsData'),
