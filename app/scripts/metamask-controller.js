@@ -323,6 +323,8 @@ import {
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './controller-init/perps-controller-init';
+import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -423,7 +425,6 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -604,6 +605,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      PerpsController: PerpsControllerInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -6544,27 +6546,101 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    const messengerSubscriptions = new MessengerSubscriptions(
-      this.controllerMessenger,
-      outStream,
-    );
+    // Per-connection Perps streaming bridge — manages subscription lifecycle
+    // for a single UI connection. See PerpsStreamBridge for details.
+    // Static subscriptions (positions/orders/account) are NOT registered here;
+    // they are registered in perpsInit after the controller provider is ready.
+    const perpsController = this.controllersByName.PerpsController;
+    const perpsStream = new PerpsStreamBridge((channel, data, extra) => {
+      if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+        return;
+      }
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'perpsStreamUpdate',
+        params: [{ channel, data, ...extra }],
+      });
+    });
 
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      perpsInit: async (...args) => {
+        const result = await this.controllerApi.perpsInit(...args);
+        // Guard against two race conditions before activating static subscriptions:
+        // 1. Subscription churn: skip re-activation if subscriptions are already established
+        // 2. Zombie subscriptions: skip activation if the outstream closed while the await above was in flight (mmFinished).
+        if (
+          perpsController &&
+          !perpsStream.isActivated &&
+          !outStream.mmFinished
+        ) {
+          perpsStream.activate(perpsController);
+        }
+        return result;
+      },
+      perpsDisconnect: async (...args) => {
+        // destroy() tears down stale static subscriptions and resets #activated,
+        // so a subsequent perpsInit re-establishes them cleanly after reconnect.
+        // also sets perps view active to false
+        perpsStream.destroy();
+        return this.controllerApi.perpsDisconnect(...args);
+      },
+      perpsToggleTestnet: async (...args) => {
+        // destroy() resets #activated so the next perpsInit re-establishes
+        // static subscriptions against the new testnet/mainnet provider.
+        perpsStream.destroy();
+        return this.controllerApi.perpsToggleTestnet(...args);
+      },
+      perpsViewActive: (active) => {
+        perpsStream.setViewActive(active);
+      },
+      perpsActivateStreaming: async (params) => {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
+          perpsStream.activateStreaming(perpsController, params);
+        }
+        return 'ok';
+      },
+      perpsActivatePriceStream: async ({ symbols }) => {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
+          perpsStream.activatePriceStream(perpsController, symbols);
+        }
+        return 'ok';
+      },
+      perpsDeactivatePriceStream: () => {
+        perpsStream.deactivatePriceStream();
+      },
+      perpsActivateOrderBookStream: async ({ symbol }) => {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
+          perpsStream.activateOrderBookStream(perpsController, symbol);
+        }
+        return 'ok';
+      },
+      perpsDeactivateOrderBookStream: () => {
+        perpsStream.deactivateOrderBookStream();
+      },
+      perpsActivateCandleStream: async ({ symbol, interval, duration }) => {
+        await api.perpsInit();
+        if (perpsController && !outStream.mmFinished) {
+          perpsStream.activateCandleStream(perpsController, {
+            symbol,
+            interval,
+            duration,
+          });
+        }
+        return 'ok';
+      },
+      perpsDeactivateCandleStream: () => {
+        perpsStream.deactivateCandleStream();
+      },
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
       },
       getStatePatches: () => patchStore.flushPendingPatches(),
-      messengerSubscribe: messengerSubscriptions.subscribe.bind(
-        messengerSubscriptions,
-      ),
-      messengerUnsubscribe: messengerSubscriptions.unsubscribe.bind(
-        messengerSubscriptions,
-      ),
-      messengerCall: (method, params = []) =>
-        this.controllerMessenger.call(method, ...params),
     };
 
     this.on('update', handleUpdate);
@@ -6609,7 +6685,7 @@ export default class MetamaskController extends EventEmitter {
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
-        messengerSubscriptions.clear();
+        perpsStream.destroy();
       }
     };
 

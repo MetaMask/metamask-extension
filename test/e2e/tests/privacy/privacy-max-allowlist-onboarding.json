@@ -4,11 +4,13 @@
     "chainid.network",
     "firefox.settings.services.mozilla.com",
     "metamask.github.io",
+    "on-ramp.api.cx.metamask.io",
     "sentry.io"
   ],
   "toBeRemoved": {
     "accounts.google.com": "Should be removed - web3auth team - will only call during social login",
-    "bridge.api.cx.metamask.io": "Should be removed - STX team - when move to remote feature flag"
+    "bridge.api.cx.metamask.io": "Should be removed - STX team - when move to remote feature flag",
+    "on-ramp.api.cx.metamask.io": "Should be removed - perps team - when dedicated geolocation API is added"
   },
   "untilOnboardingComplete": [
     "accounts.google.com",
