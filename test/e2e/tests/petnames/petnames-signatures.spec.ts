@@ -11,9 +11,9 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 
 describe('Petnames - Signatures', function (this: Suite) {
   it('can save names for addresses in type 3 signatures', async function () {
@@ -100,7 +100,7 @@ describe('Petnames - Signatures', function (this: Suite) {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
           numberOfTestDapps: 1,
         },
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
