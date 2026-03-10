@@ -25,7 +25,7 @@ import {
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { getPerpsController } from '../../../../providers/perps';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getDisplayName } from '../utils';
 import { PERPS_MARKET_ORDER_FEE_RATE } from '../constants';
 import { CloseAmountSection } from '../order-entry';
@@ -36,7 +36,6 @@ export type ClosePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
-  selectedAddress: string;
 };
 
 export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
@@ -44,7 +43,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   onClose,
   position,
   currentPrice,
-  selectedAddress,
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
@@ -97,7 +95,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const isSubmitDisabled = closePercent <= 0 || isSubmitting || closeSize <= 0;
 
   const handleClose = useCallback(async () => {
-    if (isSubmitDisabled || !selectedAddress) {
+    if (isSubmitDisabled) {
       return;
     }
 
@@ -105,7 +103,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     setError(null);
 
     try {
-      const controller = await getPerpsController(selectedAddress);
       const params: {
         symbol: string;
         orderType: 'market';
@@ -119,7 +116,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         params.size = closeSize.toString();
       }
 
-      const result = await controller.closePosition(params);
+      const result = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsClosePosition', [params]);
       if (!result.success) {
         throw new Error(result.error || 'Failed to close position');
       }
@@ -131,14 +131,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, [
-    isSubmitDisabled,
-    selectedAddress,
-    position.symbol,
-    closePercent,
-    closeSize,
-    onClose,
-  ]);
+  }, [isSubmitDisabled, position.symbol, closePercent, closeSize, onClose]);
 
   const handlePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);

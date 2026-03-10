@@ -26,7 +26,7 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { PriceUpdate } from '@metamask/perps-controller';
+import type { Position, PriceUpdate } from '@metamask/perps-controller';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -42,8 +42,8 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import { getPerpsController } from '../../providers/perps';
-import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
+import { getPerpsStreamManager } from '../../providers/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -198,7 +198,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [symbol]);
 
   // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
-  // Uses getPerpsController (module singleton) since this page is outside PerpsControllerProvider
+  // Uses background streaming via perpsActivatePriceStream + PerpsStreamManager
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
@@ -208,43 +208,32 @@ const PerpsMarketDetailPage: React.FC = () => {
       return undefined;
     }
 
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
+    // Activate background price stream for this symbol
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: [decodedSymbol] },
+    ]).catch(() => {
+      // Controller not ready yet, skip silently
+    });
 
-    const subscribe = async () => {
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = controller.subscribeToPrices({
-          symbols: [decodedSymbol],
-          includeMarketData: true,
-          callback: (priceUpdates) => {
-            const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
-            if (update) {
-              const ts = (update as { timestamp?: number }).timestamp;
-              const mark = (update as { markPrice?: string }).markPrice;
-              setLivePrice({
-                symbol: update.symbol,
-                price: update.price,
-                timestamp: ts ?? Date.now(),
-                markPrice: mark ?? update.price,
-              });
-            }
-          },
-          throttleMs: 1000,
+    // Subscribe to price updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
+      const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
+      if (update) {
+        const ts = (update as { timestamp?: number }).timestamp;
+        const mark = (update as { markPrice?: string }).markPrice;
+        setLivePrice({
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          markPrice: mark ?? update.price,
         });
-      } catch {
-        // Controller not ready yet, skip silently
       }
-    };
-
-    subscribe();
+    });
 
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      submitRequestToBackground('perpsDeactivatePriceStream', []);
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 
@@ -378,8 +367,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [chartCurrentPrice, market, formatNumber]);
 
   // 24h change from market data.
-  // TODO: When PerpsControllerProvider is available in the route tree,
-  // subscribe to usePerpsLivePrices for live 24h change updates.
+  // TODO: Subscribe to usePerpsLivePrices for live 24h change updates.
   const displayChange = market?.change24hPercent ?? '';
 
   // Build price lines for chart overlay (current price + TP, Entry, SL)
@@ -584,8 +572,10 @@ const PerpsMarketDetailPage: React.FC = () => {
     const handleVisibility = async () => {
       if (document.visibilityState === 'visible' && selectedAddress) {
         try {
-          const controller = await getPerpsController(selectedAddress);
-          const positions = await controller.getPositions({ skipCache: true });
+          const positions = await submitRequestToBackground<Position[]>(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
           getPerpsStreamManager().pushPositionsWithOverrides(positions);
         } catch (e) {
           console.warn('[Perps] Visibility refetch failed:', e);
@@ -1605,41 +1595,37 @@ const PerpsMarketDetailPage: React.FC = () => {
           position={position}
           account={account}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
           mode={marginModalMode}
         />
       )}
 
       {/* Reverse position modal (from Modify menu) */}
-      {position && selectedAddress && isReverseModalOpen && (
+      {position && isReverseModalOpen && (
         <ReversePositionModal
           isOpen={isReverseModalOpen}
           onClose={handleCloseReverseModal}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
 
       {/* TP/SL update modal (from Auto Close row) */}
-      {position && selectedAddress && isTPSLModalOpen && (
+      {position && isTPSLModalOpen && (
         <UpdateTPSLModal
           isOpen={isTPSLModalOpen}
           onClose={handleCloseTPSLModal}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
 
       {/* Close position modal */}
-      {position && selectedAddress && isCloseModalOpen && (
+      {position && isCloseModalOpen && (
         <ClosePositionModal
           isOpen={isCloseModalOpen}
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
     </Box>

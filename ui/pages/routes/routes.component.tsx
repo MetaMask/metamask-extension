@@ -124,7 +124,6 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { PerpsControllerProvider } from '../../providers/perps';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
@@ -248,35 +247,11 @@ const PerpsOrderEntryPage = mmLazy(
   () => import('../perps/perps-order-entry-page.tsx'),
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
+const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
 const NotificationsSettingsRedirect = () => (
   <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
-);
-
-// Perps pages wrapped with PerpsControllerProvider
-const WrappedPerpsMarketDetailPage = () => (
-  <PerpsControllerProvider>
-    <PerpsMarketDetailPage />
-  </PerpsControllerProvider>
-);
-
-const WrappedMarketListView = () => (
-  <PerpsControllerProvider>
-    <MarketListView />
-  </PerpsControllerProvider>
-);
-
-const WrappedPerpsActivityPage = () => (
-  <PerpsControllerProvider>
-    <PerpsActivityPage />
-  </PerpsControllerProvider>
-);
-
-const WrappedPerpsOrderEntryPage = () => (
-  <PerpsControllerProvider>
-    <PerpsOrderEntryPage />
-  </PerpsControllerProvider>
 );
 
 export const routeConfig = [
@@ -642,7 +617,11 @@ export const routeConfig = [
   }),
   createRouteWithLayout({
     path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-    component: WrappedPerpsMarketDetailPage,
+    element: (
+      <PerpsLayout>
+        <PerpsMarketDetailPage />
+      </PerpsLayout>
+    ),
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityOpenPageCtaKey:
@@ -650,7 +629,11 @@ export const routeConfig = [
   }),
   createRouteWithLayout({
     path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-    component: WrappedPerpsOrderEntryPage,
+    element: (
+      <PerpsLayout>
+        <PerpsOrderEntryPage />
+      </PerpsLayout>
+    ),
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityOpenPageCtaKey:
@@ -658,7 +641,11 @@ export const routeConfig = [
   }),
   createRouteWithLayout({
     path: PERPS_ACTIVITY_ROUTE,
-    component: WrappedPerpsActivityPage,
+    element: (
+      <PerpsLayout>
+        <PerpsActivityPage />
+      </PerpsLayout>
+    ),
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityOpenPageCtaKey:
@@ -666,7 +653,11 @@ export const routeConfig = [
   }),
   createRouteWithLayout({
     path: PERPS_MARKET_LIST_ROUTE,
-    component: WrappedMarketListView,
+    element: (
+      <PerpsLayout>
+        <MarketListView />
+      </PerpsLayout>
+    ),
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityOpenPageCtaKey:
