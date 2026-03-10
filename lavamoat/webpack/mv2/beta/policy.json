@@ -1939,6 +1939,7 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
+        "atob": true,
         "console.error": true,
         "console.warn": true,
         "dispatchEvent": true,

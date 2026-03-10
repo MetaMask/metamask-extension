@@ -1919,6 +1919,8 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
+        "atob": true,
+        "btoa": true,
         "console.error": true,
         "console.warn": true,
         "dispatchEvent": true,
