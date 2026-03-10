@@ -478,7 +478,7 @@ export default class SettingsTab extends PureComponent {
     const onChange = (newTheme) => {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: 'Theme Changed',
+        event: MetaMetricsEventName.ThemeChanged,
         properties: {
           theme_selected: newTheme,
         },
