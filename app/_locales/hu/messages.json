@@ -484,9 +484,6 @@
   "removeAccount": {
     "message": "Fiók eltávolítása"
   },
-  "removeAccountDescription": {
-    "message": "Ez a fiók el lesz távolítva pénztárcádból. A folytatás előtt győződj meg róla, hogy rendelkezésedre áll az eredeti kulcsszólánc vagy titkos kulcs. A fiók legördülő menüjéből újból importálhatsz vagy létrehozhatsz fiókokat. "
-  },
   "required": {
     "message": "Kötelező"
   },

@@ -5869,9 +5869,6 @@
   "removeAccount": {
     "message": "Konto entfernen"
   },
-  "removeAccountDescription": {
-    "message": "Dieses Konto wird aus Ihrem Wallet entfernt. Bitte stellen Sie sicher, dass Sie die ursprüngliche geheime Wiederherstellungsphrase oder den privaten Schlüssel für dieses importierte Konto haben, bevor Sie fortfahren. Über die Dropdown-Liste des Kontos können Sie Konten importieren oder neu anlegen. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Stellen Sie sicher, dass Sie die geheime Wiederherstellungsphrase oder den privaten Schlüssel für dieses Konto haben, bevor Sie es entfernen.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

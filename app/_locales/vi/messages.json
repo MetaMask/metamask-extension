@@ -5869,9 +5869,6 @@
   "removeAccount": {
     "message": "Xóa tài khoản"
   },
-  "removeAccountDescription": {
-    "message": "Tài khoản này sẽ bị xóa khỏi ví của bạn. Hãy chắc chắn rằng bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư gốc cho tài khoản đã nhập này trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn thả xuống tài khoản. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Đảm bảo bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư cho tài khoản này trước khi xóa.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."

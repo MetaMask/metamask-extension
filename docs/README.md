@@ -15,3 +15,7 @@ To learn how to develop MetaMask-compatible applications, visit our [Developer D
 - [Publishing Guide](./publishing.md)
 - [How to add a feature behind a secret feature flag](./secret-preferences.md)
 - [Developing on MetaMask](../development/README.md)
+
+## LLM Agent Tooling
+
+- [LLM Workflow for Extension Testing](../test/e2e/playwright/llm-workflow/README.md) - Playwright-based workflow for LLM agents to build, launch, and interact with the MetaMask extension

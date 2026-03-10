@@ -484,9 +484,6 @@
   "removeAccount": {
     "message": "Uklanjanje računa"
   },
-  "removeAccountDescription": {
-    "message": "Ovaj se račun uklanja iz vašeg novčanika. Provjerite imate li izvornu početnu rečenicu ili privatni ključ za ovaj uvezeni račun prije nastavka. Ponovno možete uvoziti ili stvarati račune uporabom padajućeg izbornika za račun."
-  },
   "required": {
     "message": "Zahtijeva se"
   },
