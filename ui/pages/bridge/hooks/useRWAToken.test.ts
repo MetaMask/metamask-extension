@@ -50,9 +50,7 @@ describe('isStockRWAToken', () => {
   });
 
   it('returns false when rwaData is undefined', () => {
-    expect(isStockRWAToken({ rwaData: undefined } as RWATokenLike)).toBe(
-      false,
-    );
+    expect(isStockRWAToken({ rwaData: undefined } as RWATokenLike)).toBe(false);
   });
 });
 
@@ -70,10 +68,7 @@ describe('isTokenTradingOpenAt', () => {
 
     it('returns false when market object is undefined', () => {
       expect(
-        isTokenTradingOpenAt(
-          buildToken({ market: undefined as never }),
-          NOON,
-        ),
+        isTokenTradingOpenAt(buildToken({ market: undefined as never }), NOON),
       ).toBe(false);
     });
 
