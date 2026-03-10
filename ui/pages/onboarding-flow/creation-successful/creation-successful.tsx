@@ -175,12 +175,16 @@ export default function CreationSuccessful() {
         <Button
           variant={ButtonVariant.Secondary}
           data-testid="manage-default-settings"
-          className="rounded-lg w-full"
+          className="rounded-lg w-full flex justify-between items-center"
           onClick={() =>
             navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
           }
         >
-          <Box alignItems={BoxAlignItems.Center}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
+          >
             <Icon name={IconName.Setting} size={IconSize.Md} className="mr-3" />
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('manageDefaultSettings')}
@@ -386,6 +390,12 @@ export default function CreationSuccessful() {
     );
   };
 
+  const handleLearnMoreClick = () => {
+    global.platform.openTab({
+      url: learnMoreLink,
+    });
+  };
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -412,7 +422,7 @@ export default function CreationSuccessful() {
               alignItems={BoxAlignItems.Center}
               className="w-full mb-6"
             >
-              <Box style={{ width: '144px', height: '144px' }}>{renderFox}</Box>
+              <Box className="w-36 h-36 mx-auto">{renderFox}</Box>
             </Box>
             <Text
               variant={TextVariant.BodyMd}
@@ -429,8 +439,8 @@ export default function CreationSuccessful() {
               {t('walletReadyLearn', [
                 <TextButton
                   key="walletReadyLearn"
-                  className="hover:bg-transparent active:bg-transparent w-full"
-                  onClick={() => navigate(learnMoreLink)}
+                  className="hover:bg-transparent active:bg-transparent w-fit"
+                  onClick={handleLearnMoreClick}
                 >
                   {t('learnHow')}
                 </TextButton>,

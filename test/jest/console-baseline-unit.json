@@ -2699,6 +2699,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {
+      "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/onboarding-flow/download-app/download-app.test.tsx": {
