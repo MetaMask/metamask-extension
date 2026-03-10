@@ -685,14 +685,14 @@ export const routeConfig = [
     basicFunctionalityRequired: false,
   }),
   createRouteWithLayout({
-    path: `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`,
+    path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
     component: MultichainAccountAddressListPage,
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityRequired: false,
   }),
   createRouteWithLayout({
-    path: `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`,
+    path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
     component: MultichainAccountPrivateKeyListPage,
     layout: RootLayout,
     authenticated: true,
