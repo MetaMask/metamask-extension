@@ -52,25 +52,8 @@ export const selectLocalTransactions = createSelector(
     const selectedAddress = selectedAccount.address.toLowerCase();
 
     const filtered = (transactions ?? []).filter((tx) => {
-      const hasNonce = tx.txParams?.nonce !== undefined;
-
       if (!isFromSelectedAccount(tx, selectedAddress)) {
         return false;
-      }
-
-      // Ensure any externally signed transactions are always included.
-      // Such as EIP-7702 gas station and MetaMask Pay.
-      if (!hasNonce) {
-        // Temporary fix: mUSD conversion/claim txs have no nonce but DO carry
-        // the user's address in txParams.from, so they must still be scoped to
-        // the selected account. Without this guard they appear under every account.
-        if (
-          tx.type === TransactionType.musdConversion ||
-          tx.type === TransactionType.musdClaim
-        ) {
-          return isFromSelectedAccount(tx, selectedAddress);
-        }
-        return true;
       }
 
       if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
@@ -87,7 +70,7 @@ export const selectLocalTransactions = createSelector(
       const hasActionId = unsafeTx.actionId !== undefined;
       const origin =
         typeof unsafeTx.origin === 'string' ? unsafeTx.origin : undefined;
-      const isLocalOrigin = origin === 'metamask';
+      const isLocalOrigin = origin === 'metamask' || undefined;
 
       return isPending || hasActionId || isLocalOrigin;
     });

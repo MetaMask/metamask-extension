@@ -1,7 +1,10 @@
 import React from 'react';
 import { DefaultRootState } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import {
   getMockConfirmStateForTransaction,
@@ -59,7 +62,7 @@ describe('<WalletInitiatedHeader />', () => {
       ...base,
       type: TransactionType.musdClaim,
       origin: 'metamask',
-    });
+    } as TransactionMeta);
 
     const { getByTestId } = render(musdClaimState);
     fireEvent.click(getByTestId('wallet-initiated-header-back-button'));
