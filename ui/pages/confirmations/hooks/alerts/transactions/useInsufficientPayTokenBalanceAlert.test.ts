@@ -346,7 +346,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     expect(result.current).toStrictEqual([]);
   });
 
-  it('returns no alert if loading even when balance is insufficient', () => {
+  it('returns insufficient balance alert even while loading', () => {
     useIsTransactionPayLoadingMock.mockReturnValue(true);
 
     useTransactionPayTokenMock.mockReturnValue({
@@ -365,6 +365,8 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
     const { result } = runHook();
 
-    expect(result.current).toStrictEqual([]);
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].key).toBe('insufficientPayTokenBalance');
+    expect(result.current[0].isBlocking).toBe(true);
   });
 });
