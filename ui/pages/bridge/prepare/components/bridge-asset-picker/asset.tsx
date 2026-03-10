@@ -7,6 +7,9 @@ import {
   BadgeWrapper,
   Box,
   BoxBackgroundColor,
+  ButtonIcon,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -15,9 +18,6 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   PolymorphicRef,
   Tag,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
 } from '../../../../../components/component-library';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
@@ -31,7 +31,6 @@ import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  IconColor,
 } from '../../../../../helpers/constants/design-system';
 import { useBridgeNavigation } from '../../../../../hooks/bridge/useBridgeNavigation';
 import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/constants';
@@ -68,7 +67,7 @@ export const BridgeAsset = React.forwardRef(
         {...buttonProps}
         padding={4}
         borderRadius={BorderRadius.none}
-        gap={4}
+        gap={2}
         backgroundColor={
           selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
         }
@@ -116,7 +115,10 @@ export const BridgeAsset = React.forwardRef(
           />
         </BadgeWrapper>
 
-        <Column width={BlockSize.Full} style={{ overflow: 'hidden' }}>
+        <Column
+          width={BlockSize.Full}
+          style={{ overflow: 'hidden', marginLeft: 8 }}
+        >
           <Row alignItems={AlignItems.flexStart} gap={4}>
             <Row gap={2}>
               <Text ellipsis>{asset.symbol}</Text>
@@ -160,16 +162,17 @@ export const BridgeAsset = React.forwardRef(
         </Column>
 
         <ButtonIcon
+          className="bridge-asset-info-icon"
           iconName={IconName.Info}
-          size={ButtonIconSize.Sm}
           onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             e.preventDefault();
             navigateToAssetPage(asset);
           }}
-          color={IconColor.iconAlternative}
           ariaLabel={t('viewTokenDetails')}
-          style={{ alignSelf: 'center' }}
+          iconProps={{
+            size: IconSize.Sm,
+          }}
         />
       </Row>
     );

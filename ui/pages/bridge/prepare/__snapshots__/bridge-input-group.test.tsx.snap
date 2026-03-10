@@ -744,7 +744,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
@@ -785,7 +785,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -821,17 +821,22 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <button
                 aria-label="View token details"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-                style="align-self: center;"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/info.svg');"
-                />
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
@@ -872,7 +877,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -908,13 +913,18 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <button
                 aria-label="View token details"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-                style="align-self: center;"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/info.svg');"
-                />
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
               </button>
             </div>
             <div
@@ -1109,7 +1119,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
@@ -1150,7 +1160,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1186,17 +1196,22 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </div>
               <button
                 aria-label="View token details"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-                style="align-self: center;"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/info.svg');"
-                />
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
@@ -1237,7 +1252,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1273,17 +1288,22 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </div>
               <button
                 aria-label="View token details"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-                style="align-self: center;"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/info.svg');"
-                />
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="2"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
@@ -1324,7 +1344,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1360,13 +1380,18 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </div>
               <button
                 aria-label="View token details"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-                style="align-self: center;"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/info.svg');"
-                />
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
               </button>
             </div>
           </div>
