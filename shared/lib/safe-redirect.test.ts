@@ -52,6 +52,7 @@ describe('sanitizeRedirectUrl', () => {
   });
 
   it('rejects javascript: protocol scheme', () => {
+    // eslint-disable-next-line no-script-url
     expect(sanitizeRedirectUrl('javascript:alert(1)')).toBeUndefined();
   });
 
