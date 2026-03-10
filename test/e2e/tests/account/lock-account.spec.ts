@@ -1,9 +1,11 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  loginWithBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 
 describe('Lock and unlock', function (this: Suite) {
   it('successfully unlocks after lock', async function () {
@@ -17,8 +19,7 @@ describe('Lock and unlock', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const homePage = new HomePage(driver);
-        await homePage.headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
         await loginWithBalanceValidation(driver);
       },
     );
