@@ -26,28 +26,15 @@ import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useMusdConversionHeaderContent } from '../../info/musd-conversion-info';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
-function useSimpleHeaderContent(): {
+const SimpleHeaderLayout = ({
+  title,
+  endAccessory,
+}: Readonly<{
   title: ReactNode;
   endAccessory: ReactNode;
-} {
-  const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const musdContent = useMusdConversionHeaderContent();
-
-  if (currentConfirmation?.type === TransactionType.musdConversion) {
-    return musdContent;
-  }
-
-  return {
-    title: t('review'),
-    endAccessory: <AdvancedDetailsButton />,
-  };
-}
-
-export const SimpleConfirmationHeader = () => {
+}>) => {
   const t = useI18nContext();
   const { onCancel } = useConfirmActions();
-  const { title, endAccessory } = useSimpleHeaderContent();
 
   const handleBackButtonClick = useCallback(() => {
     onCancel({
@@ -93,4 +80,29 @@ export const SimpleConfirmationHeader = () => {
       </Text>
     </HeaderBase>
   );
+};
+
+const MusdConversionSimpleHeader = () => {
+  const { title, endAccessory } = useMusdConversionHeaderContent();
+  return <SimpleHeaderLayout title={title} endAccessory={endAccessory} />;
+};
+
+const DefaultSimpleHeader = () => {
+  const t = useI18nContext();
+  return (
+    <SimpleHeaderLayout
+      title={t('review')}
+      endAccessory={<AdvancedDetailsButton />}
+    />
+  );
+};
+
+export const SimpleConfirmationHeader = () => {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
+  if (currentConfirmation?.type === TransactionType.musdConversion) {
+    return <MusdConversionSimpleHeader />;
+  }
+
+  return <DefaultSimpleHeader />;
 };

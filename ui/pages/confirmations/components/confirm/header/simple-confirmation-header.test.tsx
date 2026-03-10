@@ -88,4 +88,30 @@ describe('<SimpleConfirmationHeader />', () => {
       expect(getByTestId('musd-conversion-header-tooltip')).toBeInTheDocument();
     });
   });
+
+  describe('default (non-mUSD) type', () => {
+    it('renders the "Review" title', () => {
+      const { getByTestId } = render(TransactionType.contractInteraction);
+
+      expect(getByTestId('simple-confirmation-header-title')).toHaveTextContent(
+        'Review',
+      );
+    });
+
+    it('renders the advanced details button as endAccessory', () => {
+      const { getByTestId } = render(TransactionType.contractInteraction);
+
+      expect(
+        getByTestId('header-advanced-details-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render the mUSD info tooltip', () => {
+      const { queryByTestId } = render(TransactionType.contractInteraction);
+
+      expect(
+        queryByTestId('musd-conversion-header-tooltip-button'),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

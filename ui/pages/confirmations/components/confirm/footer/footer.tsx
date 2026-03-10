@@ -306,7 +306,10 @@ const Footer = () => {
     return null;
   }
 
-  if (SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)) {
+  if (
+    currentConfirmation.type &&
+    SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)
+  ) {
     return (
       <SingleActionFooter
         onSubmit={onSubmit}
