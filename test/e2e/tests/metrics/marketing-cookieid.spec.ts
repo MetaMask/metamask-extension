@@ -40,7 +40,7 @@ const mockSegment = async (mockServer: Mockttp) => {
   ];
 };
 
-describe('TST Marketing cookieId', function (this: Suite) {
+describe('Marketing cookieId', function (this: Suite) {
   it('should be send to segment when preferences are enabled', async function () {
     await withFixtures(
       {
