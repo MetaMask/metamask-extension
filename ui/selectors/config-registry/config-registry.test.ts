@@ -305,6 +305,110 @@ describe('config-registry selectors', () => {
       expect(result).toBe(FEATURED_RPCS);
     });
 
+    it('skips entries with malformed chainId and falls back to FEATURED_RPCS when no valid entries remain', () => {
+      const state: ConfigRegistryTestState = {
+        metamask: {
+          remoteFeatureFlags: { configRegistryApiEnabled: true },
+          configs: {
+            networks: {
+              'malformed-chain-id': {
+                chainId: 'malformed-chain-id',
+                name: 'Bad Network',
+                rpcProviders: {
+                  default: {
+                    url: 'https://rpc.example.com',
+                    type: 'custom',
+                    networkClientId: 'x',
+                  },
+                  fallbacks: [],
+                },
+                config: {
+                  isActive: true,
+                  isTestnet: false,
+                  isDefault: false,
+                  isFeatured: true,
+                  isDeprecated: false,
+                  isDeletable: false,
+                  priority: 0,
+                },
+              } as never,
+            },
+          },
+          version: '1',
+          lastFetched: 1,
+          etag: null,
+        },
+      };
+      expect(() => getFeaturedNetworksForAdditionalList(state)).not.toThrow();
+      const result = getFeaturedNetworksForAdditionalList(state);
+      expect(result).toBe(FEATURED_RPCS);
+    });
+
+    it('skips malformed chainId entries but includes valid ones', () => {
+      const state: ConfigRegistryTestState = {
+        metamask: {
+          remoteFeatureFlags: { configRegistryApiEnabled: true },
+          configs: {
+            networks: {
+              'malformed-chain-id': {
+                chainId: 'malformed-chain-id',
+                name: 'Bad Network',
+                rpcProviders: {
+                  default: {
+                    url: 'https://rpc.example.com',
+                    type: 'custom',
+                    networkClientId: 'x',
+                  },
+                  fallbacks: [],
+                },
+                config: {
+                  isActive: true,
+                  isTestnet: false,
+                  isDefault: false,
+                  isFeatured: true,
+                  isDeprecated: false,
+                  isDeletable: false,
+                  priority: 0,
+                },
+              } as never,
+              'eip155:1329': {
+                chainId: 'eip155:1329',
+                name: 'Sei Network',
+                rpcProviders: {
+                  default: {
+                    url: 'https://evm-rpc.sei.network',
+                    type: 'custom',
+                    networkClientId: 'evm-sei-1329',
+                  },
+                  fallbacks: [],
+                },
+                config: {
+                  isActive: true,
+                  isTestnet: false,
+                  isDefault: false,
+                  isFeatured: true,
+                  isDeprecated: false,
+                  isDeletable: false,
+                  priority: 0,
+                },
+              } as never,
+            },
+          },
+          version: '1',
+          lastFetched: 1,
+          etag: null,
+        },
+      };
+      expect(() => getFeaturedNetworksForAdditionalList(state)).not.toThrow();
+      const result = getFeaturedNetworksForAdditionalList(state);
+      expect(result).not.toBe(FEATURED_RPCS);
+      const sei = result.find((n) => n.chainId === '0x531');
+      expect(sei).toBeDefined();
+      expect(sei?.name).toBe('Sei Network');
+      const bad = result.find((n) => n.name === 'Bad Network');
+      expect(bad).toBeUndefined();
+    });
+
     it('returns FEATURED_RPCS when featured EVM network has non-https RPC URL', () => {
       const state: ConfigRegistryTestState = {
         metamask: {

@@ -113,7 +113,12 @@ export type FeaturedNetworkForAdditionalList = AddNetworkFields & {
 function registryConfigToAddNetworkFields(
   config: RegistryNetworkConfig,
 ): FeaturedNetworkForAdditionalList | null {
-  const { namespace } = parseCaipChainId(config.chainId as `eip155:${string}`);
+  let namespace: string;
+  try {
+    ({ namespace } = parseCaipChainId(config.chainId as `eip155:${string}`));
+  } catch {
+    return null;
+  }
   if (namespace !== KnownCaipNamespace.Eip155) {
     return null;
   }
