@@ -15,6 +15,12 @@ export const SETTINGS_ROUTE = '/settings';
 export const SETTINGS_V2_ROUTE = '/settings-v2';
 export const ASSETS_ROUTE = '/settings-v2/assets';
 export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
+export const PREFERENCES_AND_DISPLAY_ROUTE =
+  '/settings-v2/preferences-and-display';
+export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
+export const LANGUAGE_ROUTE = '/settings-v2/preferences-and-display/language';
+export const ACCOUNT_IDENTICON_ROUTE =
+  '/settings-v2/preferences-and-display/account-identicon';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -56,6 +62,12 @@ export const CONTACT_LIST_ROUTE = '/settings/contact-list';
 export const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 export const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
+
+// Standalone contacts (hamburger menu)
+export const CONTACTS_ROUTE = '/contacts';
+export const CONTACTS_ADD_ROUTE = '/contacts/add';
+export const CONTACTS_VIEW_ROUTE = '/contacts/view';
+export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
 export const REVEAL_SRP_LIST_ROUTE =
   '/settings/security-and-privacy/reveal-srp-list';
@@ -225,6 +237,26 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: PREFERENCES_AND_DISPLAY_ROUTE,
+    label: 'Preferences And Display Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: THEME_ROUTE,
+    label: 'Theme Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: LANGUAGE_ROUTE,
+    label: 'Language Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: ACCOUNT_IDENTICON_ROUTE,
+    label: 'Account Identicon Settings Page',
+    trackInAnalytics: true,
+  },
+  {
     path: GENERAL_ROUTE,
     label: 'General Settings Page',
     trackInAnalytics: true,
@@ -293,6 +325,26 @@ export const ROUTES = [
   {
     path: `${CONTACT_VIEW_ROUTE}/:address`,
     label: 'View Contact Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CONTACTS_ROUTE,
+    label: 'Contacts Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CONTACTS_ADD_ROUTE,
+    label: 'Add Contact Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${CONTACTS_VIEW_ROUTE}/:address`,
+    label: 'Contact Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${CONTACTS_EDIT_ROUTE}/:address`,
+    label: 'Edit Contact Page',
     trackInAnalytics: true,
   },
   {
