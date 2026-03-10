@@ -10,6 +10,8 @@ import {
   type MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
+const selectAlwaysFalse = (): boolean => false;
+
 export type ToggleEventConfig = {
   event: MetaMetricsEventName;
   properties: (newValue: boolean) => Record<string, Json>;
@@ -36,9 +38,7 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
     const dispatch = useDispatch();
     const { trackEvent } = useContext(MetaMetricsContext);
     const value = useSelector(config.selector);
-    const disabled = useSelector(
-      config.disabledSelector ?? ((): boolean => false),
-    );
+    const disabled = useSelector(config.disabledSelector ?? selectAlwaysFalse);
 
     const handleToggle = (currentValue: boolean) => {
       const newValue = !currentValue;

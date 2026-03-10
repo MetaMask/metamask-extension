@@ -32,6 +32,9 @@ const AccountIdenticonSubPage = () => {
   const { avatarType } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
+  const currentVariant: AvatarAccountVariant =
+    avatarType ?? AvatarAccountVariant.Maskicon;
+
   const handleSelect = (value: AvatarAccountVariant) => {
     dispatch(setAvatarType(value));
     navigate(PREFERENCES_AND_DISPLAY_ROUTE);
@@ -40,7 +43,7 @@ const AccountIdenticonSubPage = () => {
   return (
     <Box data-testid="account-identicon-list">
       {AVATAR_OPTIONS.map(({ value, labelKey }) => {
-        const isSelected = value === avatarType;
+        const isSelected = value === currentVariant;
         return (
           <Box
             key={value}
