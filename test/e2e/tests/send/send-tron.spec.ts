@@ -20,18 +20,14 @@ describe('Send Tron', function () {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
 
-        // Switch to Tron network
+        // Switch to Tron via the UI. Enabling it through fixtures causes a redirect
+        // back to the default network because the snap is not yet initialized
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
