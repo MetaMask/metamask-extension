@@ -131,15 +131,14 @@ export function getGasValuesForReplacement(txParams, previousGas, rate) {
     .round(0)
     .toPrefixedHexString();
 
-  const maxFeePerGas = new BigNumber(txParams?.maxFeePerGas ?? 0, 16).gte(
-    new BigNumber(minMaxFeePerGas, 16),
+  const maxFeePerGas = new BigNumber(txParams?.maxFeePerGas ?? 0).gte(
+    new BigNumber(minMaxFeePerGas),
   )
     ? txParams.maxFeePerGas
     : minMaxFeePerGas;
   const maxPriorityFeePerGas = new BigNumber(
     txParams?.maxPriorityFeePerGas ?? 0,
-    16,
-  ).gte(new BigNumber(minMaxPriorityFeePerGas, 16))
+  ).gte(new BigNumber(minMaxPriorityFeePerGas))
     ? txParams.maxPriorityFeePerGas
     : minMaxPriorityFeePerGas;
 

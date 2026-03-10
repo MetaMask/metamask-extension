@@ -40,7 +40,7 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
 // Preset levels show their label; others (e.g. PriorityLevels.tenPercentIncreased, custom) show as "Advanced"
-const PRESET_ESTIMATES = ['low', 'medium', 'high'];
+const PRESET_ESTIMATES = new Set(['low', 'medium', 'high']);
 
 export default function GasTiming({
   chainId,
@@ -151,7 +151,7 @@ export default function GasTiming({
     transactionData?.userFeeLevel ??
     'medium';
 
-  const isPresetEstimate = PRESET_ESTIMATES.includes(estimateToUse);
+  const isPresetEstimate = PRESET_ESTIMATES.has(estimateToUse);
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
   let text =
     estimateTextMap[estimateToUse] ??

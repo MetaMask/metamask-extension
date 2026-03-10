@@ -144,5 +144,46 @@ describe('Gas utils', () => {
       expect(result.maxFeePerGas).toBe('0x100');
       expect(result.maxPriorityFeePerGas).toBe('0x100');
     });
+
+    it('returns txParams when they exceed min replacement gas (0x-prefixed hex from toPrefixedHexString)', () => {
+      // previousGas 70 GWEI × 1.1 ≈ 77 GWEI min. User chose 100 GWEI — must be kept.
+      // Uses 0x-prefixed values as produced by Numeric#toPrefixedHexString().
+      const txParams = {
+        maxFeePerGas: '0x174876e800', // 100 GWEI
+        maxPriorityFeePerGas: '0x174876e800',
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x104c533c00', // 70 GWEI in hex WEI
+        maxPriorityFeePerGas: '0x2540be400', // 10 GWEI
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(result.maxFeePerGas).toBe('0x174876e800');
+      expect(result.maxPriorityFeePerGas).toBe('0x174876e800');
+    });
+
+    it('returns min replacement gas when txParams are lower (0x-prefixed hex)', () => {
+      // 70 GWEI × 1.1 = 77 GWEI min. txParams at 70 GWEI → result should be ≥ 77 GWEI.
+      const seventyGweiHex = '0x104c533c00';
+      const tenGweiHex = '0x2540be400';
+      const txParams = {
+        maxFeePerGas: seventyGweiHex,
+        maxPriorityFeePerGas: tenGweiHex,
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: seventyGweiHex,
+        maxPriorityFeePerGas: tenGweiHex,
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      const minMaxFeeWei = 77 * 1e9;
+      const minMaxPriorityWei = 10 * 1.1 * 1e9;
+      expect(Number(result.maxFeePerGas)).toBeGreaterThanOrEqual(minMaxFeeWei);
+      expect(Number(result.maxPriorityFeePerGas)).toBeGreaterThanOrEqual(
+        minMaxPriorityWei,
+      );
+    });
   });
 });

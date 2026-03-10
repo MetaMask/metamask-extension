@@ -75,7 +75,7 @@ export function useCancelSpeedupGasState(
 
   const transactionFromStore = useSelector((state: Record<string, unknown>) =>
     selectTransactionMetadata(state, transaction?.id),
-  ) as TransactionMeta | undefined;
+  );
 
   const network = useSelector((state: Record<string, unknown>) =>
     selectNetworkConfigurationByChainId(state, transaction?.chainId),
@@ -102,7 +102,7 @@ export function useCancelSpeedupGasState(
       networkClientId:
         (sourceTx as TransactionMeta & { networkClientId?: string })
           .networkClientId ?? networkClientId,
-    } as TransactionMeta;
+    };
   }, [transactionFromStore, transaction, networkClientId]);
 
   const { gasFeeEstimates } = useGasFeeEstimates(networkClientId);
@@ -121,8 +121,7 @@ export function useCancelSpeedupGasState(
     : '0';
 
   const setRetryTxMetaState = useCallback(
-    (updated: TransactionMeta) =>
-      setRetryTxMeta(updated as Partial<TransactionMeta>),
+    (updated: TransactionMeta) => setRetryTxMeta(updated),
     [],
   );
 

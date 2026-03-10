@@ -73,7 +73,14 @@ const MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX =
   MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.div(10, 10).toString(16); // 1 GWEI in hex WEI, which is below the medium estimate
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
-  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16); // 10 GWEI in hex WEI
+  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16); // 70 GWEI in hex WEI (from mock medium)
+
+// Exact ETH fee strings shown in the network fee row (4 decimals). Asserting these catches
+// regressions in getGasValuesForReplacement / addTenPercentAndRound and fee display logic.
+// Above medium: initial 100 GWEI -> replacement uses max(100, previous×1.1); fee shown from effective tx.
+// Below medium: initial 1 GWEI -> useCancelSpeedupInitialGas sets to medium estimate (70 GWEI).
+const EXPECTED_ETH_FEE_ABOVE_MEDIUM_10_PCT = '0.0013';
+const EXPECTED_ETH_FEE_MEDIUM = '0.0001';
 const mockTransaction = {
   id: '1',
   chainId: '0x5',
@@ -261,7 +268,7 @@ describe('CancelSpeedup Component', () => {
     await waitFor(() => {
       const row = screen.getByTestId('edit-gas-fees-row');
       expect(row).toHaveTextContent('ETH');
-      expect(row.textContent).toMatch(/\d/u);
+      expect(row).toHaveTextContent(EXPECTED_ETH_FEE_ABOVE_MEDIUM_10_PCT);
     });
   });
 
@@ -276,7 +283,7 @@ describe('CancelSpeedup Component', () => {
     await waitFor(() => {
       const row = screen.getByTestId('edit-gas-fees-row');
       expect(row).toHaveTextContent('ETH');
-      expect(row.textContent).toMatch(/\d/u);
+      expect(row).toHaveTextContent(EXPECTED_ETH_FEE_MEDIUM);
     });
   });
 });
