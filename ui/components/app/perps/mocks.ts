@@ -6,19 +6,18 @@
  * Once integration is complete, import from:
  * `app/scripts/controllers/perps/mocks`
  */
-
-import {
-  FillType,
-  PerpsOrderTransactionStatus,
-  PerpsOrderTransactionStatusType,
-} from './types/transactionHistory';
-import type { PerpsTransaction } from './types';
 import {
   AccountState,
   Order,
   PerpsMarketData,
   Position,
 } from '@metamask/perps-controller';
+import {
+  FillType,
+  PerpsOrderTransactionStatus,
+  PerpsOrderTransactionStatusType,
+} from './types/transactionHistory';
+import type { PerpsTransaction } from './types';
 
 /**
  * Mock account state data
