@@ -848,6 +848,10 @@
     "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
+  "basicConfigurationDescriptionV2": {
+    "message": "Includes basic features like token details and gas settings. Keep this feature on for the best experience.  Read our $1 to learn more.",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+  },
   "basicConfigurationLabel": {
     "message": "Basic functionality"
   },
@@ -887,6 +891,9 @@
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Open the DeFi page"
+  },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "Open the mUSD Conversion page"
   },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "Open the Notifications page"
@@ -2057,7 +2064,7 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
@@ -2166,6 +2173,9 @@
   },
   "deepLink_theHomePage": {
     "message": "the home page"
+  },
+  "deepLink_theMusdEducationPage": {
+    "message": "the MUSD conversion education page"
   },
   "deepLink_theNFTsPage": {
     "message": "the NFTs page"
@@ -4111,6 +4121,24 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBonusExplanation": {
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
+    "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
+  },
+  "musdBoostDescription": {
+    "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBoostTitle": {
+    "message": "Get $1% on your stablecoins",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBuyMusd": {
+    "message": "Buy mUSD"
+  },
+  "musdClaimActivityTitle": {
+    "message": "Claim mUSD bonus"
+  },
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
@@ -4120,10 +4148,46 @@
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD Conversion"
+    "message": "Convert $1 to mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD Conversion"
+    "message": "Convert $1 to mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionToastFailed": {
+    "message": "mUSD conversion failed"
+  },
+  "musdConversionToastInProgress": {
+    "message": "Converting $1 → mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionToastSuccess": {
+    "message": "Your mUSD is here!"
+  },
+  "musdEarnBonusPercentage": {
+    "message": "Earn a $1% bonus",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdEducationGetStarted": {
+    "message": "Get started"
+  },
+  "musdEducationHeadline": {
+    "message": "GET $1% ON STABLECOINS",
+    "description": "$1 is the bonus APY percentage"
+  },
+  "musdEducationNotNow": {
+    "message": "Not now"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Get $1% bonus",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdGetMusd": {
+    "message": "Get mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Terms apply."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -7547,6 +7611,12 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
   },
+  "skipLinkConfirmationScreens": {
+    "message": "Skip link confirmation screens"
+  },
+  "skipLinkConfirmationScreensDescription": {
+    "message": "When you open a link from MetaMask, we show a confirmation screen to protect you from accidentally viewing sensitive info like your accounts, balances, or transaction history. Turn this on to skip that screen for links originating from MetaMask."
+  },
   "slippage": {
     "message": "Slippage"
   },
@@ -9007,6 +9077,9 @@
   },
   "useMultiAccountBalanceCheckerSettingDescription": {
     "message": "Get faster balance updates by batching account balance requests. This lets us fetch your account balances together, so you get quicker updates for an improved experience. When this feature is off, third parties may be less likely to associate your accounts with each other."
+  },
+  "useMultiAccountBalanceCheckerSettingDescriptionV2": {
+    "message": "Sends balance updates for all your accounts at once. Allows for a faster and overall better experience managing multiple accounts."
   },
   "useNftDetection": {
     "message": "Autodetect NFTs"
