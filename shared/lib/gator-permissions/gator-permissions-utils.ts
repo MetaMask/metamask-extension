@@ -359,7 +359,7 @@ export function formatGatorAmountLabel(params: {
   amount: string;
   tokenSymbol: string;
   frequency: string;
-  tokenDecimals: number | null;
+  tokenDecimals?: number;
   locale: string;
   threshold?: number;
   numberFormatOptions?: Intl.NumberFormatOptions;

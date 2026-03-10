@@ -245,7 +245,7 @@ export const ReviewGatorPermissionItem = ({
 
       const { symbol, decimals } = tokenMetadata;
 
-      if (!decimals) {
+      if (decimals === undefined) {
         return `${formatDecimalShiftedValue(value, decimals)} ${symbol} (raw units)`;
       }
 
