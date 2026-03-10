@@ -14,6 +14,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { formatPeriodDuration } from './typed-sign-permission-util';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
+import { Expiry } from './expiry';
 
 /**
  * Component for displaying ERC20 token periodic permission details.
@@ -69,12 +70,7 @@ export const Erc20TokenPeriodicDetails: React.FC<{
         label={t('confirmFieldStartDate')}
       />
 
-      {expiry && (
-        <DateAndTimeRow
-          timestamp={expiry}
-          label={t('confirmFieldExpiration')}
-        />
-      )}
+      <Expiry expiry={expiry} />
     </ConfirmInfoSection>
   );
 };

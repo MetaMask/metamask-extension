@@ -70,7 +70,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
           },
         });
       }}
-      className="stakeable-link"
+      className="cursor-pointer border-none p-0 m-0 bg-transparent"
     >
       <Box
         flexDirection={BoxFlexDirection.Row}
@@ -78,7 +78,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         backgroundColor={BoxBackgroundColor.BackgroundMuted}
         paddingLeft={2}
         paddingRight={2}
-        className="stakeable-link__badge"
+        className="rounded"
       >
         <Text
           variant={TextVariant.BodySm}
@@ -91,7 +91,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
           name={IconName.Stake}
           size={IconSize.Xs}
           color={IconColor.PrimaryDefault}
-          className="stakeable-link__icon"
+          className="ml-1"
         />
       </Box>
     </button>
