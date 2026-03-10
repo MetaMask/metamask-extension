@@ -1,3 +1,4 @@
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import useConfirmationAlerts from './useConfirmationAlerts';
@@ -21,7 +22,23 @@ jest.mock('../../../hooks/useAsync', () => ({
   useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
 }));
 
+jest.mock('./alerts/useSpenderAlerts', () => ({
+  useSpenderAlerts: () => [],
+}));
+
 describe('useConfirmationAlerts', () => {
+  const backgroundConnectionMock = new Proxy(
+    {},
+    {
+      get: () => jest.fn().mockResolvedValue(undefined),
+    },
+  );
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    setBackgroundConnection(backgroundConnectionMock as never);
+  });
+
   it('returns empty array if no alerts', () => {
     const { result } = renderHookWithConfirmContextProvider(
       useConfirmationAlerts,
