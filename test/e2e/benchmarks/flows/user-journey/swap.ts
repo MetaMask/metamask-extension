@@ -27,6 +27,8 @@ import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
+const SOLANA_USDC_CONTRACT_ADDRESS =
+  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
   let webVitals: WebVitalsMetrics | undefined;
@@ -95,6 +97,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         await swapPage.createSwap({
           amount: 0.01,
           swapTo: 'USDC',
+          swapToContractAddress: SOLANA_USDC_CONTRACT_ADDRESS,
           swapFrom: 'SOL',
           network: 'Solana',
         });

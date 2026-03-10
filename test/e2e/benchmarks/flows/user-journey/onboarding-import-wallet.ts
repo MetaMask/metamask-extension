@@ -4,8 +4,9 @@
  */
 
 import { Browser } from 'selenium-webdriver';
+import { Mockttp } from 'mockttp';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../../constants';
 import { withFixtures } from '../../../helpers';
@@ -25,10 +26,13 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { setPassThroughInterceptor } from '../../../mock-e2e-pass-through';
 import {
-  getTestSpecificMock,
-  shouldUseMockedRequests,
-} from '../../utils/mock-config';
+  getCommonMocks,
+  benchmarkPassThroughInterceptor,
+  mockBenchmarkEndpoints,
+} from '../../mocks/performance-mocks';
+import { shouldUseMockedRequests } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult, WebVitalsMetrics } from '../../utils/types';
 import { collectWebVitals } from '../../utils/web-vitals-collector';
@@ -51,10 +55,16 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
-        testSpecificMock: getTestSpecificMock(),
+        testSpecificMock: async (server: Mockttp) => {
+          if (shouldUseMockedRequests()) {
+            return mockBenchmarkEndpoints(server);
+          }
+          setPassThroughInterceptor(server, benchmarkPassThroughInterceptor);
+          return Promise.all(getCommonMocks(server));
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;

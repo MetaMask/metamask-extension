@@ -3,16 +3,16 @@ import {
   ENTRY_BENCHMARK_PLATFORMS,
   ENTRY_BENCHMARK_BUILD_TYPES,
 } from '../../shared/constants/benchmarks';
-import {
-  STARTUP_PRESETS,
-  INTERACTION_PRESETS,
-  USER_JOURNEY_PRESETS,
-} from '../../test/e2e/benchmarks/utils/constants';
 import type {
   BenchmarkResults,
   StatisticalResult,
   WebVitalsSummary,
 } from '../../test/e2e/benchmarks/utils/types';
+import {
+  STARTUP_PRESETS,
+  INTERACTION_PRESETS,
+  USER_JOURNEY_PRESETS,
+} from '../../test/e2e/benchmarks/utils/constants';
 
 /** A parsed benchmark entry with its name and the stats we render. */
 export type BenchmarkEntry = {

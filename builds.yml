@@ -16,7 +16,6 @@ buildTypes:
   main:
     id: 10
     features:
-      - build-main
       - keyring-snaps
       - multi-srp
       - bitcoin
@@ -80,7 +79,6 @@ buildTypes:
     id: 12
     features:
       - build-experimental
-      - build-main
       - keyring-snaps
       - multi-srp
       - bitcoin
@@ -149,7 +147,6 @@ features:
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
 
-  build-main:
   build-beta:
     assets:
       # Assets that will be copied
@@ -197,9 +194,6 @@ features:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
-  ocap-kernel:
-    assets:
-      - ./{app,shared,ui}/**/ocap-kernel/**
   build-experimental:
     assets:
       - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
@@ -292,6 +286,7 @@ env:
   - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
+  - QUICKNODE_HYPEREVM_URL: null
 
   ###
   # API keys to 3rd party services
@@ -401,13 +396,6 @@ env:
   - ENABLE_WHY_DID_YOU_RENDER: false
 
   ###
-  # Unused environment variables referenced in dependencies
-  # Unset environment variables cause a build error. These are set to `null` to tell our build
-  # system that they are intentionally unset.
-  ###
-  - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
-
-  ###
   # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
   ###
   - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'
@@ -456,6 +444,3 @@ env:
 
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
-
-  # Enable MetaMask Pay in dApp transaction confirmations
-  - MM_PAY_DAPPS_ENABLED: false

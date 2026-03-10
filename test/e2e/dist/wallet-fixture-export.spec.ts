@@ -141,7 +141,7 @@ describe('Wallet State', function () {
   });
   it('export default fixture', async function () {
     const networkName = 'Localhost 8545';
-    const networkUrl = 'http://127.0.0.1:8545';
+    const networkUrl = 'http://localhost:8545';
     const currencySymbol = 'ETH';
     const chainId = 1337;
     await withFixtures(

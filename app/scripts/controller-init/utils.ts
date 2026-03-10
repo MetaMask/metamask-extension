@@ -39,6 +39,7 @@ type ControllerMessengerCallback = (
 export type ControllersToInitialize =
   | 'AccountTrackerController'
   | 'AuthenticationController'
+  | 'ClientController'
   | 'CronjobController'
   | 'DeFiPositionsController'
   | 'ExecutionService'

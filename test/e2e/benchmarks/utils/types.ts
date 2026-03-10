@@ -1,3 +1,8 @@
+import type {
+  Persona,
+  BenchmarkType,
+} from '../../../../shared/constants/benchmarks';
+
 export type TimerResult = {
   id: string;
   duration: number;
@@ -28,27 +33,12 @@ export type Metrics = {
   numNetworkReqs: number;
 };
 
-export type StatisticalResult = {
-  [key: string]: number;
-};
-
-export type Persona = 'standard' | 'powerUser';
-
-export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
-
-export type BenchmarkResults = {
-  testTitle: string;
-  persona: Persona;
-  benchmarkType?: BenchmarkType;
-  mean: StatisticalResult;
-  min: StatisticalResult;
-  max: StatisticalResult;
-  stdDev: StatisticalResult;
-  p75: StatisticalResult;
-  p95: StatisticalResult;
-  /** Web vitals per-run data and aggregated statistics */
-  webVitals?: WebVitalsSummary;
-};
+export type {
+  StatisticalResult,
+  Persona,
+  BenchmarkType,
+  BenchmarkResults as SharedBenchmarkResults,
+} from '../../../../shared/constants/benchmarks';
 
 export type WebVitalsRating = 'good' | 'needs-improvement' | 'poor';
 
@@ -110,6 +100,11 @@ export type WebVitalsSummary = {
   runs: WebVitalsRun[];
   /** Aggregated statistics using outlier detection and percentile analysis */
   aggregated: WebVitalsAggregated;
+};
+
+/** BenchmarkResults extended with web vitals */
+export type BenchmarkResults = SharedBenchmarkResults & {
+  webVitals?: WebVitalsSummary;
 };
 
 /** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
@@ -204,14 +199,12 @@ export type BenchmarkSummary = {
   exclusionRatePassed: boolean;
   /** Percentage of runs that were excluded (0-1) */
   exclusionRate: number;
-  /** List of threshold violations (if any thresholds configured) */
-  thresholdViolations?: ThresholdViolation[];
-  /** Whether all thresholds passed (no 'fail' violations) */
-  thresholdsPassed?: boolean;
-  /** Web vitals per-run data and aggregated statistics */
-  webVitals?: WebVitalsSummary;
+  thresholdViolations: ThresholdViolation[];
+  thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
+  /** Web vitals per-run data and aggregated statistics */
+  webVitals?: WebVitalsSummary;
 };
 
 export type PerformanceBenchmarkResults = {

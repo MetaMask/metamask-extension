@@ -12,6 +12,15 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
+export const SETTINGS_V2_ROUTE = '/settings-v2';
+export const ASSETS_ROUTE = '/settings-v2/assets';
+export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
+export const PREFERENCES_AND_DISPLAY_ROUTE =
+  '/settings-v2/preferences-and-display';
+export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
+export const LANGUAGE_ROUTE = '/settings-v2/preferences-and-display/language';
+export const ACCOUNT_IDENTICON_ROUTE =
+  '/settings-v2/preferences-and-display/account-identicon';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -53,6 +62,12 @@ export const CONTACT_LIST_ROUTE = '/settings/contact-list';
 export const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 export const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
+
+// Standalone contacts (hamburger menu)
+export const CONTACTS_ROUTE = '/contacts';
+export const CONTACTS_ADD_ROUTE = '/contacts/add';
+export const CONTACTS_VIEW_ROUTE = '/contacts/view';
+export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
 export const REVEAL_SRP_LIST_ROUTE =
   '/settings/security-and-privacy/reveal-srp-list';
@@ -100,7 +115,7 @@ export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
-export const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
+export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -112,6 +127,7 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
+export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
@@ -131,18 +147,18 @@ export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
-///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
+
+/** Shown when Basic Functionality is off and user opens a route that requires it (e.g. swap, rewards). */
+export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
+
 export const DEFI_ROUTE = '/defi';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
-export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
 export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
@@ -158,7 +174,6 @@ export const ROUTES = [
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
   { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
-  { path: PERPS_HOME_ROUTE, label: 'Perps Home', trackInAnalytics: true },
   {
     path: PERPS_MARKET_LIST_ROUTE,
     label: 'Perps Market List',
@@ -210,6 +225,37 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
+  {
+    path: SETTINGS_V2_ROUTE,
+    label: 'Settings V2 Page',
+    trackInAnalytics: true,
+  },
+  { path: ASSETS_ROUTE, label: 'Assets Settings Page', trackInAnalytics: true },
+  {
+    path: CURRENCY_ROUTE,
+    label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: PREFERENCES_AND_DISPLAY_ROUTE,
+    label: 'Preferences And Display Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: THEME_ROUTE,
+    label: 'Theme Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: LANGUAGE_ROUTE,
+    label: 'Language Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: ACCOUNT_IDENTICON_ROUTE,
+    label: 'Account Identicon Settings Page',
+    trackInAnalytics: true,
+  },
   {
     path: GENERAL_ROUTE,
     label: 'General Settings Page',
@@ -279,6 +325,26 @@ export const ROUTES = [
   {
     path: `${CONTACT_VIEW_ROUTE}/:address`,
     label: 'View Contact Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CONTACTS_ROUTE,
+    label: 'Contacts Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CONTACTS_ADD_ROUTE,
+    label: 'Add Contact Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${CONTACTS_VIEW_ROUTE}/:address`,
+    label: 'Contact Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${CONTACTS_EDIT_ROUTE}/:address`,
+    label: 'Edit Contact Page',
     trackInAnalytics: true,
   },
   {
@@ -466,7 +532,7 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+    path: SWAP_PATH,
     label: 'Prepare Bridge Page',
     trackInAnalytics: true,
   },
@@ -559,7 +625,6 @@ export const ROUTES = [
     label: 'Swaps Awaiting Signatures',
     trackInAnalytics: false,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   {
     path: INITIALIZE_EXPERIMENTAL_AREA,
     label: 'Initialize Experimental Area',
@@ -570,7 +635,6 @@ export const ROUTES = [
     label: 'Onboarding Experimental Area',
     trackInAnalytics: false,
   },
-  ///: END:ONLY_INCLUDE_IF
   {
     path: SHIELD_PLAN_ROUTE,
     label: 'Shield Plan',

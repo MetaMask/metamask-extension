@@ -137,8 +137,7 @@ jest.mock(
 );
 
 const mockIsHardwareAccount = jest.fn((_account: InternalAccount) => false);
-jest.mock('../../../shared/lib/accounts', () => ({
-  ...jest.requireActual('../../../shared/lib/accounts'),
+jest.mock('../../components/app/rewards/utils/isHardwareAccount', () => ({
   isHardwareAccount: (account: InternalAccount) =>
     mockIsHardwareAccount(account),
 }));

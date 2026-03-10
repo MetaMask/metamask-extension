@@ -1,0 +1,301 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Assets Tab snapshot matches snapshot 1`] = `
+<div>
+  <div
+    class="pb-4 px-4"
+  >
+    <div
+      class="flex flex-row items-center justify-between py-3"
+    >
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Local currency
+      </p>
+      <div
+        class="flex flex-row gap-1 items-center"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          USD
+        </p>
+        <button
+          aria-label="Select Local currency"
+          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Show native token as main balance
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--on"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(68, 89, 255);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
+                />
+              </div>
+              <input
+                data-testid="show-native-token-as-main-balance"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="true"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-muted my-2 h-px w-full"
+    />
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Hide tokens without balance
+        </p>
+        <div
+          data-testid="hide-zero-balance-tokens"
+        >
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                data-testid="toggle-zero-balance-button"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-muted my-2 h-px w-full"
+    />
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Display NFT media
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--on"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(68, 89, 255);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
+                />
+              </div>
+              <input
+                data-testid="display-nft-media"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="true"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        NFT autodetection relies on this feature.
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Autodetect NFTs
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--on"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(68, 89, 255);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
+                />
+              </div>
+              <input
+                data-testid="use-nft-detection"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="true"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Displays all NFTs, including fake ones airdropped by scammers.
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Autodetect tokens
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--on"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(68, 89, 255);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
+                />
+              </div>
+              <input
+                data-testid="autodetect-tokens"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="true"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Displays new tokens sent to your wallet.
+      </p>
+    </div>
+  </div>
+</div>
+`;

@@ -3,14 +3,13 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import FixtureBuilder from '../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
 import AddNetworkConfirmation from '../page-objects/pages/confirmations/add-network-confirmations';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
@@ -111,7 +110,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -181,7 +180,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -255,7 +254,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -311,7 +310,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           title: this.test?.fullTitle(),
@@ -374,12 +373,11 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -453,12 +451,11 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -524,8 +521,8 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -574,7 +571,8 @@ describe('Add Ethereum Chain', function () {
           );
 
           // go to network selector
-          await switchToEditRPCViaGlobalMenuNetworks(driver);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openGlobalNetworksMenu();
           await driver.findElement({ text: 'Localhost 8545' });
         },
       );
@@ -586,9 +584,9 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: [
             {

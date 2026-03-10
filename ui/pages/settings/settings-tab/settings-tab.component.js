@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -74,6 +74,7 @@ export default class SettingsTab extends PureComponent {
     defaultAddressScope: PropTypes.string,
     setDefaultAddressScope: PropTypes.func,
     selectedAddress: PropTypes.string,
+    isDefaultAddressEnabled: PropTypes.bool,
     theme: PropTypes.string,
     setTheme: PropTypes.func,
   };
@@ -477,7 +478,7 @@ export default class SettingsTab extends PureComponent {
     const onChange = (newTheme) => {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: 'Theme Changed',
+        event: MetaMetricsEventName.ThemeChanged,
         properties: {
           theme_selected: newTheme,
         },
@@ -528,7 +529,8 @@ export default class SettingsTab extends PureComponent {
         {this.renderTheme()}
         {this.renderBlockieOptIn()}
         {this.renderHideZeroBalanceTokensOptIn()}
-        {this.renderShowDefaultAddressOptIn()}
+        {this.props.isDefaultAddressEnabled &&
+          this.renderShowDefaultAddressOptIn()}
       </div>
     );
   }

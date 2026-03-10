@@ -9,6 +9,7 @@
  */
 
 import type {
+  BenchmarkResults,
   PercentileThreshold,
   RatingDistribution,
   StatisticalResult,
@@ -532,18 +533,50 @@ export const validateThresholds = (
 };
 
 /**
- * Format threshold violations into human-readable messages
+ * Validate a BenchmarkResults object against configured thresholds.
+ * Used by startup benchmarks which produce BenchmarkResults directly
+ * rather than TimerStatistics[].
  *
- * @param violations - Array of threshold violations
+ * @param results - Benchmark results containing p75/p95 maps
+ * @param thresholdConfig - Threshold configuration for metrics
+ * @returns Object containing violations array and whether all thresholds passed
  */
-export const formatThresholdViolations = (
-  violations: ThresholdViolation[],
-): string[] => {
-  return violations.map((v) => {
-    const severityPrefix = v.severity === 'fail' ? '❌ FAIL' : '⚠️ WARN';
-    const percentileLabel = v.percentile.toUpperCase();
-    return `${severityPrefix}: ${v.metricId} ${percentileLabel} (${v.value.toFixed(2)}ms) exceeds threshold (${v.threshold.toFixed(2)}ms)`;
-  });
+export const validateResultThresholds = (
+  results: BenchmarkResults,
+  thresholdConfig: ThresholdConfig,
+): { violations: ThresholdViolation[]; passed: boolean } => {
+  const violations: ThresholdViolation[] = [];
+
+  for (const [metricId, thresholds] of Object.entries(thresholdConfig)) {
+    if (thresholds.p75 && results.p75[metricId] !== undefined) {
+      const violation = validatePercentile(
+        metricId,
+        'p75',
+        results.p75[metricId],
+        thresholds.p75,
+        thresholds.ciMultiplier,
+      );
+      if (violation) {
+        violations.push(violation);
+      }
+    }
+
+    if (thresholds.p95 && results.p95[metricId] !== undefined) {
+      const violation = validatePercentile(
+        metricId,
+        'p95',
+        results.p95[metricId],
+        thresholds.p95,
+        thresholds.ciMultiplier,
+      );
+      if (violation) {
+        violations.push(violation);
+      }
+    }
+  }
+
+  const passed = !violations.some((v) => v.severity === 'fail');
+  return { violations, passed };
 };
 
 const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
@@ -677,4 +710,23 @@ export function aggregateWebVitals(
   }
 
   return result;
+};
+
+/**
+ * Log threshold validation results to the console.
+ *
+ * @param violations - Array of threshold violations (empty = all passed)
+ */
+export function logThresholdResult(violations: ThresholdViolation[]): void {
+  if (violations.length > 0) {
+    console.log('\n⚠️  Threshold Violations:');
+    violations.forEach((v) => {
+      const icon = v.severity === 'fail' ? '❌' : '⚠️';
+      console.log(
+        `  ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
+      );
+    });
+  } else {
+    console.log('✅ All thresholds passed');
+  }
 }

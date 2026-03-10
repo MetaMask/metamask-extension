@@ -70,6 +70,8 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
   const onboardingState = initMessenger.call('OnboardingController:getState');
   const preferencesState = initMessenger.call('PreferencesController:getState');
   const { distribution, environment } = getConfigForRemoteFeatureFlagRequest();
+  const prevClientVersion =
+    persistedState?.AppMetadataController?.currentAppVersion;
 
   let canUseExternalServices = preferencesState.useExternalServices === true;
   let hasCompletedOnboarding = onboardingState.completedOnboarding === true;
@@ -91,6 +93,7 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
     getMetaMetricsId: () =>
       initMessenger.call('MetaMetricsController:getMetaMetricsId'),
     clientVersion: getBaseSemVerVersion(),
+    prevClientVersion,
     clientConfigApiService: new ClientConfigApiService({
       fetch: globalThis.fetch.bind(globalThis),
       config: {

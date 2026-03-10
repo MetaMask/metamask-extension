@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Трябва да изберете акаунт!"
   },
-  "activityLog": {
-    "message": "Дневник на дейността"
-  },
   "addAcquiredTokens": {
     "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
   },
@@ -302,9 +299,6 @@
     "message": "Импортирани",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Първоначалната транзакция беше потвърдена от мрежата. Кликнете върху OK, за да се върнете обратно."
-  },
   "insufficientBalance": {
     "message": "Недостатъчно салдо."
   },
@@ -487,12 +481,6 @@
   "rejectAll": {
     "message": "Отхвърлете всички"
   },
-  "rejectTxsDescription": {
-    "message": "На път сте да отхвърлите партида от $1 транзакции."
-  },
-  "rejectTxsN": {
-    "message": "Отхвърлете $1 транзакции"
-  },
   "rejected": {
     "message": "Отказан"
   },
@@ -501,9 +489,6 @@
   },
   "removeAccount": {
     "message": "Премахване на профила"
-  },
-  "removeAccountDescription": {
-    "message": "Този акаунт ще бъде премахнат от портфейла ви. Моля, уверете се, че имате оригиналната фраза или частен ключ за този импортиран акаунт, преди да продължите. Можете да импортирате или създавате отново акаунти от падащото меню."
   },
   "required": {
     "message": "Задължително"
@@ -590,9 +575,6 @@
   "speedUpCancellation": {
     "message": "Ускорете това анулиране"
   },
-  "speedUpTransaction": {
-    "message": "Ускорете тази транзакция"
-  },
   "stateLogError": {
     "message": "Грешка при извличането на дневници на състоянието."
   },
@@ -638,38 +620,11 @@
   "transaction": {
     "message": "транзакция"
   },
-  "transactionCancelAttempted": {
-    "message": "Опит за отмяна на транзакцията с такса за газ от $1 при $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакцията беше успешно отменена при $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакцията беше потвърдена при $2."
-  },
-  "transactionCreated": {
-    "message": "Транзакцията е създадена със стойност от $1 при $2."
-  },
-  "transactionDropped": {
-    "message": "Транзакцията спадна на $2."
-  },
   "transactionError": {
     "message": "Грешка при транзакцията. Беше върнато изключение в кода на договора."
   },
   "transactionErrorNoContract": {
     "message": "Опит за извикване на функция на извъндоговорния адрес."
-  },
-  "transactionErrored": {
-    "message": "Възникна грешка в транзакцията."
-  },
-  "transactionResubmitted": {
-    "message": "Повторната транзакция с такса за газ се увеличи до $1 при $2"
-  },
-  "transactionSubmitted": {
-    "message": "Транзакция, изпратена с такса за газ от $1 при $2."
-  },
-  "transactionUpdated": {
-    "message": "Транзакцията е актуализирана на $2."
   },
   "transfer": {
     "message": "Трансфер"
@@ -715,8 +670,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Трябва да разрешите достъпа на камерата, за да използвате тази функция."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Вашата лична фраза зародиш"
   }
 }

@@ -1,7 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Text, TextVariant } from '@metamask/design-system-react';
-import { Icon, IconName, IconSize } from '../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setRewardsBadgeHidden } from '../../../ducks/rewards';
 import { setStorageItem } from '../../../../shared/lib/storage-helpers';
@@ -14,6 +20,7 @@ export const RewardsBadge = ({
   withPointsSuffix = true,
   useAlternativeIconColor = false,
   allowHideBadge = false,
+  startIconName,
   onClick,
 }: {
   formattedPoints: string;
@@ -22,6 +29,7 @@ export const RewardsBadge = ({
   withPointsSuffix?: boolean;
   useAlternativeIconColor?: boolean;
   allowHideBadge?: boolean;
+  startIconName?: IconName;
   onClick?: () => void;
 }) => {
   const t = useI18nContext();
@@ -47,18 +55,22 @@ export const RewardsBadge = ({
       onMouseLeave={allowHideBadge ? () => setIsHovered(false) : undefined}
     >
       <Box className="flex items-center gap-1" onClick={onClick}>
-        {!imageLoadError && (
-          <img
-            src={
-              useAlternativeIconColor
-                ? './images/metamask-rewards-points-alternative.svg'
-                : './images/metamask-rewards-points.svg'
-            }
-            alt={t('rewardsPointsIcon')}
-            width={16}
-            height={16}
-            onError={() => setImageLoadError(true)}
-          />
+        {startIconName ? (
+          <Icon name={startIconName} size={IconSize.Sm} />
+        ) : (
+          !imageLoadError && (
+            <img
+              src={
+                useAlternativeIconColor
+                  ? './images/metamask-rewards-points-alternative.svg'
+                  : './images/metamask-rewards-points.svg'
+              }
+              alt={t('rewardsPointsIcon')}
+              width={16}
+              height={16}
+              onError={() => setImageLoadError(true)}
+            />
+          )
         )}
         <Text
           variant={TextVariant.BodySm}
