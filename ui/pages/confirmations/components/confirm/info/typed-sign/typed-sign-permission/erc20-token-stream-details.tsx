@@ -11,6 +11,7 @@ import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
+import { Expiry } from './expiry';
 
 /**
  * Component for displaying ERC20 token stream permission details.
@@ -75,12 +76,7 @@ export const Erc20TokenStreamDetails: React.FC<{
           timestamp={startTime}
           label={t('confirmFieldStartDate')}
         />
-        {expiry && (
-          <DateAndTimeRow
-            timestamp={expiry}
-            label={t('confirmFieldExpiration')}
-          />
-        )}
+        <Expiry expiry={expiry} />
       </ConfirmInfoSection>
 
       <ConfirmInfoSection data-testid="erc20-token-stream-stream-rate-section">

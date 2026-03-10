@@ -103,7 +103,8 @@ describe('NativeTokenStreamDetails', () => {
         expiry: null,
       });
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 
