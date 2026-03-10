@@ -1241,9 +1241,9 @@
         "browserify>JSONStream>through": true
       }
     },
-    "readable-stream>abort-controller": {
+    "openai>abort-controller": {
       "packages": {
-        "readable-stream>abort-controller>event-target-shim": true
+        "openai>abort-controller>event-target-shim": true
       }
     },
     "eslint>espree>acorn-jsx": {
@@ -3032,7 +3032,7 @@
         "browserify>JSONStream>through": true
       }
     },
-    "readable-stream>abort-controller>event-target-shim": {
+    "openai>abort-controller>event-target-shim": {
       "globals": {
         "Event": true,
         "EventTarget": true,
@@ -5324,7 +5324,7 @@
         "queueMicrotask": true
       },
       "packages": {
-        "readable-stream>abort-controller": true,
+        "openai>abort-controller": true,
         "process": true,
         "browserify>string_decoder": true
       }

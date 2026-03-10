@@ -6,7 +6,7 @@ import {
   unapprovedTypedMessagesSelector,
 } from './transactions';
 
-export const selectUnapprovedMessages = createSelector(
+const selectUnapprovedMessages = createSelector(
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,
   (personalMsgs, typedMessages) => ({

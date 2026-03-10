@@ -3996,10 +3996,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
@@ -5877,9 +5879,6 @@
   },
   "removeAccount": {
     "message": "Удалить счет"
-  },
-  "removeAccountDescription": {
-    "message": "Этот счет будет удален из вашего кошелька. Прежде чем продолжить, убедитесь, что у вас есть исходная секретная фраза для восстановления или закрытый ключ для этого импортированного счета. Вы можете импортировать или создать счета снова из раскрывающегося списка счетов. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Перед удалением убедитесь, что у вас есть секретная фраза для восстановления или закрытый ключ для этого счета.",

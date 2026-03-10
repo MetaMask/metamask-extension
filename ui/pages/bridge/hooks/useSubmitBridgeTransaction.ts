@@ -9,12 +9,6 @@ import {
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
-import {
-  AWAITING_SIGNATURES_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
@@ -30,6 +24,7 @@ import {
   useHardwareWalletConfig,
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -67,7 +62,11 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const navigate = useNavigate();
+  const {
+    navigateToBridgePage,
+    navigateToHwSigningPage,
+    navigateToActivityPage,
+  } = useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -124,7 +123,7 @@ export default function useSubmitBridgeTransaction() {
 
     // Navigate to HW signing page
     if (hardwareWalletUsed) {
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      navigateToHwSigningPage();
       setIsSubmitting(false);
     }
 
@@ -149,18 +148,14 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
-          replace: true,
-        });
+        navigateToBridgePage();
         return;
       }
     } finally {
       setIsSubmitting(false);
     }
 
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      state: { stayOnHomePage: true },
-    });
+    navigateToActivityPage();
   };
 
   return {

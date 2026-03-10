@@ -21,14 +21,12 @@ export const TokenCellTitle = React.memo(
     const tokenIsStock = isStockToken(token);
 
     return (
-      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
-        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
-          <AssetCellTitle title={token.title} />
-          {tokenIsStock && (
-            <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
-          )}
-          {label && <Tag label={label} />}
-        </Box>
+      <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
+        <AssetCellTitle title={token.title} />
+        {label && <Tag label={label} />}
+        {tokenIsStock && (
+          <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
+        )}
         {token.isStakeable && (
           <StakeableLink chainId={token.chainId} symbol={token.symbol} />
         )}
@@ -46,5 +44,8 @@ export const TokenCellTitle = React.memo(
     prevProps.token.rwaData?.nextPause?.start ===
       nextProps.token.rwaData?.nextPause?.start &&
     prevProps.token.rwaData?.nextPause?.end ===
-      nextProps.token.rwaData?.nextPause?.end,
+      nextProps.token.rwaData?.nextPause?.end &&
+    prevProps.token.address === nextProps.token.address &&
+    prevProps.token.chainId === nextProps.token.chainId &&
+    prevProps.token.symbol === nextProps.token.symbol,
 );

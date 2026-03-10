@@ -777,14 +777,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: { enabled: true },
     status: FeatureFlagStatus.Active,
   },
-
-  settingsRedesign: {
-    name: 'settingsRedesign',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: false,
-    status: FeatureFlagStatus.Active,
-  },
   gasFeesSponsoredNetwork: {
     name: 'gasFeesSponsoredNetwork',
     type: FeatureFlagType.Remote,
