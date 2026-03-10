@@ -147,9 +147,12 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * Ref to hold the latest implementation of evaluateCohortEligibility.
    * Assigned synchronously during render (not in useEffect) so the ref
    * is populated before commit-phase callbacks (componentDidUpdate) fire.
+   * Uses a no-op initial value so useRef returns MutableRefObject (not RefObject).
    */
-  const evaluateCohortEligibilityRef =
-    useRef<(entrypointCohort: string) => Promise<void>>(null);
+  const evaluateCohortEligibilityRef = useRef<
+    (entrypointCohort: string) => Promise<void>
+    // eslint-disable-next-line no-empty-function
+  >(async () => {});
 
   // eslint-disable-next-line react-compiler/react-compiler
   evaluateCohortEligibilityRef.current = async (
@@ -287,7 +290,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    */
   const evaluateCohortEligibility = useCallback(
     async (entrypointCohort: string): Promise<void> => {
-      await evaluateCohortEligibilityRef.current?.(entrypointCohort);
+      await evaluateCohortEligibilityRef.current(entrypointCohort);
     },
     [],
   );
