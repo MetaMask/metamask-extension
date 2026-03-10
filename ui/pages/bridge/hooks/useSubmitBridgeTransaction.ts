@@ -7,11 +7,7 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import {
-  getHardwareWalletType,
-  isHardwareWallet,
-} from '../../../../shared/modules/selectors';
+import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -72,7 +68,6 @@ export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const hardwareWalletType = useSelector(getHardwareWalletType);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
@@ -83,7 +78,6 @@ export default function useSubmitBridgeTransaction() {
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isQrHardwareWallet = hardwareWalletType === HardwareKeyringType.qr;
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -142,9 +136,6 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
           }),
         );
-        if (hardwareWalletUsed && !isQrHardwareWallet) {
-          return;
-        }
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
           state: { stayOnHomePage: true },
         });

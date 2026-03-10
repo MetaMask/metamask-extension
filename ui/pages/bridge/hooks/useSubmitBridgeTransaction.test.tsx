@@ -18,7 +18,6 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import * as sharedSelectors from '../../../../shared/modules/selectors';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
@@ -168,8 +167,6 @@ const makeWrapper =
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
-const getHardwareWalletTypeSpy =
-  sharedSelectors.getHardwareWalletType as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 
 setBackgroundConnection({
@@ -184,7 +181,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       isHardwareWalletSpy.mockImplementation(() => false);
-      getHardwareWalletTypeSpy.mockReturnValue(undefined);
       mockEnsureDeviceReady.mockResolvedValue(true);
       captureExceptionSpy.mockReturnValue(undefined);
       setBackgroundConnection({
@@ -406,7 +402,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       }
     });
 
-    it('navigates to awaiting signatures for hardware-wallet intent quotes', async () => {
+    it('routes hardware-wallet intent quotes to activity after submit', async () => {
       const store = makeMockStore();
       isHardwareWalletSpy.mockImplementation(() => true);
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
@@ -430,44 +426,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           quoteWithIntent as any,
         );
-      });
-
-      const {
-        quote: { requestId },
-      } = quoteWithIntent;
-
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
-          requestId,
-        )}`,
-      );
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        expect.anything(),
-      );
-    });
-
-    it('routes QR hardware-wallet intent quotes to activity after submit', async () => {
-      const store = makeMockStore();
-      isHardwareWalletSpy.mockImplementation(() => true);
-      getHardwareWalletTypeSpy.mockReturnValue(HardwareKeyringType.qr);
-      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
-      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
-        wrapper: makeWrapper(store),
-      });
-
-      const quoteWithIntent = {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-        quote: {
-          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
-          intent: {
-            order: {},
-          },
-        },
-      };
-
-      await act(async () => {
-        await result.current.submitBridgeTransaction(quoteWithIntent as never);
       });
 
       const {
