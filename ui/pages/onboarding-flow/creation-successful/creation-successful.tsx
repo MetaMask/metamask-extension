@@ -452,9 +452,7 @@ export default function CreationSuccessful() {
       )}
       {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
       {!isFromSettingsSRPBackup && (
-        <Text variant={TextVariant.HeadingLg} className="title">
-          {t('yourWalletIsReady')}
-        </Text>
+        <Text className="title">{t('yourWalletIsReady')}</Text>
       )}
       {renderDoneButton()}
       {!isFromSettingsSRPBackup && (
