@@ -5512,7 +5512,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^100.0.3, @metamask/assets-controllers@npm:^100.1.0":
+"@metamask/assets-controllers@npm:^100.0.3, @metamask/assets-controllers@npm:^100.2.0":
   version: 100.2.1
   resolution: "@metamask/assets-controllers@npm:100.2.1"
   dependencies:
