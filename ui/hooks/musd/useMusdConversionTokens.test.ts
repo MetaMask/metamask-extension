@@ -15,12 +15,6 @@ import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
-jest.mock('../../pages/confirmations/context/confirm', () => ({
-  useConfirmContext: () => ({
-    currentConfirmation: { type: 'musdConversion' },
-  }),
-}));
-
 // Mock hooks
 jest.mock('./useMusdNetworkFilter', () => ({
   useMusdNetworkFilter: jest.fn(),
