@@ -20,13 +20,13 @@ import {
 } from '../../selectors';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
-import { DeleteContactModal } from './components/delete-contact-modal';
-import { ViewContactContent } from './components/view-contact-content';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { DeleteContactModal } from './components/delete-contact-modal';
+import { ViewContactContent } from './components/view-contact-content';
 
 export function ContactDetailsPage() {
   const t = useI18nContext();
@@ -47,8 +47,14 @@ export function ContactDetailsPage() {
       trackEvent({
         category: MetaMetricsEventCategory.Contacts,
         event: MetaMetricsEventName.ContactDetailsViewed,
-        properties: { chain_id: contact.chainId },
-        sensitiveProperties: { contact_address: address },
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: contact.chainId,
+        },
+        sensitiveProperties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          contact_address: address,
+        },
       });
     }
   }, [address, contact?.chainId, trackEvent]);
@@ -65,9 +71,15 @@ export function ContactDetailsPage() {
     trackEvent({
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.DeleteContactClicked,
-      properties: { chain_id: contact?.chainId },
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: contact?.chainId,
+      },
       ...(address && {
-        sensitiveProperties: { contact_address: address },
+        sensitiveProperties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          contact_address: address,
+        },
       }),
     });
     setShowDeleteModal(true);
@@ -85,8 +97,14 @@ export function ContactDetailsPage() {
     trackEvent({
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactDeleted,
-      properties: { chain_id: contact.chainId },
-      sensitiveProperties: { contact_address: address },
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: contact.chainId,
+      },
+      sensitiveProperties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        contact_address: address,
+      },
     });
     await dispatch(removeFromAddressBook(contact.chainId, address));
     navigate(CONTACTS_ROUTE, { state: { showContactDeletedToast: true } });
@@ -141,8 +159,14 @@ export function ContactDetailsPage() {
               trackEvent({
                 category: MetaMetricsEventCategory.Contacts,
                 event: MetaMetricsEventName.EditContactClicked,
-                properties: { chain_id: contact.chainId },
-                sensitiveProperties: { contact_address: address },
+                properties: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: contact.chainId,
+                },
+                sensitiveProperties: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  contact_address: address,
+                },
               });
               navigate(`${CONTACTS_EDIT_ROUTE}/${address}`);
             }}

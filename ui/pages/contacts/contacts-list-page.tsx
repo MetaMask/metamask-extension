@@ -25,13 +25,13 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getCompleteAddressBook } from '../../selectors';
-import { ContactListItem } from './components/contact-list-item';
-import { ContactsEmptyState } from './components/contacts-empty-state';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { ContactListItem } from './components/contact-list-item';
+import { ContactsEmptyState } from './components/contacts-empty-state';
 
 const TOAST_AUTO_HIDE_MS = 2500;
 
@@ -57,6 +57,7 @@ export function ContactsListPage() {
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactsPageViewed,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         number_of_contacts: contacts.length,
       },
     });

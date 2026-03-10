@@ -130,7 +130,6 @@ class ContactsSettings {
       text: contactName,
       css: this.contactListItem,
     });
-    await this.driver.clickElement(this.editContactButton);
     await this.driver.clickElement(this.deleteContactButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.deleteContactConfirmButton,

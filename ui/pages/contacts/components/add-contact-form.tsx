@@ -36,7 +36,6 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
-import { ContactNetworks } from './contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import {
   getCurrentChainId,
@@ -69,6 +68,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { ContactNetworks } from './contact-networks';
 
 export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
@@ -225,9 +225,13 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactAdded,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
       },
-      sensitiveProperties: { contact_address: newAddress },
+      sensitiveProperties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        contact_address: newAddress,
+      },
     });
     onSuccess();
   };

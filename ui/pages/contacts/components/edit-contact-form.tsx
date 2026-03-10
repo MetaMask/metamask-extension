@@ -137,8 +137,14 @@ export function EditContactForm({
     trackEvent({
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactUpdated,
-      properties: { chain_id: contactChainId },
-      sensitiveProperties: { contact_address: newAddress },
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: contactChainId,
+      },
+      sensitiveProperties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        contact_address: newAddress,
+      },
     });
     onSuccess();
   };
@@ -255,7 +261,10 @@ export function EditContactForm({
                 name={selectedNetworkName}
               />
               <Box marginLeft={2}>
-                <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextDefault}
+                >
                   {selectedNetworkName}
                 </Text>
               </Box>
