@@ -348,7 +348,7 @@ describe('useConfirmationNavigation', () => {
   });
 
   describe('navigateToTransaction', () => {
-    it('navigates to transaction route without params when no options provided', () => {
+    it('navigates to transaction route with default loader when no options provided', () => {
       const result = renderHook(ApprovalType.Transaction);
 
       result.navigateToTransaction('tx-123');
@@ -356,7 +356,7 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
-        search: '',
+        search: 'loader=default',
       });
     });
 
@@ -388,7 +388,7 @@ describe('useConfirmationNavigation', () => {
       });
     });
 
-    it('navigates with returnTo param when provided', () => {
+    it('navigates with returnTo param and default loader when only returnTo provided', () => {
       const result = renderHook(ApprovalType.Transaction);
 
       result.navigateToTransaction('tx-100', {
@@ -398,7 +398,7 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-100`,
-        search: 'returnTo=%2Fasset%2F0x1%2F0xabc',
+        search: 'loader=default&returnTo=%2Fasset%2F0x1%2F0xabc',
       });
     });
 

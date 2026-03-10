@@ -19,71 +19,56 @@ type ButtonState = {
   isLoading: boolean;
 };
 
+const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
+  [TransactionType.musdConversion]: 'musdConvert',
+};
+
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const isMusdConversion =
-    currentConfirmation?.type === TransactionType.musdConversion;
+  const transactionType = currentConfirmation?.type;
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
   const requiredTokens = useTransactionPayRequiredTokens();
 
   const blockingAlerts = useMemo(
-    () => (isMusdConversion ? alerts.filter((a) => a.isBlocking) : []),
-    [alerts, isMusdConversion],
+    () => alerts.filter((a) => a.isBlocking),
+    [alerts],
   );
 
-  const hasAmount = useMemo(() => {
-    if (!isMusdConversion) {
-      return false;
-    }
-    return (requiredTokens ?? [])
-      .filter((token) => !token.skipIfBalance)
-      .reduce(
-        (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
-        new BigNumber(0),
-      )
-      .gt(0);
-  }, [requiredTokens, isMusdConversion]);
+  const hasAmount = useMemo(
+    () =>
+      (requiredTokens ?? [])
+        .filter((token) => !token.skipIfBalance)
+        .reduce(
+          (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
+          new BigNumber(0),
+        )
+        .gt(0),
+    [requiredTokens],
+  );
 
   return useMemo(() => {
-    const firstBlockingAlert = blockingAlerts[0];
     const isLoadingState = isGaslessLoading || isPayLoading;
-    let buttonText = t('confirm');
+    const i18nKey =
+      (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
+    const buttonText = t(i18nKey);
 
-    if (isMusdConversion) {
-      buttonText = t('musdConvert');
-    }
-
-    if (firstBlockingAlert) {
-      return {
-        buttonText,
-        isDisabled: true,
-        isLoading: isLoadingState,
-      };
-    }
-
-    if (!hasAmount) {
-      return {
-        buttonText,
-        isDisabled: true,
-        isLoading: isLoadingState,
-      };
-    }
+    const isDisabled = blockingAlerts.length > 0 || !hasAmount;
 
     return {
       buttonText,
-      isDisabled: false,
+      isDisabled,
       isLoading: isLoadingState,
     };
   }, [
     blockingAlerts,
     hasAmount,
     isGaslessLoading,
-    isMusdConversion,
     isPayLoading,
+    transactionType,
     t,
   ]);
 }

@@ -100,9 +100,7 @@ export function useConfirmationNavigation() {
     (transactionId: string, options: ConfirmationNavigationOptions = {}) => {
       const params = new URLSearchParams();
 
-      if (options.loader) {
-        params.set('loader', options.loader);
-      }
+      params.set('loader', options.loader ?? ConfirmationLoader.Default);
 
       if (options.returnTo) {
         params.set('returnTo', options.returnTo);
