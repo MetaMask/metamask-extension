@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'clsx';
@@ -60,9 +60,9 @@ export const MultichainAccountDetailsPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
 
-  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
+  const accountGroupId = searchParams.get('accountGroupId') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
@@ -70,7 +70,7 @@ export const MultichainAccountDetailsPage = () => {
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
-  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
+  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}?id=${encodeURIComponent(walletId)}`;
   const isRemovable = wallet?.type !== AccountWalletType.Entropy;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
@@ -154,12 +154,12 @@ export const MultichainAccountDetailsPage = () => {
 
   useEffect(() => {
     // Redirect if account doesn't exist
-    if (!id || !multichainAccount) {
+    if (!accountGroupId || !multichainAccount) {
       navigate(DEFAULT_ROUTE);
     }
-  }, [id, multichainAccount, navigate]);
+  }, [accountGroupId, multichainAccount, navigate]);
 
-  return id && multichainAccount ? (
+  return accountGroupId && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{

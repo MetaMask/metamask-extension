@@ -38,7 +38,7 @@ export const AccountDetailsMenuItem = ({
     });
 
     navigate(
-      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
+      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(selectedAccountGroup)}`,
     );
 
     closeMenu?.();

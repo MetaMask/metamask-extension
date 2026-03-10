@@ -706,7 +706,7 @@ export const routeConfig = [
     basicFunctionalityRequired: false,
   }),
   createRouteWithLayout({
-    path: `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`,
+    path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
     component: MultichainAccountDetailsPage,
     layout: RootLayout,
     authenticated: true,
@@ -720,7 +720,7 @@ export const routeConfig = [
     basicFunctionalityRequired: false,
   }),
   createRouteWithLayout({
-    path: `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`,
+    path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
     component: WalletDetailsPage,
     layout: RootLayout,
     authenticated: true,
