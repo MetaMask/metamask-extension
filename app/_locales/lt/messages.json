@@ -490,9 +490,6 @@
   "removeAccount": {
     "message": "Pašalinti paskyrą"
   },
-  "removeAccountDescription": {
-    "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
-  },
   "required": {
     "message": "Reikalaujama"
   },
