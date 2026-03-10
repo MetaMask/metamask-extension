@@ -467,9 +467,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       };
 
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          quoteWithIntent as never,
-        );
+        await result.current.submitBridgeTransaction(quoteWithIntent as never);
       });
 
       const {
