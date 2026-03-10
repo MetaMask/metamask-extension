@@ -1,16 +1,62 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
-import { SettingsTab } from '../shared';
+import { SettingsTab, createToggleItem } from '../shared';
+import { getPreferences, getUseExternalNameSources } from '../../../selectors';
+import {
+  setFeatureFlag,
+  setUseExternalNameSources,
+  setSmartAccountRequestsFromDapps,
+  setDismissSmartAccountSuggestionEnabled,
+} from '../../../store/actions';
+import type { MetaMaskReduxState } from '../../../store/store';
 import { TransactionSimulationsItem } from './transaction-simulations-item';
 import { SecurityAlertsItem } from './security-alerts-item';
 import { SmartTransactionsItem } from './smart-transactions-item';
-import { SmartAccountRequestsFromDappsItem } from './smart-account-requests-from-dapps-item';
-import { ProposedNicknamesItem } from './proposed-nicknames-item';
-import { ShowHexDataItem } from './show-hex-data-item';
 import { CustomizeTransactionNonceItem } from './customize-transaction-nonce-item';
-import { DismissSmartAccountSuggestionItem } from './dismiss-smart-account-suggestion-item';
 
-/** Registry of setting items for the Transactions page. Add new items here */
+const ShowHexDataItem = createToggleItem({
+  name: 'ShowHexDataItem',
+  titleKey: 'showHexData',
+  descriptionKey: 'showHexDataDescription',
+  selector: (state: MetaMaskReduxState) =>
+    Boolean(state.metamask?.featureFlags?.sendHexData),
+  action: (value: boolean) => setFeatureFlag('sendHexData', value, ''),
+  dataTestId: 'showHexData-toggle',
+});
+
+const ProposedNicknamesItem = createToggleItem({
+  name: 'ProposedNicknamesItem',
+  titleKey: 'externalNameSourcesSetting',
+  descriptionKey: 'externalNameSourcesSettingDescription',
+  selector: (state: MetaMaskReduxState) =>
+    Boolean(getUseExternalNameSources(state)),
+  action: (value: boolean) => () => {
+    setUseExternalNameSources(value);
+  },
+  dataTestId: 'useExternalNameSources-toggle',
+});
+
+const SmartAccountRequestsFromDappsItem = createToggleItem({
+  name: 'SmartAccountRequestsFromDappsItem',
+  titleKey: 'smartAccountRequestsFromDapps',
+  descriptionKey: 'smartAccountRequestsFromDappsDescription',
+  selector: (state: MetaMaskReduxState) =>
+    Boolean(getPreferences(state)?.smartAccountRequestsFromDapps),
+  action: setSmartAccountRequestsFromDapps,
+  dataTestId: 'settings-page-smart-account-requests-from-dapps-toggle',
+});
+
+const DismissSmartAccountSuggestionItem = createToggleItem({
+  name: 'DismissSmartAccountSuggestionItem',
+  titleKey: 'dismissSmartAccountSuggestionEnabledTitle',
+  descriptionKey: 'dismissSmartAccountSuggestionEnabledDescription',
+  selector: (state: MetaMaskReduxState) =>
+    Boolean(getPreferences(state)?.dismissSmartAccountSuggestionEnabled),
+  action: setDismissSmartAccountSuggestionEnabled,
+  dataTestId: 'settings-page-dismiss-smart-account-suggestion-enabled-toggle',
+});
+
+/** Registry of setting items for the Transactions page */
 const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'estimate-balance-changes', component: TransactionSimulationsItem },
   { id: 'security-alerts', component: SecurityAlertsItem },

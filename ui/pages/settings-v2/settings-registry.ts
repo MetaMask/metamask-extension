@@ -97,6 +97,9 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     component: mmLazy(
       (() =>
         import('./transactions-tab/index.ts')) as unknown as DynamicImportType,
+    ),
+  },
+  {
     id: 'preferences-and-display',
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     labelKey: 'preferencesAndDisplay',
