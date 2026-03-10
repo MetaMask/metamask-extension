@@ -168,7 +168,11 @@ describe('App Header', () => {
         fireEvent.click(rejectButton);
 
         await waitFor(() => {
-          expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+          // When user doesn't consent, URL should not include query parameters
+          const supportLinkWithoutQueryParams = SUPPORT_LINK?.split('?')[0];
+          expect(openWindow).toHaveBeenCalledWith(
+            supportLinkWithoutQueryParams,
+          );
         });
       });
     });
