@@ -36,74 +36,6 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
-function useSimpleHeaderContent(): { title: ReactNode; endAccessory: ReactNode } {
-  const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  if (currentConfirmation?.type === TransactionType.musdConversion) {
-    return {
-      title: t('musdConvertAndGetBonus', [String(MUSD_CONVERSION_APY)]),
-      endAccessory: <MusdInfoTooltip />,
-    };
-  }
-
-  return {
-    title: t('review'),
-    endAccessory: <AdvancedDetailsButton />,
-  };
-}
-
-export const SimpleConfirmationHeader = () => {
-  const t = useI18nContext();
-  const { onCancel } = useConfirmActions();
-  const { title, endAccessory } = useSimpleHeaderContent();
-
-  const handleBackButtonClick = useCallback(() => {
-    onCancel({
-      location: MetaMetricsEventLocation.Confirmation,
-      navigateBackToPreviousPage: true,
-    });
-  }, [onCancel]);
-
-  return (
-    <HeaderBase
-      backgroundColor={BackgroundColor.backgroundDefault}
-      padding={4}
-      alignItems={AlignItems.center}
-      style={{ zIndex: 2 }}
-      data-testid="simple-confirmation-header"
-      startAccessory={
-        <ButtonIcon
-          iconName={IconName.ArrowLeft}
-          ariaLabel={t('back')}
-          size={ButtonIconSize.Md}
-          onClick={handleBackButtonClick}
-          data-testid="simple-confirmation-header-back-button"
-        />
-      }
-      endAccessory={endAccessory}
-      childrenWrapperProps={{
-        display: Display.Flex,
-        justifyContent: JustifyContent.center,
-        alignItems: AlignItems.center,
-        paddingTop: 4,
-        paddingRight: 8,
-        paddingBottom: 4,
-        paddingLeft: 8,
-      }}
-    >
-      <Text
-        variant={TextVariant.HeadingSm}
-        color={TextColor.TextDefault}
-        textAlign={TextAlign.Center}
-        data-testid="simple-confirmation-header-title"
-      >
-        {title}
-      </Text>
-    </HeaderBase>
-  );
-};
-
 const MusdInfoTooltip = () => {
   const t = useI18nContext();
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
@@ -169,5 +101,76 @@ const MusdInfoTooltip = () => {
         </Text>
       </Popover>
     </Box>
+  );
+};
+
+function useSimpleHeaderContent(): {
+  title: ReactNode;
+  endAccessory: ReactNode;
+} {
+  const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
+  if (currentConfirmation?.type === TransactionType.musdConversion) {
+    return {
+      title: t('musdConvertAndGetBonus', [String(MUSD_CONVERSION_APY)]),
+      endAccessory: <MusdInfoTooltip />,
+    };
+  }
+
+  return {
+    title: t('review'),
+    endAccessory: <AdvancedDetailsButton />,
+  };
+}
+
+export const SimpleConfirmationHeader = () => {
+  const t = useI18nContext();
+  const { onCancel } = useConfirmActions();
+  const { title, endAccessory } = useSimpleHeaderContent();
+
+  const handleBackButtonClick = useCallback(() => {
+    onCancel({
+      location: MetaMetricsEventLocation.Confirmation,
+      navigateBackToPreviousPage: true,
+    });
+  }, [onCancel]);
+
+  return (
+    <HeaderBase
+      backgroundColor={BackgroundColor.backgroundDefault}
+      padding={4}
+      alignItems={AlignItems.center}
+      style={{ zIndex: 2 }}
+      data-testid="simple-confirmation-header"
+      startAccessory={
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          ariaLabel={t('back')}
+          size={ButtonIconSize.Md}
+          onClick={handleBackButtonClick}
+          data-testid="simple-confirmation-header-back-button"
+        />
+      }
+      endAccessory={endAccessory}
+      childrenWrapperProps={{
+        display: Display.Flex,
+        justifyContent: JustifyContent.center,
+        alignItems: AlignItems.center,
+        paddingTop: 4,
+        paddingRight: 8,
+        paddingBottom: 4,
+        paddingLeft: 8,
+      }}
+    >
+      <Text
+        variant={TextVariant.HeadingSm}
+        color={TextColor.TextDefault}
+        textAlign={TextAlign.Center}
+        data-testid="simple-confirmation-header-title"
+      >
+        {title}
+      </Text>
+    </HeaderBase>
   );
 };

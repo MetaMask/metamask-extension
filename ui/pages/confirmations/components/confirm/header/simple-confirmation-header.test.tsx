@@ -10,7 +10,9 @@ import configureStore from '../../../../../store/store';
 import * as ConfirmActions from '../../../hooks/useConfirmActions';
 import { SimpleConfirmationHeader } from './simple-confirmation-header';
 
-function genConfirmation(type: TransactionType = TransactionType.musdConversion) {
+function genConfirmation(
+  type: TransactionType = TransactionType.musdConversion,
+) {
   const base = genUnapprovedContractInteractionConfirmation({
     chainId: '0x1',
   });
@@ -65,9 +67,9 @@ describe('<SimpleConfirmationHeader />', () => {
     it('renders the "Convert and get 3%" title', () => {
       const { getByTestId } = render(TransactionType.musdConversion);
 
-      expect(
-        getByTestId('simple-confirmation-header-title'),
-      ).toHaveTextContent('Convert and get 3%');
+      expect(getByTestId('simple-confirmation-header-title')).toHaveTextContent(
+        'Convert and get 3%',
+      );
     });
 
     it('renders the mUSD info tooltip as endAccessory', () => {
@@ -83,9 +85,7 @@ describe('<SimpleConfirmationHeader />', () => {
 
       fireEvent.click(getByTestId('musd-conversion-header-info-button'));
 
-      expect(
-        getByTestId('musd-conversion-header-tooltip'),
-      ).toBeInTheDocument();
+      expect(getByTestId('musd-conversion-header-tooltip')).toBeInTheDocument();
     });
   });
 });
