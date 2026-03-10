@@ -15,8 +15,8 @@ import { selectTransactions } from '../../../../shared/lib/multichain/transforma
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
-import { queries } from '../../../helpers/queries';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
+import { apiClient } from '../../../helpers/api-client';
 import { calculateFiatFromMarketRates } from './helpers';
 import type { ActivityListFilter } from './helpers';
 
@@ -62,19 +62,21 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
     [evmAddress, internalTxHashes],
   );
 
-  const queryOptions = useMemo(
-    () =>
-      queries.transactions(
-        { accountAddresses, evmAddress, networks },
-        {
-          enabled: Boolean(useExternalServices) && networks.length > 0,
-          keepPreviousData: true,
-        },
-      ),
-    [evmAddress, accountAddresses, networks, useExternalServices],
-  );
+  const options =
+    apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
+      accountAddresses,
+      networks,
+      includeTxMetadata: true,
+    });
 
-  return useInfiniteQuery({ ...queryOptions, select: selectFn });
+  return useInfiniteQuery({
+    ...options,
+    select: selectFn,
+    enabled: Boolean(useExternalServices) && networks.length > 0,
+    keepPreviousData: true,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+  });
 }
 
 export function usePrefetchTransactions() {
@@ -83,8 +85,13 @@ export function usePrefetchTransactions() {
   const { evmAddress, accountAddresses, networks } = useTransactionParams();
 
   const queryOptions = useMemo(
-    () => queries.transactions({ accountAddresses, evmAddress, networks }),
-    [evmAddress, accountAddresses, networks],
+    () =>
+      apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
+        accountAddresses,
+        networks,
+        includeTxMetadata: true,
+      }),
+    [accountAddresses, networks],
   );
 
   return useCallback(() => {
