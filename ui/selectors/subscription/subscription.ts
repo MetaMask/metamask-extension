@@ -12,7 +12,7 @@ import {
 } from '../../../shared/lib/shield';
 import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 
-export type SubscriptionState = {
+type SubscriptionState = {
   metamask: SubscriptionControllerState & {
     showShieldEntryModalOnce: boolean | null;
     shieldSubscriptionError?: ShieldSubscriptionError | null;

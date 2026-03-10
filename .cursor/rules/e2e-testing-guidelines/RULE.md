@@ -82,8 +82,8 @@ For new test code, use `FixtureBuilderV2` by default.
 
 `FixtureBuilderV2` currently supports:
 
-- `withAddressBookController`
 - `withAccountsController`
+- `withAddressBookController`
 - `withAppStateController`
 - `withCurrencyController`
 - `withKeyringController`
@@ -93,6 +93,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withOnboardingController`
 - `withPermissionController`
 - `withPreferencesController`
+- `withSelectedNetworkController`
 - `withTransactionController`
 - `withConversionRateDisabled`
 - `withEnabledNetworks`
@@ -102,6 +103,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
 - `withSelectedNetwork`
+- `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`

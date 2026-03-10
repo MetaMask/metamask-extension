@@ -1487,6 +1487,9 @@
   "confirmFieldMaxAllowance": {
     "message": "Max allowance"
   },
+  "confirmFieldNeverExpires": {
+    "message": "Never expires"
+  },
   "confirmFieldPaymaster": {
     "message": "Fee paid by"
   },
@@ -3626,6 +3629,9 @@
   },
   "l2FeeTooltip": {
     "message": "L2 gas fee"
+  },
+  "language": {
+    "message": "Language"
   },
   "lastSold": {
     "message": "Last sold"
@@ -5811,6 +5817,9 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
+  "preferencesAndDisplay": {
+    "message": "Preferences and display"
+  },
   "prev": {
     "message": "Prev"
   },
@@ -6111,9 +6120,6 @@
   },
   "removeAccount": {
     "message": "Remove account"
-  },
-  "removeAccountDescription": {
-    "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Make sure you have the Secret Recovery Phrase or private key for this account before removing.",
