@@ -117,7 +117,7 @@ describe('MultichainAccountDetailsPage', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
+      `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}?id=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
     );
   });
 

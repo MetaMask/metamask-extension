@@ -95,7 +95,7 @@ export const MultichainAccountMenu = ({
   const menuConfig = useMemo(() => {
     const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
-      const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`;
       navigate(multichainAccountDetailsPageRoute);
     };
 

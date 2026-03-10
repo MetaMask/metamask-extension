@@ -203,12 +203,12 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`,
+    path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
     label: 'Account Details Page',
     trackInAnalytics: true,
   },
   {
-    path: `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`,
+    path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
     label: 'Wallet Details Page',
     trackInAnalytics: true,
   },
