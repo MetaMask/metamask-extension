@@ -88,7 +88,9 @@ export function resolveThresholdConfig(
     }
   }
 
-  const kebab = benchmarkName.replace(/([A-Z])/gu, '-$1').toLowerCase();
+  const kebab = benchmarkName
+    .replace(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
+    .replace(/^-/u, '');
   if (THRESHOLD_REGISTRY[kebab]) {
     return THRESHOLD_REGISTRY[kebab];
   }
