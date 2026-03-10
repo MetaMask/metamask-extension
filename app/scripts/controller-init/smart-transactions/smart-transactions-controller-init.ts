@@ -5,6 +5,7 @@ import {
 } from '@metamask/smart-transactions-controller';
 import type { Hex } from '@metamask/utils';
 import type { TraceCallback } from '@metamask/controller-utils';
+import log from 'loglevel';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import { ControllerInitFunction, ControllerInitRequest } from '../types';
 import { SmartTransactionsControllerInitMessenger } from '../messengers/smart-transactions-controller-messenger';
@@ -57,6 +58,7 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
       }
       return undefined;
     } catch (err) {
+      log.warn('Failed to get bearer token', err);
       return undefined;
     }
   };

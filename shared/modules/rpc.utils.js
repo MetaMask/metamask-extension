@@ -21,7 +21,7 @@ export async function jsonRpcRequest(
   let fetchUrl = rpcUrl;
   const headers = {
     'Content-Type': 'application/json',
-    ...(options.headers ?? {}),
+    ...options.headers,
   };
   // Convert basic auth URL component to Authorization header
   const { origin, pathname, username, password, search } = new URL(rpcUrl);
