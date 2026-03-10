@@ -25,16 +25,20 @@ jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
   useFeeCalculations: jest.fn(),
 }));
 
-jest.mock('../transactions/useTransactionNativeTicker', () => ({
-  useTransactionNativeTicker: () => 'ETH',
-}));
-
 jest.mock('../../../../store/actions', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 
+const mockState = {
+  metamask: {
+    networkConfigurationsByChainId: {},
+  },
+};
+
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector?.(mockState) ?? undefined,
 }));
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
@@ -53,6 +57,24 @@ describe('useGasFeeEstimateLevelOptions', () => {
         preciseNativeCurrencyFee: '0.001',
       }),
     } as unknown as ReturnType<typeof useFeeCalculations>);
+  });
+
+  it('returns empty array when currentConfirmation is undefined', () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: undefined,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {},
+    } as ReturnType<typeof useGasFeeEstimates>);
+
+    const { result } = renderHook(() =>
+      useGasFeeEstimateLevelOptions({
+        handleCloseModals: mockHandleCloseModals,
+      }),
+    );
+
+    expect(result.current).toEqual([]);
   });
 
   it('returns empty array when gas fee estimate type is GasPrice', () => {

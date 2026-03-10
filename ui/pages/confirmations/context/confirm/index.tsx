@@ -27,11 +27,19 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
   confirmationId?: string;
-}> = ({ children, confirmationId }) => {
+  /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
+  currentConfirmationOverride?: Confirmation;
+}> = ({ children, confirmationId, currentConfirmationOverride }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
-  const { currentConfirmation } = useCurrentConfirmation(confirmationId);
-  useSyncConfirmPath(currentConfirmation);
+  const { currentConfirmation: currentConfirmationFromHook } =
+    useCurrentConfirmation(confirmationId);
+  const currentConfirmation =
+    currentConfirmationOverride ?? currentConfirmationFromHook;
+
+  useSyncConfirmPath(
+    currentConfirmationOverride === undefined ? currentConfirmation : undefined,
+  );
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
 
@@ -40,10 +48,18 @@ export const ConfirmContextProvider: React.FC<{
    * but removed by us, this can happen in cases like when dapp changes network.
    */
   useEffect(() => {
+    if (currentConfirmationOverride !== undefined) {
+      return;
+    }
     if (previousConfirmation && !currentConfirmation) {
       navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
-  }, [previousConfirmation, currentConfirmation, navigate]);
+  }, [
+    currentConfirmationOverride,
+    previousConfirmation,
+    currentConfirmation,
+    navigate,
+  ]);
 
   const value = useMemo(
     () => ({
