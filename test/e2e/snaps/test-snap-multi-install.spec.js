@@ -51,6 +51,12 @@ describe('Test Snap Multi Install', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        // wait for connection request dialog to load
+        await driver.waitForSelector({
+          text: 'Connection request',
+          tag: 'h3',
+        });
+
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
