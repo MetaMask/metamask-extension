@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
 import {
@@ -25,6 +25,7 @@ import {
   CONTACTS_VIEW_ROUTE,
   CONTACTS_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getCompleteAddressBook, getInternalAccounts } from '../../selectors';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -50,6 +51,8 @@ export function ContactsListPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const fromPath = searchParams.get('from') ?? undefined;
   const { trackEvent } = useContext(MetaMetricsContext);
   const completeAddressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
@@ -129,7 +132,11 @@ export function ContactsListPage() {
   }, [showUpdatedToast, navigate]);
 
   const handleBack = () => {
-    navigate(DEFAULT_ROUTE);
+    if (fromPath === DEFAULT_ROUTE) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
   };
 
   const showDeletedToastNow =
