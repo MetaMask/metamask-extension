@@ -16,31 +16,21 @@ import {
   getIsUpdatingMetamaskNotifications,
   getValidNotificationAccounts,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { getInternalAccounts } from '../../selectors';
+import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
+import { getNotificationWalletGroups } from './notifications-settings-helpers';
 
-function useNotificationAccounts() {
+function useNotificationAccountGroups() {
   const accountAddresses = useSelector(getValidNotificationAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const accounts = useMemo(() => {
-    return (
-      accountAddresses
-        .map((addr) => {
-          const account = internalAccounts.find(
-            (a) => a.address.toLowerCase() === addr.toLowerCase(),
-          );
-          return account;
-        })
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        .filter(<T,>(val: T | undefined): val is T => Boolean(val))
-    );
-  }, [accountAddresses, internalAccounts]);
+  const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
-  return accounts;
+  return useMemo(
+    () => getNotificationWalletGroups(accountGroups, accountAddresses),
+    [accountAddresses, accountGroups],
+  );
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -52,12 +42,15 @@ export function NotificationsSettingsContent() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const accounts = useNotificationAccounts();
+  const notificationAccountGroups = useNotificationAccountGroups();
   const [loadingAllowNotifications, setLoadingAllowNotifications] =
     useState<boolean>(isUpdatingMetamaskNotifications);
   const accountAddresses = useMemo(
-    () => accounts.map((a) => a.address),
-    [accounts],
+    () =>
+      notificationAccountGroups.flatMap((walletGroup) =>
+        walletGroup.accounts.map((account) => account.address),
+      ),
+    [notificationAccountGroups],
   );
   const accountSettingsProps = useAccountSettingsProps(accountAddresses);
   const updatingAccounts = accountSettingsProps.accountsBeingUpdated.length > 0;
@@ -86,59 +79,78 @@ export function NotificationsSettingsContent() {
             disabled={loadingAllowNotifications || updatingAccounts}
           />
           <Box className="w-full h-px border-t border-muted" />
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            alignItems={BoxAlignItems.Stretch}
-            gap={6}
-            data-testid="notifications-settings-per-account"
-          >
+          {notificationAccountGroups.length > 0 ? (
             <Box
               flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Start}
-              gap={1}
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextDefault}
-              >
-                {t('accountActivity')}
-              </Text>
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Regular}
-                color={TextColor.TextAlternative}
-              >
-                {t('accountActivityText')}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              justifyContent={BoxJustifyContent.Start}
               alignItems={BoxAlignItems.Stretch}
-              gap={4}
+              gap={6}
+              data-testid="notifications-settings-per-account"
             >
-              {accounts.map((account) => (
-                <NotificationsSettingsPerAccount
-                  key={account.id}
-                  address={account.address}
-                  name={account.metadata.name}
-                  disabledSwitch={
-                    accountSettingsProps.initialLoading || updatingAccounts
-                  }
-                  isLoading={accountSettingsProps.accountsBeingUpdated.includes(
-                    account.address,
-                  )}
-                  isEnabled={
-                    accountSettingsProps.data?.[
-                      account.address.toLowerCase()
-                    ] ?? false
-                  }
-                  refetchAccountSettings={refetchAccountSettings}
-                />
-              ))}
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Start}
+                gap={1}
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                >
+                  {t('accountActivity')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Regular}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('accountActivityText')}
+                </Text>
+              </Box>
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                justifyContent={BoxJustifyContent.Start}
+                alignItems={BoxAlignItems.Stretch}
+                gap={4}
+              >
+                {notificationAccountGroups.map((walletGroup) => (
+                  <Box
+                    key={walletGroup.walletId}
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.Stretch}
+                    gap={2}
+                  >
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                      color={TextColor.TextAlternative}
+                    >
+                      {walletGroup.walletName}
+                    </Text>
+                    {walletGroup.accounts.map((account) => (
+                      <NotificationsSettingsPerAccount
+                        key={account.id}
+                        address={account.address}
+                        name={account.name}
+                        disabledSwitch={
+                          accountSettingsProps.initialLoading ||
+                          updatingAccounts
+                        }
+                        isLoading={accountSettingsProps.accountsBeingUpdated.includes(
+                          account.address,
+                        )}
+                        isEnabled={
+                          accountSettingsProps.data?.[
+                            account.address.toLowerCase()
+                          ] ?? false
+                        }
+                        refetchAccountSettings={refetchAccountSettings}
+                      />
+                    ))}
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          </Box>
+          ) : null}
         </>
       )}
     </Box>
