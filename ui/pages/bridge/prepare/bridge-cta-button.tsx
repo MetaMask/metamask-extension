@@ -181,7 +181,8 @@ export const BridgeCTAButton = ({
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
 
-  return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
+  return (activeQuote || needsDestinationAddress || isMarketClosed) &&
+    !secondaryButtonLabel ? (
     <Button
       width={BlockSize.Full}
       size={ButtonSize.Lg}
@@ -211,7 +212,9 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
+        (!needsDestinationAddress &&
+          !isMarketClosed &&
+          (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }
     >
