@@ -1,8 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
-import {
-  DEFAULT_SOLANA_WS_MOCKS,
-} from '../tests/solana/mocks/websocketDefaultMocks';
+import { DEFAULT_SOLANA_WS_MOCKS } from '../tests/solana/mocks/websocketDefaultMocks';
 import type { WebSocketMessageMock } from './types';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';

@@ -28,7 +28,11 @@ export class PerpsMarketListPage {
     testId: 'sort-dropdown-option-volumeLow',
   };
 
-  /** Returns the selector for a filter dropdown option (e.g. 'all', 'crypto'). */
+  /**
+   * Returns the selector for a filter dropdown option (e.g. 'all', 'crypto').
+   *
+   * @param optionId - The filter option id (e.g. 'all', 'crypto').
+   */
   private getFilterOptionSelector(optionId: string): { testId: string } {
     return { testId: `filter-select-option-${optionId}` };
   }
