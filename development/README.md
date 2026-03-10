@@ -25,6 +25,45 @@ Events triggered whilst using the extension will be logged to the console of the
 
 More information on the API and its usage can be found [here](./mock-segment.js#L28).
 
+### Collecting and Querying Events with the Mock Segment Collector
+
+If you need to query or analyse events after they are fired (e.g., to feed them to
+an AI agent for validation, or to assert on event counts in a scripted flow), use
+the [Mock Segment Collector](./mock-segment-collector.js) instead. It stores every
+event in memory and exposes a REST API to retrieve them:
+
+- Add/replace the `SEGMENT_HOST` and `SEGMENT_WRITE_KEY` variables in `.metamaskrc`
+  ```
+  SEGMENT_HOST='http://localhost:9090'
+  SEGMENT_WRITE_KEY='FAKE'
+  ```
+- Build the project to the `./dist/` folder with `yarn dist`
+- Run the collector from the command line
+  ```
+  node development/mock-segment-collector.js
+  ```
+- Query collected events via the REST API
+
+  ```bash
+  # All events
+  curl http://localhost:9090/events
+
+  # Filter by event name
+  curl http://localhost:9090/events?event=Transaction+Submitted
+
+  # Filter by Segment type (track, page, identify)
+  curl http://localhost:9090/events?type=track
+
+  # Compact summary (event counts grouped by name)
+  curl http://localhost:9090/events/summary
+
+  # Clear all stored events
+  curl -X DELETE http://localhost:9090/events
+  ```
+
+The full REST API reference is documented in the
+[source file header](./mock-segment-collector.js#L3).
+
 ### Debugging in Segment
 
 To debug in a production Segment environment:
