@@ -79,7 +79,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/confirm-transaction?maxValueMode=true',
+        '/confirm-transaction?maxValueMode=true&loader=send',
       );
     });
   });

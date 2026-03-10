@@ -20,11 +20,13 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
+  // SETTINGS_V2_ROUTE,
   DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
   GATOR_PERMISSIONS,
+  // CONTACTS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -80,7 +82,7 @@ import {
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
-import { isBeta, isFlask } from '../../../helpers/utils/build-types';
+import { isBeta, isFlask } from '../../../../shared/lib/build-types';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -395,6 +397,13 @@ export function useGlobalMenuSections(
       id: 'global-menu-section-manage',
       title: t('manage'),
       items: [
+        // TODO: Uncomment when we remove the Contacts tab from Settings
+        // {
+        //   id: 'global-menu-contacts',
+        //   iconName: IconName.Book,
+        //   label: t('contacts'),
+        //   to: `${CONTACTS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+        // },
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,
@@ -448,6 +457,21 @@ export function useGlobalMenuSections(
           },
           disabled: hasUnapprovedTransactions,
         },
+        // Uncomment to view Settings V2 in Hamburger Menu
+        // {
+        //   id: 'global-menu-settings-v2',
+        //   iconName: IconName.Setting,
+        //   label: `${t('settings')} (V2)`,
+        //   to: SETTINGS_V2_ROUTE,
+        //   onClick: () => {
+        //     trackEvent({
+        //       category: MetaMetricsEventCategory.Navigation,
+        //       event: MetaMetricsEventName.NavSettingsOpened,
+        //       properties: { location: METRICS_LOCATION },
+        //     });
+        //   },
+        //   disabled: hasUnapprovedTransactions,
+        // },
         {
           id: 'global-menu-support',
           iconName: IconName.MessageQuestion,

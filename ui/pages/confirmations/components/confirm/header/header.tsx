@@ -28,6 +28,7 @@ import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
 const CONFIRMATIONS_WITH_ALT_HEADER = [
+  TransactionType.musdClaim,
   TransactionType.simpleSend,
   TransactionType.shieldSubscriptionApprove,
   TransactionType.tokenMethodSafeTransferFrom,

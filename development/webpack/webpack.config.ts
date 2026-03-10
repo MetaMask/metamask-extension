@@ -21,8 +21,6 @@ import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
-  type Manifest,
-  collectEntries,
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
@@ -34,26 +32,23 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables, resolveEnvironment } from './utils/config';
+import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
+import { MODES } from './utils/constants';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
-  const resolvedEnv = resolveEnvironment(args);
-  console.error(getDryRunMessage(args, features, resolvedEnv));
+  console.error(getDryRunMessage(args, features));
   exit(0);
 }
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
-const isDevelopment = args.env === 'development';
+const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifest_version;
-const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
-const manifest: Manifest = require(manifestPath);
-const { entry, canBeChunked } = collectEntries(manifest, context);
 const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -69,7 +64,7 @@ const webAccessibleResources =
 const cache = args.cache
   ? ({
       type: 'filesystem',
-      name: `MetaMask—${args.env}`,
+      name: `MetaMask—${args.mode}`,
       version: cacheKey,
       idleTimeout: 0,
       idleTimeoutForInitialStore: 0,
@@ -97,7 +92,38 @@ const cache = args.cache
 
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
+
+const manifestPlugin = new ManifestPlugin({
+  web_accessible_resources: webAccessibleResources,
+  manifest_version: MANIFEST_VERSION,
+  description: commitHash
+    ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
+    : null,
+  version: version.version,
+  versionName: version.versionName,
+  browsers: args.browser,
+  transform: transformManifest(
+    args,
+    isDevelopment,
+    variables.get('MANIFEST_OVERRIDES') as string | undefined,
+  ),
+  zip: args.zip,
+  ...(args.zip
+    ? {
+        zipOptions: {
+          outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
+          mtime: getLatestCommit().timestamp(),
+          excludeExtensions: ['.map'],
+          // `level: 9` is the highest; it may increase build time by ~5% over level 1
+          level: 9,
+        },
+      }
+    : {}),
+  buildType: args.type,
+});
+
 const plugins: WebpackPluginInstance[] = [
+  manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
@@ -112,38 +138,6 @@ const plugins: WebpackPluginInstance[] = [
         test: /fonts\/\.(?:woff2)$/u,
       },
     ],
-  }),
-  new ManifestPlugin({
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    web_accessible_resources: webAccessibleResources,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    manifest_version: MANIFEST_VERSION,
-    description: commitHash
-      ? `${args.type} build for ${args.env} from git id: ${commitHash.substring(0, 8)}`
-      : null,
-    version: version.version,
-    versionName: version.versionName,
-    browsers: args.browser,
-    transform: transformManifest(
-      args,
-      isDevelopment,
-      variables.get('MANIFEST_OVERRIDES') as string | undefined,
-    ),
-    zip: args.zip,
-    ...(args.zip
-      ? {
-          zipOptions: {
-            outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-            mtime: getLatestCommit().timestamp(),
-            excludeExtensions: ['.map'],
-            // `level: 9` is the highest; it may increase build time by ~5% over level 1
-            level: 9,
-          },
-        }
-      : {}),
-    buildType: args.type,
   }),
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
@@ -166,6 +160,25 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // TODO: automatically bundle build-type specific images
+      ...(args.type === 'flask'
+        ? [
+            {
+              from: join(context, 'build-types', 'flask', 'images'),
+              to: 'images',
+              force: true,
+            },
+          ]
+        : []),
+      ...(args.type === 'beta'
+        ? [
+            {
+              from: join(context, 'build-types', 'beta', 'images'),
+              to: 'images',
+              force: true,
+            },
+          ]
+        : []),
       // snaps MV3 needs the offscreen document
       ...(MANIFEST_VERSION === 3
         ? [
@@ -238,13 +251,15 @@ const envValidationLoader = args.validateEnv
   : null;
 
 const config = {
-  entry,
+  // All entries are added dynamically by ManifestPlugin
+  // an empty entry object prevents webpack's default entry.
+  entry: {},
   cache,
   plugins,
   context,
-  mode: args.env,
+  mode: args.mode,
   stats: args.stats ? 'normal' : 'none',
-  name: `MetaMask – ${args.env}`,
+  name: `MetaMask – ${args.mode}`,
   // use the `.browserlistrc` file directly to avoid browserslist searching
   target: `browserslist:${browsersListPath}:defaults`,
   // TODO: look into using SourceMapDevToolPlugin and its exclude option to speed up the build
@@ -453,11 +468,7 @@ const config = {
   node: {
     // eventually we should avoid any code that uses node globals `__dirname`
     // and `__filename``. But for now, just warn about their use.
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     __dirname: 'warn-mock',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     __filename: 'warn-mock',
     // Hopefully in the the future we won't need to polyfill node `global`, as
     // a browser version, `globalThis`, already exists and we should use it
@@ -485,7 +496,8 @@ const config = {
     runtimeChunk: {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
-      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
+      name: (chunk) =>
+        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
@@ -499,13 +511,13 @@ const config = {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
           test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: canBeChunked,
+          chunks: manifestPlugin.canBeChunked,
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: canBeChunked,
+          chunks: manifestPlugin.canBeChunked,
         },
       },
     },

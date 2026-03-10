@@ -13,7 +13,6 @@ import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
-import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import LegacyMultichainBridgeListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
@@ -26,11 +25,10 @@ type Props = {
 // Wrapper around TransactionListItem for non-EVM transactions
 // until we properly map values to the new ActivityListItem
 export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
-  const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const matchedBridgeHistoryItem = bridgeHistoryItems[transaction.id];
   const { from, to, type, timestamp, isRedeposit, title } =
-    useMultichainTransactionDisplay(transaction, networkConfig);
+    useMultichainTransactionDisplay(transaction);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
   if (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AutoCloseSection } from './auto-close-section';
@@ -32,7 +33,9 @@ describe('AutoCloseSection', () => {
       renderWithProvider(<AutoCloseSection {...defaultProps} />, mockStore);
 
       // Text is lowercase 'c' in "Auto close"
-      expect(screen.getByText('Auto close')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAutoClose.message),
+      ).toBeInTheDocument();
     });
 
     it('renders the toggle button', () => {
@@ -69,25 +72,6 @@ describe('AutoCloseSection', () => {
 
       expect(screen.getByTestId('tp-percent-input')).toBeInTheDocument();
       expect(screen.getByTestId('sl-percent-input')).toBeInTheDocument();
-    });
-
-    it('shows preset buttons when enabled', () => {
-      renderWithProvider(
-        <AutoCloseSection {...defaultProps} enabled={true} />,
-        mockStore,
-      );
-
-      // TP presets: +10%, +25%, +50%, +100%
-      expect(screen.getByTestId('tp-preset-10')).toBeInTheDocument();
-      expect(screen.getByTestId('tp-preset-25')).toBeInTheDocument();
-      expect(screen.getByTestId('tp-preset-50')).toBeInTheDocument();
-      expect(screen.getByTestId('tp-preset-100')).toBeInTheDocument();
-
-      // SL presets: -10%, -25%, -50%, -75%
-      expect(screen.getByTestId('sl-preset-10')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-preset-25')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-preset-50')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-preset-75')).toBeInTheDocument();
     });
   });
 
@@ -255,88 +239,6 @@ describe('AutoCloseSection', () => {
       const container = screen.getByTestId('tp-percent-input');
       const percentInput = container.querySelector('input');
       expect(percentInput).toHaveValue('');
-    });
-  });
-
-  describe('preset buttons', () => {
-    it('sets TP price when preset is clicked for long position', () => {
-      const onTakeProfitPriceChange = jest.fn();
-      renderWithProvider(
-        <AutoCloseSection
-          {...defaultProps}
-          enabled={true}
-          direction="long"
-          currentPrice={45000}
-          onTakeProfitPriceChange={onTakeProfitPriceChange}
-        />,
-        mockStore,
-      );
-
-      const preset10 = screen.getByTestId('tp-preset-10');
-      fireEvent.click(preset10);
-
-      // For long +10%: 45000 * 1.10 = 49500
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49,500.00');
-    });
-
-    it('sets SL price when preset is clicked for long position', () => {
-      const onStopLossPriceChange = jest.fn();
-      renderWithProvider(
-        <AutoCloseSection
-          {...defaultProps}
-          enabled={true}
-          direction="long"
-          currentPrice={45000}
-          onStopLossPriceChange={onStopLossPriceChange}
-        />,
-        mockStore,
-      );
-
-      const preset10 = screen.getByTestId('sl-preset-10');
-      fireEvent.click(preset10);
-
-      // For long -10%: 45000 * 0.90 = 40500
-      expect(onStopLossPriceChange).toHaveBeenCalledWith('40,500.00');
-    });
-
-    it('sets TP price when preset is clicked for short position', () => {
-      const onTakeProfitPriceChange = jest.fn();
-      renderWithProvider(
-        <AutoCloseSection
-          {...defaultProps}
-          enabled={true}
-          direction="short"
-          currentPrice={45000}
-          onTakeProfitPriceChange={onTakeProfitPriceChange}
-        />,
-        mockStore,
-      );
-
-      const preset10 = screen.getByTestId('tp-preset-10');
-      fireEvent.click(preset10);
-
-      // For short +10% profit: 45000 * 0.90 = 40500
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('40,500.00');
-    });
-
-    it('sets SL price when preset is clicked for short position', () => {
-      const onStopLossPriceChange = jest.fn();
-      renderWithProvider(
-        <AutoCloseSection
-          {...defaultProps}
-          enabled={true}
-          direction="short"
-          currentPrice={45000}
-          onStopLossPriceChange={onStopLossPriceChange}
-        />,
-        mockStore,
-      );
-
-      const preset10 = screen.getByTestId('sl-preset-10');
-      fireEvent.click(preset10);
-
-      // For short -10% loss: 45000 * 1.10 = 49500
-      expect(onStopLossPriceChange).toHaveBeenCalledWith('49,500.00');
     });
   });
 

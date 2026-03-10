@@ -48,6 +48,15 @@ jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
   };
 });
 
+jest.mock('../../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+  }),
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
@@ -55,6 +64,13 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
+jest.mock('../../musd', () => ({
+  ClaimBonusBadge: () => null,
+  MusdConvertLink: () => null,
+  isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
+  useMerklRewards: jest.fn().mockReturnValue({ hasClaimableReward: false }),
+}));
 
 describe('Token Cell', () => {
   const mockState = {

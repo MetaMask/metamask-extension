@@ -1,29 +1,35 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import type { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
   Token,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
-import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
+import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
-import { queries } from '../../../helpers/queries';
+import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
+import { apiClient } from '../../../helpers/api-client';
 import { calculateFiatFromMarketRates } from './helpers';
+import type { ActivityListFilter } from './helpers';
 
-function useTransactionParams() {
+function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
-  const evmNetworks = useMemo(
-    () => enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
-    [enabledNetworks],
-  );
+  const evmNetworks = useMemo(() => {
+    if (caipChainId) {
+      return caipChainId.startsWith('eip155:') ? [caipChainId] : [];
+    }
+    return enabledNetworks.filter((id: string) => id.startsWith('eip155:'));
+  }, [enabledNetworks, caipChainId]);
 
   const accountAddresses = useMemo(
     () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
@@ -40,20 +46,41 @@ function useTransactionParams() {
   );
 }
 
-export function useTransactionsQuery() {
+export function useTransactionsQuery(filter?: ActivityListFilter) {
   const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, networks } = useTransactionParams();
+  const { evmAddress, accountAddresses, networks } = useTransactionParams(
+    filter?.chainId,
+  );
+  const internalTxHashes = useSelector(selectRequiredTransactionHashes);
 
-  const queryOptions = useMemo(
+  const selectFn = useMemo(
     () =>
-      queries.transactions(
-        { accountAddresses, evmAddress, networks },
-        { enabled: Boolean(useExternalServices), keepPreviousData: true },
-      ),
-    [evmAddress, accountAddresses, networks, useExternalServices],
+      selectTransactions({
+        address: evmAddress,
+        excludedTxHashes: internalTxHashes,
+      }),
+    [evmAddress, internalTxHashes],
   );
 
-  return useInfiniteQuery(queryOptions);
+  const queryOptions =
+    apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
+      accountAddresses,
+      networks,
+      includeTxMetadata: true,
+    });
+
+  // @ts-expect-error apiClient returns v5 types, repo still in v4
+  return useInfiniteQuery({
+    ...queryOptions,
+    select: selectFn,
+    enabled:
+      Boolean(useExternalServices) &&
+      networks.length > 0 &&
+      accountAddresses.length > 0,
+    keepPreviousData: true,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+  });
 }
 
 export function usePrefetchTransactions() {
@@ -62,8 +89,13 @@ export function usePrefetchTransactions() {
   const { evmAddress, accountAddresses, networks } = useTransactionParams();
 
   const queryOptions = useMemo(
-    () => queries.transactions({ accountAddresses, evmAddress, networks }),
-    [evmAddress, accountAddresses, networks],
+    () =>
+      apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
+        accountAddresses,
+        networks,
+        includeTxMetadata: true,
+      }),
+    [accountAddresses, networks],
   );
 
   return useCallback(() => {
@@ -80,15 +112,58 @@ export function usePrefetchTransactions() {
       return;
     }
 
+    // @ts-expect-error apiClient returns v5 types, repo still in v4
     queryClient.prefetchInfiniteQuery(queryOptions).catch(() => {
       // Prefetch is opportunistic
     });
   }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }
 
+function classifyNft(
+  valueTransfers: TransactionViewModel['valueTransfers'],
+  address: string,
+): 'mint' | 'bought' | 'received' | 'sent' | null {
+  const incoming = valueTransfers?.find(
+    (vt) =>
+      (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
+      vt.to?.toLowerCase() === address,
+  );
+
+  if (incoming) {
+    const isMint =
+      incoming.from?.toLowerCase() ===
+      '0x0000000000000000000000000000000000000000';
+    if (isMint) {
+      return 'mint';
+    }
+    const hasPaid = valueTransfers?.some(
+      (vt) =>
+        vt.transferType === 'normal' && vt.from?.toLowerCase() === address,
+    );
+    return hasPaid ? 'bought' : 'received';
+  }
+
+  const outgoing = valueTransfers?.find(
+    (vt) =>
+      (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
+      vt.from?.toLowerCase() === address,
+  );
+
+  if (outgoing) {
+    return 'sent';
+  }
+
+  return null;
+}
+
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
+
+  const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
+    transaction,
+  });
+
   const { transactionCategory, transactionType, transactionProtocol } =
     transaction;
 
@@ -118,6 +193,8 @@ export function useGetTitle(transaction: TransactionViewModel): string {
       if (isOutgoing) {
         return t('sentSpecifiedTokens', ['NFT']);
       }
+    } else {
+      return t('sentSpecifiedTokens', ['NFT']);
     }
   }
 
@@ -127,6 +204,12 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'APPROVE') {
+    if (sourceTokenSymbol) {
+      return t(isBridgeTx ? 'bridgeApproval' : 'swapApproval', [
+        sourceTokenSymbol,
+      ]);
+    }
+
     const data = transaction.txParams?.data;
     const selectorFromData =
       typeof data === 'string' ? data.slice(0, 10) : undefined;
@@ -180,11 +263,10 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'BRIDGE_OUT') {
-    const chainName =
-      NETWORK_TO_NAME_MAP[
-        transaction.chainId as keyof typeof NETWORK_TO_NAME_MAP
-      ];
-    return chainName ? t('bridgedToChain', [chainName]) : t('bridged');
+    if (!destNetwork?.name || !isBridgeTx) {
+      return t('bridged');
+    }
+    return t('bridgedToChain', [destNetwork.name]);
   }
 
   if (transactionCategory === 'BRIDGE_IN') {
@@ -202,6 +284,22 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   }
 
   if (transactionCategory === 'TRANSFER') {
+    const nft = classifyNft(transaction.valueTransfers, evmAddress ?? '');
+    if (nft) {
+      switch (nft) {
+        case 'mint':
+          return t('nftMinted', ['NFT']);
+        case 'bought':
+          return t('nftBought', ['NFT']);
+        case 'received':
+          return t('received');
+        case 'sent':
+          return t('sentSpecifiedTokens', ['NFT']);
+        default:
+          break;
+      }
+    }
+
     if (transaction.amounts?.to && !transaction.amounts?.from) {
       return t('received');
     }
@@ -242,6 +340,22 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
     if (isIncoming && transaction.amounts?.to) {
       return t('received');
+    }
+
+    const nft = classifyNft(transaction.valueTransfers, evmAddress ?? '');
+    if (nft) {
+      switch (nft) {
+        case 'mint':
+          return t('nftMinted', ['NFT']);
+        case 'bought':
+          return t('nftBought', ['NFT']);
+        case 'received':
+          return t('received');
+        case 'sent':
+          return t('sentSpecifiedTokens', ['NFT']);
+        default:
+          break;
+      }
     }
   }
 

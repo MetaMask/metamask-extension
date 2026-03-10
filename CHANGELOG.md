@@ -7,6 +7,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.21.0]
+
+### Added
+
+- Bump assets controller to v2.1.0 (#40439)
+- Bump @metamask/core-backend and set up ApiPlatformClient (#40262)
+- Sets Infura RPC for HyperEVM with Quicknode failover (#39635)
+- Implement safe state management for notification hooks (#40401)
+- `@metamask/seedless-onboarding-controller` upgrade to v8.1 (#40425)
+- Add gasless bridge with EIP-7702 (#40354)
+- Adds foundational layer for the mUSD stablecoin conversion feature (#40223)
+- Support for hardware wallets in rewards feature for extension. (#40202)
+- Use new state for aggregated balance (#40239)
+- Added a new sell deeplink (#40231)
+- Added a Settings option to choose which network type to show as your default address in the extension header and account list (#40196)
+- Refresh new state (#40230)
+- Support import/hide tokens for the new controller (#40228)
+- Adds Chiliz chain logo for network and token (#40144)
+- Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind feature flag) (#39901)
+
+### Changed
+
+- Update NFT transaction labels (#40350)
+- Small styling tweaks to default address feature (#40393)
+- Updated Experimental Settings styles and Snaps settings content (#40369)
+- Map staking transaction icon (#40339)
+- Remove fil locale (#40333)
+- chore: update delete button from red to white (#40261)
+
+### Fixed
+
+- Nft image `startsWith` error (#40413)
+- When Basic functionality is off, protected routes now redirect to a “Basic functionality is off” page with an inline toggle and optional “Open the [feature] page” action instead of showing the feature. (#39975)
+- Handle non-evm bridge details (#40383)
+- Fixes syncing failure caused by the sidepanel being opened in multiple browser windows, and then one of the sidepanels being closed, causing syncing to stop. (#40305)
+- Refactors the Perps tutorial modal to align with the mobile implementation pattern (#40174)
+- Only show MUSD claim bonus CTA if there are rewards to claim (#40299)
+- Fixed blurry MMPoly font rendering on mobile devices by preventing browser font synthesis (#40349)
+- Inconsistent decimals between and and selected network (#40341)
+- Bump assets and phishing controllers versions (#40132)
+- Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to value `eip155:999/slip44:2457` if applicable. (#40206)
+- Adjusts update modal logic to use the pending extension version and only show when a newer version is available. (#39884)
+
+## [13.20.1]
+
+### Fixed
+
+- Prevent re-sync account removal dialogs (#40572)
+
+## [13.20.0]
+
+### Added
+
+- Activity view with infinite scroll (#39930)
+- Gas sponsorship UI (#40210)
+- Added initial Perps UI (#40076)
+- Added deferred deep links (#38458)
+- Replaced global-menu with global-menu-drawer (#39991)
+- Added Perps tutorial modal with animated walkthrough explaining perpetual futures trading (#39693)
+- Added toast notifications for mUSD reward claim transaction status (in-progress, success, failed); fixed a bug where the "network added" home notification would reappear after navigation (#39979)
+- Optimized gas fees for Shield crypto subscription transactions to reduce sponsorship costs (#39931)
+- Added vertical scroll to drawer (#40301)
+
+### Changed
+
+- Updated GMX referral image and subtitle (#40208)
+- Use `StorageService` in Snap Controller (#39804)
+- Remove network dropdown from Activity tab (#39945)
+
+### Fixed
+
+- Remove unintended "Dapp suggested" label from gas speed labels (#39934)
+- Fixed the "Paste" button not working in Chrome side panel mode during wallet import (#40222)
+- Swap tx submission fails if page navigates to Activity log before QuotesReceived event is published (#40173)
+- Fixed an issue where approvals would be closed too soon (#40139)
+- Fixed access token not persisting across lock/unlock cycles for seedless onboarding users (#40013)
+- Fixed a security issue where users could skip onboarding by navigating directly to the completion route (#40012)
+- Remove pinned swap token from asset picker (#40211)
+- Fixed activity year format (#40329)
+- Fixed list item disappearing in token page (#40316)
+- Fixed error when importing tokens on EVM networks when chainId is provided as decimal string (#40325)
+- AccountsApiBalanceFetcher stricter zero out conditions (#40411)
+
 ## [13.19.0]
 
 ### Added
@@ -1803,7 +1886,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...HEAD
+[13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
+[13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1
+[13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0
 [13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...v13.19.0
 [13.18.1]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.18.1
 [13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0

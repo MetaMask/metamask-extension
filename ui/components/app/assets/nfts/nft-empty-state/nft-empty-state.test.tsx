@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import * as actions from '../../../../../store/actions';
@@ -29,16 +30,14 @@ describe('NftEmptyState', () => {
   it('should render description text', () => {
     renderComponent();
     expect(
-      screen.getByText(
-        "There's a world of NFTs out there. Start your collection today.",
-      ),
+      screen.getByText(messages.nftEmptyDescription.message),
     ).toBeInTheDocument();
   });
 
   it('should render import button', () => {
     renderComponent();
     expect(
-      screen.getByRole('button', { name: 'Import NFT' }),
+      screen.getByRole('button', { name: messages.importNFT.message }),
     ).toBeInTheDocument();
   });
 
@@ -55,7 +54,7 @@ describe('NftEmptyState', () => {
     renderComponent();
 
     const importButton = screen.getByRole('button', {
-      name: 'Import NFT',
+      name: messages.importNFT.message,
     });
     fireEvent.click(importButton);
 

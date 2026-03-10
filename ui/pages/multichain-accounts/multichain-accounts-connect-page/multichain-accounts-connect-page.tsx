@@ -515,7 +515,7 @@ export const MultichainAccountsConnectPage: React.FC<
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
-  const originTrustSignals = useOriginTrustSignals(
+  const { state: trustSignalState } = useOriginTrustSignals(
     targetSubjectMetadata.origin,
   );
 
@@ -593,15 +593,28 @@ export const MultichainAccountsConnectPage: React.FC<
           >
             {title}
           </Text>
-          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+          {trustSignalState === TrustSignalDisplayState.Verified && (
             <Tooltip
               title={t('alertReasonOriginTrustSignalVerified')}
               position="bottom"
-              style={{ display: 'flex' }}
+              style={{ display: 'flex', paddingTop: '2px' }}
             >
               <Icon
                 name={IconName.VerifiedFilled}
-                color={IconColor.infoDefault}
+                color={IconColor.successDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+          {trustSignalState === TrustSignalDisplayState.Malicious && (
+            <Tooltip
+              title={t('trustSignalBlockTitle')}
+              position="bottom"
+              style={{ display: 'flex', paddingTop: '2px' }}
+            >
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.errorDefault}
                 size={IconSize.Sm}
               />
             </Tooltip>
@@ -726,6 +739,12 @@ export const MultichainAccountsConnectPage: React.FC<
               data-testid="confirm-btn"
               size={ButtonSize.Lg}
               onClick={onConfirm}
+              danger={trustSignalState === TrustSignalDisplayState.Malicious}
+              startIconName={
+                trustSignalState === TrustSignalDisplayState.Malicious
+                  ? IconName.Danger
+                  : undefined
+              }
               disabled={
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0

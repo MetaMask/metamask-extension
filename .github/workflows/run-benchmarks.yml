@@ -80,11 +80,10 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore .metamask folder
         id: restore-metamask
@@ -138,6 +137,15 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
 
+      - name: Upload benchmark result as artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+          retention-days: 7
+          if-no-files-found: ignore
+
   # Webpack user journey benchmarks - only on push to main/release branches.
   # Compares webpack vs browserify performance before releasing webpack to production.
   benchmarks-webpack-perf:
@@ -173,11 +181,10 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore .metamask folder
         id: restore-metamask

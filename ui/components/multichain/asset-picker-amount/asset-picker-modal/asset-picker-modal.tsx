@@ -56,10 +56,7 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import {
-  getNativeTokenName,
-  isTronEnergyOrBandwidthResource,
-} from '../../../../ducks/bridge/utils';
+import { getNativeTokenName } from '../../../../ducks/bridge/utils';
 import {
   getMultichainConversionRate,
   getMultichainCurrencyImage,
@@ -73,7 +70,10 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { Numeric } from '../../../../../shared/modules/Numeric';
-import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import {
+  isEvmChainId,
+  isTronSpecialAsset,
+} from '../../../../../shared/lib/asset-utils';
 
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type { ERC20Asset, NativeAsset, AssetWithDisplayData } from './types';
@@ -286,8 +286,8 @@ export function AssetPickerModal({
     > {
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
-        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
-        if (isTronEnergyOrBandwidthResource(token.chainId, token.symbol)) {
+        // Filter out Tron special assets (resources, staking state, etc.)
+        if (isTronSpecialAsset(token.assetId)) {
           continue;
         }
         if (shouldAddToken(token.symbol, token.address, token.chainId)) {
@@ -338,10 +338,6 @@ export function AssetPickerModal({
       }
 
       for (const token of allDetectedTokens) {
-        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
-        if (isTronEnergyOrBandwidthResource(currentChainId, token.symbol)) {
-          continue;
-        }
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
