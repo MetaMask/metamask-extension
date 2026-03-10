@@ -27,16 +27,19 @@ import {
 
 const mockUseInfiniteQuery = jest.fn();
 const mockUseQueryClient = jest.fn();
-const mockQueriesTransactions = jest.fn();
+const mockGetV4MultiAccountTransactionsInfiniteQueryOptions = jest.fn();
 
 jest.mock('@tanstack/react-query', () => ({
   useInfiniteQuery: (...args: unknown[]) => mockUseInfiniteQuery(...args),
   useQueryClient: () => mockUseQueryClient(),
 }));
 
-jest.mock('../../../helpers/queries', () => ({
-  queries: {
-    transactions: (...args: unknown[]) => mockQueriesTransactions(...args),
+jest.mock('../../../helpers/api-client', () => ({
+  apiClient: {
+    accounts: {
+      getV4MultiAccountTransactionsInfiniteQueryOptions: (...args: unknown[]) =>
+        mockGetV4MultiAccountTransactionsInfiniteQueryOptions(...args),
+    },
   },
 }));
 
@@ -553,7 +556,7 @@ describe('Query hooks', () => {
 
   beforeEach(() => {
     mockUseInfiniteQuery.mockReturnValue({ data: undefined });
-    mockQueriesTransactions.mockReturnValue({
+    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue({
       queryKey: ['transactions'],
       queryFn: jest.fn(),
       getNextPageParam: jest.fn(),
@@ -573,16 +576,18 @@ describe('Query hooks', () => {
   it('useTransactionsQuery composes query options and delegates to useInfiniteQuery', () => {
     renderQueryHook(() => useTransactionsQuery());
 
-    expect(mockQueriesTransactions).toHaveBeenCalledWith(
-      {
-        accountAddresses: [`eip155:0:${expectedEvmAddress}`],
-        evmAddress: expectedEvmAddress,
-        networks: expectedNetworks,
-      },
-      { enabled: true, keepPreviousData: true },
-    );
+    expect(
+      mockGetV4MultiAccountTransactionsInfiniteQueryOptions,
+    ).toHaveBeenCalledWith({
+      accountAddresses: [`eip155:0:${expectedEvmAddress}`],
+      networks: expectedNetworks,
+      includeTxMetadata: true,
+    });
     expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ select: expect.any(Function) }),
+      expect.objectContaining({
+        select: expect.any(Function),
+        enabled: true,
+      }),
     );
   });
 
@@ -600,7 +605,9 @@ describe('Query hooks', () => {
     };
 
     mockUseQueryClient.mockReturnValue(mockQueryClient);
-    mockQueriesTransactions.mockReturnValue(queryOptions);
+    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue(
+      queryOptions,
+    );
 
     const { result } = renderQueryHook(() => usePrefetchTransactions());
 
