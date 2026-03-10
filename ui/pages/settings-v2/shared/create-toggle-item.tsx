@@ -20,7 +20,7 @@ export type ToggleEventConfig = {
 export type ToggleItemConfig = {
   name: string;
   titleKey: string;
-  descriptionKey: string;
+  descriptionKey?: string;
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
@@ -56,7 +56,9 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
     return (
       <SettingsToggleItem
         title={t(config.titleKey)}
-        description={t(config.descriptionKey)}
+        description={
+          config.descriptionKey ? t(config.descriptionKey) : undefined
+        }
         value={value}
         onToggle={handleToggle}
         dataTestId={config.dataTestId}
