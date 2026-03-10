@@ -21,6 +21,9 @@ const accountDetailsRowSmartAccountTestId = 'account-details-row-smart-account';
 const accountDetailsRowWalletTestId = 'account-details-row-wallet';
 const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
 const accountNameInputDataTestId = 'account-name-input';
+const DEFAULT_ACCOUNT_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+const LEDGER_ACCOUNT_GROUP_ID =
+  'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
 jest.mock('../../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../../shared/lib/trace'),
@@ -28,14 +31,20 @@ jest.mock('../../../../shared/lib/trace', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-const mockUseParams = jest.fn();
-const mockUseLocation = jest.fn();
+const mockUseSearchParams = jest.fn();
+
+const setSearchParams = (accountGroupId = DEFAULT_ACCOUNT_GROUP_ID) => {
+  mockUseSearchParams.mockReturnValue([
+    new URLSearchParams({ accountGroupId }),
+    jest.fn(),
+  ]);
+};
+
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => mockUseParams(),
-    useLocation: () => mockUseLocation(),
+    useSearchParams: () => mockUseSearchParams(),
   };
 });
 
@@ -52,17 +61,7 @@ jest.mock('react-redux', () => {
 describe('MultichainAccountDetailsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
-    mockUseParams.mockReturnValue({
-      id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-    });
-
-    mockUseLocation.mockReturnValue({
-      pathname: '/test',
-      search: '',
-      hash: '',
-      state: null,
-    });
+    setSearchParams();
   });
 
   const mockStore = configureMockStore([thunk])(mockState);
@@ -128,9 +127,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('renders remove account section for Keyring wallet type', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
 
     renderComponent();
 
@@ -138,9 +135,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('does not render Setup Smart Account row for hardware wallet (Ledger) account', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
 
     renderComponent();
 
@@ -174,9 +169,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('opens account remove modal when remove account action button is clicked', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
     renderComponent();
 
     const removeAccountActionButton = screen.getByTestId(
@@ -188,9 +181,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('closes account remove modal when close button is clicked', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
 
     renderComponent();
 
@@ -208,9 +199,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('calls removeAccount action when remove account button is clicked', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
     renderComponent();
 
     const removeAccountActionButton = screen.getByTestId(
@@ -232,10 +221,11 @@ describe('MultichainAccountDetailsPage', () => {
     it('calls ShowAccountAddressList trace when clicking network addresses link', () => {
       const store = configureStore(mockState);
       const groupId = mockState.metamask.accountTree.selectedAccountGroup;
+      setSearchParams(groupId);
       renderWithProvider(
         <MultichainAccountDetailsPage />,
         store,
-        `/test/${encodeURIComponent(groupId)}`,
+        `/test?accountGroupId=${encodeURIComponent(groupId)}`,
       );
 
       const addressesLink = document.querySelector(
