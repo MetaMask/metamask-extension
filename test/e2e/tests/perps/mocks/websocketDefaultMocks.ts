@@ -12,23 +12,9 @@
  * @see Hyperliquid API docs for message formats
  */
 
-export type WebSocketMessageMock = {
-  /** String(s) that the message should include to trigger this mock */
-  messageIncludes: string | string[];
-  /** The JSON response to send back, or a getter called at send time (e.g. for fresh timestamps) */
-  response: object | (() => object);
-  /** Delay before sending the response (in milliseconds) */
-  delay?: number;
-  /** Custom log message for this mock */
-  logMessage?: string;
-};
+import type { WebSocketMessageMock } from '../../../websocket/types';
 
-/**
- * Returns the response payload, evaluating getters at send time so timestamps are fresh.
- *
- * @param mock - The WebSocket message mock (response may be a function).
- * @returns The response object to send back.
- */
+export type { WebSocketMessageMock } from '../../../websocket/types';
 export function getResponsePayload(mock: WebSocketMessageMock): object {
   return typeof mock.response === 'function' ? mock.response() : mock.response;
 }

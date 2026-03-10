@@ -1,20 +1,10 @@
 /**
  * Configuration for a WebSocket message mock
  */
-export type WebSocketMessageMock = {
-  /** String(s) that the message should include to trigger this mock */
-  messageIncludes: string | string[];
-  /** The JSON response to send back */
-  response: object;
-  /** Delay before sending the response (in milliseconds) */
-  delay?: number;
-  /** Optional follow-up response sent after the initial response */
-  followUpResponse?: object;
-  /** Delay before sending the follow-up response (in milliseconds) */
-  followUpDelay?: number;
-  /** Custom log message for this mock */
-  logMessage?: string;
-};
+
+import type { WebSocketMessageMock } from '../../../websocket/types';
+
+export type { WebSocketMessageMock } from '../../../websocket/types';
 
 export const DEFAULT_SOLANA_WS_MOCKS: WebSocketMessageMock[] = [
   {
