@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "dist", "coverage"],
+  "extends": "../../../../tsconfig.json",
+  "include": ["**/*.ts"]
+}

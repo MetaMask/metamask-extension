@@ -475,9 +475,6 @@
   "removeAccount": {
     "message": "Suprimir el compte"
   },
-  "removeAccountDescription": {
-    "message": "Aquest compte serà retirat del teu moneder. Si us plau, assegura't que tens la frase de recuperació original o la clau privada per a aquest compte importat abans de continuar. Pots importar o crear comptes novament des del desplegable de comptes."
-  },
   "required": {
     "message": "Obligatori"
   },
