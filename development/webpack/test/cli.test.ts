@@ -35,7 +35,12 @@ describe('./utils/cli.ts', () => {
 
   it('should return defaults', () => {
     const { args, cacheKey, features } = parseArgv([], loadBuildTypesConfig());
-    assert.deepStrictEqual(args, defaultArgs);
+    const { resolvedThreads, resolvedJobs, ...rest } = args;
+    assert.deepStrictEqual(rest, defaultArgs);
+    assert.strictEqual(typeof resolvedThreads, 'number');
+    assert.strictEqual(typeof resolvedJobs, 'number');
+    assert(resolvedThreads >= 0, 'resolvedThreads should be non-negative');
+    assert(resolvedJobs >= 0, 'resolvedJobs should be non-negative');
     assert.strictEqual(
       typeof cacheKey,
       'string',

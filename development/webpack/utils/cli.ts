@@ -245,6 +245,14 @@ export function parseArgv(
     );
   }
 
+  const resolvedThreads = effectiveThreads;
+  const resolvedJobs =
+    effectiveThreads === 0
+      ? 0
+      : config.jobsPerThread === 'auto'
+        ? resolveAutoJobs(effectiveThreads)
+        : config.jobsPerThread;
+
   // set up feature flags
   const active = new Set<string>();
   const defaultFeaturesForBuildType = buildTypes[config.type].features ?? [];
@@ -259,13 +267,22 @@ export function parseArgv(
     'watch',
     'threads',
     'jobsPerThread',
+    'resolvedThreads',
+    'resolvedJobs',
   ]);
   const cacheKey = Object.entries(args)
     .filter(([key]) => key.length > 1 && !ignore.has(key) && !key.includes('-'))
     .sort(([x], [y]) => x.localeCompare(y));
   return {
     // narrow the `config` type to only the options we're returning
-    args: config as { [key in OptionsKeys]: (typeof config)[key] },
+    args: {
+      ...config,
+      resolvedThreads,
+      resolvedJobs,
+    } as { [key in OptionsKeys]: (typeof config)[key] } & {
+      resolvedThreads: number;
+      resolvedJobs: number;
+    },
     cacheKey: JSON.stringify(cacheKey),
     features: {
       active,
@@ -602,19 +619,6 @@ function getOptions(
  * @param features - The active and available features
  */
 export function getDryRunMessage(args: Args, features: Features) {
-  let resolvedThreads: number;
-  if (args.generatePolicy || args.reactCompilerVerbose) {
-    resolvedThreads = 0;
-  } else if (args.threads === 'auto') {
-    resolvedThreads = resolveAutoThreads();
-  } else {
-    resolvedThreads = args.threads;
-  }
-  const resolvedJobs =
-    args.jobsPerThread === 'auto'
-      ? resolveAutoJobs(resolvedThreads)
-      : args.jobsPerThread;
-
   return `🦊 Build Config 🦊
 
 Mode: ${args.mode}
@@ -631,8 +635,8 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
-Threads: ${args.threads === 'auto' ? `auto (${resolvedThreads})` : args.threads}
-Jobs per thread: ${args.jobsPerThread === 'auto' ? `auto (${resolvedJobs})` : args.jobsPerThread}
+Threads: ${args.threads === 'auto' ? `auto (${args.resolvedThreads})` : args.threads}
+Jobs per thread: ${args.jobsPerThread === 'auto' ? `auto (${args.resolvedJobs})` : args.jobsPerThread}
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
