@@ -34,14 +34,30 @@ jest.mock('../../../../component-library', () => ({
   ),
 }));
 
+jest.mock('../../stock-badge/stock-badge', () => ({
+  StockBadge: ({ isMarketClosed }: { isMarketClosed: boolean }) => (
+    <span data-testid="stock-badge" data-market-closed={String(isMarketClosed)}>
+      Stock
+    </span>
+  ),
+}));
+
+const mockIsStockToken = jest.fn().mockReturnValue(false);
+const mockIsTokenTradingOpen = jest.fn().mockReturnValue(true);
+
 jest.mock('../../../../../pages/bridge/hooks/useRWAToken', () => ({
   useRWAToken: () => ({
-    isStockToken: () => false,
-    isTokenTradingOpen: () => true,
+    isStockToken: mockIsStockToken,
+    isTokenTradingOpen: mockIsTokenTradingOpen,
   }),
 }));
 
 describe('TokenCellTitle', () => {
+  beforeEach(() => {
+    mockIsStockToken.mockReturnValue(false);
+    mockIsTokenTradingOpen.mockReturnValue(true);
+  });
+
   const createMockToken = (
     overrides: Partial<TokenFiatDisplayInfo> = {},
   ): TokenFiatDisplayInfo =>
@@ -162,5 +178,35 @@ describe('TokenCellTitle', () => {
     expect(
       container.querySelector('[data-testid="stakeable-link"]'),
     ).toBeInTheDocument();
+  });
+
+  it('does not render StockBadge when token is not a stock token', () => {
+    mockIsStockToken.mockReturnValue(false);
+    const token = createMockToken();
+    const { queryByTestId } = render(<TokenCellTitle token={token} />);
+
+    expect(queryByTestId('stock-badge')).not.toBeInTheDocument();
+  });
+
+  it('renders StockBadge with market open when stock token is trading', () => {
+    mockIsStockToken.mockReturnValue(true);
+    mockIsTokenTradingOpen.mockReturnValue(true);
+    const token = createMockToken({ title: 'OUSG' });
+    const { getByTestId } = render(<TokenCellTitle token={token} />);
+
+    const badge = getByTestId('stock-badge');
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveAttribute('data-market-closed', 'false');
+  });
+
+  it('renders StockBadge with market closed when stock token is not trading', () => {
+    mockIsStockToken.mockReturnValue(true);
+    mockIsTokenTradingOpen.mockReturnValue(false);
+    const token = createMockToken({ title: 'OUSG' });
+    const { getByTestId } = render(<TokenCellTitle token={token} />);
+
+    const badge = getByTestId('stock-badge');
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveAttribute('data-market-closed', 'true');
   });
 });
