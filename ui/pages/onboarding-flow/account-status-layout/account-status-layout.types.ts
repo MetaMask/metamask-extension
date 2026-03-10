@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export type AccountStatusLayoutProps = {
   /** Test id for the root container */
@@ -18,5 +18,5 @@ export type AccountStatusLayoutProps = {
   /** i18n key for the secondary button label */
   secondaryButtonTextKey: string;
   /** Called when the secondary button is clicked */
-  onSecondaryButtonClick: (e?: MouseEvent<HTMLButtonElement>) => void;
+  onSecondaryButtonClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
 };

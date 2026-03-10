@@ -19,7 +19,9 @@ describe('AccountStatusLayout', () => {
     const { container } = renderWithProvider(
       <AccountStatusLayout {...defaultProps} />,
     );
-    expect(container.querySelector('[data-testid="account-status-layout"]')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="account-status-layout"]'),
+    ).toBeInTheDocument();
     const heading = getByRole(container, 'heading', { level: 2 });
     expect(heading).toBeInTheDocument();
   });
@@ -55,7 +57,9 @@ describe('AccountStatusLayout', () => {
         rootClassName="custom-class h-full"
       />,
     );
-    const root = container.querySelector('[data-testid="account-status-layout"]');
+    const root = container.querySelector(
+      '[data-testid="account-status-layout"]',
+    );
     expect(root).toHaveClass('custom-class');
     expect(root).toHaveClass('h-full');
   });

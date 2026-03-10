@@ -23,7 +23,7 @@ export function AccountStatusLayout({
   onPrimaryButtonClick,
   secondaryButtonTextKey,
   onSecondaryButtonClick,
-}: AccountStatusLayoutProps) {
+}: Readonly<AccountStatusLayoutProps>) {
   const t = useI18nContext();
   const title = t(titleKey);
   const description = t(descriptionKey, descriptionInterpolation);
