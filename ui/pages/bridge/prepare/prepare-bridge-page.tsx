@@ -11,13 +11,14 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
+import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
   setToToken,
   updateQuoteRequestParams,
-  resetBridgeState,
   trackUnifiedSwapBridgeEvent,
 } from '../../../ducks/bridge/actions';
 import {
@@ -83,18 +84,15 @@ import {
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
-import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
-import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -205,6 +203,8 @@ const PrepareBridgePage = ({
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
 
+  useLatestBalance();
+
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
   // Resets the banner visibility when new alerts found
@@ -309,13 +309,6 @@ const PrepareBridgePage = ({
   );
 
   useEffect(() => {
-    return () => {
-      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
-      debouncedUpdateQuoteRequestInController.current.cancel();
-    };
-  }, []);
-
-  useEffect(() => {
     dispatch(setSelectedQuote(null));
     if (!quoteParams) {
       return;
@@ -343,9 +336,6 @@ const PrepareBridgePage = ({
     );
   }, [quoteParams]);
 
-  // Use smart slippage defaults
-  useSmartSlippage();
-
   // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
@@ -353,13 +343,11 @@ const PrepareBridgePage = ({
       timestamp: Date.now(),
     });
 
-    if (!activeQuote) {
-      // Reset controller and inputs on load if there's no restored active quote
-      dispatch(resetBridgeState());
-    }
+    return () => {
+      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
+      debouncedUpdateQuoteRequestInController.current.cancel();
+    };
   }, []);
-
-  useBridgeQueryParams();
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
