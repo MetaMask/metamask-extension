@@ -42,8 +42,8 @@ jest.mock('../../stock-badge/stock-badge', () => ({
   ),
 }));
 
-const mockIsStockToken = jest.fn().mockReturnValue(false);
-const mockIsTokenTradingOpen = jest.fn().mockReturnValue(true);
+const mockIsStockToken = jest.fn();
+const mockIsTokenTradingOpen = jest.fn();
 
 jest.mock('../../../../../pages/bridge/hooks/useRWAToken', () => ({
   useRWAToken: () => ({
