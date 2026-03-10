@@ -228,28 +228,30 @@ export const ReviewGatorPermissionItem = ({
 
       const { symbol, decimals } = tokenMetadata;
 
+      const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
       if (!decimals) {
-        return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec (raw units)`;
+        return `${formattedValueWithSymbol}/sec (raw units)`;
       }
 
-      return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec`;
+      return `${formattedValueWithSymbol}/sec`;
     },
     [tokenMetadata],
   );
 
   const formatValue = useCallback(
-    (value: Hex | null | undefined) => {
+    (value: Hex | null | undefined, placeholder: string = 'Unknown') => {
       if (!value) {
-        return 'Unknown';
+        return placeholder;
       }
 
       const { symbol, decimals } = tokenMetadata;
 
+      const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
       if (decimals === undefined) {
-        return `${formatDecimalShiftedValue(value, decimals)} ${symbol} (raw units)`;
+        return `${formattedValueWithSymbol} (raw units)`;
       }
 
-      return `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
+      return `${formattedValueWithSymbol}`;
     },
     [tokenMetadata],
   );
@@ -283,12 +285,12 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
-            value: formatValue(permission.data.initialAmount),
+            value: formatValue(permission.data.initialAmount, `0 ${tokenMetadata?.symbol}`),
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value: formatValue(permission.data.maxAmount),
+            value: formatValue(permission.data.maxAmount, t('unlimited')),
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -298,7 +300,6 @@ export const ReviewGatorPermissionItem = ({
             ),
             testId: 'review-gator-permission-start-date',
           },
-
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
             value: getExpirationDate(permissionResponse.rules),
