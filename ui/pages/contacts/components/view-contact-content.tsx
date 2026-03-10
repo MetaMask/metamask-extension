@@ -20,9 +20,6 @@ import {
   AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
-  BadgeWrapper,
-  AvatarIcon,
-  AvatarIconSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -64,18 +61,7 @@ export function ViewContactContent({
         className="flex flex-col"
       >
         <Box>
-          <BadgeWrapper
-            badge={
-              <AvatarIcon
-                className="border-2 border-background-default rounded-md bg-primary-default"
-                size={AvatarIconSize.Sm}
-                iconName={IconName.Edit}
-                iconProps={{ color: IconColor.PrimaryInverse }}
-              />
-            }
-          >
-            <AvatarAccount address={address} size={AvatarAccountSize.Xl} />
-          </BadgeWrapper>
+          <AvatarAccount address={address} size={AvatarAccountSize.Xl} />
         </Box>
         {/* Fields: Nickname, Address, Network, Memo */}
         <Box
@@ -181,7 +167,7 @@ export function ViewContactContent({
                 src={networkImage}
               />
               <Text
-                variant={TextVariant.BodySm}
+                variant={TextVariant.BodyMd}
                 color={TextColor.TextDefault}
                 ellipsis
                 className="min-w-0 flex-1"

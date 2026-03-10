@@ -267,7 +267,7 @@ export function ContactsListPage() {
           <Box
             padding={4}
             paddingBottom={6}
-            paddingTop={0}
+            paddingTop={4}
             className="shrink-0 bg-background-default"
           >
             <Button

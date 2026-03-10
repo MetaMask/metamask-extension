@@ -3,19 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AvatarAccount,
   AvatarAccountSize,
-  AvatarIcon,
-  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
-  BadgeWrapper,
   Box,
-  BoxBackgroundColor,
-  BoxBorderColor,
   Button,
   ButtonSize,
   ButtonVariant,
-  IconName,
-  IconColor,
   Text,
   TextVariant,
   TextColor,
@@ -158,18 +151,7 @@ export function EditContactForm({
       >
         {/* Avatar */}
         <Box className="flex flex-col items-center">
-          <BadgeWrapper
-            badge={
-              <AvatarIcon
-                className="rounded-md border-2 border-background-default bg-primary-default"
-                size={AvatarIconSize.Sm}
-                iconName={IconName.Edit}
-                iconProps={{ color: IconColor.PrimaryInverse }}
-              />
-            }
-          >
-            <AvatarAccount address={address} size={AvatarAccountSize.Xl} />
-          </BadgeWrapper>
+          <AvatarAccount address={address} size={AvatarAccountSize.Xl} />
         </Box>
 
         {/* Form fields */}
@@ -233,7 +215,11 @@ export function EditContactForm({
             />
           )}
 
-          <Box className="w-full">
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            gap={1}
+            className="flex w-full flex-col"
+          >
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
@@ -245,10 +231,9 @@ export function EditContactForm({
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
+              gap={2}
               padding={4}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
-              borderColor={BoxBorderColor.BorderDefault}
-              className="rounded-xl border"
+              className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
               style={{ cursor: 'not-allowed' }}
             >
               <AvatarNetwork
@@ -260,14 +245,14 @@ export function EditContactForm({
                 }
                 name={selectedNetworkName}
               />
-              <Box marginLeft={2}>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  color={TextColor.TextDefault}
-                >
-                  {selectedNetworkName}
-                </Text>
-              </Box>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextDefault}
+                ellipsis
+                className="min-w-0 flex-1"
+              >
+                {selectedNetworkName}
+              </Text>
             </Box>
           </Box>
         </Box>
