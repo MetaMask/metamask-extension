@@ -131,8 +131,8 @@ const useBridging = () => {
 
       navigateToBridgePage({
         token: tokenToUse,
-        isEntrypoint: true,
         search,
+        isEntrypoint: true,
       });
     },
     [

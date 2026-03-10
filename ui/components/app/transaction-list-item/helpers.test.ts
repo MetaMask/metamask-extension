@@ -69,6 +69,12 @@ describe('mapTransactionTypeToCategory', () => {
     );
   });
 
+  it('returns send category for musdClaim', () => {
+    expect(mapTransactionTypeToCategory(TransactionType.musdClaim)).toBe(
+      TransactionGroupCategory.send,
+    );
+  });
+
   it('returns correct categories for transaction types', () => {
     transactions.forEach(({ primaryTransaction }, index) => {
       const transactionType = primaryTransaction.type as TransactionType;

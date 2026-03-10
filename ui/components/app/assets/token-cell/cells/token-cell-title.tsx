@@ -15,17 +15,20 @@ export const TokenCellTitle = React.memo(
     const label = token.accountType
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
+
     return (
-      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
-        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
-          <AssetCellTitle title={token.title} />
-          {label && <Tag label={label} />}
-        </Box>
+      <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
+        <AssetCellTitle title={token.title} />
+        {label && <Tag label={label} />}
         {token.isStakeable && (
           <StakeableLink chainId={token.chainId} symbol={token.symbol} />
         )}
       </Box>
     );
   },
-  (prevProps, nextProps) => prevProps.token.title === nextProps.token.title, // Only rerender if the title changes
+  (prevProps, nextProps) =>
+    prevProps.token.title === nextProps.token.title &&
+    prevProps.token.address === nextProps.token.address &&
+    prevProps.token.chainId === nextProps.token.chainId &&
+    prevProps.token.symbol === nextProps.token.symbol,
 );

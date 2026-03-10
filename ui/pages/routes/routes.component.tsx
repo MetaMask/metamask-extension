@@ -75,6 +75,7 @@ import {
   CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
+import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -356,6 +357,9 @@ const PerpsOrderEntryPage = mmLazy(
     import(
       '../perps/perps-order-entry-page.tsx'
     )) as unknown as DynamicImportType,
+);
+const MusdConversionPage = mmLazy(
+  (() => import('../musd/index.tsx')) as unknown as DynamicImportType,
 );
 
 // Perps pages wrapped with PerpsControllerProvider
@@ -772,6 +776,14 @@ export default function Routes() {
           'basicFunctionalityRequired_openDefiPage',
       }),
       createRouteWithLayout({
+        path: `${MUSD_CONVERSION_ROUTE}/*`,
+        component: MusdConversionPage,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openMusdConversionPage',
+      }),
+      createRouteWithLayout({
         path: PERMISSIONS,
         component: PermissionsPage,
         layout: RootLayout,
@@ -828,14 +840,14 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`,
+        path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
         component: MultichainAccountAddressListPage,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`,
+        path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
         component: MultichainAccountPrivateKeyListPage,
         layout: RootLayout,
         authenticated: true,
