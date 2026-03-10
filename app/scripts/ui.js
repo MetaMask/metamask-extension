@@ -44,6 +44,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
+import { CriticalErrorType } from '../../shared/constants/state-corruption';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
@@ -264,10 +265,15 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
+    // No port: by the time launchMetamaskUi throws, startSendingPatches may have already
+    // run and removed the repair listener, so a restore link would be non-functional.
     await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
+      undefined,
+      undefined,
+      CriticalErrorType.TroubleStarting,
     );
   }
 }

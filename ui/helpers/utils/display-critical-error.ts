@@ -7,6 +7,12 @@ import {
   maybeGetLocaleContext,
 } from '../../../shared/lib/error-utils';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import {
+  CriticalErrorType,
+  METHOD_REPAIR_DATABASE_TIMEOUT,
+} from '../../../shared/constants/state-corruption';
+import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
+import { safeGetVaultBackup, hasVault } from '../../../shared/lib/backup';
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
@@ -164,6 +170,8 @@ async function handleRestartAction(
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
  * @param currentLocale - Optional locale context for translations.
+ * @param port - Optional port for background communication (needed for restore accounts functionality).
+ * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -172,9 +180,35 @@ export async function displayCriticalErrorMessage(
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
   currentLocale?: string,
+  port?: browser.Runtime.Port,
+  criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
+  const backup = await safeGetVaultBackup();
+  const canTriggerRestore = Boolean(port) && hasVault(backup);
+
+  try {
+    port?.postMessage({
+      data: {
+        method: CRITICAL_ERROR_SCREEN_VIEWED,
+        params: {
+          backup,
+          canTriggerRestore,
+          criticalErrorType,
+        },
+      },
+    });
+  } catch (e) {
+    log.warn('Failed to notify background of critical error screen view', e);
+  }
+
   const localeContext = await maybeGetLocaleContext(currentLocale);
-  const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
+  const html = getErrorHtml(
+    errorKey,
+    error,
+    localeContext,
+    SUPPORT_LINK,
+    canTriggerRestore,
+  );
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
   if (criticalErrorContainer) {
@@ -192,6 +226,32 @@ export async function displayCriticalErrorMessage(
       const shouldReport = reportCheckbox?.checked ?? false;
       await handleRestartAction(error, shouldReport);
     });
+
+    // Restore accounts link: trigger vault recovery flow.
+    if (canTriggerRestore) {
+      const restoreLink =
+        criticalErrorContainer.querySelector<HTMLAnchorElement>(
+          '#critical-error-restore-link',
+        );
+
+      if (restoreLink) {
+        restoreLink.addEventListener('click', (event: Event) => {
+          event.preventDefault();
+          // eslint-disable-next-line no-alert
+          const confirmed = confirm(
+            localeContext.t('stateCorruptionAreYouSure') ?? '',
+          );
+          if (confirmed) {
+            (port as browser.Runtime.Port).postMessage({
+              data: {
+                method: METHOD_REPAIR_DATABASE_TIMEOUT,
+                params: { criticalErrorType, backup },
+              },
+            });
+          }
+        });
+      }
+    }
   }
 
   log.error(error.stack);
