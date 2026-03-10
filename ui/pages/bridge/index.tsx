@@ -105,16 +105,18 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const redirectToDefaultRoute = () => {
-    const doNavigate = async () => {
-      await resetControllerAndInputStates();
-      if (isFromTransactionShield) {
-        navigate(TRANSACTION_SHIELD_ROUTE);
-      } else {
-        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+    transitionBack(async () => {
+      try {
+        await resetControllerAndInputStates();
+      } finally {
+        navigate(
+          isFromTransactionShield ? TRANSACTION_SHIELD_ROUTE : DEFAULT_ROUTE,
+          isFromTransactionShield
+            ? undefined
+            : { state: { stayOnHomePage: true } },
+        );
       }
-    };
-
-    transitionBack(() => doNavigate().catch(() => undefined));
+    });
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -128,8 +130,6 @@ const CrossChainSwap = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={redirectToDefaultRoute}
           />
         }
