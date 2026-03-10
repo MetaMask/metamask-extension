@@ -43,7 +43,8 @@ describe('resolveAutoThreads', () => {
 });
 
 describe('resolveAutoJobs', () => {
-  it('returns 10 for a single thread', () => {
+  it('returns 10 for zero or single thread', () => {
+    assert.strictEqual(resolveAutoJobs(0), 10);
     assert.strictEqual(resolveAutoJobs(1), 10);
   });
 

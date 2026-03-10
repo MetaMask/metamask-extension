@@ -16,10 +16,7 @@ import {
   toOrange,
 } from './helpers';
 import { ENVIRONMENTS, MODES } from './constants';
-import {
-  resolveAutoThreads,
-  resolveAutoJobs,
-} from './loaders/threadLoader';
+import { resolveAutoJobs, resolveAutoThreads } from './loaders/threadLoader';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -53,14 +50,38 @@ const prerequisites = {
 } as const satisfies YargsOptionsMap;
 
 /**
- * Parses the given args from `argv` and returns whether or not the requested
- * build is a production build or not.
+ * Options that must be pre-parsed to compute dynamic defaults for other options.
+ * Includes prerequisites plus thread-loader-related flags that affect
+ * effectiveThreads and thus defaultDescription for threads/jobsPerThread.
+ */
+const preParseOpts = {
+  ...prerequisites,
+  threads: {
+    array: false,
+    default: 'auto',
+    type: 'string',
+  },
+  generatePolicy: {
+    array: false,
+    default: false,
+    type: 'boolean',
+  },
+  reactCompilerVerbose: {
+    array: false,
+    default: false,
+    type: 'boolean',
+  },
+} as const;
+
+/**
+ * Parses the given args from `argv` and returns values needed to compute
+ * dynamic defaults for other options.
  *
  * @param argv - The command line arguments to parse, typically `process.argv.slice(2)`
  * @param opts - The options to parse from the command line arguments
- * @returns An object containing the parsed `mode` and `test` flag
+ * @returns Parsed values including effectiveThreads for dynamic defaultDescription
  */
-function preParse(argv: string[], opts: typeof prerequisites) {
+function preParse(argv: string[], opts: typeof preParseOpts) {
   const defaults: Record<string, unknown> = {};
   const booleanOptions: string[] = [];
   const stringOptions: string[] = [];
@@ -83,7 +104,30 @@ function preParse(argv: string[], opts: typeof prerequisites) {
   });
   const mode = parsed.mode === 'production' ? 'production' : 'development';
   const test = parsed.test === true;
-  return { mode, test } as const;
+  const generatePolicy = parsed.generatePolicy === true;
+  const reactCompilerVerbose = parsed.reactCompilerVerbose === true;
+  const threadsRaw = String(parsed.threads ?? 'auto');
+
+  let effectiveThreads: number;
+  if (generatePolicy || reactCompilerVerbose) {
+    effectiveThreads = 0;
+  } else if (threadsRaw === 'auto') {
+    effectiveThreads = resolveAutoThreads();
+  } else {
+    const parsedNum = parseInt(threadsRaw, 10);
+    if (Number.isNaN(parsedNum) || parsedNum < 0) {
+      throw new Error(
+        `Invalid --threads value "${threadsRaw}": expected "auto" or a non-negative integer`,
+      );
+    }
+    effectiveThreads = parsedNum;
+  }
+
+  return {
+    mode,
+    test,
+    effectiveThreads,
+  } as const;
 }
 
 /**
@@ -170,12 +214,36 @@ export function parseArgv(
   const allFeatureNames = Object.keys(features);
 
   // args like `production` may change our CLI defaults, so we pre-parse them
-  const preconditions = preParse(argv, prerequisites);
+  const preconditions = preParse(argv, preParseOpts);
   const options = getOptions(preconditions, allBuildTypeNames, allFeatureNames);
   const args = getCli(options, 'yarn webpack').parseSync(argv);
   // the properties `$0` and `_` are added by yargs, but we don't need them. We
   // transform `add` and `omit`, so we also remove them from the config object.
   const { $0, _, addFeature: add, omitFeature: omit, ...config } = args;
+
+  let effectiveThreads: number;
+  if (config.generatePolicy || config.reactCompilerVerbose) {
+    effectiveThreads = 0;
+  } else if (config.threads === 'auto') {
+    effectiveThreads = resolveAutoThreads();
+  } else {
+    const t = config.threads;
+    if (typeof t !== 'number' || Number.isNaN(t) || t < 0) {
+      throw new Error(
+        `Invalid --threads value: expected "auto" or a non-negative integer`,
+      );
+    }
+    effectiveThreads = t;
+  }
+  if (
+    effectiveThreads === 0 &&
+    config.jobsPerThread !== 'auto' &&
+    typeof config.jobsPerThread === 'number'
+  ) {
+    throw new Error(
+      'Invalid combination: --jobsPerThread is ignored when thread-loader is disabled (--threads 0, --generatePolicy, or --reactCompilerVerbose). Remove --jobsPerThread or enable thread-loader.',
+    );
+  }
 
   // set up feature flags
   const active = new Set<string>();
@@ -259,7 +327,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
 type Options = ReturnType<typeof getOptions>;
 
 function getOptions(
-  { mode, test }: ReturnType<typeof preParse>,
+  { mode, test, effectiveThreads }: ReturnType<typeof preParse>,
   buildTypes: string[],
   allFeatures: string[],
 ) {
@@ -330,27 +398,43 @@ function getOptions(
     threads: {
       array: false,
       default: 'auto' as 'auto' | number,
-      defaultDescription: `auto (resolved: ${resolveAutoThreads()})`,
+      defaultDescription: `auto (resolved: ${effectiveThreads})`,
       description:
         'Number of thread-loader worker threads. ' +
         '`auto` adapts to core count and available memory. ' +
         '`0` disables thread-loader entirely.',
       group: toOrange('Developer assistance:'),
       type: 'string',
-      coerce: (v: string) =>
-        v === 'auto' ? ('auto' as const) : Number(v),
+      coerce: (v: string) => {
+        if (v === 'auto') return 'auto' as const;
+        const n = Number(v);
+        if (Number.isNaN(n) || n < 0 || !Number.isInteger(n)) {
+          throw new Error(
+            `Invalid --threads value "${v}": expected "auto" or a non-negative integer`,
+          );
+        }
+        return n;
+      },
     },
     jobsPerThread: {
       array: false,
       default: 'auto' as 'auto' | number,
-      defaultDescription: `auto (resolved: ${resolveAutoJobs(resolveAutoThreads())})`,
+      defaultDescription: `auto (resolved: ${resolveAutoJobs(effectiveThreads)})`,
       description:
         'Number of parallel jobs per thread-loader worker. ' +
-        '`auto` derives from thread count.',
+        '`auto` derives from thread count. Ignored when `threads` is `0`.',
       group: toOrange('Developer assistance:'),
       type: 'string',
-      coerce: (v: string) =>
-        v === 'auto' ? ('auto' as const) : Number(v),
+      coerce: (v: string) => {
+        if (v === 'auto') return 'auto' as const;
+        const n = Number(v);
+        if (Number.isNaN(n) || n < 0 || !Number.isInteger(n)) {
+          throw new Error(
+            `Invalid --jobsPerThread value "${v}": expected "auto" or a non-negative integer`,
+          );
+        }
+        return n;
+      },
     },
 
     ...prerequisites,
@@ -518,6 +602,19 @@ function getOptions(
  * @param features - The active and available features
  */
 export function getDryRunMessage(args: Args, features: Features) {
+  let resolvedThreads: number;
+  if (args.generatePolicy || args.reactCompilerVerbose) {
+    resolvedThreads = 0;
+  } else if (args.threads === 'auto') {
+    resolvedThreads = resolveAutoThreads();
+  } else {
+    resolvedThreads = args.threads;
+  }
+  const resolvedJobs =
+    args.jobsPerThread === 'auto'
+      ? resolveAutoJobs(resolvedThreads)
+      : args.jobsPerThread;
+
   return `🦊 Build Config 🦊
 
 Mode: ${args.mode}
@@ -534,8 +631,8 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
-Threads: ${args.threads === 'auto' ? `auto (${resolveAutoThreads()})` : args.threads}
-Jobs per thread: ${args.jobsPerThread === 'auto' ? `auto (${resolveAutoJobs(typeof args.threads === 'number' ? args.threads : resolveAutoThreads())})` : args.jobsPerThread}
+Threads: ${args.threads === 'auto' ? `auto (${resolvedThreads})` : args.threads}
+Jobs per thread: ${args.jobsPerThread === 'auto' ? `auto (${resolvedJobs})` : args.jobsPerThread}
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
