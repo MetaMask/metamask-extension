@@ -262,10 +262,10 @@ function categorizeStyleProperty(
     'white-space',
     'word-break',
     'word-wrap',
+    'color',
   ];
 
   const colorProps = [
-    'color',
     'background-color',
     'background',
     'opacity',
