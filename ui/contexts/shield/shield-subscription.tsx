@@ -64,6 +64,9 @@ export const useShieldSubscriptionContext = () => {
  * 5. Entry modal not already shown this session
  * 6. Server-side eligibility (balance category, cohort criteria) via `useSubscriptionEligibility`
  * 7. Cohort assignment and modal display per flowchart (MetaMask-planning#6638)
+ *
+ * @param props - Component props
+ * @param props.children - Child elements to render
  */
 export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
@@ -146,7 +149,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * is populated before commit-phase callbacks (componentDidUpdate) fire.
    */
   const evaluateCohortEligibilityRef =
-    useRef<(entrypointCohort: string) => Promise<void>>(null!);
+    useRef<(entrypointCohort: string) => Promise<void>>(null);
 
   // eslint-disable-next-line react-compiler/react-compiler
   evaluateCohortEligibilityRef.current = async (
@@ -245,10 +248,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         eligibleCohorts.length > 0 &&
         modalType
       ) {
-        const selectedCohort = await assignToCohort(
-          eligibleCohorts,
-          modalType,
-        );
+        const selectedCohort = await assignToCohort(eligibleCohorts, modalType);
         if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
           await dispatch(
             setShowShieldEntryModalOnce({
