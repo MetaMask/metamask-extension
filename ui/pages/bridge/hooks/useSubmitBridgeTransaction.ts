@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
@@ -9,12 +8,6 @@ import {
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
-import {
-  AWAITING_SIGNATURES_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
 import {
   submitBridgeIntent,
   submitBridgeTx,
@@ -32,6 +25,7 @@ import {
   useHardwareWalletConfig,
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -65,7 +59,11 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const navigate = useNavigate();
+  const {
+    navigateToBridgePage,
+    navigateToHwSigningPage,
+    navigateToActivityPage,
+  } = useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -116,15 +114,7 @@ export default function useSubmitBridgeTransaction() {
     const intentData = quoteResponse.quote.intent;
 
     if (hardwareWalletUsed) {
-      const {
-        quote: { requestId },
-      } = quoteResponse;
-      const awaitingUrl = requestId
-        ? `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
-            requestId,
-          )}`
-        : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
-      navigate(awaitingUrl);
+      navigateToHwSigningPage();
       setIsSubmitting(false);
     }
 
@@ -136,9 +126,7 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
           }),
         );
-        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          state: { stayOnHomePage: true },
-        });
+        navigateToActivityPage();
         return;
       }
 
@@ -160,23 +148,16 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
-          replace: true,
-        });
+        navigateToBridgePage();
         return;
       }
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-        replace: true,
-        state: { stayOnHomePage: true },
-      });
+      navigateToActivityPage();
       return;
     } finally {
       setIsSubmitting(false);
     }
 
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      state: { stayOnHomePage: true },
-    });
+    navigateToActivityPage();
   };
 
   return {

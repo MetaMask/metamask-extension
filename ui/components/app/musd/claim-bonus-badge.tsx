@@ -61,6 +61,7 @@ export const ClaimBonusBadge = ({
         variant={TextVariant.BodySm}
         color={TextColor.ErrorDefault}
         data-testid="claim-bonus-error"
+        style={{ textAlign: 'end' }}
       >
         {t('merklRewardsUnexpectedError')}
       </Text>

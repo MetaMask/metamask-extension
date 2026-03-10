@@ -206,6 +206,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       });
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
       expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -244,7 +258,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
         {
-          state: { stayOnHomePage: true },
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+            token: null,
+          },
         },
       );
       expect(result.current.isSubmitting).toBe(false);
@@ -276,14 +294,26 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      const {
-        quote: { requestId },
-      } = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
-          requestId,
-        )}`,
-      );
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/cross-chain/swaps/awaiting-signatures",
+            {
+              "state": {},
+            },
+          ],
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalledTimes(1);
     });
@@ -351,7 +381,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
         {
-          state: { stayOnHomePage: true },
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+            token: null,
+          },
         },
       );
     });
@@ -394,7 +428,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           `${DEFAULT_ROUTE}?tab=activity`,
           {
             replace: true,
-            state: { stayOnHomePage: true },
+            state: {
+              stayOnHomePage: true,
+              token: null,
+            },
           },
         );
       } finally {
@@ -428,19 +465,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      const {
-        quote: { requestId },
-      } = quoteWithIntent;
-
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
-          requestId,
-        )}`,
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        1,
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        { state: {} },
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        2,
         `${DEFAULT_ROUTE}?tab=activity`,
         {
-          state: { stayOnHomePage: true },
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+            token: null,
+          },
         },
       );
     });
