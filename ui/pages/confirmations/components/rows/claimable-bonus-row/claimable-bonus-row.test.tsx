@@ -51,7 +51,7 @@ describe('ClaimableBonusRow', () => {
   it('opens tooltip popover when info button is clicked', () => {
     const { getByTestId } = render();
 
-    fireEvent.click(getByTestId('claimable-bonus-row-tooltip'));
+    fireEvent.click(getByTestId('claimable-bonus-tooltip-popover-button'));
 
     expect(getByTestId('claimable-bonus-tooltip-popover')).toBeInTheDocument();
   });
@@ -59,7 +59,7 @@ describe('ClaimableBonusRow', () => {
   it('closes tooltip popover when clicking outside', () => {
     const { getByTestId } = render();
 
-    fireEvent.click(getByTestId('claimable-bonus-row-tooltip'));
+    fireEvent.click(getByTestId('claimable-bonus-tooltip-popover-button'));
     expect(getByTestId('claimable-bonus-tooltip-popover')).toBeInTheDocument();
 
     fireEvent.click(document.body);

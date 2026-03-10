@@ -76,14 +76,14 @@ describe('<SimpleConfirmationHeader />', () => {
       const { getByTestId } = render(TransactionType.musdConversion);
 
       expect(
-        getByTestId('musd-conversion-header-info-button'),
+        getByTestId('musd-conversion-header-tooltip-button'),
       ).toBeInTheDocument();
     });
 
     it('shows tooltip when info button is clicked', () => {
       const { getByTestId } = render(TransactionType.musdConversion);
 
-      fireEvent.click(getByTestId('musd-conversion-header-info-button'));
+      fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
 
       expect(getByTestId('musd-conversion-header-tooltip')).toBeInTheDocument();
     });

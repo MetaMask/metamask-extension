@@ -1,3 +1,4 @@
+export { useMusdConversionHeaderContent } from './musd-conversion-header-content';
 export { MusdConversionInfo } from './musd-conversion-info';
 export {
   MusdOverrideContent,

@@ -1,12 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React from 'react';
 import {
-  Box,
-  ButtonIcon,
   ButtonIconSize,
   ButtonLink,
   ButtonLinkSize,
-  IconName,
-  Popover,
   PopoverPosition,
   Text,
 } from '../../../../../components/component-library';
@@ -15,6 +11,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
@@ -36,16 +33,6 @@ export function ClaimableBonusRow({
 }: ClaimableBonusRowProps) {
   const t = useI18nContext();
   const isLoading = useIsTransactionPayLoading();
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const infoButtonRef = useRef<HTMLButtonElement>(null);
-
-  const handleInfoClick = useCallback(() => {
-    setIsTooltipOpen((prev) => !prev);
-  }, []);
-
-  const handleCloseTooltip = useCallback(() => {
-    setIsTooltipOpen(false);
-  }, []);
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
@@ -66,53 +53,28 @@ export function ClaimableBonusRow({
       label={t('musdClaimableBonus')}
       rowVariant={rowVariant}
       labelChildren={
-        <Box>
-          <ButtonIcon
-            ref={infoButtonRef}
-            ariaLabel="info"
-            iconName={IconName.Info}
-            size={ButtonIconSize.Sm}
-            onClick={handleInfoClick}
-            data-testid="claimable-bonus-row-tooltip"
-            color={IconColor.iconAlternative}
-            marginLeft={1}
-          />
-          <Popover
-            isOpen={isTooltipOpen}
-            position={PopoverPosition.BottomStart}
-            referenceElement={infoButtonRef.current}
-            hasArrow
-            onPressEscKey={handleCloseTooltip}
-            onClickOutside={handleCloseTooltip}
-            isPortal
-            style={{
-              zIndex: 3,
-              backgroundColor: 'var(--color-text-default)',
-              paddingInline: '6px',
-              paddingTop: '6px',
-              paddingBottom: '6px',
-              paddingLeft: '16px',
-              paddingRight: '16px',
-              maxWidth: 240,
-            }}
-            data-testid="claimable-bonus-tooltip-popover"
-          >
-            <Text variant={TextVariant.bodyMd} color={TextColor.infoInverse}>
-              {t('musdClaimableBonusTooltip', [
-                <ButtonLink
-                  key="terms-link"
-                  size={ButtonLinkSize.Inherit}
-                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
-                  externalLink
-                  color={TextColor.infoInverse}
-                  style={{ textDecoration: 'underline' }}
-                >
-                  {t('musdTermsApply')}
-                </ButtonLink>,
-              ])}
-            </Text>
-          </Popover>
-        </Box>
+        <InfoPopoverTooltip
+          position={PopoverPosition.BottomStart}
+          iconSize={ButtonIconSize.Sm}
+          iconColor={IconColor.iconAlternative}
+          iconMarginLeft={1}
+          data-testid="claimable-bonus-tooltip-popover"
+        >
+          <Text variant={TextVariant.bodyMd} color={TextColor.infoInverse}>
+            {t('musdClaimableBonusTooltip', [
+              <ButtonLink
+                key="terms-link"
+                size={ButtonLinkSize.Inherit}
+                href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                externalLink
+                color={TextColor.infoInverse}
+                style={{ textDecoration: 'underline' }}
+              >
+                {t('musdTermsApply')}
+              </ButtonLink>,
+            ])}
+          </Text>
+        </InfoPopoverTooltip>
       }
     >
       <Text
