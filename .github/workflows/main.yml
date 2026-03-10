@@ -150,7 +150,6 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      # Production builds are now created exclusively by publish-release-from-release-head.yml
       build-command: yarn build dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -162,7 +161,6 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      # Production builds are now created exclusively by publish-release-from-release-head.yml
       build-command: yarn build dist
       mozilla-lint: true
       enable-mv3: false
@@ -200,7 +198,6 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      # Production builds are now created exclusively by publish-release-from-release-head.yml
       build-command: yarn build --build-type flask dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -212,7 +209,6 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      # Production builds are now created exclusively by publish-release-from-release-head.yml
       build-command: yarn build --build-type flask dist
       mozilla-lint: true
       enable-mv3: false
