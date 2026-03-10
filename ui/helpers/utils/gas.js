@@ -1,5 +1,6 @@
 import { constant, times, uniq, zip } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { addHexPrefix } from 'ethereumjs-util';
 import {
   GasRecommendations,
   EditGasModes,
@@ -131,14 +132,21 @@ export function getGasValuesForReplacement(txParams, previousGas, rate) {
     .round(0)
     .toPrefixedHexString();
 
-  const maxFeePerGas = new BigNumber(txParams?.maxFeePerGas ?? 0).gte(
+  // Normalize hex so BigNumber can parse (0x prefix). Values may be 0x-prefixed
+  // or raw hex from .toString(16); addHexPrefix handles both (idempotent with 0x).
+  const hexForBN = (v) =>
+    v === null || v === undefined
+      ? new BigNumber(0)
+      : new BigNumber(addHexPrefix(String(v)));
+
+  const maxFeePerGas = hexForBN(txParams?.maxFeePerGas).gte(
     new BigNumber(minMaxFeePerGas),
   )
     ? txParams.maxFeePerGas
     : minMaxFeePerGas;
-  const maxPriorityFeePerGas = new BigNumber(
-    txParams?.maxPriorityFeePerGas ?? 0,
-  ).gte(new BigNumber(minMaxPriorityFeePerGas))
+  const maxPriorityFeePerGas = hexForBN(txParams?.maxPriorityFeePerGas).gte(
+    new BigNumber(minMaxPriorityFeePerGas),
+  )
     ? txParams.maxPriorityFeePerGas
     : minMaxPriorityFeePerGas;
 
