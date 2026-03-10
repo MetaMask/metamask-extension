@@ -2,6 +2,7 @@ import { submitRequestToBackground } from '../../../../store/background-connecti
 
 export type CreatePerpsWithdrawTransactionParams = {
   amount: string;
+  assetId: string;
 };
 
 export type CreatedPerpsWithdrawTransaction = {
@@ -16,13 +17,15 @@ export type CreatedPerpsWithdrawTransaction = {
  *
  * @param params - Parameters for the withdraw request
  * @param params.amount - Withdraw amount
+ * @param params.assetId
  * @returns The withdraw result
  */
 export async function createPerpsWithdrawTransaction({
   amount,
+  assetId,
 }: CreatePerpsWithdrawTransactionParams): Promise<CreatedPerpsWithdrawTransaction> {
   return submitRequestToBackground<CreatedPerpsWithdrawTransaction>(
     'perpsWithdraw',
-    [{ amount }],
+    [{ amount, assetId }],
   );
 }

@@ -2,6 +2,8 @@ import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getSelectedInternalAccount } from '../../../../selectors';
+import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
+import { getPerpsWithdrawUsdcAssetId } from '../constants';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 
 const MAX_DECIMALS = 6;
@@ -28,6 +30,7 @@ export type UsePerpsWithdrawResult = {
 
 export function usePerpsWithdraw(): UsePerpsWithdrawResult {
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const isPerpsTestnet = useSelector(selectPerpsIsTestnet);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isInFlightRef = useRef(false);
@@ -65,8 +68,10 @@ export function usePerpsWithdraw(): UsePerpsWithdrawResult {
       setError(null);
 
       try {
+        const assetId = getPerpsWithdrawUsdcAssetId(isPerpsTestnet);
         const result = await createPerpsWithdrawTransaction({
           amount: normalizedAmount,
+          assetId,
         });
 
         if (!result.success) {
@@ -88,7 +93,7 @@ export function usePerpsWithdraw(): UsePerpsWithdrawResult {
         setIsLoading(false);
       }
     },
-    [isLoading, selectedAccount?.address],
+    [isLoading, isPerpsTestnet, selectedAccount?.address],
   );
 
   return {
