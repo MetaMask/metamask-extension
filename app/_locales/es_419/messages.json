@@ -525,6 +525,9 @@
   "dropped": {
     "message": "Abandonado"
   },
+  "duplicateContactTooltip": {
+    "message": "This contact name collides with an existing account or contact"
+  },
   "edit": {
     "message": "Editar"
   },

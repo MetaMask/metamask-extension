@@ -214,6 +214,9 @@
   "dropped": {
     "message": "নেমে গেছে"
   },
+  "duplicateContactTooltip": {
+    "message": "This contact name collides with an existing account or contact"
+  },
   "edit": {
     "message": "সম্পাদনা"
   },
