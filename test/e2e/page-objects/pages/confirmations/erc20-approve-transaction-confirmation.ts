@@ -1,7 +1,14 @@
 import { tEn } from '../../../../lib/i18n-helpers';
+import { RawLocator } from '../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
 class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
+  private readonly customSpendingCapInput: RawLocator =
+    '[data-testid="custom-spending-cap-input"]';
+
+  private readonly editSpendingCapIcon: RawLocator =
+    '[data-testid="edit-spending-cap-icon"]';
+
   private readonly estimatedChangesSection = {
     css: 'p',
     text: tEn('simulationDetailsTitle'),
@@ -96,6 +103,21 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkSpendingCapSection(): Promise<void> {
     console.log('Verify spending cap section is displayed');
     await this.driver.waitForSelector(this.spendingCapSection);
+  }
+
+  /**
+   * Edits the spending cap value on the confirmation dialog.
+   *
+   * @param newSpendingCap - The new spending cap value to set.
+   */
+  async editSpendingCap(newSpendingCap: string): Promise<void> {
+    console.log(`Editing spending cap to ${newSpendingCap}`);
+    await this.driver.clickElement(this.editSpendingCapIcon);
+    await this.driver.fill(this.customSpendingCapInput, newSpendingCap);
+    await this.clickSaveButton();
+    await this.driver.waitForSelector(this.customSpendingCapInput, {
+      state: 'detached',
+    });
   }
 }
 
