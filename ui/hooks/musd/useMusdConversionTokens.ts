@@ -10,7 +10,7 @@
 
 import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
-import { useCallback, useContext, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { isMusdSupportedChain } from '../../components/app/musd/constants';
@@ -27,7 +27,6 @@ import {
   selectMusdMinAssetBalanceRequired,
 } from '../../selectors/musd';
 import { checkTokenAllowed } from '../../components/app/musd/utils/token-allowlist';
-import { ConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
 // ============================================================================
@@ -115,6 +114,10 @@ function getTokenFiatBalance(token: ConversionToken): number | null {
 /**
  * The source of truth for the tokens that are eligible for mUSD conversion.
  *
+ * @param options - Optional configuration.
+ * @param options.transactionType - When provided, filterTokens is a no-op for
+ * transaction types other than musdConversion. When omitted, filterTokens
+ * always applies the allowlist/blocklist filter.
  * @returns Object containing:
  * - filterAllowedTokens(tokens): Filters tokens based on allowlist/blocklist and min balance.
  * - isConversionToken(token): Checks if a token is eligible for mUSD conversion.
@@ -122,10 +125,12 @@ function getTokenFiatBalance(token: ConversionToken): number | null {
  * - hasConvertibleTokensByChainId(chainId): Checks if there are convertible tokens on a given chain.
  * - tokens: The tokens that are eligible for mUSD conversion.
  */
-export function useMusdConversionTokens(): UseMusdConversionTokensResult {
+export function useMusdConversionTokens(options?: {
+  transactionType?: string;
+}): UseMusdConversionTokensResult {
+  const { transactionType } = options ?? {};
   const { selectedChainId } = useMusdNetworkFilter();
-  const confirmContext = useContext(ConfirmContext);
-  const confirmationType = confirmContext?.currentConfirmation?.type;
+
   // Get feature flag values
   const allowlist = useSelector(selectMusdConvertibleTokensAllowlist);
   const blocklist = useSelector(selectMusdConvertibleTokensBlocklist);
@@ -299,7 +304,10 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
    */
   const filterTokens: TokenFilterFn = useCallback(
     (tokens: Asset[]): Asset[] => {
-      if (confirmationType !== TransactionType.musdConversion) {
+      if (
+        transactionType &&
+        transactionType !== TransactionType.musdConversion
+      ) {
         return tokens;
       }
       return tokens.filter((token) => {
@@ -327,7 +335,7 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
     [
       filterTokensWithAllowlistAndBlocklist,
       filterTokensWithMinBalance,
-      confirmationType,
+      transactionType,
     ],
   );
 

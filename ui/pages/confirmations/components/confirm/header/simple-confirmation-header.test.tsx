@@ -101,9 +101,7 @@ describe('<SimpleConfirmationHeader />', () => {
     it('renders the advanced details button as endAccessory', () => {
       const { getByTestId } = render(TransactionType.contractInteraction);
 
-      expect(
-        getByTestId('header-advanced-details-button'),
-      ).toBeInTheDocument();
+      expect(getByTestId('header-advanced-details-button')).toBeInTheDocument();
     });
 
     it('does not render the mUSD info tooltip', () => {

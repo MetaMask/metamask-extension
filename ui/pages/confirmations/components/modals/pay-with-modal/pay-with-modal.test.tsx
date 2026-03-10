@@ -12,6 +12,11 @@ jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../utils/transaction-pay');
 jest.mock('../../../../../hooks/musd');
+jest.mock('../../../context/confirm', () => ({
+  useConfirmContext: () => ({
+    currentConfirmation: {},
+  }),
+}));
 
 jest.mock('../../send/asset', () => ({
   Asset: ({
