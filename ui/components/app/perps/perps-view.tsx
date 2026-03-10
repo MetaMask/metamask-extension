@@ -17,15 +17,16 @@ import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
 } from './perps-skeletons';
+import { PerpsToastProvider } from './perps-toast';
 
 /**
- * PerpsTabView component displays the perpetuals trading tab
+ * PerpsView component displays the perpetuals trading view
  * with positions and orders sections using stream data.
  *
  * Uses PerpsStreamManager for cached data, enabling smooth navigation
  * without loading skeletons when switching between views.
  */
-export const PerpsTabView: React.FC = () => {
+export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
   // Use stream hooks for real-time data
@@ -67,7 +68,7 @@ export const PerpsTabView: React.FC = () => {
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={4}
-        data-testid="perps-tab-view-loading"
+        data-testid="perps-view-loading"
       >
         <PerpsControlBarSkeleton />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
@@ -77,41 +78,43 @@ export const PerpsTabView: React.FC = () => {
   }
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      gap={4}
-      data-testid="perps-tab-view"
-    >
-      {/* Balance header with Add funds / Withdraw dropdown */}
-      <PerpsBalanceDropdown
-        hasPositions={hasPositions}
-        onAddFunds={triggerDeposit}
-        onWithdraw={() => {
-          // TODO: Navigate to withdraw flow
-        }}
-      />
+    <PerpsToastProvider>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
+        data-testid="perps-view"
+      >
+        {/* Balance header with Add funds / Withdraw dropdown */}
+        <PerpsBalanceDropdown
+          hasPositions={hasPositions}
+          onAddFunds={triggerDeposit}
+          onWithdraw={() => {
+            // TODO: Navigate to withdraw flow
+          }}
+        />
 
-      {/* Positions + Orders sections */}
-      <PerpsPositionsOrders positions={positions} orders={orders} />
+        {/* Positions + Orders sections */}
+        <PerpsPositionsOrders positions={positions} orders={orders} />
 
-      {/* Watchlist */}
-      <PerpsWatchlist />
+        {/* Watchlist */}
+        <PerpsWatchlist />
 
-      {/* Explore markets */}
-      <PerpsExploreMarkets
-        cryptoMarkets={cryptoMarkets}
-        hip3Markets={hip3Markets}
-      />
+        {/* Explore markets */}
+        <PerpsExploreMarkets
+          cryptoMarkets={cryptoMarkets}
+          hip3Markets={hip3Markets}
+        />
 
-      {/* Recent Activity */}
-      <PerpsRecentActivity />
+        {/* Recent Activity */}
+        <PerpsRecentActivity />
 
-      {/* Support & Learn */}
-      <PerpsSupportLearn />
-      {/* Tutorial Modal */}
-      <PerpsTutorialModal />
-    </Box>
+        {/* Support & Learn */}
+        <PerpsSupportLearn />
+        {/* Tutorial Modal */}
+        <PerpsTutorialModal />
+      </Box>
+    </PerpsToastProvider>
   );
 };
 
-export default PerpsTabView;
+export default PerpsView;

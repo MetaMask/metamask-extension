@@ -5,7 +5,7 @@ import { PERPS_TAB_HASH } from '../../../tests/perps/helpers';
  * Page object for the Perps tab on the account overview (home).
  * Covers the tab that shows positions and orders from the mock PerpsStreamManager.
  *
- * @see ui/components/app/perps/perps-tab-view.tsx
+ * @see ui/components/app/perps/perps-view.tsx
  */
 export class PerpsTabPage {
   private readonly driver: Driver;

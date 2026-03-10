@@ -3,9 +3,9 @@ import { PERPS_TAB_HASH } from '../../../tests/perps/helpers';
 
 /**
  * Page object for the Perps tab (wallet home with perps tab selected).
- * Content merged from former PerpsHomePage into PerpsTabView.
+ * Content merged from former PerpsHomePage into PerpsView.
  *
- * @see ui/components/app/perps/perps-tab-view.tsx
+ * @see ui/components/app/perps/perps-view.tsx
  */
 export class PerpsHomePage {
   private readonly driver: Driver;
@@ -14,8 +14,8 @@ export class PerpsHomePage {
     testId: 'perps-home-back-button',
   };
 
-  private readonly perpsTabView = {
-    testId: 'perps-tab-view',
+  private readonly perpsView = {
+    testId: 'perps-view',
   };
 
   private readonly perpsExploreMarketsRow = {
@@ -36,7 +36,7 @@ export class PerpsHomePage {
    * Waits for the Perps tab view to be loaded and visible.
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsTabView);
+    await this.driver.waitForSelector(this.perpsView);
   }
 
   /**
