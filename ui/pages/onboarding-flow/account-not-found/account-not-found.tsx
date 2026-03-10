@@ -97,7 +97,7 @@ export default function AccountNotFound() {
   return (
     <AccountStatusLayout
       dataTestId="account-not-found"
-      rootClassName="account-not-found h-full"
+      rootClassName="h-full"
       titleKey="accountNotFoundTitle"
       descriptionKey="accountNotFoundDescription"
       descriptionInterpolation={[userSocialLoginEmail || '-']}
