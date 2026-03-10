@@ -293,7 +293,7 @@
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controller": "^2.1.0",
-    "@metamask/assets-controllers": "^100.1.0",
+    "@metamask/assets-controllers": "^100.2.0",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
     "@metamask/bridge-controller": "^67.4.0",
