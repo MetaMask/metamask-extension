@@ -34,14 +34,7 @@ if [[ -z "${RELEASE_SHA:-}" ]]; then
     exit 1
 fi
 
-# Normalize tag to include 'v' prefix
-tag=""
-if [[ "${RELEASE_TAG}" == v* ]]; then
-    tag="${RELEASE_TAG}"
-else
-    tag="v${RELEASE_TAG}"
-fi
-
+tag="${RELEASE_TAG}"
 VERSION="${tag#v}"
 
 echo "=== Release Creation ==="
@@ -88,7 +81,7 @@ publish_tag() {
 publish_tag "${tag}" "${RELEASE_SHA}" "Release ${VERSION}"
 
 # Create Flask tag if specified
-if [[ -n "${FLASK_TAG}" ]]; then
+if [[ -n "${FLASK_TAG:-}" ]]; then
     publish_tag "${FLASK_TAG}" "${RELEASE_SHA}" "Flask release ${FLASK_TAG#v}"
 fi
 
@@ -117,8 +110,7 @@ for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
                 build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
                 build-flask-browserify/builds/metamask-flask-chrome-*.zip \
                 build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
-    # shellcheck disable=SC2086
-    if ! ls $artifact >/dev/null 2>&1; then
+    if ! ls "$artifact" >/dev/null 2>&1; then
         echo "::error::Required artifact not found: ${artifact}"
         exit 1
     fi

@@ -414,7 +414,7 @@ jobs:
       BRANCH_NAME: ${{ github.ref_name }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download all performance benchmark artifacts
         id: download-perf-benchmark

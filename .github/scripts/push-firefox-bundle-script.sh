@@ -8,22 +8,21 @@ if [[ -z "${FIREFOX_BUNDLE_SCRIPT_TOKEN}" ]]; then
     exit 1
 fi
 
+if [[ -z "${RELEASE_TAG:-}" ]]; then
+    echo "::error::RELEASE_TAG not provided."
+    exit 1
+fi
+
 git config --global user.name "MetaMask Bot"
 git config --global user.email metamaskbot@users.noreply.github.com
 
-rawVersion=""
-if [[ -n "${RELEASE_TAG:-}" ]]; then
-    rawVersion="${RELEASE_TAG#v}"
-else
-    target_sha="${RELEASE_SHA:-HEAD}"
-    rawVersion=$(git show -s --format='%s' "${target_sha}" | grep -Eo 'release/[0-9]+\.[0-9]+\.[0-9]+' | sed 's|release/||')
-fi
+rawVersion="${RELEASE_TAG#v}"
 
 version="v${rawVersion}"
 
 # Validate that the version was successfully extracted
 if [[ -z "${rawVersion}" ]]; then
-    echo "::error::Failed to extract version. Provide RELEASE_TAG or ensure commit message follows 'release/x.y.z'."
+    echo "::error::Failed to extract version from RELEASE_TAG='${RELEASE_TAG}'. Expected format: 'vX.Y.Z'."
     exit 1
 fi
 

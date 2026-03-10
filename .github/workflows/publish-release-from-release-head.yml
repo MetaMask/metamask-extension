@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read # Default read-only; publish-release job elevates to write
+  contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
   checks: read # Required to verify CI check-runs on the SHA
   actions: read # Required to download artifacts from build jobs
   id-token: write # Required for OIDC authentication in S3 uploads
@@ -24,7 +24,7 @@ jobs:
       release-sha: ${{ steps.compute-tag.outputs.release_sha }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.sha }}
           sparse-checkout: .github/scripts
@@ -55,32 +55,18 @@ jobs:
         env:
           TAG: ${{ steps.compute-tag.outputs.tag }}
           RELEASE_SHA: ${{ steps.compute-tag.outputs.release_sha }}
-        run: echo "Release ${TAG} @ ${RELEASE_SHA}" >> "${GITHUB_STEP_SUMMARY}"
-
-  verify-ci-checks:
-    name: Verify CI checks passed
-    needs: validate-branch
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.validate-branch.outputs.release-sha }}
-          sparse-checkout: .github/scripts
-          sparse-checkout-cone-mode: false
+        run: echo "Release ${TAG} (${RELEASE_SHA})" >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Verify required CI checks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
+          RELEASE_SHA: ${{ steps.compute-tag.outputs.release_sha }}
         run: .github/scripts/verify-ci-checks.sh
 
   approve-release:
     name: Approve release
     needs:
       - validate-branch
-      - verify-ci-checks
     runs-on: ubuntu-latest
     environment: release-branch
     steps:
@@ -91,7 +77,6 @@ jobs:
     name: Build prod (Chrome MV3)
     needs:
       - validate-branch
-      - verify-ci-checks
       - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
@@ -104,7 +89,6 @@ jobs:
     name: Build prod (Firefox MV2)
     needs:
       - validate-branch
-      - verify-ci-checks
       - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
@@ -119,7 +103,6 @@ jobs:
     name: Build Flask prod (Chrome MV3)
     needs:
       - validate-branch
-      - verify-ci-checks
       - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
@@ -132,7 +115,6 @@ jobs:
     name: Build Flask prod (Firefox MV2)
     needs:
       - validate-branch
-      - verify-ci-checks
       - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
@@ -154,9 +136,6 @@ jobs:
       - build-flask-mv2-browserify
     runs-on: ubuntu-latest
     environment: release-branch
-    permissions:
-      contents: write # Required to push tags and create releases
-      actions: read # Required to download artifacts
     timeout-minutes: 30
     env:
       RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
@@ -222,7 +201,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-dist-browserify
           name: build-dist-browserify
@@ -231,7 +210,7 @@ jobs:
         run: yarn sentry:publish --dist-directory build-dist-browserify/dist
 
       - name: Download artifact 'build-dist-mv2-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-dist-mv2-browserify
           name: build-dist-mv2-browserify
@@ -240,7 +219,7 @@ jobs:
         run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-browserify/dist
 
       - name: Download artifact 'build-flask-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-flask-browserify
           name: build-flask-browserify
@@ -249,7 +228,7 @@ jobs:
         run: yarn sentry:publish --build-type flask --dist-directory build-flask-browserify/dist
 
       - name: Download artifact 'build-flask-mv2-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-flask-mv2-browserify
           name: build-flask-mv2-browserify
