@@ -2,6 +2,8 @@ import React from 'react';
 import {
   Box,
   Button,
+  ButtonLink,
+  ButtonLinkSize,
   ButtonVariant,
   Modal,
   ModalBody,
@@ -12,6 +14,7 @@ import {
   Text,
 } from '../../component-library';
 import {
+  AlignItems,
   BlockSize,
   Display,
   FlexDirection,
@@ -34,10 +37,6 @@ export const MarketClosedModal = ({
 }: MarketClosedModalProps) => {
   const t = useI18nContext();
 
-  const handleLearnMore = () => {
-    global.platform.openTab({ url: MARKET_CLOSED_LEARN_MORE_URL });
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} data-testid="market-closed-modal">
       <ModalOverlay />
@@ -56,15 +55,22 @@ export const MarketClosedModal = ({
               color={TextColor.textDefault}
               textAlign={TextAlign.Left}
             >
-              {t('bridgeMarketClosedModalDescription')}
+              {t('bridgeMarketClosedModalDescription')}&nbsp;
+              <ButtonLink
+                data-testid="market-closed-modal-learn-more"
+                size={ButtonLinkSize.Inherit}
+                href={MARKET_CLOSED_LEARN_MORE_URL}
+                textProps={{
+                  variant: TextVariant.bodyMd,
+                  alignItems: AlignItems.flexStart,
+                }}
+                target="_blank"
+                as="a"
+                rel="noopener noreferrer"
+              >
+                {t('bridgeMarketClosedModalLearnMore')}
+              </ButtonLink>
             </Text>
-            <Button
-              variant={ButtonVariant.Link}
-              onClick={handleLearnMore}
-              data-testid="market-closed-modal-learn-more"
-            >
-              {t('bridgeMarketClosedModalLearnMore')}
-            </Button>
           </Box>
         </ModalBody>
         <ModalFooter>

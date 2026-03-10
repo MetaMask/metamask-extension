@@ -21,7 +21,7 @@ export const MarketClosedActionButton = ({
       width={BlockSize.Full}
       variant={ButtonVariant.Secondary}
       startIconName={IconName.Clock}
-      endIconName={IconName.Arrow2Right}
+      endIconName={IconName.Info}
       onClick={onClick}
       data-testid="market-closed-action-button"
     >
