@@ -72,7 +72,7 @@ describe('InfoTab', () => {
       });
       expect(contactUsLink).toHaveAttribute(
         'href',
-        'https://support.metamask.io',
+        'https://support.metamask.io?utm_source=extension',
       );
     });
   });
