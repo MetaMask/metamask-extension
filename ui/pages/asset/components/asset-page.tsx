@@ -248,6 +248,7 @@ const AssetPage = ({
   const assetNameElement = (
     <Text
       variant={TextVariant.BodyMd}
+      fontWeight={FontWeight.Medium}
       color={TextColor.TextAlternative}
       data-testid="asset-name"
     >
@@ -297,16 +298,6 @@ const AssetPage = ({
         ) : (
           assetNameElement
         )}
-        <Text
-          data-testid="asset-name"
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextAlternative}
-        >
-          {name && symbol && name !== symbol
-            ? `${name} (${symbol})`
-            : (name ?? symbol)}
-        </Text>
       </Box>
       <AssetChart
         chainId={chainId}

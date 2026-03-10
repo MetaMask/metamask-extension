@@ -96,6 +96,13 @@ describe('TokenCellTitle', () => {
     expect(queryByTestId('tag')).not.toBeInTheDocument();
   });
 
+  it('does not render tag when accountType is undefined', () => {
+    const token = createMockToken({ accountType: undefined });
+    const { queryByTestId } = render(<TokenCellTitle token={token} />);
+
+    expect(queryByTestId('tag')).not.toBeInTheDocument();
+  });
+
   it('renders Legacy tag for P2pkh account type', () => {
     const token = createMockToken({ accountType: BtcAccountType.P2pkh });
     const { getByTestId } = render(<TokenCellTitle token={token} />);
@@ -181,41 +188,36 @@ describe('TokenCellTitle', () => {
     ).toBeInTheDocument();
   });
 
-  it('does not render StockBadge when token is not a stock token', () => {
-    mockIsStockToken.mockReturnValue(false);
-    const token = createMockToken();
-    const { queryByTestId } = render(<TokenCellTitle token={token} />);
+  describe('StockBadge', () => {
+    it('does not render StockBadge when token is not a stock token', () => {
+      mockIsStockToken.mockReturnValue(false);
+      const token = createMockToken();
+      const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
-    expect(queryByTestId('stock-badge')).not.toBeInTheDocument();
-  });
+      expect(queryByTestId('stock-badge')).not.toBeInTheDocument();
+    });
 
-  it('renders StockBadge with market open when stock token is trading', () => {
-    mockIsStockToken.mockReturnValue(true);
-    mockIsTokenTradingOpen.mockReturnValue(true);
-    const token = createMockToken({ title: 'OUSG' });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
+    it('renders StockBadge with market open when stock token is trading', () => {
+      mockIsStockToken.mockReturnValue(true);
+      mockIsTokenTradingOpen.mockReturnValue(true);
+      const token = createMockToken({ title: 'OUSG' });
+      const { getByTestId } = render(<TokenCellTitle token={token} />);
 
-    const badge = getByTestId('stock-badge');
-    expect(badge).toBeInTheDocument();
-    expect(badge).toHaveAttribute('data-market-closed', 'false');
-  });
+      const badge = getByTestId('stock-badge');
+      expect(badge).toBeInTheDocument();
+      expect(badge).toHaveAttribute('data-market-closed', 'false');
+    });
 
-  it('renders StockBadge with market closed when stock token is not trading', () => {
-    mockIsStockToken.mockReturnValue(true);
-    mockIsTokenTradingOpen.mockReturnValue(false);
-    const token = createMockToken({ title: 'OUSG' });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
+    it('renders StockBadge with market closed when stock token is not trading', () => {
+      mockIsStockToken.mockReturnValue(true);
+      mockIsTokenTradingOpen.mockReturnValue(false);
+      const token = createMockToken({ title: 'OUSG' });
+      const { getByTestId } = render(<TokenCellTitle token={token} />);
 
-    const badge = getByTestId('stock-badge');
-    expect(badge).toBeInTheDocument();
-    expect(badge).toHaveAttribute('data-market-closed', 'true');
-  });
-
-  it('does not render tag when accountType is undefined', () => {
-    const token = createMockToken({ accountType: undefined });
-    const { queryByTestId } = render(<TokenCellTitle token={token} />);
-
-    expect(queryByTestId('tag')).not.toBeInTheDocument();
+      const badge = getByTestId('stock-badge');
+      expect(badge).toBeInTheDocument();
+      expect(badge).toHaveAttribute('data-market-closed', 'true');
+    });
   });
 
   describe('React.memo arePropsEqual', () => {
