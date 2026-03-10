@@ -1,3 +1,4 @@
+import HomePage from '../../page-objects/pages/home/homepage';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
@@ -20,9 +21,12 @@ describe('Send Solana', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
+        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

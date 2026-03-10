@@ -1,7 +1,8 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
@@ -16,7 +17,7 @@ describe('Send Tron', function () {
   it('it should be possible to send TRX', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
         manifestFlags: {
@@ -27,6 +28,8 @@ describe('Send Tron', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Tron network
         const networkManager = new NetworkManager(driver);
@@ -35,6 +38,10 @@ describe('Send Tron', function () {
         await networkManager.selectNetworkByNameWithWait('Tron');
 
         const nonEvmHomepage = new NonEvmHomepage(driver);
+        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed(
+          '6.072',
+          'TRX',
+        );
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );
