@@ -13,6 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import type { Position } from '@metamask/perps-controller';
 import { useNavigate } from 'react-router-dom';
+import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getPositionDirection } from '../utils';

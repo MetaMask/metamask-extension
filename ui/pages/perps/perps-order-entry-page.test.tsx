@@ -2,7 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { screen, fireEvent, act } from '@testing-library/react';
-import type { PerpsMarketData } from '@metamask/perps-controller';
+import type {
+  AccountState,
+  Position,
+  PerpsMarketData,
+} from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
