@@ -50,7 +50,9 @@ function createAccount({
     methods: [],
     metadata: {
       name: id,
-      keyring: {},
+      keyring: {
+        type: 'HD Key Tree',
+      },
       importTime: 0,
     },
     scopes: [],
