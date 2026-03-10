@@ -1,13 +1,10 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
-import { getSelectedInternalAccount } from '../../../selectors';
-
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsExploreMarkets } from './perps-explore-markets';
@@ -30,8 +27,6 @@ import { PerpsWatchlist } from './perps-watchlist';
  */
 export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
-
-  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
