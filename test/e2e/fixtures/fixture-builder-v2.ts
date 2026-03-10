@@ -3,6 +3,7 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
+import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   PermissionConstraint,
@@ -109,6 +110,11 @@ class FixtureBuilderV2 {
 
   withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
     merge(this.fixture.data.MetaMetricsController, data);
+    return this;
+  }
+
+  withNameController(data: Partial<NameControllerState>): this {
+    merge(this.fixture.data.NameController, data);
     return this;
   }
 
@@ -308,6 +314,12 @@ class FixtureBuilderV2 {
           status: NetworkStatus.Available,
         },
       },
+    });
+  }
+
+  withNoNames(): this {
+    return this.withNameController({
+      names: { [NameType.ETHEREUM_ADDRESS]: {} },
     });
   }
 
