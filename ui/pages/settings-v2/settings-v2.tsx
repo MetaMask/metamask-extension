@@ -54,24 +54,15 @@ const CurrencySubPage = mmLazy(
 );
 
 const ThemeSubPage = mmLazy(
-  (() =>
-    import(
-      './preferences-and-display-tab/theme-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./preferences-and-display-tab/theme-sub-page.tsx'),
 );
 
 const LanguageSubPage = mmLazy(
-  (() =>
-    import(
-      './preferences-and-display-tab/language-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./preferences-and-display-tab/language-sub-page.tsx'),
 );
 
 const AccountIdenticonSubPage = mmLazy(
-  (() =>
-    import(
-      './preferences-and-display-tab/account-identicon-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
 );
 
 // Get the first tab's component for rendering at the settings root (like Settings V1)

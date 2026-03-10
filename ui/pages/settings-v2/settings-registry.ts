@@ -95,20 +95,13 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     labelKey: 'preferencesAndDisplay',
     iconName: IconName.Setting,
-    component: mmLazy(
-      (() =>
-        import(
-          './preferences-and-display-tab/index.ts'
-        )) as unknown as DynamicImportType,
-    ),
+    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
   },
   {
     id: 'privacy',
     path: PRIVACY_ROUTE,
     labelKey: 'privacy',
     iconName: IconName.Lock,
-    component: mmLazy(
-      (() => import('./privacy-tab/index.ts')) as unknown as DynamicImportType,
-    ),
+    component: mmLazy(() => import('./privacy-tab/index.ts')),
   },
 ];
