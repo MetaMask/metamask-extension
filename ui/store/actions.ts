@@ -9,7 +9,7 @@ import log from 'loglevel';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
   CaipAccountId,
@@ -719,7 +719,7 @@ export function setShowShieldEntryModalOnce({
   };
 }
 
-export function setShowShieldEntryModalOnceAction(payload: {
+function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
   triggeringCohort?: string;
@@ -1165,7 +1165,7 @@ export async function createSeedPhraseBackup(
   ]);
 }
 
-export function createNewVault(password: string): Promise<KeyringObject> {
+function createNewVault(password: string): Promise<KeyringObject> {
   return submitRequestToBackground<KeyringObject>('createNewVaultAndKeychain', [
     password,
   ]);
@@ -2102,7 +2102,7 @@ export async function getTransactions(
   ]);
 }
 
-export function completedTx(
+function completedTx(
   txId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -2115,10 +2115,7 @@ export function completedTx(
   };
 }
 
-export function updateTransactionParams(
-  txId: string,
-  txParams: TransactionParams,
-) {
+function updateTransactionParams(txId: string, txParams: TransactionParams) {
   return {
     type: actionConstants.UPDATE_TRANSACTION_PARAMS,
     id: txId,
@@ -2376,49 +2373,6 @@ export function cancelTx(
   };
 }
 
-/**
- * Cancels all of the given transactions
- *
- * @param txMetaList
- * @returns
- */
-export function cancelTxs(
-  txMetaList: TransactionMeta[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      const txIds = txMetaList.map(({ id }) => id);
-      const jsonRpcError = providerErrors.userRejectedRequest().serialize();
-
-      const cancellations = txIds.map((id) =>
-        submitRequestToBackground('rejectPendingApproval', [
-          String(id),
-          jsonRpcError,
-        ]),
-      );
-
-      await Promise.all(cancellations);
-
-      await forceUpdateMetamaskState(dispatch);
-
-      txIds.forEach((id) => {
-        dispatch(completedTx(id));
-      });
-    } finally {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        // Use closeCurrentNotificationWindow which has hardware wallet guards
-        dispatch(closeCurrentNotificationWindow());
-      } else {
-        dispatch(hideLoadingIndication());
-      }
-    }
-  };
-}
-
 export function markPasswordForgotten(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -2451,31 +2405,20 @@ export function unMarkPasswordForgotten(): ThunkAction<
     await forceUpdateMetamaskState(dispatch);
   };
 }
-
-export function closeWelcomeScreen() {
-  return {
-    type: actionConstants.CLOSE_WELCOME_SCREEN,
-  };
-}
-
-//
-// unlock screen
-//
-
-export function unlockInProgress() {
+function unlockInProgress() {
   return {
     type: actionConstants.UNLOCK_IN_PROGRESS,
   };
 }
 
-export function unlockFailed(message?: string) {
+function unlockFailed(message?: string) {
   return {
     type: actionConstants.UNLOCK_FAILED,
     value: message,
   };
 }
 
-export function unlockSucceeded(message?: string) {
+function unlockSucceeded(message?: string) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
@@ -2933,7 +2876,7 @@ export function setPermittedChains(
   };
 }
 
-export function showAccountsPage() {
+function showAccountsPage() {
   return {
     type: actionConstants.SHOW_ACCOUNTS_PAGE,
   };
@@ -3703,33 +3646,6 @@ export function createSpeedUpTransaction(
     }
   };
 }
-
-export function createRetryTransaction(
-  txId: string,
-  customGasSettings: CustomGasSettings,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const actionId = generateActionId();
-    try {
-      const newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('createSpeedUpTransaction', [txId, customGasSettings, { actionId }]);
-
-      await forceUpdateMetamaskState(dispatch);
-
-      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
-      const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
-
-      return newTx;
-    } catch (err) {
-      dispatch(displayWarning(err));
-      throw err;
-    }
-  };
-}
-
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
 ): ThunkAction<
@@ -3929,19 +3845,6 @@ export function removeFromAddressBook(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-
-export function showNetworkDropdown(): Action {
-  return {
-    type: actionConstants.NETWORK_DROPDOWN_OPEN,
-  };
-}
-
-export function hideNetworkDropdown() {
-  return {
-    type: actionConstants.NETWORK_DROPDOWN_CLOSE,
-  };
-}
-
 export function showImportTokensModal(): Action {
   return {
     type: actionConstants.IMPORT_TOKENS_POPOVER_OPEN,
@@ -4135,7 +4038,7 @@ export function showLoadingIndication(
   };
 }
 
-export function showNftStillFetchingIndication(): Action {
+function showNftStillFetchingIndication(): Action {
   return {
     type: actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION,
   };
@@ -4159,15 +4062,7 @@ export function hideLoadingIndication(): Action {
     type: actionConstants.HIDE_LOADING,
   };
 }
-
-export function setSlides(slides): Action {
-  return {
-    type: actionConstants.SET_SLIDES,
-    slides,
-  };
-}
-
-export function hideNftStillFetchingIndication(): Action {
+function hideNftStillFetchingIndication(): Action {
   return {
     type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
   };
@@ -4315,14 +4210,6 @@ export function clearAccountDetails(): Action {
     type: actionConstants.CLEAR_ACCOUNT_DETAILS,
   };
 }
-
-export function showSendTokenPage(): Action {
-  return {
-    type: actionConstants.SHOW_SEND_TOKEN_PAGE,
-  };
-}
-
-// TODO: Lift to shared folder when it makes sense
 type TemporaryFeatureFlagDef = {
   [feature: string]: boolean;
 };
@@ -4569,7 +4456,7 @@ export function completeOnboarding() {
   };
 }
 
-export function completeOnboardingWithSidepanel() {
+function completeOnboardingWithSidepanel() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL,
   };
@@ -4603,7 +4490,7 @@ export function resetOnboarding(): ThunkAction<
   };
 }
 
-export function resetOnboardingAction() {
+function resetOnboardingAction() {
   return {
     type: actionConstants.RESET_ONBOARDING,
   };
@@ -5757,35 +5644,11 @@ export function rejectPendingApproval(
 }
 
 /**
- * Rejects all approvals for the given messages
+ * Updates throttled origin state in background.
  *
- * @param messageList - The list of messages to reject
+ * @param origin - The origin to update.
+ * @param throttledOriginState - The new throttling state.
  */
-export function rejectAllMessages(
-  messageList: [],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const userRejectionError = serializeError(
-      providerErrors.userRejectedRequest(),
-    );
-    await Promise.all(
-      messageList.map(
-        async ({ id }) =>
-          await submitRequestToBackground('rejectPendingApproval', [
-            id,
-            userRejectionError,
-          ]),
-      ),
-    );
-    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-    if (Object.values(pendingApprovals).length === 0) {
-      dispatch(closeCurrentNotificationWindow());
-    }
-  };
-}
-
 export function updateThrottledOriginState(
   origin: string,
   throttledOriginState: ThrottledOrigin,
@@ -6124,7 +5987,7 @@ export function getNextNonce(
   };
 }
 
-export function setRequestAccountTabIds(requestAccountTabIds: {
+function setRequestAccountTabIds(requestAccountTabIds: {
   [origin: string]: string;
 }): PayloadAction<{
   [origin: string]: string;
@@ -6151,7 +6014,7 @@ export function getRequestAccountTabIds(): ThunkAction<
   };
 }
 
-export function setOpenMetamaskTabsIDs(openMetaMaskTabIDs: {
+function setOpenMetamaskTabsIDs(openMetaMaskTabIDs: {
   [tabId: string]: boolean;
 }): PayloadAction<{ [tabId: string]: boolean }> {
   return {
@@ -6871,34 +6734,6 @@ export function fetchSmartTransactionsLiveness({
     }
   };
 }
-
-export function dismissSmartTransactionsErrorMessage(): Action {
-  return {
-    type: actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE,
-  };
-}
-
-// App state
-export function hideTestNetMessage() {
-  return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
-}
-
-export function hideBetaHeader() {
-  return submitRequestToBackground('setShowBetaHeader', [false]);
-}
-
-export function hidePermissionsTour() {
-  return submitRequestToBackground('setShowPermissionsTour', [false]);
-}
-
-export function hideAccountBanner() {
-  return submitRequestToBackground('setShowAccountBanner', [false]);
-}
-
-export function hideNetworkBanner() {
-  return submitRequestToBackground('setShowNetworkBanner', [false]);
-}
-
 export function updateNetworkConnectionBanner(
   networkConnectionBanner: NetworkConnectionBanner,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -7389,13 +7224,6 @@ export function deleteInterface(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
-
-export function trackInsightSnapUsage(snapId: string) {
-  return async () => {
-    await submitRequestToBackground('trackInsightSnapView', [snapId]);
-  };
-}
-
 export async function setSnapsAddSnapAccountModalDismissed() {
   await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
     true,
@@ -8000,21 +7828,6 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
-
-export async function endBackgroundTrace(request: EndTraceRequest) {
-  // We want to record the timestamp immediately, not after the request reaches the background.
-  // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
-  // other timings.
-  const timestamp =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    request.timestamp || performance.timeOrigin + performance.now();
-
-  await submitRequestToBackground<void>('endTrace', [
-    { ...request, timestamp },
-  ]);
-}
-
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],

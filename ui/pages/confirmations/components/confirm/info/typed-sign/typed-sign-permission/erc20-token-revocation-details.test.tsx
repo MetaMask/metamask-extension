@@ -34,10 +34,11 @@ describe('Erc20TokenRevocationDetails', () => {
       expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
     });
 
-    it('does not render details section when expiry is null', () => {
-      expect(() => renderAndGetDetailsSection(null)).toThrow(
-        'Unable to find an element',
-      );
+    it('renders with "Never expires" when expiry is null', () => {
+      const detailsSection = renderAndGetDetailsSection(null);
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 });
