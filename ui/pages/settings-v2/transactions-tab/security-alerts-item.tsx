@@ -25,8 +25,9 @@ export const SecurityAlertsItem = () => {
     <a
       key="learn_more_link"
       href={SECURITY_ALERTS_LEARN_MORE_LINK}
-      rel="noreferrer"
+      rel="noopener noreferrer"
       target="_blank"
+      className="font-medium text-primary-default"
     >
       {t('learnMoreUpperCase')}
     </a>,

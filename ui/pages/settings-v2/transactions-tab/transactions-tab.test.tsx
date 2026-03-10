@@ -22,10 +22,7 @@ describe('TransactionsTab', () => {
 
   describe('snapshot', () => {
     it('matches snapshot', () => {
-      const { container } = renderWithProvider(
-        <TransactionsTab />,
-        mockStore,
-      );
+      const { container } = renderWithProvider(<TransactionsTab />, mockStore);
 
       expect(container).toMatchSnapshot();
     });
@@ -35,17 +32,14 @@ describe('TransactionsTab', () => {
     it('renders createToggleItem toggles with expected test ids', () => {
       renderWithProvider(<TransactionsTab />, mockStore);
 
-      expect(
-        screen.getByTestId('showHexData-toggle'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('showHexData-toggle')).toBeInTheDocument();
       expect(
         screen.getByTestId('useExternalNameSources-toggle'),
       ).toBeInTheDocument();
       expect(
-        screen.getByTestId('settings-page-smart-account-requests-from-dapps-toggle'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('settings-page-dismiss-smart-account-suggestion-enabled-toggle'),
+        screen.getByTestId(
+          'settings-page-smart-account-requests-from-dapps-toggle',
+        ),
       ).toBeInTheDocument();
     });
 

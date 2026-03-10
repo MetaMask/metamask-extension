@@ -21,8 +21,9 @@ export const TransactionSimulationsItem = () => {
     <a
       key="learn_more_link"
       href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
-      rel="noreferrer"
+      rel="noopener noreferrer"
       target="_blank"
+      className="font-medium text-primary-default"
     >
       {t('learnMoreUpperCase')}
     </a>,

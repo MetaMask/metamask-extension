@@ -1,11 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Text,
-  TextVariant,
-  TextColor,
-  FontWeight,
-} from '@metamask/design-system-react';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSmartTransactionsPreferenceEnabled } from '../../../store/actions';
@@ -23,14 +17,9 @@ export const SmartTransactionsItem = () => {
       href={SMART_TRANSACTIONS_LEARN_MORE_URL}
       target="_blank"
       rel="noopener noreferrer"
+      className="font-medium text-primary-default"
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        color={TextColor.PrimaryDefault}
-        fontWeight={FontWeight.Medium}
-      >
-        {t('learnMoreUpperCase')}
-      </Text>
+      {t('learnMoreUpperCase')}
     </a>,
   ]);
 

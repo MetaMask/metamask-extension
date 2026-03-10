@@ -6,13 +6,11 @@ import {
   setFeatureFlag,
   setUseExternalNameSources,
   setSmartAccountRequestsFromDapps,
-  setDismissSmartAccountSuggestionEnabled,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { TransactionSimulationsItem } from './transaction-simulations-item';
 import { SecurityAlertsItem } from './security-alerts-item';
 import { SmartTransactionsItem } from './smart-transactions-item';
-import { CustomizeTransactionNonceItem } from './customize-transaction-nonce-item';
 
 const ShowHexDataItem = createToggleItem({
   name: 'ShowHexDataItem',
@@ -46,16 +44,6 @@ const SmartAccountRequestsFromDappsItem = createToggleItem({
   dataTestId: 'settings-page-smart-account-requests-from-dapps-toggle',
 });
 
-const DismissSmartAccountSuggestionItem = createToggleItem({
-  name: 'DismissSmartAccountSuggestionItem',
-  titleKey: 'dismissSmartAccountSuggestionEnabledTitle',
-  descriptionKey: 'dismissSmartAccountSuggestionEnabledDescription',
-  selector: (state: MetaMaskReduxState) =>
-    Boolean(getPreferences(state)?.dismissSmartAccountSuggestionEnabled),
-  action: setDismissSmartAccountSuggestionEnabled,
-  dataTestId: 'settings-page-dismiss-smart-account-suggestion-enabled-toggle',
-});
-
 /** Registry of setting items for the Transactions page */
 const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'estimate-balance-changes', component: TransactionSimulationsItem },
@@ -67,14 +55,6 @@ const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
   },
   { id: 'proposed-nicknames', component: ProposedNicknamesItem },
   { id: 'show-hex-data', component: ShowHexDataItem },
-  {
-    id: 'customize-transaction-nonce',
-    component: CustomizeTransactionNonceItem,
-  },
-  {
-    id: 'dismiss-smart-account-suggestion',
-    component: DismissSmartAccountSuggestionItem,
-  },
 ];
 
 const TransactionsTab = () => <SettingsTab items={TRANSACTION_SETTING_ITEMS} />;
