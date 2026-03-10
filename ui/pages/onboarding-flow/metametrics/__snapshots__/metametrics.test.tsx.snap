@@ -96,7 +96,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
       <p
         class="mm-box mm-text mm-text--body-sm mm-text--text-align-left mm-box--color-text-alternative"
       >
-        We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
+        We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
       </p>
     </div>
     <div
@@ -209,7 +209,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
       <p
         class="mm-box mm-text mm-text--body-sm mm-text--text-align-left mm-box--color-text-alternative"
       >
-        We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
+        We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
       </p>
     </div>
     <div
