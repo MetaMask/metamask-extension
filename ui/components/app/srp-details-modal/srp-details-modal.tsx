@@ -67,12 +67,14 @@ export default function SRPDetailsModal({ onClose }: { onClose: () => void }) {
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
+                asChild
               >
                 <li>{t('srpDetailsOwnsAccessListItemTwo')}</li>
               </Text>
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
+                asChild
               >
                 <li>{t('srpDetailsOwnsAccessListItemThree')}</li>
               </Text>
