@@ -1,6 +1,10 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { ButtonIconSize, IconColor } from '@metamask/design-system-react';
+import {
+  ButtonIconSize,
+  IconColor,
+  IconName,
+} from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../../components/component-library';
 import { InfoPopoverTooltip } from './info-popover-tooltip';
 
@@ -69,5 +73,23 @@ describe('InfoPopoverTooltip', () => {
     );
 
     expect(getByTestId('custom-tooltip-button')).toBeInTheDocument();
+  });
+
+  it('accepts a custom iconName', () => {
+    const { getByTestId } = render(
+      <InfoPopoverTooltip
+        data-testid="question-tooltip"
+        iconName={IconName.Question}
+      >
+        <span>Question content</span>
+      </InfoPopoverTooltip>,
+    );
+
+    const button = getByTestId('question-tooltip-button');
+    expect(button).toBeInTheDocument();
+    fireEvent.click(button);
+    expect(getByTestId('question-tooltip')).toHaveTextContent(
+      'Question content',
+    );
   });
 });

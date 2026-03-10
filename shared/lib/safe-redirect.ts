@@ -1,4 +1,4 @@
-const DUMMY_BASE = 'http://a';
+const DUMMY_BASE = 'https://a';
 
 /**
  * Validates that a URL string is a safe internal route suitable for use with
