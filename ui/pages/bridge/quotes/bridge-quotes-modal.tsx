@@ -65,41 +65,42 @@ export const BridgeQuotesModal = ({
   const handleQuoteSelected = useCallback(
     (quote: QuoteMetadata & QuoteResponse) => {
       dispatch(setSelectedQuote(quote));
-      if (!recommendedQuote) {
-        return;
-      }
-      dispatch(
-        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.QuoteSelected, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          can_submit: !insufficientBal,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_best_quote: isRecommendedQuote(quote),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          best_quote_provider: formatProviderLabel(recommendedQuote.quote),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_quoted_return: Number(quote.toTokenAmount.usd),
-          provider: formatProviderLabel(quote.quote),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          price_impact: Number(quote.quote?.priceData?.priceImpact ?? '0'),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          gas_included: Boolean(quote.quote?.gasIncluded),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          gas_included_7702: Boolean(quote.quote?.gasIncluded7702),
-        }),
-      );
+      recommendedQuote &&
+        dispatch(
+          trackUnifiedSwapBridgeEvent(
+            UnifiedSwapBridgeEventName.QuoteSelected,
+            {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              can_submit: !insufficientBal,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              is_best_quote: isRecommendedQuote(quote),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              best_quote_provider: formatProviderLabel(recommendedQuote.quote),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              usd_quoted_return: Number(quote.toTokenAmount.usd),
+              provider: formatProviderLabel(quote.quote),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              price_impact: Number(quote.quote?.priceData?.priceImpact ?? '0'),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              gas_included: Boolean(quote.quote?.gasIncluded),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              gas_included_7702: Boolean(quote.quote?.gasIncluded7702),
+            },
+          ),
+        );
       onClose();
     },
     [dispatch, isRecommendedQuote, insufficientBal, onClose, recommendedQuote],
