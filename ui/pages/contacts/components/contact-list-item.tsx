@@ -13,6 +13,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
+  Icon,
   IconColor,
   IconName,
   Text,
@@ -25,6 +26,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
+import Tooltip from '../../../components/ui/tooltip';
 import type { ContactListItemProps } from '../contacts.types';
 
 export type { ContactListItemProps } from '../contacts.types';
@@ -34,6 +36,7 @@ export function ContactListItem({
   name,
   chainId,
   onSelect,
+  isDuplicate = false,
 }: ContactListItemProps) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -110,20 +113,40 @@ export function ContactListItem({
           </Text>
         </Box>
       </Box>
-      <ButtonIcon
-        ariaLabel={t('copyToClipboard')}
-        title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-        iconName={copied ? IconName.CopySuccess : IconName.Copy}
-        size={ButtonIconSize.Md}
-        iconProps={{
-          className: copied
-            ? IconColor.SuccessDefault
-            : IconColor.IconAlternative,
-        }}
-        onClick={onCopy}
-        data-testid="contact-list-item-copy"
-        className="mt-4"
-      />
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
+        className="mt-4 shrink-0"
+      >
+        {isDuplicate && (
+          <Tooltip title={t('duplicateContactTooltip')} position="top">
+            <Box
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              data-testid="contact-list-item-duplicate-warning"
+              className="flex size-10 items-center justify-center"
+            >
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.WarningDefault}
+              />
+            </Box>
+          </Tooltip>
+        )}
+        <ButtonIcon
+          ariaLabel={t('copyToClipboard')}
+          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+          iconName={copied ? IconName.CopySuccess : IconName.Copy}
+          size={ButtonIconSize.Md}
+          iconProps={{
+            className: copied
+              ? IconColor.SuccessDefault
+              : IconColor.IconAlternative,
+          }}
+          onClick={onCopy}
+          data-testid="contact-list-item-copy"
+        />
+      </Box>
     </Box>
   );
 }

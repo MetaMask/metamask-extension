@@ -30,7 +30,11 @@ import {
   getCompleteAddressBook,
   getInternalAccounts,
 } from '../../selectors';
-import { hasDuplicateContacts } from '../../components/app/contact-list/utils';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  buildDuplicateContactMap,
+  hasDuplicateContacts,
+} from '../../components/app/contact-list/utils';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -71,6 +75,15 @@ export function ContactsListPage() {
       Boolean(
         completeAddressBook?.length &&
           hasDuplicateContacts(completeAddressBook, internalAccounts ?? []),
+      ),
+    [completeAddressBook, internalAccounts],
+  );
+
+  const duplicateContactMap = useMemo(
+    () =>
+      buildDuplicateContactMap(
+        completeAddressBook ?? [],
+        internalAccounts ?? [],
       ),
     [completeAddressBook, internalAccounts],
   );
@@ -213,6 +226,15 @@ export function ContactsListPage() {
                     chainId={entry.chainId}
                     onSelect={() =>
                       navigate(`${CONTACTS_VIEW_ROUTE}/${entry.address}`)
+                    }
+                    isDuplicate={
+                      (duplicateContactMap.get(
+                        (entry.name ?? '').trim().toLowerCase(),
+                      ) ?? []).length > 1 ||
+                      (completeAddressBook ?? []).filter(
+                        (e: { address: string }) =>
+                          isEqualCaseInsensitive(e.address, entry.address),
+                      ).length > 1
                     }
                   />
                 ),

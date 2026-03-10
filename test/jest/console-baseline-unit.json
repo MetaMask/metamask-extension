@@ -2860,20 +2860,6 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings/contact-list-tab/add-contact/add-contact.test.js": {
-      "React: State updates on unmounted components": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/edit-contact/edit-contact.container.test.tsx": {
-      "React: PropTypes validation failures": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/edit-contact/edit-contact.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/view-contact/view-contact.container.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings/developer-options-tab/backup-and-sync.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
