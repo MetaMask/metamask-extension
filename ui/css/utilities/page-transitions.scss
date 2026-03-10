@@ -81,18 +81,4 @@
   ::view-transition-new(root) {
     animation-duration: 0.01ms !important;
   }
-
-  .page-enter-animation,
-  .page-exit-animation {
-    animation-duration: 0.01ms !important;
-  }
-}
-
-/* Modal enter/exit animations (used by receive-modal) */
-.page-enter-animation {
-  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
-}
-
-.page-exit-animation {
-  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
 }
