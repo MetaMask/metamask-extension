@@ -267,7 +267,7 @@ const CoinButtons = ({
 
     // Native Send flow
     await setCorrectChain();
-    const params: { chainId?: string } | undefined =
+    const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);

@@ -67,19 +67,20 @@ export const SendInner = () => {
   if (currentPage === SendPages.LOADER) {
     return <Loader />;
   }
+  if (currentPage === SendPages.ASSET) {
+    return (
+      <SendContainer>
+        <Asset />
+      </SendContainer>
+    );
+  }
+  if (currentPage === SendPages.AMOUNTRECIPIENT) {
+    return (
+      <SendContainer>
+        <AmountRecipient />
+      </SendContainer>
+    );
+  }
 
-  return (
-    <>
-      {currentPage === SendPages.ASSET && (
-        <SendContainer>
-          <Asset />
-        </SendContainer>
-      )}
-      {currentPage === SendPages.AMOUNTRECIPIENT && (
-        <SendContainer>
-          <AmountRecipient />
-        </SendContainer>
-      )}
-    </>
-  );
+  return null;
 };
