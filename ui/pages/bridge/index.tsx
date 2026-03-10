@@ -8,7 +8,6 @@ import {
 import { I18nContext } from '../../contexts/i18n';
 import {
   DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -145,7 +144,20 @@ const CrossChainSwap = () => {
       <Content padding={0}>
         <Routes>
           <Route
-            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+          <Route
+            path={'*'}
             element={
               <>
                 <BridgeTransactionSettingsModal
@@ -157,19 +169,6 @@ const CrossChainSwap = () => {
                 <PrepareBridgePage
                   onOpenSettings={() => setIsSettingsModalOpen(true)}
                 />
-              </>
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
               </>
             }
           />
