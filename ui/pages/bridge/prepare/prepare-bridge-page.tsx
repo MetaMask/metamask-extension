@@ -631,6 +631,7 @@ const PrepareBridgePage = ({
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
                 description={t('noOptionsAvailableMessage')}
+                data-testid="bridge-error-banner"
                 descriptionProps={{
                   'data-testid': 'bridge-no-options-available',
                 }}
