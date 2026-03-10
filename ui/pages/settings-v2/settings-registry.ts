@@ -9,6 +9,7 @@ import {
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
   THEME_ROUTE,
+  PRIVACY_ROUTE,
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
 import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
@@ -37,6 +38,7 @@ export type SettingsV2RouteMeta = {
 // Map from path to route meta. Sub-pages (e.g. currency) must be listed here.
 export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
   [SETTINGS_V2_ROUTE]: { labelKey: 'settings' },
+  // Assets tab
   [ASSETS_ROUTE]: {
     labelKey: 'assets',
     parentPath: SETTINGS_V2_ROUTE,
@@ -45,6 +47,7 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'localCurrency',
     parentPath: ASSETS_ROUTE,
   },
+  // Preferences and display tab
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
     labelKey: 'preferencesAndDisplay',
     parentPath: SETTINGS_V2_ROUTE,
@@ -60,6 +63,11 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
   [ACCOUNT_IDENTICON_ROUTE]: {
     labelKey: 'accountIdenticon',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+  },
+  // Privacy tab
+  [PRIVACY_ROUTE]: {
+    labelKey: 'privacy',
+    parentPath: SETTINGS_V2_ROUTE,
   },
 };
 
@@ -94,6 +102,15 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
         import(
           './preferences-and-display-tab/index.ts'
         )) as unknown as DynamicImportType,
+    ),
+  },
+  {
+    id: 'privacy',
+    path: PRIVACY_ROUTE,
+    labelKey: 'privacy',
+    iconName: IconName.Lock,
+    component: mmLazy(
+      (() => import('./privacy-tab/index.ts')) as unknown as DynamicImportType,
     ),
   },
 ];

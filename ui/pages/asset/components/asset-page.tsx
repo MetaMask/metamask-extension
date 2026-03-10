@@ -1,6 +1,25 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
+  Box,
+  BoxAlignItems,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  FontWeight,
+  IconColor,
+  IconName,
+  Text,
+  TextButton,
+  TextButtonSize,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   BtcMethod,
   EthMethod,
   SolMethod,
@@ -9,6 +28,7 @@ import {
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
+  Hex,
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
@@ -27,29 +47,9 @@ import {
 } from '../../../components/app/assets/types';
 import { ActivityList } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonLink,
-  IconName,
-  Text,
-} from '../../../components/component-library';
 import { AddressCopyButton } from '../../../components/multichain';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import {
-  AlignItems,
-  BorderColor,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -79,6 +79,8 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
+import { useMusdCtaVisibility } from '../../../hooks/musd';
+import { MusdAssetCta } from '../../../components/app/musd';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
@@ -130,6 +132,11 @@ const AssetPage = ({
   const isMainnet = !isTestnet;
   // Check if show conversion is enabled
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+
+  // mUSD CTA visibility check
+  const { shouldShowAssetOverviewCta: checkMusdCtaVisibility } =
+    useMusdCtaVisibility();
+
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
@@ -233,22 +240,21 @@ const AssetPage = ({
   return (
     <Box className="asset__content">
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         paddingBottom={3}
         paddingLeft={2}
         paddingRight={4}
         className="pt-4 sticky top-0 z-10 bg-background-default"
       >
-        <Box display={Display.Flex}>
+        <Box flexDirection={BoxFlexDirection.Row}>
           <ButtonIcon
-            color={IconColor.iconDefault}
-            marginRight={1}
+            color={IconColor.IconDefault}
             size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
+            ariaLabel={t('back') as string}
             iconName={IconName.ArrowLeft}
             onClick={() => transitionBack(() => navigate(DEFAULT_ROUTE))}
+            className="asset-page__back-button"
           />
         </Box>
         {optionsButton}
@@ -256,8 +262,9 @@ const AssetPage = ({
       <Box paddingLeft={4}>
         <Text
           data-testid="asset-name"
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
         >
           {name && symbol && name !== symbol
             ? `${name} (${symbol})`
@@ -289,11 +296,7 @@ const AssetPage = ({
           <TokenButtons token={updatedAsset} disableSendForNonEvm />
         )}
       </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        paddingTop={3}
-      >
+      <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
         {showTronResources && (
           <Box>
             <TronDailyResources
@@ -304,17 +307,14 @@ const AssetPage = ({
             <Box
               marginTop={2}
               marginBottom={2}
-              borderColor={BorderColor.borderMuted}
-              marginInline={4}
-              style={{ height: '1px', borderBottomWidth: 0 }}
+              borderColor={BoxBorderColor.BorderMuted}
+              className="asset-page__divider"
             />
           </Box>
         )}
         <Text
-          variant={TextVariant.headingSm}
-          paddingBottom={1}
-          paddingTop={1}
-          paddingLeft={4}
+          variant={TextVariant.HeadingSm}
+          className="asset-page__balance-heading"
         >
           {t('yourBalance')}
         </Text>
@@ -326,40 +326,47 @@ const AssetPage = ({
             showMerklBadge
           />
         )}
-        <Box
-          marginTop={2}
-          marginBottom={2}
-          borderColor={BorderColor.borderMuted}
-          marginInline={4}
-          style={{ height: '1px', borderBottomWidth: 0 }}
-        />
-        <Box
-          marginTop={2}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={4}
-        >
+        {/* mUSD Conversion CTA - shows for eligible stablecoins */}
+        {!isNativeAsset(updatedAsset) &&
+          type === AssetType.token &&
+          isEvm &&
+          checkMusdCtaVisibility({
+            address: (asset as { address: Hex }).address,
+            chainId,
+            symbol,
+          }) && (
+            <Box marginTop={2} paddingLeft={4} paddingRight={4}>
+              <MusdAssetCta
+                token={{
+                  address: (asset as { address: Hex }).address,
+                  chainId: chainId as string,
+                  symbol,
+                  balance: String(balance),
+                  fiatBalance: String(tokenFiatAmount),
+                }}
+                variant="card"
+              />
+            </Box>
+          )}
+        <Box marginTop={6} flexDirection={BoxFlexDirection.Column} gap={4}>
           {[AssetType.token, AssetType.native].includes(type) && (
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
+              flexDirection={BoxFlexDirection.Column}
               paddingLeft={4}
               paddingRight={4}
             >
-              <Text variant={TextVariant.headingSm} paddingBottom={2}>
+              <Text
+                variant={TextVariant.HeadingSm}
+                className="asset-page__details-heading"
+              >
                 {t('tokenDetails')}
               </Text>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={2}
-              >
+              <Box flexDirection={BoxFlexDirection.Column} gap={2}>
                 {renderRow(
                   t('network'),
-                  <Text
-                    variant={TextVariant.bodyMdMedium}
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
                     gap={2}
                     data-testid="asset-network"
                   >
@@ -368,8 +375,13 @@ const AssetPage = ({
                       name={networkName}
                       size={AvatarNetworkSize.Xs}
                     />
-                    {networkName}
-                  </Text>,
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {networkName}
+                    </Text>
+                  </Box>,
                 )}
                 {shouldShowContractAddress && (
                   <Box>
@@ -377,27 +389,30 @@ const AssetPage = ({
                       t('contractAddress'),
                       <AddressCopyButton address={contractAddress} shorten />,
                     )}
-                    <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      gap={2}
-                    >
+                    <Box flexDirection={BoxFlexDirection.Column} gap={2}>
                       {asset.decimals !== undefined &&
                         renderRow(
                           t('tokenDecimal'),
-                          <Text variant={TextVariant.bodyMdMedium}>
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
                             {asset.decimals}
                           </Text>,
                         )}
                       {asset.aggregators && asset.aggregators.length > 0 && (
                         <Box>
                           <Text
-                            variant={TextVariant.bodyMdMedium}
-                            color={TextColor.textAlternative}
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                            color={TextColor.TextAlternative}
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text variant={TextVariant.bodyMdMedium}>
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
                             {asset.aggregators
                               .map((agg) =>
                                 agg.replace(/^metamask$/iu, 'MetaMask'),
@@ -412,26 +427,30 @@ const AssetPage = ({
                 {shouldShowSpendingCaps &&
                   renderRow(
                     t('spendingCaps'),
-                    <ButtonLink
-                      className="asset-page__spending-caps mm-text--body-md-medium"
-                      href={portfolioSpendingCapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('editInPortfolio')}
-                    </ButtonLink>,
+                    <TextButton size={TextButtonSize.BodyMd} asChild>
+                      <a
+                        className="asset-page__spending-caps"
+                        href={portfolioSpendingCapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('editInPortfolio')}
+                      </a>
+                    </TextButton>,
                   )}
               </Box>
             </Box>
           )}
           <AssetMarketDetails asset={updatedAsset} address={address} />
           <Box
-            borderColor={BorderColor.borderMuted}
-            marginInline={4}
-            style={{ height: '1px', borderBottomWidth: 0 }}
-          ></Box>
+            borderColor={BoxBorderColor.BorderMuted}
+            className="asset-page__divider"
+          />
           <Box marginBottom={4}>
-            <Text paddingInline={4} variant={TextVariant.headingSm}>
+            <Text
+              variant={TextVariant.HeadingSm}
+              className="asset-page__activity-heading"
+            >
               {t('yourActivity')}
             </Text>
             <ActivityList
@@ -455,14 +474,20 @@ const AssetPage = ({
 
 function renderRow(leftColumn: string, rightColumn: ReactNode) {
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+    >
       <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMdMedium}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
       >
         {leftColumn}
       </Text>
-      <Text variant={TextVariant.bodyMdMedium}>{rightColumn}</Text>
+      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        {rightColumn}
+      </Text>
     </Box>
   );
 }
