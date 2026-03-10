@@ -1,10 +1,13 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
+import {
+  ACCOUNT_1,
+  ACCOUNT_2,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID } from '../../../constants';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
@@ -82,7 +85,7 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .withTrezorAccount()
             .build(),
@@ -91,7 +94,7 @@ describe('Multichain API', function () {
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           const REQUEST_SCOPE = 'eip155:1337';
           /**
-           * check {@link FixtureBuilder.withTrezorAccount} for second injected account address.
+           * check {@link FixtureBuilderV2.withTrezorAccount} for second injected account address.
            */
           const SECOND_ACCOUNT_IN_WALLET =
             '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
@@ -422,13 +425,12 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
-            .withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts(
-              {
-                scopes: OLD_SCOPES,
-              },
-            )
+            .withPermissionControllerConnectedToTestDapp({
+              account: [ACCOUNT_1, ACCOUNT_2],
+              chainIds: [1337, 1],
+            })
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
