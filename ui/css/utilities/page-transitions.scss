@@ -17,7 +17,7 @@
   isolation: auto;
 }
 
-/* Avoid ghosting */
+/* No additive blending between old and new */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   mix-blend-mode: normal;
