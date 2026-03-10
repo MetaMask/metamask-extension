@@ -50,14 +50,12 @@ export enum BuyGetMusdCtaVariant {
 export type BuyGetMusdCtaState =
   | {
       shouldShowCta: false;
-      showNetworkIcon: false;
       selectedChainId: null;
       isEmptyWallet: boolean;
       variant: null;
     }
   | {
       shouldShowCta: true;
-      showNetworkIcon: boolean;
       selectedChainId: Hex | null;
       isEmptyWallet: boolean;
       variant: BuyGetMusdCtaVariant;
@@ -80,7 +78,6 @@ export type BuyGetCtaOptions = {
   hasMusdBalance?: boolean;
   isEmptyWallet?: boolean;
   selectedChainId?: Hex | null;
-  isPopularNetworksFilterActive?: boolean;
 };
 
 /**
@@ -122,7 +119,6 @@ export type UseMusdCtaVisibilityResult = {
  */
 const HIDDEN_BUY_GET_CTA_STATE: BuyGetMusdCtaState = {
   shouldShowCta: false,
-  showNetworkIcon: false,
   selectedChainId: null,
   isEmptyWallet: false,
   variant: null,
@@ -234,7 +230,6 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         hasMusdBalance = false,
         isEmptyWallet = false,
         selectedChainId = null,
-        isPopularNetworksFilterActive = false,
       } = options;
 
       // Master feature flag check
@@ -264,12 +259,8 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
       // Determine variant: GET takes priority over BUY
       // GET variant: User has convertible tokens
       if (hasConvertibleTokens) {
-        const showNetworkIcon =
-          !isPopularNetworksFilterActive && selectedChainId !== null;
-
         return {
           shouldShowCta: true,
-          showNetworkIcon,
           selectedChainId,
           isEmptyWallet,
           variant: BuyGetMusdCtaVariant.GET,
@@ -284,12 +275,8 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
           : MUSD_BUYABLE_CHAIN_IDS.length > 0;
 
         if (isMusdBuyable) {
-          const showNetworkIcon =
-            !isPopularNetworksFilterActive && selectedChainId !== null;
-
           return {
             shouldShowCta: true,
-            showNetworkIcon,
             selectedChainId,
             isEmptyWallet: true,
             variant: BuyGetMusdCtaVariant.BUY,

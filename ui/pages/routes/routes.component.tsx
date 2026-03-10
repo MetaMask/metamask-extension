@@ -75,6 +75,7 @@ import {
   CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
+import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -356,6 +357,9 @@ const PerpsOrderEntryPage = mmLazy(
     import(
       '../perps/perps-order-entry-page.tsx'
     )) as unknown as DynamicImportType,
+);
+const MusdConversionPage = mmLazy(
+  (() => import('../musd/index.tsx')) as unknown as DynamicImportType,
 );
 
 // Perps pages wrapped with PerpsControllerProvider
@@ -770,6 +774,14 @@ export default function Routes() {
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openDefiPage',
+      }),
+      createRouteWithLayout({
+        path: `${MUSD_CONVERSION_ROUTE}/*`,
+        component: MusdConversionPage,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openMusdConversionPage',
       }),
       createRouteWithLayout({
         path: PERMISSIONS,
