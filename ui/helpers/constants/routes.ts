@@ -21,6 +21,7 @@ export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
 export const LANGUAGE_ROUTE = '/settings-v2/preferences-and-display/language';
 export const ACCOUNT_IDENTICON_ROUTE =
   '/settings-v2/preferences-and-display/account-identicon';
+export const PRIVACY_ROUTE = '/settings-v2/privacy';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
