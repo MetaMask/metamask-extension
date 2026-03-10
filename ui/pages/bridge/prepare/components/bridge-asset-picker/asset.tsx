@@ -121,7 +121,9 @@ export const BridgeAsset = React.forwardRef(
         >
           <Row alignItems={AlignItems.flexStart} gap={4}>
             <Row gap={2}>
-              <Text ellipsis>{asset.symbol}</Text>
+              <Text ellipsis data-testid="bridge-asset-symbol">
+                {asset.symbol}
+              </Text>
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}

@@ -51,6 +51,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+          data-testid="bridge-asset-symbol"
         >
           mUSD
         </p>
@@ -144,6 +145,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+          data-testid="bridge-asset-symbol"
         >
           BTC
         </p>
@@ -246,6 +248,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+          data-testid="bridge-asset-symbol"
         >
           mUSD
         </p>
@@ -347,6 +350,7 @@ exports[`BridgeAsset should render native asset 1`] = `
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+          data-testid="bridge-asset-symbol"
         >
           ETH
         </p>

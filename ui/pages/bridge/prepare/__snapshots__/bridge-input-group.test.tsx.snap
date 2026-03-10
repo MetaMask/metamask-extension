@@ -795,6 +795,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -887,6 +888,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDT
                     </p>
@@ -1170,6 +1172,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -1262,6 +1265,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDT
                     </p>
@@ -1354,6 +1358,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>

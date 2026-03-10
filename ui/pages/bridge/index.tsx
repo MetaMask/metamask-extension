@@ -31,6 +31,7 @@ import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
+import { transitionBack } from '../../components/ui/transition';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -72,6 +73,10 @@ const CrossChainSwap = () => {
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
+  const handleBack = () => {
+    transitionBack(() => navigateToDefaultRoute());
+  };
+
   return (
     <Page className="bridge__container">
       <Header
@@ -83,7 +88,7 @@ const CrossChainSwap = () => {
             ariaLabel={t('back')}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={navigateToDefaultRoute}
+            onClick={handleBack}
           />
         }
         endAccessory={

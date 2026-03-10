@@ -53,6 +53,7 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
@@ -251,7 +252,7 @@ const AssetPage = ({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back') as string}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(-1)}
+            onClick={() => transitionBack(() => navigate(-1))}
             className="asset-page__back-button"
           />
         </Box>
