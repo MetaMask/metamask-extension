@@ -484,9 +484,6 @@
   "removeAccount": {
     "message": "Konto eemaldamine"
   },
-  "removeAccountDescription": {
-    "message": "See konto eemaldatakse teie rahakotist. Veenduge enne jätkamist, et teil on imporditud konto algne seemnefraas või privaatvõti olemas. Saate kontode rippmenüü kaudu importida või luua uued kontod."
-  },
   "required": {
     "message": "Nõutav"
   },

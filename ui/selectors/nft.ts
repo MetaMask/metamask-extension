@@ -4,7 +4,7 @@ import { NetworkState } from '../../shared/modules/selectors/networks';
 import { getMemoizedCurrentChainId } from './selectors';
 import { EMPTY_OBJECT } from './shared';
 
-export type NftState = {
+type NftState = {
   metamask: {
     allNftContracts: {
       [account: string]: {

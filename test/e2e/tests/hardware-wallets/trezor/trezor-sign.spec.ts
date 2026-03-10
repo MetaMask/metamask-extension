@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { WINDOW_TITLES } from '../../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
@@ -14,7 +14,7 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
@@ -43,7 +43,7 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,

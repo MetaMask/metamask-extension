@@ -29,7 +29,7 @@ const BASE_ENV: Record<string, string> = {
 };
 
 function setEnv(overrides: Record<string, string | undefined> = {}): void {
-  for (const key of Object.keys(BASE_ENV)) {
+  for (const key of [...Object.keys(BASE_ENV), 'TEST_PLAN_VERSION']) {
     delete process.env[key];
   }
   for (const [k, v] of Object.entries({ ...BASE_ENV, ...overrides })) {
@@ -146,5 +146,30 @@ describe('start() entry point', () => {
         commentBody: expect.stringContaining('<p>artifacts</p>'),
       }),
     );
+  });
+
+  it('includes test plan link when TEST_PLAN_VERSION is set', async () => {
+    setEnv({ TEST_PLAN_VERSION: '99.0.0' });
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    const { commentBody } =
+      getMocks().utils.postCommentWithMetamaskBot.mock.calls[0][0];
+    expect(commentBody).toContain('AI generated test plan');
+    expect(commentBody).toContain('test-plan-99.0.0.json');
+  });
+
+  it('does not include test plan link when TEST_PLAN_VERSION is not set', async () => {
+    setEnv();
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    const { commentBody } =
+      getMocks().utils.postCommentWithMetamaskBot.mock.calls[0][0];
+    expect(commentBody).not.toContain('AI generated test plan');
   });
 });

@@ -48,6 +48,15 @@ jest.mock('../../../../shared/constants/network', () => ({
   },
 }));
 
+jest.mock('../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+  }),
+}));
 jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
 }));

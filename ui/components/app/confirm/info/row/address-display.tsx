@@ -16,6 +16,7 @@ import {
   TextButtonSize,
   TextColor,
   TextVariant,
+  FontWeight,
 } from '@metamask/design-system-react';
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
@@ -149,6 +150,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
           >
@@ -167,6 +169,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {!name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             ellipsis
             data-testid="confirm-info-row-display-name"

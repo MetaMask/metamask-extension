@@ -3996,10 +3996,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSDへの変換"
+    "message": "$1をmUSDに変換",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSDへの変換"
+    "message": "$1をmUSDに変換",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
@@ -5871,9 +5873,6 @@
   },
   "removeAccount": {
     "message": "アカウントを削除"
-  },
-  "removeAccountDescription": {
-    "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレットリカバリーフレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウントドロップダウンから再度インポートまたは作成できます。"
   },
   "removeAccountModalBannerDescription": {
     "message": "削除する前に、このアカウントのシークレットリカバリーフレーズまたは秘密鍵をお持ちであることを確認してください。",
