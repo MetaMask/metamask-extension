@@ -1,5 +1,7 @@
 import { memoize } from 'lodash';
 
+import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
+
 type AppRoute = {
   path: string;
   label: string;
@@ -22,6 +24,7 @@ export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
 export const LANGUAGE_ROUTE = '/settings-v2/preferences-and-display/language';
 export const ACCOUNT_IDENTICON_ROUTE =
   '/settings-v2/preferences-and-display/account-identicon';
+export const PRIVACY_ROUTE = '/settings-v2/privacy';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -656,6 +659,7 @@ export const ROUTES = [
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
+  ...MUSD_ROUTE_DEFINITIONS,
 ] as const satisfies AppRoute[];
 
 export type AppRoutes = (typeof ROUTES)[number];
