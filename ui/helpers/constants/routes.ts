@@ -118,7 +118,7 @@ export const SIGNATURE_REQUEST_PATH = '/signature-request';
 export const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
-export const TRANSACTION_DETAILS_ROUTE = '/transaction-details';
+export const TRANSACTION_DETAILS_ROUTE = '/transaction';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
