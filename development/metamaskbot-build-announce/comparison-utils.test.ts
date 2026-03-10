@@ -218,6 +218,36 @@ describe('benchmark-comparison', () => {
 
       expect(comparison.relativeMetrics).toHaveLength(0);
     });
+
+    it('skips p95 relative metrics when results.p95 is undefined', () => {
+      const p75OnlyConfig = {
+        uiStartup: {
+          p75: { warn: 2000, fail: 3000 },
+        },
+      };
+      const results = {
+        testTitle: 'test',
+        persona: 'standard' as const,
+        mean: { uiStartup: 1500 },
+        min: { uiStartup: 1000 },
+        max: { uiStartup: 2000 },
+        stdDev: { uiStartup: 200 },
+        p75: { uiStartup: 1800 },
+      };
+      const baseline = {
+        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+      };
+
+      const comparison = compareBenchmarkEntries(
+        'test-bench',
+        results,
+        p75OnlyConfig,
+        baseline,
+      );
+
+      expect(comparison.relativeMetrics).toHaveLength(1);
+      expect(comparison.relativeMetrics[0].percentile).toBe('p75');
+    });
   });
 
   describe('getTrafficLightIndication', () => {

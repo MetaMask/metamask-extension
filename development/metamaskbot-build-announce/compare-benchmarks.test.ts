@@ -1,5 +1,13 @@
+import { promises as fs } from 'fs';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
-import { resolveThresholdConfig, runComparison } from './compare-benchmarks';
+import {
+  resolveThresholdConfig,
+  runComparison,
+  loadCurrentBenchmarks,
+  loadBaseline,
+  printReport,
+} from './compare-benchmarks';
+import * as historicalComparison from './historical-comparison';
 
 function makeBenchmarkResults(
   overrides: Partial<BenchmarkResults> = {},
@@ -147,6 +155,263 @@ describe('compare-benchmarks', () => {
 
       const result = runComparison(benchmarks, {});
       expect(result.comparisons).toHaveLength(0);
+    });
+  });
+
+  describe('resolveThresholdConfig (additional)', () => {
+    it('resolves camelCase entry name via kebab conversion', () => {
+      const config = resolveThresholdConfig('onboardingImportWallet');
+      expect(config).toBeDefined();
+      expect(config).toHaveProperty('importWalletToSocialScreen');
+    });
+
+    it('strips firefox-browserify prefix', () => {
+      const config = resolveThresholdConfig(
+        'benchmark-firefox-browserify-swap',
+      );
+      expect(config).toBeDefined();
+      expect(config).toHaveProperty('openSwapPageFromHome');
+    });
+
+    it('strips chrome-webpack prefix', () => {
+      const config = resolveThresholdConfig('benchmark-chrome-webpack-swap');
+      expect(config).toBeDefined();
+      expect(config).toHaveProperty('openSwapPageFromHome');
+    });
+
+    it('strips prefix then converts to kebab-case', () => {
+      const config = resolveThresholdConfig(
+        'benchmark-chrome-browserify-onboardingImportWallet',
+      );
+      expect(config).toBeDefined();
+      expect(config).toHaveProperty('importWalletToSocialScreen');
+    });
+  });
+
+  describe('loadCurrentBenchmarks', () => {
+    it('loads JSON files from a directory', async () => {
+      jest
+        .spyOn(fs, 'readdir')
+        .mockResolvedValue(['bench-a.json', 'bench-b.json', 'readme.txt'] as never);
+      jest.spyOn(fs, 'readFile').mockResolvedValue(
+        JSON.stringify({ entry: makeBenchmarkResults() }),
+      );
+
+      const results = await loadCurrentBenchmarks('/fake/dir');
+
+      expect(results).toHaveLength(2);
+      expect(results[0].name).toBe('bench-a');
+      expect(results[1].name).toBe('bench-b');
+
+      jest.restoreAllMocks();
+    });
+  });
+
+  describe('loadBaseline', () => {
+    it('returns empty object when fetch returns null', async () => {
+      jest
+        .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
+        .mockResolvedValue(null);
+
+      const result = await loadBaseline();
+
+      expect(result).toStrictEqual({});
+
+      jest.restoreAllMocks();
+    });
+
+    it('returns baseline data when fetch succeeds', async () => {
+      const mockBaseline = {
+        'test/metric': { uiStartup: { mean: 100, p75: 110, p95: 130 } },
+      };
+      jest
+        .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
+        .mockResolvedValue(mockBaseline);
+
+      const result = await loadBaseline();
+
+      expect(result).toBe(mockBaseline);
+
+      jest.restoreAllMocks();
+    });
+  });
+
+  describe('printReport', () => {
+    let logSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      logSpy = jest.spyOn(console, 'log').mockImplementation();
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('prints PASS when no benchmarks failed', () => {
+      printReport({ comparisons: [], anyFailed: false });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('RESULT: PASS');
+    });
+
+    it('prints FAIL when a benchmark failed', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'test-bench',
+            relativeMetrics: [],
+            absoluteViolations: [],
+            hasRegression: false,
+            hasWarning: false,
+            absoluteFailed: true,
+          },
+        ],
+        anyFailed: true,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('FAIL  test-bench');
+      expect(output).toContain('RESULT: FAIL');
+    });
+
+    it('shows (no historical baseline data) when no relative metrics', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'test-bench',
+            relativeMetrics: [],
+            absoluteViolations: [],
+            hasRegression: false,
+            hasWarning: false,
+            absoluteFailed: false,
+          },
+        ],
+        anyFailed: false,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('(no historical baseline data)');
+    });
+
+    it('groups p75 and p95 on same line with indications', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'test-bench',
+            relativeMetrics: [
+              {
+                metric: 'uiStartup',
+                percentile: 'p75',
+                current: 1100,
+                baseline: 1000,
+                delta: 100,
+                deltaPercent: 0.1,
+                direction: 'slower',
+                severity: 'regression',
+                indication: '🔺',
+              },
+              {
+                metric: 'uiStartup',
+                percentile: 'p95',
+                current: 1300,
+                baseline: 1200,
+                delta: 100,
+                deltaPercent: 0.083,
+                direction: 'slower',
+                severity: 'warn',
+                indication: '🟡⬆️',
+              },
+            ],
+            absoluteViolations: [],
+            hasRegression: true,
+            hasWarning: true,
+            absoluteFailed: false,
+          },
+        ],
+        anyFailed: false,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('uiStartup:');
+      expect(output).toContain('p75: 1100ms');
+      expect(output).toContain('p95: 1300ms');
+    });
+
+    it('overrides indication with 🔺 for absolute fail violations', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'test-bench',
+            relativeMetrics: [
+              {
+                metric: 'uiStartup',
+                percentile: 'p75',
+                current: 99999,
+                baseline: 1000,
+                delta: 98999,
+                deltaPercent: 98.999,
+                direction: 'slower',
+                severity: 'regression',
+                indication: '🔺',
+              },
+              {
+                metric: 'uiStartup',
+                percentile: 'p95',
+                current: 99999,
+                baseline: 1200,
+                delta: 98799,
+                deltaPercent: 82.33,
+                direction: 'slower',
+                severity: 'regression',
+                indication: '🔺',
+              },
+            ],
+            absoluteViolations: [
+              {
+                metricId: 'uiStartup',
+                percentile: 'p75',
+                value: 99999,
+                threshold: 5000,
+                severity: 'fail',
+              },
+            ],
+            hasRegression: true,
+            hasWarning: false,
+            absoluteFailed: true,
+          },
+        ],
+        anyFailed: true,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('🔺 p75: 99999ms');
+    });
+
+    it('counts warnings for benchmarks with warn-level violations', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'warn-bench',
+            relativeMetrics: [],
+            absoluteViolations: [
+              {
+                metricId: 'uiStartup',
+                percentile: 'p75',
+                value: 5000,
+                threshold: 4500,
+                severity: 'warn',
+              },
+            ],
+            hasRegression: false,
+            hasWarning: true,
+            absoluteFailed: false,
+          },
+        ],
+        anyFailed: false,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('1 warnings');
     });
   });
 });

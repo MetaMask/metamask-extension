@@ -164,6 +164,62 @@ describe('aggregateHistoricalData', () => {
     expect(result['pageLoad/entry']?.uiStartup?.p75).toBe(1350);
     expect(result['pageLoad/entry']?.uiStartup?.p95).toBe(1600);
   });
+
+  it('skips commits where presets is missing', () => {
+    const data = asHistoricalFile({
+      c1: { timestamp: 1 },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    expect(result).toStrictEqual({});
+  });
+
+  it('skips preset entries that are not objects', () => {
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: 'not-an-object',
+          userActions: makeCommit().presets.userActions,
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    expect(result['pageLoad/standardHome']).toBeUndefined();
+    expect(
+      result['userActions/loadNewAccount']?.loadNewAccount?.mean,
+    ).toBe(300);
+  });
+
+  it('falls back to mean when p75/p95 data is missing', () => {
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 500 },
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    expect(result['pageLoad/entry']?.metric?.mean).toBe(500);
+    expect(result['pageLoad/entry']?.metric?.p75).toBe(500);
+    expect(result['pageLoad/entry']?.metric?.p95).toBe(500);
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining('No p75 data'),
+    );
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining('No p95 data'),
+    );
+  });
 });
 
 describe('fetchHistoricalPerformanceData', () => {
@@ -458,5 +514,26 @@ describe('fetchHistoricalPerformanceData', () => {
     const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).toBeNull();
+  });
+
+  it('includes Authorization header when GITHUB_TOKEN is set', async () => {
+    process.env.GITHUB_TOKEN = 'test-token-123';
+    mockFetch
+      .mockReturnValueOnce(makeNotFoundResponse())
+      .mockReturnValueOnce(makeOkResponse([]));
+
+    await fetchHistoricalPerformanceData('main');
+
+    const apiCall = mockFetch.mock.calls.find(
+      (c: [string, RequestInit?]) =>
+        typeof c[0] === 'string' && c[0].includes('api.github.com'),
+    );
+    expect(apiCall).toBeDefined();
+    expect((apiCall as [string, RequestInit])[1]?.headers).toHaveProperty(
+      'Authorization',
+      'token test-token-123',
+    );
+
+    delete process.env.GITHUB_TOKEN;
   });
 });
