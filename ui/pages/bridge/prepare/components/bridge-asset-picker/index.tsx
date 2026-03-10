@@ -307,6 +307,7 @@ export const BridgeAssetPicker = ({
       <MarketClosedModal
         isOpen={showMarketClosedModal}
         onClose={() => {
+          closeFromMarketCloseRef.current = false;
           setShowMarketClosedModal(false);
         }}
       />
