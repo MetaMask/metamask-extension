@@ -67,11 +67,14 @@ describe('Test Snap Multi Install', function () {
           tag: 'button',
         });
 
-        // wait and scroll if necessary
-        await driver.waitForSelector({
-          tag: 'h3',
-          text: 'Add to MetaMask',
-        });
+        // wait for snap binary download and verification to complete, then scroll if necessary
+        await driver.waitForSelector(
+          {
+            tag: 'h3',
+            text: 'Add to MetaMask',
+          },
+          { timeout: 30000 },
+        );
         await driver.clickElementSafe(
           '[data-testid="snap-install-scroll"]',
           3000,
