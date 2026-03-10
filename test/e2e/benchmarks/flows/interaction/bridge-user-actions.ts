@@ -127,9 +127,7 @@ export async function run(): Promise<BenchmarkRunResult> {
     );
 
     return [
-      { id: 'bridge_load_page', duration: loadPage },
-      { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
-      { id: 'bridge_search_token', duration: searchToken },
+      ...steps.map((s) => ({ id: s.id, duration: s.duration })),
       ...buildLongTaskTimerResults(steps),
     ];
   }, BENCHMARK_TYPE.USER_ACTION);

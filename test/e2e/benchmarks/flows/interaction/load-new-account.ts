@@ -59,7 +59,7 @@ export async function run(): Promise<BenchmarkRunResult> {
     );
 
     return [
-      { id: 'load_new_account', duration: loadingTimes },
+      ...steps.map((s) => ({ id: s.id, duration: s.duration })),
       ...buildLongTaskTimerResults(steps),
     ];
   }, BENCHMARK_TYPE.USER_ACTION);
