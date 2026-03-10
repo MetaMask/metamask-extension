@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   usePerpsLivePositions,
@@ -13,6 +13,7 @@ import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsRecentActivity } from './perps-recent-activity';
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { WithdrawFundsModal } from './withdraw-funds-modal';
 import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
@@ -27,6 +28,7 @@ import {
  */
 export const PerpsTabView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   // Use stream hooks for real-time data
   const { positions, isInitialLoading: positionsLoading } =
@@ -61,6 +63,14 @@ export const PerpsTabView: React.FC = () => {
     return allHip3Markets.slice(0, 5);
   }, [allHip3Markets]);
 
+  const handleOpenWithdrawModal = useCallback(() => {
+    setIsWithdrawModalOpen(true);
+  }, []);
+
+  const handleCloseWithdrawModal = useCallback(() => {
+    setIsWithdrawModalOpen(false);
+  }, []);
+
   // Show loading state while initial data is being fetched
   if (isLoading) {
     return (
@@ -86,9 +96,7 @@ export const PerpsTabView: React.FC = () => {
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
         onAddFunds={triggerDeposit}
-        onWithdraw={() => {
-          // TODO: Navigate to withdraw flow
-        }}
+        onWithdraw={handleOpenWithdrawModal}
       />
 
       {/* Positions + Orders sections */}
@@ -110,6 +118,10 @@ export const PerpsTabView: React.FC = () => {
       <PerpsSupportLearn />
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
+      <WithdrawFundsModal
+        isOpen={isWithdrawModalOpen}
+        onClose={handleCloseWithdrawModal}
+      />
     </Box>
   );
 };

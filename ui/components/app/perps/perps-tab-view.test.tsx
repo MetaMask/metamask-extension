@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -43,6 +43,14 @@ jest.mock('../../../hooks/perps/stream', () => ({
     hip3Markets: mocks.mockHip3Markets,
     isInitialLoading: false,
   }),
+}));
+
+jest.mock('./withdraw-funds-modal', () => ({
+  WithdrawFundsModal: ({ isOpen }: { isOpen: boolean }) => (
+    <div data-testid="perps-withdraw-modal-state">
+      {isOpen ? 'open' : 'closed'}
+    </div>
+  ),
 }));
 
 const mockStore = configureStore({
@@ -146,6 +154,21 @@ describe('PerpsTabView', () => {
       renderWithProvider(<PerpsTabView />, mockStore);
 
       expect(screen.getByTestId('perps-watchlist')).toBeInTheDocument();
+    });
+
+    it('opens withdraw modal when withdraw is clicked from balance dropdown', () => {
+      renderWithProvider(<PerpsTabView />, mockStore);
+
+      expect(
+        screen.getByTestId('perps-withdraw-modal-state'),
+      ).toHaveTextContent('closed');
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
+
+      expect(
+        screen.getByTestId('perps-withdraw-modal-state'),
+      ).toHaveTextContent('open');
     });
   });
 

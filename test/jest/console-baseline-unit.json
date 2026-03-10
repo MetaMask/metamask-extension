@@ -469,6 +469,9 @@
     "ui/components/app/perps/hooks/usePerpsDepositConfirmation.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/hooks/usePerpsWithdraw.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/order-card/order-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -523,6 +526,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/transaction-card/transaction-card.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/withdraw-funds-modal/withdraw-funds-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/update-tpsl/update-tpsl-modal-content.test.tsx": {
