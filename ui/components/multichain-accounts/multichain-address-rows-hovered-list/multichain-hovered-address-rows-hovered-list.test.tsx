@@ -731,7 +731,7 @@ describe('MultichainHoveredAddressRowsList', () => {
       fireEvent.click(viewAllButton);
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
     });
 
@@ -772,7 +772,7 @@ describe('MultichainHoveredAddressRowsList', () => {
       fireEvent.click(viewAllButton);
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(SPECIAL_GROUP_ID)}`,
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(SPECIAL_GROUP_ID)}`,
       );
     });
 
@@ -796,7 +796,7 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       expect(mockOnViewAllClick).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
     });
 
