@@ -73,7 +73,10 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
   return useInfiniteQuery({
     ...queryOptions,
     select: selectFn,
-    enabled: Boolean(useExternalServices) && networks.length > 0,
+    enabled:
+      Boolean(useExternalServices) &&
+      networks.length > 0 &&
+      accountAddresses.length > 0,
     keepPreviousData: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
