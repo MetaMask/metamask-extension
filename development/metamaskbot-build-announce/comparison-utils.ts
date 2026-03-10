@@ -74,15 +74,15 @@ export function getTrafficLightIndication(
   direction: ComparisonDirection,
 ): string {
   if (severity === ComparisonSeverity.Regression) {
-    return '🔺';
-  }
-  if (severity === ComparisonSeverity.Improvement) {
-    return '🔻';
+    return direction === ComparisonDirection.Slower ? '🔺' : '🔻';
   }
   if (severity === ComparisonSeverity.Warn) {
-    return direction === ComparisonDirection.Slower ? '🔼' : '🔽';
+    return direction === ComparisonDirection.Slower ? '🟡⬆️' : '🟡⬇️';
   }
-  return '⚪';
+  if (severity === ComparisonSeverity.Improvement) {
+    return direction === ComparisonDirection.Faster ? '🟢⬇️' : '🟢⬆️';
+  }
+  return '➡️';
 }
 
 /**

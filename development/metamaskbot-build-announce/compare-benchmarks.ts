@@ -277,8 +277,8 @@ export function printReport(result: {
       const parts = [entry.p75, entry.p95].map((pctl) => {
         const delta = formatDeltaPercent(pctl.deltaPercent, pctl.direction);
         const failed = failViolations.has(`${entry.metric}:${pctl.percentile}`);
-        const prefix = failed ? '🔺 ' : '';
-        return `${prefix}${pctl.percentile}: ${pctl.current.toFixed(0)}ms (${delta})`;
+        const icon = failed ? '🔺' : pctl.indication;
+        return `${icon} ${pctl.percentile}: ${pctl.current.toFixed(0)}ms (${delta})`;
       });
       console.log(`    ${entry.metric}: ${parts.join(' | ')}`);
     }

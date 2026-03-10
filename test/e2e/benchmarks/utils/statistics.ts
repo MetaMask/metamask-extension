@@ -8,11 +8,13 @@
  * - Sanity checks for metric validation
  */
 
-import { ThresholdSeverity } from '../../../../shared/constants/benchmarks';
+import {
+  ThresholdSeverity,
+} from '../../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
-  PercentileThreshold,
   PercentileKey,
+  PercentileThreshold,
   StatisticalResult,
   ThresholdConfig,
   ThresholdViolation,
@@ -425,7 +427,6 @@ const validatePercentile = (
   const warnThreshold = getEffectiveThreshold(thresholds.warn, ciMultiplier);
   const failThreshold = getEffectiveThreshold(thresholds.fail, ciMultiplier);
 
-  // Check fail threshold first (more severe)
   if (value > failThreshold) {
     return {
       metricId,
@@ -436,7 +437,6 @@ const validatePercentile = (
     };
   }
 
-  // Check warn threshold
   if (value > warnThreshold) {
     return {
       metricId,

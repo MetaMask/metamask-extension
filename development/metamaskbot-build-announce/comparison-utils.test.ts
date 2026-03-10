@@ -37,7 +37,7 @@ describe('benchmark-comparison', () => {
       );
       expect(result.severity).toBe(ComparisonSeverity.Improvement);
       expect(result.direction).toBe(ComparisonDirection.Faster);
-      expect(result.indication).toBe('🔻');
+      expect(result.indication).toBe('🟢⬇️');
     });
 
     it('classifies 5-10% as warn', () => {
@@ -50,7 +50,7 @@ describe('benchmark-comparison', () => {
       );
       expect(result.severity).toBe(ComparisonSeverity.Warn);
       expect(result.direction).toBe(ComparisonDirection.Slower);
-      expect(result.indication).toBe('🔼');
+      expect(result.indication).toBe('🟡⬆️');
       expect(result.percentile).toBe('p95');
     });
 
@@ -63,7 +63,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.severity).toBe(ComparisonSeverity.Neutral);
-      expect(result.indication).toBe('⚪');
+      expect(result.indication).toBe('➡️');
     });
 
     it('handles identical values', () => {
@@ -221,7 +221,7 @@ describe('benchmark-comparison', () => {
   });
 
   describe('getTrafficLightIndication', () => {
-    it('returns 🔺 for regression', () => {
+    it('returns 🔺 for regression slower', () => {
       expect(
         getTrafficLightIndication(
           ComparisonSeverity.Regression,
@@ -230,22 +230,49 @@ describe('benchmark-comparison', () => {
       ).toBe('🔺');
     });
 
-    it('returns 🔻 for improvement', () => {
+    it('returns 🔻 for regression faster', () => {
       expect(
         getTrafficLightIndication(
-          ComparisonSeverity.Improvement,
+          ComparisonSeverity.Regression,
           ComparisonDirection.Faster,
         ),
       ).toBe('🔻');
     });
 
-    it('returns ⚪ for neutral', () => {
+    it('returns 🟡⬆️ for warn slower', () => {
+      expect(
+        getTrafficLightIndication(
+          ComparisonSeverity.Warn,
+          ComparisonDirection.Slower,
+        ),
+      ).toBe('🟡⬆️');
+    });
+
+    it('returns 🟡⬇️ for warn faster', () => {
+      expect(
+        getTrafficLightIndication(
+          ComparisonSeverity.Warn,
+          ComparisonDirection.Faster,
+        ),
+      ).toBe('🟡⬇️');
+    });
+
+    it('returns 🟢⬇️ for improvement faster', () => {
+      expect(
+        getTrafficLightIndication(
+          ComparisonSeverity.Improvement,
+          ComparisonDirection.Faster,
+        ),
+      ).toBe('🟢⬇️');
+    });
+
+    it('returns ➡️ for neutral', () => {
       expect(
         getTrafficLightIndication(
           ComparisonSeverity.Neutral,
           ComparisonDirection.Same,
         ),
-      ).toBe('⚪');
+      ).toBe('➡️');
     });
   });
 
