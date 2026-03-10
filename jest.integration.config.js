@@ -9,11 +9,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
   coverageReporters: ['html', 'json'],
   maxWorkers: '50%',
-  moduleNameMapper: {
-    // Map @metamask/perps-controller to local mock
-    '^@metamask/perps-controller$':
-      '<rootDir>/ui/__mocks__/perps/perps-controller/index.ts',
-  },
+  moduleNameMapper: {},
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
@@ -71,7 +67,18 @@ module.exports = {
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       'jest-preview/transforms/file',
   },
-  transformIgnorePatterns: ['/node_modules/'],
+  // Transform ESM packages that Jest can't parse natively
+  // These packages use ES module syntax (import/export) and need to be transpiled
+  // Packages from @metamask/perps-controller dependency tree that are ESM-only:
+  // - @nktkas/hyperliquid, @nktkas/rews
+  // - @noble/hashes, @noble/curves
+  // - @scure/base (nested in micro-packed)
+  // - valibot, micro-eth-signer, micro-packed
+  // - lodash-es, wretch (transitive via @myx-trade/sdk)
+  // - @myx-trade/sdk (ESM .mjs with CJS sub-imports)
+  transformIgnorePatterns: [
+    'node_modules/(?!(@nktkas|@noble|@scure|@myx-trade|valibot|micro-eth-signer|micro-packed|lodash-es|wretch)/)',
+  ],
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
   verbose: false,

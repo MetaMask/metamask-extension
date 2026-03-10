@@ -308,11 +308,6 @@ const config = {
     alias: {
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
-      // Mock perps-controller for minimal POC branch development
-      '@metamask/perps-controller': join(
-        context,
-        '../ui/__mocks__/perps/perps-controller',
-      ),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
@@ -350,6 +345,13 @@ const config = {
       /^lodash$/u,
     ],
     rules: [
+      {
+        test: /\.mjs$/u,
+        include: /node_modules[\\/]@myx-trade[\\/]sdk/u,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       // json
       { test: /\.json$/u, type: 'json' },
       // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
