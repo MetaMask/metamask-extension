@@ -117,20 +117,23 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-reject-button'),
     );
 
+    // When user rejects, URL should not include query parameters
+    const supportLinkWithoutQueryParams = SUPPORT_LINK?.split('?')[0] ?? '';
+
     expect(mockOnClose).toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SupportLinkClicked,
         properties: {
-          url: SUPPORT_LINK,
+          url: supportLinkWithoutQueryParams,
         },
       }),
       {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+    expect(openWindow).toHaveBeenCalledWith(supportLinkWithoutQueryParams);
   });
 
   it('handles clicking the accept button with undefined parameters', () => {

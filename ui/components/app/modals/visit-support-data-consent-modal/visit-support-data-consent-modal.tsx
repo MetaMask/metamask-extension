@@ -94,19 +94,21 @@ const VisitSupportDataConsentModal: React.FC<
 
   const handleClickNoShare = useCallback(() => {
     onClose();
+    // When user doesn't consent, strip all query parameters for privacy
+    const supportLinkWithoutQueryParams = SUPPORT_LINK?.split('?')[0] ?? '';
     trackEvent(
       {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SupportLinkClicked,
         properties: {
-          url: SUPPORT_LINK,
+          url: supportLinkWithoutQueryParams,
         },
       },
       {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    openWindow(SUPPORT_LINK as string);
+    openWindow(supportLinkWithoutQueryParams);
   }, [onClose, trackEvent]);
 
   return (
