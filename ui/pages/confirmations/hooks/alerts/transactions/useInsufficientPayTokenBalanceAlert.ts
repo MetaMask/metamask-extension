@@ -119,6 +119,10 @@ export function useInsufficientPayTokenBalanceAlert({
   );
 
   return useMemo(() => {
+    if (isLoading) {
+      return [];
+    }
+
     const baseAlert = {
       field: RowAlertKey.EstimatedFee,
       severity: Severity.Danger,
@@ -159,6 +163,7 @@ export function useInsufficientPayTokenBalanceAlert({
 
     return [];
   }, [
+    isLoading,
     isInsufficientForInput,
     isInsufficientForFees,
     isInsufficientForSourceNetwork,

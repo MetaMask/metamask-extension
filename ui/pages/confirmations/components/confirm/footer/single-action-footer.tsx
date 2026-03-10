@@ -2,10 +2,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
-import {
-  Button,
-  ButtonSize,
-} from '../../../../../components/component-library';
+import { Button, ButtonSize } from '@metamask/design-system-react';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -14,19 +11,13 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
-import { AlertsName } from '../../../hooks/alerts/constants';
+import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
 type ButtonState = {
   buttonText: string;
   isDisabled: boolean;
   isLoading: boolean;
 };
-
-const INSUFFICIENT_BALANCE_ALERTS = new Set([
-  AlertsName.InsufficientPayTokenBalance,
-  AlertsName.InsufficientPayTokenFees,
-  AlertsName.InsufficientPayTokenNative,
-]);
 
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
@@ -58,22 +49,17 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   }, [requiredTokens, isMusdConversion]);
 
   return useMemo(() => {
-    if (!isMusdConversion) {
-      return {
-        buttonText: t('confirm'),
-        isDisabled: false,
-        isLoading: isGaslessLoading,
-      };
-    }
-
     const firstBlockingAlert = blockingAlerts[0];
     const isLoadingState = isGaslessLoading || isPayLoading;
+    let buttonText = t('confirm');
+
+    if (isMusdConversion) {
+      buttonText = t('musdConvert');
+    }
 
     if (firstBlockingAlert) {
       return {
-        buttonText: INSUFFICIENT_BALANCE_ALERTS.has(firstBlockingAlert.key)
-          ? t('alertInsufficientPayTokenBalance')
-          : t('musdConvert'),
+        buttonText,
         isDisabled: true,
         isLoading: isLoadingState,
       };
@@ -81,14 +67,14 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
     if (!hasAmount) {
       return {
-        buttonText: t('musdConvert'),
+        buttonText,
         isDisabled: true,
         isLoading: isLoadingState,
       };
     }
 
     return {
-      buttonText: t('musdConvert'),
+      buttonText,
       isDisabled: false,
       isLoading: isLoadingState,
     };
@@ -115,12 +101,15 @@ export const SingleActionFooter = ({
     useSingleActionButtonState(isGaslessLoading);
 
   return (
-    <PageFooter className="confirm-footer_page-footer">
+    <PageFooter
+      className="confirm-footer_page-footer"
+      flexDirection={FlexDirection.Column}
+    >
       <Button
-        block
+        className="w-full"
         data-testid="confirm-footer-button"
-        disabled={!isLoading && isDisabled}
-        loading={isLoading}
+        disabled={isDisabled}
+        isLoading={isLoading && !isDisabled}
         onClick={isLoading ? undefined : onSubmit}
         size={ButtonSize.Lg}
       >

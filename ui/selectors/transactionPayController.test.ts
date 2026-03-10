@@ -115,7 +115,7 @@ describe('transactionPayController selectors', () => {
       expect(result).toBe(false);
     });
 
-    it('returns false when transaction data does not exist', () => {
+    it('returns true when transaction data does not exist', () => {
       const state = createMockState();
 
       const result = selectIsTransactionPayLoadingByTransactionId(
@@ -123,7 +123,7 @@ describe('transactionPayController selectors', () => {
         TRANSACTION_ID,
       );
 
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
   });
 

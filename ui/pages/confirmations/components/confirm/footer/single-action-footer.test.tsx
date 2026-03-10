@@ -7,7 +7,6 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { AlertsName } from '../../../hooks/alerts/constants';
 import {
   useIsTransactionPayLoading,
   useTransactionPayRequiredTokens,
@@ -108,64 +107,13 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
   });
 
-  it('disables button and shows insufficient balance text for InsufficientPayTokenNative blocking alert', () => {
+  it('disables button when there is a blocking alert', () => {
     const { getByTestId } = render({
       alerts: [
         {
-          key: AlertsName.InsufficientPayTokenNative,
+          key: 'some-blocking-alert',
           severity: Severity.Danger,
-          message: 'Insufficient native token',
-          isBlocking: true,
-        },
-      ],
-    });
-
-    const button = getByTestId('confirm-footer-button');
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Insufficient funds');
-  });
-
-  it('shows insufficient balance text for InsufficientPayTokenBalance alert', () => {
-    const { getByTestId } = render({
-      alerts: [
-        {
-          key: AlertsName.InsufficientPayTokenBalance,
-          severity: Severity.Danger,
-          message: 'Insufficient token balance',
-          isBlocking: true,
-        },
-      ],
-    });
-
-    const button = getByTestId('confirm-footer-button');
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Insufficient funds');
-  });
-
-  it('shows insufficient balance text for InsufficientPayTokenFees alert', () => {
-    const { getByTestId } = render({
-      alerts: [
-        {
-          key: AlertsName.InsufficientPayTokenFees,
-          severity: Severity.Danger,
-          message: 'Insufficient token for fees',
-          isBlocking: true,
-        },
-      ],
-    });
-
-    const button = getByTestId('confirm-footer-button');
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Insufficient funds');
-  });
-
-  it('shows generic convert text for non-balance blocking alerts', () => {
-    const { getByTestId } = render({
-      alerts: [
-        {
-          key: AlertsName.Blockaid,
-          severity: Severity.Danger,
-          message: 'Security alert',
+          message: 'Something is wrong',
           isBlocking: true,
         },
       ],

@@ -345,4 +345,26 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
     expect(result.current).toStrictEqual([]);
   });
+
+  it('returns no alert if loading even when balance is insufficient', () => {
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        ...PAY_TOKEN_MOCK,
+        balanceUsd: '1.00',
+        balanceRaw: '100',
+      },
+      isNative: false,
+      setPayToken: jest.fn(),
+    });
+
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      { ...REQUIRED_TOKEN_MOCK, amountUsd: '50.00' },
+    ]);
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([]);
+  });
 });
