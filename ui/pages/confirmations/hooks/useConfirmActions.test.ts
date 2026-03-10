@@ -3,11 +3,12 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../test/data/confirmations/token-transfer';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import * as ConfirmPreviousNavigation from './useConfirmPreviousNavigation';
 import * as ConfirmSendNavigation from './useConfirmSendNavigation';
 import { useConfirmActions } from './useConfirmActions';
 
 const mockDispatch = jest.fn();
+const mockNavigate = jest.fn();
+const mockReturnTo = jest.fn<string | undefined, []>(() => undefined);
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -16,6 +17,18 @@ jest.mock('react-redux', () => {
     useDispatch: () => mockDispatch,
   };
 });
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock('./useConfirmationNavigation', () => ({
+  ...jest.requireActual('./useConfirmationNavigation'),
+  useConfirmationNavigationOptions: () => ({
+    returnTo: mockReturnTo(),
+  }),
+}));
 
 function renderHook() {
   const transactionMeta = genUnapprovedTokenTransferConfirmation({
@@ -45,7 +58,6 @@ describe('useConfirmActions', () => {
     const result = renderHook();
     result.resetTransactionState();
 
-    // Verify that updateCustomNonce('') and setNextNonce('') are dispatched
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'UPDATE_CUSTOM_NONCE',
       value: '',
@@ -76,32 +88,33 @@ describe('useConfirmActions', () => {
     expect(mockNavigateBackIfSend).not.toHaveBeenCalled();
   });
 
-  it('calls navigateBackToPrevious when navigateBackToPreviousPage is true', async () => {
-    const mockNavigateBackToPrevious = jest.fn();
-    jest
-      .spyOn(ConfirmPreviousNavigation, 'useConfirmPreviousNavigation')
-      .mockReturnValue({
-        navigateBackToPrevious: mockNavigateBackToPrevious,
-      });
+  it('navigates to returnTo when navigateBackToPreviousPage is true', async () => {
+    mockReturnTo.mockReturnValue('/asset/0x1/0xabc');
     mockDispatch.mockResolvedValue(undefined);
     const result = renderHook();
     await result.onCancel({
       location: 'dummy',
       navigateBackToPreviousPage: true,
     });
-    expect(mockNavigateBackToPrevious).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith('/asset/0x1/0xabc');
   });
 
-  it('does not call navigateBackToPrevious by default', async () => {
-    const mockNavigateBackToPrevious = jest.fn();
-    jest
-      .spyOn(ConfirmPreviousNavigation, 'useConfirmPreviousNavigation')
-      .mockReturnValue({
-        navigateBackToPrevious: mockNavigateBackToPrevious,
-      });
+  it('navigates to DEFAULT_ROUTE when navigateBackToPreviousPage is true but no returnTo', async () => {
+    mockReturnTo.mockReturnValue(undefined);
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook();
+    await result.onCancel({
+      location: 'dummy',
+      navigateBackToPreviousPage: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('does not navigate back by default', async () => {
+    mockReturnTo.mockReturnValue('/some-page');
     mockDispatch.mockResolvedValue(undefined);
     const result = renderHook();
     await result.onCancel({ location: 'dummy' });
-    expect(mockNavigateBackToPrevious).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

@@ -22,43 +22,56 @@ type ButtonState = {
   isLoading: boolean;
 };
 
-function useMusdConversionButtonState(isGaslessLoading: boolean): ButtonState {
+const INSUFFICIENT_BALANCE_ALERTS = new Set([
+  AlertsName.InsufficientPayTokenBalance,
+  AlertsName.InsufficientPayTokenFees,
+  AlertsName.InsufficientPayTokenNative,
+]);
+
+function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
+  const isMusdConversion =
+    currentConfirmation?.type === TransactionType.musdConversion;
+
   const { alerts } = useAlerts(transactionId);
-  const isLoading = useIsTransactionPayLoading();
+  const isPayLoading = useIsTransactionPayLoading();
   const requiredTokens = useTransactionPayRequiredTokens();
 
   const blockingAlerts = useMemo(
-    () => alerts.filter((a) => a.isBlocking),
-    [alerts],
+    () => (isMusdConversion ? alerts.filter((a) => a.isBlocking) : []),
+    [alerts, isMusdConversion],
   );
 
-  const hasAmount = useMemo(
-    () =>
-      (requiredTokens ?? [])
-        .filter((token) => !token.skipIfBalance)
-        .reduce(
-          (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
-          new BigNumber(0),
-        )
-        .gt(0),
-    [requiredTokens],
-  );
+  const hasAmount = useMemo(() => {
+    if (!isMusdConversion) {
+      return false;
+    }
+    return (requiredTokens ?? [])
+      .filter((token) => !token.skipIfBalance)
+      .reduce(
+        (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
+        new BigNumber(0),
+      )
+      .gt(0);
+  }, [requiredTokens, isMusdConversion]);
 
   return useMemo(() => {
+    if (!isMusdConversion) {
+      return {
+        buttonText: t('confirm'),
+        isDisabled: false,
+        isLoading: isGaslessLoading,
+      };
+    }
+
     const firstBlockingAlert = blockingAlerts[0];
-    const isLoadingState = isGaslessLoading || isLoading;
+    const isLoadingState = isGaslessLoading || isPayLoading;
 
     if (firstBlockingAlert) {
-      const isBalanceAlert =
-        firstBlockingAlert.key === AlertsName.InsufficientPayTokenBalance ||
-        firstBlockingAlert.key === AlertsName.InsufficientPayTokenFees ||
-        firstBlockingAlert.key === AlertsName.InsufficientPayTokenNative;
-
       return {
-        buttonText: isBalanceAlert
+        buttonText: INSUFFICIENT_BALANCE_ALERTS.has(firstBlockingAlert.key)
           ? t('alertInsufficientPayTokenBalance')
           : t('musdConvert'),
         isDisabled: true,
@@ -74,36 +87,19 @@ function useMusdConversionButtonState(isGaslessLoading: boolean): ButtonState {
       };
     }
 
-    if (isLoadingState) {
-      return {
-        buttonText: t('musdConvert'),
-        isDisabled: false,
-        isLoading: true,
-      };
-    }
-
     return {
       buttonText: t('musdConvert'),
       isDisabled: false,
-      isLoading: false,
+      isLoading: isLoadingState,
     };
-  }, [blockingAlerts, hasAmount, isGaslessLoading, isLoading, t]);
-}
-
-function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
-  const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const musdState = useMusdConversionButtonState(isGaslessLoading);
-
-  if (currentConfirmation?.type === TransactionType.musdConversion) {
-    return musdState;
-  }
-
-  return {
-    buttonText: t('confirm'),
-    isDisabled: false,
-    isLoading: isGaslessLoading,
-  };
+  }, [
+    blockingAlerts,
+    hasAmount,
+    isGaslessLoading,
+    isMusdConversion,
+    isPayLoading,
+    t,
+  ]);
 }
 
 type SingleActionFooterProps = {
