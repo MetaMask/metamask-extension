@@ -201,7 +201,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. 
               <a
-                href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
+                href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -617,7 +617,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. 
               <a
-                href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
+                href="https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -713,7 +713,7 @@ exports[`Security Tab should match snapshot 1`] = `
               </a>
               , and for Solana accounts, 
               <a
-                href="https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts"
+                href="https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/?utm_source=extension#solana-accounts"
                 rel="noopener noreferrer"
                 target="_blank"
               >

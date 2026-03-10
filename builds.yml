@@ -121,7 +121,7 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.0/index.html
-      - SUPPORT_LINK: https://support.metamask.io/
+      - SUPPORT_LINK: https://support.metamask.io?utm_source=extension
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
@@ -218,7 +218,7 @@ env:
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - METAMASK_REACT_REDUX_DEVTOOLS: null
-  - SUPPORT_LINK: https://support.metamask.io
+  - SUPPORT_LINK: https://support.metamask.io?utm_source=extension
   - SKIP_BACKGROUND_INITIALIZATION: false
   - PPOM_URI: ./ppom_bg.wasm
   # CDN for blockaid files

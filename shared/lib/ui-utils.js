@@ -6,7 +6,7 @@ export const COINGECKO_LINK = 'https://www.coingecko.com/';
 export const CRYPTOCOMPARE_LINK = 'https://www.cryptocompare.com/';
 export const PRIVACY_POLICY_LINK = 'https://consensys.io/privacy-policy/';
 export const METAMETRICS_SETTINGS_LINK =
-  'https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/';
+  'https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/?utm_source=extension';
 export const SURVEY_LINK = 'https://www.getfeedback.com/r/Oczu1vP0';
 
 // TODO make sure these links are correct
@@ -17,18 +17,18 @@ export const AUTO_DETECT_TOKEN_LEARN_MORE_LINK =
 export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
 
 export const SECURITY_ALERTS_LEARN_MORE_LINK =
-  'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/';
+  'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension';
 
 export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
-  'https://support.metamask.io/transactions-and-gas/transactions/simulations/';
+  'https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension';
 
 export const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export const SMART_ACCOUNT_INFO_LINK =
-  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts';
+  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts';
 
-export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/#step-two-locate-your-vault`;
+export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/?utm_source=extension#step-two-locate-your-vault`;
 
 export const SHIELD_TERMS_OF_USE_URL =
   'https://consensys.io/transaction-shield-supplemental-terms-and-privacy-notice';

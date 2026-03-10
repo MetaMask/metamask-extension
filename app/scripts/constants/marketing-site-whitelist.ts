@@ -3,7 +3,7 @@ export const COOKIE_ID_MARKETING_WHITELIST = [
   'https://learn.metamask.io',
   'https://mmi-support.zendesk.com',
   'https://community.metamask.io',
-  'https://support.metamask.io',
+  'https://support.metamask.io?utm_source=extension',
 ];
 
 if (process.env.IN_TEST) {
