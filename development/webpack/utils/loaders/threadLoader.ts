@@ -10,6 +10,48 @@ export type ThreadLoaderConfig = {
   watch: boolean;
 };
 
+function resolveEnvThreads(
+  value: ThreadLoaderConfig['threads'],
+): ThreadLoaderConfig['threads'] {
+  const raw = process.env.THREAD_LOADER_WORKERS?.trim();
+
+  if (!raw) {
+    return value;
+  }
+
+  if (raw === 'auto') {
+    return 'auto';
+  }
+
+  const parsed = Number(raw);
+  if (Number.isInteger(parsed) && parsed >= 0) {
+    return parsed;
+  }
+
+  return value;
+}
+
+function resolveEnvJobsPerThread(
+  value: ThreadLoaderConfig['jobsPerThread'],
+): ThreadLoaderConfig['jobsPerThread'] {
+  const raw = process.env.THREAD_LOADER_WORKER_PARALLEL_JOBS?.trim();
+
+  if (!raw) {
+    return value;
+  }
+
+  if (raw === 'auto') {
+    return 'auto';
+  }
+
+  const parsed = Number(raw);
+  if (Number.isInteger(parsed) && parsed > 0) {
+    return parsed;
+  }
+
+  return value;
+}
+
 /**
  * Resolves the worker count when `threads` is set to `'auto'`.
  *
@@ -52,7 +94,10 @@ export function resolveAutoJobs(threads: number): number {
 export function getThreadLoader(
   config: ThreadLoaderConfig,
 ): RuleSetUseItem | null {
-  const { threads, jobsPerThread, watch } = config;
+  const { watch } = config;
+
+  const threads = resolveEnvThreads(config.threads);
+  const jobsPerThread = resolveEnvJobsPerThread(config.jobsPerThread);
 
   if (threads === 0) {
     return null;
@@ -61,6 +106,10 @@ export function getThreadLoader(
   const resolvedThreads = threads === 'auto' ? resolveAutoThreads() : threads;
   const resolvedJobs =
     jobsPerThread === 'auto' ? resolveAutoJobs(resolvedThreads) : jobsPerThread;
+
+  console.log(
+    `Using thread-loader with ${resolvedThreads} worker(s) and ${resolvedJobs} job(s) per worker (watch mode: ${watch})`,
+  );
 
   return {
     loader: 'thread-loader',
