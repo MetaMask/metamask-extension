@@ -144,6 +144,9 @@
     "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
+    "feature-flags:sync": "tsx test/e2e/feature-flags/sync-production-flags.ts",
+    "feature-flags:sync:check": "tsx test/e2e/feature-flags/sync-production-flags.ts --check",
+    "feature-flags:sync:update": "tsx test/e2e/feature-flags/sync-production-flags.ts --update",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
@@ -302,7 +305,7 @@
     "@metamask/connectivity-controller": "^0.1.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.18.0",
-    "@metamask/core-backend": "^6.0.0",
+    "@metamask/core-backend": "^6.1.0",
     "@metamask/delegation-controller": "^2.0.1",
     "@metamask/delegation-core": "^0.2.0-rc.1",
     "@metamask/delegation-deployments": "^0.15.0",
