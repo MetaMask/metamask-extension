@@ -214,6 +214,7 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
+      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
       dispatch(setFromToken(fromTokenToUse));
     }
 
