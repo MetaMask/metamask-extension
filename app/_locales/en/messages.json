@@ -2229,9 +2229,6 @@
   "delete": {
     "message": "Delete"
   },
-  "deleteContact": {
-    "message": "Delete contact"
-  },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
@@ -4388,9 +4385,6 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "New contact"
   },
   "newContract": {
     "message": "New contract"
@@ -9039,9 +9033,6 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
-  "userName": {
-    "message": "Username"
-  },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart account is not supported"
   },
@@ -9060,9 +9051,6 @@
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "View contact"
   },
   "viewDetails": {
     "message": "View details"

@@ -162,11 +162,6 @@ describe('Contact Syncing - Existing User', function () {
           expect(contactNames).toContain('Bob Johnson');
           expect(contactNames).toContain('Charlie Brown');
 
-          // Set up UI navigation
-          const header = new HeaderNavbar(driver);
-          await header.checkPageIsLoaded();
-
-          // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
             return (
@@ -174,6 +169,8 @@ describe('Contact Syncing - Existing User', function () {
             );
           }, 30000);
 
+          const header = new HeaderNavbar(driver);
+          await header.checkPageIsLoaded();
           const contactsSettings = new ContactsSettings(driver);
 
           // STEP 2: Add new contact
@@ -231,10 +228,6 @@ describe('Contact Syncing - Existing User', function () {
           // STEP 3: Modify existing contact (Alice)
           console.log('STEP 3: Modifying existing contact...');
 
-          // Navigate back to contacts list first
-          await header.openContactsPage();
-          await contactsSettings.checkPageIsLoaded();
-
           await contactsSettings.editContact({
             existingContactName: 'Alice Smith',
             newContactName: modifiedContactName,
@@ -252,8 +245,6 @@ describe('Contact Syncing - Existing User', function () {
 
           // STEP 4: Delete existing contact (Bob)
           console.log('STEP 4: Deleting existing contact...');
-          await header.openContactsPage();
-          await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.deleteContact('Bob Johnson');
 

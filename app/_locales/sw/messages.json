@@ -377,9 +377,6 @@
     "message": "Akaunti $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Mawasiliano Mapya"
-  },
   "newContract": {
     "message": "Mkataba Mpya"
   },
@@ -640,12 +637,6 @@
   },
   "usedByClients": {
     "message": "Hutumiwa na wateja mbalimbali"
-  },
-  "userName": {
-    "message": "Jina la mtumiaji"
-  },
-  "viewContact": {
-    "message": "Tazama Mawasiliano"
   },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"

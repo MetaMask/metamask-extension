@@ -2131,9 +2131,6 @@
   "delete": {
     "message": "Supprimer"
   },
-  "deleteContact": {
-    "message": "Supprimer le contact"
-  },
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
   },
@@ -4267,9 +4264,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nouveau contact"
   },
   "newContract": {
     "message": "Nouveau contrat"
@@ -8761,9 +8755,6 @@
   "usedByClients": {
     "message": "Utilisé par plusieurs clients différents"
   },
-  "userName": {
-    "message": "Nom d’utilisateur"
-  },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"
   },
@@ -8782,9 +8773,6 @@
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Voir le contact"
   },
   "viewDetails": {
     "message": "Afficher les détails"

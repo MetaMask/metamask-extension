@@ -2131,9 +2131,6 @@
   "delete": {
     "message": "Hapus"
   },
-  "deleteContact": {
-    "message": "Hapus kontak"
-  },
   "deleteMetaMetricsData": {
     "message": "Hapus data MetaMetrics"
   },
@@ -4267,9 +4264,6 @@
   "newAccountNumberName": {
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Kontak baru"
   },
   "newContract": {
     "message": "Kontrak baru"
@@ -8764,9 +8758,6 @@
   "usedByClients": {
     "message": "Digunakan oleh berbagai klien yang berbeda"
   },
-  "userName": {
-    "message": "Nama pengguna"
-  },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"
   },
@@ -8785,9 +8776,6 @@
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Lihat kontak"
   },
   "viewDetails": {
     "message": "Lihat detail"

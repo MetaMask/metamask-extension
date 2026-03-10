@@ -395,9 +395,6 @@
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Нов контакт"
-  },
   "newContract": {
     "message": "Нов договор"
   },
@@ -658,12 +655,6 @@
   },
   "usedByClients": {
     "message": "Използва се от различни клиенти"
-  },
-  "userName": {
-    "message": "Потребителско име"
-  },
-  "viewContact": {
-    "message": "Преглед на контакта"
   },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"

@@ -2131,9 +2131,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteContact": {
-    "message": "Eliminar contacto"
-  },
   "deleteMetaMetricsData": {
     "message": "Eliminar datos de MetaMetrics"
   },
@@ -4267,9 +4264,6 @@
   "newAccountNumberName": {
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Contacto nuevo"
   },
   "newContract": {
     "message": "Contrato nuevo"
@@ -8764,9 +8758,6 @@
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
   },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
   "userOpContractDeployError": {
     "message": "No se admite la implementación de contratos desde una cuenta inteligente"
   },
@@ -8785,9 +8776,6 @@
   "viewAddressOnExplorer": {
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Ver contacto"
   },
   "viewDetails": {
     "message": "Ver detalles"

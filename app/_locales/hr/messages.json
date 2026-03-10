@@ -392,9 +392,6 @@
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Novi kontakt"
-  },
   "newContract": {
     "message": "Novi ugovor"
   },
@@ -652,12 +649,6 @@
   },
   "usedByClients": {
     "message": "Upotrebljavaju brojni klijenti"
-  },
-  "userName": {
-    "message": "Korisničko ime"
-  },
-  "viewContact": {
-    "message": "Prikaži kontakt"
   },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"

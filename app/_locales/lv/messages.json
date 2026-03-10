@@ -395,9 +395,6 @@
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Jauna kontaktpersona"
-  },
   "newContract": {
     "message": "Jauns līgums"
   },
@@ -658,12 +655,6 @@
   },
   "usedByClients": {
     "message": "Izmanto dažādi klienti"
-  },
-  "userName": {
-    "message": "Lietotājvārds"
-  },
-  "viewContact": {
-    "message": "Skatīt līgumu"
   },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"

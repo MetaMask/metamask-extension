@@ -847,9 +847,6 @@
   "newAccount": {
     "message": "Nuovo Account"
   },
-  "newContact": {
-    "message": "Nuovo contatto"
-  },
   "newContract": {
     "message": "Nuovo Contratto"
   },
@@ -1304,12 +1301,6 @@
   },
   "usedByClients": {
     "message": "Usato da una varietà di clients diversi"
-  },
-  "userName": {
-    "message": "Nome utente"
-  },
-  "viewContact": {
-    "message": "Visualizza contatto"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"

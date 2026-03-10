@@ -389,9 +389,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Uus kontakt"
-  },
   "newContract": {
     "message": "Uus kontakt"
   },
@@ -652,12 +649,6 @@
   },
   "usedByClients": {
     "message": "Kasutavad erinevad kliendid"
-  },
-  "userName": {
-    "message": "Kasutajanimi"
-  },
-  "viewContact": {
-    "message": "Kuva kontakt"
   },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"

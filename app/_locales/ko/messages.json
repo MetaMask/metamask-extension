@@ -2131,9 +2131,6 @@
   "delete": {
     "message": "삭제"
   },
-  "deleteContact": {
-    "message": "연락처 삭제"
-  },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics 데이터 삭제"
   },
@@ -4267,9 +4264,6 @@
   "newAccountNumberName": {
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "새 연락처"
   },
   "newContract": {
     "message": "새 계약"
@@ -8764,9 +8758,6 @@
   "usedByClients": {
     "message": "다양한 클라이언트에서 사용합니다."
   },
-  "userName": {
-    "message": "사용자 이름"
-  },
   "userOpContractDeployError": {
     "message": "스마트 계약 계정에서 계약 배포는 지원되지 않습니다."
   },
@@ -8785,9 +8776,6 @@
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "연락처 보기"
   },
   "viewDetails": {
     "message": "세부 정보 보기"

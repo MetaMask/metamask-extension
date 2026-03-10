@@ -382,9 +382,6 @@
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Kenalan Baru"
-  },
   "newContract": {
     "message": "Kontrak Baru"
   },
@@ -639,12 +636,6 @@
   },
   "usedByClients": {
     "message": "Digunakan oleh pelbagai klien berbeza"
-  },
-  "userName": {
-    "message": "Nama pengguna"
-  },
-  "viewContact": {
-    "message": "Lihat Kenalan"
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"

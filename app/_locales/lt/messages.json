@@ -395,9 +395,6 @@
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Naujas kontaktas"
-  },
   "newContract": {
     "message": "Nauja sutartis"
   },
@@ -658,12 +655,6 @@
   },
   "usedByClients": {
     "message": "Naudojama daugelio skirtingų klientų"
-  },
-  "userName": {
-    "message": "Vartotojo vardas"
-  },
-  "viewContact": {
-    "message": "Peržiūrėti kontaktą"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"

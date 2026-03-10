@@ -2131,9 +2131,6 @@
   "delete": {
     "message": "Xóa"
   },
-  "deleteContact": {
-    "message": "Xóa người liên hệ"
-  },
   "deleteMetaMetricsData": {
     "message": "Xóa dữ liệu MetaMetrics"
   },
@@ -4267,9 +4264,6 @@
   "newAccountNumberName": {
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Liên hệ mới"
   },
   "newContract": {
     "message": "Hợp đồng mới"
@@ -8764,9 +8758,6 @@
   "usedByClients": {
     "message": "Được nhiều ví khác nhau sử dụng"
   },
-  "userName": {
-    "message": "Tên người dùng"
-  },
   "userOpContractDeployError": {
     "message": "Không hỗ trợ triển khai hợp đồng từ tài khoản thông minh"
   },
@@ -8785,9 +8776,6 @@
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Xem địa chỉ liên hệ"
   },
   "viewDetails": {
     "message": "Xem chi tiết"
