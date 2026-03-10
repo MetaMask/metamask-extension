@@ -61,7 +61,7 @@ export const selectLocalTransactions = createSelector(
       }
 
       // Include pending transactions
-      // or locally submitted transactions (have actionId or origin=metamask)
+      // or locally submitted transactions (have actionId, origin=metamask, or no origin)
       const isPending = tx.status in PENDING_STATUS_HASH;
       const unsafeTx = tx as TransactionMeta & {
         actionId?: unknown;
@@ -70,7 +70,7 @@ export const selectLocalTransactions = createSelector(
       const hasActionId = unsafeTx.actionId !== undefined;
       const origin =
         typeof unsafeTx.origin === 'string' ? unsafeTx.origin : undefined;
-      const isLocalOrigin = origin === 'metamask' || undefined;
+      const isLocalOrigin = origin === 'metamask' || origin === undefined;
 
       return isPending || hasActionId || isLocalOrigin;
     });
