@@ -990,7 +990,6 @@ export function DesignerModePanel() {
       return;
     }
     setIsSending(true);
-    setWaitingForAgent(true);
 
     const message = `Apply these changes:\n${editLog.join('\n')}`;
     setAgentMessages((prev) => [...prev, { text: message, type: 'sent' }]);
@@ -1007,7 +1006,13 @@ export function DesignerModePanel() {
         body: prompt,
       });
       if (res.ok) {
+        setWaitingForAgent(true);
         clearEditLog();
+      } else {
+        setAgentMessages((prev) => [
+          ...prev,
+          { text: `Failed to send (${res.status})`, type: 'status' },
+        ]);
       }
     } catch {
       setAgentMessages((prev) => [
@@ -1017,7 +1022,6 @@ export function DesignerModePanel() {
           type: 'status',
         },
       ]);
-      setWaitingForAgent(false);
     }
     setIsSending(false);
   };
