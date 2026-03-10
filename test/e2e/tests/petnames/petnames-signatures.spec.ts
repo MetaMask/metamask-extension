@@ -103,7 +103,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockLookupSnap,
         title: this.test?.fullTitle(),
