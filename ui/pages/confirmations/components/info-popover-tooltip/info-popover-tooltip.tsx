@@ -1,18 +1,15 @@
-import React, {
-  useCallback,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
+import React, { useCallback, useRef, useState, type ReactNode } from 'react';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  IconColor,
   IconName,
+} from '@metamask/design-system-react';
+import {
   Popover,
   PopoverPosition,
 } from '../../../../components/component-library';
-import { IconColor } from '../../../../helpers/constants/design-system';
 
 const POPOVER_STYLE = {
   zIndex: 3,
@@ -61,8 +58,10 @@ export function InfoPopoverTooltip({
         size={iconSize}
         onClick={handleToggle}
         data-testid={dataTestId ? `${dataTestId}-button` : undefined}
-        color={iconColor}
-        marginLeft={iconMarginLeft}
+        iconProps={iconColor ? { color: iconColor } : undefined}
+        style={
+          iconMarginLeft ? { marginLeft: `${iconMarginLeft * 4}px` } : undefined
+        }
       />
       <Popover
         isOpen={isOpen}

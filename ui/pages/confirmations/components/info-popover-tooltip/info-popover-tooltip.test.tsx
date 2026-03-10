@@ -1,10 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import {
-  ButtonIconSize,
-  PopoverPosition,
-} from '../../../../components/component-library';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import { ButtonIconSize, IconColor } from '@metamask/design-system-react';
+import { PopoverPosition } from '../../../../components/component-library';
 import { InfoPopoverTooltip } from './info-popover-tooltip';
 
 describe('InfoPopoverTooltip', () => {
@@ -65,7 +62,7 @@ describe('InfoPopoverTooltip', () => {
         data-testid="custom-tooltip"
         position={PopoverPosition.BottomStart}
         iconSize={ButtonIconSize.Sm}
-        iconColor={IconColor.iconAlternative}
+        iconColor={IconColor.IconAlternative}
       >
         <span>Custom content</span>
       </InfoPopoverTooltip>,

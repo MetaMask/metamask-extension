@@ -47,9 +47,7 @@ describe('OutputAmountTag', () => {
       const tag = screen.getByTestId(OUTPUT_AMOUNT_TAG_SELECTOR);
       // When showBackground is true (default), the component should have
       // the background-alternative class
-      expect(tag).toHaveClass(
-        'mm-box--background-color-background-alternative',
-      );
+      expect(tag).toHaveClass('bg-alternative');
     });
 
     it('should have background when showBackground is true', () => {
@@ -58,9 +56,7 @@ describe('OutputAmountTag', () => {
       );
 
       const tag = screen.getByTestId(OUTPUT_AMOUNT_TAG_SELECTOR);
-      expect(tag).toHaveClass(
-        'mm-box--background-color-background-alternative',
-      );
+      expect(tag).toHaveClass('bg-alternative');
     });
 
     it('should not have background when showBackground is false', () => {
@@ -73,9 +69,7 @@ describe('OutputAmountTag', () => {
       );
 
       const tag = screen.getByTestId(OUTPUT_AMOUNT_TAG_SELECTOR);
-      expect(tag).not.toHaveClass(
-        'mm-box--background-color-background-alternative',
-      );
+      expect(tag).not.toHaveClass('bg-alternative');
     });
   });
 

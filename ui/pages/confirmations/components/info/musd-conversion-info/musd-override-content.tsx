@@ -10,12 +10,11 @@
  */
 
 import React from 'react';
-import { Box } from '../../../../../components/component-library';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import {
@@ -51,9 +50,8 @@ export const MusdOverrideContent: React.FC<MusdOverrideContentProps> = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
       gap={3}
     >
       {shouldShowOutputAmountTag && outputAmount !== null && (

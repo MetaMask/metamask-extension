@@ -67,6 +67,10 @@ jest.mock('../../../hooks/useConfirmationNavigation', () => ({
     navigateNext: jest.fn(),
     navigateToId: jest.fn(),
   })),
+  useConfirmationNavigationOptions: jest.fn(() => ({
+    loader: 'default',
+    returnTo: undefined,
+  })),
 }));
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',

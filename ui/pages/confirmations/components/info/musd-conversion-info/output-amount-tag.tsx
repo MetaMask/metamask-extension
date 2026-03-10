@@ -9,15 +9,16 @@
  */
 
 import React from 'react';
-import { Box, Text } from '../../../../../components/component-library';
 import {
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  JustifyContent,
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 
 export const OUTPUT_AMOUNT_TAG_SELECTOR = 'output-amount-tag';
 
@@ -62,12 +63,12 @@ export const OutputAmountTag: React.FC<OutputAmountTagProps> = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Center}
       backgroundColor={
-        showBackground ? BackgroundColor.backgroundAlternative : undefined
+        showBackground ? BoxBackgroundColor.BackgroundAlternative : undefined
       }
-      borderRadius={BorderRadius.pill}
+      className="rounded-full"
       paddingLeft={4}
       paddingRight={4}
       paddingTop={2}
@@ -75,7 +76,11 @@ export const OutputAmountTag: React.FC<OutputAmountTagProps> = ({
       marginBottom={2}
       data-testid={testID || OUTPUT_AMOUNT_TAG_SELECTOR}
     >
-      <Text variant={TextVariant.bodySmMedium} color={TextColor.textDefault}>
+      <Text
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextDefault}
+      >
         {displayText}
       </Text>
     </Box>

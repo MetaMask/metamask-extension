@@ -1,11 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../../../../components/component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import {
   selectTransactionPaymentTokenByTransactionId,
@@ -35,12 +31,7 @@ const MusdBottomContent = () => {
   }
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      gap={2}
-      paddingBottom={4}
-    >
+    <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingBottom={4}>
       <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
       <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
       <TotalRow variant={ConfirmInfoRowSize.Small} />

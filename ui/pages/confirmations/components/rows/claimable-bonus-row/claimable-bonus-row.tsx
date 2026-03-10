@@ -1,16 +1,18 @@
 import React from 'react';
 import {
   ButtonIconSize,
+  FontWeight,
+  IconColor,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   ButtonLink,
   ButtonLinkSize,
   PopoverPosition,
-  Text,
 } from '../../../../../components/component-library';
-import {
-  IconColor,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
+import { TextColor as LegacyTextColor } from '../../../../../helpers/constants/design-system';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 import {
   ConfirmInfoRow,
@@ -35,7 +37,6 @@ export function ClaimableBonusRow({
   const isLoading = useIsTransactionPayLoading();
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
-  const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
 
   if (isLoading) {
     return (
@@ -56,18 +57,18 @@ export function ClaimableBonusRow({
         <InfoPopoverTooltip
           position={PopoverPosition.BottomStart}
           iconSize={ButtonIconSize.Sm}
-          iconColor={IconColor.iconAlternative}
+          iconColor={IconColor.IconAlternative}
           iconMarginLeft={1}
           data-testid="claimable-bonus-tooltip-popover"
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.infoInverse}>
+          <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
             {t('musdClaimableBonusTooltip', [
               <ButtonLink
                 key="terms-link"
                 size={ButtonLinkSize.Inherit}
                 href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                 externalLink
-                color={TextColor.infoInverse}
+                color={LegacyTextColor.infoInverse}
                 style={{ textDecoration: 'underline' }}
               >
                 {t('musdTermsApply')}
@@ -78,8 +79,9 @@ export function ClaimableBonusRow({
       }
     >
       <Text
-        variant={textVariant}
-        color={TextColor.textAlternative}
+        variant={TextVariant.BodyMd}
+        fontWeight={isSmall ? undefined : FontWeight.Medium}
+        color={TextColor.TextAlternative}
         data-testid="claimable-bonus-value"
       >
         {`${MUSD_CONVERSION_APY}%`}
