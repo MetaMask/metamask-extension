@@ -306,11 +306,13 @@ const CoinButtons = ({
       : hexChainOrAssetId;
 
     // Handle clicking from the wallet or native asset overview page
-    openBridgeExperience(
-      MetaMetricsSwapsEventSource.MainView,
-      chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-        ? getNativeAssetForChainId(chainIdToUse)
-        : undefined,
+    transitionForward(() =>
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+          ? getNativeAssetForChainId(chainIdToUse)
+          : undefined,
+      ),
     );
   }, [location, openBridgeExperience]);
 

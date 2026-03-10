@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
-  type GenericQuoteRequest,
+  GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
@@ -13,7 +12,6 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { transitionForward } from '../../components/ui/transition';
 import {
   getBip44DefaultPairsConfig,
   getFromChain,
@@ -21,23 +19,20 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
+  resetBridgeControllerAndCache,
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
+import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
-import {
-  type MinimalAsset,
-  validateMinimalAssetObject,
-} from '../../pages/bridge/utils/tokens';
-import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
+  BridgeNavigationOptions,
+  useBridgeNavigation,
+} from './useBridgeNavigation';
 
 const useBridging = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { navigateToBridgePage } = useBridgeNavigation();
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
@@ -64,8 +59,8 @@ const useBridging = () => {
         chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
-      clearAllBridgeCacheItems();
       dispatch(resetInputFields());
+      dispatch(resetBridgeControllerAndCache());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
@@ -82,25 +77,27 @@ const useBridging = () => {
         }),
       );
 
-      const queryParams: string[] = [];
-      const navigationState: Partial<Record<'srcToken', MinimalAsset>> = {};
+      let tokenToUse: BridgeNavigationOptions['state']['token'] = null;
+      const search = new URLSearchParams('');
 
       const assetId =
         srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
           ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
           : undefined;
+
       if (srcToken && assetId) {
-        // If srcToken is a bridge token, propagate it to the bridge experience
-        const tokenToUse = {
+        // If token is supported for bridging, propagate it to the bridge experience
+        const tokenWithAssetId = {
           ...srcToken,
           assetId,
           name: srcToken.name ?? srcToken.symbol,
+          chainId: formatChainIdToCaip(srcToken.chainId),
         };
-        if (validateMinimalAssetObject(tokenToUse)) {
-          navigationState.srcToken = tokenToUse;
+        if (validateMinimalAssetObject(tokenWithAssetId)) {
+          tokenToUse = tokenWithAssetId;
         } else {
-          // Otherwise, set the from param to use the bridge page's deep linking logic
-          queryParams.push(`${BridgeQueryParams.FROM}=${assetId}`);
+          // Otherwise, set the `from` query param to use the bridge page's deep linking logic
+          search.set(BridgeQueryParams.From, assetId);
         }
       } else if (lastSelectedChainId !== fromChain.chainId) {
         // If an unsupported network is selected in the network filter, use bridge page's default fromChain
@@ -113,23 +110,21 @@ const useBridging = () => {
         // Otherwise, use the native assetId
         const defaultAssetId =
           bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
-        queryParams.push(`${BridgeQueryParams.FROM}=${defaultAssetId}`);
+        search.set(BridgeQueryParams.From, defaultAssetId);
       }
 
       if (location === MetaMetricsSwapsEventSource.TransactionShield) {
-        queryParams.push('isFromTransactionShield=true');
+        search.set(BridgeQueryParams.IsFromTransactionShield, 'true');
       }
 
-      const url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-      transitionForward(() =>
-        navigate([url, queryParams.join('&')].filter(Boolean).join('?'), {
-          state: navigationState,
-        }),
-      );
+      navigateToBridgePage({
+        token: tokenToUse,
+        search,
+        preventBackNavigation: false,
+      });
     },
     [
-      dispatch,
-      navigate,
+      navigateToBridgePage,
       lastSelectedChainId,
       fromChain?.chainId,
       isChainIdEnabledForBridging,
