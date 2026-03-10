@@ -103,7 +103,7 @@ function createShieldFixtureCrypto() {
     });
 }
 
-describe('Shield Subscription Tests', function () {
+describe('TEST Shield Subscription Tests', function () {
   describe('Card Payment', function () {
     describe('Shield Entry Modal', function () {
       it('should subscribe to the shield plan from the entry modal - annual plan', async function () {

@@ -10,7 +10,7 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Settings Search', function () {
+describe('TEST Settings Search', function () {
   const settingsSearch = {
     general: 'Show native token as main balance',
     advanced: 'State logs',

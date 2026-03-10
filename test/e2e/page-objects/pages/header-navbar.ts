@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs } from '../../helpers';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -42,10 +41,6 @@ class HeaderNavbar {
     `[data-testid="${networkId}"]`;
 
   private readonly networkPicker = '.mm-picker-network';
-
-  private readonly notificationCounterMenuIcon = {
-    testId: 'notifications-tag-counter__unread-dot',
-  };
 
   private readonly notificationCountOption =
     '[data-testid="global-menu-notification-count"]';
@@ -110,23 +105,10 @@ class HeaderNavbar {
     await this.driver.clickElement(this.globalNetworksMenu);
   }
 
-  async openGlobalMenu({
-    withNotificationCounter = false,
-  } = {}): Promise<void> {
+  async openGlobalMenu(): Promise<void> {
     console.log('Open account options menu');
-    if (withNotificationCounter) {
-      // To avoid ElementIntercept error because of the notification overlap
-      await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
-    } else {
-      // Sometimes the notification counter briefly appears and disappears overlapping the menu icon
-      await this.driver.assertElementNotPresent(
-        this.notificationCounterMenuIcon,
-        {
-          waitAtLeastGuard: regularDelayMs,
-        },
-      );
-      await this.driver.clickElement(this.globalMenuButton);
-    }
+    // To avoid ElementIntercept error because of the notification overlap
+    await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
@@ -191,12 +173,12 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.openGlobalMenu({ withNotificationCounter: true });
+    await this.openGlobalMenu();
     await this.driver.clickElement(this.notificationsButton);
   }
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.openGlobalMenu({ withNotificationCounter: true });
+    await this.openGlobalMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),
