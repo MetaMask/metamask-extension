@@ -185,6 +185,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
                 "token": null,
               },
@@ -238,6 +239,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
                 "token": null,
               },
@@ -285,6 +287,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
                 "token": null,
               },
