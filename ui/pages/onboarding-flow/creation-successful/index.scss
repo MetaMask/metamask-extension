@@ -47,10 +47,10 @@
 .title {
   text-align: center;
   font-family: var(--font-family-accent);
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 40px; /* 100% */
-  letter-spacing: -0.26px;
-  margin-bottom: 48px;
+  font-size: 40px !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 40px !important; /* 100% */
+  letter-spacing: -0.26px !important;
+  margin-bottom: 48px !important;
 }
