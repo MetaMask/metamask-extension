@@ -11,6 +11,7 @@ import { useDesignerMode } from './designer-mode-context';
 import {
   extractDesignTokensFromClasses,
   formatAgentPrompt,
+  getDirectTextContent,
 } from './designer-mode.utils';
 import type { ComputedStyleInfo } from './designer-mode.types';
 
@@ -762,14 +763,6 @@ function toHexColor(cssColor: string): string {
     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
   }
   return '#000000';
-}
-
-function getDirectTextContent(element: HTMLElement): string {
-  return Array.from(element.childNodes)
-    .filter((node) => node.nodeType === Node.TEXT_NODE)
-    .map((node) => node.textContent || '')
-    .join('')
-    .trim();
 }
 
 function findStyleValue(
