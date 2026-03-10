@@ -29,7 +29,7 @@ function isOurTraceContext(value) {
  */
 function extractTraceContext(params) {
   if (!Array.isArray(params) || params.length === 0) {
-    return { cleanParams: params ?? [], traceContext: undefined };
+    return { cleanParams: params, traceContext: undefined };
   }
 
   const lastParam = params[params.length - 1];
