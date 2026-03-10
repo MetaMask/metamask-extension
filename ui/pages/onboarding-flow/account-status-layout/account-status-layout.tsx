@@ -45,7 +45,7 @@ export function AccountStatusLayout({
         >
           <Text
             variant={TextVariant.HeadingLg}
-            className="self-start mb-4 text-center"
+            className="self-start mb-4"
           >
             {title}
           </Text>
