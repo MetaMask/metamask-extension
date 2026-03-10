@@ -2,20 +2,20 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
-
 import {
-  Display,
-  FlexDirection,
+  Box,
+  Checkbox,
+  Text,
+  Button,
+  ButtonSize,
   TextVariant,
   FontWeight,
-  TextAlign,
   TextColor,
-  BlockSize,
-  AlignItems,
-  JustifyContent,
-  BorderRadius,
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setParticipateInMetaMetrics,
@@ -42,13 +42,6 @@ import {
 } from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Box,
-  Checkbox,
-  Text,
-  Button,
-  ButtonSize,
-} from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
@@ -79,8 +72,8 @@ export default function OnboardingMetametrics() {
     setIsDataCollectionForMarketingChecked,
   ] = useState(false);
 
-  const participateCheckboxRef = useRef<HTMLInputElement>(null);
-  const marketingCheckboxRef = useRef<HTMLInputElement>(null);
+  const participateCheckboxRef = useRef<{ toggle: () => void } | null>(null);
+  const marketingCheckboxRef = useRef<{ toggle: () => void } | null>(null);
 
   useEffect(() => {
     if (participateInMetaMetricsSet) {
@@ -170,68 +163,65 @@ export default function OnboardingMetametrics() {
     <Box
       className="onboarding-metametrics"
       data-testid="onboarding-metametrics"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       gap={4}
     >
       <Text
-        variant={TextVariant.headingLg}
-        textAlign={TextAlign.Left}
+        variant={TextVariant.HeadingLg}
+        className="text-left"
         fontWeight={FontWeight.Bold}
       >
         {t('onboardingMetametricsTitle')}
       </Text>
 
       <Box
-        width={BlockSize.Full}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        className="onboarding-metametrics__user-control"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        className="onboarding-metametrics__user-control w-full"
       >
         <img
           src="images/user-control.png"
           alt="User control"
           height={175}
           width={200}
+          className="mx-auto"
         />
       </Box>
 
       <Text
-        variant={TextVariant.bodySmMedium}
-        color={TextColor.textAlternative}
-        textAlign={TextAlign.Left}
+        variant={TextVariant.BodySm}
+        color={TextColor.TextAlternative}
+        fontWeight={FontWeight.Medium}
+        className="text-left"
       >
         {t('onboardingMetametricsDescription')}
       </Text>
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
         gap={2}
         padding={3}
-        borderRadius={BorderRadius.LG}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        className="onboarding-metametrics__checkbox"
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
+        className="onboarding-metametrics__checkbox rounded-lg"
         role="button"
         tabIndex={0}
         onClick={() => {
-          participateCheckboxRef.current?.click();
+          participateCheckboxRef.current?.toggle();
         }}
         onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
           if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
-            participateCheckboxRef.current?.click();
+            participateCheckboxRef.current?.toggle();
           }
         }}
       >
         <Checkbox
           id="metametrics-opt-in"
           data-testid="metametrics-checkbox"
-          isChecked={isParticipateInMetaMetricsChecked}
+          isSelected={isParticipateInMetaMetricsChecked}
           onChange={handleParticipateInMetaMetricsChange}
-          inputRef={participateCheckboxRef}
-          onClick={(e: React.MouseEvent<HTMLInputElement>) =>
+          ref={participateCheckboxRef}
+          onClick={(e: React.MouseEvent<HTMLLabelElement>) =>
             e.stopPropagation()
           }
           inputProps={{
@@ -239,16 +229,15 @@ export default function OnboardingMetametrics() {
               e.stopPropagation(),
           }}
           label={
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('onboardingMetametricCheckboxTitleOne')}
             </Text>
           }
-          alignItems={AlignItems.center}
         />
         <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Left}
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="text-left"
         >
           {isPna25Enabled
             ? t('onboardingMetametricCheckboxDescriptionOneUpdated')
@@ -257,19 +246,17 @@ export default function OnboardingMetametrics() {
       </Box>
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
         gap={2}
         padding={3}
-        borderRadius={BorderRadius.LG}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        className={`${isParticipateInMetaMetricsChecked ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'}`}
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
+        className={`${isParticipateInMetaMetricsChecked ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'} rounded-lg`}
         role={isParticipateInMetaMetricsChecked ? 'button' : undefined}
         tabIndex={isParticipateInMetaMetricsChecked ? 0 : undefined}
         onClick={
           isParticipateInMetaMetricsChecked
             ? () => {
-                marketingCheckboxRef.current?.click();
+                marketingCheckboxRef.current?.toggle();
               }
             : undefined
         }
@@ -279,14 +266,14 @@ export default function OnboardingMetametrics() {
             isParticipateInMetaMetricsChecked
           ) {
             e.preventDefault();
-            marketingCheckboxRef.current?.click();
+            marketingCheckboxRef.current?.toggle();
           }
         }}
       >
         <Checkbox
           id="metametrics-datacollection-opt-in"
           data-testid="metametrics-data-collection-checkbox"
-          isChecked={
+          isSelected={
             isParticipateInMetaMetricsChecked &&
             isDataCollectionForMarketingChecked
           }
@@ -294,8 +281,8 @@ export default function OnboardingMetametrics() {
           onChange={() => {
             setIsDataCollectionForMarketingChecked((prev) => !prev);
           }}
-          inputRef={marketingCheckboxRef}
-          onClick={(e: React.MouseEvent<HTMLInputElement>) =>
+          ref={marketingCheckboxRef}
+          onClick={(e: React.MouseEvent<HTMLLabelElement>) =>
             e.stopPropagation()
           }
           inputProps={{
@@ -303,26 +290,25 @@ export default function OnboardingMetametrics() {
               e.stopPropagation(),
           }}
           label={
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('onboardingMetametricCheckboxTitleTwo')}
             </Text>
           }
-          alignItems={AlignItems.center}
         />
         <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Left}
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="text-left"
         >
           {t('onboardingMetametricCheckboxDescriptionTwo')}
         </Text>
       </Box>
 
-      <Box width={BlockSize.Full}>
+      <Box className="w-full">
         <Button
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
-          width={BlockSize.Full}
+          className="w-full"
           onClick={handleContinue}
         >
           {t('onboardingMetametricsContinue')}
