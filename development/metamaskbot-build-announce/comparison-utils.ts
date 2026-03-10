@@ -77,12 +77,12 @@ export function getTrafficLightIndication(
     return direction === ComparisonDirection.Slower ? '🔺' : '🔻';
   }
   if (severity === ComparisonSeverity.Warn) {
-    return direction === ComparisonDirection.Slower ? '🟡⬆️ ' : '🟡⬇️ ';
+    return direction === ComparisonDirection.Slower ? '🟡⬆️' : '🟡⬇️';
   }
   if (severity === ComparisonSeverity.Improvement) {
-    return direction === ComparisonDirection.Faster ? '🟢⬇️ ' : '🟢⬆️ ';
+    return direction === ComparisonDirection.Faster ? '🟢⬇️' : '🟢⬆️';
   }
-  return '➡️ ';
+  return '➡️';
 }
 
 /**

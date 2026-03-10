@@ -189,9 +189,9 @@ describe('aggregateHistoricalData', () => {
     const result = aggregateHistoricalData(data);
 
     expect(result['pageLoad/standardHome']).toBeUndefined();
-    expect(
-      result['userActions/loadNewAccount']?.loadNewAccount?.mean,
-    ).toBe(300);
+    expect(result['userActions/loadNewAccount']?.loadNewAccount?.mean).toBe(
+      300,
+    );
   });
 
   it('falls back to mean when p75/p95 data is missing', () => {

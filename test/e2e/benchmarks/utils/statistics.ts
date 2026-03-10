@@ -8,9 +8,7 @@
  * - Sanity checks for metric validation
  */
 
-import {
-  ThresholdSeverity,
-} from '../../../../shared/constants/benchmarks';
+import { ThresholdSeverity } from '../../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   PercentileKey,

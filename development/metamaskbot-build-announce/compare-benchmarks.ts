@@ -208,13 +208,14 @@ export function runComparison(
 
 type GroupedMetricEntry = {
   metric: string;
-  p75: MetricComparison;
-  p95: MetricComparison;
+  p75?: MetricComparison;
+  p95?: MetricComparison;
 };
 
 /**
  * Groups relative deltas by metric name,
  * combining p75 and p95 into a single entry.
+ * Includes metrics that have only one percentile.
  *
  * @param comparison - Comparison result for a single benchmark.
  */
@@ -232,12 +233,14 @@ function groupByMetric(
     }
   }
 
+  const allMetrics = new Set([...p75Map.keys(), ...p95Map.keys()]);
   const entries: GroupedMetricEntry[] = [];
-  for (const [metric, p75] of p75Map) {
-    const p95 = p95Map.get(metric);
-    if (p95) {
-      entries.push({ metric, p75, p95 });
-    }
+  for (const metric of allMetrics) {
+    entries.push({
+      metric,
+      p75: p75Map.get(metric),
+      p95: p95Map.get(metric),
+    });
   }
   return entries;
 }
@@ -274,12 +277,16 @@ export function printReport(result: {
     );
 
     for (const entry of grouped) {
-      const parts = [entry.p75, entry.p95].map((pctl) => {
-        const delta = formatDeltaPercent(pctl.deltaPercent, pctl.direction);
-        const failed = failViolations.has(`${entry.metric}:${pctl.percentile}`);
-        const icon = failed ? '🔺' : pctl.indication;
-        return `${icon} ${pctl.percentile}: ${pctl.current.toFixed(0)}ms (${delta})`;
-      });
+      const parts = [entry.p75, entry.p95]
+        .filter((pctl): pctl is MetricComparison => pctl !== undefined)
+        .map((pctl) => {
+          const delta = formatDeltaPercent(pctl.deltaPercent, pctl.direction);
+          const failed = failViolations.has(
+            `${entry.metric}:${pctl.percentile}`,
+          );
+          const icon = failed ? '🔺' : pctl.indication;
+          return `${icon} ${pctl.percentile}: ${pctl.current.toFixed(0)}ms (${delta})`;
+        });
       console.log(`    ${entry.metric}: ${parts.join(' | ')}`);
     }
   }

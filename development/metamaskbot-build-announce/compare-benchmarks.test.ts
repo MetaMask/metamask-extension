@@ -192,10 +192,14 @@ describe('compare-benchmarks', () => {
     it('loads JSON files from a directory', async () => {
       jest
         .spyOn(fs, 'readdir')
-        .mockResolvedValue(['bench-a.json', 'bench-b.json', 'readme.txt'] as never);
-      jest.spyOn(fs, 'readFile').mockResolvedValue(
-        JSON.stringify({ entry: makeBenchmarkResults() }),
-      );
+        .mockResolvedValue([
+          'bench-a.json',
+          'bench-b.json',
+          'readme.txt',
+        ] as never);
+      jest
+        .spyOn(fs, 'readFile')
+        .mockResolvedValue(JSON.stringify({ entry: makeBenchmarkResults() }));
 
       const results = await loadCurrentBenchmarks('/fake/dir');
 
