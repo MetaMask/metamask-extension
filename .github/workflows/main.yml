@@ -4,8 +4,8 @@ on:
   push:
 
 jobs:
-  build-test-webpack-matrix:
-    name: build:test:webpack (workers=${{ matrix.workers }}, jobs=${{ matrix.workerParallelJobs }})
+  webpack-matrix:
+    name: yarn webpack (workers=${{ matrix.workers }}, jobs=${{ matrix.workerParallelJobs }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -20,8 +20,8 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Build test webpack
+      - name: yarn webpack
         env:
           THREAD_LOADER_WORKERS: ${{ matrix.workers }}
           THREAD_LOADER_WORKER_PARALLEL_JOBS: ${{ matrix.workerParallelJobs }}
-        run: yarn build:test:webpack
+        run: yarn webpack
