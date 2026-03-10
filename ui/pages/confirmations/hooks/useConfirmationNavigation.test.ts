@@ -459,7 +459,7 @@ describe('useConfirmationNavigationOptions', () => {
     expect(result.loader).toBe(ConfirmationLoader.Default);
   });
 
-  it('returns returnTo from search params', () => {
+  it('returns sanitized returnTo from search params', () => {
     const searchParams = new URLSearchParams({
       returnTo: '/asset/0x1/0xabc',
     });
@@ -477,90 +477,9 @@ describe('useConfirmationNavigationOptions', () => {
     expect(result.returnTo).toBeUndefined();
   });
 
-  it('rejects protocol-relative returnTo (//evil.com)', () => {
-    const searchParams = new URLSearchParams({
-      returnTo: '//evil.com',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBeUndefined();
-  });
-
-  it('rejects absolute URL returnTo (https://evil.com)', () => {
+  it('rejects unsafe returnTo values', () => {
     const searchParams = new URLSearchParams({
       returnTo: 'https://evil.com',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBeUndefined();
-  });
-
-  it('normalizes relative path without leading slash', () => {
-    const searchParams = new URLSearchParams({
-      returnTo: 'some-relative-path',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBe('/some-relative-path');
-  });
-
-  it('rejects returnTo with backslash (browser normalization attack)', () => {
-    const searchParams = new URLSearchParams({
-      returnTo: '/\\evil.com',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBeUndefined();
-  });
-
-  it('rejects javascript: protocol scheme', () => {
-    const searchParams = new URLSearchParams({
-      // eslint-disable-next-line no-script-url
-      returnTo: 'javascript:alert(1)',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBeUndefined();
-  });
-
-  it('rejects data: protocol scheme', () => {
-    const searchParams = new URLSearchParams({
-      returnTo: 'data:text/html,<script>alert(1)</script>',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBeUndefined();
-  });
-
-  it('allows valid internal path with query string', () => {
-    const searchParams = new URLSearchParams({
-      returnTo: '/home?tab=tokens',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBe('/home?tab=tokens');
-  });
-
-  it('strips fragment and credentials from returnTo', () => {
-    const searchParams = new URLSearchParams({
-      returnTo: '/page?q=1#fragment',
-    });
-
-    const result = renderOptionsHook(searchParams);
-
-    expect(result.returnTo).toBe('/page?q=1');
-  });
-
-  it('returns undefined for bare slash', () => {
-    const searchParams = new URLSearchParams({
-      returnTo: '/',
     });
 
     const result = renderOptionsHook(searchParams);

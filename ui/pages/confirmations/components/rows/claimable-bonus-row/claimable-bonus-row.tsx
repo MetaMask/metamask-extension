@@ -1,18 +1,15 @@
 import React from 'react';
 import {
-  ButtonIconSize,
   FontWeight,
-  IconColor,
+  IconName,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  PopoverPosition,
-} from '../../../../../components/component-library';
-import { TextColor as LegacyTextColor } from '../../../../../helpers/constants/design-system';
+import { PopoverPosition } from '../../../../../components/component-library';
+import { Color } from '../../../../../helpers/constants/design-system';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 import {
   ConfirmInfoRow,
@@ -32,7 +29,7 @@ export type ClaimableBonusRowProps = {
 
 export function ClaimableBonusRow({
   rowVariant = ConfirmInfoRowSize.Default,
-}: ClaimableBonusRowProps) {
+}: Readonly<ClaimableBonusRowProps>) {
   const t = useI18nContext();
   const isLoading = useIsTransactionPayLoading();
 
@@ -55,24 +52,30 @@ export function ClaimableBonusRow({
       rowVariant={rowVariant}
       labelChildren={
         <InfoPopoverTooltip
-          position={PopoverPosition.BottomStart}
-          iconSize={ButtonIconSize.Sm}
-          iconColor={IconColor.IconAlternative}
+          position={PopoverPosition.TopStart}
+          iconName={IconName.Question}
+          iconColor={Color.iconAlternative}
           iconMarginLeft={1}
+          plainIcon
           data-testid="claimable-bonus-tooltip-popover"
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
             {t('musdClaimableBonusTooltip', [
-              <ButtonLink
+              <TextButton
                 key="terms-link"
-                size={ButtonLinkSize.Inherit}
-                href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
-                externalLink
-                color={LegacyTextColor.infoInverse}
-                style={{ textDecoration: 'underline' }}
+                size={TextButtonSize.BodyMd}
+                isInverse
+                asChild
               >
-                {t('musdTermsApply')}
-              </ButtonLink>,
+                <a
+                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'underline' }}
+                >
+                  {t('musdTermsApply')}
+                </a>
+              </TextButton>,
             ])}
           </Text>
         </InfoPopoverTooltip>
