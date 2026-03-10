@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
 import {
-  WebSocketMessageMock,
   DEFAULT_SOLANA_WS_MOCKS,
 } from '../tests/solana/mocks/websocketDefaultMocks';
+import type { WebSocketMessageMock } from './types';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
 import { WEBSOCKET_SERVICES } from './constants';
@@ -59,10 +59,14 @@ async function setupSolanaWebsocketMocks(
 
           const delay = mock.delay || 500;
           setTimeout(() => {
+            const rawResponse =
+              typeof mock.response === 'function'
+                ? mock.response()
+                : mock.response;
             const response =
               requestId === null
-                ? mock.response
-                : { ...mock.response, id: requestId };
+                ? rawResponse
+                : { ...rawResponse, id: requestId };
             socket.send(JSON.stringify(response));
             console.log(
               `[Solana] Simulated message sent to the client for: ${includes.join(' + ')}`,

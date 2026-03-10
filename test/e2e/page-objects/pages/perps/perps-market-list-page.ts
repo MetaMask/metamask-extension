@@ -28,6 +28,11 @@ export class PerpsMarketListPage {
     testId: 'sort-dropdown-option-volumeLow',
   };
 
+  /** Returns the selector for a filter dropdown option (e.g. 'all', 'crypto'). */
+  private getFilterOptionSelector(optionId: string): { testId: string } {
+    return { testId: `filter-select-option-${optionId}` };
+  }
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -63,7 +68,7 @@ export class PerpsMarketListPage {
   async selectFilter(optionId: string): Promise<void> {
     await this.driver.waitForSelector(this.filterSelectButton);
     await this.driver.clickElement(this.filterSelectButton);
-    await this.driver.clickElement({ testId: `filter-select-option-${optionId}` });
+    await this.driver.clickElement(this.getFilterOptionSelector(optionId));
   }
 
   /**

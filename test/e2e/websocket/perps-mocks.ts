@@ -4,7 +4,7 @@ import {
   DEFAULT_HYPERLIQUID_WS_MOCKS,
   getResponsePayload,
 } from '../tests/perps/mocks/websocketDefaultMocks';
-import type { WebSocketMessageMock } from '../tests/solana/mocks/websocketDefaultMocks';
+import type { WebSocketMessageMock } from './types';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
 import { WEBSOCKET_SERVICES } from './constants';
