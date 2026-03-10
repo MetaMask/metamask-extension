@@ -105,7 +105,7 @@ const DeveloperOptionsTab = () => {
   };
 
   const handleToggleDesignerMode = (value: boolean): void => {
-    dispatch(setDesignerModeEnabled(!value));
+    dispatch(setDesignerModeEnabled(value));
   };
 
   const renderAnnouncementReset = () => {
@@ -228,7 +228,7 @@ const DeveloperOptionsTab = () => {
         title="Designer Mode"
         description="Enable UI element inspector for designers. Hover over elements to see component names, styles, and design tokens. Press Ctrl+Shift+D to toggle, or use the floating button. Copy element info for AI agents."
         isEnabled={isDesignerModeEnabled}
-        onToggle={handleToggleDesignerMode}
+        onToggle={(value) => handleToggleDesignerMode(!value)}
         dataTestId="developer-options-designer-mode-toggle"
         settingsRef={settingsRefs[4] as React.RefObject<HTMLDivElement>}
       />
