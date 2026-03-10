@@ -406,58 +406,5 @@ describe('transaction-pay utils', () => {
 
       expect(result).toHaveLength(0);
     });
-
-    it('applies musdTokenFilter when transactionType is musdConversion', () => {
-      const tokens = [
-        createMockAsset({ address: TOKEN_ADDRESS_MOCK }),
-        createMockAsset({ address: TOKEN_ADDRESS_2_MOCK }),
-      ];
-      const musdTokenFilter = jest.fn((t: Asset[]) =>
-        t.filter((token) => token.address === TOKEN_ADDRESS_MOCK),
-      );
-
-      const result = getAvailableTokens({
-        tokens,
-        transactionType: TransactionType.musdConversion,
-        musdTokenFilter,
-      });
-
-      expect(musdTokenFilter).toHaveBeenCalledTimes(1);
-      expect(result).toHaveLength(1);
-      expect(result[0].address).toBe(TOKEN_ADDRESS_MOCK);
-    });
-
-    it('does not apply musdTokenFilter when transactionType is not musdConversion', () => {
-      const tokens = [
-        createMockAsset({ address: TOKEN_ADDRESS_MOCK }),
-        createMockAsset({ address: TOKEN_ADDRESS_2_MOCK }),
-      ];
-      const musdTokenFilter = jest.fn((t: Asset[]) =>
-        t.filter((token) => token.address === TOKEN_ADDRESS_MOCK),
-      );
-
-      const result = getAvailableTokens({
-        tokens,
-        transactionType: TransactionType.simpleSend,
-        musdTokenFilter,
-      });
-
-      expect(musdTokenFilter).not.toHaveBeenCalled();
-      expect(result).toHaveLength(2);
-    });
-
-    it('does not apply filtering when musdTokenFilter is not provided', () => {
-      const tokens = [
-        createMockAsset({ address: TOKEN_ADDRESS_MOCK }),
-        createMockAsset({ address: TOKEN_ADDRESS_2_MOCK }),
-      ];
-
-      const result = getAvailableTokens({
-        tokens,
-        transactionType: TransactionType.musdConversion,
-      });
-
-      expect(result).toHaveLength(2);
-    });
   });
 });

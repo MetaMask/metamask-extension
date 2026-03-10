@@ -12,6 +12,10 @@ import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { isMusdSupportedChain } from '../../components/app/musd/constants';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
@@ -26,6 +30,7 @@ import {
   selectMusdMinAssetBalanceRequired,
 } from '../../selectors/musd';
 import { checkTokenAllowed } from '../../components/app/musd/utils/token-allowlist';
+import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
 // ============================================================================
@@ -122,7 +127,7 @@ function getTokenFiatBalance(token: ConversionToken): number | null {
  */
 export function useMusdConversionTokens(): UseMusdConversionTokensResult {
   const { selectedChainId } = useMusdNetworkFilter();
-
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   // Get feature flag values
   const allowlist = useSelector(selectMusdConvertibleTokensAllowlist);
   const blocklist = useSelector(selectMusdConvertibleTokensBlocklist);
@@ -295,8 +300,11 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
    * Designed for use in the pay-with modal where tokens are Asset type.
    */
   const filterTokens: TokenFilterFn = useCallback(
-    (tokens: Asset[]): Asset[] =>
-      tokens.filter((token) => {
+    (tokens: Asset[]): Asset[] => {
+      if (currentConfirmation?.type !== TransactionType.musdConversion) {
+        return tokens;
+      }
+      return tokens.filter((token) => {
         if (token.standard && token.standard !== AssetStandard.ERC20) {
           return false;
         }
@@ -316,8 +324,13 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
           filterTokensWithAllowlistAndBlocklist(asConversion) &&
           filterTokensWithMinBalance(asConversion)
         );
-      }),
-    [filterTokensWithAllowlistAndBlocklist, filterTokensWithMinBalance],
+      });
+    },
+    [
+      filterTokensWithAllowlistAndBlocklist,
+      filterTokensWithMinBalance,
+      currentConfirmation?.type,
+    ],
   );
 
   return useMemo(

@@ -11,9 +11,6 @@ import { PayWithModal } from './pay-with-modal';
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../utils/transaction-pay');
-jest.mock('../../../context/confirm', () => ({
-  useConfirmContext: () => ({ currentConfirmation: { type: 'simpleSend' } }),
-}));
 jest.mock('../../../../../hooks/musd');
 
 jest.mock('../../send/asset', () => ({
@@ -144,7 +141,7 @@ describe('PayWithModal', () => {
     expect(onCloseMock).toHaveBeenCalled();
   });
 
-  it('filters tokens using getAvailableTokens with transactionType and musdTokenFilter', () => {
+  it('filters tokens using getAvailableTokens with payToken and requiredTokens', () => {
     renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
 
     expect(getAvailableTokensMock).toHaveBeenCalledWith(
@@ -154,8 +151,6 @@ describe('PayWithModal', () => {
           chainId: CHAIN_ID_MOCK,
         }),
         requiredTokens: [],
-        transactionType: 'simpleSend',
-        musdTokenFilter: expect.any(Function),
       }),
     );
   });

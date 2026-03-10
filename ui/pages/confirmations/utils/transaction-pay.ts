@@ -83,16 +83,12 @@ export function getAvailableTokens({
   payToken,
   requiredTokens,
   tokens,
-  transactionType,
-  musdTokenFilter,
 }: {
   payToken?: TransactionPaymentToken;
   requiredTokens?: TransactionPayRequiredToken[];
   tokens: Asset[];
-  transactionType?: TransactionType;
-  musdTokenFilter?: (tokens: Asset[]) => Asset[];
 }): Asset[] {
-  const result = tokens
+  return tokens
     .filter((token) => {
       if (
         (token.standard !== AssetStandard.ERC20 &&
@@ -146,10 +142,4 @@ export function getAvailableTokens({
         isSelected,
       };
     });
-
-  if (transactionType === TransactionType.musdConversion && musdTokenFilter) {
-    return musdTokenFilter(result);
-  }
-
-  return result;
 }

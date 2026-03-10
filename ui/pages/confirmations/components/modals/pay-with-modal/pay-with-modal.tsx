@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -9,7 +8,6 @@ import {
   ModalOverlay,
 } from '../../../../../components/component-library';
 import { ScrollContainer } from '../../../../../contexts/scroll-container';
-import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
@@ -24,7 +22,6 @@ export type PayWithModalProps = {
 
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
 
@@ -51,15 +48,14 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   );
 
   const tokenFilter = useCallback(
-    (tokens: AssetType[]) =>
-      getAvailableTokens({
-        payToken,
-        requiredTokens,
-        tokens,
-        transactionType: currentConfirmation?.type,
-        musdTokenFilter,
-      }),
-    [payToken, requiredTokens, currentConfirmation?.type, musdTokenFilter],
+    (tokens: AssetType[]) => {
+      let available = getAvailableTokens({ payToken, requiredTokens, tokens });
+
+      available = musdTokenFilter(available);
+
+      return available;
+    },
+    [payToken, requiredTokens, musdTokenFilter],
   );
 
   return (
