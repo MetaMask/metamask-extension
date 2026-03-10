@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
