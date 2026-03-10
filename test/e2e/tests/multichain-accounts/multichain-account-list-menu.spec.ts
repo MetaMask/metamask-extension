@@ -9,7 +9,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { mockPriceApi } from '../tokens/utils/mocks';
@@ -49,12 +49,14 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
-          .withShowFiatTestnetEnabled()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+            useCurrencyRateCheck: true,
+          })
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withConversionRateEnabled()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
