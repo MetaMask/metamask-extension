@@ -305,6 +305,16 @@ export function endTrace(request: EndTraceRequest): void {
 }
 
 /**
+ * Get the currently active Sentry span, if any.
+ * Used by wrappers to avoid trace overhead when no span is active.
+ *
+ * @returns The active span or null.
+ */
+export function getActiveSpan(): Sentry.Span | null {
+  return sentryGetActiveSpan();
+}
+
+/**
  * Get the serialized trace context from the currently active Sentry span.
  * Used by cross-boundary wrappers to propagate trace context over RPC.
  *
@@ -327,8 +337,26 @@ export function getSerializedTraceContext():
 }
 
 /**
+ * Check if value has the expected trace context shape (traceId + spanId).
+ * Only strip when we're confident it's our injected context, not a legitimate param.
+ *
+ * @param value - The _traceContext value to check.
+ * @returns Whether the value is a valid serialized trace context.
+ */
+function isOurTraceContext(value: unknown): value is SerializedTraceContext {
+  return Boolean(
+    value &&
+      typeof value === 'object' &&
+      typeof (value as Record<string, unknown>)._traceId === 'string' &&
+      typeof (value as Record<string, unknown>)._spanId === 'string',
+  );
+}
+
+/**
  * Extract trace context appended by submitRequestToBackground from RPC params.
  * Returns the clean params (without trace context) and the trace context if present.
+ * Only strips when the last param has _traceContext with our expected shape
+ * (_traceId, _spanId) to avoid eating legitimate params.
  *
  * @param {Array} params - RPC call parameters.
  * @returns {{ cleanParams: Array, traceContext: object | undefined }}
@@ -348,7 +376,7 @@ export function extractTraceContext(params: unknown): {
     lastParam &&
     typeof lastParam === 'object' &&
     lastParam._traceContext &&
-    typeof lastParam._traceContext === 'object'
+    isOurTraceContext(lastParam._traceContext)
   ) {
     return {
       cleanParams: params.slice(0, -1),
