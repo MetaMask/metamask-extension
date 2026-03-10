@@ -54,6 +54,7 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   AlignItems,
   BackgroundColor,
@@ -376,6 +377,8 @@ const PrepareBridgePage = ({
       React.ComponentProps<typeof BridgePriceImpactWarningModal>['variant']
     >(null);
 
+  const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
+
   const getFromInputHeader = () => {
     return t('swapSelectToken');
   };
@@ -401,6 +404,11 @@ const PrepareBridgePage = ({
         onClose={() => {
           togglePriceImpactModalWithVariant(null);
         }}
+      />
+
+      <MarketClosedModal
+        isOpen={isMarketClosedModalOpen}
+        onClose={() => setIsMarketClosedModalOpen(false)}
       />
 
       <Column className="prepare-bridge-page" gap={4}>
@@ -722,6 +730,7 @@ const PrepareBridgePage = ({
               onOpenPriceImpactWarningModal={() =>
                 togglePriceImpactModalWithVariant('submit-cta')
               }
+              onOpenMarketClosedModal={() => setIsMarketClosedModalOpen(true)}
             />
           )}
         </Column>
