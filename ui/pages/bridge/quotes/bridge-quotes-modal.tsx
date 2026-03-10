@@ -75,7 +75,7 @@ export const BridgeQuotesModal = ({
           is_best_quote: isRecommendedQuote(quote),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          best_quote_provider: formatProviderLabel(quote?.quote),
+          best_quote_provider: formatProviderLabel(recommendedQuote?.quote),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
@@ -99,7 +99,7 @@ export const BridgeQuotesModal = ({
       );
       onClose();
     },
-    [dispatch, isRecommendedQuote, insufficientBal, onClose],
+    [dispatch, isRecommendedQuote, insufficientBal, onClose, recommendedQuote],
   );
 
   return (
