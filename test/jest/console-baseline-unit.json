@@ -2802,10 +2802,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings-v2/assets-tab/autodetect-tokens-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/assets-tab/currency-sub-page.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2813,15 +2809,7 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings-v2/assets-tab/hide-zero-balance-tokens-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/assets-tab/local-currency-item.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings-v2/assets-tab/show-network-token-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
