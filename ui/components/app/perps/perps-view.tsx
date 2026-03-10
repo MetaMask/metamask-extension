@@ -1,5 +1,5 @@
+import React, { useMemo, useState, useCallback } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import React, { useMemo } from 'react';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -13,6 +13,7 @@ import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
+import { WithdrawFundsModal } from './withdraw-funds-modal';
 import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
@@ -30,6 +31,7 @@ import { PerpsWatchlist } from './perps-watchlist';
  */
 export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
@@ -73,6 +75,14 @@ export const PerpsView: React.FC = () => {
     return allHip3Markets.slice(0, 5);
   }, [allHip3Markets]);
 
+  const handleOpenWithdrawModal = useCallback(() => {
+    setIsWithdrawModalOpen(true);
+  }, []);
+
+  const handleCloseWithdrawModal = useCallback(() => {
+    setIsWithdrawModalOpen(false);
+  }, []);
+
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here
   // so the section is represented before the main view mounts.
@@ -103,9 +113,7 @@ export const PerpsView: React.FC = () => {
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
         onAddFunds={triggerDeposit}
-        onWithdraw={() => {
-          // TODO: Navigate to withdraw flow
-        }}
+        onWithdraw={handleOpenWithdrawModal}
       />
 
       {/* Positions + Orders sections */}
@@ -132,6 +140,10 @@ export const PerpsView: React.FC = () => {
       <PerpsSupportLearn />
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
+      <WithdrawFundsModal
+        isOpen={isWithdrawModalOpen}
+        onClose={handleCloseWithdrawModal}
+      />
     </Box>
   );
 };
