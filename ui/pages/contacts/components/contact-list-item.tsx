@@ -126,10 +126,7 @@ export function ContactListItem({
               data-testid="contact-list-item-duplicate-warning"
               className="flex size-10 items-center justify-center"
             >
-              <Icon
-                name={IconName.Danger}
-                color={IconColor.WarningDefault}
-              />
+              <Icon name={IconName.Danger} color={IconColor.WarningDefault} />
             </Box>
           </Tooltip>
         )}

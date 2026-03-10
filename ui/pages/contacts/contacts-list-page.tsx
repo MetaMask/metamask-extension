@@ -26,10 +26,7 @@ import {
   CONTACTS_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getCompleteAddressBook,
-  getInternalAccounts,
-} from '../../selectors';
+import { getCompleteAddressBook, getInternalAccounts } from '../../selectors';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   buildDuplicateContactMap,
@@ -112,7 +109,9 @@ export function ContactsListPage() {
   }, [location.state?.showContactUpdatedToast]);
 
   useEffect(() => {
-    if (!showDeletedToast) return;
+    if (!showDeletedToast) {
+      return;
+    }
     const id = setTimeout(() => {
       navigate(CONTACTS_ROUTE, { replace: true, state: {} });
     }, TOAST_CLEAR_STATE_DELAY_MS);
@@ -120,7 +119,9 @@ export function ContactsListPage() {
   }, [showDeletedToast, navigate]);
 
   useEffect(() => {
-    if (!showUpdatedToast) return;
+    if (!showUpdatedToast) {
+      return;
+    }
     const id = setTimeout(() => {
       navigate(CONTACTS_ROUTE, { replace: true, state: {} });
     }, TOAST_CLEAR_STATE_DELAY_MS);
@@ -228,9 +229,11 @@ export function ContactsListPage() {
                       navigate(`${CONTACTS_VIEW_ROUTE}/${entry.address}`)
                     }
                     isDuplicate={
-                      (duplicateContactMap.get(
-                        (entry.name ?? '').trim().toLowerCase(),
-                      ) ?? []).length > 1 ||
+                      (
+                        duplicateContactMap.get(
+                          (entry.name ?? '').trim().toLowerCase(),
+                        ) ?? []
+                      ).length > 1 ||
                       (completeAddressBook ?? []).filter(
                         (e: { address: string }) =>
                           isEqualCaseInsensitive(e.address, entry.address),
