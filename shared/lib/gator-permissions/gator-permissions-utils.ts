@@ -16,7 +16,7 @@ import {
 // Token info type used across helpers
 export type GatorTokenInfo = {
   symbol: string;
-  decimals: number | null;
+  decimals?: number;
   name?: string;
   image?: string;
   address?: string;
@@ -283,7 +283,7 @@ async function fetchGatorErc20TokenInfo(
 
   return {
     symbol: symbol || 'Unknown Token',
-    decimals: decimals ?? 18,
+    decimals,
     name,
     image,
     address,
@@ -359,7 +359,7 @@ export function formatGatorAmountLabel(params: {
   amount: string;
   tokenSymbol: string;
   frequency: string;
-  tokenDecimals: number;
+  tokenDecimals: number | null;
   locale: string;
   threshold?: number;
   numberFormatOptions?: Intl.NumberFormatOptions;
@@ -384,7 +384,8 @@ export function formatGatorAmountLabel(params: {
     if (amount.startsWith('0x')) {
       // For hex amounts, we need to convert from wei to token units
       const weiAmount = BigInt(amount);
-      const divisor = BigInt(10 ** tokenDecimals);
+      // if tokenDecimals is null, we show raw units and add a note `(raw units)`
+      const divisor = BigInt(10 ** (tokenDecimals ?? 0));
 
       // Use BigInt division to avoid precision loss
       const quotient = weiAmount / divisor;
@@ -393,6 +394,7 @@ export function formatGatorAmountLabel(params: {
       // Convert to number only after BigInt division
       numericAmount = Number(quotient) + Number(remainder) / Number(divisor);
     } else {
+      // todo: we shouldn't accept a non-hex value, and we definitely shouldn't be using floating point
       numericAmount = parseFloat(amount);
       if (Number.isNaN(numericAmount)) {
         return 'Permission details unavailable';
@@ -405,7 +407,9 @@ export function formatGatorAmountLabel(params: {
         ? `<${formatter.format(threshold)}`
         : formatter.format(numericAmount);
 
-    return `${formattedAmount} ${tokenSymbol} ${frequency}`;
+    const note = !tokenDecimals ? ' (raw units)' : '';
+
+    return `${formattedAmount} ${tokenSymbol} ${frequency}${note}`;
   } catch (error) {
     return 'Permission details unavailable';
   }

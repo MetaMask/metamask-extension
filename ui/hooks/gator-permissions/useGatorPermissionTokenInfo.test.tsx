@@ -385,7 +385,7 @@ describe('useGatorPermissionTokenInfo', () => {
       await waitForNextUpdate();
 
       expect(result.current.tokenInfo?.symbol).toBe('Unknown Token');
-      expect(result.current.tokenInfo?.decimals).toBe(null);
+      expect(result.current.tokenInfo?.decimals).toBeUndefined();
       expect(result.current.error).toBeInstanceOf(Error);
       expect(result.current.error?.message).toBe('On-chain Error');
     });
@@ -402,7 +402,7 @@ describe('useGatorPermissionTokenInfo', () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.tokenInfo).toMatchObject({
         symbol: 'Unknown Token',
-        decimals: null,
+        decimals: undefined,
         chainId: mockChainId,
       });
     });

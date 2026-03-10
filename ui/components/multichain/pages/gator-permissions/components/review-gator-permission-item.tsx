@@ -227,7 +227,7 @@ export const ReviewGatorPermissionItem = ({
 
     const { symbol, decimals } = tokenMetadata;
 
-    if (decimals === null) {
+    if (!decimals) {
       return `${formatDecimalShiftedValue(value, decimals)} ${symbol}/sec (raw units)`;
     }
 
@@ -241,7 +241,7 @@ export const ReviewGatorPermissionItem = ({
 
     const { symbol, decimals } = tokenMetadata;
 
-    if (decimals === null) {
+    if (!decimals) {
       return `${formatDecimalShiftedValue(value, decimals)} ${symbol} (raw units)`;
     }
 
@@ -319,10 +319,6 @@ export const ReviewGatorPermissionItem = ({
     (
       permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
     ): PermissionDetails => {
-      const { symbol, decimals } = tokenMetadata;
-      const decimalsNotice =
-        decimals === undefined ? ' (raw units - decimals unavailable)' : '';
-
       return {
         amountLabel: {
           translationKey: 'amount',

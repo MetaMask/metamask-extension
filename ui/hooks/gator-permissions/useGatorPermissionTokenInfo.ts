@@ -150,7 +150,6 @@ export function useGatorPermissionTokenInfo(
     return {
       tokenInfo: {
         symbol: 'Unknown Token',
-        decimals: null,
         chainId: chainId || '0x0',
       },
       loading: isFetching,

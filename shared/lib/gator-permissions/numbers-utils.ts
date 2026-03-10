@@ -24,7 +24,7 @@ export const DEFAULT_TOKEN_AMOUNT_FORMAT_OPTIONS: Intl.NumberFormatOptions = {
  */
 export function formatDecimalShiftedValue(
   value: Hex,
-  decimals: number | null,
+  decimals?: number,
 ): string {
   const valueDec = new Numeric(value, 16).toBase(10);
   if (!decimals) {
