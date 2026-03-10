@@ -687,7 +687,7 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: TRANSACTION_DETAILS_ROUTE,
+        path: `${TRANSACTION_DETAILS_ROUTE}/:txId`,
         component: TransactionDetailsPage,
         layout: LegacyLayout,
         authenticated: true,

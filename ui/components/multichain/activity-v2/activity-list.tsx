@@ -166,14 +166,16 @@ export const ActivityList = ({ filter }: Props) => {
 
   const handleItemClick = useCallback(
     (transaction: TransactionViewModel) => {
-      navigate(TRANSACTION_DETAILS_ROUTE, { state: { transaction } });
+      navigate(`${TRANSACTION_DETAILS_ROUTE}/${transaction.id}`, {
+        state: { transaction },
+      });
     },
     [navigate],
   );
 
   const handleNonEvmItemClick = useCallback(
     (transaction: Transaction) => {
-      navigate(TRANSACTION_DETAILS_ROUTE, {
+      navigate(`${TRANSACTION_DETAILS_ROUTE}/${transaction.id}`, {
         state: { nonEvmTransaction: transaction },
       });
     },

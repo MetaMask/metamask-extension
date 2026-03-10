@@ -591,7 +591,7 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: TRANSACTION_DETAILS_ROUTE,
+    path: `${TRANSACTION_DETAILS_ROUTE}/:txId`,
     label: 'Transaction Details Page',
     trackInAnalytics: false,
   },
