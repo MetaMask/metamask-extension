@@ -49,7 +49,7 @@ async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
