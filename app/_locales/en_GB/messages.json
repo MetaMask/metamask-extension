@@ -1101,9 +1101,6 @@
   "bridgeMarketClosedTitle": {
     "message": "Market closed"
   },
-  "bridgeNetCost": {
-    "message": "Net cost"
-  },
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },
