@@ -97,6 +97,7 @@ class SettingsPage extends PureComponent {
     backRoute: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
+    currentSnapId: PropTypes.string,
     hasSubscribedToShield: PropTypes.bool,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
@@ -390,6 +391,7 @@ class SettingsPage extends PureComponent {
     const {
       navigate,
       currentPath,
+      currentSnapId,
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
@@ -476,6 +478,17 @@ class SettingsPage extends PureComponent {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;
           }
+
+          if (
+            currentPath === SNAP_SETTINGS_ROUTE &&
+            key.startsWith(`${SNAP_SETTINGS_ROUTE}?`)
+          ) {
+            const keySnapId = new URLSearchParams(key.split('?')[1]).get(
+              'snapId',
+            );
+            return keySnapId === currentSnapId;
+          }
+
           return matchPath(key, currentPath);
         }}
         onSelect={(key) => {

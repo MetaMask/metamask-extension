@@ -200,6 +200,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute,
     conversionDate,
     currentPath: pathname,
+    currentSnapId: snapIdFromSearch,
     hasSubscribedToShield: getHasSubscribedToShield(state),
     isAddressEntryPage,
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
