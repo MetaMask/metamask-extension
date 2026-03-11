@@ -57,7 +57,7 @@ import type {
   MetaMetricsReferrerObject,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
 import {
   checkAlarmExists,
@@ -84,7 +84,7 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
-import { getTokensControllerAllTokens } from '../../../shared/modules/selectors/assets-migration';
+import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
 import type {
   PreferencesControllerGetStateAction,

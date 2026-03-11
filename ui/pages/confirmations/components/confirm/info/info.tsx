@@ -1,7 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';

@@ -3,7 +3,7 @@ import {
   I18NMessageDict,
   I18NSubstitution,
   getMessage as getMessageShared,
-} from '../../../shared/modules/i18n';
+} from '../../../shared/lib/i18n';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 

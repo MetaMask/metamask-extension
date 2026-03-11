@@ -6,7 +6,7 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { isHardwareWallet } from '../../../../shared/modules/selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   submitBridgeIntent,

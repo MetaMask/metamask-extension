@@ -6,7 +6,7 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../../shared/modules/selectors/multichain', () => ({
+jest.mock('../../../shared/lib/selectors/multichain', () => ({
   getEnabledNetworks: jest.fn(),
 }));
 

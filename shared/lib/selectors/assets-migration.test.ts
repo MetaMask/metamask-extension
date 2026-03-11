@@ -4,7 +4,7 @@ import type { CaipAssetType, Hex } from '@metamask/utils';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
-} from '../../lib/assets-unify-state/remote-feature-flag';
+} from '../assets-unify-state/remote-feature-flag';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,

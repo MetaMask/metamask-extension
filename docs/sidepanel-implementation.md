@@ -42,7 +42,7 @@ The sidepanel feature is controlled by the `IS_SIDEPANEL` environment variable, 
 
 ### Browser Support Detection
 
-The `getIsSidePanelFeatureEnabled()` function (located in `shared/modules/environment.ts`) performs comprehensive browser support detection:
+The `getIsSidePanelFeatureEnabled()` function (located in `shared/lib/environment.ts`) performs comprehensive browser support detection:
 
 1. **Build Flag Check**: Verifies `IS_SIDEPANEL === 'true'`
 2. **API Existence Check**: Checks if `chrome.sidePanel` API exists (Firefox and Opera don't have it)
@@ -210,7 +210,7 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 
 - Uses a different extension API model despite being Chromium-based
 - **Uses `chrome.sidebarAction` API instead of `chrome.sidePanel` API**
-- MetaMask currently only checks for `chrome.sidePanel` API (see `shared/modules/environment.ts`)
+- MetaMask currently only checks for `chrome.sidePanel` API (see `shared/lib/environment.ts`)
 - Since Opera's `sidebarAction` API hasn't been implemented in MetaMask, sidepanel doesn't work for Opera
 - Detected via user agent string containing `'OPR'` (see `app/scripts/lib/util.ts`)
 - Feature automatically disabled via API check (fails because `chrome.sidePanel` doesn't exist)
@@ -239,7 +239,7 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 | `app/manifest/v3/chrome.json`   | Manifest configuration for sidepanel                     |
 | `app/html/pages/sidepanel.html` | Sidepanel HTML entry point                               |
 | `app/scripts/background.js`     | Background script initialization and preference handling |
-| `shared/modules/environment.ts` | Browser support detection                                |
+| `shared/lib/environment.ts`     | Browser support detection                                |
 | `shared/types/sidepanel.ts`     | TypeScript type definitions                              |
 | `app/scripts/lib/util.ts`       | Environment type detection                               |
 
