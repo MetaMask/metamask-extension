@@ -56,6 +56,11 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly generalTabButton = {
+    text: 'General',
+    css: '.tab-bar__tab__content__title',
+  };
+
   private readonly transactionShieldButton = {
     text: 'Transaction Shield',
     css: '.tab-bar__tab__content__title',
@@ -89,6 +94,12 @@ class SettingsPage {
       css: '.tab-bar__tab__content__title',
       text: 'Advanced',
     });
+  }
+
+  async goToGeneralTab(): Promise<void> {
+    console.log('Navigating to General tab');
+    await this.driver.waitForSelector(this.generalTabButton);
+    await this.driver.clickElement(this.generalTabButton);
   }
 
   async fillSearchSettingsInput(text: string): Promise<void> {

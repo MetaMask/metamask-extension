@@ -106,6 +106,24 @@ class SnapInstall {
     await this.driver.clickElementAndWaitForWindowToClose(this.okButton);
   }
 
+  async clickDialogButtonAndWaitForClose(button: {
+    text: string;
+    tag: string;
+  }): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(button);
+  }
+
+  async waitForDialogPanelText(expectedText: string): Promise<void> {
+    const panel = await this.driver.findElement(
+      this.lifeCycleHookMessageElement,
+    );
+    await this.driver.scrollToElement(panel);
+    await this.driver.waitForSelector({
+      css: this.lifeCycleHookMessageElement,
+      text: expectedText,
+    });
+  }
+
   async clickOkButtonAndContinueOnDialog() {
     console.log(
       'Clicking Confirm/Ok button without waiting for the dialog to close',
