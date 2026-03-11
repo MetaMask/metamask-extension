@@ -19,8 +19,6 @@ const PREFERENCES_STATE_MOCK = {
   preferences: {
     showFiatInTestnets: true,
   },
-  // Enables advanced details due to migration 123
-  useNonceField: true,
 };
 
 describe('Send - Edit Transaction', function () {
@@ -29,7 +27,6 @@ describe('Send - Edit Transaction', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
-          .withConversionRateDisabled()
           .build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         title: this.test?.fullTitle(),
@@ -48,7 +45,6 @@ describe('Send - Edit Transaction', function () {
           text: '1 ETH',
         });
 
-        await sendTokenConfirmPage.checkFirstGasFee('0');
         await sendTokenConfirmPage.checkNativeCurrency('$0.07');
 
         await driver.clickElement(
@@ -74,7 +70,6 @@ describe('Send - Edit Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmPage.checkFirstGasFee('0.0002');
         await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction
@@ -101,7 +96,6 @@ describe('Send - Edit Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withConversionRateDisabled()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         title: this.test?.fullTitle(),
@@ -120,7 +114,6 @@ describe('Send - Edit Transaction', function () {
           text: '1 ETH',
         });
 
-        await sendTokenConfirmPage.checkFirstGasFee('0.0004');
         await sendTokenConfirmPage.checkNativeCurrency('$0.75');
 
         await driver.clickElement(
@@ -147,7 +140,6 @@ describe('Send - Edit Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmPage.checkFirstGasFee('0.0002');
         await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction

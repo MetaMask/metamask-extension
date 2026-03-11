@@ -37,10 +37,16 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         );
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          '$85,025.00',
-        );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 2',
+          balance: '$0.00',
+        });
         await accountListPage.checkNumberOfAvailableAccounts(2);
       },
     );
@@ -82,10 +88,16 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          '$85,025.00',
-        );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          balance: '$85,025.00',
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          balance: '$85,025.00',
+          wallet: 'Ledger',
+          account: 'Ledger 1',
+        });
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Ledger 1');
         await accountListPage.checkNumberOfAvailableAccounts(2);
@@ -127,10 +139,16 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           'MetaMask Simple Snap Keyring',
         );
         // Ensure that an SSK account within the wallet is displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          '$85,025.00',
-        );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 2',
+          balance: '$0.00',
+        });
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList(
           'Snap Account 1',

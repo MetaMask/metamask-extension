@@ -109,7 +109,7 @@ describe('Settings', function () {
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(
           driver,
-        ).checkMultichainAccountBalanceDisplayed('$42,500.00');
+        ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });
       },
     );
   });
