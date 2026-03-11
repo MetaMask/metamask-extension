@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Token } from '../types';
@@ -45,47 +45,46 @@ const useAssetListTokenDetection = () => {
     getNetworkConfigurationsByChainId,
   );
 
-  const multichainDetectedTokensLength = Object.values(
-    detectedTokensMultichain || {},
-  ).reduce((acc, tokens) => acc + tokens.length, 0);
+  const handleAddImportedTokens = useCallback(
+    async (tokens: Token[], networkClientIdProp: string) => {
+      await dispatch(addImportedTokens(tokens as Token[], networkClientIdProp));
+    },
+    [dispatch],
+  );
 
-  const handleAddImportedTokens = async (
-    tokens: Token[],
-    networkClientIdProp: string,
-  ) => {
-    await dispatch(addImportedTokens(tokens as Token[], networkClientIdProp));
-  };
-
-  const trackTokenAddedEvent = (importedToken: Token, chainId: string) => {
-    trackEvent({
-      event: MetaMetricsEventName.TokenAdded,
-      category: MetaMetricsEventCategory.Wallet,
-      sensitiveProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: importedToken.symbol,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_contract_address: importedToken.address,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_decimal_precision: importedToken.decimals,
-        source: MetaMetricsTokenEventSource.Detected,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_standard: TokenStandard.ERC20,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        asset_type: AssetType.token,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_added_type: 'detected',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      },
-    });
-  };
+  const trackTokenAddedEvent = useCallback(
+    (importedToken: Token, chainId: string) => {
+      trackEvent({
+        event: MetaMetricsEventName.TokenAdded,
+        category: MetaMetricsEventCategory.Wallet,
+        sensitiveProperties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: importedToken.symbol,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_contract_address: importedToken.address,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_decimal_precision: importedToken.decimals,
+          source: MetaMetricsTokenEventSource.Detected,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_standard: TokenStandard.ERC20,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_type: AssetType.token,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_added_type: 'detected',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        },
+      });
+    },
+    [trackEvent],
+  );
 
   // Add detected tokens to sate
   useEffect(() => {
@@ -106,11 +105,15 @@ const useAssetListTokenDetection = () => {
       trackTokenAddedEvent,
     );
   }, [
+    allNetworks,
+    currentChainId,
+    detectedTokens,
+    detectedTokensMultichain,
+    handleAddImportedTokens,
     isOnCurrentNetwork,
-    selectedAddress,
     networkClientId,
-    detectedTokens.length,
-    multichainDetectedTokensLength,
+    trackTokenAddedEvent,
+    useTokenDetection,
   ]);
 };
 
