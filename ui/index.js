@@ -26,12 +26,12 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import {
   setupLongTaskObserver,
   setupLongTaskSentryReporting,
   exposeLongTaskMetricsForTesting,
 } from './helpers/utils/performance-observers';
-import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
