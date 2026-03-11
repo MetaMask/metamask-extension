@@ -39,11 +39,11 @@ export const Default: Story = {
   ],
   parameters: {
     initialEntries: [
-      `/multichain-account-address-list/${encodeURIComponent(
+      `/multichain-account-address-list?accountGroupId=${encodeURIComponent(
         MOCK_GROUP_ID,
-      )}?source=receive`,
+      )}&source=receive`,
     ],
-    path: '/multichain-account-address-list/:accountGroupId',
+    path: '/multichain-account-address-list',
     backgrounds: {
       default: 'light',
     },
