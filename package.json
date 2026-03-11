@@ -260,7 +260,8 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.1",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
-    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267"
+    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -295,7 +296,7 @@
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controller": "^2.1.0",
-    "@metamask/assets-controllers": "^100.2.0",
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
     "@metamask/bridge-controller": "^68.0.0",
