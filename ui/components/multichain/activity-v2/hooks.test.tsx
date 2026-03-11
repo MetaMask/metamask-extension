@@ -520,6 +520,22 @@ describe('useGetTitle', () => {
 
     expect(result.current).toBe('sentSpecifiedTokens:NFT');
   });
+
+  it('returns musdClaimActivityTitle when transactionCategory is MUSD_CLAIM (local override)', () => {
+    const tx = {
+      chainId: '0xe708',
+      txParams: {
+        to: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
+        from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      },
+      transactionCategory: 'MUSD_CLAIM',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('musdClaimActivityTitle');
+  });
 });
 
 describe('Query hooks', () => {

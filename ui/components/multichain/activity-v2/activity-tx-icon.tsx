@@ -3,9 +3,15 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import { MUSD_CLAIM_CATEGORY } from '../../app/musd/activity-overrides';
 
 function getIconCategory(tx: TransactionViewModel) {
   const { transactionCategory } = tx;
+
+  // Local override: mUSD Merkl claim (transactionCategory set in activity-overrides)
+  if (transactionCategory === MUSD_CLAIM_CATEGORY) {
+    return TransactionGroupCategory.receive;
+  }
 
   if (transactionCategory === 'APPROVE') {
     return TransactionGroupCategory.approval;

@@ -9,6 +9,7 @@ import type {
 } from '../../../../shared/lib/multichain/types';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { formatUnits } from '../../../../shared/lib/unit';
+import { MUSD_CLAIM_CATEGORY } from '../../app/musd/activity-overrides';
 
 export type AssetScope =
   | { kind: 'native'; caipAssetType?: string }
@@ -320,6 +321,11 @@ export function resolveTransactionType(
     if (tx.amounts?.from) {
       return TransactionType.simpleSend;
     }
+  }
+
+  // Local override: mUSD Merkl claim (transactionCategory set in activity-overrides)
+  if (tx.transactionCategory === MUSD_CLAIM_CATEGORY) {
+    return TransactionType.musdClaim;
   }
 
   return TransactionType.contractInteraction;

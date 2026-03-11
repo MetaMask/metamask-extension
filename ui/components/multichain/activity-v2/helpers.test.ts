@@ -363,4 +363,19 @@ describe('resolveTransactionType', () => {
     );
     expect(result).toBe(TransactionType.tokenMethodTransferFrom);
   });
+
+  it('returns musdClaim when transactionCategory is MUSD_CLAIM (local override)', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        transactionCategory: 'MUSD_CLAIM',
+        txParams: {
+          to: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
+          from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+        },
+        chainId: '0xe708',
+      }),
+    );
+    expect(result).toBe(TransactionType.musdClaim);
+  });
 });

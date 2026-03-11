@@ -13,6 +13,10 @@ import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
+import {
+  applyActivityTransactionOverrides,
+  MUSD_CLAIM_CATEGORY,
+} from '../../app/musd/activity-overrides';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
@@ -53,14 +57,14 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
   );
   const internalTxHashes = useSelector(selectRequiredTransactionHashes);
 
-  const selectFn = useMemo(
-    () =>
-      selectTransactions({
-        address: evmAddress,
-        excludedTxHashes: internalTxHashes,
-      }),
-    [evmAddress, internalTxHashes],
-  );
+  const selectFn = useMemo(() => {
+    const baseSelect = selectTransactions({
+      address: evmAddress,
+      excludedTxHashes: internalTxHashes,
+    });
+    return (data: Parameters<typeof baseSelect>[0]) =>
+      applyActivityTransactionOverrides(baseSelect(data));
+  }, [evmAddress, internalTxHashes]);
 
   const queryOptions =
     apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
@@ -200,6 +204,11 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   if (transactionType === 'DEPLOY_CONTRACT') {
     return t('contractDeployment');
+  }
+
+  // Local override: mUSD Merkl claim (transactionCategory set in activity-overrides)
+  if (transactionCategory === MUSD_CLAIM_CATEGORY) {
+    return t('musdClaimActivityTitle');
   }
 
   // This should be server-side
