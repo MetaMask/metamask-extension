@@ -50,9 +50,25 @@ publish_tag() {
     echo "Checking tag: ${tag_name}"
 
     # Check if tag already exists via API
-    if gh api "/repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag_name}" >/dev/null 2>&1; then
-        printf '%s\n' "✅ Tag ${tag_name} already exists. Skipping."
-        return 0
+    local ref_response
+    if ref_response=$(gh api "/repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag_name}" 2>/dev/null); then
+        local ref_sha ref_type existing_sha
+        ref_sha=$(echo "$ref_response" | jq -r '.object.sha')
+        ref_type=$(echo "$ref_response" | jq -r '.object.type')
+
+        if [[ "${ref_type}" == "tag" ]]; then
+            existing_sha=$(gh api "/repos/${GITHUB_REPOSITORY}/git/tags/${ref_sha}" --jq '.object.sha')
+        else
+            existing_sha="${ref_sha}"
+        fi
+
+        if [[ "${existing_sha}" == "${target_sha}" ]]; then
+            printf '%s\n' "✅ Tag ${tag_name} already exists at correct SHA (${target_sha:0:7}). Skipping."
+            return 0
+        else
+            echo "::error::Tag ${tag_name} exists at ${existing_sha:0:7} but expected ${target_sha:0:7}"
+            return 1
+        fi
     fi
 
     echo "Creating tag ${tag_name} at ${target_sha:0:7}..."
