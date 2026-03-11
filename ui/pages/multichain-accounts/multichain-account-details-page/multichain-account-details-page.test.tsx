@@ -120,9 +120,10 @@ describe('MultichainAccountDetailsPage', () => {
     fireEvent.click(walletRow);
 
     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}?id=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+      search: 'id=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ',
+    });
   });
 
   it('navigates to default route when accountGroupId is missing', async () => {
