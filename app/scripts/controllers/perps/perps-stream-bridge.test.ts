@@ -195,8 +195,11 @@ describe('PerpsStreamBridge', () => {
     });
 
     it('is a no-op when controller is undefined', () => {
-      const { bridge } = createBridge({
+      const bridge = new PerpsStreamBridge({
         controller: undefined as unknown as PerpsController,
+        controllerApi: createMockControllerApi(),
+        isConnectionAlive: () => true,
+        emit: jest.fn(),
       });
       bridge.activate();
       expect(bridge.isActivated).toBe(false);
