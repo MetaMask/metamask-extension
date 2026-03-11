@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impacto sobre el precio"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "El impacto en el precio refleja cómo tu canje afecta el precio de mercado. Si no tienes suficiente para gas, algunos de tus tokens se usan para cubrir tarifas, lo que aumenta el impacto en el precio. MetaMask no lo establece ni lo controla."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impacto sobre el precio"
   },
@@ -1209,9 +1206,6 @@
   },
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
-  },
-  "buildContactList": {
-    "message": "Cree su lista de contactos"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
@@ -1605,9 +1599,6 @@
   },
   "connectAccount": {
     "message": "Conectar cuenta"
-  },
-  "connectAccountOrCreate": {
-    "message": "Conectar cuenta o crear nueva"
   },
   "connectAccounts": {
     "message": "Conectar cuentas"
@@ -2137,9 +2128,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteContact": {
-    "message": "Eliminar contacto"
-  },
   "deleteMetaMetricsData": {
     "message": "Eliminar datos de MetaMetrics"
   },
@@ -2188,9 +2176,6 @@
   "descriptionFromSnap": {
     "message": "Descripción de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Deseleccionar todo"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No se encontraron cuentas elegibles"
@@ -2373,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Editar apodo"
-  },
-  "editAccountName": {
-    "message": "Editar el nombre de la cuenta"
   },
   "editAccounts": {
     "message": "Editar cuentas"
@@ -3138,9 +3120,6 @@
   "hidden": {
     "message": "Oculto"
   },
-  "hiddenAccounts": {
-    "message": "Cuentas ocultas"
-  },
   "hide": {
     "message": "Ocultar"
   },
@@ -3528,9 +3507,6 @@
   },
   "l2FeeTooltip": {
     "message": "Tarifa de gas L2"
-  },
-  "lastConnected": {
-    "message": "Última conexión"
   },
   "lastSold": {
     "message": "Última venta"
@@ -4008,10 +3984,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversión de mUSD"
+    "message": "Convertir $1 a mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversión de mUSD"
+    "message": "Convertir $1 a mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."
@@ -4279,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Contacto nuevo"
   },
   "newContract": {
     "message": "Contrato nuevo"
@@ -5280,12 +5255,6 @@
   "perpsEntryPrice": {
     "message": "Precio de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explora criptomonedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explora acciones y materias primas"
-  },
   "perpsFees": {
     "message": "Tarifas"
   },
@@ -5405,9 +5374,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "La mediana de los precios externos informados por los validadores, utilizada para calcular la tasa de financiación"
-  },
-  "perpsOrderAmount": {
-    "message": "Monto de la orden"
   },
   "perpsOrders": {
     "message": "Órdenes"
@@ -5555,12 +5521,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirar"
-  },
-  "perpsYourOrders": {
-    "message": "Tus órdenes"
-  },
-  "perpsYourPositions": {
-    "message": "Tus posiciones"
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
@@ -5904,9 +5864,6 @@
   },
   "removeAccount": {
     "message": "Eliminar cuenta"
-  },
-  "removeAccountDescription": {
-    "message": "Esta cuenta se eliminará de su billetera. Antes de continuar, asegúrese de que dispone de la frase secreta de recuperación original o de la clave privada de esta cuenta importada. Puede importar o volver a crear cuentas desde el menú desplegable de cuentas. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Asegúrate de tener la frase secreta de recuperación o la clave privada de esta cuenta antes de eliminarla.",
@@ -6288,9 +6245,6 @@
   "search": {
     "message": "Buscar"
   },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
-  },
   "searchAnAcccountOrContact": {
     "message": "Buscar una cuenta o contacto"
   },
@@ -6432,12 +6386,6 @@
   "selectAccountToConnect": {
     "message": "Seleccione una cuenta para conectarse"
   },
-  "selectAccounts": {
-    "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
-  },
-  "selectAccountsForSnap": {
-    "message": "Seleccione la(s) cuenta(s) para usar con este snap"
-  },
   "selectAll": {
     "message": "Seleccionar todo"
   },
@@ -6476,9 +6424,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Se seleccionó una cuenta distinta"
-  },
-  "selectingAllWillAllow": {
-    "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
   },
   "send": {
     "message": "Enviar"
@@ -8800,9 +8745,6 @@
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
   },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
   "userOpContractDeployError": {
     "message": "No se admite la implementación de contratos desde una cuenta inteligente"
   },
@@ -8822,14 +8764,8 @@
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Ver contacto"
-  },
   "viewDetails": {
     "message": "Ver detalles"
-  },
-  "viewMore": {
-    "message": "Ver más"
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"

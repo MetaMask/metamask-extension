@@ -5,10 +5,10 @@ class PrivacySettings {
   private readonly driver: Driver;
 
   private readonly autodetectNftToggleButton =
-    '[data-testid="useNftDetection"] .toggle-button > div';
+    '[data-testid="use-nft-detection"] .toggle-button > div';
 
   private readonly autoDetectToken =
-    '[data-testid="autoDetectTokens"] .toggle-button';
+    '[data-testid="autodetect-tokens"] .toggle-button';
 
   private readonly blockaidAlertsToggle =
     '[data-testid="securityAlert"] .toggle-button';

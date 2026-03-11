@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Влияние на цену"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Влияние на цену отражает, как ваш своп влияет на рыночную цену. Если у вас недостаточно средств для покупки газа, часть ваших токенов используется для покрытия комиссий, что увеличивает влияние на цену. MetaMask не устанавливает и не контролирует это."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Влияние на цену"
   },
@@ -1209,9 +1206,6 @@
   },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
-  },
-  "buildContactList": {
-    "message": "Создайте список контактов"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
@@ -1605,9 +1599,6 @@
   },
   "connectAccount": {
     "message": "Подключить счет"
-  },
-  "connectAccountOrCreate": {
-    "message": "Подключите счет или создайте новый"
   },
   "connectAccounts": {
     "message": "Подключить счета"
@@ -2137,9 +2128,6 @@
   "delete": {
     "message": "Удалить"
   },
-  "deleteContact": {
-    "message": "Удалить контакт"
-  },
   "deleteMetaMetricsData": {
     "message": "Удалить данные MetaMetrics"
   },
@@ -2188,9 +2176,6 @@
   "descriptionFromSnap": {
     "message": "Описание из $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Отменить выбор всего"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Удовлетворяющие требованиям счета не найдены"
@@ -2373,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Редактировать псевдоним"
-  },
-  "editAccountName": {
-    "message": "Изменить имя счета"
   },
   "editAccounts": {
     "message": "Изменить счета"
@@ -3138,9 +3120,6 @@
   "hidden": {
     "message": "Скрыто"
   },
-  "hiddenAccounts": {
-    "message": "Скрыть счета"
-  },
   "hide": {
     "message": "Скрыть"
   },
@@ -3528,9 +3507,6 @@
   },
   "l2FeeTooltip": {
     "message": "Плата за газ L2"
-  },
-  "lastConnected": {
-    "message": "Последнее подключение"
   },
   "lastSold": {
     "message": "Последняя продажа"
@@ -4008,10 +3984,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
@@ -4279,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Новый контакт"
   },
   "newContract": {
     "message": "Новый контракт"
@@ -5280,12 +5255,6 @@
   "perpsEntryPrice": {
     "message": "Начальная цена"
   },
-  "perpsExploreCrypto": {
-    "message": "Обзор криптовалюты"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Обзор акций и товаров"
-  },
   "perpsFees": {
     "message": "Комиссии"
   },
@@ -5405,9 +5374,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Медианное значение внешних цен, сообщенных валидаторами, используется для расчета ставки финансирования"
-  },
-  "perpsOrderAmount": {
-    "message": "Сумма ордера"
   },
   "perpsOrders": {
     "message": "Ордеры"
@@ -5555,12 +5521,6 @@
   },
   "perpsWithdraw": {
     "message": "Вывести средства"
-  },
-  "perpsYourOrders": {
-    "message": "Ваши ордера"
-  },
-  "perpsYourPositions": {
-    "message": "Ваши позиции"
   },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
@@ -5904,9 +5864,6 @@
   },
   "removeAccount": {
     "message": "Удалить счет"
-  },
-  "removeAccountDescription": {
-    "message": "Этот счет будет удален из вашего кошелька. Прежде чем продолжить, убедитесь, что у вас есть исходная секретная фраза для восстановления или закрытый ключ для этого импортированного счета. Вы можете импортировать или создать счета снова из раскрывающегося списка счетов. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Перед удалением убедитесь, что у вас есть секретная фраза для восстановления или закрытый ключ для этого счета.",
@@ -6288,9 +6245,6 @@
   "search": {
     "message": "Поиск"
   },
-  "searchAccounts": {
-    "message": "Поиск счетов"
-  },
   "searchAnAcccountOrContact": {
     "message": "Поиск по аккаунту или контакту"
   },
@@ -6432,12 +6386,6 @@
   "selectAccountToConnect": {
     "message": "Выберите счет для подключения"
   },
-  "selectAccounts": {
-    "message": "Выберите счета(-а) для использования на этом сайте"
-  },
-  "selectAccountsForSnap": {
-    "message": "Выберите счет(-а) для использования с этим snap"
-  },
   "selectAll": {
     "message": "Выбрать все"
   },
@@ -6476,9 +6424,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Выбран другой счет"
-  },
-  "selectingAllWillAllow": {
-    "message": "Выбор всех позволит этому сайту просматривать все ваши текущие счета. Убедитесь, что вы доверяете этому сайту."
   },
   "send": {
     "message": "Отправить"
@@ -8800,9 +8745,6 @@
   "usedByClients": {
     "message": "Используется множеством разных клиентов"
   },
-  "userName": {
-    "message": "Имя пользователя"
-  },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"
   },
@@ -8822,14 +8764,8 @@
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Смотреть контакт"
-  },
   "viewDetails": {
     "message": "Просмотр сведений"
-  },
-  "viewMore": {
-    "message": "Больше"
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"

@@ -934,9 +934,6 @@
   "bridgePriceImpact": {
     "message": "Tionchar praghais"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Léiríonn tionchar praghais an chaoi a mbíonn tionchar ag do bhabhtáil ar phraghas an mhargaidh. Mura bhfuil go leor agat le haghaidh gáis, úsáidtear cuid de do chomharthaí chun táillí a chlúdach, rud a mhéadaíonn tionchar praghais. Ní shocraíonn ná ní rialaíonn MetaMask é seo."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tionchar Praghsanna"
   },
@@ -1066,9 +1063,6 @@
   },
   "browserNotSupported": {
     "message": "Ní thacaítear le do bhrabhsálaí..."
-  },
-  "buildContactList": {
-    "message": "Tóg do liosta teagmhála"
   },
   "builtAroundTheWorld": {
     "message": "Tá MetaMask deartha agus tógtha ar fud an domhain."
@@ -1383,9 +1377,6 @@
   },
   "connectAccount": {
     "message": "Ceangail cuntas"
-  },
-  "connectAccountOrCreate": {
-    "message": "Ceangail cuntas nó cruthaigh ceann nua"
   },
   "connectAccounts": {
     "message": "Ceangail cuntais"
@@ -1847,9 +1838,6 @@
   "delete": {
     "message": "Scrios"
   },
-  "deleteContact": {
-    "message": "Scrios an teagmhálaí"
-  },
   "deleteMetaMetricsData": {
     "message": "Scrios sonraí MetaMetrics"
   },
@@ -1898,9 +1886,6 @@
   "descriptionFromSnap": {
     "message": "Cur síos ó $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Díroghnaigh gach rud"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Ní bhfuarthas aon chuntais incháilithe"
@@ -2071,9 +2056,6 @@
   },
   "editANickname": {
     "message": "Cuir leasainm in eagar"
-  },
-  "editAccountName": {
-    "message": "Cuir ainm an chuntais in eagar"
   },
   "editAccounts": {
     "message": "Cuir cuntais in eagar"
@@ -2657,9 +2639,6 @@
   "hexDataPlaceholder": {
     "message": "Cuir isteach sonraí heicsidheachúlach (roghnach)"
   },
-  "hiddenAccounts": {
-    "message": "Cuntais i bhfolach"
-  },
   "hide": {
     "message": "Folaigh"
   },
@@ -3035,9 +3014,6 @@
   },
   "l2FeeTooltip": {
     "message": "Táille gáis L2"
-  },
-  "lastConnected": {
-    "message": "Ceangailte go deireanach"
   },
   "lastSold": {
     "message": "Díolta go deireanach"
@@ -3702,9 +3678,6 @@
   "newAccountNumberName": {
     "message": "Cuntas $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Teagmháil nua"
   },
   "newContract": {
     "message": "Conradh nua"
@@ -4841,9 +4814,6 @@
   "removeAccount": {
     "message": "Bain cuntas"
   },
-  "removeAccountDescription": {
-    "message": "Bainfear an cuntas seo as do sparán. Déan cinnte go bhfuil an Frása Aisghabhála Rúnda bunaidh nó an eochair phríobháideach agat don chuntas allmhairithe seo sula leanann tú ar aghaidh. Is féidir leat cuntais a allmhairiú nó a chruthú arís ón roghchlár anuas cuntais."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Cinntigh go bhfuil an Frása Aisghabhála Rúnda nó an eochair phríobháideach agat don chuntas seo sula mbaintear é.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -5045,9 +5015,6 @@
   "search": {
     "message": "Cuardaigh"
   },
-  "searchAccounts": {
-    "message": "Cuardaigh cuntais"
-  },
   "searchAnAcccountOrContact": {
     "message": "Cuardaigh cuntas nó teagmhálaí"
   },
@@ -5186,12 +5153,6 @@
   "selectAccountToConnect": {
     "message": "Roghnaigh cuntas le ceangal"
   },
-  "selectAccounts": {
-    "message": "Roghnaigh an cuntas/na cuntais le húsáid ar an suíomh seo"
-  },
-  "selectAccountsForSnap": {
-    "message": "Roghnaigh an cuntas/na cuntais le húsáid leis an snap seo"
-  },
   "selectAll": {
     "message": "Roghnaigh gach rud"
   },
@@ -5230,9 +5191,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Cuntas difriúil roghnaithe"
-  },
-  "selectingAllWillAllow": {
-    "message": "Trí gach ceann a roghnú, beidh an suíomh seo in ann do chuntais reatha go léir a fheiceáil. Déan cinnte go bhfuil muinín agat as an suíomh seo."
   },
   "send": {
     "message": "Seol"
@@ -7012,9 +6970,6 @@
   "usedByClients": {
     "message": "Úsáidte ag réimse cliant éagsúil"
   },
-  "userName": {
-    "message": "Ainm úsáideora"
-  },
   "userOpContractDeployError": {
     "message": "Ní thacaítear le himscaradh conartha ó chuntas conartha cliste"
   },
@@ -7034,14 +6989,8 @@
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Féach ar an teagmháil"
-  },
   "viewDetails": {
     "message": "Féach sonraí"
-  },
-  "viewMore": {
-    "message": "Féach níos mó"
   },
   "viewOnBlockExplorer": {
     "message": "Féach ar an iniúchóir bloc"

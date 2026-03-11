@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "价格影响"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "价格影响反映了您的兑换对市场价格的影响程度。若燃料费不足，系统将自动使用部分代币抵扣手续费，这会进一步推高价格影响。MetaMask 不设定也不控制该机制。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "价格影响"
   },
@@ -1209,9 +1206,6 @@
   },
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
-  },
-  "buildContactList": {
-    "message": "建立您的联系人列表"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
@@ -1605,9 +1599,6 @@
   },
   "connectAccount": {
     "message": "连接账户"
-  },
-  "connectAccountOrCreate": {
-    "message": "连接账户或创建新账户"
   },
   "connectAccounts": {
     "message": "连接账户"
@@ -2137,9 +2128,6 @@
   "delete": {
     "message": "删除"
   },
-  "deleteContact": {
-    "message": "删除联系信息"
-  },
   "deleteMetaMetricsData": {
     "message": "删除MetaMetrics数据"
   },
@@ -2188,9 +2176,6 @@
   "descriptionFromSnap": {
     "message": "来自 $1 的描述",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "全部取消选择"
   },
   "destinationAccountPickerNoEligible": {
     "message": "未找到符合条件的账户"
@@ -2373,9 +2358,6 @@
   },
   "editANickname": {
     "message": "编辑昵称"
-  },
-  "editAccountName": {
-    "message": "编辑账户名"
   },
   "editAccounts": {
     "message": "编辑账户"
@@ -3138,9 +3120,6 @@
   "hidden": {
     "message": "隐藏"
   },
-  "hiddenAccounts": {
-    "message": "隐藏账户"
-  },
   "hide": {
     "message": "隐藏"
   },
@@ -3528,9 +3507,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 燃料费"
-  },
-  "lastConnected": {
-    "message": "最后连接"
   },
   "lastSold": {
     "message": "最后售出"
@@ -4008,10 +3984,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -4279,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新联系人"
   },
   "newContract": {
     "message": "新合约"
@@ -5280,12 +5255,6 @@
   "perpsEntryPrice": {
     "message": "入场价格"
   },
-  "perpsExploreCrypto": {
-    "message": "探索加密货币"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "探索股票与大宗商品"
-  },
   "perpsFees": {
     "message": "费用"
   },
@@ -5399,9 +5368,6 @@
   },
   "perpsOpenedLong": {
     "message": "已开设多头仓位"
-  },
-  "perpsOrderAmount": {
-    "message": "订单金额"
   },
   "perpsOrders": {
     "message": "订单"
@@ -5549,12 +5515,6 @@
   },
   "perpsWithdraw": {
     "message": "提取"
-  },
-  "perpsYourOrders": {
-    "message": "您的订单"
-  },
-  "perpsYourPositions": {
-    "message": "您的仓位"
   },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
@@ -5898,9 +5858,6 @@
   },
   "removeAccount": {
     "message": "删除账户"
-  },
-  "removeAccountDescription": {
-    "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
   },
   "removeAccountModalBannerDescription": {
     "message": "删除之前，请确保您拥有此账户的私钥助记词或私钥。",
@@ -6282,9 +6239,6 @@
   "search": {
     "message": "搜索"
   },
-  "searchAccounts": {
-    "message": "搜索账户"
-  },
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"
   },
@@ -6426,12 +6380,6 @@
   "selectAccountToConnect": {
     "message": "选择要连接的账户"
   },
-  "selectAccounts": {
-    "message": "选择要在此网站上使用的账户"
-  },
-  "selectAccountsForSnap": {
-    "message": "选择使用此 Snap 的账户"
-  },
   "selectAll": {
     "message": "全部选择"
   },
@@ -6470,9 +6418,6 @@
   },
   "selectedAccountMismatch": {
     "message": "已选择不同账户"
-  },
-  "selectingAllWillAllow": {
-    "message": "选择全部将允许本网站查看您当前的所有账户。确保您信任这个网站。"
   },
   "send": {
     "message": "发送"
@@ -8794,9 +8739,6 @@
   "usedByClients": {
     "message": "可用于各种不同的客户端"
   },
-  "userName": {
-    "message": "用户名"
-  },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
   },
@@ -8816,14 +8758,8 @@
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "查看联系人"
-  },
   "viewDetails": {
     "message": "查看详情"
-  },
-  "viewMore": {
-    "message": "查看更多"
   },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"

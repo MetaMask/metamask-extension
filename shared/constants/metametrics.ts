@@ -794,6 +794,7 @@ export enum MetaMetricsEventName {
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
+  EnabledDisabledOpenSea = 'Enabled/Disable OpenSea',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -857,6 +858,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
@@ -923,6 +925,7 @@ export enum MetaMetricsEventName {
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
+  ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
@@ -1082,6 +1085,16 @@ export enum MetaMetricsEventName {
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
   ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
   ShieldOptInRewards = 'Shield Opt In Rewards',
+  // Contacts (address book)
+  ContactsPageViewed = 'Contacts Page Viewed',
+  ContactDetailsViewed = 'Contact Details Viewed',
+  AddContactClicked = 'Add Contact Clicked',
+  ContactAddQrScannerClicked = 'Contact Add QR Scanner Clicked',
+  ContactAdded = 'Contact Added',
+  EditContactClicked = 'Edit Contact Clicked',
+  ContactUpdated = 'Contact Updated',
+  DeleteContactClicked = 'Delete Contact Clicked',
+  ContactDeleted = 'Contact Deleted',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1144,6 +1157,7 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
+  Contacts = 'Contacts',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
   Rewards = 'Rewards',

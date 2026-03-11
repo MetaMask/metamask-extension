@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Epekto ng presyo"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Sinasalamin ng epekto ng presyo kung paanong naapektuhan ng iyong swap ang presyong merkado. Kung wala kang sapat para sa gas, gagamitin ang ilan sa iyong token para sa pagbabayad, na magpapataas ng price impact. Hindi ang MetaMask ang nagtatakda kumokontrol nito."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Epekto ng presyo"
   },
@@ -1209,9 +1206,6 @@
   },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
-  },
-  "buildContactList": {
-    "message": "Buuin ang iyong listahan ng contact"
   },
   "builtAroundTheWorld": {
     "message": "Ang MetaMask ay dinisenyo at itinatag sa buong mundo."
@@ -1605,9 +1599,6 @@
   },
   "connectAccount": {
     "message": "Ikonekta ang account"
-  },
-  "connectAccountOrCreate": {
-    "message": "Ikonekta ang account o gumawa ng bago"
   },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
@@ -2137,9 +2128,6 @@
   "delete": {
     "message": "Tanggalin"
   },
-  "deleteContact": {
-    "message": "Tanggalin ang kontak"
-  },
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
   },
@@ -2188,9 +2176,6 @@
   "descriptionFromSnap": {
     "message": "Deskripsyon mula sa $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Alisin ang pagkapili sa lahat"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Walang nahanap na kwalipikadong account"
@@ -2373,9 +2358,6 @@
   },
   "editANickname": {
     "message": "I-edit ang palayaw"
-  },
-  "editAccountName": {
-    "message": "I-edit ang pangalan ng account"
   },
   "editAccounts": {
     "message": "I-edit ang mga account"
@@ -3138,9 +3120,6 @@
   "hidden": {
     "message": "Nakatago"
   },
-  "hiddenAccounts": {
-    "message": "Nakatagong mga account"
-  },
   "hide": {
     "message": "Itago"
   },
@@ -3528,9 +3507,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 na bayad sa gas"
-  },
-  "lastConnected": {
-    "message": "Huling Kumonekta"
   },
   "lastSold": {
     "message": "Huling naibenta"
@@ -4008,10 +3984,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Palitan ng mUSD"
+    "message": "I-convert ang $1 sa mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Palitan ng mUSD"
+    "message": "I-convert ang $1 sa mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
@@ -4279,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Bagong Contact"
   },
   "newContract": {
     "message": "Bagong kontrata"
@@ -5280,12 +5255,6 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Tuklasin ang crypto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Tuklasin ang mga stock at commodity"
-  },
   "perpsFees": {
     "message": "Mga Bayarin"
   },
@@ -5405,9 +5374,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
-  },
-  "perpsOrderAmount": {
-    "message": "Halaga ng Order"
   },
   "perpsOrders": {
     "message": "Mga Order"
@@ -5555,12 +5521,6 @@
   },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
-  },
-  "perpsYourOrders": {
-    "message": "Ang mga order mo"
-  },
-  "perpsYourPositions": {
-    "message": "Mga position mo"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -5904,9 +5864,6 @@
   },
   "removeAccount": {
     "message": "Alisin ang account"
-  },
-  "removeAccountDescription": {
-    "message": "Aalisin ang account na ito sa wallet mo. Tiyakin na mayroon ka ng orihinal na Lihim na Parirala sa Pagbawi o pribadong key para sa in-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa muli ng mga account mula sa account drop-down. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Tiyaking mayroon kang Lihim na Parirala sa Pagbawi o pribadong key para sa account na ito bago alisin.",
@@ -6288,9 +6245,6 @@
   "search": {
     "message": "Maghanap"
   },
-  "searchAccounts": {
-    "message": "Maghanap ng mga account"
-  },
   "searchAnAcccountOrContact": {
     "message": "Maghanap ng account o contact"
   },
@@ -6432,12 +6386,6 @@
   "selectAccountToConnect": {
     "message": "Piliin ang account na ikokonekta"
   },
-  "selectAccounts": {
-    "message": "Pumili ng (mga) account"
-  },
-  "selectAccountsForSnap": {
-    "message": "Piliin ang (mga) account para gamitin ang snap na ito"
-  },
   "selectAll": {
     "message": "Piliin lahat"
   },
@@ -6476,9 +6424,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Ibang account ang pinili"
-  },
-  "selectingAllWillAllow": {
-    "message": "Kapag pinili lahat, mabibigyang-daan ang site na ito na makita ang lahat ng kasalukuyan mong account. Tiyaking pinagkakatiwalaan mo ang site na ito."
   },
   "send": {
     "message": "Ipadala"
@@ -8800,9 +8745,6 @@
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang kliyente"
   },
-  "userName": {
-    "message": "Username"
-  },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"
   },
@@ -8822,14 +8764,8 @@
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Tingnan ang Contact"
-  },
   "viewDetails": {
     "message": "Tingnan ang mga detalye"
-  },
-  "viewMore": {
-    "message": "Tingnan Pa"
   },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"

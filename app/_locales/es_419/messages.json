@@ -241,9 +241,6 @@
   "browserNotSupported": {
     "message": "El explorador no es compatible..."
   },
-  "buildContactList": {
-    "message": "Cree su lista de contactos"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
   },
@@ -315,9 +312,6 @@
   },
   "connect": {
     "message": "Conectar"
-  },
-  "connectAccountOrCreate": {
-    "message": "Conectar cuenta o crear nueva"
   },
   "connectManually": {
     "message": "Conectarse manualmente al sitio actual"
@@ -922,9 +916,6 @@
   "knownTokenWarning": {
     "message": "Esta acción editará tokens que ya estén enumerados en la cartera y que se pueden usar para engañarlo. Apruebe solo si está seguro de que quiere cambiar lo que representan estos tokens."
   },
-  "lastConnected": {
-    "message": "Última conexión"
-  },
   "learnMore": {
     "message": "más información"
   },
@@ -1127,9 +1118,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Contacto nuevo"
-  },
   "newContract": {
     "message": "Contrato nuevo"
   },
@@ -1313,9 +1301,6 @@
   "removeAccount": {
     "message": "Quitar cuenta"
   },
-  "removeAccountDescription": {
-    "message": "Esta cuenta se quitará de la cartera. Antes de continuar, asegúrese de tener la frase secreta de recuperación original o la clave privada de esta cuenta importada. Puede importar o crear cuentas nuevamente en la lista desplegable de la cuenta. "
-  },
   "removeNFT": {
     "message": "Eliminar NFT"
   },
@@ -1362,9 +1347,6 @@
   "search": {
     "message": "Buscar"
   },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },
@@ -1376,9 +1358,6 @@
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
-  },
-  "selectAccounts": {
-    "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
   },
   "selectAll": {
     "message": "Seleccionar todo"
@@ -1400,9 +1379,6 @@
   },
   "selectType": {
     "message": "Seleccionar tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
   },
   "send": {
     "message": "Enviar"
@@ -1871,15 +1847,6 @@
   },
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
-  },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
-  "viewContact": {
-    "message": "Ver contacto"
-  },
-  "viewMore": {
-    "message": "Ver más"
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"
