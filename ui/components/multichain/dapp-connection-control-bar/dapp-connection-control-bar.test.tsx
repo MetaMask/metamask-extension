@@ -159,6 +159,13 @@ describe('DappConnectionControlBar', () => {
       expect(getByText('metamask.github.io')).toBeInTheDocument();
     });
 
+    it('displays the dapp favicon', () => {
+      const { getByTestId } = renderConnected();
+      expect(
+        getByTestId('dapp-connection-control-bar__favicon'),
+      ).toBeInTheDocument();
+    });
+
     it('displays the green connection dot on the favicon', () => {
       const { getByTestId } = renderConnected();
       expect(
