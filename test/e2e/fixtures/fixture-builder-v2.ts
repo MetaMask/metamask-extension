@@ -336,9 +336,11 @@ class FixtureBuilderV2 {
   }
 
   withNoNames(): this {
-    return this.withNameController({
-      names: { [NameType.ETHEREUM_ADDRESS]: {} },
-    });
+    // Direct assignment instead of merge so existing petname entries are cleared if any
+    this.fixture.data.NameController.names = {
+      [NameType.ETHEREUM_ADDRESS]: {},
+    };
+    return this;
   }
 
   withPermissionControllerConnectedToTestDapp({
