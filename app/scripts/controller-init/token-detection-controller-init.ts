@@ -1,4 +1,7 @@
-import { TokenDetectionController } from '@metamask/assets-controllers';
+import {
+  TokenDetectionController,
+  type TokenDetectionControllerMessenger as PackageTokenDetectionControllerMessenger,
+} from '@metamask/assets-controllers';
 import { ControllerInitFunction } from './types';
 import {
   TokenDetectionControllerMessenger,
@@ -11,7 +14,9 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
   TokenDetectionControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
   const controller = new TokenDetectionController({
-    messenger: controllerMessenger,
+    // TODO: replace with correct type
+    messenger:
+      controllerMessenger as unknown as PackageTokenDetectionControllerMessenger,
     disabled: false,
     getBalancesInSingleCall: (...args) =>
       initMessenger.call(

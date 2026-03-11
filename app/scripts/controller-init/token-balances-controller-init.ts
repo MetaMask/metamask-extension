@@ -1,4 +1,7 @@
-import { TokenBalancesController } from '@metamask/assets-controllers';
+import {
+  TokenBalancesController,
+  type TokenBalancesControllerMessenger as PackageTokenBalancesControllerMessenger,
+} from '@metamask/assets-controllers';
 import { ControllerInitFunction } from './types';
 import {
   TokenBalancesControllerMessenger,
@@ -15,7 +18,9 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
   );
 
   const controller = new TokenBalancesController({
-    messenger: controllerMessenger,
+    // TODO: replace with correct type
+    messenger:
+      controllerMessenger as unknown as PackageTokenBalancesControllerMessenger,
     state: persistedState.TokenBalancesController,
     queryMultipleAccounts: useMultiAccountBalanceChecker,
     interval: 30_000,
