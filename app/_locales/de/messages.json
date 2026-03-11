@@ -3981,8 +3981,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1 in mUSD umrechnen",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "In mUSD umgerechnet",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Sie müssen mindestens 1 Token auswählen."

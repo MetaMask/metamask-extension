@@ -1511,6 +1511,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/activity/transaction-details-summary/transaction-details-summary.test.tsx": {
+      "warn: No tokens found for chainId:": 6,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/activity/transaction-details-total-row/transaction-details-total-row.test.tsx": {
@@ -1565,6 +1566,10 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/confirm/footer/single-action-footer.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/confirm/header/advanced-details-button.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1578,6 +1583,11 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/header/header.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2028,12 +2038,20 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/info-popover-tooltip/info-popover-tooltip.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
+    },
     "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
+      "MetaMask: Background connection not initialized": 16,
       "Reselect: Identity function warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/musd-conversion-info/musd-conversion-info.test.tsx": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx": {
@@ -2081,6 +2099,11 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/bridge-time-row/bridge-time-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {

@@ -3981,8 +3981,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Μετατροπή $1 σε mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Μετατράπηκε σε mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε τουλάχιστον 1 token."
