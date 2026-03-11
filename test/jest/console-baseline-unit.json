@@ -1082,9 +1082,6 @@
     "ui/components/ui/hex-to-decimal/hex-to-decimal.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/ui/identicon/identicon.component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/ui/list-item/list-item.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3065,12 +3062,6 @@
     "ui/pages/swaps/import-token/import-token.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/swaps/list-with-search/list-with-search.test.js": {
-      "React: PropTypes validation failures": 2,
-      "error: Error: Insufficient number of substitutions": 1,
-      "error: Warning: React.createElement: type is invalid": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/swaps/loading-swaps-quotes/background-animation.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3083,9 +3074,6 @@
     },
     "ui/pages/swaps/notification-page/notification-page.test.js": {
       "React: PropTypes validation failures": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/swaps/searchable-item-list/item-list/item-list.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/swaps/select-quote-popover/quote-details/quote-details.test.js": {

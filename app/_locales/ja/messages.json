@@ -333,10 +333,6 @@
   "addToken": {
     "message": "トークンを追加"
   },
-  "addTokenByContractAddress": {
-    "message": "トークンが見つからない場合、アドレスを貼り付けて手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URLを追加"
   },
@@ -8037,10 +8033,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 の見積もり.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1と一致するトークンがありません",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "このトランザクションの処理が完了すると、$1がアカウントに追加されます。",

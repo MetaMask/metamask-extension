@@ -5,8 +5,8 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import * as actions from '../../../../store/actions';
-import Identicon from '../../../ui/identicon';
 import { Button, ButtonVariant, Box } from '../../../component-library';
 import {
   Display,
@@ -153,11 +153,11 @@ class HideTokenConfirmationModal extends Component {
         <div className="hide-token-confirmation__title">
           {this.context.t('hideTokenPrompt')}
         </div>
-        <Identicon
+        <AvatarToken
           className="hide-token-confirmation__identicon"
-          diameter={45}
-          address={address}
-          image={image}
+          size={AvatarTokenSize.Xl}
+          name={symbol || address}
+          src={image}
         />
         <div className="hide-token-confirmation__symbol">{symbol}</div>
         <div className="hide-token-confirmation__copy">

@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Προσθήκη token"
   },
-  "addTokenByContractAddress": {
-    "message": "Δεν μπορείτε να βρείτε ένα token; Μπορείτε να προσθέσετε χειροκίνητα οποιοδήποτε token επικολλώντας τη διεύθυνσή του. Οι διευθύνσεις συμβολαίων token μπορούν να βρεθούν στο $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
@@ -8043,10 +8039,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 προσφορές.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "Δεν υπάρχουν διαθέσιμα tokens που να αντιστοιχούν σε $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Το $1 σας θα προστεθεί στον λογαριασμό σας μόλις ολοκληρωθεί αυτή η συναλλαγή.",
