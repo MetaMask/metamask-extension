@@ -15,6 +15,7 @@
  * resolution issues. Both values MUST stay in sync.
  */
 import { createRequire } from 'node:module';
+import type { Schema } from 'schema-utils';
 import type { LoaderDefinitionFunction } from 'webpack';
 
 // Thread-loader workers may load this file as either CJS or ESM depending on
@@ -44,7 +45,14 @@ type LoaderOptions = {
 
 type CompilerEvent = {
   kind: 'CompileSuccess' | 'CompileSkip' | 'CompileError';
-  detail?: { options?: { category?: string }; category?: string };
+  fnLoc?: { start?: { line?: number; column?: number } } | null;
+  detail?: {
+    options?: { category?: string };
+    category?: string;
+    message?: string;
+    reason?: string;
+    toString?: () => string;
+  };
 };
 
 /**
@@ -59,11 +67,37 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
   sourceMap,
 ) {
   const options = this.getOptions();
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { __verbose: verbose, ...loaderOptions } = options;
+  const verbose = options.__verbose ?? false;
   const buildMeta = this._module?.buildMeta as
     | Record<string, unknown>
     | undefined;
+
+  function extractMessage(detail: CompilerEvent['detail']): string | undefined {
+    if (!detail) {
+      return undefined;
+    }
+    const d = detail as Record<string, unknown>;
+    if (typeof d.message === 'string') {
+      return d.message;
+    }
+    if (typeof d.reason === 'string') {
+      return d.reason;
+    }
+    if (
+      typeof (detail as { toString?: () => string }).toString === 'function'
+    ) {
+      try {
+        return (detail as { toString: () => string }).toString();
+      } catch {
+        return undefined;
+      }
+    }
+    try {
+      return JSON.stringify(detail);
+    } catch {
+      return undefined;
+    }
+  }
 
   const logger = buildMeta && {
     logEvent: (filename: string | null, event: CompilerEvent) => {
@@ -82,21 +116,53 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
           break;
         case 'CompileError':
           status = detail?.category === 'Todo' ? 'unsupported' : 'error';
-          if (verbose && status === 'error') {
-            console.error(`❌ Error: ${filename}`);
+          if (verbose) {
+            if (status === 'unsupported') {
+              console.warn(`🔍 Unsupported: ${filename}`);
+            }
+            if (status === 'error') {
+              const errMsg = extractMessage(detail) ?? 'Unknown error';
+              console.error(
+                `❌ React Compiler error in ${filename}: ${errMsg}`,
+              );
+            }
           }
           break;
         default:
           break;
       }
 
-      if (status) buildMeta[REACT_COMPILER_STATUS_KEY] = status;
+      if (status) {
+        const stored = buildMeta[REACT_COMPILER_STATUS_KEY] as
+          | { events: Record<string, unknown>[] }
+          | undefined;
+        const events = stored?.events ?? [];
+        const loc = event.fnLoc?.start;
+        const message = extractMessage(detail);
+        const entry: Record<string, unknown> = {
+          filename,
+          status,
+          kind: event.kind,
+          ...(message && { message }),
+          ...(loc &&
+            typeof loc.line === 'number' &&
+            typeof loc.column === 'number' && {
+              loc: { line: loc.line, column: loc.column },
+            }),
+        };
+        events.push(entry);
+        buildMeta[REACT_COMPILER_STATUS_KEY] = { events };
+      }
     },
   };
 
   const originalGetOptions = this.getOptions.bind(this);
-  this.getOptions = () =>
-    (logger ? { ...loaderOptions, logger } : loaderOptions) as LoaderOptions;
+  this.getOptions = (schema?: Schema) => {
+    const opts = (
+      schema === undefined ? originalGetOptions() : originalGetOptions(schema)
+    ) as LoaderOptions;
+    return (logger ? { ...opts, logger } : opts) as LoaderOptions;
+  };
 
   const result = actualLoader.call(this, source, sourceMap);
 
