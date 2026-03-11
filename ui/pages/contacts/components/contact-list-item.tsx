@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
-  AvatarAccount,
   AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
@@ -21,6 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -83,7 +83,7 @@ export function ContactListItem({
               />
             }
           >
-            <AvatarAccount address={address} size={AvatarAccountSize.Md} />
+            <PreferredAvatar address={address} size={AvatarAccountSize.Md} />
           </BadgeWrapper>
         </Box>
         <Box

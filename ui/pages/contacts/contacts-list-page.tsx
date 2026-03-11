@@ -200,7 +200,9 @@ export function ContactsListPage() {
       </Header>
       <Box
         flexDirection={BoxFlexDirection.Column}
-        className="flex min-h-0 w-full flex-1 flex-col"
+        className={`flex min-h-0 w-full flex-1 flex-col ${
+          showDeletedToastNow || showUpdatedToastNow ? 'pb-24' : ''
+        }`}
       >
         <Box
           flexDirection={BoxFlexDirection.Column}
