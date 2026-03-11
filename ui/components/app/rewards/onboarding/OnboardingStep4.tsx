@@ -218,7 +218,6 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
         >
           {t('rewardsOnboardingStep4LegalDisclaimer', [
             <TextButton
-              key="terms"
               size={TextButtonSize.BodySm}
               className="text-primary-default"
               onClick={openTermsOfUse}
@@ -226,7 +225,6 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
               {t('rewardsOnboardingStep4LegalDisclaimerTermsLink')}
             </TextButton>,
             <TextButton
-              key="learnMore"
               size={TextButtonSize.BodySm}
               className="text-primary-default"
               onClick={openLearnMore}

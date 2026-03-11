@@ -45,10 +45,8 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
   const [value, setValue] = useState(initialValue ?? '');
 
   useEffect(() => {
-    if (initialValue) {
-      setValue((currentValue) =>
-        currentValue === initialValue ? currentValue : initialValue,
-      );
+    if (initialValue && value !== initialValue) {
+      setValue(initialValue);
     }
   }, [initialValue]);
 
@@ -60,11 +58,7 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
   const displayRadioOptions = (options: SnapUIRadioOption[]) => {
     return options.map((option: SnapUIRadioOption) => {
       return (
-        <Box
-          key={option.value}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-        >
+        <Box display={Display.Flex} alignItems={AlignItems.center}>
           <input
             type="radio"
             id={option.name}

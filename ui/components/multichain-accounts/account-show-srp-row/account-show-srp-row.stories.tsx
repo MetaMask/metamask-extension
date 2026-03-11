@@ -95,3 +95,4 @@ WithBackupReminder.decorators = [
     </Provider>
   ),
 ];
+WithBackupReminder.storyName = 'With Backup Reminder';

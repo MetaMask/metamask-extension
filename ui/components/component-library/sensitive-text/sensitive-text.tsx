@@ -37,7 +37,7 @@ export const SensitiveText = React.forwardRef<
 
   const fallback = useMemo(
     () => '•'.repeat(getFallbackLength(adjustedLength)),
-    [adjustedLength, getFallbackLength],
+    [length, getFallbackLength],
   );
 
   return (

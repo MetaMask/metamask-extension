@@ -102,6 +102,7 @@ DefaultStory.parameters = {
 };
 
 export const WithOneConnectedAccount = Template.bind({});
+WithOneConnectedAccount.storyName = 'With One Connected Account';
 WithOneConnectedAccount.args = {
   store: storeWithOneAccount,
 };
@@ -117,6 +118,7 @@ WithOneConnectedAccount.parameters = {
 };
 
 export const NoConnectedAccounts = Template.bind({});
+NoConnectedAccounts.storyName = 'No Connected Accounts';
 NoConnectedAccounts.args = {
   store: storeWithNoAccounts,
 };

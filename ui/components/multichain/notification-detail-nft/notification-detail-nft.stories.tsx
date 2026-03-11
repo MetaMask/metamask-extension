@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta } from '@storybook/react';
 import {
   NotificationDetailNft,
   NotificationDetailNftProps,
@@ -11,9 +11,9 @@ export default {
   component: NotificationDetailNft,
 } as Meta;
 
-const Template: StoryFn<NotificationDetailNftProps> = (
-  args: NotificationDetailNftProps,
-) => <NotificationDetailNft {...args} />;
+const Template = (args: NotificationDetailNftProps) => (
+  <NotificationDetailNft {...args} />
+);
 
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
@@ -21,6 +21,7 @@ DefaultStory.args = {
     'https://i.seadn.io/s/raw/files/a96f90ec8ebf55a2300c66a0c46d6a16.png?w=500&auto=format',
   networkSrc:
     'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
+  tokenId: 'NFT ID',
   tokenName: 'NFT Name',
   networkName: 'Ethereum',
 };

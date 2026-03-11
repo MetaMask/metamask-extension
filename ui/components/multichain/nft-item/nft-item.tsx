@@ -37,6 +37,7 @@ type NftItemProps = {
   alt: string;
   src: string | undefined;
   name?: string;
+  tokenId?: string;
   networkName: string;
   networkSrc?: string;
   onClick?: () => void;

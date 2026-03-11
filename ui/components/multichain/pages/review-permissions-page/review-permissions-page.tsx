@@ -85,7 +85,7 @@ export const ReviewPermissions = () => {
       setShowNetworkToast(showPermittedNetworkToastOpen);
       dispatch(hidePermittedNetworkToast());
     }
-  }, [showPermittedNetworkToastOpen, dispatch]);
+  }, [showPermittedNetworkToastOpen]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(

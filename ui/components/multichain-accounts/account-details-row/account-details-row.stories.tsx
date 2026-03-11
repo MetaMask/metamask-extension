@@ -49,6 +49,7 @@ const Template: StoryFn<typeof AccountDetailsRow> = (args) => (
 );
 
 export const Default = Template.bind({});
+Default.storyName = 'Default';
 
 export const WithEditButton = Template.bind({});
 WithEditButton.args = {
