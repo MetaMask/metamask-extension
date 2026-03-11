@@ -169,4 +169,44 @@ describe('VisitSupportDataConsentModal', () => {
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
+
+  it('handles clicking the accept button with all undefined parameters', () => {
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === selectSessionData) {
+        return { profile: { profileId: undefined } };
+      }
+      if (selector === getMetaMetricsId) {
+        return undefined;
+      }
+      if (selector === getUserSubscriptions) {
+        return {
+          customerId: undefined,
+          subscriptions: [],
+          trialedProducts: [],
+        };
+      }
+      return undefined;
+    });
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    const expectedUrl = `${SUPPORT_LINK}&metamask_version=MOCK_VERSION`;
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: expectedUrl,
+        },
+      }),
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+  });
 });

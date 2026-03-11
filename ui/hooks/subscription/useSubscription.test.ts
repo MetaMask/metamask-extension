@@ -13,6 +13,7 @@ import type { MetaMaskReduxState } from '../../store/store';
 import {
   useSubscriptionCryptoApprovalTransaction,
   useShieldRewards,
+  useUserSubscriptions,
 } from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
@@ -27,6 +28,7 @@ jest.mock('../../store/actions', () => ({
   getRewardsSeasonMetadata: jest.fn(() => async () => null),
   estimateRewardsPoints: jest.fn(() => async () => null),
   getRewardsHasAccountOptedIn: jest.fn(() => async () => false),
+  getSubscriptions: jest.fn(() => async () => []),
 }));
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
@@ -291,6 +293,7 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
 const mockGetRewardsSeasonMetadata =
   actions.getRewardsSeasonMetadata as jest.Mock;
 const mockEstimateRewardsPoints = actions.estimateRewardsPoints as jest.Mock;
+const mockGetSubscriptions = actions.getSubscriptions as jest.Mock;
 
 describe('useShieldRewards', () => {
   let shieldState: MetaMaskReduxState;
@@ -392,5 +395,93 @@ describe('useShieldRewards', () => {
     expect(result.current.pointsMonthly).toBeNull();
     expect(result.current.pointsYearly).toBeNull();
     expect(result.current.pending).toBe(false);
+  });
+});
+
+describe('useUserSubscriptions', () => {
+  let state: MetaMaskReduxState;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    state = cloneDeep(mockState) as unknown as MetaMaskReduxState;
+
+    // Set up subscription state
+    (state.metamask as Record<string, unknown>).customerId = 'test-customer-id';
+    (state.metamask as Record<string, unknown>).subscriptions = [];
+    (state.metamask as Record<string, unknown>).trialedProducts = [];
+  });
+
+  it('returns subscription data without refetching when refetch is false', async () => {
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useUserSubscriptions({ refetch: false }),
+      state,
+    );
+
+    await waitForNextUpdate();
+
+    expect(result.current.customerId).toBe('test-customer-id');
+    expect(result.current.subscriptions).toEqual([]);
+    expect(result.current.trialedProducts).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(mockGetSubscriptions).not.toHaveBeenCalled();
+  });
+
+  it('returns subscription data without refetching when no options provided', async () => {
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useUserSubscriptions(),
+      state,
+    );
+
+    await waitForNextUpdate();
+
+    expect(result.current.customerId).toBe('test-customer-id');
+    expect(result.current.subscriptions).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(mockGetSubscriptions).not.toHaveBeenCalled();
+  });
+
+  it('refetches subscriptions when refetch is true', async () => {
+    const mockSubscriptions = [
+      {
+        id: 'sub-1',
+        products: [{ name: 'shield' }],
+        status: 'active',
+      },
+    ];
+
+    mockGetSubscriptions.mockImplementation(
+      () => async () => mockSubscriptions,
+    );
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useUserSubscriptions({ refetch: true }),
+      state,
+    );
+
+    // Initially loading
+    expect(result.current.loading).toBe(true);
+
+    await waitForNextUpdate();
+
+    // After loading completes
+    expect(result.current.loading).toBe(false);
+    expect(mockGetSubscriptions).toHaveBeenCalled();
+  });
+
+  it('handles error during refetch', async () => {
+    const mockError = new Error('Failed to fetch subscriptions');
+    mockGetSubscriptions.mockImplementation(() => async () => {
+      throw mockError;
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useUserSubscriptions({ refetch: true }),
+      state,
+    );
+
+    await waitForNextUpdate();
+
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(mockError);
   });
 });
