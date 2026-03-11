@@ -152,9 +152,13 @@ export default function OnboardingMetametrics() {
   };
 
   const handleParticipateInMetaMetricsChange = () => {
-    setIsParticipateInMetaMetricsChecked((prev) => !prev);
-    isParticipateInMetaMetricsChecked &&
-      setIsDataCollectionForMarketingChecked(false);
+    setIsParticipateInMetaMetricsChecked((prev) => {
+      const next = !prev;
+      if (!next) {
+        setIsDataCollectionForMarketingChecked(false);
+      }
+      return next;
+    });
   };
 
   return (
@@ -217,12 +221,10 @@ export default function OnboardingMetametrics() {
           ref={participateCheckboxRef}
           onClick={(e: React.MouseEvent<HTMLLabelElement>) => {
             e.stopPropagation();
-            e.preventDefault();
-            participateCheckboxRef.current?.toggle();
           }}
           inputProps={{
             onClick: (e: React.MouseEvent<HTMLInputElement>) => {
-              e.preventDefault();
+              e.stopPropagation();
             },
           }}
           label={
@@ -281,12 +283,10 @@ export default function OnboardingMetametrics() {
           ref={marketingCheckboxRef}
           onClick={(e: React.MouseEvent<HTMLLabelElement>) => {
             e.stopPropagation();
-            e.preventDefault();
-            marketingCheckboxRef.current?.toggle();
           }}
           inputProps={{
             onClick: (e: React.MouseEvent<HTMLInputElement>) => {
-              e.preventDefault();
+              e.stopPropagation();
             },
           }}
           label={
