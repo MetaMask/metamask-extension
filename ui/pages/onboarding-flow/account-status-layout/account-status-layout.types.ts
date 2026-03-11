@@ -3,8 +3,6 @@ import type { ReactNode } from 'react';
 export type AccountStatusLayoutProps = {
   /** Test id for the root container */
   dataTestId: string;
-  /** Optional additional class names for the root Box */
-  rootClassName?: string;
   /** i18n key for the page title */
   titleKey: string;
   /** i18n key for the description (supports interpolation) */

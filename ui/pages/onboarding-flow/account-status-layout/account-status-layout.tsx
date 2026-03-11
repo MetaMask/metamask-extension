@@ -15,7 +15,6 @@ import type { AccountStatusLayoutProps } from './account-status-layout.types';
 
 export function AccountStatusLayout({
   dataTestId,
-  rootClassName = '',
   titleKey,
   descriptionKey,
   descriptionInterpolation = [],
