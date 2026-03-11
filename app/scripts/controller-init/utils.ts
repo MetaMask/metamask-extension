@@ -12,6 +12,11 @@ import { CONTROLLER_MESSENGERS } from './messengers';
 
 const log = createProjectLogger('controller-init');
 
+/** A function tagged with the controller that owns it. */
+export type TaggedApiMethod = ((...args: unknown[]) => unknown) & {
+  _controllerName?: string;
+};
+
 /** Result of initializing controllers. */
 export type InitControllersResult = {
   /** All API methods exposed by the controllers. */
@@ -152,6 +157,12 @@ export function initControllers({
     } = result;
 
     const api = result.api ?? {};
+
+    for (const fn of Object.values(api)) {
+      if (typeof fn === 'function') {
+        (fn as TaggedApiMethod)._controllerName = controllerName;
+      }
+    }
 
     const persistedStateKey =
       persistedStateKeyRaw === null

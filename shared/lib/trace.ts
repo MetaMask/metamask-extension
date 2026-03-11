@@ -161,9 +161,10 @@ export type TraceRequest = {
   id?: string;
 
   /**
-   * The name of the trace.
+   * The name of the trace. Accepts TraceName enum values or a dynamic string
+   * (e.g. including the RPC method or messenger action).
    */
-  name: TraceName;
+  name: TraceName | (string & Record<never, never>);
 
   /**
    * The parent context of the trace.
@@ -282,11 +283,22 @@ export function endTrace(request: EndTraceRequest): void {
 }
 
 /**
+ * Get the currently active Sentry span, if any.
+ * Used by wrappers to avoid trace overhead when no span is active.
+ *
+ * @returns The active span or null.
+ */
+export function getActiveSpan(): Sentry.Span | null {
+  return sentryGetActiveSpan();
+}
+
+/**
  * Get the serialized trace context from the currently active Sentry span.
  * Used by cross-boundary wrappers to propagate trace context over RPC.
  *
  * @returns Serialized context with traceId/spanId, or undefined if no active span.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by background-connection.ts
 export function getSerializedTraceContext():
   | SerializedTraceContext
   | undefined {
@@ -314,6 +326,7 @@ export function getSerializedTraceContext():
  * @param request.id - Optional trace ID for same-process map lookup.
  * @returns Serialized trace context.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by trace.test.ts
 export function serializeTraceContext(
   span: Sentry.Span | null | undefined,
   request: { name: string; id?: string },
