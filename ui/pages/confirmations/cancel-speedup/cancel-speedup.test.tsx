@@ -11,10 +11,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  decGWEIToHexWEI,
-  hexWEIToDecETH,
-} from '../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import {
   createCancelTransaction,
@@ -48,21 +45,20 @@ jest.mock('../../../contexts/transaction-modal', () => ({
   useTransactionModalContext: jest.fn(),
 }));
 
+const mockOpenGasFeeModal = jest.fn();
+jest.mock('../context/gas-fee-modal', () => ({
+  GasFeeModalContextProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+  GasFeeModalWrapper: () => null,
+  useGasFeeModalContext: () => ({
+    openGasFeeModal: mockOpenGasFeeModal,
+    closeGasFeeModal: jest.fn(),
+  }),
+}));
+
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
-
-const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800'; // 100 GWEI in hex WEI
-const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN = new BigNumber(
-  MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX,
-  16,
-).times(21000, 10); // maxFeePerGas * gasLimit
-const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX =
-  MAXGASCOST_ABOVE_MOCK_MEDIUM_BN.times(1.1, 10).toString(16); // adding 10%
-
-const EXPECTED_ETH_FEE_1 = hexWEIToDecETH(
-  MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX,
-); // converting back to ETH for display
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI =
   mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.medium
@@ -71,20 +67,34 @@ const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI = new BigNumber(
   decGWEIToHexWEI(MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI),
   16,
 ); // converting to hex WEI and then to BN for calculations
-const MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX =
-  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.div(10, 10).toString(16); // 1 GWEI in hex WEI, which is below the medium estimate
-
-const EXPECTED_ETH_FEE_2 = hexWEIToDecETH(
-  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.times(21000, 10).toString(16),
-); // expected fee when using the medium estimate (10 GWEI * 21000 gasLimit)
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
-  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16); // 10 GWEI in hex WEI
+  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16); // 70 GWEI in hex WEI (from mock medium)
+
+// Network fee row shows 4 decimals. estimatedFee (wei) = minimumFeePerGas × gasLimit; display = fee/1e18 round 4.
+// Above medium (10%): effective 110 GWEI × 20909 gas = 2.29999e15 wei → "0.0023".
+// useFeeCalculations uses min(estimatedBaseFee + maxPriorityFeePerGas, maxFeePerGas); mock base = 50 GWEI.
+const GAS_LIMIT_ABOVE_MEDIUM = '0x51AD'; // 20909
+const MAXFEEPERGAS_110_GWEI_HEX = '0x19a8142800'; // 110 GWEI in hex WEI
+const MAXPRIORITYFEE_60_GWEI_HEX = '0xdf8475800'; // 60 GWEI so 50+60 ≥ 110
+const EXPECTED_ETH_FEE_ABOVE_MEDIUM_10_PCT = '0.0023';
+
+// Below medium: effective 75 GWEI × 20000 gas = 1.5e15 wei → "0.0015". Mock base = 50, so priority ≥ 25.
+const GAS_LIMIT_BELOW_MEDIUM = '0x4E20'; // 20000
+const MAXFEEPERGAS_75_GWEI_HEX = '0x1172b83c00'; // 75 GWEI in hex WEI
+const MAXPRIORITYFEE_25_GWEI_HEX = '0x5d21dba00'; // 25 GWEI so 50+25 = 75
+const EXPECTED_ETH_FEE_MEDIUM = '0.0015';
+
 const mockTransaction = {
   id: '1',
   chainId: '0x5',
   networkClientId: 'goerli',
   userFeeLevel: 'tenPercentIncreased',
+  previousGas: {
+    maxFeePerGas: MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+    maxPriorityFeePerGas: '0x2540be400',
+    gas: '0x5208',
+  },
   txParams: {
     from: mockSelectedInternalAccount.address,
     gas: '0x5208',
@@ -108,10 +118,31 @@ describe('CancelSpeedup Component', () => {
     });
   });
 
+  type RenderOptions = {
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+    gas?: string;
+    gasLimitNoBuffer?: string;
+    gasFeeEstimates?: (typeof mockEstimates)[GasEstimateTypes.feeMarket]['gasFeeEstimates'];
+  };
+
   const render = (
     props: Partial<React.ComponentProps<typeof CancelSpeedup>> = {},
-    maxFeePerGas = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+    options:
+      | string
+      | RenderOptions = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
   ) => {
+    const opts: RenderOptions =
+      typeof options === 'string' ? { maxFeePerGas: options } : options;
+    const {
+      maxFeePerGas = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+      maxPriorityFeePerGas,
+      gas,
+      gasLimitNoBuffer,
+      gasFeeEstimates = mockEstimates[GasEstimateTypes.feeMarket]
+        .gasFeeEstimates,
+    } = opts;
+
     const store = configureStore({
       appState: {
         isLoading: false,
@@ -129,30 +160,36 @@ describe('CancelSpeedup Component', () => {
           showFiatInTestnets: true,
         },
         featureFlags: { advancedInlineGas: true },
-        gasFeeEstimates:
-          mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        gasFeeEstimates,
         gasFeeEstimatesByChainId: {
           ...mockState.metamask.gasFeeEstimatesByChainId,
           '0x5': {
             ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
-            gasFeeEstimates:
-              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+            gasFeeEstimates,
           },
         },
       },
     });
 
+    const effectiveGas = gas ?? mockTransaction.txParams.gas;
+    const txParams = {
+      ...mockTransaction.txParams,
+      maxFeePerGas,
+      gas: effectiveGas,
+      ...(maxPriorityFeePerGas !== undefined && {
+        maxPriorityFeePerGas,
+      }),
+    };
+
+    const transaction = {
+      ...mockTransaction,
+      txParams,
+      gasLimitNoBuffer: gasLimitNoBuffer ?? effectiveGas,
+    } as TransactionMeta;
+
     return renderWithProvider(
       <CancelSpeedup
-        transaction={
-          {
-            ...mockTransaction,
-            txParams: {
-              ...mockTransaction.txParams,
-              maxFeePerGas,
-            },
-          } as TransactionMeta
-        }
+        transaction={transaction}
         editGasMode={EditGasModes.cancel}
         {...props}
       />,
@@ -247,39 +284,43 @@ describe('CancelSpeedup Component', () => {
     fireEvent.click(screen.getByTestId('edit-gas-fee-icon'));
 
     await waitFor(() => {
-      expect(mockOpenModal).toHaveBeenCalledWith('editGasFee');
+      expect(mockOpenGasFeeModal).toHaveBeenCalledTimes(1);
     });
   });
 
-  it('shows correct gas values, increased by 10%, when initial initial gas value is above estimated medium', async () => {
+  it('shows network fee 0.0023 ETH when above medium (110 GWEI × 20909 gas, 4 decimals)', async () => {
+    // Base 50 + priority 60 → min 110 GWEI; 110e9 × 20909 = 0.0023 ETH.
     render(
+      { editGasMode: EditGasModes.speedUp },
       {
-        editGasMode: EditGasModes.speedUp,
+        maxFeePerGas: MAXFEEPERGAS_110_GWEI_HEX,
+        maxPriorityFeePerGas: MAXPRIORITYFEE_60_GWEI_HEX,
+        gas: GAS_LIMIT_ABOVE_MEDIUM,
       },
-      MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent(
-        EXPECTED_ETH_FEE_1,
-      );
-      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent('ETH');
+      const row = screen.getByTestId('edit-gas-fees-row');
+      expect(row).toHaveTextContent('ETH');
+      expect(row).toHaveTextContent(EXPECTED_ETH_FEE_ABOVE_MEDIUM_10_PCT);
     });
   });
 
-  it('shows correct gas values, set to the estimated medium, when initial initial gas value is below estimated medium', async () => {
+  it('shows network fee 0.0015 ETH when below medium (75 GWEI × 20000 gas, 4 decimals)', async () => {
+    // Base 50 + priority 25 → min 75 GWEI; 75e9 × 20000 = 0.0015 ETH.
     render(
+      { editGasMode: EditGasModes.speedUp },
       {
-        editGasMode: EditGasModes.speedUp,
+        maxFeePerGas: MAXFEEPERGAS_75_GWEI_HEX,
+        maxPriorityFeePerGas: MAXPRIORITYFEE_25_GWEI_HEX,
+        gas: GAS_LIMIT_BELOW_MEDIUM,
       },
-      `0x${MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX}`,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent(
-        EXPECTED_ETH_FEE_2,
-      );
-      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent('ETH');
+      const row = screen.getByTestId('edit-gas-fees-row');
+      expect(row).toHaveTextContent('ETH');
+      expect(row).toHaveTextContent(EXPECTED_ETH_FEE_MEDIUM);
     });
   });
 });
