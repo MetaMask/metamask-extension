@@ -807,10 +807,9 @@ describe('NetworkForm Component', () => {
   it('should not duplicate endpoint when user URL matches featured Infura URL', async () => {
     const infuraPolygonUrl = `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`;
 
-    nock('https://polygon-mainnet.infura.io:443').post('/').reply(200, {
-      jsonrpc: '2.0',
-      result: '0x89',
-    });
+    nock('https://polygon-mainnet.infura.io:443')
+      .post(`/v3/${infuraProjectId}`)
+      .reply(200, { jsonrpc: '2.0', result: '0x89' });
 
     const { getByText } = renderComponent({
       ...propNetworkDisplay,
