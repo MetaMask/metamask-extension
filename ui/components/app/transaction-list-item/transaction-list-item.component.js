@@ -52,7 +52,10 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import { abortTransactionSigning } from '../../../store/actions';
-import { selectBridgeHistoryItemByHash } from '../../../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+} from '../../../ducks/bridge-status/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -86,12 +89,21 @@ function TransactionListItemInner({
     useBridgeTxHistoryData({
       transactionGroup,
     });
-  const bridgeTxHistoryItem = useSelector((state) =>
+  const bridgeTxHistoryItemByHash = useSelector((state) =>
     selectBridgeHistoryItemByHash(
       state,
       transactionGroup.initialTransaction.hash,
     ),
   );
+  const bridgeTxHistoryItemByOriginalTxMetaId = useSelector((state) =>
+    selectBridgeHistoryForOriginalTxMetaId(
+      state,
+      transactionGroup.initialTransaction.id,
+    ),
+  );
+  const bridgeTxHistoryItem =
+    bridgeTxHistoryItemByHash ?? bridgeTxHistoryItemByOriginalTxMetaId;
+  const isIntentBridgeActivity = Boolean(bridgeTxHistoryItem?.quote?.intent);
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
@@ -187,6 +199,11 @@ function TransactionListItemInner({
     isBridgeTx && isBridgeFailed
       ? TransactionStatus.failed
       : getStatusKey(transactionGroup.primaryTransaction);
+  const shouldShowPendingBridgeStatus =
+    Boolean(isUnifiedSwapTx) &&
+    displayedStatusKey === TransactionStatus.submitted &&
+    !isBridgeFailed &&
+    !isBridgeComplete;
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -285,10 +302,15 @@ function TransactionListItemInner({
   ]);
   const showCancelButton =
     !hasCancelled &&
+
     isPending &&
+
     !isUnapproved &&
+
     !isSubmitting &&
+
     !isBridgeTx &&
+    !isIntentBridgeActivity &&
     !hasGasFeeTokenSelected;
 
   return (
@@ -320,7 +342,7 @@ function TransactionListItemInner({
             <TransactionStatusLabel
               statusOnly
               isPending={isPending}
-              isEarliestNonce={isEarliestNonce}
+              isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
               date={date}
               status={displayedStatusKey}
@@ -398,7 +420,9 @@ function TransactionListItemInner({
             transactionStatus={() => (
               <TransactionStatusLabel
                 isPending={isPending}
-                isEarliestNonce={isEarliestNonce}
+                isEarliestNonce={
+                  isEarliestNonce || shouldShowPendingBridgeStatus
+                }
                 error={error}
                 date={date}
                 status={displayedStatusKey}
