@@ -28,7 +28,7 @@ export function formatDecimalShiftedValue(
 ): string {
   const valueDec = new Numeric(value, 16).toBase(10);
   if (!decimals) {
-    // Return raw units when decimals cannot be resolved
+    // Return raw units when decimals cannot be resolved, or decimals is zero
     return valueDec.toString();
   }
   return valueDec.shiftedBy(decimals).toString();
