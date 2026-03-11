@@ -26,6 +26,8 @@ export function getTransactionPayControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       'AccountTrackerController:getState',
+      'AppMetadataController:getState',
+      'AssetsController:getStateForTransactionPay',
       'BridgeController:fetchQuotes',
       'BridgeStatusController:submitTx',
       'CurrencyRateController:getState',
@@ -34,7 +36,6 @@ export function getTransactionPayControllerMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
       'TokenBalancesController:getState',
-      'TokenListController:getState',
       'TokenRatesController:getState',
       'TokensController:getState',
       'TransactionController:estimateGas',

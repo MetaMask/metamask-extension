@@ -259,7 +259,8 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.1",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1",
+    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.4.1-preview-61aec42b1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -390,7 +391,7 @@
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.0.0",
     "@metamask/transaction-controller": "^62.20.0",
-    "@metamask/transaction-pay-controller": "^12.2.0",
+    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.4.1-preview-61aec42b1",
     "@metamask/tron-wallet-snap": "1.22.1",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.10.0",
