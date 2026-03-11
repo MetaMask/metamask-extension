@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
-  "buildContactList": {
-    "message": "Crie sua lista de contatos"
-  },
   "builtAroundTheWorld": {
     "message": "A MetaMask é concebida e desenvolvida em todo o mundo."
   },
@@ -2130,9 +2127,6 @@
   },
   "delete": {
     "message": "Excluir"
-  },
-  "deleteContact": {
-    "message": "Excluir contato"
   },
   "deleteMetaMetricsData": {
     "message": "Excluir dados do MetaMetrics"
@@ -4263,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Novo contato"
   },
   "newContract": {
     "message": "Novo contrato"
@@ -8754,9 +8745,6 @@
   "usedByClients": {
     "message": "Usado por diversos clientes diferentes"
   },
-  "userName": {
-    "message": "Nome de usuário"
-  },
   "userOpContractDeployError": {
     "message": "A implementação do contrato a partir de uma conta de contrato inteligente não é suportada"
   },
@@ -8775,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Ver contato"
   },
   "viewDetails": {
     "message": "Ver detalhes"
