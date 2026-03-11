@@ -603,7 +603,7 @@ describe('ConnectHardwareForm', () => {
       fireEvent.click(continueButton);
 
       await act(async () => {
-        resolveStatus!(true);
+        resolveStatus?.(true);
       });
 
       await waitFor(() => {
