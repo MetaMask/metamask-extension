@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type {
   TransactionPayRequiredToken,
@@ -9,7 +6,6 @@ import type {
 } from '@metamask/transaction-pay-controller';
 import { Asset, AssetStandard } from '../types/send';
 import {
-  hasTransactionType,
   getTokenTransferData,
   getTokenAddress,
   getAvailableTokens,
@@ -75,98 +71,6 @@ function createMockRequiredToken(
 }
 
 describe('transaction-pay utils', () => {
-  describe('hasTransactionType', () => {
-    it('returns true when transaction type matches', () => {
-      const transactionMeta = {
-        type: TransactionType.simpleSend,
-      } as TransactionMeta;
-
-      expect(
-        hasTransactionType(transactionMeta, [TransactionType.simpleSend]),
-      ).toBe(true);
-    });
-
-    it('returns true when transaction type is in the list', () => {
-      const transactionMeta = {
-        type: TransactionType.tokenMethodTransfer,
-      } as TransactionMeta;
-
-      expect(
-        hasTransactionType(transactionMeta, [
-          TransactionType.simpleSend,
-          TransactionType.tokenMethodTransfer,
-        ]),
-      ).toBe(true);
-    });
-
-    it('returns false when transaction type does not match', () => {
-      const transactionMeta = {
-        type: TransactionType.simpleSend,
-      } as TransactionMeta;
-
-      expect(
-        hasTransactionType(transactionMeta, [
-          TransactionType.tokenMethodTransfer,
-        ]),
-      ).toBe(false);
-    });
-
-    it('returns false when transactionMeta is undefined', () => {
-      expect(hasTransactionType(undefined, [TransactionType.simpleSend])).toBe(
-        false,
-      );
-    });
-
-    it('returns true when nested transaction type matches', () => {
-      const transactionMeta = {
-        type: TransactionType.simpleSend,
-        nestedTransactions: [
-          { type: TransactionType.tokenMethodApprove },
-          { type: TransactionType.tokenMethodTransfer },
-        ],
-      } as unknown as TransactionMeta;
-
-      expect(
-        hasTransactionType(transactionMeta, [
-          TransactionType.tokenMethodApprove,
-        ]),
-      ).toBe(true);
-    });
-
-    it('returns false when neither top-level nor nested types match', () => {
-      const transactionMeta = {
-        type: TransactionType.simpleSend,
-        nestedTransactions: [{ type: TransactionType.tokenMethodTransfer }],
-      } as unknown as TransactionMeta;
-
-      expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
-        false,
-      );
-    });
-
-    it('returns true for top-level type even with nested transactions', () => {
-      const transactionMeta = {
-        type: TransactionType.swap,
-        nestedTransactions: [{ type: TransactionType.tokenMethodTransfer }],
-      } as unknown as TransactionMeta;
-
-      expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
-        true,
-      );
-    });
-
-    it('returns false when nestedTransactions is empty', () => {
-      const transactionMeta = {
-        type: TransactionType.simpleSend,
-        nestedTransactions: [],
-      } as unknown as TransactionMeta;
-
-      expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
-        false,
-      );
-    });
-  });
-
   describe('getTokenTransferData', () => {
     it('returns token transfer data from txParams when data starts with transfer selector', () => {
       const transactionMeta = {
