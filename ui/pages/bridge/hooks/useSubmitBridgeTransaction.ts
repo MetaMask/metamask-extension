@@ -156,8 +156,6 @@ export default function useSubmitBridgeTransaction() {
         navigateToBridgePage();
         return;
       }
-      navigateToActivityPage();
-      return;
     } finally {
       setIsSubmitting(false);
     }
