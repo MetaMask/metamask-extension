@@ -1,7 +1,4 @@
-import {
-  TokenDetectionController,
-  type TokenDetectionControllerMessenger as PackageTokenDetectionControllerMessenger,
-} from '@metamask/assets-controllers';
+import { TokenDetectionController } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from './types';
 import {
   TokenDetectionControllerMessenger,

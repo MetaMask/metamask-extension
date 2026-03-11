@@ -1,7 +1,4 @@
-import {
-  TokenBalancesController,
-  type TokenBalancesControllerMessenger as PackageTokenBalancesControllerMessenger,
-} from '@metamask/assets-controllers';
+import { TokenBalancesController } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from './types';
 import {
   TokenBalancesControllerMessenger,
