@@ -62,7 +62,12 @@ export const SnapHomeRenderer = ({ snapId }) => {
     } else if (snapApproval) {
       navigate(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, navigate, snapId]);
+  }, [
+    unapprovedTemplatedConfirmations,
+    unapprovedConfirmations,
+    navigate,
+    snapId,
+  ]);
 
   if (error) {
     return (
