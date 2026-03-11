@@ -2,9 +2,6 @@ const { withFixtures } = require('../helpers');
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
-// Privacy warning handled via withSnapsPrivacyWarningAlreadyShown fixture
-// const SnapPrivacyWarning =
-//   require('../page-objects/pages/dialog/snap-privacy-warning').default;
 const {
   DAPP_PATH,
   DAPP_URL_LOCALHOST,
@@ -53,10 +50,6 @@ describe('Test Snap Dialog', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarning = new SnapPrivacyWarning(driver);
-        // await snapPrivacyWarning.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({

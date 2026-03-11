@@ -33,8 +33,6 @@ export async function openTestSnapClickButtonAndInstall(
   await testSnaps.checkPageIsLoaded();
   await testSnaps.scrollAndClickButton(buttonName);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  // const snapPrivacyWarning = new SnapPrivacyWarning(driver);
-  // await snapPrivacyWarning.scrollToBottomAndAccept();
   await snapInstall.checkPageIsLoaded();
   await snapInstall.clickConnectButton();
   await snapInstall.clickConfirmButton();

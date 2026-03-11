@@ -2,9 +2,6 @@ const { strict: assert } = require('assert');
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
-// Privacy warning handled via withSnapsPrivacyWarningAlreadyShown fixture
-// const SnapPrivacyWarning =
-//   require('../page-objects/pages/dialog/snap-privacy-warning').default;
 const { withFixtures, getEventPayloads } = require('../helpers');
 const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
@@ -235,10 +232,6 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarning = new SnapPrivacyWarning(driver);
-        // await snapPrivacyWarning.scrollToBottomAndAccept();
-
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -355,10 +348,6 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarningRejected = new SnapPrivacyWarning(driver);
-        // await snapPrivacyWarningRejected.scrollToBottomAndAccept();
-
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -451,10 +440,6 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarningFailed = new SnapPrivacyWarning(driver);
-        // await snapPrivacyWarningFailed.scrollToBottomAndAccept();
-
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -542,10 +527,6 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarningUninstall = new SnapPrivacyWarning(driver);
-        // await snapPrivacyWarningUninstall.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -681,10 +662,6 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarningUpdate = new SnapPrivacyWarning(driver);
-        // await snapPrivacyWarningUpdate.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -852,12 +829,6 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarningUpdateRejectedFirst = new SnapPrivacyWarning(
-        //   driver,
-        // );
-        // await snapPrivacyWarningUpdateRejectedFirst.scrollToBottomAndAccept();
-
         // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
@@ -1011,10 +982,6 @@ describe('Test Snap Metrics', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
-        // const snapPrivacyWarningUpdateFailed = new SnapPrivacyWarning(driver);
-        // await snapPrivacyWarningUpdateFailed.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
