@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Takma adı düzenle"
   },
-  "editAccountName": {
-    "message": "Hesap adını düzenle"
-  },
   "editAccounts": {
     "message": "Hesapları düzenle"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Gizli"
-  },
-  "hiddenAccounts": {
-    "message": "Gizli hesaplar"
   },
   "hide": {
     "message": "Gizle"
@@ -6259,9 +6253,6 @@
   },
   "search": {
     "message": "Ara"
-  },
-  "searchAccounts": {
-    "message": "Hesapları ara"
   },
   "searchAnAcccountOrContact": {
     "message": "Bir hesap veya kişi ara"
