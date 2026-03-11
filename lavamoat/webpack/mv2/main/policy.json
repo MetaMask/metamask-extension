@@ -2119,7 +2119,7 @@
         "@metamask/post-message-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
-        "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": true,
+        "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2166,18 +2166,6 @@
         "@metamask/utils": true,
         "@noble/hashes": true,
         "@metamask/keyring-api>async-mutex": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": {
-      "packages": {
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@noble/hashes": true
       }
     },
     "@metamask/snaps-sdk": {
