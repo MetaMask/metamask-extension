@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 
 import Popover from '../popover';
 import Button from '../button';
@@ -8,8 +9,8 @@ import TextField from '../text-field';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 export default function UpdateNicknamePopover({
   address,
@@ -74,11 +75,11 @@ export default function UpdateNicknamePopover({
       }
     >
       <div className="update-nickname__content">
-        <Identicon
+        <PreferredAvatar
           className="update-nickname__content__indenticon"
           address={address}
-          diameter={36}
-          image={tokenList[address.toLowerCase()]?.iconUrl}
+          size={AvatarAccountSize.Lg}
+          src={tokenList[address.toLowerCase()]?.iconUrl}
         />
         <label className="update-nickname__content__label--capitalized">
           {t('address')}
