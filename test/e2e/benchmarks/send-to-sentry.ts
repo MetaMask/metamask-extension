@@ -107,11 +107,13 @@ function sendWebVitalsToSentry(
       aggAttributes[`webVitals.${key}.dataQuality`] = stats.dataQuality;
     }
 
-    const ratings = aggregated.ratings[key as keyof typeof aggregated.ratings];
-    aggAttributes[`webVitals.${key}.ratings.good`] = ratings.good;
-    aggAttributes[`webVitals.${key}.ratings.needsImprovement`] =
-      ratings['needs-improvement'];
-    aggAttributes[`webVitals.${key}.ratings.poor`] = ratings.poor;
+    const ratings = aggregated.ratings?.[key as keyof typeof aggregated.ratings];
+    if (ratings) {
+      aggAttributes[`webVitals.${key}.ratings.good`] = ratings.good;
+      aggAttributes[`webVitals.${key}.ratings.needsImprovement`] =
+        ratings['needs-improvement'];
+      aggAttributes[`webVitals.${key}.ratings.poor`] = ratings.poor;
+    }
   }
 
   Sentry.logger.info(`benchmark.${benchmarkName}.webVitals.summary`, {
