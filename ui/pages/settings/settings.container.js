@@ -18,7 +18,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   isValidHexAddress,
   isBurnAddress,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/lib/hexstring-utils';
 
 import {
   ABOUT_US_ROUTE,
@@ -42,12 +42,12 @@ import {
   TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
-import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import Settings from './settings.component';

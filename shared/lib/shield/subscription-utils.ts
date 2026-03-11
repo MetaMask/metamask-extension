@@ -11,9 +11,9 @@ import {
 import {
   ActiveSubscriptionStatuses,
   PausedSubscriptionStatuses,
-} from '../constants/subscriptions';
-import { getIsMetaMaskShieldFeatureEnabled } from '../modules/environment';
-import { DAY } from '../constants/time';
+} from '../../constants/subscriptions';
+import { getIsMetaMaskShieldFeatureEnabled } from '../environment';
+import { DAY } from '../../constants/time';
 
 const SUBSCRIPTION_ENDING_SOON_DAYS = DAY;
 

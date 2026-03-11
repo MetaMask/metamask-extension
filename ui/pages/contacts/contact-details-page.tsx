@@ -18,7 +18,7 @@ import {
   getAddressBookEntry,
   getInternalAccountByAddress,
 } from '../../selectors';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
