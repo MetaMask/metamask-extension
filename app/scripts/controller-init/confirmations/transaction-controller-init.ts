@@ -1,4 +1,5 @@
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
@@ -113,18 +114,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         onboardingController().state.completedOnboarding,
       updateTransactions: true,
     },
-    isAutomaticGasFeeUpdateEnabled: ({ type }) => {
-      // Disables automatic gas fee updates for swap and bridge transactions
-      // which provide their own gas parameters when they are submitted
-      const disabledTypes = [
-        TransactionType.swap,
-        TransactionType.swapApproval,
-        TransactionType.bridge,
-        TransactionType.bridgeApproval,
-      ];
-
-      return !type || !disabledTypes.includes(type);
-    },
+    isAutomaticGasFeeUpdateEnabled,
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
       const { chainId } = transactionMeta;
       const uiState = getUIState(getFlatState());
@@ -462,4 +452,49 @@ export function publishBatchHook({
     featureFlags,
     transactionMeta,
   });
+}
+
+const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
+  TransactionType.swap,
+  TransactionType.swapApproval,
+  TransactionType.bridge,
+  TransactionType.bridgeApproval,
+];
+
+const RELAY_DEPOSIT_TYPES = [
+  TransactionType.relayDeposit,
+  TransactionType.perpsRelayDeposit,
+  TransactionType.predictRelayDeposit,
+];
+
+function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
+  if (hasRelayDepositType(transaction)) {
+    return false;
+  }
+
+  if (
+    transaction.origin === ORIGIN_METAMASK &&
+    transaction.type === TransactionType.tokenMethodApprove
+  ) {
+    return false;
+  }
+
+  return (
+    !transaction.type ||
+    !DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES.includes(transaction.type)
+  );
+}
+
+function hasRelayDepositType(transaction: TransactionMeta) {
+  const { nestedTransactions, type } = transaction;
+
+  if (RELAY_DEPOSIT_TYPES.includes(type as TransactionType)) {
+    return true;
+  }
+
+  return (
+    nestedTransactions?.some((tx) =>
+      RELAY_DEPOSIT_TYPES.includes(tx.type as TransactionType),
+    ) ?? false
+  );
 }
