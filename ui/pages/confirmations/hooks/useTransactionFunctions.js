@@ -46,7 +46,7 @@ import {
  * @param options.gasLimit
  * @param options.maxPriorityFeePerGas
  * @param options.transaction
- * @param options.setRetryTxMeta
+ * @param {Function} [options.setRetryTxMeta] - Optional callback; when absent, cancel/speedup dispatches to store
  * @returns {TransactionFunctionsReturnType}
  */
 export const useTransactionFunctions = ({
@@ -57,7 +57,7 @@ export const useTransactionFunctions = ({
   gasLimit: gasLimitValue,
   maxPriorityFeePerGas: maxPriorityFeePerGasValue,
   transaction,
-  setRetryTxMeta,
+  setRetryTxMeta = undefined,
 }) => {
   const dispatch = useDispatch();
 
@@ -118,7 +118,7 @@ export const useTransactionFunctions = ({
           updateSwapsUserFeeLevel(estimateUsed || PriorityLevels.custom),
         );
         dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
-      } else if (editGasModeIsSpeedUpOrCancel(editGasMode)) {
+      } else if (editGasModeIsSpeedUpOrCancel(editGasMode) && setRetryTxMeta) {
         setRetryTxMeta(updatedTxMeta);
       } else {
         newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;

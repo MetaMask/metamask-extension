@@ -105,7 +105,7 @@ describe('useCancelSpeedupGasState', () => {
     );
   });
 
-  it('merges transaction with retryTxMeta in effectiveTransaction when editGasMode is speedUp', () => {
+  it('uses transaction as effectiveTransaction when store has no matching tx (speedUp)', () => {
     const transaction = createMockTransaction({ userFeeLevel: 'medium' });
 
     const { result } = renderHook(() =>
@@ -122,7 +122,7 @@ describe('useCancelSpeedupGasState', () => {
     expect(result.current.effectiveTransaction.networkClientId).toBe('mainnet');
   });
 
-  it('merges transaction with retryTxMeta in effectiveTransaction when editGasMode is cancel', () => {
+  it('uses transaction as effectiveTransaction when store has no matching tx (cancel)', () => {
     const transaction = createMockTransaction();
 
     const { result } = renderHook(() =>

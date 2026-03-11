@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import classNames from 'clsx';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   GasEstimateTypes,
@@ -75,11 +75,14 @@ export default function GasTiming({
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
   const previousIsUnknownLow = usePrevious(isUnknownLow);
 
-  const estimateTextMap = {
-    [PriorityLevels.tenPercentIncreased]: t('tenPercentIncreased'),
-    [PriorityLevels.dAppSuggested]: t('dappSuggested'),
-    [PriorityLevels.dappSuggestedHigh]: t('dappSuggested'),
-  };
+  const estimateTextMap = useMemo(
+    () => ({
+      [PriorityLevels.tenPercentIncreased]: t('tenPercentIncreased'),
+      [PriorityLevels.dAppSuggested]: t('dappSuggested'),
+      [PriorityLevels.dappSuggestedHigh]: t('dappSuggested'),
+    }),
+    [t],
+  );
 
   useEffect(() => {
     let isMounted = true;
