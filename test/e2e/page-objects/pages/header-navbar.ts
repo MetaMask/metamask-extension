@@ -16,11 +16,6 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
-
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
