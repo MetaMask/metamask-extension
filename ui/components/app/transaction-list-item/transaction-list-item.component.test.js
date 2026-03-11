@@ -37,7 +37,17 @@ import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
+import { useIs7702Transaction } from '../../../pages/confirmations/hooks/useIs7702Transaction';
 import TransactionListItem from '.';
+
+jest.mock('../../../pages/confirmations/hooks/useIs7702Transaction', () => ({
+  useIs7702Transaction: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
+  useShouldShowSpeedUp: jest.fn(),
+}));
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
@@ -159,6 +169,9 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   return undefined;
 };
 
+const useIs7702TransactionMock = jest.mocked(useIs7702Transaction);
+const useShouldShowSpeedUpMock = jest.mocked(useShouldShowSpeedUp);
+
 describe('TransactionListItem', () => {
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
@@ -171,6 +184,9 @@ describe('TransactionListItem', () => {
         label: null,
       })),
     );
+
+    useIs7702TransactionMock.mockReturnValue(false);
+    useShouldShowSpeedUpMock.mockReturnValue(true);
   });
 
   afterAll(() => {
@@ -368,5 +384,42 @@ describe('TransactionListItem', () => {
       '?Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
+  });
+
+  describe('EIP-7702 transactions', () => {
+    it('hides Cancel and Speed up buttons when transaction is 7702', () => {
+      useIs7702TransactionMock.mockReturnValue(true);
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={transactionGroup} />,
+      );
+
+      expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).not.toBeInTheDocument();
+
+      useIs7702TransactionMock.mockReturnValue(false);
+    });
+
+    it('shows Cancel and Speed up buttons when not 7702 and other conditions allow', () => {
+      useIs7702TransactionMock.mockReturnValue(false);
+      useShouldShowSpeedUpMock.mockReturnValue(true);
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={transactionGroup} />,
+      );
+
+      expect(queryByTestId('cancel-button')).toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).toBeInTheDocument();
+    });
   });
 });

@@ -17,6 +17,7 @@ import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
+import { useIs7702Transaction } from '../../../pages/confirmations/hooks/useIs7702Transaction';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
@@ -95,6 +96,10 @@ function TransactionListItemInner({
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
     bridgeTxHistoryItem;
+
+  const is7702Transaction = useIs7702Transaction(
+    transactionGroup.primaryTransaction,
+  );
 
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
@@ -241,13 +246,21 @@ function TransactionListItemInner({
       !isPending ||
       isUnapproved ||
       isSigning ||
-      isSubmitting
+      isSubmitting ||
+      is7702Transaction
     ) {
       return false;
     }
 
     return true;
-  }, [shouldShowSpeedUp, isUnapproved, isPending, isSigning, isSubmitting]);
+  }, [
+    shouldShowSpeedUp,
+    isUnapproved,
+    isPending,
+    isSigning,
+    isSubmitting,
+    is7702Transaction,
+  ]);
 
   const speedUpButton = useMemo(() => {
     if (!isSpeedUpButtonVisible) {
@@ -271,7 +284,12 @@ function TransactionListItemInner({
     cancelTransaction,
   ]);
   const showCancelButton =
-    !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
+    !hasCancelled &&
+    isPending &&
+    !isUnapproved &&
+    !isSubmitting &&
+    !isBridgeTx &&
+    !is7702Transaction;
 
   return (
     <>
