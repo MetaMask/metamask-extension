@@ -24,7 +24,12 @@ export async function getMnemonic(
         type: KeyringTypes.hd,
         index: 0,
       },
-      async ({ keyring }) => (keyring as HdKeyring).mnemonic,
+      async ({ keyring }) => {
+        if (!keyring) {
+          return null;
+        }
+        return (keyring as HdKeyring).mnemonic;
+      },
     )) as Uint8Array | null;
 
     if (!mnemonic) {
@@ -40,10 +45,15 @@ export async function getMnemonic(
       {
         id: source,
       },
-      async ({ keyring }) => ({
-        type: keyring.type,
-        mnemonic: (keyring as HdKeyring).mnemonic,
-      }),
+      async ({ keyring }) => {
+        if (!keyring) {
+          return { type: null, mnemonic: null };
+        }
+        return {
+          type: keyring.type,
+          mnemonic: (keyring as HdKeyring).mnemonic,
+        };
+      },
     );
 
     const { type, mnemonic } = keyringData as {
@@ -83,7 +93,12 @@ export async function getMnemonicSeed(
         type: KeyringTypes.hd,
         index: 0,
       },
-      async ({ keyring }) => (keyring as HdKeyring).seed,
+      async ({ keyring }) => {
+        if (!keyring) {
+          return null;
+        }
+        return (keyring as HdKeyring).seed;
+      },
     )) as Uint8Array | null;
 
     if (!seed) {
@@ -99,10 +114,15 @@ export async function getMnemonicSeed(
       {
         id: source,
       },
-      async ({ keyring }) => ({
-        type: keyring.type,
-        seed: (keyring as HdKeyring).seed,
-      }),
+      async ({ keyring }) => {
+        if (!keyring) {
+          return { type: null, seed: null };
+        }
+        return {
+          type: keyring.type,
+          seed: (keyring as HdKeyring).seed,
+        };
+      },
     );
 
     const { type, seed } = keyringData as { type: string; seed?: Uint8Array };
