@@ -107,9 +107,7 @@ const mapStateToProps = (state, ownProps) => {
   const isAddPopularCustomNetwork = Boolean(
     pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
   );
-  const isSnapSettingsRoute = Boolean(
-    pathname.split('?')[0].match(SNAP_SETTINGS_ROUTE),
-  );
+  const isSnapSettingsRoute = pathname === SNAP_SETTINGS_ROUTE;
   const isShieldClaimNewPage = Boolean(
     pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
   );
