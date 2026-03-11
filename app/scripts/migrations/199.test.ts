@@ -1,5 +1,3 @@
-import { cloneDeep } from 'lodash';
-
 const mockInfuraIdValue = 'unitTestInfuraId';
 let mockInfuraId: string | undefined = mockInfuraIdValue;
 
