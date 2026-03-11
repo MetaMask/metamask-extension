@@ -95,22 +95,21 @@ export const DappConnectionControlBar: React.FC = () => {
     if (allPermittedAddresses.length === 0) {
       return undefined;
     }
-    const selectedAddr = selectedInternalAccount?.address;
-    if (selectedAddr) {
-      const isEvm =
-        selectedInternalAccount?.type &&
-        isEvmAccountType(selectedInternalAccount.type);
-      const match = allPermittedAddresses.find((addr) =>
-        isEvm
-          ? addr.toLowerCase() === selectedAddr.toLowerCase()
-          : addr === selectedAddr,
-      );
-      if (match) {
-        return match;
+    if (accountGroupInternalAccounts?.length) {
+      for (const account of accountGroupInternalAccounts) {
+        const isEvm = isEvmAccountType(account.type);
+        const match = allPermittedAddresses.find((addr) =>
+          isEvm
+            ? addr.toLowerCase() === account.address.toLowerCase()
+            : addr === account.address,
+        );
+        if (match) {
+          return match;
+        }
       }
     }
     return allPermittedAddresses[0];
-  }, [allPermittedAddresses, selectedInternalAccount]);
+  }, [allPermittedAddresses, accountGroupInternalAccounts]);
 
   const connectedAccountByAddress = useSelector((state) =>
     activePermittedAddress
