@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Spitznamen bearbeiten"
   },
-  "editAccountName": {
-    "message": "Kontonamen bearbeiten"
-  },
   "editAccounts": {
     "message": "Konten bearbeiten"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Verborgen"
-  },
-  "hiddenAccounts": {
-    "message": "Versteckte Konten"
   },
   "hide": {
     "message": "Verbergen"
@@ -3996,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD-Umrechnung"
+    "message": "$1 in mUSD umrechnen",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD-Umrechnung"
+    "message": "$1 in mUSD umrechnen",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Sie müssen mindestens 1 Token auswählen."
@@ -5878,9 +5874,6 @@
   "removeAccount": {
     "message": "Konto entfernen"
   },
-  "removeAccountDescription": {
-    "message": "Dieses Konto wird aus Ihrem Wallet entfernt. Bitte stellen Sie sicher, dass Sie die ursprüngliche geheime Wiederherstellungsphrase oder den privaten Schlüssel für dieses importierte Konto haben, bevor Sie fortfahren. Über die Dropdown-Liste des Kontos können Sie Konten importieren oder neu anlegen. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Stellen Sie sicher, dass Sie die geheime Wiederherstellungsphrase oder den privaten Schlüssel für dieses Konto haben, bevor Sie es entfernen.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -6260,9 +6253,6 @@
   },
   "search": {
     "message": "Suchen"
-  },
-  "searchAccounts": {
-    "message": "Konten durchsuchen"
   },
   "searchAnAcccountOrContact": {
     "message": "Ein Konto oder einen Kontakt suchen"

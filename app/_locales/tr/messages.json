@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Takma adı düzenle"
   },
-  "editAccountName": {
-    "message": "Hesap adını düzenle"
-  },
   "editAccounts": {
     "message": "Hesapları düzenle"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Gizli"
-  },
-  "hiddenAccounts": {
-    "message": "Gizli hesaplar"
   },
   "hide": {
     "message": "Gizle"
@@ -3996,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD Dönüştürme"
+    "message": "$1 mUSD'ye dönüştür",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD Dönüştürme"
+    "message": "$1 mUSD'ye dönüştür",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "En az bir token seçilmeli."
@@ -5878,9 +5874,6 @@
   "removeAccount": {
     "message": "Hesabı kaldır"
   },
-  "removeAccountDescription": {
-    "message": "Bu hesap cüzdanınızdan kaldırılacak. Devam etmeden önce lütfen orijinal Gizli Kurtarma İfadenizin veya içe aktarılan bu hesabın özel anahtarının sizde bulunduğundan emin olun. Hesap açılır menüsünden hesapları içe aktarabilir veya tekrar hesap oluşturabilirsiniz. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Kaldırmadan önce bu hesap için Gizli Kurtarma İfadenizin veya özel anahtarınızın olduğundan emin olun.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -6260,9 +6253,6 @@
   },
   "search": {
     "message": "Ara"
-  },
-  "searchAccounts": {
-    "message": "Hesapları ara"
   },
   "searchAnAcccountOrContact": {
     "message": "Bir hesap veya kişi ara"

@@ -103,7 +103,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withTrezorAccount()
             .withPermissionControllerConnectedToTestDapp({
               account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,

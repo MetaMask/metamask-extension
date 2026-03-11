@@ -1307,9 +1307,6 @@
   "removeAccount": {
     "message": "Quitar cuenta"
   },
-  "removeAccountDescription": {
-    "message": "Esta cuenta se quitará de la cartera. Antes de continuar, asegúrese de tener la frase secreta de recuperación original o la clave privada de esta cuenta importada. Puede importar o crear cuentas nuevamente en la lista desplegable de la cuenta. "
-  },
   "removeNFT": {
     "message": "Eliminar NFT"
   },
@@ -1355,9 +1352,6 @@
   },
   "search": {
     "message": "Buscar"
-  },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
   },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
