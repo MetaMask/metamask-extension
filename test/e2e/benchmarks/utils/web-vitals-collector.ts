@@ -20,6 +20,7 @@
  * Falls back to 0 on extension pages where the observer is unsupported.
  */
 
+import { WINDOW_TITLES } from '../../constants';
 import type { Driver } from '../../webdriver/driver';
 import type { WebVitalsMetrics } from './types';
 
@@ -179,7 +180,9 @@ if (result.cls === null && cwv.clsSupported) {
   result.clsRating = rate(clsVal, 0.1, 0.25);
 }
 
-if (result.cls === null) {
+// Only fallback to 0 when layout-shift observer was supported but no entries
+// (no shifts occurred). When clsSupported is false, keep null — observer didn't fire.
+if (result.cls === null && cwv.clsSupported) {
   result.cls = 0;
   result.clsRating = 'good';
 }
@@ -283,6 +286,15 @@ async function dispatchINPProbe(driver: Driver): Promise<void> {
 export async function collectWebVitals(
   driver: Driver,
 ): Promise<WebVitalsMetrics> {
+  // Ensure driver context is the extension page (not a dapp tab).
+  // Benchmarks run in extension; explicit switch avoids wrong-context reads.
+  try {
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  } catch {
+    // Fallback: try MetaMask Dialog (e.g. confirmation popup)
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
   await driver.executeScript(SETUP_SCRIPT);
 
   await dispatchINPProbe(driver);

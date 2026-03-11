@@ -490,7 +490,21 @@ describe('collectWebVitals', () => {
       expect(result.inpRating).toBeNull();
     });
 
-    it('CLS falls back to 0 when layout-shift observer is unsupported', async () => {
+    it('CLS stays null when layout-shift observer is unsupported', async () => {
+      const result = await collectWebVitals(
+        createMockDriver({
+          executeScript: jest
+            .fn()
+            .mockResolvedValueOnce(undefined)
+            .mockResolvedValueOnce(makeReadResult()),
+        }),
+      );
+
+      expect(result.cls).toBeNull();
+      expect(result.clsRating).toBeNull();
+    });
+
+    it('CLS falls back to 0 when layout-shift observer is supported but no entries', async () => {
       const result = await collectWebVitals(
         createMockDriver({
           executeScript: jest
@@ -519,7 +533,7 @@ describe('collectWebVitals', () => {
       expect(readScript).not.toContain('result.inp = 0');
     });
 
-    it('read script contains CLS = 0 fallback', async () => {
+    it('read script gates CLS = 0 fallback on clsSupported', async () => {
       const execScript = jest
         .fn()
         .mockResolvedValueOnce(undefined)
@@ -530,6 +544,7 @@ describe('collectWebVitals', () => {
 
       const readScript = execScript.mock.calls[1][0] as string;
       expect(readScript).toContain('result.cls === null');
+      expect(readScript).toContain('cwv.clsSupported');
       expect(readScript).toContain('result.cls = 0');
     });
   });

@@ -26,6 +26,7 @@ import type {
   WebVitalsSummary,
 } from './utils/types';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
+import { aggregateWebVitals } from './utils/statistics';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
 const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
@@ -281,21 +282,9 @@ async function main() {
 
       // Web vitals: send per-run span for user action benchmarks
       if (userAction.webVitals) {
-        const emptyRatings = {
-          inp: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
-          fcp: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
-          lcp: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
-          cls: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
-        };
         const webVitalsSummary: WebVitalsSummary = {
           runs: [{ ...userAction.webVitals, iteration: 0 }],
-          aggregated: {
-            inp: null,
-            fcp: null,
-            lcp: null,
-            cls: null,
-            ratings: emptyRatings,
-          },
+          aggregated: aggregateWebVitals([userAction.webVitals]),
         };
         sendWebVitalsToSentry(
           name,
