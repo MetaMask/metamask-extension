@@ -93,7 +93,12 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}&metamask_version=MOCK_VERSION&metamask_profile_id=${mockProfileId}&metamask_metametrics_id=${mockMetaMetricsId}&shield_id=${mockShieldCustomerId}`;
+    const url = new URL(SUPPORT_LINK as string);
+    url.searchParams.append('metamask_version', 'MOCK_VERSION');
+    url.searchParams.append('metamask_profile_id', mockProfileId);
+    url.searchParams.append('metamask_metametrics_id', mockMetaMetricsId);
+    url.searchParams.append('shield_id', mockShieldCustomerId);
+    const expectedUrl = url.toString();
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -154,7 +159,9 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}&metamask_version=MOCK_VERSION`;
+    const url = new URL(SUPPORT_LINK as string);
+    url.searchParams.append('metamask_version', 'MOCK_VERSION');
+    const expectedUrl = url.toString();
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -194,7 +201,9 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}&metamask_version=MOCK_VERSION`;
+    const url = new URL(SUPPORT_LINK as string);
+    url.searchParams.append('metamask_version', 'MOCK_VERSION');
+    const expectedUrl = url.toString();
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
