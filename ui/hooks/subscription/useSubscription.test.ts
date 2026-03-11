@@ -10,16 +10,21 @@ import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import * as actions from '../../store/actions';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import type { MetaMaskReduxState } from '../../store/store';
+import { openWindow } from '../../helpers/utils/window';
 import {
   useSubscriptionCryptoApprovalTransaction,
   useShieldRewards,
   useUserSubscriptions,
+  useHandleSubscriptionSupportAction,
 } from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
 
 jest.mock('../useGasFeeEstimates');
 jest.mock('./useSubscriptionPricing');
+jest.mock('../../helpers/utils/window', () => ({
+  openWindow: jest.fn(),
+}));
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   estimateGas: jest.fn().mockResolvedValue('0x5208'),
@@ -36,6 +41,7 @@ const mockAddTransaction = jest.mocked(actions.addTransaction);
 const mockUseSubscriptionPricing = jest.mocked(
   subscriptionPricingHooks.useSubscriptionPricing,
 );
+const mockOpenWindow = jest.mocked(openWindow);
 
 const MOCK_SELECTED_TOKEN = {
   chainId: '0x1' as Hex,
@@ -483,5 +489,122 @@ describe('useUserSubscriptions', () => {
 
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBe(mockError);
+  });
+});
+
+describe('useHandleSubscriptionSupportAction', () => {
+  let state: MetaMaskReduxState;
+  const mockVersion = '11.0.0';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    state = cloneDeep(mockState) as unknown as MetaMaskReduxState;
+    process.env.METAMASK_VERSION = mockVersion;
+
+    // Set up state with profile and metrics IDs
+    state.metamask = {
+      ...state.metamask,
+      metaMetricsId: 'test-metametrics-id',
+      srpSessionData: {
+        someKey: {
+          profile: {
+            profileId: 'test-profile-id',
+          },
+        },
+      },
+    };
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('opens support link with all user data when available', () => {
+    const { result } = renderHookWithProvider(
+      () => useHandleSubscriptionSupportAction(),
+      state,
+    );
+
+    act(() => {
+      result.current.handleClickContactSupport();
+    });
+
+    const calledUrl = mockOpenWindow.mock.calls[0][0];
+    expect(calledUrl).toContain('metamask_version=11.0.0');
+    expect(calledUrl).toContain('metamask_profile_id=test-profile-id');
+    expect(calledUrl).toContain('metamask_metametrics_id=test-metametrics-id');
+
+    // Verify separator logic: should use correct separator based on SUPPORT_LINK content
+    expect(mockOpenWindow).toHaveBeenCalledWith(
+      expect.stringContaining('metamask_version='),
+    );
+  });
+
+  it('includes shield customer ID when available', () => {
+    state.metamask = {
+      ...state.metamask,
+      customerId: 'test-shield-customer-id',
+      subscriptions: [
+        {
+          customerId: 'test-shield-customer-id',
+          status: 'active',
+        },
+      ],
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useHandleSubscriptionSupportAction(),
+      state,
+    );
+
+    act(() => {
+      result.current.handleClickContactSupport();
+    });
+
+    const calledUrl = mockOpenWindow.mock.calls[0][0];
+    expect(calledUrl).toContain('shield_id=test-shield-customer-id');
+  });
+
+  it('opens support link without optional params when not available', () => {
+    state.metamask = {
+      ...state.metamask,
+      metaMetricsId: undefined,
+      srpSessionData: undefined,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useHandleSubscriptionSupportAction(),
+      state,
+    );
+
+    act(() => {
+      result.current.handleClickContactSupport();
+    });
+
+    const calledUrl = mockOpenWindow.mock.calls[0][0];
+    expect(calledUrl).toContain('metamask_version=11.0.0');
+    // Should not include optional params
+    expect(calledUrl).not.toContain('metamask_profile_id');
+    expect(calledUrl).not.toContain('metamask_metametrics_id');
+  });
+
+  it('handles URL separator correctly when building query string', () => {
+    const { result } = renderHookWithProvider(
+      () => useHandleSubscriptionSupportAction(),
+      state,
+    );
+
+    act(() => {
+      result.current.handleClickContactSupport();
+    });
+
+    const calledUrl = mockOpenWindow.mock.calls[0][0];
+
+    // Verify URL is properly formed (no double separators)
+    expect(calledUrl).not.toContain('??');
+    expect(calledUrl).not.toContain('&&');
+
+    // Verify query params are present
+    expect(calledUrl).toMatch(/[?&]metamask_version=11\.0\.0/u);
   });
 });

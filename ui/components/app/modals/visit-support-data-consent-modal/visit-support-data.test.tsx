@@ -210,4 +210,37 @@ describe('VisitSupportDataConsentModal', () => {
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
+
+  it('handles URL separator correctly when building support link', () => {
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    const calledUrl = (openWindow as jest.Mock).mock.calls[0][0];
+
+    // Verify URL is properly formed with correct separator
+    expect(calledUrl).toMatch(/[?&]metamask_version=/u);
+    // Should not have double separators
+    expect(calledUrl).not.toContain('??');
+  });
+
+  it('handles reject button when SUPPORT_LINK is properly formed', () => {
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-reject-button'),
+    );
+
+    // Should strip personal params but preserve URL structure
+    expect(openWindow).toHaveBeenCalled();
+    const calledUrl = (openWindow as jest.Mock).mock.calls[0][0];
+
+    // Verify personal params are not in URL
+    expect(calledUrl).not.toContain('metamask_profile_id');
+    expect(calledUrl).not.toContain('metamask_metametrics_id');
+    expect(calledUrl).not.toContain('shield_id');
+    expect(calledUrl).not.toContain('metamask_version');
+  });
 });
