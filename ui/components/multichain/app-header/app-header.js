@@ -34,7 +34,7 @@ import {
 } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';

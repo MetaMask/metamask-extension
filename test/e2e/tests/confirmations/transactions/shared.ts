@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../constants';
-import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
 import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
-
-const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
@@ -40,45 +35,6 @@ export async function assertAdvancedGasDetailsWithL2Breakdown(driver: Driver) {
   await driver.waitForSelector({ css: 'p', text: 'L2 fee' });
   await driver.waitForSelector({ css: 'p', text: 'Speed' });
   await driver.waitForSelector({ css: 'p', text: 'Max fee' });
-}
-
-export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('[data-testid="edit-spending-cap-icon"');
-
-  await driver.fill(
-    '[data-testid="custom-spending-cap-input"]',
-    newSpendingCap,
-  );
-
-  await driver.delay(largeDelayMs);
-
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-
-  // wait for the confirmation to be updated before submitting tx
-  await driver.delay(veryLargeDelayMs * 2);
-}
-
-export async function assertChangedSpendingCap(
-  driver: Driver,
-  newSpendingCap: string,
-) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-
-  await driver.delay(veryLargeDelayMs);
-
-  await driver.clickElement(
-    '.transaction-status-label--confirmed:nth-of-type(1)',
-  );
-
-  await driver.waitForSelector({
-    text: `${newSpendingCap} TST`,
-    tag: 'span',
-  });
-
-  await driver.waitForSelector({ text: 'Confirmed', tag: 'div' });
 }
 
 export async function mocked4BytesApprove(mockServer: MockttpServer) {
@@ -183,18 +139,4 @@ export async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
         },
       };
     });
-}
-
-export async function confirmApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector(
-    '.transaction-status-label--confirmed:nth-of-type(1)',
-  );
 }

@@ -9,7 +9,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
-import { parseApprovalTransactionData } from '../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../shared/lib/transaction.utils';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -20,7 +20,7 @@ import { ApprovalBalanceChange } from '../../../components/confirm/info/hooks/us
 import { useMultipleApprovalsAlerts } from './useMultipleApprovalsAlerts';
 
 // Mock dependencies
-jest.mock('../../../../../../shared/modules/transaction.utils');
+jest.mock('../../../../../../shared/lib/transaction.utils');
 jest.mock('../../../../../store/actions');
 jest.mock(
   '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges',

@@ -12,8 +12,9 @@ import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import { isMusdSupportedChain } from '../../components/app/musd/constants';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
 import {
   type Asset,
@@ -113,6 +114,10 @@ function getTokenFiatBalance(token: ConversionToken): number | null {
 /**
  * The source of truth for the tokens that are eligible for mUSD conversion.
  *
+ * @param options - Optional configuration.
+ * @param options.transactionType - When provided, filterTokens is a no-op for
+ * transaction types other than musdConversion. When omitted, filterTokens
+ * always applies the allowlist/blocklist filter.
  * @returns Object containing:
  * - filterAllowedTokens(tokens): Filters tokens based on allowlist/blocklist and min balance.
  * - isConversionToken(token): Checks if a token is eligible for mUSD conversion.
@@ -120,7 +125,10 @@ function getTokenFiatBalance(token: ConversionToken): number | null {
  * - hasConvertibleTokensByChainId(chainId): Checks if there are convertible tokens on a given chain.
  * - tokens: The tokens that are eligible for mUSD conversion.
  */
-export function useMusdConversionTokens(): UseMusdConversionTokensResult {
+export function useMusdConversionTokens(options?: {
+  transactionType?: string;
+}): UseMusdConversionTokensResult {
+  const { transactionType } = options ?? {};
   const { selectedChainId } = useMusdNetworkFilter();
 
   // Get feature flag values
@@ -295,8 +303,14 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
    * Designed for use in the pay-with modal where tokens are Asset type.
    */
   const filterTokens: TokenFilterFn = useCallback(
-    (tokens: Asset[]): Asset[] =>
-      tokens.filter((token) => {
+    (tokens: Asset[]): Asset[] => {
+      if (
+        transactionType &&
+        transactionType !== TransactionType.musdConversion
+      ) {
+        return tokens;
+      }
+      return tokens.filter((token) => {
         if (token.standard && token.standard !== AssetStandard.ERC20) {
           return false;
         }
@@ -316,8 +330,13 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
           filterTokensWithAllowlistAndBlocklist(asConversion) &&
           filterTokensWithMinBalance(asConversion)
         );
-      }),
-    [filterTokensWithAllowlistAndBlocklist, filterTokensWithMinBalance],
+      });
+    },
+    [
+      filterTokensWithAllowlistAndBlocklist,
+      filterTokensWithMinBalance,
+      transactionType,
+    ],
   );
 
   return useMemo(

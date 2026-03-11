@@ -14,7 +14,7 @@
 
 import { useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -125,6 +125,7 @@ function findExistingPendingMusdConversion(params: {
 export function useMusdConversion(): UseMusdConversionResult {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [error, setError] = useState<string | null>(null);
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -277,6 +278,7 @@ export function useMusdConversion(): UseMusdConversionResult {
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
           search: new URLSearchParams({
             loader: ConfirmationLoader.CustomAmount,
+            returnTo: location.pathname + location.search,
           }).toString(),
         });
       } catch (flowError) {
@@ -297,6 +299,8 @@ export function useMusdConversion(): UseMusdConversionResult {
       unapprovedTransactions,
       createConversionTransaction,
       navigate,
+      location.pathname,
+      location.search,
     ],
   );
 

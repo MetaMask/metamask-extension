@@ -15,7 +15,7 @@ import {
   MONAD_DISPLAY_NAME,
   MONAD_TESTNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworkListMenu } from '.';

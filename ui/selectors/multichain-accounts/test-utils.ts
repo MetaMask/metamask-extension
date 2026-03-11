@@ -1,7 +1,7 @@
 import { AccountGroupId } from '@metamask/account-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/lib/selectors/networks';
 import {
   AccountTreeState,
   InternalAccountsState,
