@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Cualquier tarifa de red indicada en la pantalla anterior incluye ambas transacciones y se dividirá."
   },
-  "bridgeNetCost": {
-    "message": "Costo neto"
-  },
   "bridgeNoMMFee": {
     "message": "Sin tarifa de MM"
   },
@@ -1129,10 +1126,6 @@
     "message": "Intercambiando $1 por $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Puentear a"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
-  },
-  "buildContactList": {
-    "message": "Cree su lista de contactos"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "Eliminar"
-  },
-  "deleteContact": {
-    "message": "Eliminar contacto"
   },
   "deleteMetaMetricsData": {
     "message": "Eliminar datos de MetaMetrics"
@@ -3994,8 +3981,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Convertir $1 a mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Convertido a mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."
@@ -4263,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Contacto nuevo"
   },
   "newContract": {
     "message": "Contrato nuevo"
@@ -5800,12 +5784,6 @@
   },
   "queued": {
     "message": "En cola"
-  },
-  "quotedReceiveAmount": {
-    "message": "Monto recibido de $1"
-  },
-  "quotedTotalCost": {
-    "message": "Costo total de $1"
   },
   "rank": {
     "message": "Rango"
@@ -8754,9 +8732,6 @@
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
   },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
   "userOpContractDeployError": {
     "message": "No se admite la implementación de contratos desde una cuenta inteligente"
   },
@@ -8775,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Ver contacto"
   },
   "viewDetails": {
     "message": "Ver detalles"

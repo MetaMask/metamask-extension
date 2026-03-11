@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "前の画面のクォートのネットワーク手数料には両方のトランザクションが含まれていて、分割されます。"
   },
-  "bridgeNetCost": {
-    "message": "純コスト"
-  },
   "bridgeNoMMFee": {
     "message": "MM手数料なし"
   },
@@ -1129,10 +1126,6 @@
     "message": "$1を$2にスワップしています",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "ブリッジ先:"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
-  },
-  "buildContactList": {
-    "message": "連絡先リストを作成する"
   },
   "builtAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "削除"
-  },
-  "deleteContact": {
-    "message": "連絡先を削除"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetricsデータを削除"
@@ -3994,8 +3981,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1をmUSDに変換",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSDに変換済み",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
@@ -4263,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新しい連絡先"
   },
   "newContract": {
     "message": "新しいコントラクト"
@@ -5794,12 +5778,6 @@
   },
   "queued": {
     "message": "キュー待ち"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1の受取額"
-  },
-  "quotedTotalCost": {
-    "message": "$1の合計コスト"
   },
   "rank": {
     "message": "ランキング"
@@ -8748,9 +8726,6 @@
   "usedByClients": {
     "message": "さまざまな異なるクライアントによって使用されています"
   },
-  "userName": {
-    "message": "ユーザー名"
-  },
   "userOpContractDeployError": {
     "message": "スマートコントラクトアカウントからのコントラクトの展開はサポートされていません"
   },
@@ -8769,9 +8744,6 @@
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "連絡先を表示"
   },
   "viewDetails": {
     "message": "詳細を表示"

@@ -1080,6 +1080,9 @@
   "bridgeGasFeesSplit": {
     "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
   },
+  "bridgeLowestCost": {
+    "message": "Lowest cost"
+  },
   "bridgeMarketClosedAction": {
     "message": "Market is closed"
   },
@@ -1097,9 +1100,6 @@
   },
   "bridgeMarketClosedTitle": {
     "message": "Market closed"
-  },
-  "bridgeNetCost": {
-    "message": "Net cost"
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
@@ -1162,6 +1162,9 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeQuotesSortedByCost": {
+    "message": "Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee."
+  },
   "bridgeReceive": {
     "message": "Receive $1 on $2",
     "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
@@ -1177,6 +1180,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectQuote": {
+    "message": "Select quote"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Select token, amount and destination account"
@@ -1221,10 +1227,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Bridge to"
@@ -1299,9 +1301,6 @@
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
-  },
-  "buildContactList": {
-    "message": "Build your contact list"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
@@ -1836,6 +1835,9 @@
   "contactDetails": {
     "message": "Contact details"
   },
+  "contactUpdated": {
+    "message": "Contact updated"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -2259,9 +2261,6 @@
   },
   "delete": {
     "message": "Delete"
-  },
-  "deleteContact": {
-    "message": "Delete contact"
   },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
@@ -4137,7 +4136,7 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdBonusExplanation": {
-    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. Powered by Relay. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
   "musdBoostDescription": {
@@ -4162,13 +4161,21 @@
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
+  "musdClaimableBonus": {
+    "message": "Claimable bonus",
+    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
+  },
+  "musdClaimableBonusTooltip": {
+    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $1",
+    "description": "$1 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Convert $1 to mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Converted to mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConversionToastFailed": {
     "message": "mUSD conversion failed"
@@ -4179,6 +4186,13 @@
   },
   "musdConversionToastSuccess": {
     "message": "Your mUSD is here!"
+  },
+  "musdConvert": {
+    "message": "Convert"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Convert and get $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
@@ -4195,7 +4209,7 @@
     "message": "Not now"
   },
   "musdGetBonusPercentage": {
-    "message": "Get $1% bonus",
+    "message": "Get $1% mUSD bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
@@ -4470,9 +4484,6 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "New contact"
   },
   "newContract": {
     "message": "New contract"
@@ -6124,11 +6135,8 @@
   "quizIntroduction": {
     "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
   },
-  "quotedReceiveAmount": {
-    "message": "$1 receive amount"
-  },
   "quotedTotalCost": {
-    "message": "$1 total cost"
+    "message": "Total cost: $1"
   },
   "rank": {
     "message": "Rank"
@@ -9130,9 +9138,6 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
-  "userName": {
-    "message": "Username"
-  },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart account is not supported"
   },
@@ -9151,9 +9156,6 @@
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "View contact"
   },
   "viewDetails": {
     "message": "View details"

@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "이전 화면에 표시된 네트워크 수수료에는 두 트랜잭션이 모두 포함된 것입니다. 이는 각각의 트랜잭션으로 분할됩니다."
   },
-  "bridgeNetCost": {
-    "message": "순비용"
-  },
   "bridgeNoMMFee": {
     "message": "MM 수수료 없음"
   },
@@ -1129,10 +1126,6 @@
     "message": "$1을(를) $2(으)로 스왑 중",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "최소 $1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "브릿지 대상:"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
-  },
-  "buildContactList": {
-    "message": "연락처 목록 작성하기"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask는 전 세계적으로 설계 및 구축되어 있습니다."
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "삭제"
-  },
-  "deleteContact": {
-    "message": "연락처 삭제"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics 데이터 삭제"
@@ -3994,8 +3981,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1을(를) mUSD로 전환",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSD로 전환됨",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
@@ -4263,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "새 연락처"
   },
   "newContract": {
     "message": "새 계약"
@@ -5800,12 +5784,6 @@
   },
   "queued": {
     "message": "대기열에 지정됨"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 수령 금액"
-  },
-  "quotedTotalCost": {
-    "message": "$1 총비용"
   },
   "rank": {
     "message": "순위"
@@ -8754,9 +8732,6 @@
   "usedByClients": {
     "message": "다양한 클라이언트에서 사용합니다."
   },
-  "userName": {
-    "message": "사용자 이름"
-  },
   "userOpContractDeployError": {
     "message": "스마트 계약 계정에서 계약 배포는 지원되지 않습니다."
   },
@@ -8775,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "연락처 보기"
   },
   "viewDetails": {
     "message": "세부 정보 보기"

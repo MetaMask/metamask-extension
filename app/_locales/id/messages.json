@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Biaya jaringan yang dikuotasi di layar sebelumnya mencakup kedua transaksi dan akan dibagi."
   },
-  "bridgeNetCost": {
-    "message": "Biaya bersih"
-  },
   "bridgeNoMMFee": {
     "message": "Tidak ada biaya MM"
   },
@@ -1129,10 +1126,6 @@
     "message": "Menukar $1 dengan $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 mnt",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Bridge ke"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
-  },
-  "buildContactList": {
-    "message": "Buat daftar kontak Anda"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask dirancang dan dibangun di seluruh dunia."
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "Hapus"
-  },
-  "deleteContact": {
-    "message": "Hapus kontak"
   },
   "deleteMetaMetricsData": {
     "message": "Hapus data MetaMetrics"
@@ -3994,8 +3981,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Konversi $1 ke mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Dikonversi ke mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Harus memilih minimal 1 token."
@@ -4263,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Kontak baru"
   },
   "newContract": {
     "message": "Kontrak baru"
@@ -5800,12 +5784,6 @@
   },
   "queued": {
     "message": "Antrean"
-  },
-  "quotedReceiveAmount": {
-    "message": "Jumlah $1 yang diterima"
-  },
-  "quotedTotalCost": {
-    "message": "Biaya total $1"
   },
   "rank": {
     "message": "Peringkat"
@@ -8754,9 +8732,6 @@
   "usedByClients": {
     "message": "Digunakan oleh berbagai klien yang berbeda"
   },
-  "userName": {
-    "message": "Nama pengguna"
-  },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"
   },
@@ -8775,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Lihat kontak"
   },
   "viewDetails": {
     "message": "Lihat detail"

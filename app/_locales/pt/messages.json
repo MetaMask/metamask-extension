@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Qualquer taxa de rede cotada na tela anterior inclui ambas as transações e será dividida."
   },
-  "bridgeNetCost": {
-    "message": "Custo líquido"
-  },
   "bridgeNoMMFee": {
     "message": "Sem taxa da MM"
   },
@@ -1129,10 +1126,6 @@
     "message": "Realizando swap de $1 para $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 mín",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Fazer ponte para"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
-  },
-  "buildContactList": {
-    "message": "Crie sua lista de contatos"
   },
   "builtAroundTheWorld": {
     "message": "A MetaMask é concebida e desenvolvida em todo o mundo."
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "Excluir"
-  },
-  "deleteContact": {
-    "message": "Excluir contato"
   },
   "deleteMetaMetricsData": {
     "message": "Excluir dados do MetaMetrics"
@@ -3994,8 +3981,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Converter $1 para mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Convertido para mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
@@ -4263,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Novo contato"
   },
   "newContract": {
     "message": "Novo contrato"
@@ -5800,12 +5784,6 @@
   },
   "queued": {
     "message": "Na fila"
-  },
-  "quotedReceiveAmount": {
-    "message": "Valor recebido $1"
-  },
-  "quotedTotalCost": {
-    "message": "Custo total de $1"
   },
   "rank": {
     "message": "Classificação"
@@ -8754,9 +8732,6 @@
   "usedByClients": {
     "message": "Usado por diversos clientes diferentes"
   },
-  "userName": {
-    "message": "Nome de usuário"
-  },
   "userOpContractDeployError": {
     "message": "A implementação do contrato a partir de uma conta de contrato inteligente não é suportada"
   },
@@ -8775,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Ver contato"
   },
   "viewDetails": {
     "message": "Ver detalhes"
