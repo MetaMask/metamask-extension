@@ -208,9 +208,6 @@
   "dropped": {
     "message": "የተጣለ"
   },
-  "duplicateContactTooltip": {
-    "message": "This contact name collides with an existing account or contact"
-  },
   "edit": {
     "message": "አርትዕ"
   },
