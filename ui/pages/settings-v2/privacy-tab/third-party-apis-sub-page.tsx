@@ -101,7 +101,10 @@ const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
 ];
 
 const ThirdPartyApisSubPage = () => (
-  <SettingsTab items={THIRD_PARTY_APIS_ITEMS} />
+  <SettingsTab
+    subHeaderKey="thirdPartyApisDescription"
+    items={THIRD_PARTY_APIS_ITEMS}
+  />
 );
 
 export default ThirdPartyApisSubPage;
