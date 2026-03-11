@@ -2,7 +2,11 @@ import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  AvatarToken,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../tooltip';
 import Popover from '../popover';
@@ -32,6 +36,7 @@ const NicknamePopover = ({
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const tokenList = useSelector(getTokenList);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
+  const iconUrl = tokenList[address.toLowerCase()]?.iconUrl;
 
   const routeToAddBlockExplorerUrl = () => {
     navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -46,12 +51,20 @@ const NicknamePopover = ({
   return (
     <div className="nickname-popover">
       <Popover onClose={onClose} className="nickname-popover__popover-wrap">
-        <PreferredAvatar
-          address={address}
-          size={AvatarAccountSize.Lg}
-          className="nickname-popover__identicon"
-          src={tokenList[address.toLowerCase()]?.iconUrl}
-        />
+        {iconUrl ? (
+          <AvatarToken
+            src={iconUrl}
+            name={nickname || address}
+            size={AvatarTokenSize.Lg}
+            className="nickname-popover__identicon"
+          />
+        ) : (
+          <PreferredAvatar
+            address={address}
+            size={AvatarAccountSize.Lg}
+            className="nickname-popover__identicon"
+          />
+        )}
         <div className="nickname-popover__address">
           {nickname || shortenAddress(address)}
         </div>
