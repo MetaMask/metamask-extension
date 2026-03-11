@@ -16,7 +16,9 @@ describe('Test Snap Homepage', function (this: Suite) {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockHomePageSnap,
         title: this.test?.fullTitle(),
       },

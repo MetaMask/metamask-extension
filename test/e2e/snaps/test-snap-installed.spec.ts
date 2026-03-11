@@ -63,6 +63,7 @@ describe('Test Snap installed', function () {
             metaMetricsId: 'fake-metrics-id',
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegmentAndSnaps,

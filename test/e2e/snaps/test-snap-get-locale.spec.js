@@ -1,8 +1,9 @@
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
-const SnapPrivacyWarning =
-  require('../page-objects/pages/dialog/snap-privacy-warning').default;
+// Privacy warning handled via withSnapsPrivacyWarningAlreadyShown fixture
+// const SnapPrivacyWarning =
+//   require('../page-objects/pages/dialog/snap-privacy-warning').default;
 
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const { withFixtures } = require('../helpers');
@@ -18,7 +19,9 @@ describe('Test Snap Get Locale', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockLocalizationSnap,
         title: this.test.fullTitle(),
       },
@@ -48,8 +51,9 @@ describe('Test Snap Get Locale', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarning = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarning.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarning = new SnapPrivacyWarning(driver);
+        // await snapPrivacyWarning.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({

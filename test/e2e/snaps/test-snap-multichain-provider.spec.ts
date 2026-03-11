@@ -19,7 +19,9 @@ describe('Test Snap multichain provider', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockMultichainProviderSnap(mockServer);
           await mockGenesisBlocks(mockServer);

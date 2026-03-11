@@ -17,7 +17,9 @@ describe('Test Snap Notification', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockNotificationSnap,
         title: this.test?.fullTitle(),
       },
@@ -61,7 +63,9 @@ describe('Test Snap Notification', function () {
   it('can send in-app notification with expanded view', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockNotificationSnap,
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],

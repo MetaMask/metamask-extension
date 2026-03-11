@@ -14,7 +14,9 @@ describe('Test Snap manageState', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockManageStateSnap,
         title: this.test?.fullTitle(),
       },
@@ -78,7 +80,9 @@ describe('Test Snap manageState', function () {
   it('can use the legacy state API', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockManageStateSnap,
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],

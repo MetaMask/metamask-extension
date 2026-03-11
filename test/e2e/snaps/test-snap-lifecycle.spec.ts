@@ -16,7 +16,9 @@ describe('Test Snap Lifecycle Hooks', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockLifecycleHooksSnap,
         title: this.test?.fullTitle(),
       },
@@ -55,6 +57,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withSnapControllerOnStartLifecycleSnap()
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test?.fullTitle(),
       },

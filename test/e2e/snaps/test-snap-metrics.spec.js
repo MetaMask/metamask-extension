@@ -2,8 +2,9 @@ const { strict: assert } = require('assert');
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
-const SnapPrivacyWarning =
-  require('../page-objects/pages/dialog/snap-privacy-warning').default;
+// Privacy warning handled via withSnapsPrivacyWarningAlreadyShown fixture
+// const SnapPrivacyWarning =
+//   require('../page-objects/pages/dialog/snap-privacy-warning').default;
 const { withFixtures, getEventPayloads } = require('../helpers');
 const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
@@ -202,6 +203,7 @@ describe('Test Snap Metrics', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
@@ -233,8 +235,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarning = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarning.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarning = new SnapPrivacyWarning(driver);
+        // await snapPrivacyWarning.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -320,6 +323,7 @@ describe('Test Snap Metrics', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
@@ -351,8 +355,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarningRejected = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarningRejected.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarningRejected = new SnapPrivacyWarning(driver);
+        // await snapPrivacyWarningRejected.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -414,6 +419,7 @@ describe('Test Snap Metrics', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
@@ -445,8 +451,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarningFailed = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarningFailed.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarningFailed = new SnapPrivacyWarning(driver);
+        // await snapPrivacyWarningFailed.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -504,6 +511,7 @@ describe('Test Snap Metrics', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
@@ -535,8 +543,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarningUninstall = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarningUninstall.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarningUninstall = new SnapPrivacyWarning(driver);
+        // await snapPrivacyWarningUninstall.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -642,6 +651,7 @@ describe('Test Snap Metrics', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
@@ -672,8 +682,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarningUpdate = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarningUpdate.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarningUpdate = new SnapPrivacyWarning(driver);
+        // await snapPrivacyWarningUpdate.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -807,6 +818,7 @@ describe('Test Snap Metrics', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
@@ -840,10 +852,11 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarningUpdateRejectedFirst = new SnapPrivacyWarning(
-          driver,
-        );
-        await snapPrivacyWarningUpdateRejectedFirst.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarningUpdateRejectedFirst = new SnapPrivacyWarning(
+        //   driver,
+        // );
+        // await snapPrivacyWarningUpdateRejectedFirst.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({
@@ -964,6 +977,7 @@ describe('Test Snap Metrics', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
@@ -998,8 +1012,9 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const snapPrivacyWarningUpdateFailed = new SnapPrivacyWarning(driver);
-        await snapPrivacyWarningUpdateFailed.scrollToBottomAndAccept();
+        // Privacy warning skipped via withSnapsPrivacyWarningAlreadyShown
+        // const snapPrivacyWarningUpdateFailed = new SnapPrivacyWarning(driver);
+        // await snapPrivacyWarningUpdateFailed.scrollToBottomAndAccept();
 
         // wait for and click connect
         await driver.waitForSelector({

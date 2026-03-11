@@ -26,6 +26,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withKeyringControllerMultiSRP()
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockGetEntropySnap,
         title: this.test?.fullTitle(),

@@ -26,6 +26,7 @@ describe('Test Snap bip-44', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withKeyringControllerMultiSRP()
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockBip44Snap,
         title: this.test?.fullTitle(),

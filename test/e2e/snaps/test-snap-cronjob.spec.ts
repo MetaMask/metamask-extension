@@ -15,7 +15,9 @@ describe('Test Snap Cronjob', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockCronjobSnap,
         title: this.test?.fullTitle(),
       },

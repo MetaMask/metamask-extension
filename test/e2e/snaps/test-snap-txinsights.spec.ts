@@ -22,6 +22,7 @@ describe('Test Snap TxInsights', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
@@ -60,6 +61,7 @@ describe('Test Snap TxInsights', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         smartContract,
         testSpecificMock: mockInsightsSnap,
@@ -109,6 +111,7 @@ describe('Test Snap TxInsights', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         smartContract,
         testSpecificMock: mockInsightsSnap,

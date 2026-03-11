@@ -21,6 +21,7 @@ describe('Test Snap get preferences', function () {
               showTestNetworks: true,
             },
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockPreferencesSnap,
         title: this.test?.fullTitle(),

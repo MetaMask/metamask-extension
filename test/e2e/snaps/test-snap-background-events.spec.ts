@@ -14,7 +14,9 @@ describe('Test Snap Background Events', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBackgroundEventsSnap,
       },
@@ -80,7 +82,9 @@ describe('Test Snap Background Events', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBackgroundEventsSnap,
       },
@@ -152,7 +156,9 @@ describe('Test Snap Background Events', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBackgroundEventsSnap,
       },
