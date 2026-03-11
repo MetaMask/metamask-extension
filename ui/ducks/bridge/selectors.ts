@@ -86,6 +86,11 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
+import {
+  isStockRWAToken,
+  isTokenTradingOpenAt,
+} from '../../pages/bridge/hooks/useRWAToken';
 import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
 import {
   exchangeRateFromMarketData,
@@ -588,6 +593,24 @@ export const getIsQuoteExpired = (
   currentTimeInMs: number,
 ) => selectIsQuoteExpired(metamask, {}, currentTimeInMs);
 
+export const getIsStockMarketClosed = (
+  state: BridgeAppState,
+  currentTimeInMs: number,
+): boolean => {
+  const isRWAEnabled = getIsRWATokensEnabled(state);
+  if (!isRWAEnabled) {
+    return false;
+  }
+  const fromToken = getFromToken(state);
+  const toToken = getToToken(state);
+  const isFromClosed =
+    isStockRWAToken(fromToken) &&
+    !isTokenTradingOpenAt(fromToken, currentTimeInMs);
+  const isToClosed =
+    isStockRWAToken(toToken) && !isTokenTradingOpenAt(toToken, currentTimeInMs);
+  return isFromClosed || isToClosed;
+};
+
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
@@ -679,7 +702,7 @@ export const getFormattedPriceImpact = createSelector(
   (priceImpact) => formatPriceImpact(priceImpact),
 );
 
-export const getValidationErrors = createDeepEqualSelector(
+const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
     _getValidatedSrcAmount,
@@ -788,9 +811,35 @@ export const getValidationErrors = createDeepEqualSelector(
   },
 );
 
-export const getWarningLabels = createSelector(
-  [getValidationErrors],
-  ({
+/**
+ * Returns all validation errors for the current bridge/swap form state.
+ * Pass `currentTimeInMs` to include stock market-closed status (follows
+ * the same pattern as {@link getIsQuoteExpired}).
+ * @param state
+ * @param currentTimeInMs
+ */
+export const getValidationErrors = (
+  state: BridgeAppState,
+  currentTimeInMs?: number,
+) => ({
+  ..._getBaseValidationErrors(state),
+  isStockMarketClosed:
+    currentTimeInMs === undefined
+      ? false
+      : getIsStockMarketClosed(state, currentTimeInMs),
+});
+
+/**
+ * Returns warning labels for metrics. Pass `currentTimeInMs` to include
+ * the market_closed warning alongside the standard QuoteWarning values.
+ * @param state
+ * @param currentTimeInMs
+ */
+export const getWarningLabels = (
+  state: BridgeAppState,
+  currentTimeInMs?: number,
+): (QuoteWarning | 'market_closed')[] => {
+  const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
     isInsufficientGasBalance,
@@ -799,20 +848,21 @@ export const getWarningLabels = createSelector(
     isPriceImpactWarning,
     isPriceImpactError,
     isTxAlertPresent,
-  }) => {
-    const warnings: QuoteWarning[] = [];
-    isEstimatedReturnLow && warnings.push('low_return');
-    isNoQuotesAvailable && warnings.push('no_quotes');
-    isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
-    isInsufficientGasForQuote &&
-      warnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance && warnings.push('insufficient_balance');
-    isPriceImpactWarning && warnings.push('price_impact');
-    isPriceImpactError && warnings.push('price_impact');
-    isTxAlertPresent && warnings.push('tx_alert');
-    return warnings;
-  },
-);
+    isStockMarketClosed,
+  } = getValidationErrors(state, currentTimeInMs);
+  const warnings: (QuoteWarning | 'market_closed')[] = [];
+  isEstimatedReturnLow && warnings.push('low_return');
+  isNoQuotesAvailable && warnings.push('no_quotes');
+  isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
+  isInsufficientGasForQuote &&
+    warnings.push('insufficient_gas_for_selected_quote');
+  isInsufficientBalance && warnings.push('insufficient_balance');
+  isPriceImpactWarning && warnings.push('price_impact');
+  isPriceImpactError && warnings.push('price_impact');
+  isTxAlertPresent && warnings.push('tx_alert');
+  isStockMarketClosed && warnings.push('market_closed');
+  return warnings;
+};
 
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;

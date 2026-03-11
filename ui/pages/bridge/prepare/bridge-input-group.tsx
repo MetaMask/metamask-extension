@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -88,8 +88,10 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
 
   const { isLoading } = useSelector(getBridgeQuotes);
-  const { isInsufficientBalance, isEstimatedReturnLow } =
-    useSelector(getValidationErrors);
+  const { isInsufficientBalance, isEstimatedReturnLow } = useSelector(
+    getValidationErrors,
+    shallowEqual,
+  );
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 

@@ -1,19 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  AvatarAccount,
   AvatarAccountSize,
-  AvatarIcon,
-  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
-  BadgeWrapper,
   Box,
   Button,
   ButtonSize,
   ButtonVariant,
-  IconName,
-  IconColor,
   Text,
   TextVariant,
   TextColor,
@@ -21,19 +15,17 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
   FormTextFieldSize,
-  SelectButton,
-  SelectButtonSize,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { ContactNetworks } from '../../settings/contact-list-tab/contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -47,6 +39,11 @@ import {
   isValidHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
 import type { EditContactFormProps } from '../contacts.types';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 export function EditContactForm({
   address,
@@ -58,6 +55,7 @@ export function EditContactForm({
 }: EditContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const addressBook = useSelector(getAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
@@ -65,10 +63,8 @@ export function EditContactForm({
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);
   const [memo, setMemo] = useState(initialMemo);
-  const [selectedChainId, setSelectedChainId] = useState(contactChainId);
   const [nameError, setNameError] = useState('');
   const [addressError, setAddressError] = useState('');
-  const [showNetworkModal, setShowNetworkModal] = useState(false);
 
   const validateName = (nameValue: string) => {
     if (nameValue === initialName) {
@@ -84,194 +80,203 @@ export function EditContactForm({
   };
 
   const selectedNetwork =
-    networks && selectedChainId
-      ? (networks as Record<string, { name?: string }>)[selectedChainId]
+    networks && contactChainId
+      ? (networks as Record<string, { name?: string }>)[contactChainId]
       : undefined;
   const selectedNetworkName =
     selectedNetwork?.name ??
-    (selectedChainId
-      ? `${t('unknownNetworkForGatorPermissions')} (${selectedChainId})`
+    (contactChainId
+      ? `${t('unknownNetworkForGatorPermissions')} (${contactChainId})`
       : t('networkTabCustom'));
+
   const isUnchanged =
     contactName === initialName &&
     newAddress === address &&
-    selectedChainId === contactChainId &&
     memo === initialMemo;
+
+  const hasValidAddress =
+    newAddress.trim() &&
+    !isBurnAddress(newAddress) &&
+    isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
+  const addressChanged = newAddress !== address;
   const isSaveDisabled =
     !contactName.trim() ||
     Boolean(nameError) ||
     Boolean(addressError) ||
-    isUnchanged;
-  const isChainChanged = selectedChainId !== contactChainId;
+    isUnchanged ||
+    !newAddress.trim() ||
+    (addressChanged && !hasValidAddress);
+
   const handleSubmit = async () => {
-    if (newAddress && newAddress !== address) {
+    if (!newAddress.trim()) {
+      setAddressError(t('invalidAddress'));
+      return;
+    }
+    if (newAddress === address) {
+      await dispatch(
+        addToAddressBook(
+          address,
+          contactName || initialName,
+          memo,
+          contactChainId,
+        ),
+      );
+    } else {
       const valid =
         !isBurnAddress(newAddress) &&
         isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
-      if (!valid) {
+      if (valid) {
+        await dispatch(removeFromAddressBook(contactChainId, address));
+        await dispatch(
+          addToAddressBook(
+            newAddress,
+            contactName || initialName,
+            memo,
+            contactChainId,
+          ),
+        );
+      } else {
         setAddressError(t('invalidAddress'));
         return;
       }
-      await dispatch(removeFromAddressBook(contactChainId, address));
-      await dispatch(
-        addToAddressBook(
-          newAddress,
-          contactName || initialName,
-          memo,
-          selectedChainId,
-        ),
-      );
-      onSuccess();
-    } else if (isChainChanged) {
-      await dispatch(removeFromAddressBook(contactChainId, address));
-      await dispatch(
-        addToAddressBook(
-          address,
-          contactName || initialName,
-          memo,
-          selectedChainId,
-        ),
-      );
-      onSuccess();
-    } else {
-      await dispatch(
-        addToAddressBook(
-          address,
-          contactName || initialName,
-          memo,
-          selectedChainId,
-        ),
-      );
-      onSuccess();
     }
+    const savedAddress = newAddress === address ? address : newAddress;
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactUpdated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: contactChainId,
+      },
+      sensitiveProperties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        contact_address: savedAddress,
+      },
+    });
+    onSuccess();
   };
 
   return (
-    <Box className="flex h-full w-full flex-col justify-between mb-4 gap-6">
+    <Box className="flex h-full w-full min-h-0 flex-col">
       <Box
-        className="flex w-full flex-col px-4 pt-4 gap-6"
+        className="flex min-h-0 flex-1 flex-col overflow-auto"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
+        style={{ scrollbarColor: 'var(--color-icon-muted) transparent' }}
       >
-        {/* Avatar */}
-        <Box className="flex flex-col items-center">
-          <BadgeWrapper
-            badge={
-              <AvatarIcon
-                className="rounded-md border-2 border-background-default bg-primary-default"
-                size={AvatarIconSize.Sm}
-                iconName={IconName.Edit}
-                iconProps={{ color: IconColor.PrimaryInverse }}
-              />
-            }
-          >
-            <AvatarAccount address={address} size={AvatarAccountSize.Xl} />
-          </BadgeWrapper>
-        </Box>
+        <Box className="flex w-full flex-col px-4 pt-4">
+          {/* Avatar */}
+          <Box className="flex flex-col items-center">
+            <PreferredAvatar address={address} size={AvatarAccountSize.Xl} />
+          </Box>
 
-        {/* Form fields */}
-        <Box className="flex w-full flex-col gap-6">
-          <FormTextField
-            id="edit-contact-nickname"
-            label={t('nickname')}
-            placeholder={t('addAlias')}
-            value={contactName}
-            onChange={handleNameChange}
-            error={Boolean(nameError)}
-            helpText={nameError || undefined}
-            size={FormTextFieldSize.Lg}
-            labelProps={{ marginBottom: 1 }}
-            textFieldProps={{
-              backgroundColor: BackgroundColor.backgroundMuted,
-              borderColor: BorderColor.borderDefault,
-              borderRadius: BorderRadius.XL,
-            }}
-            data-testid="address-book-edit-contact-name"
-          />
-
-          <FormTextField
-            id="edit-contact-address"
-            label={t('publicAddress')}
-            value={newAddress}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setNewAddress(e.target.value);
-              setAddressError('');
-            }}
-            error={Boolean(addressError)}
-            helpText={addressError || undefined}
-            size={FormTextFieldSize.Lg}
-            truncate={false}
-            labelProps={{ marginBottom: 1 }}
-            textFieldProps={{
-              backgroundColor: BackgroundColor.backgroundMuted,
-              borderColor: BorderColor.borderDefault,
-              borderRadius: BorderRadius.XL,
-            }}
-            data-testid="address-book-edit-contact-address"
-          />
-
-          {initialMemo.length > 0 && (
+          {/* Form fields */}
+          <Box className="flex w-full flex-col gap-6">
             <FormTextField
-              id="edit-contact-memo"
-              label={t('memo')}
-              placeholder={t('addMemo')}
-              value={memo}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setMemo(e.target.value)
-              }
+              id="edit-contact-nickname"
+              label={t('nickname')}
+              placeholder={t('addAlias')}
+              value={contactName}
+              onChange={handleNameChange}
+              error={Boolean(nameError)}
+              helpText={nameError || undefined}
               size={FormTextFieldSize.Lg}
-              labelProps={{ marginBottom: 1 }}
+              labelProps={{ marginBottom: 2 }}
               textFieldProps={{
                 backgroundColor: BackgroundColor.backgroundMuted,
-                borderColor: BorderColor.borderDefault,
+                borderColor: BorderColor.borderMuted,
                 borderRadius: BorderRadius.XL,
+                style: { borderColor: 'var(--color-border-muted)' },
               }}
-              data-testid="address-book-edit-contact-memo"
+              data-testid="address-book-edit-contact-name"
             />
-          )}
 
-          <Box className="w-full">
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
-              className="mb-1"
+            <FormTextField
+              id="edit-contact-address"
+              label={t('publicAddress')}
+              value={newAddress}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setNewAddress(e.target.value);
+                setAddressError('');
+              }}
+              error={Boolean(addressError)}
+              helpText={addressError || undefined}
+              size={FormTextFieldSize.Lg}
+              truncate={false}
+              labelProps={{ marginBottom: 2 }}
+              textFieldProps={{
+                backgroundColor: BackgroundColor.backgroundMuted,
+                borderColor: BorderColor.borderMuted,
+                borderRadius: BorderRadius.XL,
+                style: { borderColor: 'var(--color-border-muted)' },
+                padding: 4,
+              }}
+              data-testid="address-book-edit-contact-address"
+            />
+
+            {initialMemo.length > 0 && (
+              <FormTextField
+                id="edit-contact-memo"
+                label={t('memo')}
+                placeholder={t('addMemo')}
+                value={memo}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setMemo(e.target.value)
+                }
+                size={FormTextFieldSize.Lg}
+                labelProps={{ marginBottom: 2 }}
+                textFieldProps={{
+                  backgroundColor: BackgroundColor.backgroundMuted,
+                  borderColor: BorderColor.borderMuted,
+                  borderRadius: BorderRadius.XL,
+                  style: { borderColor: 'var(--color-border-muted)' },
+                }}
+                data-testid="address-book-edit-contact-memo"
+              />
+            )}
+
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              gap={1}
+              className="flex w-full flex-col"
             >
-              {t('network')}
-            </Text>
-            <SelectButton
-              size={SelectButtonSize.Lg}
-              isBlock
-              backgroundColor={BackgroundColor.backgroundMuted}
-              borderColor={BorderColor.borderDefault}
-              borderRadius={BorderRadius.XL}
-              startAccessory={
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                className="mb-1"
+              >
+                {t('network')}
+              </Text>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+                padding={4}
+                className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
+                style={{ cursor: 'not-allowed' }}
+              >
                 <AvatarNetwork
                   size={AvatarNetworkSize.Xs}
+                  className="rounded-xl"
                   src={
-                    selectedChainId
-                      ? getImageForChainId(selectedChainId) || undefined
+                    contactChainId
+                      ? getImageForChainId(contactChainId) || undefined
                       : undefined
                   }
                   name={selectedNetworkName}
                 />
-              }
-              onClick={() => setShowNetworkModal(true)}
-              data-testid="network-selector"
-              className="rounded-xl"
-            >
-              {selectedNetworkName}
-            </SelectButton>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextDefault}
+                  ellipsis
+                  className="min-w-0 flex-1"
+                >
+                  {selectedNetworkName}
+                </Text>
+              </Box>
+            </Box>
           </Box>
-
-          {showNetworkModal && (
-            <ContactNetworks
-              isOpen
-              onClose={() => setShowNetworkModal(false)}
-              selectedChainId={selectedChainId}
-              onSelect={(chainId: string) => setSelectedChainId(chainId)}
-            />
-          )}
         </Box>
       </Box>
 
@@ -280,7 +285,8 @@ export function EditContactForm({
         flexDirection={BoxFlexDirection.Row}
         gap={4}
         padding={4}
-        className="flex flex-row"
+        paddingBottom={6}
+        className="shrink-0 flex-row bg-background-default"
       >
         <Button
           variant={ButtonVariant.Secondary}

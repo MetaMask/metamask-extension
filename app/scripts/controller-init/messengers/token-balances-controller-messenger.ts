@@ -70,7 +70,7 @@ type AllowedActions =
   | AccountTrackerUpdateNativeBalancesAction
   | AccountTrackerUpdateStakedBalancesAction
   | KeyringControllerGetStateAction
-  | AuthenticationController.AuthenticationControllerGetBearerToken;
+  | AuthenticationController.AuthenticationControllerGetBearerTokenAction;
 
 type AllowedEvents =
   | TokensControllerStateChangeEvent

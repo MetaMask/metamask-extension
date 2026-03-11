@@ -961,6 +961,18 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // Perps controller ESM dependencies
+            './**/node_modules/valibot',
+            './**/node_modules/@nktkas',
+            './**/node_modules/@noble/hashes',
+            './**/node_modules/@noble/curves',
+            './**/node_modules/@scure',
+            './**/node_modules/micro-eth-signer',
+            './**/node_modules/micro-packed',
+            // MYX SDK and its ESM-only transitive dependencies
+            './**/node_modules/@myx-trade',
+            './**/node_modules/lodash-es',
+            './**/node_modules/wretch',
             // Ledger WebHID transport
             './**/node_modules/@ledgerhq/hw-transport-webhid',
             './**/node_modules/@ledgerhq/hw-transport',
