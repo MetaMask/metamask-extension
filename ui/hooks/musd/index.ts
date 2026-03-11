@@ -53,3 +53,8 @@ export {
 } from './useCustomAmount';
 
 export { useCanBuyMusd, type UseCanBuyMusdResult } from './useCanBuyMusd';
+
+export {
+  useMusdPaymentToken,
+  type UseMusdPaymentTokenResult,
+} from './useMusdPaymentToken';
