@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
@@ -8,7 +8,10 @@ import {
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
-import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
+import {
+  submitBridgeIntent,
+  submitBridgeTx,
+} from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -16,6 +19,7 @@ import {
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
   getWarningLabels,
+  type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
   useHardwareWalletActions,
@@ -46,14 +50,10 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
 
   return (
-    // These will be removed when adapters are made for the hardware wallets error management.
-    // Trezor rejection
     (errorMessage.includes('trezor') &&
       (errorMessage.includes('cancelled') ||
         errorMessage.includes('rejected'))) ||
-    // Lattice rejection
     (errorMessage.includes('lattice') && errorMessage.includes('rejected')) ||
-    // Generic hardware wallet rejections
     errorMessage.includes('user rejected') ||
     errorMessage.includes('user cancelled')
   );
@@ -69,10 +69,12 @@ export default function useSubmitBridgeTransaction() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
-
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
@@ -82,10 +84,8 @@ export default function useSubmitBridgeTransaction() {
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    // Set submitting state before async checks to prevent duplicate submissions.
     setIsSubmitting(true);
 
-    // Verify HW wallet and network before submitting
     try {
       if (isHardwareWalletAccount) {
         const isDeviceReady = await ensureDeviceReady();
@@ -100,7 +100,6 @@ export default function useSubmitBridgeTransaction() {
         );
       }
 
-      // If bridging, enable All Networks view so the user can see their bridging activity
       if (
         isCrossChain(
           quoteResponse.quote.srcChainId,
@@ -116,21 +115,33 @@ export default function useSubmitBridgeTransaction() {
       return;
     }
 
-    // Navigate to HW signing page
+    const intentData = quoteResponse.quote.intent;
+
     if (hardwareWalletUsed) {
       navigateToHwSigningPage();
       setIsSubmitting(false);
     }
 
-    // Execute transaction(s)
     try {
+      if (intentData) {
+        await dispatch(
+          submitBridgeIntent({
+            quoteResponse,
+            accountAddress: fromAccount.address,
+          }),
+        );
+        navigateToActivityPage();
+        return;
+      }
+
       await dispatch(
-        await submitBridgeTx(
+        submitBridgeTx(
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,
           getQuotesReceivedProperties(
             quoteResponse,
+            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
             warnings,
             true,
             recommendedQuote,
@@ -145,6 +156,8 @@ export default function useSubmitBridgeTransaction() {
         navigateToBridgePage();
         return;
       }
+      navigateToActivityPage();
+      return;
     } finally {
       setIsSubmitting(false);
     }
