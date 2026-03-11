@@ -20,7 +20,7 @@ import {
   ThemeType,
 } from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
-import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
+import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,

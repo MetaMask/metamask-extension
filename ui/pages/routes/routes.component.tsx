@@ -76,7 +76,7 @@ import {
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -145,7 +145,7 @@ import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
 import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
 import { contactsRoutes } from '../contacts';
-import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
+import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';

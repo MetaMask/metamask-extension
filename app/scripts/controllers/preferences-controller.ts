@@ -19,7 +19,7 @@ import {
 } from '../../../shared/constants/preferences';
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
-import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
+import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 
 /**
  * Referral status for an account

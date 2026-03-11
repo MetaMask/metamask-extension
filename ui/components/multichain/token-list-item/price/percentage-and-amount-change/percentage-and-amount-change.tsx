@@ -9,14 +9,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 import {
   getConversionRate,
   getCurrentCurrency,

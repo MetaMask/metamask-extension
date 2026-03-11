@@ -7,13 +7,13 @@ import {
   getMarketData,
   getCurrencyRates,
 } from '../selectors';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getConversionRate,
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 
 /**
  * Get the token balance converted to fiat and formatted for display

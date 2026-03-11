@@ -2,7 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { CaipChainId, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
-import { sumHexes } from '../../../../shared/modules/conversion.utils';
+import { sumHexes } from '../../../../shared/lib/conversion.utils';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getNativeTokenCachedBalanceByChainIdSelector,

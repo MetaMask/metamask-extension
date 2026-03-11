@@ -8,7 +8,7 @@ import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import SiteOrigin from '../../components/ui/site-origin';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Nav } from '../confirmations/components/confirm/nav';
 

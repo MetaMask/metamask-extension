@@ -11,7 +11,7 @@ import {
 } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
-import { type NetworkState } from '../../../shared/modules/selectors/networks';
+import { type NetworkState } from '../../../shared/lib/selectors/networks';
 import type { AccountsState } from '../accounts';
 import {
   MOCK_ACCOUNT_EOA,
@@ -58,7 +58,7 @@ jest.mock('./feature-flags', () => ({
   ),
 }));
 
-jest.mock('../../../shared/modules/selectors/multichain', () => ({
+jest.mock('../../../shared/lib/selectors/multichain', () => ({
   getEnabledNetworks: jest.fn(
     (state) => state.metamask.enabledNetworkMap ?? { eip155: {} },
   ),

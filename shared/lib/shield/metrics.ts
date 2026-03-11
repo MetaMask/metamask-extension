@@ -20,7 +20,6 @@ import {
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
-import { getSubscriptionPaymentData } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
 import {
   DefaultSubscriptionPaymentOptions,
@@ -32,6 +31,7 @@ import {
   getDefaultSubscriptionPaymentOptions,
   getIsTrialedSubscription,
 } from './shield';
+import { getSubscriptionPaymentData } from './subscription-utils';
 
 export function getBillingIntervalForMetrics(interval: RecurringInterval) {
   // TODO: Looks Odd, update the segment schema maybe?

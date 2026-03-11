@@ -1,5 +1,5 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/lib/environment';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,

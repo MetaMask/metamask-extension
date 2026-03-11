@@ -7,7 +7,7 @@ import { DEPRECATED_NETWORKS } from '../../../../../shared/constants/network';
 import { AddEthereumChainContext } from '../../external/add-ethereum-chain/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../settings/networks-tab/networks-form/use-safe-chains';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 
 // Ported from templates/add-ethereum-chain.js

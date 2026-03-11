@@ -14,7 +14,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
-import type { SmartTransactionsNetworks } from '../../../shared/modules/selectors/feature-flags';
+import type { SmartTransactionsNetworks } from '../../../shared/lib/selectors/feature-flags';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
