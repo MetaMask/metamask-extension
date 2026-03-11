@@ -15,6 +15,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
   BadgeWrapper,
   Box,
   Button,
@@ -40,11 +43,6 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-} from '../../components/component-library';
-import {
   Content,
   Footer,
   Header,
@@ -54,7 +52,6 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import {
   AlignItems,
   BackgroundColor,
-  BorderColor,
   FlexDirection,
   JustifyContent,
   TextVariant as OldTextVariant,
@@ -560,14 +557,14 @@ const ShieldPlan = () => {
                                     selectedToken.chainId
                                   ]
                                 }
-                                borderColor={BorderColor.borderMuted}
+                                className="border border-muted rounded-md"
                               />
                             }
                           >
                             <AvatarToken
                               name={selectedToken?.symbol || ''}
                               src={selectedToken?.image || ''}
-                              borderColor={BorderColor.borderMuted}
+                              className="border border-muted"
                             />
                           </BadgeWrapper>
                         </Box>
