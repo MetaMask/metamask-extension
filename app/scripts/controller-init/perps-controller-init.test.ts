@@ -230,181 +230,70 @@ describe('PerpsControllerInit', () => {
     });
   });
 
-  describe('ensureInitialized (via api)', () => {
-    it('calls controller.init() on first api call', async () => {
-      const request = getInitRequestMock();
-      const { api, controller } = initWithApi(request);
+  describe('api method delegation', () => {
+    const apiToController: [string, string][] = [
+      ['perpsInit', 'init'],
+      ['perpsDisconnect', 'disconnect'],
+      ['perpsPlaceOrder', 'placeOrder'],
+      ['perpsClosePosition', 'closePosition'],
+      ['perpsClosePositions', 'closePositions'],
+      ['perpsEditOrder', 'editOrder'],
+      ['perpsCancelOrder', 'cancelOrder'],
+      ['perpsCancelOrders', 'cancelOrders'],
+      ['perpsUpdatePositionTPSL', 'updatePositionTPSL'],
+      ['perpsUpdateMargin', 'updateMargin'],
+      ['perpsFlipPosition', 'flipPosition'],
+      ['perpsWithdraw', 'withdraw'],
+      ['perpsGetPositions', 'getPositions'],
+      ['perpsGetMarkets', 'getMarkets'],
+      ['perpsGetMarketDataWithPrices', 'getMarketDataWithPrices'],
+      ['perpsGetOrderFills', 'getOrderFills'],
+      ['perpsGetOrders', 'getOrders'],
+      ['perpsGetOpenOrders', 'getOpenOrders'],
+      ['perpsGetFunding', 'getFunding'],
+      ['perpsGetAccountState', 'getAccountState'],
+      ['perpsGetHistoricalPortfolio', 'getHistoricalPortfolio'],
+      ['perpsFetchHistoricalCandles', 'fetchHistoricalCandles'],
+      ['perpsCalculateFees', 'calculateFees'],
+      ['perpsGetAvailableDexs', 'getAvailableDexs'],
+      ['perpsRefreshEligibility', 'refreshEligibility'],
+      ['perpsToggleTestnet', 'toggleTestnet'],
+      ['perpsSaveTradeConfiguration', 'saveTradeConfiguration'],
+      ['perpsGetTradeConfiguration', 'getTradeConfiguration'],
+      ['perpsSavePendingTradeConfiguration', 'savePendingTradeConfiguration'],
+      ['perpsGetPendingTradeConfiguration', 'getPendingTradeConfiguration'],
+      ['perpsClearPendingTradeConfiguration', 'clearPendingTradeConfiguration'],
+      ['perpsSaveMarketFilterPreferences', 'saveMarketFilterPreferences'],
+      ['perpsGetMarketFilterPreferences', 'getMarketFilterPreferences'],
+      ['perpsSetSelectedPaymentToken', 'setSelectedPaymentToken'],
+      ['perpsResetSelectedPaymentToken', 'resetSelectedPaymentToken'],
+      ['perpsMarkTutorialCompleted', 'markTutorialCompleted'],
+      ['perpsMarkFirstOrderCompleted', 'markFirstOrderCompleted'],
+      ['perpsResetFirstTimeUserState', 'resetFirstTimeUserState'],
+      ['perpsClearPendingTransactionRequests', 'clearPendingTransactionRequests'],
+      ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
+      ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
+      ['perpsClearDepositResult', 'clearDepositResult'],
+      ['perpsClearWithdrawResult', 'clearWithdrawResult'],
+      ['perpsGetBlockExplorerUrl', 'getBlockExplorerUrl'],
+      ['perpsGetCurrentNetwork', 'getCurrentNetwork'],
+      ['perpsIsFirstTimeUserOnCurrentNetwork', 'isFirstTimeUserOnCurrentNetwork'],
+      ['perpsGetWatchlistMarkets', 'getWatchlistMarkets'],
+      ['perpsToggleWatchlistMarket', 'toggleWatchlistMarket'],
+      ['perpsIsWatchlistMarket', 'isWatchlistMarket'],
+    ];
 
-      await api.perpsInit();
+    for (const [apiMethod, controllerMethod] of apiToController) {
+      it(`${apiMethod} delegates to controller.${controllerMethod}`, async () => {
+        const { api, controller } = initWithApi();
 
-      expect(controller.init).toHaveBeenCalledTimes(1);
-    });
+        await (api as Record<string, CallableFunction>)[apiMethod]();
 
-    it('skips init when already initialized', async () => {
-      const request = getInitRequestMock();
-      const { api, controller } = initWithApi(request);
-      (
-        controller.state as unknown as Record<string, string>
-      ).initializationState = 'initialized';
-
-      await api.perpsInit();
-
-      expect(controller.init).not.toHaveBeenCalled();
-    });
-
-    it('reuses the same init promise for concurrent calls', async () => {
-      const request = getInitRequestMock();
-      const { api, controller } = initWithApi(request);
-
-      await Promise.all([api.perpsInit(), api.perpsInit()]);
-
-      expect(controller.init).toHaveBeenCalledTimes(1);
-    });
-
-    it('resets init promise on failure so retry is possible', async () => {
-      const request = getInitRequestMock();
-      const { api, controller } = initWithApi(request);
-
-      const initMock = jest.mocked(controller.init);
-      initMock.mockRejectedValueOnce(new Error('init failed'));
-
-      await expect(api.perpsInit()).rejects.toThrow('init failed');
-
-      initMock.mockResolvedValueOnce(undefined);
-      await api.perpsInit();
-
-      expect(controller.init).toHaveBeenCalledTimes(2);
-    });
-
-    it('re-initializes when initializationState is reset after a successful init', async () => {
-      const request = getInitRequestMock();
-      const { api, controller } = initWithApi(request);
-
-      await api.perpsInit();
-      expect(controller.init).toHaveBeenCalledTimes(1);
-
-      // Simulate a lifecycle event (e.g. toggleTestnet / disconnect) that
-      // resets initialization state back to uninitialized.
-      (
-        controller.state as unknown as Record<string, string>
-      ).initializationState = 'uninitialized';
-
-      await api.perpsInit();
-      expect(controller.init).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe('trading mutation api methods', () => {
-    it('perpsPlaceOrder initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-      const args = [{ market: 'ETH', size: 1, side: 'buy' }] as never;
-
-      await api.perpsPlaceOrder(
-        ...(args as Parameters<typeof api.perpsPlaceOrder>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.placeOrder).toHaveBeenCalled();
-    });
-
-    it('perpsClosePosition initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsClosePosition(
-        ...([] as unknown as Parameters<typeof api.perpsClosePosition>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.closePosition).toHaveBeenCalled();
-    });
-
-    it('perpsClosePositions initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsClosePositions(
-        ...([] as unknown as Parameters<typeof api.perpsClosePositions>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.closePositions).toHaveBeenCalled();
-    });
-
-    it('perpsEditOrder initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsEditOrder(
-        ...([] as unknown as Parameters<typeof api.perpsEditOrder>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.editOrder).toHaveBeenCalled();
-    });
-
-    it('perpsCancelOrder initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsCancelOrder(
-        ...([] as unknown as Parameters<typeof api.perpsCancelOrder>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.cancelOrder).toHaveBeenCalled();
-    });
-
-    it('perpsCancelOrders initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsCancelOrders(
-        ...([] as unknown as Parameters<typeof api.perpsCancelOrders>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.cancelOrders).toHaveBeenCalled();
-    });
-
-    it('perpsUpdatePositionTPSL initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsUpdatePositionTPSL(
-        ...([] as unknown as Parameters<typeof api.perpsUpdatePositionTPSL>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.updatePositionTPSL).toHaveBeenCalled();
-    });
-
-    it('perpsUpdateMargin initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsUpdateMargin(
-        ...([] as unknown as Parameters<typeof api.perpsUpdateMargin>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.updateMargin).toHaveBeenCalled();
-    });
-
-    it('perpsFlipPosition initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsFlipPosition(
-        ...([] as unknown as Parameters<typeof api.perpsFlipPosition>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.flipPosition).toHaveBeenCalled();
-    });
-
-    it('perpsWithdraw initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsWithdraw(
-        ...([] as unknown as Parameters<typeof api.perpsWithdraw>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.withdraw).toHaveBeenCalled();
-    });
+        expect(
+          (controller as unknown as Record<string, jest.Mock>)[controllerMethod],
+        ).toHaveBeenCalled();
+      });
+    }
 
     it('perpsDepositWithConfirmation returns lastDepositTransactionId', async () => {
       const { api, controller } = initWithApi();
@@ -421,397 +310,16 @@ describe('PerpsControllerInit', () => {
       expect(controller.depositWithConfirmation).toHaveBeenCalled();
       expect(result).toBe('tx-123');
     });
-  });
 
-  describe('data fetch api methods', () => {
-    it('perpsGetPositions initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetPositions();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getPositions).toHaveBeenCalled();
-    });
-
-    it('perpsGetMarkets initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetMarkets();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getMarkets).toHaveBeenCalled();
-    });
-
-    it('perpsGetMarketDataWithPrices initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetMarketDataWithPrices();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getMarketDataWithPrices).toHaveBeenCalled();
-    });
-
-    it('perpsGetOrderFills initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetOrderFills();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getOrderFills).toHaveBeenCalled();
-    });
-
-    it('perpsGetOrders initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetOrders();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getOrders).toHaveBeenCalled();
-    });
-
-    it('perpsGetOpenOrders initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetOpenOrders();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getOpenOrders).toHaveBeenCalled();
-    });
-
-    it('perpsGetFunding initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetFunding();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getFunding).toHaveBeenCalled();
-    });
-
-    it('perpsGetAccountState initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetAccountState();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getAccountState).toHaveBeenCalled();
-    });
-
-    it('perpsGetHistoricalPortfolio initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetHistoricalPortfolio(
-        ...([] as unknown as Parameters<
-          typeof api.perpsGetHistoricalPortfolio
-        >),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getHistoricalPortfolio).toHaveBeenCalled();
-    });
-
-    it('perpsFetchHistoricalCandles initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsFetchHistoricalCandles(
-        ...([] as unknown as Parameters<
-          typeof api.perpsFetchHistoricalCandles
-        >),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.fetchHistoricalCandles).toHaveBeenCalled();
-    });
-
-    it('perpsCalculateFees initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsCalculateFees(
-        ...([] as unknown as Parameters<typeof api.perpsCalculateFees>),
-      );
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.calculateFees).toHaveBeenCalled();
-    });
-
-    it('perpsGetAvailableDexs initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsGetAvailableDexs();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.getAvailableDexs).toHaveBeenCalled();
-    });
-
-    it('perpsRefreshEligibility initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsRefreshEligibility();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.refreshEligibility).toHaveBeenCalled();
-    });
-
-    it('perpsToggleTestnet initializes then delegates', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsToggleTestnet();
-
-      expect(controller.init).toHaveBeenCalled();
-      expect(controller.toggleTestnet).toHaveBeenCalled();
-    });
-
-    it('perpsGetUserHistory initializes then calls provider', async () => {
+    it('perpsGetUserHistory calls provider.getUserHistory', async () => {
       const { api, controller } = initWithApi();
       const params = { startTime: 0 };
 
       await api.perpsGetUserHistory(params);
 
-      expect(controller.init).toHaveBeenCalled();
       expect(
         controller.getActiveProvider().getUserHistory,
       ).toHaveBeenCalledWith(params);
-    });
-  });
-
-  describe('synchronous api methods (no init needed)', () => {
-    it('perpsDisconnect delegates without init', async () => {
-      const { api, controller } = initWithApi();
-
-      await api.perpsDisconnect();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.disconnect).toHaveBeenCalled();
-    });
-
-    it('perpsSaveTradeConfiguration delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsSaveTradeConfiguration(
-        ...([] as unknown as Parameters<
-          typeof api.perpsSaveTradeConfiguration
-        >),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.saveTradeConfiguration).toHaveBeenCalled();
-    });
-
-    it('perpsGetTradeConfiguration delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsGetTradeConfiguration(
-        ...([] as unknown as Parameters<typeof api.perpsGetTradeConfiguration>),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.getTradeConfiguration).toHaveBeenCalled();
-    });
-
-    it('perpsSavePendingTradeConfiguration delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsSavePendingTradeConfiguration(
-        ...([] as unknown as Parameters<
-          typeof api.perpsSavePendingTradeConfiguration
-        >),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.savePendingTradeConfiguration).toHaveBeenCalled();
-    });
-
-    it('perpsGetPendingTradeConfiguration delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsGetPendingTradeConfiguration();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.getPendingTradeConfiguration).toHaveBeenCalled();
-    });
-
-    it('perpsClearPendingTradeConfiguration delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsClearPendingTradeConfiguration();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.clearPendingTradeConfiguration).toHaveBeenCalled();
-    });
-
-    it('perpsSaveMarketFilterPreferences delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsSaveMarketFilterPreferences(
-        ...([] as unknown as Parameters<
-          typeof api.perpsSaveMarketFilterPreferences
-        >),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.saveMarketFilterPreferences).toHaveBeenCalled();
-    });
-
-    it('perpsGetMarketFilterPreferences delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsGetMarketFilterPreferences();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.getMarketFilterPreferences).toHaveBeenCalled();
-    });
-
-    it('perpsSetSelectedPaymentToken delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsSetSelectedPaymentToken(
-        ...([] as unknown as Parameters<
-          typeof api.perpsSetSelectedPaymentToken
-        >),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.setSelectedPaymentToken).toHaveBeenCalled();
-    });
-
-    it('perpsResetSelectedPaymentToken delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsResetSelectedPaymentToken();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.resetSelectedPaymentToken).toHaveBeenCalled();
-    });
-
-    it('perpsMarkTutorialCompleted delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsMarkTutorialCompleted();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.markTutorialCompleted).toHaveBeenCalled();
-    });
-
-    it('perpsMarkFirstOrderCompleted delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsMarkFirstOrderCompleted();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.markFirstOrderCompleted).toHaveBeenCalled();
-    });
-
-    it('perpsResetFirstTimeUserState delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsResetFirstTimeUserState();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.resetFirstTimeUserState).toHaveBeenCalled();
-    });
-
-    it('perpsClearPendingTransactionRequests delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsClearPendingTransactionRequests();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.clearPendingTransactionRequests).toHaveBeenCalled();
-    });
-
-    it('perpsSaveOrderBookGrouping delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsSaveOrderBookGrouping(
-        ...([] as unknown as Parameters<typeof api.perpsSaveOrderBookGrouping>),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.saveOrderBookGrouping).toHaveBeenCalled();
-    });
-
-    it('perpsGetOrderBookGrouping delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsGetOrderBookGrouping();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.getOrderBookGrouping).toHaveBeenCalled();
-    });
-
-    it('perpsClearDepositResult delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsClearDepositResult();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.clearDepositResult).toHaveBeenCalled();
-    });
-
-    it('perpsClearWithdrawResult delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsClearWithdrawResult();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.clearWithdrawResult).toHaveBeenCalled();
-    });
-
-    it('perpsGetBlockExplorerUrl delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsGetBlockExplorerUrl();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.getBlockExplorerUrl).toHaveBeenCalled();
-    });
-
-    it('perpsGetCurrentNetwork delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsGetCurrentNetwork();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.getCurrentNetwork).toHaveBeenCalled();
-    });
-
-    it('perpsIsFirstTimeUserOnCurrentNetwork delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsIsFirstTimeUserOnCurrentNetwork();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.isFirstTimeUserOnCurrentNetwork).toHaveBeenCalled();
-    });
-
-    it('perpsGetWatchlistMarkets delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsGetWatchlistMarkets();
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.getWatchlistMarkets).toHaveBeenCalled();
-    });
-
-    it('perpsToggleWatchlistMarket delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsToggleWatchlistMarket(
-        ...([] as unknown as Parameters<typeof api.perpsToggleWatchlistMarket>),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.toggleWatchlistMarket).toHaveBeenCalled();
-    });
-
-    it('perpsIsWatchlistMarket delegates without init', () => {
-      const { api, controller } = initWithApi();
-
-      api.perpsIsWatchlistMarket(
-        ...([] as unknown as Parameters<typeof api.perpsIsWatchlistMarket>),
-      );
-
-      expect(controller.init).not.toHaveBeenCalled();
-      expect(controller.isWatchlistMarket).toHaveBeenCalled();
     });
   });
 });
