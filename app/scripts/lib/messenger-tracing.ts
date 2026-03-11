@@ -27,7 +27,10 @@ export function wrapMessengerWithTracing<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (messenger as any).call = (actionType: string, ...args: unknown[]) => {
     if (!getActiveSpan()) {
-      return (originalCall as (...a: unknown[]) => unknown)(actionType, ...args);
+      return (originalCall as (...Args: unknown[]) => unknown)(
+        actionType,
+        ...args,
+      );
     }
     return trace(
       {
