@@ -1203,9 +1203,6 @@
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
-  "buildContactList": {
-    "message": "Kişi listenizi oluşturun"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask dünya çapında geliştirilmiş ve yapılmıştır."
   },
@@ -2126,9 +2123,6 @@
   },
   "delete": {
     "message": "Sil"
-  },
-  "deleteContact": {
-    "message": "Kişiyi sil"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics verilerini sil"
@@ -4259,9 +4253,6 @@
   "newAccountNumberName": {
     "message": "Hesap $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Yeni kişi"
   },
   "newContract": {
     "message": "Yeni sözleşme"
@@ -8746,9 +8737,6 @@
   "usedByClients": {
     "message": "Çeşitli müşteriler tarafından kullanılıyor"
   },
-  "userName": {
-    "message": "Kullanıcı adı"
-  },
   "userOpContractDeployError": {
     "message": "Akıllı hesaptan sözleşme kurulumu desteklenmiyor"
   },
@@ -8767,9 +8755,6 @@
   "viewAddressOnExplorer": {
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Kişiyi görüntüle"
   },
   "viewDetails": {
     "message": "Ayrıntıları görüntüle"

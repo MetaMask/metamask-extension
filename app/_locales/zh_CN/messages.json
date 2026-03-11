@@ -1203,9 +1203,6 @@
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
   },
-  "buildContactList": {
-    "message": "建立您的联系人列表"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
   },
@@ -2126,9 +2123,6 @@
   },
   "delete": {
     "message": "删除"
-  },
-  "deleteContact": {
-    "message": "删除联系信息"
   },
   "deleteMetaMetricsData": {
     "message": "删除MetaMetrics数据"
@@ -4259,9 +4253,6 @@
   "newAccountNumberName": {
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新联系人"
   },
   "newContract": {
     "message": "新合约"
@@ -8740,9 +8731,6 @@
   "usedByClients": {
     "message": "可用于各种不同的客户端"
   },
-  "userName": {
-    "message": "用户名"
-  },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
   },
@@ -8761,9 +8749,6 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "查看联系人"
   },
   "viewDetails": {
     "message": "查看详情"

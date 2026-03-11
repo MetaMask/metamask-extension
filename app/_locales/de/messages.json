@@ -1203,9 +1203,6 @@
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
   },
-  "buildContactList": {
-    "message": "Erstellen Sie Ihre Kontaktliste."
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask ist weltweit konzipiert und aufgebaut."
   },
@@ -2126,9 +2123,6 @@
   },
   "delete": {
     "message": "Löschen"
-  },
-  "deleteContact": {
-    "message": "Kontakt löschen"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics-Daten löschen"
@@ -4259,9 +4253,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Neuer Kontakt"
   },
   "newContract": {
     "message": "Neuer Contract"
@@ -8746,9 +8737,6 @@
   "usedByClients": {
     "message": "Verwendet von einer Reihe von Kunden"
   },
-  "userName": {
-    "message": "Nutzername"
-  },
   "userOpContractDeployError": {
     "message": "Contract-Bereitstellung von einem Smart-Konto wird nicht unterstützt"
   },
@@ -8767,9 +8755,6 @@
   "viewAddressOnExplorer": {
     "message": "Auf $1 ansehen",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Kontakt anzeigen"
   },
   "viewDetails": {
     "message": "Details anzeigen"

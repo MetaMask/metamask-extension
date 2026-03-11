@@ -12,29 +12,20 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../components/component-library/button';
-import {
+  Text,
   TextVariant,
-  Display,
-  AlignItems,
-  JustifyContent,
-  FlexDirection,
-  BorderRadius,
-  BlockSize,
-  FontWeight,
   TextColor,
   IconColor,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
-import {
   Box,
-  Text,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  FontWeight,
+  TextButton,
+  Icon,
   IconName,
   IconSize,
-  Icon,
-  ButtonLink,
-  ButtonLinkSize,
-} from '../../../components/component-library';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -175,35 +166,33 @@ export default function CreationSuccessful() {
   const renderSettingsActions = useMemo(() => {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        justifyContent={JustifyContent.flexStart}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        justifyContent={BoxJustifyContent.Start}
         className="creation-successful__settings-actions"
         gap={4}
       >
         <Button
           variant={ButtonVariant.Secondary}
           data-testid="manage-default-settings"
-          borderRadius={BorderRadius.LG}
-          width={BlockSize.Full}
+          className="rounded-lg w-full flex justify-between items-center"
           onClick={() =>
             navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
           }
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Icon
-              name={IconName.Setting}
-              size={IconSize.Md}
-              marginInlineEnd={3}
-            />
-            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
+          >
+            <Icon name={IconName.Setting} size={IconSize.Md} className="mr-3" />
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('manageDefaultSettings')}
             </Text>
           </Box>
           <Icon
             name={IconName.ArrowRight}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
             size={IconSize.Sm}
           />
         </Button>
@@ -383,16 +372,15 @@ export default function CreationSuccessful() {
   const renderDoneButton = () => {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
       >
         <Button
           data-testid="onboarding-complete-done"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          width={BlockSize.Full}
+          className="w-full"
           onClick={onDone}
           disabled={isSidePanelEnabled && isSidePanelOpen}
         >
@@ -402,76 +390,56 @@ export default function CreationSuccessful() {
     );
   };
 
+  const handleLearnMoreClick = () => {
+    global.platform.openTab({
+      url: learnMoreLink,
+    });
+  };
+
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
       gap={6}
-      className="creation-successful"
+      className="creation-successful h-full"
       data-testid="wallet-ready"
     >
       {isFromSettingsSRPBackup && (
         <Box>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.flexStart}
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Start}
           >
             <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              justifyContent={JustifyContent.center}
-              style={{
-                alignSelf: AlignItems.flexStart,
-              }}
-              marginBottom={4}
+              variant={TextVariant.HeadingLg}
+              className="self-start mb-4 flex justify-center"
             >
               {t('yourWalletIsReadyFromReminder')}
             </Text>
-            <Box
-              width={BlockSize.Full}
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              marginBottom={6}
-            >
-              <Box
-                display={Display.Flex}
-                style={{ width: '144px', height: '144px' }}
-              >
-                {renderFox}
-              </Box>
+            <Box className="w-full mb-6">
+              <Box className="w-36 h-36 mx-auto">{renderFox}</Box>
             </Box>
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              marginBottom={6}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              className="mb-6"
             >
               {renderDetails1}
             </Text>
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              marginBottom={6}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              className="mb-6"
             >
               {t('walletReadyLearn', [
-                <ButtonLink
+                <TextButton
                   key="walletReadyLearn"
-                  size={ButtonLinkSize.Inherit}
-                  textProps={{
-                    variant: TextVariant.bodyMd,
-                    alignItems: AlignItems.flexStart,
-                  }}
-                  as="a"
-                  href={learnMoreLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  className="hover:bg-transparent active:bg-transparent w-fit"
+                  onClick={handleLearnMoreClick}
                 >
                   {t('learnHow')}
-                </ButtonLink>,
+                </TextButton>,
               ])}
             </Text>
           </Box>
@@ -485,15 +453,13 @@ export default function CreationSuccessful() {
       {renderDoneButton()}
       {!isFromSettingsSRPBackup && (
         <Box>
-          <Button
-            variant={ButtonVariant.Link}
+          <TextButton
             onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-            textAlign={TextAlign.Center}
-            width={BlockSize.Full}
+            className="hover:bg-transparent active:bg-transparent w-full text-center"
             data-testid="manage-default-settings"
           >
             {t('manageDefaultSettings')}
-          </Button>
+          </TextButton>
         </Box>
       )}
     </Box>

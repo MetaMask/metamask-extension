@@ -1060,9 +1060,6 @@
   "browserNotSupported": {
     "message": "Ní thacaítear le do bhrabhsálaí..."
   },
-  "buildContactList": {
-    "message": "Tóg do liosta teagmhála"
-  },
   "builtAroundTheWorld": {
     "message": "Tá MetaMask deartha agus tógtha ar fud an domhain."
   },
@@ -1836,9 +1833,6 @@
   },
   "delete": {
     "message": "Scrios"
-  },
-  "deleteContact": {
-    "message": "Scrios an teagmhálaí"
   },
   "deleteMetaMetricsData": {
     "message": "Scrios sonraí MetaMetrics"
@@ -3680,9 +3674,6 @@
   "newAccountNumberName": {
     "message": "Cuntas $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Teagmháil nua"
   },
   "newContract": {
     "message": "Conradh nua"
@@ -6971,9 +6962,6 @@
   "usedByClients": {
     "message": "Úsáidte ag réimse cliant éagsúil"
   },
-  "userName": {
-    "message": "Ainm úsáideora"
-  },
   "userOpContractDeployError": {
     "message": "Ní thacaítear le himscaradh conartha ó chuntas conartha cliste"
   },
@@ -6992,9 +6980,6 @@
   "viewAddressOnExplorer": {
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Féach ar an teagmháil"
   },
   "viewDetails": {
     "message": "Féach sonraí"

@@ -236,9 +236,6 @@
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },
-  "buildContactList": {
-    "message": "Costruisci la tua lista contatti"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask è progettato e costruito in tutto il mondo."
   },
@@ -843,9 +840,6 @@
   "newAccount": {
     "message": "Nuovo Account"
   },
-  "newContact": {
-    "message": "Nuovo contatto"
-  },
   "newContract": {
     "message": "Nuovo Contratto"
   },
@@ -1294,12 +1288,6 @@
   },
   "usedByClients": {
     "message": "Usato da una varietà di clients diversi"
-  },
-  "userName": {
-    "message": "Nome utente"
-  },
-  "viewContact": {
-    "message": "Visualizza contatto"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"
