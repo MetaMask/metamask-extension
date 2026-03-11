@@ -14,6 +14,7 @@
 # These codeowners will review this analysis, and review the policy changes in
 # further detail if warranted.
 lavamoat/                            @MetaMask/policy-reviewers
+development/build/index.js           @MetaMask/policy-reviewers @MetaMask/extension-platform
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
