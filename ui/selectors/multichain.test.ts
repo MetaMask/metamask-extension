@@ -43,7 +43,6 @@ import {
   getMultichainIsMainnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
-  getMultichainNetworkProviders,
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
@@ -51,7 +50,6 @@ import {
   getMultichainIsTron,
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
-  getLastSelectedTronAccount,
 } from './multichain';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
@@ -214,16 +212,6 @@ function getTronProviderConfig(): MultichainProviderConfig {
 }
 
 describe('Multichain Selectors', () => {
-  describe('getMultichainNetworkProviders', () => {
-    it('has some providers', () => {
-      const state = getEvmState();
-
-      const networkProviders = getMultichainNetworkProviders(state);
-      expect(Array.isArray(networkProviders)).toBe(true);
-      expect(networkProviders.length).toBeGreaterThan(0);
-    });
-  });
-
   describe('getMultichainNetwork', () => {
     it('returns an EVM network provider if account is EVM', () => {
       const state = getEvmState();
@@ -812,59 +800,6 @@ describe('Multichain Selectors', () => {
     it('returns true if account is Tron Shasta testnet', () => {
       const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
       expect(getMultichainIsTron(state)).toBe(true);
-    });
-  });
-
-  describe('getLastSelectedTronAccount', () => {
-    it('returns undefined if no Tron accounts exist', () => {
-      const state = getEvmState();
-      // Remove Tron accounts from the state to test the case where no Tron accounts exist
-      const {
-        [MOCK_ACCOUNT_TRON_MAINNET.id]: _tronMainnet,
-        [MOCK_ACCOUNT_TRON_NILE.id]: _tronNile,
-        [MOCK_ACCOUNT_TRON_SHASTA.id]: _tronShasta,
-        ...accountsWithoutTron
-      } = state.metamask.internalAccounts.accounts;
-      state.metamask.internalAccounts.accounts = accountsWithoutTron;
-
-      expect(getLastSelectedTronAccount(state)).toBeUndefined();
-    });
-
-    it('returns the last selected Tron account', () => {
-      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
-      const result = getLastSelectedTronAccount(state);
-      expect(result).toBeDefined();
-      expect(result?.id).toBe(MOCK_ACCOUNT_TRON_MAINNET.id);
-    });
-
-    it('returns the most recently selected Tron account when multiple exist', () => {
-      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
-
-      // Modify the mock to have multiple Tron accounts with different lastSelected times
-      const olderTronAccount = {
-        ...MOCK_ACCOUNT_TRON_NILE,
-        metadata: {
-          ...MOCK_ACCOUNT_TRON_NILE.metadata,
-          lastSelected: 1000000000000, // Older timestamp
-        },
-      };
-
-      const newerTronAccount = {
-        ...MOCK_ACCOUNT_TRON_MAINNET,
-        metadata: {
-          ...MOCK_ACCOUNT_TRON_MAINNET.metadata,
-          lastSelected: 2000000000000, // Newer timestamp
-        },
-      };
-
-      state.metamask.internalAccounts.accounts = {
-        ...state.metamask.internalAccounts.accounts,
-        [olderTronAccount.id]: olderTronAccount,
-        [newerTronAccount.id]: newerTronAccount,
-      };
-
-      const result = getLastSelectedTronAccount(state);
-      expect(result?.id).toBe(newerTronAccount.id);
     });
   });
 });

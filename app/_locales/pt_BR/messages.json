@@ -79,9 +79,6 @@
   "activity": {
     "message": "Atividade"
   },
-  "activityLog": {
-    "message": "Registro de atividades"
-  },
   "add": {
     "message": "Adicionar"
   },
@@ -142,10 +139,6 @@
   },
   "alerts": {
     "message": "Alertas"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Permitir que $1 saque e gaste até o seguinte valor:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Valor"
@@ -323,9 +316,6 @@
   "connect": {
     "message": "Conectar"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar conta ou criar nova"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -436,9 +426,6 @@
   },
   "custom": {
     "message": "Avançado"
-  },
-  "customSpendLimit": {
-    "message": "Limite de gastos personalizado"
   },
   "customToken": {
     "message": "Token personalizado"
@@ -626,9 +613,6 @@
   "editNonceMessage": {
     "message": "Esse é um recurso avançado; use com cautela."
   },
-  "editPermission": {
-    "message": "Editar permissão"
-  },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar taxa de gás para aceleração"
   },
@@ -655,9 +639,6 @@
   },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
-  },
-  "enterMaxSpendLimit": {
-    "message": "Digite um limite máximo de gastos"
   },
   "enterPasswordContinue": {
     "message": "Digite a senha para continuar"
@@ -872,9 +853,6 @@
     "message": "Não foi possível conectar a MetaMask com o servidor do blockchain. Revise possíveis motivos $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
-  },
   "insufficientBalance": {
     "message": "Saldo insuficiente."
   },
@@ -940,9 +918,6 @@
   },
   "knownTokenWarning": {
     "message": "Essa ação editará os tokens já listados na sua carteira, que podem ser usado para praticar phishing contra você. Só aprove se você tiver certeza de que quer alterar o que esses tokens representam."
-  },
-  "lastConnected": {
-    "message": "Conectado pela última vez em"
   },
   "learnMore": {
     "message": "mais informações"
@@ -1027,10 +1002,6 @@
   },
   "makeAnotherSwap": {
     "message": "Criar nova troca"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Confirme que não há ninguém observando a sua tela",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "max": {
     "message": "Máx"
@@ -1291,9 +1262,6 @@
   "proceedWithTransaction": {
     "message": "Quero prosseguir mesmo assim"
   },
-  "proposedApprovalLimit": {
-    "message": "Limite de aprovação proposto"
-  },
   "provide": {
     "message": "Fornecer"
   },
@@ -1330,12 +1298,6 @@
   "rejectAll": {
     "message": "Rejeitar todas"
   },
-  "rejectTxsDescription": {
-    "message": "Você está prestes a rejeitar $1 transações em massa."
-  },
-  "rejectTxsN": {
-    "message": "Rejeitar $1 transações"
-  },
   "rejected": {
     "message": "Rejeitada"
   },
@@ -1344,9 +1306,6 @@
   },
   "removeAccount": {
     "message": "Remover conta"
-  },
-  "removeAccountDescription": {
-    "message": "Essa conta será removida da sua carteira. Antes de continuar, você precisa garantir que tem a Frase de Recuperação Secreta original ou chave privada para essa conta importada. Você pode importar ou criar contas novamente a partir do menu suspenso da conta. "
   },
   "removeNFT": {
     "message": "Remover NFT"
@@ -1394,9 +1353,6 @@
   "search": {
     "message": "Buscar"
   },
-  "searchAccounts": {
-    "message": "Buscar contas"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },
@@ -1408,9 +1364,6 @@
   },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
-  },
-  "selectAccounts": {
-    "message": "Selecione a(s) conta(s) para usar nesse site"
   },
   "selectAll": {
     "message": "Selecionar tudo"
@@ -1432,9 +1385,6 @@
   },
   "selectType": {
     "message": "Selecione o tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecionar todos permitirá que esse site visualize todas as suas contas atuais. Certifique-se de confiar nesse site."
   },
   "send": {
     "message": "Enviar"
@@ -1502,25 +1452,6 @@
   },
   "speedUpTooltipText": {
     "message": "Nova taxa de gás"
-  },
-  "speedUpTransaction": {
-    "message": "Acelerar essa transação"
-  },
-  "spendLimitInsufficient": {
-    "message": "Limite de gastos insuficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "Limite de gastos inválido; o número precisa ser positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Permissão do limite de gastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limite de gastos solicitado por $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "O limite de gastos está alto demais"
   },
   "stable": {
     "message": "Estável"
@@ -1826,35 +1757,17 @@
   "transaction": {
     "message": "transação"
   },
-  "transactionCancelAttempted": {
-    "message": "Cancelamento da transação tentado com taxa de gás de $1 às $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transação cancelada às $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transação confirmada às $2."
-  },
-  "transactionCreated": {
-    "message": "Transação criada com valor de $1 às $2."
-  },
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Valor + taxas"
   },
-  "transactionDropped": {
-    "message": "Transação abandonada às $2."
-  },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."
   },
   "transactionErrorNoContract": {
     "message": "Tentando chamar uma função em um endereço que não está no contrato."
-  },
-  "transactionErrored": {
-    "message": "A transação encontrou um erro."
   },
   "transactionHistoryBaseFee": {
     "message": "Taxa de base (GWEI)"
@@ -1876,15 +1789,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Taxa de gás total"
-  },
-  "transactionResubmitted": {
-    "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transação enviada com taxa de gás estimada de $1 às $2."
-  },
-  "transactionUpdated": {
-    "message": "Transação atualizada às $2."
   },
   "transfer": {
     "message": "Transferir"
@@ -1956,9 +1860,6 @@
   "viewContact": {
     "message": "Ver contato"
   },
-  "viewMore": {
-    "message": "Ver mais"
-  },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"
   },
@@ -1999,8 +1900,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sua Frase de Recuperação Secreta privada"
   }
 }

@@ -14,130 +14,72 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
-import { runBenchmarkWithIterations } from './utils';
+import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
-  ONBOARDING_IMPORT_THRESHOLDS,
-  ONBOARDING_NEW_WALLET_THRESHOLDS,
-  IMPORT_SRP_HOME_THRESHOLDS,
-  SWAP_THRESHOLDS,
-  SEND_TRANSACTIONS_THRESHOLDS,
-  ASSET_DETAILS_THRESHOLDS,
-  SOLANA_ASSET_DETAILS_THRESHOLDS,
+  THRESHOLD_REGISTRY,
+  STARTUP_PRESETS,
+  INTERACTION_PRESETS,
+  USER_JOURNEY_PRESETS,
 } from './utils/constants';
-import type {
-  BenchmarkResults,
-  BenchmarkSummary,
-  BenchmarkType,
-  StatisticalResult,
-  ThresholdConfig,
-} from './utils/types';
+import {
+  validateResultThresholds,
+  logThresholdResult,
+} from './utils/statistics';
+import type { BenchmarkResults, ThresholdViolation } from './utils/types';
 
 /**
- * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
- * for consistent output with send-to-sentry.ts
- *
- * @param summary
- * @param testTitle
- * @param persona
- * @param benchmarkType
- */
-function convertSummaryToResults(
-  summary: BenchmarkSummary,
-  testTitle: string,
-  persona?: string,
-  benchmarkType?: BenchmarkType,
-): BenchmarkResults {
-  const mean: StatisticalResult = {};
-  const min: StatisticalResult = {};
-  const max: StatisticalResult = {};
-  const stdDev: StatisticalResult = {};
-  const p75: StatisticalResult = {};
-  const p95: StatisticalResult = {};
-
-  for (const timer of summary.timers) {
-    mean[timer.id] = timer.mean;
-    min[timer.id] = timer.min;
-    max[timer.id] = timer.max;
-    stdDev[timer.id] = timer.stdDev;
-    p75[timer.id] = timer.p75;
-    p95[timer.id] = timer.p95;
-  }
-
-  return {
-    testTitle,
-    persona,
-    benchmarkType,
-    mean,
-    min,
-    max,
-    stdDev,
-    p75,
-    p95,
-  };
-}
-
-/**
- * Check if a benchmark file supports iterations (performance or user-actions)
- *
+ * Startup benchmarks handle their own iteration internally (browserLoads x pageLoads).
+ * All other benchmarks need external iteration + aggregation via runBenchmarkWithIterations.
  * @param filePath
  */
 function supportsIterations(filePath: string): boolean {
-  return (
-    filePath.includes('/performance/') || filePath.includes('/user-actions/')
-  );
-}
-
-function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
-  const fileName = path.basename(filePath, path.extname(filePath));
-  const thresholdMap: Record<string, ThresholdConfig> = {
-    'onboarding-import-wallet': ONBOARDING_IMPORT_THRESHOLDS,
-    'onboarding-new-wallet': ONBOARDING_NEW_WALLET_THRESHOLDS,
-    'import-srp-home': IMPORT_SRP_HOME_THRESHOLDS,
-    swap: SWAP_THRESHOLDS,
-    'send-transactions': SEND_TRANSACTIONS_THRESHOLDS,
-    'asset-details': ASSET_DETAILS_THRESHOLDS,
-    'solana-asset-details': SOLANA_ASSET_DETAILS_THRESHOLDS,
-  };
-
-  return thresholdMap[fileName];
+  return !filePath.includes('/startup/');
 }
 
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
+/**
+ * Preset definitions mapping preset names to benchmark files.
+ * Keys reference the shared constants from ./utils/constants.ts.
+ */
 const PRESETS: Record<string, string[]> = {
-  // Performance benchmarks - Onboarding
-  performanceOnboardingImport: [
-    `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
+  // User journey benchmarks - Onboarding
+  [USER_JOURNEY_PRESETS.ONBOARDING_IMPORT]: [
+    `${BENCHMARK_DIR}/user-journey/onboarding-import-wallet.ts`,
   ],
-  performanceOnboardingNew: [
-    `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
+  [USER_JOURNEY_PRESETS.ONBOARDING_NEW]: [
+    `${BENCHMARK_DIR}/user-journey/onboarding-new-wallet.ts`,
   ],
-  // Performance benchmarks - Assets
-  performanceAssets: [
-    `${BENCHMARK_DIR}/performance/asset-details.ts`,
-    `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
+  // User journey benchmarks - Assets
+  [USER_JOURNEY_PRESETS.ASSETS]: [
+    `${BENCHMARK_DIR}/user-journey/asset-details.ts`,
+    `${BENCHMARK_DIR}/user-journey/solana-asset-details.ts`,
   ],
-  // Performance benchmarks - Accounts
-  performanceAccountManagement: [
-    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+  // User journey benchmarks - Accounts
+  [USER_JOURNEY_PRESETS.ACCOUNT_MANAGEMENT]: [
+    `${BENCHMARK_DIR}/user-journey/import-srp-home.ts`,
   ],
-  // Performance benchmarks - Transactions
-  performanceTransactions: [
-    `${BENCHMARK_DIR}/performance/send-transactions.ts`,
-    `${BENCHMARK_DIR}/performance/swap.ts`,
+  // User journey benchmarks - Transactions
+  [USER_JOURNEY_PRESETS.TRANSACTIONS]: [
+    `${BENCHMARK_DIR}/user-journey/send-transactions.ts`,
+    `${BENCHMARK_DIR}/user-journey/swap.ts`,
   ],
-  // Page load benchmarks
-  standardHome: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
-  powerUserHome: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
-  // User action benchmarks
-  userActions: [
-    `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
-    `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
-    `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,
+  // Startup benchmarks
+  [STARTUP_PRESETS.STANDARD_HOME]: [
+    `${BENCHMARK_DIR}/startup/standard-home.ts`,
+  ],
+  [STARTUP_PRESETS.POWER_USER_HOME]: [
+    `${BENCHMARK_DIR}/startup/power-user-home.ts`,
+  ],
+  // Interaction benchmarks
+  [INTERACTION_PRESETS.USER_ACTIONS]: [
+    `${BENCHMARK_DIR}/interaction/load-new-account.ts`,
+    `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
+    `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
   ],
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
-    'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
+    'test/e2e/playwright/benchmark/dapp-page-load-benchmark.spec.ts',
   ],
 };
 
@@ -168,8 +110,16 @@ async function runBenchmarkFile(
   }
 
   const { run: runFn } = benchmark;
+  const thresholdConfig = THRESHOLD_REGISTRY[fileName];
+  if (!thresholdConfig) {
+    throw new Error(
+      `No threshold config for "${fileName}". Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
+    );
+  }
 
-  // For benchmarks that support iterations, use runBenchmarkWithIterations to run multiple times
+  let result: BenchmarkResults;
+  let violations: ThresholdViolation[];
+
   if (supportsIterations(filePath) && options.iterations > 0) {
     const testTitle = benchmark.testTitle || fileName;
     const { persona } = benchmark;
@@ -183,36 +133,28 @@ async function runBenchmarkFile(
       runFn,
       options.iterations,
       options.retries,
-      getThresholdConfig(filePath),
+      thresholdConfig,
     );
 
     console.log(
       `Completed: ${summary.successfulRuns}/${summary.iterations} successful runs`,
     );
 
-    // Log threshold violations if any
-    if (summary.thresholdViolations && summary.thresholdViolations.length > 0) {
-      console.log('\n⚠️  Threshold Violations:');
-      summary.thresholdViolations.forEach((v) => {
-        const icon = v.severity === 'fail' ? '❌' : '⚠️';
-        console.log(
-          `  ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
-        );
-      });
-    } else if (summary.thresholdsPassed !== undefined) {
-      console.log('✅ All thresholds passed');
-    }
-
-    return convertSummaryToResults(
+    violations = summary.thresholdViolations;
+    result = convertSummaryToResults(
       summary,
       testTitle,
       persona,
       summary.benchmarkType,
     );
+  } else {
+    result = (await runFn(options)) as BenchmarkResults;
+    violations = validateResultThresholds(result, thresholdConfig).violations;
   }
 
-  // For other benchmarks (page-load), run once with options
-  return runFn(options);
+  logThresholdResult(violations);
+
+  return result;
 }
 
 /**

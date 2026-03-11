@@ -238,19 +238,14 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
-  describe('Default variant', () => {
-    it('renders pill element', () => {
+  describe('Default variant (inline row with pill selector)', () => {
+    it('renders row with symbol in pill', () => {
       const store = mockStore(getMockState());
       renderWithProvider(<PayWithRow />, store);
 
+      expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
       expect(screen.getByTestId('pay-with-pill')).toBeInTheDocument();
-    });
-
-    it('hides balance display', () => {
-      const store = mockStore(getMockState());
-      renderWithProvider(<PayWithRow />, store);
-
-      expect(screen.queryByTestId('pay-with-balance')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
     });
 
     it('shows arrow icon when editable', () => {
@@ -270,7 +265,17 @@ describe('PayWithRow', () => {
     });
   });
 
-  describe('Small variant', () => {
+  describe('Small variant (pill)', () => {
+    it('renders pill container', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(
+        <PayWithRow variant={ConfirmInfoRowSize.Small} />,
+        store,
+      );
+
+      expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    });
+
     it('renders balance display', () => {
       const store = mockStore(getMockState());
       renderWithProvider(
@@ -278,17 +283,43 @@ describe('PayWithRow', () => {
         store,
       );
 
-      expect(screen.getByTestId('pay-with-balance')).toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+        '$150.00',
+      );
     });
 
-    it('does not render pill element', () => {
+    it('renders pay with text inside symbol text', () => {
       const store = mockStore(getMockState());
       renderWithProvider(
         <PayWithRow variant={ConfirmInfoRowSize.Small} />,
         store,
       );
 
-      expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+        'Pay with ETH',
+      );
+    });
+
+    it('shows arrow icon when editable', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(
+        <PayWithRow variant={ConfirmInfoRowSize.Small} />,
+        store,
+      );
+
+      expect(screen.getByTestId('pay-with-arrow')).toBeInTheDocument();
+    });
+
+    it('hides arrow icon for hardware account', () => {
+      isHardwareAccountMock.mockReturnValue(true);
+
+      const store = mockStore(getMockState());
+      renderWithProvider(
+        <PayWithRow variant={ConfirmInfoRowSize.Small} />,
+        store,
+      );
+
+      expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
     });
   });
 });

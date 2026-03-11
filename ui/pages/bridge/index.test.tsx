@@ -2,12 +2,14 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
+  HardwareWalletProvider,
 } from '../../contexts/hardware-wallets';
 import CrossChainSwap from '.';
 
@@ -22,6 +24,20 @@ jest.mock('../../contexts/hardware-wallets', () => ({
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
+jest.mock('../../hooks/bridge/usePopularTokens', () => ({
+  usePopularTokens: jest.fn().mockReturnValue({
+    popularTokensList: [],
+    isLoading: false,
+  }),
+}));
+
+jest.mock('../../hooks/bridge/useTokenSearchResults', () => ({
+  useTokenSearchResults: jest.fn().mockReturnValue({
+    searchResults: [],
+    isSearchResultsLoading: false,
+  }),
 }));
 
 setBackgroundConnection({
@@ -101,12 +117,14 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <CrossChainSwap />,
+      <HardwareWalletProvider>
+        <CrossChainSwap />
+      </HardwareWalletProvider>,
       store,
       PREPARE_SWAP_ROUTE,
     );
 
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });

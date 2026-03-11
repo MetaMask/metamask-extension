@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import classnames from 'classnames';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
   formatChainIdToCaip,
@@ -11,13 +11,14 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
+import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
   setToToken,
   updateQuoteRequestParams,
-  resetBridgeState,
   trackUnifiedSwapBridgeEvent,
 } from '../../../ducks/bridge/actions';
 import {
@@ -54,6 +55,7 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   AlignItems,
   BackgroundColor,
@@ -83,21 +85,19 @@ import {
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
-import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
-import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
+import { BridgePriceImpactWarningModal } from './bridge-price-impact-modal';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -181,7 +181,11 @@ const PrepareBridgePage = ({
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
     isInsufficientBalance,
-  } = useSelector(getValidationErrors);
+    isStockMarketClosed,
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
   const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
 
@@ -203,6 +207,8 @@ const PrepareBridgePage = ({
     isDestinationAccountPickerOpen,
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
+
+  useLatestBalance();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -308,13 +314,6 @@ const PrepareBridgePage = ({
   );
 
   useEffect(() => {
-    return () => {
-      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
-      debouncedUpdateQuoteRequestInController.current.cancel();
-    };
-  }, []);
-
-  useEffect(() => {
     dispatch(setSelectedQuote(null));
     if (!quoteParams) {
       return;
@@ -342,9 +341,6 @@ const PrepareBridgePage = ({
     );
   }, [quoteParams]);
 
-  // Use smart slippage defaults
-  useSmartSlippage();
-
   // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
@@ -352,19 +348,24 @@ const PrepareBridgePage = ({
       timestamp: Date.now(),
     });
 
-    if (!activeQuote) {
-      // Reset controller and inputs on load if there's no restored active quote
-      dispatch(resetBridgeState());
-    }
+    return () => {
+      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
+      debouncedUpdateQuoteRequestInController.current.cancel();
+    };
   }, []);
-
-  useBridgeQueryParams();
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
+
+  const [priceImpactModalVariant, togglePriceImpactModalWithVariant] =
+    useState<
+      React.ComponentProps<typeof BridgePriceImpactWarningModal>['variant']
+    >(null);
+
+  const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
 
   const getFromInputHeader = () => {
     return t('swapSelectToken');
@@ -384,6 +385,18 @@ const PrepareBridgePage = ({
         }}
         selectedAccount={selectedDestinationAccount}
         onClose={() => setIsDestinationAccountPickerOpen(false)}
+      />
+
+      <BridgePriceImpactWarningModal
+        variant={priceImpactModalVariant}
+        onClose={() => {
+          togglePriceImpactModalWithVariant(null);
+        }}
+      />
+
+      <MarketClosedModal
+        isOpen={isMarketClosedModalOpen}
+        onClose={() => setIsMarketClosedModalOpen(false)}
       />
 
       <Column className="prepare-bridge-page" gap={4}>
@@ -612,13 +625,28 @@ const PrepareBridgePage = ({
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }
+              onOpenPriceImpactWarningModal={() =>
+                togglePriceImpactModalWithVariant('quote-card')
+              }
               onOpenSlippageModal={onOpenSettings}
               selectedDestinationAccount={selectedDestinationAccount}
             />
           </Column>
         )}
 
+        {isStockMarketClosed && (
+          <Column paddingInline={4}>
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              title={t('bridgeMarketClosedTitle')}
+              description={t('bridgeMarketClosedDescription')}
+              textAlign={TextAlign.Left}
+            />
+          </Column>
+        )}
+
         {isNoQuotesAvailable &&
+          !isStockMarketClosed &&
           !isQuoteExpired &&
           quoteParams &&
           // Only show banner if quoteParams (inputs) are valid
@@ -627,6 +655,10 @@ const PrepareBridgePage = ({
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
                 description={t('noOptionsAvailableMessage')}
+                data-testid="bridge-error-banner"
+                descriptionProps={{
+                  'data-testid': 'bridge-no-options-available',
+                }}
                 textAlign={TextAlign.Left}
               />
             </Column>
@@ -684,6 +716,10 @@ const PrepareBridgePage = ({
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }
+              onOpenPriceImpactWarningModal={() =>
+                togglePriceImpactModalWithVariant('submit-cta')
+              }
+              onOpenMarketClosedModal={() => setIsMarketClosedModalOpen(true)}
             />
           )}
         </Column>
@@ -759,6 +795,9 @@ const PrepareBridgePage = ({
                   : 'bridgeValidationInsufficientGasMessage',
                 [ticker],
               )}
+              descriptionProps={{
+                'data-testid': 'bridge-insufficient-gas-for-quote',
+              }}
               textAlign={TextAlign.Left}
               actionButtonLabel={t('buyMoreAsset', [ticker])}
               actionButtonOnClick={() => openBuyCryptoInPdapp()}

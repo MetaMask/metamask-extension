@@ -35,6 +35,7 @@ import {
   TransactionControllerAddTransactionAction,
   TransactionControllerAddTransactionBatchAction,
   TransactionControllerEstimateGasAction,
+  TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
@@ -56,10 +57,6 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
-import {
-  SwapsControllerSetApproveTxIdAction,
-  SwapsControllerSetTradeTxIdAction,
-} from '../../controllers/swaps/swaps.types';
 import { SubscriptionServiceAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
@@ -128,11 +125,10 @@ type InitMessengerActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SubscriptionControllerActions
   | SubscriptionServiceAction
-  | SwapsControllerSetApproveTxIdAction
-  | SwapsControllerSetTradeTxIdAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerEstimateGasAction
+  | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerUpdateTransactionAction
   | TransactionPayControllerGetStateAction
@@ -206,11 +202,10 @@ export function getTransactionControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'SubscriptionController:getSubscriptionByProduct',
       'SubscriptionService:submitSubscriptionSponsorshipIntent',
-      'SwapsController:setApproveTxId',
-      'SwapsController:setTradeTxId',
       'TransactionController:addTransaction',
       'TransactionController:addTransactionBatch',
       'TransactionController:estimateGas',
+      'TransactionController:getNonceLock',
       'TransactionController:getState',
       'TransactionController:updateTransaction',
       'TransactionPayController:getState',

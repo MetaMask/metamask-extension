@@ -113,8 +113,7 @@ export function useTransactionDisplayData(transactionGroup) {
     selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
   );
   const { destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
-    srcTxMeta: transactionGroup.initialTransaction,
+    transaction: transactionGroup.initialTransaction,
   });
 
   const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork?.chainId];
@@ -273,7 +272,9 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
-  const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
+  const bridgeTokenDisplayData = useBridgeTokenDisplayData({
+    transactionGroup,
+  });
 
   if (signatureTypes.includes(type)) {
     title = t('signatureRequest');
@@ -390,14 +391,26 @@ export function useTransactionDisplayData(transactionGroup) {
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else if (PAY_TRANSACTION_TYPES.includes(type)) {
-    title =
-      type === TransactionType.perpsDeposit
-        ? t('perpsDepositActivityTitle')
-        : t('musdConversionActivityTitle');
+    const { metamaskPay } = initialTransaction;
+    const sourceTokenAddress = metamaskPay?.tokenAddress?.toLowerCase();
+    const sourceChainId = metamaskPay?.chainId;
+    const sourceToken =
+      sourceTokenAddress &&
+      sourceChainId &&
+      tokenListAllChains?.[sourceChainId]?.data?.[sourceTokenAddress];
+
+    if (type === TransactionType.perpsDeposit) {
+      title = t('perpsDepositActivityTitle');
+    } else if (type === TransactionType.musdClaim) {
+      title = t('musdClaimActivityTitle');
+    } else {
+      title = t('musdConversionActivityTitle', [
+        sourceToken?.symbol ?? 'Token',
+      ]);
+    }
 
     prefix = '';
     const targetTokenAddress = to?.toLowerCase();
-    const { metamaskPay } = initialTransaction;
 
     const targetToken =
       targetTokenAddress &&

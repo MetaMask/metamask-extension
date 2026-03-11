@@ -30,9 +30,6 @@
   "accountSelectionRequired": {
     "message": "يجب عليك تحديد حساب!"
   },
-  "activityLog": {
-    "message": "سجل النشاط"
-  },
   "addAcquiredTokens": {
     "message": "أضف العملات الرمزية التي اكتسبتها باستخدام MetaMask"
   },
@@ -306,9 +303,6 @@
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
-  },
   "insufficientBalance": {
     "message": "الرصيد غير كافٍ"
   },
@@ -488,12 +482,6 @@
   "rejectAll": {
     "message": "رفض الكل"
   },
-  "rejectTxsDescription": {
-    "message": "أنت بصدد رفض المعاملات بقيمة $1 بدفعة واحدة."
-  },
-  "rejectTxsN": {
-    "message": "رفض معاملات $1"
-  },
   "rejected": {
     "message": "مرفوض"
   },
@@ -502,9 +490,6 @@
   },
   "removeAccount": {
     "message": "إزالة الحساب"
-  },
-  "removeAccountDescription": {
-    "message": "ستتم إزالة هذا الحساب من محفظتك. يرجى التأكد من وجود عبارة الأمان الأصلية أو المفتاح الخاص لهذا الحساب الذي تم استيراده قبل المتابعة. يمكنك استيراد أو إنشاء حسابات مرة أخرى من القائمة المنسدلة للحساب."
   },
   "required": {
     "message": "مطلوب"
@@ -591,9 +576,6 @@
   "speedUpCancellation": {
     "message": "تسريع هذا الإلغاء"
   },
-  "speedUpTransaction": {
-    "message": "تعجيل هذه المعاملة"
-  },
   "stateLogError": {
     "message": "خطأ في استرداد سجلات الحالة."
   },
@@ -639,38 +621,11 @@
   "transaction": {
     "message": "المعاملة"
   },
-  "transactionCancelAttempted": {
-    "message": "تمت محاولة إلغاء المعاملة برسوم $1 من عملة جاس في $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "تم إلغاء المعاملة بنجاح عند $2"
-  },
-  "transactionConfirmed": {
-    "message": "تم تأكيد المعاملة بقيمة $2."
-  },
-  "transactionCreated": {
-    "message": "تم إنشاء المعاملة بقيمة $1 عند $2."
-  },
-  "transactionDropped": {
-    "message": "انخفضت المعاملة عند $2."
-  },
   "transactionError": {
     "message": "خطأ في المعاملة. استثناء تم طرحه في التعليمات البرمجية للعقد."
   },
   "transactionErrorNoContract": {
     "message": "جاري محاولة استدعاء وظيفة على عنوان غير ملتزم بعقد."
-  },
-  "transactionErrored": {
-    "message": "لقد حدث خطأ ما أثناء معالجة المعاملة."
-  },
-  "transactionResubmitted": {
-    "message": "زادت رسوم جاس على المعاملة التي أعيد تقديمها إلى $1 عند $2"
-  },
-  "transactionSubmitted": {
-    "message": "تم تقديم المعاملة برسوم $1 من عملة جاس في $2."
-  },
-  "transactionUpdated": {
-    "message": "تم تحديث المعاملة في $2."
   },
   "transfer": {
     "message": "تحويل"
@@ -716,8 +671,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارة الأمان الشخصية الخاصة بك"
   }
 }

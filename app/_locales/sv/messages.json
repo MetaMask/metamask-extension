@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du måste välja ett konto!"
   },
-  "activityLog": {
-    "message": "aktivitetslogg"
-  },
   "addAcquiredTokens": {
     "message": "Lägg till de tokens du har skaffat med MetaMask"
   },
@@ -296,9 +293,6 @@
     "message": "Importerade",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Din initiala transaktion har bekräftats av nätverket. Klicka på OK för att gå tillbaka."
-  },
   "insufficientBalance": {
     "message": "Otillräcklig balans."
   },
@@ -475,12 +469,6 @@
   "rejectAll": {
     "message": "Neka alla"
   },
-  "rejectTxsDescription": {
-    "message": "Du håller på att massneka överföringar på $1."
-  },
-  "rejectTxsN": {
-    "message": "Neka överföringar på $1"
-  },
   "rejected": {
     "message": "Nekad"
   },
@@ -489,9 +477,6 @@
   },
   "removeAccount": {
     "message": "Ta bort konto"
-  },
-  "removeAccountDescription": {
-    "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
   },
   "required": {
     "message": "Krävs"
@@ -578,9 +563,6 @@
   "speedUpCancellation": {
     "message": "Snabba upp denna avbokning"
   },
-  "speedUpTransaction": {
-    "message": "Snabba upp den här transaktionen"
-  },
   "stateLogError": {
     "message": "Fel vid inhämtande av statusloggar."
   },
@@ -617,38 +599,11 @@
   "transaction": {
     "message": "överföring"
   },
-  "transactionCancelAttempted": {
-    "message": "Överföringsavbrott har försökt göras med gasavgift på $1 vid $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Överföringen avbröts vid $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaktionen bekräftad på $2."
-  },
-  "transactionCreated": {
-    "message": "Transaktion skapad med ett värde på $1 på $2."
-  },
-  "transactionDropped": {
-    "message": "Transaktionen avbruten vid $2."
-  },
   "transactionError": {
     "message": "Överföringsfel. Undantag i kontraktskoden."
   },
   "transactionErrorNoContract": {
     "message": "Försöker åberopa en funktion på en icke-kontraktsadress."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen påträffade ett fel."
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion skickad igen med gas-avgift ökad till $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Överföring angedd med gasavgift på $1 vid $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaktionen uppdaterades $2."
   },
   "transfer": {
     "message": "Överföring"
@@ -694,8 +649,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din privata seedphrase"
   }
 }
