@@ -5,6 +5,7 @@
  * Several dependencies are stubbed pending integration with extension services.
  */
 
+import { createProjectLogger } from '@metamask/utils';
 import type {
   PerpsPlatformDependencies,
   PerpsCacheInvalidator,
@@ -22,24 +23,20 @@ import type {
   VersionGatedFeatureFlag,
   InvalidateCacheParams,
 } from '@metamask/perps-controller';
+import { captureException } from '../../../../shared/lib/sentry';
+
+const debugLog = createProjectLogger('perps');
 
 function createLogger(): PerpsLogger {
   return {
-    error: (error, options) => {
-      console.error('[Perps Error]', error, options);
+    error: (error) => {
+      captureException(error);
     },
   };
 }
 
 function createDebugLogger(): PerpsDebugLogger {
-  const isDevelopment = process.env.METAMASK_DEBUG === 'true';
-  return {
-    log: (...args: unknown[]) => {
-      if (isDevelopment) {
-        console.log('[Perps]', ...args);
-      }
-    },
-  };
+  return { log: debugLog };
 }
 
 function createMetrics(): PerpsMetrics {
