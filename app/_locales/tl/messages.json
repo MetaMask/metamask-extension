@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
   },
-  "buildContactList": {
-    "message": "Buuin ang iyong listahan ng contact"
-  },
   "builtAroundTheWorld": {
     "message": "Ang MetaMask ay dinisenyo at itinatag sa buong mundo."
   },
@@ -2130,9 +2127,6 @@
   },
   "delete": {
     "message": "Tanggalin"
-  },
-  "deleteContact": {
-    "message": "Tanggalin ang kontak"
   },
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
@@ -4263,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Bagong Contact"
   },
   "newContract": {
     "message": "Bagong kontrata"
@@ -8754,9 +8745,6 @@
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang kliyente"
   },
-  "userName": {
-    "message": "Username"
-  },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"
   },
@@ -8775,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Tingnan ang Contact"
   },
   "viewDetails": {
     "message": "Tingnan ang mga detalye"

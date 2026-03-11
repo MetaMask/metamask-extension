@@ -359,6 +359,51 @@ describe('useAmountValidation', () => {
     await waitFor(() => expect(result.current.amountError).toEqual(undefined));
   });
 
+  it('accepts "." as zero without reporting invalid amount', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      value: '.',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() => expect(result.current.amountError).toEqual(undefined));
+  });
+
+  it('accepts "0." as zero without reporting invalid amount', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      value: '0.',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() => expect(result.current.amountError).toEqual(undefined));
+  });
+
+  it('accepts trailing dot as valid intermediate input', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      value: '5.',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() => expect(result.current.amountError).toEqual(undefined));
+  });
+
   it('return error for ERC1155 token with amount exceeding balance', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: {

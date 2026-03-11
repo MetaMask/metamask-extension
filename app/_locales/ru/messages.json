@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
-  "buildContactList": {
-    "message": "Создайте список контактов"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
   },
@@ -2130,9 +2127,6 @@
   },
   "delete": {
     "message": "Удалить"
-  },
-  "deleteContact": {
-    "message": "Удалить контакт"
   },
   "deleteMetaMetricsData": {
     "message": "Удалить данные MetaMetrics"
@@ -4263,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Новый контакт"
   },
   "newContract": {
     "message": "Новый контракт"
@@ -8754,9 +8745,6 @@
   "usedByClients": {
     "message": "Используется множеством разных клиентов"
   },
-  "userName": {
-    "message": "Имя пользователя"
-  },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"
   },
@@ -8775,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Смотреть контакт"
   },
   "viewDetails": {
     "message": "Просмотр сведений"

@@ -15,7 +15,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
-import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
+import {
+  addLeadingZeroIfNeeded,
+  normalizeAmount,
+  submitEvmTransaction,
+} from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
@@ -60,7 +64,7 @@ export const useSendActions = () => {
           from: from as Hex,
           hexData: hexData as Hex,
           to: toAddress as Hex,
-          value: value as string,
+          value: normalizeAmount(value),
         }),
       );
       const params = new URLSearchParams();
@@ -79,7 +83,7 @@ export const useSendActions = () => {
             fromAccountId: fromAccount?.id as string,
             toAddress: toAddress as string,
             assetId: asset.assetId as CaipAssetType,
-            amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
+            amount: addLeadingZeroIfNeeded(normalizeAmount(value)) as string,
           },
         )) as SnapConfirmSendResult;
 
