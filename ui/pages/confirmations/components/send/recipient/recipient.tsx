@@ -14,8 +14,6 @@ import {
   IconSize,
   ButtonIcon,
   ButtonIconSize,
-  ButtonLink,
-  ButtonLinkSize,
   HelpText,
   HelpTextSeverity,
 } from '../../../../../components/component-library';
@@ -43,7 +41,6 @@ export const Recipient = ({
 }) => {
   const {
     recipientError,
-    recipientErrorLearnMoreLink,
     recipientErrorAllowAcknowledge,
     isRecipientAcknowledgeable,
     recipientWarning,
@@ -126,19 +123,6 @@ export const Recipient = ({
         !recipientErrorAllowAcknowledge && (
           <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
             {recipientError}
-            {recipientErrorLearnMoreLink && (
-              <>
-                {' '}
-                <ButtonLink
-                  size={ButtonLinkSize.Inherit}
-                  href={recipientErrorLearnMoreLink}
-                  externalLink
-                  data-testid="recipient-error-learn-more-link"
-                >
-                  {t('learnMore')}
-                </ButtonLink>
-              </>
-            )}
           </HelpText>
         )}
       {to === toAddressValidated && recipientWarning && (

@@ -54,7 +54,6 @@ describe('useRecipientValidation', () => {
     expect(result.current).toEqual({
       recipientConfusableCharacters: undefined,
       recipientError: undefined,
-      recipientErrorLearnMoreLink: undefined,
       recipientErrorAllowAcknowledge: false,
       isRecipientAcknowledgeable: false,
       acknowledgeError: expect.any(Function),
@@ -84,7 +83,6 @@ describe('useRecipientValidation', () => {
       expect(result.current).toEqual({
         recipientConfusableCharacters: undefined,
         recipientError: 'invalidAddress',
-        recipientErrorLearnMoreLink: undefined,
         recipientErrorAllowAcknowledge: false,
         isRecipientAcknowledgeable: false,
         acknowledgeError: expect.any(Function),
@@ -158,7 +156,6 @@ describe('useRecipientValidation', () => {
       expect(result.current).toEqual({
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
-        recipientErrorLearnMoreLink: undefined,
         recipientErrorAllowAcknowledge: false,
         isRecipientAcknowledgeable: false,
         acknowledgeError: expect.any(Function),
@@ -183,7 +180,6 @@ describe('useRecipientValidation', () => {
       expect(result.current).toEqual({
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
-        recipientErrorLearnMoreLink: undefined,
         recipientErrorAllowAcknowledge: false,
         isRecipientAcknowledgeable: false,
         acknowledgeError: expect.any(Function),
@@ -429,7 +425,6 @@ describe('useRecipientValidation', () => {
         expect(result.current).toEqual({
           recipientConfusableCharacters: undefined,
           recipientError: 'invalidAddress',
-          recipientErrorLearnMoreLink: undefined,
           recipientErrorAllowAcknowledge: false,
           isRecipientAcknowledgeable: false,
           acknowledgeError: expect.any(Function),
@@ -471,12 +466,11 @@ describe('useRecipientValidation', () => {
   });
 
   describe('acknowledgment', () => {
-    it('returns learnMoreLink and allowAcknowledge when validation includes them', async () => {
+    it('returns allowAcknowledge when validation includes it', async () => {
       jest
         .spyOn(SendValidationUtils, 'validateEvmHexAddress')
         .mockResolvedValue({
           error: 'tokenContractError',
-          learnMoreLink: 'https://example.com/learn-more',
           allowAcknowledge: true,
         });
 
@@ -484,9 +478,6 @@ describe('useRecipientValidation', () => {
 
       await waitFor(() => {
         expect(result.current.recipientError).toBe('tokenContractError');
-        expect(result.current.recipientErrorLearnMoreLink).toBe(
-          'https://example.com/learn-more',
-        );
         expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
       });
     });
@@ -496,7 +487,6 @@ describe('useRecipientValidation', () => {
         .spyOn(SendValidationUtils, 'validateEvmHexAddress')
         .mockResolvedValue({
           error: 'tokenContractError',
-          learnMoreLink: 'https://example.com/learn-more',
           allowAcknowledge: true,
         });
 
@@ -519,7 +509,6 @@ describe('useRecipientValidation', () => {
         .spyOn(SendValidationUtils, 'validateEvmHexAddress')
         .mockResolvedValue({
           error: 'tokenContractError',
-          learnMoreLink: 'https://example.com/learn-more',
           allowAcknowledge: true,
         });
 

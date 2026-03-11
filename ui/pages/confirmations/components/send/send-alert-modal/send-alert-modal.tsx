@@ -37,6 +37,19 @@ export const SendAlertModal = ({
     <Modal isOpen={isOpen} onClose={onClose} data-testid="send-alert-modal">
       <ModalOverlay />
       <ModalContent>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+          paddingTop={4}
+          paddingBottom={2}
+        >
+          <Icon
+            name={IconName.Danger}
+            size={IconSize.Xl}
+            color={IconColor.warningDefault}
+          />
+        </Box>
         <ModalHeader
           onClose={onClose}
           closeButtonProps={{
@@ -46,25 +59,13 @@ export const SendAlertModal = ({
           {title}
         </ModalHeader>
         <ModalBody>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            gap={3}
+          <Text
+            variant={TextVariant.bodyMd}
+            textAlign={TextAlign.Center}
+            data-testid="send-alert-modal-message"
           >
-            <Icon
-              name={IconName.Danger}
-              size={IconSize.Xl}
-              color={IconColor.warningDefault}
-            />
-            <Text
-              variant={TextVariant.bodyMd}
-              textAlign={TextAlign.Center}
-              data-testid="send-alert-modal-message"
-            >
-              {errorMessage}
-            </Text>
-          </Box>
+            {errorMessage}
+          </Text>
         </ModalBody>
         <ModalFooter
           onCancel={onClose}

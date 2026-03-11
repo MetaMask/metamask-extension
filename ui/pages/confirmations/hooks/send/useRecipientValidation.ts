@@ -162,7 +162,6 @@ export const useRecipientValidation = () => {
     recipientConfusableCharacters: result?.confusableCharacters,
     recipientError:
       result?.error && !errorDismissed ? t(result?.error) : undefined,
-    recipientErrorLearnMoreLink: result?.learnMoreLink,
     recipientErrorAllowAcknowledge: isAcknowledgeable && !acknowledged,
     isRecipientAcknowledgeable: isAcknowledgeable,
     acknowledgeError,

@@ -5,7 +5,7 @@ import { confusables } from 'unicode-confusables';
 
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
-import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
+
 import {
   findConfusablesInRecipient,
   validateBtcAddress,
@@ -119,7 +119,7 @@ describe('SendValidations', () => {
       });
     });
 
-    it('rejects ERC721 token address with learnMoreLink and allowAcknowledge', async () => {
+    it('rejects ERC721 token address with allowAcknowledge', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC721',
       });
@@ -131,7 +131,6 @@ describe('SendValidations', () => {
         ),
       ).toEqual({
         error: 'tokenContractError',
-        learnMoreLink: CONTRACT_ADDRESS_LINK,
         allowAcknowledge: true,
       });
 
@@ -143,7 +142,7 @@ describe('SendValidations', () => {
       );
     });
 
-    it('rejects ERC20 token address with learnMoreLink and allowAcknowledge', async () => {
+    it('rejects ERC20 token address with allowAcknowledge', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC20',
       });
@@ -155,7 +154,6 @@ describe('SendValidations', () => {
         ),
       ).toEqual({
         error: 'tokenContractError',
-        learnMoreLink: CONTRACT_ADDRESS_LINK,
         allowAcknowledge: true,
       });
     });

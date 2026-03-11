@@ -252,31 +252,8 @@ describe('Recipient', () => {
     });
   });
 
-  describe('learn more and acknowledge', () => {
+  describe('acknowledge', () => {
     const tokenContractAddress = '0x1234567890abcdef1234567890abcdef12345678';
-    const learnMoreLink = 'https://support.metamask.io/test-link';
-
-    it('renders Learn More link when recipientErrorLearnMoreLink is provided and not acknowledgeable', () => {
-      mockUseSendContext.mockReturnValue({
-        to: tokenContractAddress,
-        updateTo: mockUpdateTo,
-        updateToResolved: jest.fn(),
-      } as unknown as ReturnType<typeof useSendContext>);
-
-      const { getByTestId } = renderComponent({
-        recipientValidationResult: {
-          recipientError: 'Token contract error',
-          recipientErrorLearnMoreLink: learnMoreLink,
-          recipientErrorAllowAcknowledge: false,
-          acknowledgeError: jest.fn(),
-          toAddressValidated: tokenContractAddress,
-        },
-      });
-
-      const link = getByTestId('recipient-error-learn-more-link');
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute('href', learnMoreLink);
-    });
 
     it('hides inline error when recipientErrorAllowAcknowledge is true', () => {
       mockUseSendContext.mockReturnValue({
@@ -285,10 +262,9 @@ describe('Recipient', () => {
         updateToResolved: jest.fn(),
       } as unknown as ReturnType<typeof useSendContext>);
 
-      const { queryByTestId } = renderComponent({
+      const { queryByText } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorLearnMoreLink: learnMoreLink,
           recipientErrorAllowAcknowledge: true,
           isRecipientAcknowledgeable: true,
           acknowledgeError: jest.fn(),
@@ -296,9 +272,7 @@ describe('Recipient', () => {
         },
       });
 
-      expect(
-        queryByTestId('recipient-error-learn-more-link'),
-      ).not.toBeInTheDocument();
+      expect(queryByText('Token contract error')).not.toBeInTheDocument();
     });
 
     it('renders alert icon next to To label when address is acknowledgeable', () => {
@@ -311,7 +285,6 @@ describe('Recipient', () => {
       const { getByTestId } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorLearnMoreLink: learnMoreLink,
           recipientErrorAllowAcknowledge: true,
           isRecipientAcknowledgeable: true,
           acknowledgeError: jest.fn(),
@@ -354,7 +327,6 @@ describe('Recipient', () => {
       const { getByTestId } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorLearnMoreLink: learnMoreLink,
           recipientErrorAllowAcknowledge: true,
           isRecipientAcknowledgeable: true,
           acknowledgeError: jest.fn(),
@@ -377,7 +349,6 @@ describe('Recipient', () => {
       const { queryByTestId } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorLearnMoreLink: learnMoreLink,
           recipientErrorAllowAcknowledge: false,
           isRecipientAcknowledgeable: false,
           acknowledgeError: jest.fn(),

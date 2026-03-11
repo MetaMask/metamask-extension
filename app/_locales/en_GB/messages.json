@@ -3358,6 +3358,9 @@
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
+  "iUnderstand": {
+    "message": "I understand"
+  },
   "id": {
     "message": "ID"
   },
@@ -7656,6 +7659,12 @@
   "smartAccountUpgradeBannerTitle": {
     "message": "Switch to smart account"
   },
+  "smartContractAddress": {
+    "message": "Smart contract address"
+  },
+  "smartContractAddressWarning": {
+    "message": "The recipient address may not support direct token transfers, which could result in fund loss. Only continue if you're certain this contract can receive your transfer."
+  },
   "smartContracts": {
     "message": "Smart contracts"
   },
@@ -8684,6 +8693,9 @@
   },
   "tokenContractError": {
     "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
+  },
+  "tokenContractWarning": {
+    "message": "Token contract warning"
   },
   "tokenCount": {
     "message": "token",
