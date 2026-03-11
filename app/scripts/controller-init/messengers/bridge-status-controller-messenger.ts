@@ -18,7 +18,7 @@ import type {
   BridgeControllerAction,
 } from '@metamask/bridge-controller';
 import type { GetGasFeeState } from '@metamask/gas-fee-controller';
-import type { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import { MultichainTransactionsControllerTransactionConfirmedEvent } from '@metamask/multichain-transactions-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -34,7 +34,7 @@ type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
   | RemoteFeatureFlagControllerGetStateAction
   | KeyringControllerSignTypedMessageAction
-  | AuthenticationControllerGetBearerToken;
+  | AuthenticationControllerGetBearerTokenAction;
 
 type AllowedEvents =
   | MultichainTransactionsControllerTransactionConfirmedEvent
