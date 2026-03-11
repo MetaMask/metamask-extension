@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
@@ -55,6 +55,7 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   AlignItems,
   BackgroundColor,
@@ -180,7 +181,11 @@ const PrepareBridgePage = ({
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
     isInsufficientBalance,
-  } = useSelector(getValidationErrors);
+    isStockMarketClosed,
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
   const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
 
@@ -360,6 +365,8 @@ const PrepareBridgePage = ({
       React.ComponentProps<typeof BridgePriceImpactWarningModal>['variant']
     >(null);
 
+  const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
+
   const getFromInputHeader = () => {
     return t('swapSelectToken');
   };
@@ -385,6 +392,11 @@ const PrepareBridgePage = ({
         onClose={() => {
           togglePriceImpactModalWithVariant(null);
         }}
+      />
+
+      <MarketClosedModal
+        isOpen={isMarketClosedModalOpen}
+        onClose={() => setIsMarketClosedModalOpen(false)}
       />
 
       <Column className="prepare-bridge-page" gap={4}>
@@ -622,7 +634,19 @@ const PrepareBridgePage = ({
           </Column>
         )}
 
+        {isStockMarketClosed && (
+          <Column paddingInline={4}>
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              title={t('bridgeMarketClosedTitle')}
+              description={t('bridgeMarketClosedDescription')}
+              textAlign={TextAlign.Left}
+            />
+          </Column>
+        )}
+
         {isNoQuotesAvailable &&
+          !isStockMarketClosed &&
           !isQuoteExpired &&
           quoteParams &&
           // Only show banner if quoteParams (inputs) are valid
@@ -695,6 +719,7 @@ const PrepareBridgePage = ({
               onOpenPriceImpactWarningModal={() =>
                 togglePriceImpactModalWithVariant('submit-cta')
               }
+              onOpenMarketClosedModal={() => setIsMarketClosedModalOpen(true)}
             />
           )}
         </Column>
