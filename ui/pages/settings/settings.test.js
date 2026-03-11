@@ -6,9 +6,11 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import Settings from '.';
 
+let mockRouterLocation = { pathname: '/settings', search: '' };
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({ pathname: '/settings' }),
+  useLocation: () => mockRouterLocation,
   useNavigate: () => jest.fn(),
   useParams: () => ({}),
 }));
@@ -21,7 +23,7 @@ jest.mock(
       <Component
         {...props}
         navigate={jest.fn()}
-        location={{ pathname: '/settings' }}
+        location={mockRouterLocation}
         params={{}}
       />
     );
@@ -43,6 +45,10 @@ describe('SettingsPage', () => {
 
   const mockStore = configureMockStore()(mockState);
 
+  beforeEach(() => {
+    mockRouterLocation = { pathname: '/settings', search: '' };
+  });
+
   it('should render correctly', () => {
     const { queryByText } = renderWithProvider(
       <Settings {...props} />,
@@ -61,5 +67,17 @@ describe('SettingsPage', () => {
     );
 
     expect(queryByPlaceholderText(messages.search.message)).toBeInTheDocument();
+  });
+
+  it('falls back to default title when snap settings route has no snapId query', () => {
+    mockRouterLocation = { pathname: '/settings/snap', search: '' };
+
+    const { queryByText } = renderWithProvider(
+      <Settings {...props} />,
+      mockStore,
+      '/settings/snap',
+    );
+
+    expect(queryByText(messages.settings.message)).toBeInTheDocument();
   });
 });

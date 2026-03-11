@@ -191,9 +191,10 @@ const mapStateToProps = (state, ownProps) => {
     name: snapNameGetter(snapId),
   }));
 
-  const snapSettingsTitle = isSnapSettingsRoute
-    ? snapNameGetter(snapIdFromSearch)
-    : '';
+  const snapSettingsTitle =
+    isSnapSettingsRoute && snapIdFromSearch
+      ? snapNameGetter(snapIdFromSearch)
+      : '';
 
   return {
     addNewNetwork,
