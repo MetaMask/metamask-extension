@@ -518,22 +518,24 @@ describe('fetchHistoricalPerformanceData', () => {
 
   it('includes Authorization header when GITHUB_TOKEN is set', async () => {
     process.env.GITHUB_TOKEN = 'test-token-123';
-    mockFetch
-      .mockReturnValueOnce(makeNotFoundResponse())
-      .mockReturnValueOnce(makeOkResponse([]));
+    try {
+      mockFetch
+        .mockReturnValueOnce(makeNotFoundResponse())
+        .mockReturnValueOnce(makeOkResponse([]));
 
-    await fetchHistoricalPerformanceData('main');
+      await fetchHistoricalPerformanceData('main');
 
-    const apiCall = mockFetch.mock.calls.find(
-      (c: [string, RequestInit?]) =>
-        typeof c[0] === 'string' && c[0].includes('api.github.com'),
-    );
-    expect(apiCall).toBeDefined();
-    expect((apiCall as [string, RequestInit])[1]?.headers).toHaveProperty(
-      'Authorization',
-      'token test-token-123',
-    );
-
-    delete process.env.GITHUB_TOKEN;
+      const apiCall = mockFetch.mock.calls.find(
+        (c: [string, RequestInit?]) =>
+          typeof c[0] === 'string' && c[0].includes('api.github.com'),
+      );
+      expect(apiCall).toBeDefined();
+      expect((apiCall as [string, RequestInit])[1]?.headers).toHaveProperty(
+        'Authorization',
+        'token test-token-123',
+      );
+    } finally {
+      delete process.env.GITHUB_TOKEN;
+    }
   });
 });

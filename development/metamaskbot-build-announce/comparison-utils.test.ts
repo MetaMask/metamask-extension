@@ -228,15 +228,16 @@ describe('benchmark-comparison', () => {
           p75: { warn: 2000, fail: 3000 },
         },
       };
-      const results = {
+      const results: BenchmarkResults = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: 'standard',
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
         stdDev: { uiStartup: 200 },
         p75: { uiStartup: 1800 },
-      } as BenchmarkResults;
+        p95: {},
+      };
       const baseline = {
         uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
       };

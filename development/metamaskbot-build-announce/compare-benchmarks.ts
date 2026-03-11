@@ -97,7 +97,7 @@ export function resolveThresholdConfig(
   ];
   for (const prefix of prefixes) {
     const stripped = benchmarkName.replace(prefix, '');
-    if (stripped) {
+    if (stripped !== benchmarkName) {
       // Try stripped name directly
       if (THRESHOLD_REGISTRY[stripped]) {
         return THRESHOLD_REGISTRY[stripped];
