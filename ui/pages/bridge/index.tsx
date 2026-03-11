@@ -1,10 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
-import {
-  UnifiedSwapBridgeEventName,
-  isNonEvmChainId,
-} from '@metamask/bridge-controller';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
@@ -24,7 +21,6 @@ import {
   Header,
   Page,
 } from '../../components/multichain/pages/page';
-import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -44,7 +40,6 @@ import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTran
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
 
   useBridging();
 
@@ -66,12 +61,6 @@ const CrossChainSwap = () => {
   // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
   const shouldFetchGasEstimates =
     fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
-
-  useEffect(() => {
-    dispatch(
-      trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
-    );
-  }, []);
 
   // Needed for refreshing gas estimates (only for EVM chains)
   useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);

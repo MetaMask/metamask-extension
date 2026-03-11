@@ -213,6 +213,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
                 "token": null,
               },
@@ -255,16 +256,23 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-            token: null,
-          },
-        },
-      );
+      // Assert
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "bridgeState": null,
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
+
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalled();
     });
@@ -307,6 +315,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
                 "token": null,
               },
@@ -383,6 +392,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         {
           replace: true,
           state: {
+            bridgeState: null,
             stayOnHomePage: true,
             token: null,
           },
@@ -429,6 +439,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           {
             replace: true,
             state: {
+              bridgeState: null,
               stayOnHomePage: true,
               token: null,
             },
@@ -476,6 +487,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         {
           replace: true,
           state: {
+            bridgeState: null,
             stayOnHomePage: true,
             token: null,
           },
