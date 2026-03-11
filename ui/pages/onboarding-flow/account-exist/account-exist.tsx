@@ -100,7 +100,6 @@ export default function AccountExist() {
   return (
     <AccountStatusLayout
       dataTestId="account-exist"
-      rootClassName="h-full"
       titleKey="accountAlreadyExistsTitle"
       descriptionKey="accountAlreadyExistsLoginDescription"
       descriptionInterpolation={[userSocialLoginEmail || '-']}

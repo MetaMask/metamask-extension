@@ -49,18 +49,4 @@ describe('AccountStatusLayout', () => {
     fireEvent.click(getByTestId('account-exist-login-with-different-method'));
     expect(onSecondary).toHaveBeenCalledTimes(1);
   });
-
-  it('applies rootClassName to the root element', () => {
-    const { container } = renderWithProvider(
-      <AccountStatusLayout
-        {...defaultProps}
-        rootClassName="custom-class h-full"
-      />,
-    );
-    const root = container.querySelector(
-      '[data-testid="account-status-layout"]',
-    );
-    expect(root).toHaveClass('custom-class');
-    expect(root).toHaveClass('h-full');
-  });
 });

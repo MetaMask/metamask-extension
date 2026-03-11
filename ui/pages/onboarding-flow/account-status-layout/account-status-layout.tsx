@@ -34,7 +34,7 @@ export function AccountStatusLayout({
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
-      className={rootClassName}
+      className="h-full"
       gap={6}
     >
       <Box>
