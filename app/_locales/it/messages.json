@@ -240,9 +240,6 @@
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },
-  "buildContactList": {
-    "message": "Costruisci la tua lista contatti"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask è progettato e costruito in tutto il mondo."
   },
@@ -305,9 +302,6 @@
   },
   "connect": {
     "message": "Connetti"
-  },
-  "connectAccountOrCreate": {
-    "message": "Connetti un account o creane uno nuovo"
   },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
@@ -777,9 +771,6 @@
   "knownTokenWarning": {
     "message": "Questa azione modificherà i token che sono già nel tuo portafoglio, che possono essere utilizzati per truffarti. Approva solo se sei sicuro di voler cambiare ciò che rappresentano questi token."
   },
-  "lastConnected": {
-    "message": "Ultima Connessione"
-  },
   "learnMore": {
     "message": "Scopri di più"
   },
@@ -852,9 +843,6 @@
   },
   "newAccount": {
     "message": "Nuovo Account"
-  },
-  "newContact": {
-    "message": "Nuovo contatto"
   },
   "newContract": {
     "message": "Nuovo Contratto"
@@ -976,9 +964,6 @@
   "removeAccount": {
     "message": "Rimuovi account"
   },
-  "removeAccountDescription": {
-    "message": "Questo account sarà rimosso dal tuo portafoglio. Per favore assicurati che hai la frase seed originale o la chiave privata per questo account importato prima di continuare. Puoi nuovamente importare o creare un account dal menù a tendina. "
-  },
   "required": {
     "message": "Richiesto"
   },
@@ -1016,17 +1001,11 @@
   "search": {
     "message": "Cerca"
   },
-  "searchAccounts": {
-    "message": "Cerca Account"
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
-  },
-  "selectAccounts": {
-    "message": "Seleziona account"
   },
   "selectAll": {
     "message": "Seleziona tutti"
@@ -1042,9 +1021,6 @@
   },
   "selectType": {
     "message": "Seleziona Tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selezionare tutto consentirà al sito di avere accesso a tutti i tuoi account. Assicurati di fidarti del sito."
   },
   "send": {
     "message": "Invia"
@@ -1316,12 +1292,6 @@
   },
   "usedByClients": {
     "message": "Usato da una varietà di clients diversi"
-  },
-  "userName": {
-    "message": "Nome utente"
-  },
-  "viewContact": {
-    "message": "Visualizza contatto"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"

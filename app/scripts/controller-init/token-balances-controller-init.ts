@@ -15,8 +15,7 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
   );
 
   const controller = new TokenBalancesController({
-    // @ts-expect-error: `TokenBalancesController` uses the wrong type for
-    // the preferences controller state.
+    // @ts-expect-error - TokenBalancesControllerMessenger type is incorrect - to investigate
     messenger: controllerMessenger,
     state: persistedState.TokenBalancesController,
     queryMultipleAccounts: useMultiAccountBalanceChecker,

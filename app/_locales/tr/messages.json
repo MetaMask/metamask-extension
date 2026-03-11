@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Fiyat etkisi"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Fiyat etkisi, takas işleminizin piyasa fiyatını nasıl etkilediğini yansıtır. Gaz için yeterli token'iniz yoksa ücretleri karşılamak için token'lerinizden bazıları kullanılır ve bu da fiyat etkisini artırır. MetaMask'in bunun üzerinde ayarlama veya kontrol yetkisi yoktur."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Fiyat etkisi"
   },
@@ -1209,9 +1206,6 @@
   },
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
-  },
-  "buildContactList": {
-    "message": "Kişi listenizi oluşturun"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask dünya çapında geliştirilmiş ve yapılmıştır."
@@ -1605,9 +1599,6 @@
   },
   "connectAccount": {
     "message": "Hesabı bağla"
-  },
-  "connectAccountOrCreate": {
-    "message": "Hesabı bağla ya da yeni hesap oluştur"
   },
   "connectAccounts": {
     "message": "Hesapları bağla"
@@ -2137,9 +2128,6 @@
   "delete": {
     "message": "Sil"
   },
-  "deleteContact": {
-    "message": "Kişiyi sil"
-  },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics verilerini sil"
   },
@@ -2188,9 +2176,6 @@
   "descriptionFromSnap": {
     "message": "$1 açıklaması",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Tümünün seçimini kaldır"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Uygun hesap bulunamadı"
@@ -2373,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Takma adı düzenle"
-  },
-  "editAccountName": {
-    "message": "Hesap adını düzenle"
   },
   "editAccounts": {
     "message": "Hesapları düzenle"
@@ -3138,9 +3120,6 @@
   "hidden": {
     "message": "Gizli"
   },
-  "hiddenAccounts": {
-    "message": "Gizli hesaplar"
-  },
   "hide": {
     "message": "Gizle"
   },
@@ -3528,9 +3507,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 gaz ücreti"
-  },
-  "lastConnected": {
-    "message": "Son bağlanma"
   },
   "lastSold": {
     "message": "Son satış"
@@ -4008,10 +3984,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD Dönüştürme"
+    "message": "$1 mUSD'ye dönüştür",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD Dönüştürme"
+    "message": "$1 mUSD'ye dönüştür",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "En az bir token seçilmeli."
@@ -4279,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Hesap $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Yeni kişi"
   },
   "newContract": {
     "message": "Yeni sözleşme"
@@ -5280,12 +5255,6 @@
   "perpsEntryPrice": {
     "message": "Giriş fiyatı"
   },
-  "perpsExploreCrypto": {
-    "message": "Kriptoyu keşfet"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Hisse senetlerini ve emtiaları keşfet"
-  },
   "perpsFees": {
     "message": "Ücretler"
   },
@@ -5405,9 +5374,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
-  },
-  "perpsOrderAmount": {
-    "message": "Emir Miktarı"
   },
   "perpsOrders": {
     "message": "Emirler"
@@ -5555,12 +5521,6 @@
   },
   "perpsWithdraw": {
     "message": "Çek"
-  },
-  "perpsYourOrders": {
-    "message": "Emirleriniz"
-  },
-  "perpsYourPositions": {
-    "message": "Pozisyonlarınız"
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
@@ -5904,9 +5864,6 @@
   },
   "removeAccount": {
     "message": "Hesabı kaldır"
-  },
-  "removeAccountDescription": {
-    "message": "Bu hesap cüzdanınızdan kaldırılacak. Devam etmeden önce lütfen orijinal Gizli Kurtarma İfadenizin veya içe aktarılan bu hesabın özel anahtarının sizde bulunduğundan emin olun. Hesap açılır menüsünden hesapları içe aktarabilir veya tekrar hesap oluşturabilirsiniz. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Kaldırmadan önce bu hesap için Gizli Kurtarma İfadenizin veya özel anahtarınızın olduğundan emin olun.",
@@ -6288,9 +6245,6 @@
   "search": {
     "message": "Ara"
   },
-  "searchAccounts": {
-    "message": "Hesapları ara"
-  },
   "searchAnAcccountOrContact": {
     "message": "Bir hesap veya kişi ara"
   },
@@ -6432,12 +6386,6 @@
   "selectAccountToConnect": {
     "message": "Bağlamak için bir hesap seç"
   },
-  "selectAccounts": {
-    "message": "Bu sitede kullanılacak hesap veya hesapları seçin"
-  },
-  "selectAccountsForSnap": {
-    "message": "Bu snap ile kullanılacak hesabı/hesapları seçin"
-  },
   "selectAll": {
     "message": "Tümünü seç"
   },
@@ -6476,9 +6424,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Farklı hesap seçildi"
-  },
-  "selectingAllWillAllow": {
-    "message": "Tümü seçimi bu sitenin mevcut tüm hesaplarınızı görüntülemesine izin verecektir. Bu siteye güvendiğinizden emin olun."
   },
   "send": {
     "message": "Gönder"
@@ -8800,9 +8745,6 @@
   "usedByClients": {
     "message": "Çeşitli müşteriler tarafından kullanılıyor"
   },
-  "userName": {
-    "message": "Kullanıcı adı"
-  },
   "userOpContractDeployError": {
     "message": "Akıllı hesaptan sözleşme kurulumu desteklenmiyor"
   },
@@ -8822,14 +8764,8 @@
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Kişiyi görüntüle"
-  },
   "viewDetails": {
     "message": "Ayrıntıları görüntüle"
-  },
-  "viewMore": {
-    "message": "Daha fazlasını görüntüle"
   },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"

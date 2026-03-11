@@ -9,6 +9,7 @@ import {
   useLocation,
   useNavigationType,
   Navigate,
+  Outlet,
 } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
@@ -68,11 +69,13 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  CONTACTS_ROUTE,
+  SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
+import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -140,6 +143,8 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
+import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
+import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
@@ -174,6 +179,10 @@ const RevealSeedConfirmation = mmLazy(
 );
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,
+);
+
+const SettingsV2 = mmLazy(
+  (() => import('../settings-v2/index.ts')) as unknown as DynamicImportType,
 );
 
 const NotificationsSettingsRedirect = () => (
@@ -329,10 +338,6 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
-const PerpsHomePage = mmLazy(
-  (() =>
-    import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
-);
 const PerpsMarketDetailPage = mmLazy(
   (() =>
     import(
@@ -353,14 +358,11 @@ const PerpsOrderEntryPage = mmLazy(
       '../perps/perps-order-entry-page.tsx'
     )) as unknown as DynamicImportType,
 );
-
-// Perps pages wrapped with PerpsControllerProvider
-const WrappedPerpsHomePage = () => (
-  <PerpsControllerProvider>
-    <PerpsHomePage />
-  </PerpsControllerProvider>
+const MusdConversionPage = mmLazy(
+  (() => import('../musd/index.tsx')) as unknown as DynamicImportType,
 );
 
+// Perps pages wrapped with PerpsControllerProvider
 const WrappedPerpsMarketDetailPage = () => (
   <PerpsControllerProvider>
     <PerpsMarketDetailPage />
@@ -601,6 +603,13 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
+        path: `${SETTINGS_V2_ROUTE}/*`,
+        component: SettingsV2,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityRequired: false,
+      }),
+      createRouteWithLayout({
         path: '/notifications/settings',
         component: NotificationsSettingsRedirect,
         layout: RootLayout,
@@ -624,6 +633,17 @@ export default function Routes() {
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openNotificationsPage',
       }),
+      {
+        path: CONTACTS_ROUTE,
+        element: (
+          <RootLayout>
+            <Authenticated>
+              <Outlet />
+            </Authenticated>
+          </RootLayout>
+        ),
+        children: contactsRoutes,
+      },
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
@@ -756,6 +776,14 @@ export default function Routes() {
           'basicFunctionalityRequired_openDefiPage',
       }),
       createRouteWithLayout({
+        path: `${MUSD_CONVERSION_ROUTE}/*`,
+        component: MusdConversionPage,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openMusdConversionPage',
+      }),
+      createRouteWithLayout({
         path: PERMISSIONS,
         component: PermissionsPage,
         layout: RootLayout,
@@ -812,14 +840,14 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`,
+        path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
         component: MultichainAccountAddressListPage,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`,
+        path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
         component: MultichainAccountPrivateKeyListPage,
         layout: RootLayout,
         authenticated: true,
@@ -876,14 +904,6 @@ export default function Routes() {
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
           'basicFunctionalityRequired_openRewardsPage',
-      }),
-      createRouteWithLayout({
-        path: PERPS_HOME_ROUTE,
-        component: WrappedPerpsHomePage,
-        layout: RootLayout,
-        authenticated: true,
-        basicFunctionalityOpenPageCtaKey:
-          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,

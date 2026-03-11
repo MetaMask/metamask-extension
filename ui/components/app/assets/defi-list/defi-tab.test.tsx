@@ -9,8 +9,10 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import DeFiTab from './defi-tab';
 
+const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
 const allDeFiPositions = {
-  [mockState.metamask.selectedAddress]: {
+  [selectedAddress]: {
     [CHAIN_IDS.MAINNET]: {
       aggregatedMarketValue: 20540,
       protocols: {
@@ -61,10 +63,10 @@ const allDeFiPositions = {
   },
 };
 const loadingDefiPositions = {
-  [mockState.metamask.selectedAddress]: undefined,
+  [selectedAddress]: undefined,
 };
 const noOpenPositions = {
-  [mockState.metamask.selectedAddress]: [],
+  [selectedAddress]: [],
 };
 const defiApiError = null;
 

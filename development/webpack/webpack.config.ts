@@ -21,8 +21,6 @@ import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
-  type Manifest,
-  collectEntries,
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
@@ -32,7 +30,6 @@ import {
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
-import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/getSwcLoader';
 import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
@@ -52,10 +49,6 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifest_version;
-const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
-const manifest: Manifest = require(manifestPath);
-const { entry, canBeChunked } = collectEntries(manifest, context);
-const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -98,7 +91,38 @@ const cache = args.cache
 
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
+
+const manifestPlugin = new ManifestPlugin({
+  web_accessible_resources: webAccessibleResources,
+  manifest_version: MANIFEST_VERSION,
+  description: commitHash
+    ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
+    : null,
+  version: version.version,
+  versionName: version.versionName,
+  browsers: args.browser,
+  transform: transformManifest(
+    args,
+    isDevelopment,
+    variables.get('MANIFEST_OVERRIDES') as string | undefined,
+  ),
+  zip: args.zip,
+  ...(args.zip
+    ? {
+        zipOptions: {
+          outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
+          mtime: getLatestCommit().timestamp(),
+          excludeExtensions: ['.map'],
+          // `level: 9` is the highest; it may increase build time by ~5% over level 1
+          level: 9,
+        },
+      }
+    : {}),
+  buildType: args.type,
+});
+
 const plugins: WebpackPluginInstance[] = [
+  manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
@@ -113,34 +137,6 @@ const plugins: WebpackPluginInstance[] = [
         test: /fonts\/\.(?:woff2)$/u,
       },
     ],
-  }),
-  new ManifestPlugin({
-    web_accessible_resources: webAccessibleResources,
-    manifest_version: MANIFEST_VERSION,
-    description: commitHash
-      ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
-      : null,
-    version: version.version,
-    versionName: version.versionName,
-    browsers: args.browser,
-    transform: transformManifest(
-      args,
-      isDevelopment,
-      variables.get('MANIFEST_OVERRIDES') as string | undefined,
-    ),
-    zip: args.zip,
-    ...(args.zip
-      ? {
-          zipOptions: {
-            outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-            mtime: getLatestCommit().timestamp(),
-            excludeExtensions: ['.map'],
-            // `level: 9` is the highest; it may increase build time by ~5% over level 1
-            level: 9,
-          },
-        }
-      : {}),
-    buildType: args.type,
   }),
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
@@ -271,7 +267,9 @@ const envValidationLoader = args.validateEnv
   : null;
 
 const config = {
-  entry,
+  // All entries are added dynamically by ManifestPlugin
+  // an empty entry object prevents webpack's default entry.
+  entry: {},
   cache,
   plugins,
   context,
@@ -326,11 +324,6 @@ const config = {
     alias: {
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
-      // Mock perps-controller for minimal POC branch development
-      '@metamask/perps-controller': join(
-        context,
-        '../ui/__mocks__/perps/perps-controller',
-      ),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
@@ -382,13 +375,13 @@ const config = {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
         enforce: 'pre',
-        use: [envValidationLoader, codeFenceLoader].filter(Boolean),
+        use: [envValidationLoader].filter(Boolean),
       },
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
         enforce: 'pre',
-        use: [envValidationLoader, codeFenceLoader].filter(Boolean),
+        use: [envValidationLoader].filter(Boolean),
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       ...threadLoaderRule,
@@ -396,13 +389,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: tsxLoader,
+        use: [tsxLoader, envValidationLoader].filter(Boolean),
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: jsxLoader,
+        use: [jsxLoader, envValidationLoader].filter(Boolean),
       },
       // React Compiler for UI component files (must appear after SWC rules)
       ...reactCompilerRule,
@@ -485,7 +478,6 @@ const config = {
               },
             },
           },
-          codeFenceLoader,
         ],
       },
       // images, fonts, wasm, riv etc.
@@ -527,7 +519,8 @@ const config = {
     runtimeChunk: {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
-      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
+      name: (chunk) =>
+        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
@@ -541,13 +534,13 @@ const config = {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
           test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: canBeChunked,
+          chunks: manifestPlugin.canBeChunked,
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: canBeChunked,
+          chunks: manifestPlugin.canBeChunked,
         },
       },
     },

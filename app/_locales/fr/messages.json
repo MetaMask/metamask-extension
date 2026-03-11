@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Impact sur les prix"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "L’impact sur le prix reflète la manière dont votre swap affecte le prix du marché. Si vous n’avez pas assez de gaz, certains de vos jetons sont utilisés pour couvrir les frais, ce qui augmente l’impact sur le prix. MetaMask ne définit ni ne contrôle cet impact."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impact sur les prix"
   },
@@ -1209,9 +1206,6 @@
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
-  },
-  "buildContactList": {
-    "message": "Créez votre liste de contacts"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask est conçu et établi dans le monde entier."
@@ -1605,9 +1599,6 @@
   },
   "connectAccount": {
     "message": "Connecter le compte"
-  },
-  "connectAccountOrCreate": {
-    "message": "Connecter un compte ou en créer un nouveau"
   },
   "connectAccounts": {
     "message": "Connecter les comptes"
@@ -2137,9 +2128,6 @@
   "delete": {
     "message": "Supprimer"
   },
-  "deleteContact": {
-    "message": "Supprimer le contact"
-  },
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
   },
@@ -2188,9 +2176,6 @@
   "descriptionFromSnap": {
     "message": "Description provenant de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Tout désélectionner"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Aucun compte admissible n’a été trouvé"
@@ -2373,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Modifier le pseudonyme"
-  },
-  "editAccountName": {
-    "message": "Modifier le nom du compte"
   },
   "editAccounts": {
     "message": "Modifier les comptes"
@@ -3138,9 +3120,6 @@
   "hidden": {
     "message": "Masqué"
   },
-  "hiddenAccounts": {
-    "message": "Comptes cachés"
-  },
   "hide": {
     "message": "Masquer"
   },
@@ -3528,9 +3507,6 @@
   },
   "l2FeeTooltip": {
     "message": "Frais de gaz L2"
-  },
-  "lastConnected": {
-    "message": "Dernière connexion"
   },
   "lastSold": {
     "message": "Dernière vente"
@@ -4008,10 +3984,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Convertir $1 en mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Convertir $1 en mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
@@ -4279,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nouveau contact"
   },
   "newContract": {
     "message": "Nouveau contrat"
@@ -5280,12 +5255,6 @@
   "perpsEntryPrice": {
     "message": "Prix d’ouverture"
   },
-  "perpsExploreCrypto": {
-    "message": "Découvrez les cryptomonnaies"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Découvrez les actions et les matières premières"
-  },
   "perpsFees": {
     "message": "Frais"
   },
@@ -5402,9 +5371,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Médiane des prix externes communiqués par les validateurs, utilisée pour calculer le taux de financement"
-  },
-  "perpsOrderAmount": {
-    "message": "Montant de l’ordre"
   },
   "perpsOrders": {
     "message": "Ordres"
@@ -5552,12 +5518,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirer"
-  },
-  "perpsYourOrders": {
-    "message": "Vos ordres"
-  },
-  "perpsYourPositions": {
-    "message": "Vos positions"
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
@@ -5901,9 +5861,6 @@
   },
   "removeAccount": {
     "message": "Suprimer le compte"
-  },
-  "removeAccountDescription": {
-    "message": "Ce compte sera supprimé de votre portefeuille. Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée d’origine pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu déroulant des comptes. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée de ce compte avant de le supprimer.",
@@ -6285,9 +6242,6 @@
   "search": {
     "message": "Rechercher"
   },
-  "searchAccounts": {
-    "message": "Rechercher des comptes"
-  },
   "searchAnAcccountOrContact": {
     "message": "Rechercher un compte ou un contact"
   },
@@ -6429,12 +6383,6 @@
   "selectAccountToConnect": {
     "message": "Sélectionner un compte à connecter"
   },
-  "selectAccounts": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser avec ce snap"
-  },
   "selectAll": {
     "message": "Tout sélectionner"
   },
@@ -6473,9 +6421,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Compte différent sélectionné"
-  },
-  "selectingAllWillAllow": {
-    "message": "En sélectionnant tout, vous autorisez ce site à voir tous vos comptes actuels. Assurez-vous de bien avoir confiance en ce site."
   },
   "send": {
     "message": "Envoyer"
@@ -8797,9 +8742,6 @@
   "usedByClients": {
     "message": "Utilisé par plusieurs clients différents"
   },
-  "userName": {
-    "message": "Nom d’utilisateur"
-  },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"
   },
@@ -8819,14 +8761,8 @@
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Voir le contact"
-  },
   "viewDetails": {
     "message": "Afficher les détails"
-  },
-  "viewMore": {
-    "message": "Afficher plus"
   },
   "viewOnBlockExplorer": {
     "message": "Afficher sur l’explorateur de blocs"

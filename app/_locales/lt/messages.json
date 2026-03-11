@@ -395,9 +395,6 @@
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Naujas kontaktas"
-  },
   "newContract": {
     "message": "Nauja sutartis"
   },
@@ -489,9 +486,6 @@
   },
   "removeAccount": {
     "message": "Pašalinti paskyrą"
-  },
-  "removeAccountDescription": {
-    "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
   },
   "required": {
     "message": "Reikalaujama"
@@ -658,12 +652,6 @@
   },
   "usedByClients": {
     "message": "Naudojama daugelio skirtingų klientų"
-  },
-  "userName": {
-    "message": "Vartotojo vardas"
-  },
-  "viewContact": {
-    "message": "Peržiūrėti kontaktą"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"

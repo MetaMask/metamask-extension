@@ -392,9 +392,6 @@
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "איש קשר חדש"
-  },
   "newContract": {
     "message": "חוזה חדש"
   },
@@ -486,9 +483,6 @@
   },
   "removeAccount": {
     "message": "הסר חשבון"
-  },
-  "removeAccountDescription": {
-    "message": "חשבון זה יוסר מארנקך. יש לוודא שיש לך את ה-seed phrase המקורי או המפתח האישי לחשבון מיובא זה לפני שתמשיך/י. באפשרותך ליבוא או לפתוח חשבונות שוב מהתפריט הנפתח של החשבון."
   },
   "required": {
     "message": "נדרש"
@@ -655,12 +649,6 @@
   },
   "usedByClients": {
     "message": "בשימוש על ידי מגוון לקוחות שונים"
-  },
-  "userName": {
-    "message": "שם משתמש"
-  },
-  "viewContact": {
-    "message": "הצג איש קשר"
   },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"

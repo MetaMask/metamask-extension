@@ -1,10 +1,14 @@
-import { describe, it, afterEach } from 'node:test';
+import { describe, it, afterEach, mock } from 'node:test';
 import assert from 'node:assert';
 import { loadBuildTypesConfig } from '../../lib/build-type';
 import { getDryRunMessage, parseArgv } from '../utils/cli';
-import { Browsers } from '../utils/helpers';
+import { Browsers, noop } from '../utils/helpers';
 
 describe('./utils/cli.ts', () => {
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
   const defaultArgs = {
     mode: 'development',
     env: 'development',
@@ -91,6 +95,42 @@ describe('./utils/cli.ts', () => {
   it('should return all browsers when `--browser all` is specified', () => {
     const { args } = parseArgv(['--browser', 'all'], loadBuildTypesConfig());
     assert.deepStrictEqual(args.browser, Browsers);
+  });
+
+  // TODO: Remove this temporary block and tests once LavaMoat supports watch
+  // mode. Tracking issue: https://github.com/MetaMask/metamask-extension/issues/40677
+  describe('temporary: block lavamoat and watch mode options', () => {
+    it('exits when watch and lavamoat are both enabled', () => {
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(['--watch', '--lavamoat'], loadBuildTypesConfig());
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).includes(
+            'LavaMoat does not currently support watch mode.',
+          ),
+        ),
+      );
+    });
+
+    it('explains how to disable lavamoat in production mode', () => {
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(['--mode', 'production', '--watch'], loadBuildTypesConfig());
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).includes('`--no-lavamoat`'),
+        ),
+      );
+    });
   });
 
   describe('build environment defaulting', () => {

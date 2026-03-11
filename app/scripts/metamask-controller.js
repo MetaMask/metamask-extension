@@ -129,6 +129,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
+  getEip7702SupportedChains,
 } from '../../shared/lib/eip7702-support-utils';
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import { captureException } from '../../shared/lib/sentry';
@@ -384,7 +385,6 @@ import { ConnectivityControllerInit } from './controller-init/connectivity';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
-import { SwapsControllerInit } from './controller-init/swaps-controller-init';
 import { BridgeControllerInit } from './controller-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './controller-init/preferences-controller-init';
@@ -423,6 +423,7 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -609,7 +610,6 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
-      SwapsController: SwapsControllerInit,
       BridgeController: BridgeControllerInit,
       BridgeStatusController: BridgeStatusControllerInit,
       NftController: NftControllerInit,
@@ -726,7 +726,6 @@ export default class MetamaskController extends EventEmitter {
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
       controllersByName.SmartTransactionsController;
-    this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
     this.backendWebSocketService = controllersByName.BackendWebSocketService;
@@ -879,6 +878,8 @@ export default class MetamaskController extends EventEmitter {
         'NotificationServicesController:getState',
         'TokenBalancesController:getState',
         'MultichainBalancesController:getState',
+        'RemoteFeatureFlagController:getState',
+        'AssetsController:getState',
       ],
     });
 
@@ -1152,8 +1153,25 @@ export default class MetamaskController extends EventEmitter {
           throw rpcErrors.methodNotSupported('No permission type provided');
         }
 
-        for (const param of params) {
-          const permissionType = param?.permission?.type;
+        const supportedChains = getEip7702SupportedChains(
+          this.remoteFeatureFlagController.state,
+        ).map((chainId) => chainId.toLowerCase());
+
+        const unsupportedChains = params
+          .filter(
+            ({ chainId }) => !supportedChains.includes(chainId?.toLowerCase()),
+          )
+          .map(({ chainId }) => chainId);
+
+        if (unsupportedChains.length > 0) {
+          throw rpcErrors.methodNotSupported(
+            `wallet_requestExecutionPermissions is not supported on chains '${unsupportedChains.join(', ')}'`,
+          );
+        }
+
+        for (const { permission } of params) {
+          const permissionType = permission?.type;
+
           if (!enabledTypes.includes(permissionType)) {
             throw rpcErrors.methodNotSupported(
               `Permission type '${permissionType ?? 'unknown'}' is not enabled`,
@@ -1225,7 +1243,6 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
-      SwapsController: this.swapsController,
       BridgeController: this.bridgeController,
       BridgeStatusController: this.bridgeStatusController,
       EnsController: this.ensController,
@@ -1362,7 +1379,6 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController,
       ),
       this.signatureController.resetState.bind(this.signatureController),
-      this.swapsController.resetState.bind(this.swapsController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
@@ -3225,96 +3241,6 @@ export default class MetamaskController extends EventEmitter {
         'SnapInterfaceController:updateInterfaceState',
       ),
 
-      // swaps
-      fetchAndSetQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:fetchAndSetQuotes',
-      ),
-      setSelectedQuoteAggId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSelectedQuoteAggId',
-      ),
-      resetSwapsState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:resetSwapsState',
-      ),
-      setSwapsTokens: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTokens',
-      ),
-      clearSwapsQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:clearSwapsQuotes',
-      ),
-      setApproveTxId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setApproveTxId',
-      ),
-      setTradeTxId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setTradeTxId',
-      ),
-      setSwapsTxGasPrice: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxGasPrice',
-      ),
-      setSwapsTxGasLimit: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxGasLimit',
-      ),
-      setSwapsTxMaxFeePerGas: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxMaxFeePerGas',
-      ),
-      setSwapsTxMaxFeePriorityPerGas: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsTxMaxFeePriorityPerGas',
-      ),
-      safeRefetchQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:safeRefetchQuotes',
-      ),
-      stopPollingForQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:stopPollingForQuotes',
-      ),
-      setBackgroundSwapRouteState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setBackgroundSwapRouteState',
-      ),
-      resetPostFetchState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:resetPostFetchState',
-      ),
-      setSwapsErrorKey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsErrorKey',
-      ),
-      setInitialGasEstimate: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setInitialGasEstimate',
-      ),
-      setCustomApproveTxData: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setCustomApproveTxData',
-      ),
-      setSwapsLiveness: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsLiveness',
-      ),
-      setSwapsFeatureFlags: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsFeatureFlags',
-      ),
-      setSwapsUserFeeLevel: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsUserFeeLevel',
-      ),
-      setSwapsQuotesPollingLimitEnabled: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SwapsController:setSwapsQuotesPollingLimitEnabled',
-      ),
-
       // Bridge
       [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3339,6 +3265,10 @@ export default class MetamaskController extends EventEmitter {
       submitTx: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitTx'}`,
+      ),
+      submitIntent: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
       ),
 
       // Smart Transactions
@@ -5420,13 +5350,19 @@ export default class MetamaskController extends EventEmitter {
         };
       },
     );
-    // Select the account
-    this.preferencesController.setSelectedAddress(unlockedAccount);
 
     const accounts = this.accountsController.listAccounts();
 
-    const { identities } = this.preferencesController.state;
-    return { unlockedAccount, identities, accounts };
+    const internalAccount =
+      this.accountsController.getAccountByAddress(unlockedAccount);
+
+    if (internalAccount) {
+      this.accountsController.setSelectedAccount(internalAccount.id);
+    } else {
+      throw new Error(`No account found for address: ${unlockedAccount}`);
+    }
+
+    return { unlockedAccount, accounts };
   }
 
   //
@@ -5480,7 +5416,13 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
-      this.preferencesController.setSelectedAddress(addedAccountAddress);
+      const internalAccount =
+        this.accountsController.getAccountByAddress(addedAccountAddress);
+      if (internalAccount) {
+        this.accountsController.setSelectedAccount(internalAccount.id);
+      } else {
+        throw new Error(`No account found for address: ${addedAccountAddress}`);
+      }
     }
 
     return addedAccountAddress;
@@ -5877,9 +5819,18 @@ export default class MetamaskController extends EventEmitter {
   async _updateDefiReferralUrl(partner, tabId) {
     try {
       const { url } = await browser.tabs.get(tabId);
-      const { search } = new URL(url || '');
-      const newUrl = `${partner.referralUrl}${search}`;
-      await browser.tabs.update(tabId, { url: newUrl });
+      const currentUrl = new URL(url || '');
+      const referralUrl = new URL(partner.referralUrl);
+
+      // Preserve (or update) existing params and add referral params
+      const mergedParams = new URLSearchParams(currentUrl.search);
+      for (const [key, value] of referralUrl.searchParams) {
+        mergedParams.set(key, value);
+      }
+
+      // Apply merged params to the referral URL
+      referralUrl.search = mergedParams.toString();
+      await browser.tabs.update(tabId, { url: referralUrl.toString() });
     } catch (error) {
       log.error(
         `Failed to update URL to ${partner.name} referral page: `,
@@ -5991,8 +5942,16 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldSelectAccount) {
-      // set new account as selected
-      this.preferencesController.setSelectedAddress(importedAccountAddress);
+      const account = this.accountsController.getAccountByAddress(
+        importedAccountAddress,
+      );
+      if (account) {
+        this.accountsController.setSelectedAccount(account.id);
+      } else {
+        throw new Error(
+          `No account found for address: ${importedAccountAddress}`,
+        );
+      }
     }
   }
 
@@ -6589,6 +6548,11 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
+    const messengerSubscriptions = new MessengerSubscriptions(
+      this.controllerMessenger,
+      outStream,
+    );
+
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
@@ -6597,6 +6561,14 @@ export default class MetamaskController extends EventEmitter {
         handleUpdate();
       },
       getStatePatches: () => patchStore.flushPendingPatches(),
+      messengerSubscribe: messengerSubscriptions.subscribe.bind(
+        messengerSubscriptions,
+      ),
+      messengerUnsubscribe: messengerSubscriptions.unsubscribe.bind(
+        messengerSubscriptions,
+      ),
+      messengerCall: (method, params = []) =>
+        this.controllerMessenger.call(method, ...params),
     };
 
     this.on('update', handleUpdate);
@@ -6641,6 +6613,7 @@ export default class MetamaskController extends EventEmitter {
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
+        messengerSubscriptions.clear();
       }
     };
 

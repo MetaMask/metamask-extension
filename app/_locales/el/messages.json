@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Επίδραση στην τιμή"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Η επίδραση στην τιμή αντικατοπτρίζει πώς η ανταλλαγή σας επηρεάζει την τιμή της αγοράς. Αν δεν έχετε αρκετά για τα τέλη συναλλαγών, μέρος των token σας χρησιμοποιείται για την κάλυψη των τελών, γεγονός που αυξάνει την επίδραση στην τιμή. Το MetaMask δεν ορίζει ούτε ελέγχει αυτήν τη διαδικασία."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Επίδραση στην τιμή"
   },
@@ -1209,9 +1206,6 @@
   },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
-  },
-  "buildContactList": {
-    "message": "Δημιουργήστε τη λίστα επαφών σας"
   },
   "builtAroundTheWorld": {
     "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
@@ -1605,9 +1599,6 @@
   },
   "connectAccount": {
     "message": "Σύνδεση λογαριασμού"
-  },
-  "connectAccountOrCreate": {
-    "message": "Σύνδεση λογαριασμού ή δημιουργία νέου"
   },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
@@ -2137,9 +2128,6 @@
   "delete": {
     "message": "Διαγραφή"
   },
-  "deleteContact": {
-    "message": "Διαγραφή επαφής"
-  },
   "deleteMetaMetricsData": {
     "message": "Διαγραφή δεδομένων MetaMetrics"
   },
@@ -2188,9 +2176,6 @@
   "descriptionFromSnap": {
     "message": "Περιγραφή από $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Αποεπιλογή όλων"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Δεν βρέθηκαν επιλέξιμοι λογαριασμοί"
@@ -2373,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Επεξεργασία ψευδωνύμου"
-  },
-  "editAccountName": {
-    "message": "Επεξεργασία ονόματος λογαριασμού"
   },
   "editAccounts": {
     "message": "Επεξεργασία λογαριασμών"
@@ -3138,9 +3120,6 @@
   "hidden": {
     "message": "Απόκρυψη"
   },
-  "hiddenAccounts": {
-    "message": "Κρυφοί λογαριασμοί"
-  },
   "hide": {
     "message": "Απόκρυψη"
   },
@@ -3528,9 +3507,6 @@
   },
   "l2FeeTooltip": {
     "message": "Τέλη συναλλαγών L2"
-  },
-  "lastConnected": {
-    "message": "Τελευταία σύνδεση"
   },
   "lastSold": {
     "message": "Τελευταία πώληση"
@@ -4008,10 +3984,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατροπή $1 σε mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατροπή $1 σε mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε τουλάχιστον 1 token."
@@ -4279,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Νέα επαφή"
   },
   "newContract": {
     "message": "Νέο συμβόλαιο"
@@ -5280,12 +5255,6 @@
   "perpsEntryPrice": {
     "message": "Τιμή εισόδου"
   },
-  "perpsExploreCrypto": {
-    "message": "Εξερευνήστε τα κρυπτονομίσματα"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Εξερευνήστε μετοχές και εμπορεύματα"
-  },
   "perpsFees": {
     "message": "Τέλη"
   },
@@ -5405,9 +5374,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Η διάμεσος των εξωτερικών τιμών που αναφέρονται από τους επικυρωτές, η οποία χρησιμοποιείται για τον υπολογισμό του ποσοστού χρηματοδότησης"
-  },
-  "perpsOrderAmount": {
-    "message": "Ποσό εντολής"
   },
   "perpsOrders": {
     "message": "Εντολές"
@@ -5555,12 +5521,6 @@
   },
   "perpsWithdraw": {
     "message": "Ανάληψη"
-  },
-  "perpsYourOrders": {
-    "message": "Οι εντολές σας"
-  },
-  "perpsYourPositions": {
-    "message": "Οι θέσεις σας"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
@@ -5904,9 +5864,6 @@
   },
   "removeAccount": {
     "message": "Διαγραφή λογαριασμού"
-  },
-  "removeAccountDescription": {
-    "message": "Αυτός ο λογαριασμός θα αφαιρεθεί από το πορτοφόλι σας. Βεβαιωθείτε ότι έχετε την αρχική Μυστική Φράση Ανάκτησης ή το ιδιωτικό κλειδί για αυτόν τον λογαριασμό που έχετε εισαγάγει πριν συνεχίσετε. Μπορείτε να εισαγάγετε ή να δημιουργήσετε ξανά λογαριασμούς από το αναπτυσσόμενο μενού λογαριασμών. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Βεβαιωθείτε ότι έχετε τη Μυστική Φράση Ανάκτησης ή το ιδιωτικό κλειδί για αυτόν τον λογαριασμό πριν τον αφαιρέσετε.",
@@ -6288,9 +6245,6 @@
   "search": {
     "message": "Αναζήτηση"
   },
-  "searchAccounts": {
-    "message": "Αναζήτηση λογαριασμών"
-  },
   "searchAnAcccountOrContact": {
     "message": "Αναζήτηση λογαριασμού ή επαφής"
   },
@@ -6432,12 +6386,6 @@
   "selectAccountToConnect": {
     "message": "Επιλέξτε έναν λογαριασμό για σύνδεση"
   },
-  "selectAccounts": {
-    "message": "Επιλέξτε τον λογαριασμό (-ούς) που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο"
-  },
-  "selectAccountsForSnap": {
-    "message": "Επιλέξτε τον λογαριασμό (-ους) που θέλετε να χρησιμοποιήσετε με αυτό το snap"
-  },
   "selectAll": {
     "message": "Επιλογή όλων"
   },
@@ -6476,9 +6424,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Επιλογή διαφορετικού λογαριασμού"
-  },
-  "selectingAllWillAllow": {
-    "message": "Επιλέγοντας τα όλα θα επιτρέψετε σε αυτόν τον ιστότοπο να δει όλους τους τρεχούμενους λογαριασμούς σας. Βεβαιωθείτε ότι εμπιστεύεστε αυτόν τον ιστότοπο."
   },
   "send": {
     "message": "Αποστολή"
@@ -8800,9 +8745,6 @@
   "usedByClients": {
     "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
-  "userName": {
-    "message": "Όνομα χρήστη"
-  },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"
   },
@@ -8822,14 +8764,8 @@
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Προβολή επαφής"
-  },
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"
-  },
-  "viewMore": {
-    "message": "Δείτε περισσότερα"
   },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"

@@ -1,6 +1,6 @@
 import { ClaimDraft, ClaimsControllerState } from '@metamask/claims-controller';
 
-export type ClaimsState = {
+type ClaimsState = {
   metamask: ClaimsControllerState;
 };
 
