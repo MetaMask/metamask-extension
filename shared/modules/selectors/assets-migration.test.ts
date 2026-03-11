@@ -701,8 +701,10 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
           },
           assetsPrice: {
             [nativeEthAssetId]: {
+              assetPriceType: 'fungible',
               id: 'eth-price',
               price: 2500,
+              usdPrice: 3000,
               lastUpdated,
               marketCap: 300000000000,
               allTimeHigh: 4000,
@@ -731,57 +733,9 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
         ETH: {
           conversionDate: lastUpdated / 1000,
           conversionRate: 2500,
-          usdConversionRate: null,
+          usdConversionRate: 3000,
         },
       });
-    });
-
-    it('sets usdConversionRate when selectedCurrency is usd', () => {
-      const lastUpdated = 1700000000000;
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
-            },
-          },
-          currentCurrency: 'eur',
-          selectedCurrency: 'usd',
-          currencyRates: {},
-          assetsInfo: {
-            [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
-          },
-          assetsPrice: {
-            [nativeEthAssetId]: {
-              id: 'eth-price',
-              price: 2000,
-              lastUpdated,
-              marketCap: 0,
-              allTimeHigh: 0,
-              allTimeLow: 0,
-              totalVolume: 0,
-              high1d: 0,
-              low1d: 0,
-              circulatingSupply: 0,
-              dilutedMarketCap: 0,
-              marketCapPercentChange1d: 0,
-              priceChange1d: 0,
-              pricePercentChange1h: 0,
-              pricePercentChange1d: 0,
-              pricePercentChange7d: 0,
-              pricePercentChange14d: 0,
-              pricePercentChange30d: 0,
-              pricePercentChange200d: 0,
-              pricePercentChange1y: 0,
-            },
-          },
-        },
-      };
-      const result = getCurrencyRateControllerCurrencyRates(state);
-
-      expect(result.ETH.usdConversionRate).toBe(2000);
     });
   });
 });
@@ -830,7 +784,7 @@ describe('getTokenRatesControllerMarketData', () => {
   describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives marketData from assetsPrice with prices converted to native currency', () => {
       const lastUpdated = 1700000000000;
-      const ethPrice = 2000; // USD per ETH
+      const ethPriceInUsd = 2000;
       const usdcPriceInUsd = 1;
       const state = {
         metamask: {
@@ -855,8 +809,10 @@ describe('getTokenRatesControllerMarketData', () => {
           },
           assetsPrice: {
             [nativeEthAssetId]: {
+              assetPriceType: 'fungible',
               id: 'eth-price',
-              price: ethPrice,
+              price: ethPriceInUsd,
+              usdPrice: ethPriceInUsd,
               lastUpdated,
               marketCap: 300e9,
               allTimeHigh: 4000,
@@ -877,8 +833,10 @@ describe('getTokenRatesControllerMarketData', () => {
               pricePercentChange1y: 30,
             },
             [erc20AssetId]: {
+              assetPriceType: 'fungible',
               id: 'usdc-price',
               price: usdcPriceInUsd,
+              usdPrice: usdcPriceInUsd,
               lastUpdated,
               marketCap: 30e9,
               allTimeHigh: 1.1,
@@ -908,7 +866,7 @@ describe('getTokenRatesControllerMarketData', () => {
 
       // ETH native rate is 2000 USD; USDC price 1 USD -> 1/2000 ETH
       const marketData = result['0x1'][erc20AssetAddressChecksummed];
-      expect(marketData.price).toBe(usdcPriceInUsd / ethPrice);
+      expect(marketData.price).toBe(usdcPriceInUsd / ethPriceInUsd);
       expect(marketData.currency).toBe('ETH');
       expect(marketData.tokenAddress).toBe(erc20AssetAddressChecksummed);
     });
@@ -969,8 +927,10 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
           conversionRates: {},
           assetsPrice: {
             [nativeEthAssetId]: {
+              assetPriceType: 'fungible',
               id: 'eth-price',
               price: 2000,
+              usdPrice: 2000,
               lastUpdated,
               marketCap: 300e9,
               allTimeHigh: 4000,
@@ -991,8 +951,10 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
               pricePercentChange1y: 30,
             },
             [solanaTokenAssetId]: {
+              assetPriceType: 'fungible',
               id: 'sol-usdc-price',
               price: 1.02,
+              usdPrice: 1.02,
               lastUpdated,
               marketCap: 30e9,
               allTimeHigh: 1.1,
