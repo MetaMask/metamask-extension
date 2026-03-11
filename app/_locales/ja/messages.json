@@ -1200,9 +1200,6 @@
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
-  "buildContactList": {
-    "message": "連絡先リストを作成する"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
   },
@@ -2124,9 +2121,6 @@
   "delete": {
     "message": "削除"
   },
-  "deleteContact": {
-    "message": "連絡先を削除"
-  },
   "deleteMetaMetricsData": {
     "message": "MetaMetricsデータを削除"
   },
@@ -2357,9 +2351,6 @@
   },
   "editANickname": {
     "message": "ニックネームを編集"
-  },
-  "editAccountName": {
-    "message": "アカウント名を編集"
   },
   "editAccounts": {
     "message": "アカウントを編集"
@@ -3121,9 +3112,6 @@
   },
   "hidden": {
     "message": "非表示"
-  },
-  "hiddenAccounts": {
-    "message": "非表示のアカウント"
   },
   "hide": {
     "message": "非表示"
@@ -3989,10 +3977,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSDへの変換"
+    "message": "$1をmUSDに変換",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSDへの変換"
+    "message": "$1をmUSDに変換",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
@@ -4260,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新しい連絡先"
   },
   "newContract": {
     "message": "新しいコントラクト"
@@ -6238,9 +6225,6 @@
   },
   "search": {
     "message": "検索"
-  },
-  "searchAccounts": {
-    "message": "アカウントを検索"
   },
   "searchAnAcccountOrContact": {
     "message": "アカウントまたは連絡先を検索"
@@ -8742,9 +8726,6 @@
   "usedByClients": {
     "message": "さまざまな異なるクライアントによって使用されています"
   },
-  "userName": {
-    "message": "ユーザー名"
-  },
   "userOpContractDeployError": {
     "message": "スマートコントラクトアカウントからのコントラクトの展開はサポートされていません"
   },
@@ -8763,9 +8744,6 @@
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "連絡先を表示"
   },
   "viewDetails": {
     "message": "詳細を表示"

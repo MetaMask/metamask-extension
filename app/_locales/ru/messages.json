@@ -1200,9 +1200,6 @@
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
-  "buildContactList": {
-    "message": "Создайте список контактов"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
   },
@@ -2124,9 +2121,6 @@
   "delete": {
     "message": "Удалить"
   },
-  "deleteContact": {
-    "message": "Удалить контакт"
-  },
   "deleteMetaMetricsData": {
     "message": "Удалить данные MetaMetrics"
   },
@@ -2357,9 +2351,6 @@
   },
   "editANickname": {
     "message": "Редактировать псевдоним"
-  },
-  "editAccountName": {
-    "message": "Изменить имя счета"
   },
   "editAccounts": {
     "message": "Изменить счета"
@@ -3121,9 +3112,6 @@
   },
   "hidden": {
     "message": "Скрыто"
-  },
-  "hiddenAccounts": {
-    "message": "Скрыть счета"
   },
   "hide": {
     "message": "Скрыть"
@@ -3989,10 +3977,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
@@ -4260,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Новый контакт"
   },
   "newContract": {
     "message": "Новый контракт"
@@ -6244,9 +6231,6 @@
   },
   "search": {
     "message": "Поиск"
-  },
-  "searchAccounts": {
-    "message": "Поиск счетов"
   },
   "searchAnAcccountOrContact": {
     "message": "Поиск по аккаунту или контакту"
@@ -8748,9 +8732,6 @@
   "usedByClients": {
     "message": "Используется множеством разных клиентов"
   },
-  "userName": {
-    "message": "Имя пользователя"
-  },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"
   },
@@ -8769,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Смотреть контакт"
   },
   "viewDetails": {
     "message": "Просмотр сведений"

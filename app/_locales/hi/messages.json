@@ -1200,9 +1200,6 @@
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
   },
-  "buildContactList": {
-    "message": "अपनी कॉन्टेक्ट लिस्ट बनाएं"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask दुनिया भर में डिज़ाइन किया और बनाया गया है।"
   },
@@ -2124,9 +2121,6 @@
   "delete": {
     "message": "मिटाएं"
   },
-  "deleteContact": {
-    "message": "कॉन्टेक्ट मिटाएं"
-  },
   "deleteMetaMetricsData": {
     "message": "मेटामेट्रिक्स डेटा हटाएं"
   },
@@ -2357,9 +2351,6 @@
   },
   "editANickname": {
     "message": "उपनाम बदलें"
-  },
-  "editAccountName": {
-    "message": "अकाउंट नाम बदलें"
   },
   "editAccounts": {
     "message": "एकाउंट्स बदलें"
@@ -3121,9 +3112,6 @@
   },
   "hidden": {
     "message": "छिपा हुआ"
-  },
-  "hiddenAccounts": {
-    "message": "छिपाए गए अकाउंट"
   },
   "hide": {
     "message": "छुपाएं"
@@ -3989,10 +3977,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD कन्वर्शन"
+    "message": "$1 को mUSD में बदलें",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD कन्वर्शन"
+    "message": "$1 को mUSD में बदलें",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
@@ -4260,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "अकाउंट $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "नया कॉन्टेक्ट"
   },
   "newContract": {
     "message": "नया कॉन्ट्रैक्ट"
@@ -6238,9 +6225,6 @@
   },
   "search": {
     "message": "ढूंढें"
-  },
-  "searchAccounts": {
-    "message": "अकाउंट्स खोजें"
   },
   "searchAnAcccountOrContact": {
     "message": "किसी अकाउंट या कॉन्टेक्ट को ढूंढें"
@@ -8742,9 +8726,6 @@
   "usedByClients": {
     "message": "विभिन्न क्लाइंट द्वारा इस्तेमाल किया जाता है"
   },
-  "userName": {
-    "message": "यूज़र"
-  },
   "userOpContractDeployError": {
     "message": "स्मार्ट कॉन्ट्रैक्ट अकाउंट से कॉन्ट्रैक्ट डीप्लॉयमेंट को सपोर्ट नहीं करता"
   },
@@ -8763,9 +8744,6 @@
   "viewAddressOnExplorer": {
     "message": "$1 पर देखें",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "कॉन्टेक्ट देखें"
   },
   "viewDetails": {
     "message": "विवरण देखें"

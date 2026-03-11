@@ -1200,9 +1200,6 @@
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
-  "buildContactList": {
-    "message": "Crie sua lista de contatos"
-  },
   "builtAroundTheWorld": {
     "message": "A MetaMask é concebida e desenvolvida em todo o mundo."
   },
@@ -2124,9 +2121,6 @@
   "delete": {
     "message": "Excluir"
   },
-  "deleteContact": {
-    "message": "Excluir contato"
-  },
   "deleteMetaMetricsData": {
     "message": "Excluir dados do MetaMetrics"
   },
@@ -2357,9 +2351,6 @@
   },
   "editANickname": {
     "message": "Editar apelido"
-  },
-  "editAccountName": {
-    "message": "Editar nome da conta"
   },
   "editAccounts": {
     "message": "Editar contas"
@@ -3121,9 +3112,6 @@
   },
   "hidden": {
     "message": "Oculto"
-  },
-  "hiddenAccounts": {
-    "message": "Contas ocultas"
   },
   "hide": {
     "message": "Ocultar"
@@ -3989,10 +3977,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversão mUSD"
+    "message": "Converter $1 para mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversão mUSD"
+    "message": "Converter $1 para mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
@@ -4260,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Novo contato"
   },
   "newContract": {
     "message": "Novo contrato"
@@ -6244,9 +6231,6 @@
   },
   "search": {
     "message": "Buscar"
-  },
-  "searchAccounts": {
-    "message": "Pesquisar contas"
   },
   "searchAnAcccountOrContact": {
     "message": "Pesquise uma conta ou contato"
@@ -8748,9 +8732,6 @@
   "usedByClients": {
     "message": "Usado por diversos clientes diferentes"
   },
-  "userName": {
-    "message": "Nome de usuário"
-  },
   "userOpContractDeployError": {
     "message": "A implementação do contrato a partir de uma conta de contrato inteligente não é suportada"
   },
@@ -8769,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Ver contato"
   },
   "viewDetails": {
     "message": "Ver detalhes"

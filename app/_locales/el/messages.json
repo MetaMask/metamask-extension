@@ -1200,9 +1200,6 @@
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
   },
-  "buildContactList": {
-    "message": "Δημιουργήστε τη λίστα επαφών σας"
-  },
   "builtAroundTheWorld": {
     "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
   },
@@ -2124,9 +2121,6 @@
   "delete": {
     "message": "Διαγραφή"
   },
-  "deleteContact": {
-    "message": "Διαγραφή επαφής"
-  },
   "deleteMetaMetricsData": {
     "message": "Διαγραφή δεδομένων MetaMetrics"
   },
@@ -2357,9 +2351,6 @@
   },
   "editANickname": {
     "message": "Επεξεργασία ψευδωνύμου"
-  },
-  "editAccountName": {
-    "message": "Επεξεργασία ονόματος λογαριασμού"
   },
   "editAccounts": {
     "message": "Επεξεργασία λογαριασμών"
@@ -3121,9 +3112,6 @@
   },
   "hidden": {
     "message": "Απόκρυψη"
-  },
-  "hiddenAccounts": {
-    "message": "Κρυφοί λογαριασμοί"
   },
   "hide": {
     "message": "Απόκρυψη"
@@ -3989,10 +3977,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατροπή $1 σε mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατροπή $1 σε mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε τουλάχιστον 1 token."
@@ -4260,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Νέα επαφή"
   },
   "newContract": {
     "message": "Νέο συμβόλαιο"
@@ -6244,9 +6231,6 @@
   },
   "search": {
     "message": "Αναζήτηση"
-  },
-  "searchAccounts": {
-    "message": "Αναζήτηση λογαριασμών"
   },
   "searchAnAcccountOrContact": {
     "message": "Αναζήτηση λογαριασμού ή επαφής"
@@ -8748,9 +8732,6 @@
   "usedByClients": {
     "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
-  "userName": {
-    "message": "Όνομα χρήστη"
-  },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"
   },
@@ -8769,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Προβολή επαφής"
   },
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"

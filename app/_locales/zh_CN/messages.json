@@ -1200,9 +1200,6 @@
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
   },
-  "buildContactList": {
-    "message": "建立您的联系人列表"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
   },
@@ -2124,9 +2121,6 @@
   "delete": {
     "message": "删除"
   },
-  "deleteContact": {
-    "message": "删除联系信息"
-  },
   "deleteMetaMetricsData": {
     "message": "删除MetaMetrics数据"
   },
@@ -2357,9 +2351,6 @@
   },
   "editANickname": {
     "message": "编辑昵称"
-  },
-  "editAccountName": {
-    "message": "编辑账户名"
   },
   "editAccounts": {
     "message": "编辑账户"
@@ -3121,9 +3112,6 @@
   },
   "hidden": {
     "message": "隐藏"
-  },
-  "hiddenAccounts": {
-    "message": "隐藏账户"
   },
   "hide": {
     "message": "隐藏"
@@ -3989,10 +3977,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -4260,9 +4250,6 @@
   "newAccountNumberName": {
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新联系人"
   },
   "newContract": {
     "message": "新合约"
@@ -6238,9 +6225,6 @@
   },
   "search": {
     "message": "搜索"
-  },
-  "searchAccounts": {
-    "message": "搜索账户"
   },
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"
@@ -8742,9 +8726,6 @@
   "usedByClients": {
     "message": "可用于各种不同的客户端"
   },
-  "userName": {
-    "message": "用户名"
-  },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
   },
@@ -8763,9 +8744,6 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "查看联系人"
   },
   "viewDetails": {
     "message": "查看详情"
