@@ -69,7 +69,7 @@ export const ContactNetworks = ({
         alignItems={BoxAlignItems.Center}
         gap={2}
         padding={4}
-        className={`flex cursor-pointer rounded-xl ${
+        className={`flex cursor-pointer ${
           selected ? 'bg-background-muted' : 'bg-transparent'
         }`}
         onClick={() => {
@@ -124,8 +124,6 @@ export const ContactNetworks = ({
             {renderNetworkList(nonTestNetworks)}
 
             <Box
-              padding={4}
-              paddingLeft={0}
               flexDirection={BoxFlexDirection.Column}
               className="flex flex-col"
             >
@@ -133,7 +131,7 @@ export const ContactNetworks = ({
                 variant={TextVariant.BodyMd}
                 fontWeight={FontWeight.Medium}
                 color={TextColor.TextDefault}
-                className="mb-2"
+                className="p-4"
               >
                 {t('testnets')}
               </Text>

@@ -70,9 +70,6 @@ class ContactsSettings {
    * Clicks the add contact button (same for empty state and when contacts exist).
    */
   private async clickAddContact(): Promise<void> {
-    await this.driver.waitForSelector(this.addContactButton, {
-      timeout: 2000,
-    });
     await this.driver.clickElement(this.addContactButton);
   }
 

@@ -144,45 +144,43 @@ export function ContactsListPage() {
   const showUpdatedToastNow =
     showUpdatedToast || Boolean(location.state?.showContactUpdatedToast);
 
-  return (
-    <Page data-testid="contacts-page">
+  const toastContent = (
+    <>
       {showDeletedToastNow && (
-        <ToastContainer>
-          <Toast
-            startAdornment={
-              <Icon
-                name={IconName.CheckBold}
-                color={IconColor.SuccessDefault}
-              />
-            }
-            text={t('contactDeleted')}
-            onClose={() => setShowDeletedToast(false)}
-            autoHideTime={TOAST_AUTO_HIDE_MS}
-            onAutoHideToast={() => setShowDeletedToast(false)}
-            borderRadius={BorderRadius.LG}
-            textClassName="text-base"
-            data-testid="contact-deleted-toast"
-          />
-        </ToastContainer>
+        <Toast
+          startAdornment={
+            <Icon name={IconName.CheckBold} color={IconColor.SuccessDefault} />
+          }
+          text={t('contactDeleted')}
+          onClose={() => setShowDeletedToast(false)}
+          autoHideTime={TOAST_AUTO_HIDE_MS}
+          onAutoHideToast={() => setShowDeletedToast(false)}
+          borderRadius={BorderRadius.LG}
+          textClassName="text-base"
+          data-testid="contact-deleted-toast"
+        />
       )}
       {showUpdatedToastNow && (
-        <ToastContainer>
-          <Toast
-            startAdornment={
-              <Icon
-                name={IconName.CheckBold}
-                color={IconColor.SuccessDefault}
-              />
-            }
-            text={t('contactUpdated')}
-            onClose={() => setShowUpdatedToast(false)}
-            autoHideTime={TOAST_AUTO_HIDE_MS}
-            onAutoHideToast={() => setShowUpdatedToast(false)}
-            borderRadius={BorderRadius.LG}
-            textClassName="text-base"
-            data-testid="contact-updated-toast"
-          />
-        </ToastContainer>
+        <Toast
+          startAdornment={
+            <Icon name={IconName.CheckBold} color={IconColor.SuccessDefault} />
+          }
+          text={t('contactUpdated')}
+          onClose={() => setShowUpdatedToast(false)}
+          autoHideTime={TOAST_AUTO_HIDE_MS}
+          onAutoHideToast={() => setShowUpdatedToast(false)}
+          borderRadius={BorderRadius.LG}
+          textClassName="text-base"
+          data-testid="contact-updated-toast"
+        />
+      )}
+    </>
+  );
+
+  return (
+    <Page data-testid="contacts-page">
+      {!contacts.length && (showDeletedToastNow || showUpdatedToastNow) && (
+        <ToastContainer>{toastContent}</ToastContainer>
       )}
       <Header
         startAccessory={
@@ -200,9 +198,7 @@ export function ContactsListPage() {
       </Header>
       <Box
         flexDirection={BoxFlexDirection.Column}
-        className={`flex min-h-0 w-full flex-1 flex-col ${
-          showDeletedToastNow || showUpdatedToastNow ? 'pb-24' : ''
-        }`}
+        className="flex min-h-0 w-full flex-1 flex-col"
       >
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -274,11 +270,15 @@ export function ContactsListPage() {
         </Box>
         {contacts.length > 0 && (
           <Box
+            flexDirection={BoxFlexDirection.Column}
             padding={4}
             paddingBottom={6}
             paddingTop={4}
             className="shrink-0 bg-background-default"
           >
+            {(showDeletedToastNow || showUpdatedToastNow) && (
+              <Box marginBottom={4}>{toastContent}</Box>
+            )}
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
