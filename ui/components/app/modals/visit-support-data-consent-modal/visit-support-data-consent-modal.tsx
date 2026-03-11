@@ -94,21 +94,37 @@ const VisitSupportDataConsentModal: React.FC<
 
   const handleClickNoShare = useCallback(() => {
     onClose();
-    // When user doesn't consent, strip all query parameters for privacy
-    const supportLinkWithoutQueryParams = SUPPORT_LINK?.split('?')[0] ?? '';
+    // When user doesn't consent, strip only personal data while preserving
+    // non-personal attribution parameters like utm_source
+    let supportLinkWithoutPersonalData = SUPPORT_LINK as string;
+
+    if (SUPPORT_LINK) {
+      const url = new URL(SUPPORT_LINK);
+      const personalParams = [
+        'metamask_profile_id',
+        'metamask_metametrics_id',
+        'shield_id',
+        'metamask_version',
+      ];
+
+      // Remove only personal parameters, keep others like utm_source
+      personalParams.forEach((param) => url.searchParams.delete(param));
+      supportLinkWithoutPersonalData = url.toString();
+    }
+
     trackEvent(
       {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SupportLinkClicked,
         properties: {
-          url: supportLinkWithoutQueryParams,
+          url: supportLinkWithoutPersonalData,
         },
       },
       {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    openWindow(supportLinkWithoutQueryParams);
+    openWindow(supportLinkWithoutPersonalData);
   }, [onClose, trackEvent]);
 
   return (

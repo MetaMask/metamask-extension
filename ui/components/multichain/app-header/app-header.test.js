@@ -168,11 +168,10 @@ describe('App Header', () => {
         fireEvent.click(rejectButton);
 
         await waitFor(() => {
-          // When user doesn't consent, URL should not include query parameters
-          const supportLinkWithoutQueryParams = SUPPORT_LINK?.split('?')[0];
-          expect(openWindow).toHaveBeenCalledWith(
-            supportLinkWithoutQueryParams,
-          );
+          // When user doesn't consent, non-personal params (utm_source) are preserved
+          // URL constructor normalizes the URL (adds / before ?)
+          const expectedUrl = new URL(SUPPORT_LINK).toString();
+          expect(openWindow).toHaveBeenCalledWith(expectedUrl);
         });
       });
     });
