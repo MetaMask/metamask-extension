@@ -1,8 +1,8 @@
 import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import { ContactsEmptyState } from './contacts-empty-state';
-import { ThemeType } from '../../../../../shared/constants/preferences';
 
 jest.mock('../../../hooks/useTheme', () => ({
   useTheme: jest.fn(),
