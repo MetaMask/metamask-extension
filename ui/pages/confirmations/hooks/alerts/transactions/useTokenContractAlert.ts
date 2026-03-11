@@ -44,8 +44,8 @@ export function useTokenContractAlert(): Alert[] {
         key: 'tokenContractAddress',
         field: RowAlertKey.InteractingWith,
         content: TokenContractAlertMessage(),
-        reason: t('tokenContractError'),
-        severity: Severity.Danger,
+        reason: t('tokenContractWarning'),
+        severity: Severity.Warning,
       },
     ];
   }, [isTokenContract, t]);

@@ -25,10 +25,12 @@ import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
 import { HexData } from '../hex-data';
+import { SendAlertModal } from '../send-alert-modal';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
   const [hexDataError, setHexDataError] = useState<string>();
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const { asset, toResolved, nonEVMSubmitError } = useSendContext();
   const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
   const { isNonEvmSendType } = useSendType();
@@ -37,17 +39,31 @@ export const AmountRecipient = () => {
   const { captureRecipientSelected } = useRecipientSelectionMetrics();
   const recipientValidationResult = useRecipientValidation();
 
-  const hasError =
+  const { recipientErrorAllowAcknowledge, acknowledgeError } =
+    recipientValidationResult;
+
+  const hasBlockingError =
     Boolean(amountError) ||
-    Boolean(recipientValidationResult.recipientError) ||
+    (Boolean(recipientValidationResult.recipientError) &&
+      !recipientErrorAllowAcknowledge) ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
-  const isDisabled = hasError || !toResolved;
+  const isDisabled = hasBlockingError || !toResolved;
 
-  const onClick = useCallback(async () => {
+  const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
+    useState(false);
+
+  const openAlertModal = useCallback(() => {
+    setShouldSubmitOnAcknowledge(false);
+    setIsAlertModalOpen(true);
+  }, []);
+
+  const handleAlertModalClose = useCallback(() => {
+    setIsAlertModalOpen(false);
+  }, []);
+
+  const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {
-      // Non EVM flows need an extra validation because "value" can be empty dependent on the blockchain (e.g it's fine for Solana but not for Bitcoin)
-      // Hence we do a call for `validateNonEvmAmountAsync` here to raise UI validation errors if exists
       const nonEvmAmountError = await validateNonEvmAmountAsync();
       if (nonEvmAmountError) {
         return;
@@ -64,6 +80,23 @@ export const AmountRecipient = () => {
     validateNonEvmAmountAsync,
   ]);
 
+  const handleAlertModalAcknowledge = useCallback(async () => {
+    setIsAlertModalOpen(false);
+    acknowledgeError();
+    if (shouldSubmitOnAcknowledge) {
+      await proceedWithSubmit();
+    }
+  }, [acknowledgeError, shouldSubmitOnAcknowledge, proceedWithSubmit]);
+
+  const onClick = useCallback(async () => {
+    if (recipientErrorAllowAcknowledge) {
+      setShouldSubmitOnAcknowledge(true);
+      setIsAlertModalOpen(true);
+      return;
+    }
+    await proceedWithSubmit();
+  }, [recipientErrorAllowAcknowledge, proceedWithSubmit]);
+
   if (!asset) {
     return <LoadingScreen />;
   }
@@ -79,7 +112,10 @@ export const AmountRecipient = () => {
     >
       <Box>
         <SendHero asset={asset as Asset} />
-        <Recipient recipientValidationResult={recipientValidationResult} />
+        <Recipient
+          recipientValidationResult={recipientValidationResult}
+          onAlertIconClick={openAlertModal}
+        />
         <Amount amountError={amountError} />
         <HexData setHexDataError={setHexDataError} />
       </Box>
@@ -88,12 +124,21 @@ export const AmountRecipient = () => {
         onClick={onClick}
         size={ButtonSize.Lg}
         backgroundColor={
-          hasError ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
+          hasBlockingError
+            ? BackgroundColor.errorDefault
+            : BackgroundColor.iconDefault
         }
         marginBottom={4}
       >
         {amountError ?? hexDataError ?? nonEVMSubmitError ?? t('continue')}
       </Button>
+      <SendAlertModal
+        isOpen={isAlertModalOpen}
+        title={t('smartContractAddress')}
+        errorMessage={t('smartContractAddressWarning')}
+        onAcknowledge={handleAlertModalAcknowledge}
+        onClose={handleAlertModalClose}
+      />
     </Box>
   );
 };

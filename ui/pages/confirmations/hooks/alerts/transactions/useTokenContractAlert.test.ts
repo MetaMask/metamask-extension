@@ -111,7 +111,7 @@ describe('useTokenContractAlert', () => {
   });
 
   describe('when recipient is a token contract', () => {
-    it('returns a danger alert for ERC20 token', async () => {
+    it('returns a warning alert for ERC20 token', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC20',
       } as TokenStandAndDetails);
@@ -134,13 +134,13 @@ describe('useTokenContractAlert', () => {
         expect.objectContaining({
           key: 'tokenContractAddress',
           field: RowAlertKey.InteractingWith,
-          reason: 'tokenContractError',
-          severity: Severity.Danger,
+          reason: 'tokenContractWarning',
+          severity: Severity.Warning,
         }),
       );
     });
 
-    it('returns a danger alert for ERC721 token', async () => {
+    it('returns a warning alert for ERC721 token', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC721',
       } as TokenStandAndDetails);
@@ -162,7 +162,7 @@ describe('useTokenContractAlert', () => {
       expect(result.current[0]).toEqual(
         expect.objectContaining({
           key: 'tokenContractAddress',
-          severity: Severity.Danger,
+          severity: Severity.Warning,
         }),
       );
     });

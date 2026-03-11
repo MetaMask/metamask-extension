@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 
 import {
+  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -8,7 +9,9 @@ import {
   ModalBody,
   ModalContentSize,
   Text,
+  Icon,
   IconName,
+  IconSize,
   ButtonIcon,
   ButtonIconSize,
   ButtonLink,
@@ -17,6 +20,9 @@ import {
   HelpTextSeverity,
 } from '../../../../../components/component-library';
 import {
+  AlignItems,
+  Display,
+  IconColor,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -30,14 +36,16 @@ import { RecipientInput } from '../recipient-input';
 
 export const Recipient = ({
   recipientValidationResult,
+  onAlertIconClick,
 }: {
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
+  onAlertIconClick?: () => void;
 }) => {
   const {
     recipientError,
     recipientErrorLearnMoreLink,
     recipientErrorAllowAcknowledge,
-    acknowledgeError,
+    isRecipientAcknowledgeable,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
@@ -90,45 +98,49 @@ export const Recipient = ({
 
   return (
     <>
-      <Text variant={TextVariant.bodyMdMedium} paddingBottom={1}>
-        {t('to')}
-      </Text>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        gap={1}
+        paddingBottom={1}
+      >
+        <Text variant={TextVariant.bodyMdMedium}>{t('to')}</Text>
+        {to === toAddressValidated && isRecipientAcknowledgeable && (
+          <Icon
+            name={IconName.Danger}
+            size={IconSize.Sm}
+            color={IconColor.warningDefault}
+            onClick={onAlertIconClick}
+            style={{ cursor: 'pointer' }}
+            data-testid="recipient-alert-icon"
+          />
+        )}
+      </Box>
       <RecipientInput
         openRecipientModal={openRecipientModal}
         recipientInputRef={recipientInputRef}
         recipientValidationResult={recipientValidationResult}
       />
-      {to === toAddressValidated && recipientError && (
-        <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
-          {recipientError}
-          {recipientErrorLearnMoreLink && (
-            <>
-              {' '}
-              <ButtonLink
-                size={ButtonLinkSize.Inherit}
-                href={recipientErrorLearnMoreLink}
-                externalLink
-                data-testid="recipient-error-learn-more-link"
-              >
-                {t('learnMore')}
-              </ButtonLink>
-            </>
-          )}
-        </HelpText>
-      )}
-      {to === toAddressValidated && recipientErrorAllowAcknowledge && (
-        <Text
-          as="a"
-          color={TextColor.primaryDefault}
-          variant={TextVariant.bodyXs}
-          marginTop={1}
-          onClick={acknowledgeError}
-          style={{ cursor: 'pointer' }}
-          data-testid="recipient-error-acknowledge"
-        >
-          {t('iUnderstand')}
-        </Text>
-      )}
+      {to === toAddressValidated &&
+        recipientError &&
+        !recipientErrorAllowAcknowledge && (
+          <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+            {recipientError}
+            {recipientErrorLearnMoreLink && (
+              <>
+                {' '}
+                <ButtonLink
+                  size={ButtonLinkSize.Inherit}
+                  href={recipientErrorLearnMoreLink}
+                  externalLink
+                  data-testid="recipient-error-learn-more-link"
+                >
+                  {t('learnMore')}
+                </ButtonLink>
+              </>
+            )}
+          </HelpText>
+        )}
       {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
