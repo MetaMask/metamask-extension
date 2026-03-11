@@ -23,10 +23,6 @@ import {
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
-  CONTACT_LIST_ROUTE,
-  CONTACT_ADD_ROUTE,
-  CONTACT_EDIT_ROUTE,
-  CONTACT_VIEW_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   GENERAL_ROUTE,
   NETWORKS_FORM_ROUTE,
@@ -63,10 +59,6 @@ const ROUTES_TO_I18N_KEYS = {
   [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
   [BACKUPANDSYNC_ROUTE]: 'backupAndSync',
-  [CONTACT_ADD_ROUTE]: 'newContact',
-  [CONTACT_EDIT_ROUTE]: 'editContact',
-  [CONTACT_LIST_ROUTE]: 'contacts',
-  [CONTACT_VIEW_ROUTE]: 'viewContact',
   [DEVELOPER_OPTIONS_ROUTE]: 'developerOptions',
   [EXPERIMENTAL_ROUTE]: 'experimental',
   [GENERAL_ROUTE]: 'general',
@@ -101,8 +93,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const pathNameTail = pathname.match(/[^/]+$/u)?.[0] || '';
   const isAddressEntryPage = pathNameTail.includes('0x');
-  const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
-  const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
@@ -163,11 +153,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   let backRoute = SETTINGS_ROUTE;
-  if (isEditContactPage) {
-    backRoute = `${CONTACT_VIEW_ROUTE}/${pathNameTail}`;
-  } else if (isAddressEntryPage || isAddContactPage) {
-    backRoute = CONTACT_LIST_ROUTE;
-  } else if (isNetworksFormPage) {
+  if (isNetworksFormPage) {
     backRoute = NETWORKS_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
