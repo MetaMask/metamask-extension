@@ -845,7 +845,6 @@ describe('NetworkForm Component', () => {
 
     await waitFor(() => {
       expect(addNetwork).toHaveBeenCalledTimes(1);
-      // Should only have 1 endpoint (no duplicate)
       expect(addNetwork).toHaveBeenCalledWith(
         expect.objectContaining({
           chainId: '0x89',
