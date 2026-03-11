@@ -218,9 +218,10 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      search: 'accountGroupId=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
+    });
   });
 
   it('calls handleAccountRenameAction when clicking the rename option', async () => {

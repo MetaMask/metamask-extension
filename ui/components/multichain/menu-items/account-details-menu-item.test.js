@@ -45,10 +45,9 @@ describe('AccountDetailsMenuItem', () => {
 
     fireEvent.click(getByTestId('account-list-menu-details'));
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(
-        mockInternalAccount.address,
-      )}`,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      search: `accountGroupId=${encodeURIComponent(mockInternalAccount.address)}`,
+    });
   });
 });
