@@ -15,8 +15,7 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
 > = ({ controllerMessenger, initMessenger }) => {
   const controller = new TokenDetectionController({
     // @ts-expect-error - TokenBalancesControllerMessenger type is incorrect - to investigate
-    messenger:
-      controllerMessenger as unknown as PackageTokenDetectionControllerMessenger,
+    messenger: controllerMessenger,
     disabled: false,
     getBalancesInSingleCall: (...args) =>
       initMessenger.call(
