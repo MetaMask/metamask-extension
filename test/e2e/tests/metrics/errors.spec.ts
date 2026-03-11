@@ -14,6 +14,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { getBooleanFlag } from '../../../../shared/lib/common-utils';
 
 const FEATURE_FLAGS_RESPONSE = [
   { feature1: true },
@@ -179,7 +180,7 @@ function transformUiState(data: JsonRpcResponse<Json>): JsonRpcResponse<Json> {
 async function matchesSnapshot({
   data,
   snapshot,
-  update = process.env.UPDATE_SNAPSHOTS === 'true',
+  update = getBooleanFlag(process.env.UPDATE_SNAPSHOTS),
 }: {
   data: JsonRpcResponse<Json>;
   snapshot: string;

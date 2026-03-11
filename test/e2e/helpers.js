@@ -5,6 +5,7 @@ const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const WebSocket = require('ws');
+const { getBooleanFlag } = require('../../shared/lib/common-utils');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
@@ -467,7 +468,7 @@ async function withFixtures(options, testSuite) {
     const newHosts = difference(mergedReport, privacySnapshot);
 
     if (newHosts.length > 0) {
-      if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
+      if (getBooleanFlag(process.env.UPDATE_PRIVACY_SNAPSHOT)) {
         writeFileSync(
           './privacy-snapshot.json',
           `${JSON.stringify(mergedReport, null, 2)}\n`, // must add trailing newline to satisfy prettier

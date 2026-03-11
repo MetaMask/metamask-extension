@@ -11,7 +11,7 @@ import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
-import { getBooleanFlag } from '../../lib/util';
+import { getBooleanFlag } from '../../../../shared/lib/common-utils';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';

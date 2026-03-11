@@ -1,4 +1,5 @@
 import { SupportedPermissionType } from '@metamask/gator-permissions-controller';
+import { getBooleanFlag } from '../lib/common-utils';
 import { ENVIRONMENT } from '../../development/build/constants';
 
 export const isProduction = (): boolean => {
@@ -9,15 +10,15 @@ export const isProduction = (): boolean => {
 };
 
 export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
-  return process.env.SEEDLESS_ONBOARDING_ENABLED?.toString() === 'true';
+  return getBooleanFlag(process.env.SEEDLESS_ONBOARDING_ENABLED);
 };
 
 export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
-  return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
+  return getBooleanFlag(process.env.METAMASK_SHIELD_ENABLED);
 };
 
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
-  return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
+  return getBooleanFlag(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS);
 };
 
 /**
@@ -36,9 +37,7 @@ export const getEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
 };
 
 export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
-  return (
-    process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
-  );
+  return getBooleanFlag(process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED);
 };
 
 export const getIsSidePanelFeatureEnabled = (): boolean => {
@@ -67,4 +66,8 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
   }
 
   return true;
+};
+
+export const getIsForcePreinstalledSnapsEnabled = (): boolean => {
+  return getBooleanFlag(process.env.FORCE_PREINSTALLED_SNAPS);
 };

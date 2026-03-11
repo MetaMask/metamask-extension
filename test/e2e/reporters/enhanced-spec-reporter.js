@@ -1,6 +1,7 @@
 // test/e2e/reporters/enhanced-spec-reporter.js
 const { inherits } = require('util');
 const Spec = require('mocha/lib/reporters/spec');
+const { getBooleanFlag } = require('../../../shared/lib/common-utils');
 
 // Enhance stack traces to include more frames and better test file detection
 // Increase stack trace limit to capture more frames (default is 10)
@@ -129,11 +130,12 @@ function printSummary(stats, failures, allTests) {
   };
 
   const isCI =
-    process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    getBooleanFlag(process.env.CI) ||
+    getBooleanFlag(process.env.GITHUB_ACTIONS);
   const useColors =
     !isCI ||
     process.env.FORCE_COLOR === '1' ||
-    process.env.FORCE_COLOR === 'true';
+    getBooleanFlag(process.env.FORCE_COLOR);
 
   const colorize = (text, color) => {
     return useColors && colors[color]

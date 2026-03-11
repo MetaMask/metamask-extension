@@ -48,6 +48,7 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
+import { getBooleanFlag } from '../../../../shared/lib/common-utils';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -148,7 +149,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       isResubmitEnabled: () => false,
     },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
-    testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
+    testGasFeeFlows: getBooleanFlag(process.env.TEST_GAS_FEE_FLOWS),
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
