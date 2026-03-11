@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { strict as assert } from 'assert';
 import type { Mockttp } from 'mockttp';
 import { Driver } from '../webdriver/driver';
@@ -112,9 +113,11 @@ async function mockedSnapExportUsed(mockServer: Mockttp) {
 }
 
 async function mockedNpmInstall(mockServer: Mockttp) {
-  return mockServer.forGet(/https:\/\/registry\.npmjs\.org/u).thenCallback(() => ({
-    statusCode: 429,
-  }));
+  return mockServer
+    .forGet(/https:\/\/registry\.npmjs\.org/u)
+    .thenCallback(() => ({
+      statusCode: 429,
+    }));
 }
 
 async function mockedNpmUpdate(mockServer: Mockttp) {
@@ -382,7 +385,6 @@ describe('Test Snap Metrics', function () {
 
         await driver.openNewPage(DAPP_URL);
 
-        const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
@@ -617,8 +619,6 @@ describe('Test Snap Metrics', function () {
         await driver.openNewPage(DAPP_URL);
 
         const testSnaps = new TestSnaps(driver);
-        const snapInstall = new SnapInstall(driver);
-
         await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
         await testSnaps.checkInstallationComplete(
           'connectUpdateButton',

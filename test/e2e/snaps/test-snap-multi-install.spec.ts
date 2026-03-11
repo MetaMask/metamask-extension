@@ -11,7 +11,9 @@ import {
 } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
-async function mockSnapBinaries(mockServer: { forGet: (url: string) => unknown }) {
+async function mockSnapBinaries(mockServer: {
+  forGet: (url: string) => unknown;
+}) {
   return [await mockBip32Snap(mockServer), await mockBip44Snap(mockServer)];
 }
 
@@ -81,7 +83,7 @@ describe('Test Snap Multi Install', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkInstalledSnapsResult(
-          'npm:@metamask/bip32-example-snap, npm:@metamask/bip44-example-snap'
+          'npm:@metamask/bip32-example-snap, npm:@metamask/bip44-example-snap',
         );
       },
     );

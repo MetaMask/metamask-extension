@@ -8,8 +8,18 @@ import { mockDialogSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { emptyHtmlPage } from '../mock-e2e';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
-async function mockSnapsWebsite(mockServer: Parameters<typeof mockDialogSnap>[0]) {
-  return await (mockServer as { forGet: (u: string) => { thenCallback: (cb: () => { statusCode: number; body: string }) => unknown } })
+async function mockSnapsWebsite(
+  mockServer: Parameters<typeof mockDialogSnap>[0],
+) {
+  return await (
+    mockServer as {
+      forGet: (u: string) => {
+        thenCallback: (
+          cb: () => { statusCode: number; body: string },
+        ) => unknown;
+      };
+    }
+  )
     .forGet('https://snaps.metamask.io/')
     .thenCallback(() => ({
       statusCode: 200,
@@ -17,11 +27,10 @@ async function mockSnapsWebsite(mockServer: Parameters<typeof mockDialogSnap>[0]
     }));
 }
 
-async function mockSnapBinaryAndWebsite(mockServer: Parameters<typeof mockDialogSnap>[0]) {
-  return [
-    await mockDialogSnap(mockServer),
-    await mockSnapsWebsite(mockServer),
-  ];
+async function mockSnapBinaryAndWebsite(
+  mockServer: Parameters<typeof mockDialogSnap>[0],
+) {
+  return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)];
 }
 
 describe('Test Snap UI Links', function () {
@@ -42,10 +51,7 @@ describe('Test Snap UI Links', function () {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectDialogsButton',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
         await testSnaps.checkInstallationComplete(
           'connectDialogsButton',
           'Reconnect to Dialogs Snap',

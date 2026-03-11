@@ -1,6 +1,5 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -25,10 +24,7 @@ describe('Test Snap Images', function () {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectImagesButton',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectImagesButton');
         await testSnaps.checkInstallationComplete(
           'connectImagesButton',
           'Reconnect to Images Snap',

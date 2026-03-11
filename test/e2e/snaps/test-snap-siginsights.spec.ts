@@ -1,16 +1,10 @@
 import { Driver } from '../webdriver/driver';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { withFixtures } from '../helpers';
 import { mockSignatureInsightsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import {
-  DAPP_PATH,
-  DAPP_ONE_URL,
-  DAPP_URL,
-  WINDOW_TITLES,
-} from '../constants';
+import { DAPP_PATH, DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Signature Insights', function () {
   it('tests Signature Insights functionality', async function () {
@@ -31,7 +25,6 @@ describe('Test Snap Signature Insights', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectSignatureInsightsButton',
@@ -63,7 +56,9 @@ describe('Test Snap Signature Insights', function () {
         });
 
         await driver.findElement('#signTypedData');
-        await driver.scrollToElement(await driver.findElement('#signTypedData'));
+        await driver.scrollToElement(
+          await driver.findElement('#signTypedData'),
+        );
         await driver.clickElement('#signTypedData');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Hi, Alice!', tag: 'p' });
@@ -80,7 +75,9 @@ describe('Test Snap Signature Insights', function () {
         });
 
         await driver.findElement('#signTypedDataV3');
-        await driver.scrollToElement(await driver.findElement('#signTypedDataV3'));
+        await driver.scrollToElement(
+          await driver.findElement('#signTypedDataV3'),
+        );
         await driver.clickElement('#signTypedDataV3');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElementSafe('[aria-label="Scroll down"]');
@@ -102,7 +99,9 @@ describe('Test Snap Signature Insights', function () {
         });
 
         await driver.findElement('#signTypedDataV4');
-        await driver.scrollToElement(await driver.findElement('#signTypedDataV4'));
+        await driver.scrollToElement(
+          await driver.findElement('#signTypedDataV4'),
+        );
         await driver.clickElement('#signTypedDataV4');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElementSafe('[aria-label="Scroll down"]');
