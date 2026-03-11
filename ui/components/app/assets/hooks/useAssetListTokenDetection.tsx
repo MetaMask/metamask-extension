@@ -6,7 +6,6 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
-  getSelectedAddress,
   getUseTokenDetection,
 } from '../../../../selectors';
 import { importAllDetectedTokens } from '../util/importAllDetectedTokens';
@@ -34,13 +33,14 @@ const useAssetListTokenDetection = () => {
     [key: string]: Token[];
   } = useSelector(getAllDetectedTokensForSelectedAddress);
   const networkClientId = useSelector(getSelectedNetworkClientId);
-  const selectedAddress = useSelector(getSelectedAddress);
   const useTokenDetection = useSelector(getUseTokenDetection);
   const currentChainId = useSelector(getCurrentChainId);
   const isOnCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
+  const detectedTokensInCurrentNetwork = useSelector(
+    getDetectedTokensInCurrentNetwork,
+  );
   const allNetworks: Record<`0x${string}`, NetworkConfiguration> = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -92,6 +92,8 @@ const useAssetListTokenDetection = () => {
       return;
     }
 
+    const detectedTokens = detectedTokensInCurrentNetwork ?? [];
+
     importAllDetectedTokens(
       isOnCurrentNetwork,
       detectedTokensMultichain,
@@ -107,7 +109,7 @@ const useAssetListTokenDetection = () => {
   }, [
     allNetworks,
     currentChainId,
-    detectedTokens,
+    detectedTokensInCurrentNetwork,
     detectedTokensMultichain,
     handleAddImportedTokens,
     isOnCurrentNetwork,

@@ -163,17 +163,15 @@ export default function CurrencyInput({
       500,
     );
 
-    // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     hexValue,
     asset?.address,
     processNewDecimalValue,
-    isTokenPrimary,
     assetDecimals,
     isDisabled,
     isInputUnchanged,
     isMatchingUpstream,
+    tokenDecimalValue,
   ]);
 
   const renderSwapButton = () => {
