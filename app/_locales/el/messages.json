@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
   },
-  "buildContactList": {
-    "message": "Δημιουργήστε τη λίστα επαφών σας"
-  },
   "builtAroundTheWorld": {
     "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
   },
@@ -2130,9 +2127,6 @@
   },
   "delete": {
     "message": "Διαγραφή"
-  },
-  "deleteContact": {
-    "message": "Διαγραφή επαφής"
   },
   "deleteMetaMetricsData": {
     "message": "Διαγραφή δεδομένων MetaMetrics"
@@ -4263,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Νέα επαφή"
   },
   "newContract": {
     "message": "Νέο συμβόλαιο"
@@ -8754,9 +8745,6 @@
   "usedByClients": {
     "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
-  "userName": {
-    "message": "Όνομα χρήστη"
-  },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"
   },
@@ -8775,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Προβολή επαφής"
   },
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"
