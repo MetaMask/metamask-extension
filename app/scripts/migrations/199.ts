@@ -149,8 +149,7 @@ function transformState(
     const infuraUrl = `https://${config.infuraSubdomain}.infura.io/v3/${infuraProjectId}`;
     const infuraOrigin = `https://${config.infuraSubdomain}.infura.io`;
     const hasInfura = networkConfig.rpcEndpoints.some(
-      (ep) =>
-        ep.url === infuraOrigin || ep.url.startsWith(`${infuraOrigin}/`),
+      (ep) => ep.url === infuraOrigin || ep.url.startsWith(`${infuraOrigin}/`),
     );
 
     if (!hasInfura) {
@@ -164,7 +163,9 @@ function transformState(
         type: 'custom',
         url: infuraUrl,
       });
-      networkConfig.defaultRpcEndpointIndex += 1;
+      if (networkConfig.rpcEndpoints.length > 1) {
+        networkConfig.defaultRpcEndpointIndex += 1;
+      }
       modified = true;
     }
   }
