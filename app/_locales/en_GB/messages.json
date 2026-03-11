@@ -1076,6 +1076,24 @@
   "bridgeGasFeesSplit": {
     "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
   },
+  "bridgeMarketClosedAction": {
+    "message": "Market is closed"
+  },
+  "bridgeMarketClosedDescription": {
+    "message": "This stock token is currently outside trading hours. Try again when the market reopens."
+  },
+  "bridgeMarketClosedModalDescription": {
+    "message": "The market that backs this token is currently closed. Tokens can be transferred on-chain at any time."
+  },
+  "bridgeMarketClosedModalLearnMore": {
+    "message": "Learn more"
+  },
+  "bridgeMarketClosedModalTitle": {
+    "message": "Market is closed"
+  },
+  "bridgeMarketClosedTitle": {
+    "message": "Market closed"
+  },
   "bridgeNetCost": {
     "message": "Net cost"
   },
@@ -8694,6 +8712,9 @@
   },
   "tokenStandard": {
     "message": "Token standard"
+  },
+  "tokenStock": {
+    "message": "Stock"
   },
   "tokenStream": {
     "message": "Token stream"

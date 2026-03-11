@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -32,6 +33,7 @@ type AllowedActions =
   | GetGasFeeState
   | AccountsControllerGetAccountByAddressAction
   | RemoteFeatureFlagControllerGetStateAction
+  | KeyringControllerSignTypedMessageAction
   | AuthenticationControllerGetBearerToken;
 
 type AllowedEvents =
@@ -69,6 +71,7 @@ export function getBridgeStatusControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
+      'KeyringController:signTypedMessage',
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',
