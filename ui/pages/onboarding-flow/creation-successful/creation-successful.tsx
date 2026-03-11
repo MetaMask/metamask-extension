@@ -417,11 +417,7 @@ export default function CreationSuccessful() {
             >
               {t('yourWalletIsReadyFromReminder')}
             </Text>
-            <Box
-              justifyContent={BoxJustifyContent.Center}
-              alignItems={BoxAlignItems.Center}
-              className="w-full mb-6"
-            >
+            <Box className="w-full mb-6">
               <Box className="w-36 h-36 mx-auto">{renderFox}</Box>
             </Box>
             <Text
