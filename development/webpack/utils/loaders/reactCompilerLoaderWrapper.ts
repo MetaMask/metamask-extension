@@ -166,13 +166,11 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
     return (logger ? { ...opts, logger } : opts) as LoaderOptions;
   };
 
-  const result = actualLoader.call(this, source, sourceMap);
-
-  // react-compiler-loader uses this.async() and returns undefined (not a
-  // callback). It reads options synchronously before returning, so restoring
-  // getOptions immediately is correct.
-  this.getOptions = originalGetOptions;
-  return result;
+  // Do not restore getOptions. react-compiler-loader uses this.async() and may
+  // read options during async continuation. Leaving the override in place
+  // ensures stats collection works if the upstream loader ever defers option
+  // access. The loader context is per-module and discarded after processing.
+  return actualLoader.call(this, source, sourceMap);
 };
 
 export default loader;
