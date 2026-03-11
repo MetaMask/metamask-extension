@@ -337,8 +337,47 @@ describe('compare-benchmarks', () => {
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
       expect(output).toContain('uiStartup:');
-      expect(output).toContain('p75: 1100ms');
-      expect(output).toContain('p95: 1300ms');
+      expect(output).toContain('🟡⬆️ p75: 1100ms');
+      expect(output).toContain('🟡⬆️ p95: 1300ms');
+    });
+
+    it('uses 🔻 for absolute fail violations when metric is faster', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'faster-but-failing',
+            relativeMetrics: [
+              {
+                metric: 'uiStartup',
+                percentile: 'p75',
+                current: 7200,
+                baseline: 11164,
+                delta: -3964,
+                deltaPercent: -0.355,
+                direction: 'faster',
+                severity: 'improvement',
+                indication: '🟢⬇️',
+              },
+            ],
+            absoluteViolations: [
+              {
+                metricId: 'uiStartup',
+                percentile: 'p75',
+                value: 7200,
+                threshold: 4500,
+                severity: 'fail',
+              },
+            ],
+            hasRegression: false,
+            hasWarning: false,
+            absoluteFailed: true,
+          },
+        ],
+        anyFailed: true,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('🔻 p75: 7200ms (-35.5%)');
     });
 
     it('overrides indication with 🔺 for absolute fail violations', () => {
@@ -423,9 +462,86 @@ describe('compare-benchmarks', () => {
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
       expect(output).toContain('FAIL  no-baseline-bench');
-      expect(output).toContain('🔺 uiStartup (p75): 9000ms > 5000ms');
-      expect(output).toContain('🟡⬆️ uiStartup (p95): 6000ms > 5500ms');
+      expect(output).toContain(
+        'uiStartup: 🔺 p75: 9000ms (no baseline) | 🟡⬆️ p95: 6000ms (no baseline)',
+      );
       expect(output).not.toContain('(no historical baseline data)');
+    });
+
+    it('shows violations for metrics missing from baseline when other metrics have baseline', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'partial-baseline',
+            relativeMetrics: [
+              {
+                metric: 'metricA',
+                percentile: 'p75',
+                current: 1100,
+                baseline: 1000,
+                delta: 100,
+                deltaPercent: 0.1,
+                direction: 'slower',
+                severity: 'regression',
+                indication: '🔺',
+              },
+            ],
+            absoluteViolations: [
+              {
+                metricId: 'metricB',
+                percentile: 'p75',
+                value: 9000,
+                threshold: 5000,
+                severity: 'fail',
+              },
+            ],
+            hasRegression: true,
+            hasWarning: false,
+            absoluteFailed: true,
+          },
+        ],
+        anyFailed: true,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain('metricA:');
+      expect(output).toContain('metricB: 🔺 p75: 9000ms (no baseline)');
+    });
+
+    it('groups p75 and p95 violations on one line for metrics without baseline', () => {
+      printReport({
+        comparisons: [
+          {
+            benchmarkName: 'no-baseline-grouped',
+            relativeMetrics: [],
+            absoluteViolations: [
+              {
+                metricId: 'load',
+                percentile: 'p75',
+                value: 8000,
+                threshold: 5000,
+                severity: 'fail',
+              },
+              {
+                metricId: 'load',
+                percentile: 'p95',
+                value: 12000,
+                threshold: 8000,
+                severity: 'fail',
+              },
+            ],
+            hasRegression: false,
+            hasWarning: false,
+            absoluteFailed: true,
+          },
+        ],
+        anyFailed: true,
+      });
+
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
+      expect(output).toContain(
+        'load: 🔺 p75: 8000ms (no baseline) | 🔺 p95: 12000ms (no baseline)',
+      );
     });
 
     it('counts warnings for benchmarks with warn-level violations', () => {

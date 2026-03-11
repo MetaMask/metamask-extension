@@ -31,6 +31,9 @@ import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import {
   compareBenchmarkEntries,
   formatDeltaPercent,
+  getTrafficLightIndication,
+  ComparisonSeverity,
+  ComparisonDirection,
   type BenchmarkEntryComparison,
   type MetricComparison,
 } from './comparison-utils';
@@ -206,43 +209,82 @@ export function runComparison(
   return { comparisons, anyFailed };
 }
 
-type GroupedMetricEntry = {
-  metric: string;
-  p75?: MetricComparison;
-  p95?: MetricComparison;
-};
+function violationIcon(severity: ThresholdSeverity): string {
+  const mapped =
+    severity === ThresholdSeverity.Fail
+      ? ComparisonSeverity.Regression
+      : ComparisonSeverity.Warn;
+  return getTrafficLightIndication(mapped, ComparisonDirection.Slower);
+}
+
+type MetricLine = { metric: string; parts: string[] };
 
 /**
- * Groups relative deltas by metric name,
- * combining p75 and p95 into a single entry.
- * Includes metrics that have only one percentile.
- *
- * @param comparison - Comparison result for a single benchmark.
+ * Builds display lines for a single benchmark comparison.
+ * Metrics with baseline show relative deltas; metrics without show "(no baseline)".
+ * Absolute fail violations override the indication icon with 🔺.
  */
-function groupByMetric(
-  comparison: BenchmarkEntryComparison,
-): GroupedMetricEntry[] {
-  const p75Map = new Map<string, MetricComparison>();
-  const p95Map = new Map<string, MetricComparison>();
+function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
+  const failKeys = new Set(
+    comparison.absoluteViolations
+      .filter((v) => v.severity === ThresholdSeverity.Fail)
+      .map((v) => `${v.metricId}:${v.percentile}`),
+  );
 
+  const relativeByKey = new Map(
+    comparison.relativeMetrics.map((m) => [`${m.metric}:${m.percentile}`, m]),
+  );
+
+  const allMetrics = new Map<string, PercentileKey[]>();
   for (const m of comparison.relativeMetrics) {
-    if (m.percentile === PercentileKey.P75) {
-      p75Map.set(m.metric, m);
-    } else {
-      p95Map.set(m.metric, m);
+    const list = allMetrics.get(m.metric) ?? [];
+    list.push(m.percentile);
+    allMetrics.set(m.metric, list);
+  }
+  for (const v of comparison.absoluteViolations) {
+    const list = allMetrics.get(v.metricId) ?? [];
+    if (!list.includes(v.percentile)) {
+      list.push(v.percentile);
     }
+    allMetrics.set(v.metricId, list);
   }
 
-  const allMetrics = new Set([...p75Map.keys(), ...p95Map.keys()]);
-  const entries: GroupedMetricEntry[] = [];
-  for (const metric of allMetrics) {
-    entries.push({
-      metric,
-      p75: p75Map.get(metric),
-      p95: p95Map.get(metric),
+  return [...allMetrics.entries()].map(([metric, percentiles]) => {
+    const parts = percentiles.map((pKey) => {
+      const key = `${metric}:${pKey}`;
+      const rel = relativeByKey.get(key);
+      if (rel) {
+        const delta = formatDeltaPercent(rel.deltaPercent, rel.direction);
+        let icon: string;
+        if (failKeys.has(key)) {
+          icon = getTrafficLightIndication(
+            ComparisonSeverity.Regression,
+            rel.direction,
+          );
+        } else if (rel.severity === ComparisonSeverity.Regression) {
+          icon = getTrafficLightIndication(
+            ComparisonSeverity.Warn,
+            rel.direction,
+          );
+        } else {
+          icon = rel.indication;
+        }
+        return `${icon} ${pKey}: ${rel.current.toFixed(0)}ms (${delta})`;
+      }
+      const violation = comparison.absoluteViolations.find(
+        (v) => v.metricId === metric && v.percentile === pKey,
+      );
+      const icon = violation
+        ? violationIcon(violation.severity)
+        : getTrafficLightIndication(
+            ComparisonSeverity.Neutral,
+            ComparisonDirection.Same,
+          );
+      const value = violation?.value ?? 0;
+      return `${icon} ${pKey}: ${value.toFixed(0)}ms (no baseline)`;
     });
-  }
-  return entries;
+    return { metric, parts };
+  });
 }
 
 /**
@@ -264,39 +306,13 @@ export function printReport(result: {
     const status = comparison.absoluteFailed ? 'FAIL' : 'PASS';
     console.log(`\n${status}  ${comparison.benchmarkName}\n`);
 
-    const failViolations = new Map(
-      comparison.absoluteViolations
-        .filter((v) => v.severity === ThresholdSeverity.Fail)
-        .map((v) => [`${v.metricId}:${v.percentile}`, v]),
-    );
+    const lines = buildMetricLines(comparison);
 
-    const grouped = groupByMetric(comparison);
-
-    if (grouped.length === 0 && comparison.absoluteViolations.length === 0) {
+    if (lines.length === 0) {
       console.log('    (no historical baseline data)');
     }
-
-    if (grouped.length === 0 && comparison.absoluteViolations.length > 0) {
-      for (const v of comparison.absoluteViolations) {
-        const icon = v.severity === ThresholdSeverity.Fail ? '🔺' : '🟡⬆️';
-        console.log(
-          `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(0)}ms > ${v.threshold}ms`,
-        );
-      }
-    }
-
-    for (const entry of grouped) {
-      const parts = [entry.p75, entry.p95]
-        .filter((pctl): pctl is MetricComparison => pctl !== undefined)
-        .map((pctl) => {
-          const delta = formatDeltaPercent(pctl.deltaPercent, pctl.direction);
-          const failed = failViolations.has(
-            `${entry.metric}:${pctl.percentile}`,
-          );
-          const icon = failed ? '🔺' : pctl.indication;
-          return `${icon} ${pctl.percentile}: ${pctl.current.toFixed(0)}ms (${delta})`;
-        });
-      console.log(`    ${entry.metric}: ${parts.join(' | ')}`);
+    for (const { metric, parts } of lines) {
+      console.log(`    ${metric}: ${parts.join(' | ')}`);
     }
   }
 
