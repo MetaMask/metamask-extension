@@ -7,7 +7,9 @@ const meta: Meta<typeof AssetOptions> = {
   component: AssetOptions,
   decorators: [
     (Story) => (
-      <div style={{ padding: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+      <div
+        style={{ padding: '16px', display: 'flex', justifyContent: 'flex-end' }}
+      >
         <Story />
       </div>
     ),

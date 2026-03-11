@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Dampak harga"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Dampak harga mencerminkan swap Anda memengaruhi harga pasar. Jika kekurangan gas, sebagian token Anda akan digunakan untuk membayar biaya, yang meningkatkan dampak harga. MetaMask tidak mengatur atau mengontrol hal ini."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Dampak harga"
   },
@@ -2368,9 +2365,6 @@
   "editANickname": {
     "message": "Edit nama panggilan"
   },
-  "editAccountName": {
-    "message": "Edit nama akun"
-  },
   "editAccounts": {
     "message": "Edit akun"
   },
@@ -3131,9 +3125,6 @@
   },
   "hidden": {
     "message": "Tersembunyi"
-  },
-  "hiddenAccounts": {
-    "message": "Akun tersembunyi"
   },
   "hide": {
     "message": "Sembunyikan"
@@ -3999,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Konversi mUSD"
+    "message": "Konversi $1 ke mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Konversi mUSD"
+    "message": "Konversi $1 ke mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Harus memilih minimal 1 token."
@@ -5271,12 +5264,6 @@
   "perpsEntryPrice": {
     "message": "Harga masuk"
   },
-  "perpsExploreCrypto": {
-    "message": "Jelajahi kripto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Jelajahi saham dan komoditas"
-  },
   "perpsFees": {
     "message": "Biaya"
   },
@@ -5396,9 +5383,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Nilai median dari harga eksternal yang dilaporkan oleh validator, digunakan untuk menghitung tingkat pendanaan"
-  },
-  "perpsOrderAmount": {
-    "message": "Jumlah Order"
   },
   "perpsOrders": {
     "message": "Order"
@@ -5546,12 +5530,6 @@
   },
   "perpsWithdraw": {
     "message": "Tarik"
-  },
-  "perpsYourOrders": {
-    "message": "Order Anda"
-  },
-  "perpsYourPositions": {
-    "message": "Posisi Anda"
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
@@ -5895,9 +5873,6 @@
   },
   "removeAccount": {
     "message": "Hapus akun"
-  },
-  "removeAccountDescription": {
-    "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki Frasa Pemulihan Rahasia atau kunci pribadi asli untuk akun yang diimpor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari menu tarik-turun akun. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Pastikan Anda memiliki Frasa Pemulihan Rahasia atau kunci pribadi untuk akun ini sebelum menghapusnya.",
@@ -6278,9 +6253,6 @@
   },
   "search": {
     "message": "Cari"
-  },
-  "searchAccounts": {
-    "message": "Cari akun"
   },
   "searchAnAcccountOrContact": {
     "message": "Cari akun atau kontak"

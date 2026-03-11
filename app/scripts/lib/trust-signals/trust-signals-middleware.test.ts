@@ -1260,6 +1260,44 @@ describe('createTrustSignalsMiddleware', () => {
     });
   });
 
+  describe('EIP-7715 advanced permissions', () => {
+    const eip7715Methods = [
+      MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS,
+      MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS,
+      MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS,
+    ] as const;
+
+    eip7715Methods.forEach((method) => {
+      describe(method, () => {
+        it('scans URL when origin is present', async () => {
+          const { middleware, phishingController } = createMiddleware();
+          const origin = 'https://example.com';
+          const req = createMockRequest(method, [], origin);
+          const res = createMockResponse();
+          const next = jest.fn();
+
+          await middleware(req, res, next);
+
+          expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+          expect(next).toHaveBeenCalled();
+        });
+
+        it('does not scan URL when origin is not present', async () => {
+          const { middleware, phishingController } = createMiddleware();
+          const req = createMockRequest(method);
+          req.origin = undefined;
+          const res = createMockResponse();
+          const next = jest.fn();
+
+          await middleware(req, res, next);
+
+          expect(phishingController.scanUrl).not.toHaveBeenCalled();
+          expect(next).toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
   describe('non-transaction methods', () => {
     it('ignores non-transaction RPC methods', async () => {
       const { middleware, appStateController } = createMiddleware();

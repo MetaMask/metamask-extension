@@ -11,7 +11,7 @@ describe('eth_accounts', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
@@ -46,7 +46,7 @@ describe('eth_accounts', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
