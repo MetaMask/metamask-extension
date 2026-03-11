@@ -26,7 +26,7 @@ function SnapView() {
   const [searchParams] = useSearchParams();
 
   // The snap ID is in URI-encoded form in the query parameter.
-  const snapId = searchParams.get('snapId');
+  const snapId = searchParams.get('snapId') ?? '';
   const snaps = useSelector(getSnaps);
   const snap = Object.entries(snaps)
     .map(([_, snapState]) => snapState)
