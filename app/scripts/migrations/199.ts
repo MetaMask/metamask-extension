@@ -153,12 +153,13 @@ function transformState(
         ? process.env[config.quicknodeEnvVar]
         : undefined;
 
-      networkConfig.rpcEndpoints.push({
+      networkConfig.rpcEndpoints.unshift({
         failoverUrls: failoverUrl ? [failoverUrl] : [],
         networkClientId: v4(),
         type: 'custom',
         url: infuraUrl,
       });
+      networkConfig.defaultRpcEndpointIndex += 1;
       modified = true;
     }
   }

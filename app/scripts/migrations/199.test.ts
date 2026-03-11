@@ -113,16 +113,16 @@ describe(`migration #${VERSION}`, () => {
 
     expect(config.rpcEndpoints).toHaveLength(2);
     expect(config.rpcEndpoints[0].url).toBe(
-      'https://custom-polygon-rpc.example.com',
-    );
-    expect(config.rpcEndpoints[1].url).toBe(
       `https://polygon-mainnet.infura.io/v3/${mockInfuraIdValue}`,
     );
-    expect(config.rpcEndpoints[1].failoverUrls).toEqual([
+    expect(config.rpcEndpoints[0].failoverUrls).toEqual([
       'https://quicknode-polygon.example.com',
     ]);
-    // User's default is preserved
-    expect(config.defaultRpcEndpointIndex).toBe(0);
+    expect(config.rpcEndpoints[1].url).toBe(
+      'https://custom-polygon-rpc.example.com',
+    );
+    // User's default shifts from 0 to 1
+    expect(config.defaultRpcEndpointIndex).toBe(1);
     expect(changed.has('NetworkController')).toBe(true);
   });
 
@@ -148,7 +148,7 @@ describe(`migration #${VERSION}`, () => {
     expect(changed.has('NetworkController')).toBe(false);
   });
 
-  it('preserves the existing defaultRpcEndpointIndex', async () => {
+  it('shifts defaultRpcEndpointIndex when Infura is prepended', async () => {
     const arbitrumChainId = '0xa4b1';
     const state = makeState({
       [arbitrumChainId]: makeNetworkConfig(
@@ -171,7 +171,11 @@ describe(`migration #${VERSION}`, () => {
     ).networkConfigurationsByChainId[arbitrumChainId];
 
     expect(config.rpcEndpoints).toHaveLength(3);
-    expect(config.defaultRpcEndpointIndex).toBe(1);
+    expect(config.rpcEndpoints[0].url).toBe(
+      `https://arbitrum-mainnet.infura.io/v3/${mockInfuraIdValue}`,
+    );
+    // Default was 1, shifted to 2 after prepend
+    expect(config.defaultRpcEndpointIndex).toBe(2);
     expect(changed.has('NetworkController')).toBe(true);
   });
 
@@ -264,7 +268,7 @@ describe(`migration #${VERSION}`, () => {
       }
     ).networkConfigurationsByChainId[polygonChainId];
 
-    expect(config.rpcEndpoints[1].failoverUrls).toEqual([
+    expect(config.rpcEndpoints[0].failoverUrls).toEqual([
       'https://quicknode-polygon.example.com',
     ]);
   });
@@ -287,7 +291,7 @@ describe(`migration #${VERSION}`, () => {
       }
     ).networkConfigurationsByChainId[polygonChainId];
 
-    expect(config.rpcEndpoints[1].failoverUrls).toEqual([]);
+    expect(config.rpcEndpoints[0].failoverUrls).toEqual([]);
   });
 
   it('covers all featured networks in FEATURED_INFURA_NETWORKS', () => {
