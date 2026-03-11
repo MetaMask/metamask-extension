@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 import TextField from '../../../components/ui/text-field';
@@ -13,6 +10,7 @@ import {
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
+// eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 
 export const IpfsGatewayItem = () => {
