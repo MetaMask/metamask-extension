@@ -88,6 +88,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withCurrencyController`
 - `withKeyringController`
 - `withMetaMetricsController`
+- `withNameController`
 - `withNetworkController`
 - `withOnboardingController`
 - `withPermissionController`
@@ -99,6 +100,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withLedgerAccount`
 - `withNetworkControllerDoubleNode`
 - `withNetworkControllerTripleNode`
+- `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`

@@ -5,7 +5,7 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type BackendWebSocketServiceMessenger =
@@ -54,7 +54,7 @@ export type BackendWebSocketServiceInitMessenger = ReturnType<
 
 type AllowedInitializationActions =
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerToken;
+  | AuthenticationControllerGetBearerTokenAction;
 
 export function getBackendWebSocketServiceInitMessenger(
   messenger: RootMessenger<AllowedInitializationActions, never>,
