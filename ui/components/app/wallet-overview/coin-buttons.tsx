@@ -12,6 +12,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { ChainId } from '../../../../shared/constants/network';
+import { transitionForward } from '../../ui/transition';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -266,11 +267,9 @@ const CoinButtons = ({
 
     // Native Send flow
     await setCorrectChain();
-    let params;
-    if (trackingLocation !== 'home') {
-      params = { chainId: chainId.toString() };
-    }
-    navigateToSendRoute(navigate, params);
+    const params =
+      trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
+    transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
@@ -307,11 +306,13 @@ const CoinButtons = ({
       : hexChainOrAssetId;
 
     // Handle clicking from the wallet or native asset overview page
-    openBridgeExperience(
-      MetaMetricsSwapsEventSource.MainView,
-      chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-        ? getNativeAssetForChainId(chainIdToUse)
-        : undefined,
+    transitionForward(() =>
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+          ? getNativeAssetForChainId(chainIdToUse)
+          : undefined,
+      ),
     );
   }, [location, openBridgeExperience]);
 
@@ -331,8 +332,10 @@ const CoinButtons = ({
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(selectedAccountGroup)}&${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+      transitionForward(() =>
+        navigate(
+          `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(selectedAccountGroup)}&${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+        ),
       );
     } else {
       // Show the traditional receive modal
