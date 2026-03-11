@@ -32,6 +32,21 @@ export async function signTronRewardsMessage(
 
     return result as SignRewardsMessageResult;
   } catch (error) {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof error.message === 'string' &&
+      error.message.toLowerCase().includes('account not found')
+    ) {
+      log.debug(
+        'Tron snap account not yet initialized for rewards message signing. This is expected during app initialization.',
+        { accountId },
+      );
+      throw new Error(
+        'Tron snap account state not yet synchronized. Silent auth will be retried.',
+      );
+    }
     log.error('Error signing Tron rewards message:', error);
     throw error;
   }

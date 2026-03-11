@@ -127,6 +127,43 @@ describe('solana-snap', () => {
       ).rejects.toThrow('Snap not found');
     });
 
+    it('handles account not found error during initialization', async () => {
+      // Arrange
+      const accountNotFoundError = new Error('Account not found');
+      mockHandleSnapRequest.mockRejectedValueOnce(accountNotFoundError);
+
+      // Act & Assert
+      await expect(
+        signSolanaRewardsMessage(
+          mockHandleSnapRequest,
+          mockAccountId,
+          mockMessage,
+        ),
+      ).rejects.toThrow(
+        'Solana snap account state not yet synchronized. Silent auth will be retried.',
+      );
+    });
+
+    it('handles NotFoundError error type', async () => {
+      // Arrange
+      const notFoundError = {
+        message: 'NotFoundError: Account not found',
+        name: 'NotFoundError',
+      };
+      mockHandleSnapRequest.mockRejectedValueOnce(notFoundError);
+
+      // Act & Assert
+      await expect(
+        signSolanaRewardsMessage(
+          mockHandleSnapRequest,
+          mockAccountId,
+          mockMessage,
+        ),
+      ).rejects.toThrow(
+        'Solana snap account state not yet synchronized. Silent auth will be retried.',
+      );
+    });
+
     it('generates unique request IDs for concurrent calls', async () => {
       // Arrange
       const firstTimestamp = 1000;

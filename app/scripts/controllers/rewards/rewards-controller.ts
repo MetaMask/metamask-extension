@@ -1082,7 +1082,7 @@ export class RewardsController extends BaseController<
             signError,
           );
 
-          // Check if the error is due to locked keyring
+          // Check if the error is due to locked keyring or snap account not ready
           if (
             signError &&
             typeof signError === 'object' &&
@@ -1091,6 +1091,11 @@ export class RewardsController extends BaseController<
             const errorMessage = (signError as Error).message;
             if (errorMessage.includes('controller is locked')) {
               return null; // Exit silently when keyring is locked
+            }
+            if (
+              errorMessage.includes('snap account state not yet synchronized')
+            ) {
+              return null; // Exit silently when snap account is not ready yet
             }
           }
 
