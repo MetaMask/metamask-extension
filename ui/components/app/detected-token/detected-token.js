@@ -82,7 +82,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const [tokensListDetected, setTokensListDetected] = useState({});
 
   useEffect(() => {
-    const newTokensList = () => {
+    const newTokensList = (previousTokensListDetected) => {
       if (
         process.env.PORTFOLIO_VIEW &&
         !isTokenNetworkFilterEqualCurrentNetwork
@@ -93,7 +93,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
               tokens.forEach((token) => {
                 acc[token.address] = {
                   token: { ...token, chainId },
-                  selected: tokensListDetected[token.address]?.selected ?? true,
+                  selected:
+                    previousTokensListDetected[token.address]?.selected ?? true,
                 };
               });
             }
@@ -106,14 +107,16 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       return detectedTokens.reduce((tokenObj, token) => {
         tokenObj[token.address] = {
           token,
-          selected: tokensListDetected[token.address]?.selected ?? true,
+          selected: previousTokensListDetected[token.address]?.selected ?? true,
           chainId: currentChainId,
         };
         return tokenObj;
       }, {});
     };
 
-    setTokensListDetected(newTokensList());
+    setTokensListDetected((previousTokensListDetected) =>
+      newTokensList(previousTokensListDetected),
+    );
   }, [
     isTokenNetworkFilterEqualCurrentNetwork,
     detectedTokensMultichain,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -78,14 +78,14 @@ export default function TokenSearch({
     onSearch({ newSearchQuery, results });
   };
 
-  const clear = () => {
+  const clear = useCallback(() => {
     setSearchQuery('');
     setSearchResults([]);
-  };
+  }, [setSearchResults]);
 
   useEffect(() => {
     clear();
-  }, [isTokenNetworkFilterEqualCurrentNetwork]);
+  }, [clear, isTokenNetworkFilterEqualCurrentNetwork]);
 
   return (
     <TextFieldSearch

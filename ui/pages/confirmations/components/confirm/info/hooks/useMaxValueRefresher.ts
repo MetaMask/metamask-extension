@@ -75,7 +75,7 @@ export const useMaxValueRefresher = () => {
       },
       transactionId,
     );
-  }, [isMaxValueMode, transactionId]);
+  }, [isMaxValueMode, transactionId, updateTransactionEventFragment]);
 
   useEffect(() => {
     if (

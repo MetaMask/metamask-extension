@@ -20,6 +20,7 @@ type RecipientFilterInputProps = {
 export const RecipientFilterInput = ({
   searchQuery,
   onChange,
+  placeholder,
 }: RecipientFilterInputProps) => {
   const t = useI18nContext();
 
@@ -27,7 +28,7 @@ export const RecipientFilterInput = ({
     <Box paddingInline={4} paddingBottom={4}>
       <TextFieldSearch
         borderRadius={BorderRadius.LG}
-        placeholder={t('searchAnAcccountOrContact')}
+        placeholder={placeholder ?? t('searchAnAcccountOrContact')}
         value={searchQuery}
         onChange={(e) => onChange(e.target.value)}
         error={false}

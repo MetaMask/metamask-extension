@@ -90,7 +90,7 @@ export const NotificationsSettingsPerAccount = ({
       },
     });
     await toggleAccount(!isEnabled);
-  }, [address, isEnabled, toggleAccount, trackEvent]);
+  }, [isEnabled, toggleAccount, trackEvent]);
 
   const checksumAddress = toChecksumHexAddress(address);
   const shortenedAddress = shortenAddress(checksumAddress);

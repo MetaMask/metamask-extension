@@ -204,7 +204,7 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
       description={
         <span>
           Trigger the crash on extension to send user feedback to sentry. You
-          can click "Try again" to reload extension
+          can click &quot;Try again&quot; to reload extension
         </span>
       }
       onClick={handleClick}
@@ -246,7 +246,7 @@ function TestButton({
         setIsComplete(true);
       }
     }
-  }, [onClick]);
+  }, [expectError, onClick]);
 
   return (
     <Box

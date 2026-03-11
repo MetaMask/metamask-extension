@@ -118,7 +118,7 @@ export function BatchedApprovalFunction({
 
   const { value, pending } = useAsyncResult(
     () => getBatchedApprovalDisplayValue(t as TranslateFunction, data, to),
-    [data, to],
+    [data, t, to],
   );
 
   if (pending || !value) {

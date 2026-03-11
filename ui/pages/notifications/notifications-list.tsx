@@ -85,7 +85,10 @@ const NotificationsListStates = ({
   notifications,
   isLoading,
   isError,
-}: NotificationsListProps) => {
+}: Pick<
+  NotificationsListProps,
+  'activeTab' | 'notifications' | 'isLoading' | 'isError'
+>) => {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );

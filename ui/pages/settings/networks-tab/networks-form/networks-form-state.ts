@@ -50,7 +50,7 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
       defaultBlockExplorerUrlIndex:
         existingNetwork?.defaultBlockExplorerUrlIndex,
     });
-  }, [existingNetwork?.chainId]);
+  }, [existingNetwork]);
 
   return {
     name,

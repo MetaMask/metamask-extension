@@ -44,5 +44,12 @@ export function useDecodedTransactionData({
       chainId,
       contractAddress: transactionTo,
     });
-  }, [isDecodeEnabled, transactionData, transactionTo, chainId]);
+  }, [
+    chainId,
+    currentTransactionType,
+    isDecodeEnabled,
+    transactionData,
+    transactionTo,
+    transactionTypeFilter,
+  ]);
 }

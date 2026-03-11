@@ -102,6 +102,7 @@ export function useTokenFiatAmount(
       currentCurrency,
       tokenAmount,
       tokenSymbol,
+      formatted,
       hideCurrencySymbol,
     ],
   );

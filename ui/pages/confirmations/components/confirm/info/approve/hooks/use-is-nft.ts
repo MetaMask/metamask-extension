@@ -13,7 +13,11 @@ export const useIsNFT = (
       undefined,
       transactionMeta?.chainId as string,
     );
-  }, [transactionMeta?.txParams?.to]);
+  }, [
+    transactionMeta?.chainId,
+    transactionMeta?.txParams?.from,
+    transactionMeta?.txParams?.to,
+  ]);
 
   const isNFT = value?.standard !== TokenStandard.ERC20;
 

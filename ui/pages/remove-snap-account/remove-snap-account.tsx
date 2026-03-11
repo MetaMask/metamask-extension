@@ -32,9 +32,11 @@ export type RemoveSnapAccountProps = {
 
 const RemoveSnapAccount = ({
   snapId,
+  snapName,
   publicAddress,
   onCancel,
 }: RemoveSnapAccountProps) => {
+  void snapName;
   const t = useI18nContext();
   return (
     <Box

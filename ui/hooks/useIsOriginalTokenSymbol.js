@@ -38,7 +38,7 @@ export function useIsOriginalTokenSymbol(tokenAddress, tokenSymbol) {
 
     getTokenSymbolForToken(tokenAddress);
     // no need to wait for tokens to load, since we'd fetch without them if they aren't available
-  }, [tokenAddress, tokenSymbol]);
+  }, [tokenAddress, tokenSymbol, tokens]);
 
   return isOriginalNativeSymbol;
 }

@@ -53,7 +53,7 @@ export const useScrollRequired = (
     }
   }, [isScrollableState, offsetPxFromBottom]);
 
-  useEffect(update, [ref, ...dependencies]);
+  useEffect(update, [update, ref, ...dependencies]);
 
   useEffect(() => {
     if (prevOffsetHeight !== ref.current?.offsetHeight) {

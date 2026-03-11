@@ -166,7 +166,7 @@ export const NetworksForm = ({
           }
         : undefined,
     }));
-  }, [chainId, name, safeChains]);
+  }, [chainId, name, safeChains, t]);
 
   // Validate the ticker when it changes
   useEffect(() => {
@@ -198,7 +198,7 @@ export const NetworksForm = ({
           }
         : undefined,
     }));
-  }, [chainId, ticker, safeChains]);
+  }, [chainId, ticker, safeChains, t]);
 
   // Validate the chain ID when it changes
   useEffect(() => {
@@ -253,7 +253,7 @@ export const NetworksForm = ({
       chainId: error ? { key: error[0], msg: error[1] } : undefined,
       rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
     }));
-  }, [chainId, fetchedChainId, existingNetwork?.chainId]);
+  }, [chainId, existingNetwork, fetchedChainId, networkConfigurations, t]);
 
   // Fetch the chain ID from the RPC endpoint when it changes
   useEffect(() => {
@@ -277,7 +277,7 @@ export const NetworksForm = ({
           }));
         });
     }
-  }, [chainId, rpcUrls]);
+  }, [chainId, rpcUrls, t]);
 
   const onSubmit = async () => {
     try {

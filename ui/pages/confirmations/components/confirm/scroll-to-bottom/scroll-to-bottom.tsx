@@ -76,7 +76,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     }
 
     setHasScrolledToBottom(false);
-  }, [currentConfirmation?.id, previousId, ref?.current]);
+  }, [currentConfirmation?.id, previousId, ref, setHasScrolledToBottom]);
 
   useEffect(() => {
     if (isTransactionRedesign) {
@@ -85,7 +85,12 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     }
 
     setIsScrollToBottomCompleted(!isScrollable || hasScrolledToBottom);
-  }, [isScrollable, hasScrolledToBottom, isTransactionRedesign]);
+  }, [
+    hasScrolledToBottom,
+    isScrollable,
+    isTransactionRedesign,
+    setIsScrollToBottomCompleted,
+  ]);
 
   return (
     <Box

@@ -112,7 +112,7 @@ export const BridgeAssetPicker = ({
         (a) => a.assetId?.toLowerCase(),
       ).map((token) => toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, accountGroup.id, accountAddress],
+    [assetsWithBalance, chainIdsSet],
   );
 
   const { popularTokensList, isLoading: isPopularTokensLoading } =
@@ -145,7 +145,7 @@ export const BridgeAssetPicker = ({
           : persistedChainId,
       );
     }
-  }, [isOpen]);
+  }, [isOpen, persistedChainId, selectedAsset.chainId, selectedChainId]);
 
   const handleClose = useCallback(() => {
     setSearchQuery('');
