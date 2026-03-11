@@ -8,7 +8,7 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
-import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
+import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   forceUpdateMetamaskState,
   setActiveNetworkWithError,

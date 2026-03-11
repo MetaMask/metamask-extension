@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { getAllTokens } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import { hexToDecimal } from '../../shared/lib/conversion.utils';
 
 import { TokenWithBalance } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { stringifyBalance, useTokenBalances } from './useTokenBalances';

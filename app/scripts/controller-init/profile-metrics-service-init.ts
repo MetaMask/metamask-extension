@@ -2,7 +2,7 @@ import {
   ProfileMetricsService,
   ProfileMetricsServiceMessenger,
 } from '@metamask/profile-metrics-controller';
-import { loadAuthenticationConfig } from '../../../shared/modules/authentication';
+import { loadAuthenticationConfig } from '../../../shared/lib/authentication';
 import { ControllerInitFunction } from './types';
 
 /**

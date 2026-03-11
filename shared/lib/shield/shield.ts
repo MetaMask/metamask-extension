@@ -6,14 +6,14 @@ import {
   RECURRING_INTERVALS,
   Subscription,
 } from '@metamask/subscription-controller';
-import { getIsShieldSubscriptionActive } from '../../lib/shield';
 import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
-import { SETTINGS_ROUTE } from '../../lib/deep-links/routes/route';
-import { SHIELD_QUERY_PARAMS } from '../../lib/deep-links/routes/shield';
+import { SETTINGS_ROUTE } from '../deep-links/routes/route';
+import { SHIELD_QUERY_PARAMS } from '../deep-links/routes/shield';
+import { getIsShieldSubscriptionActive } from './subscription-utils';
 import { loadShieldConfig } from './config';
 
 export async function getShieldGatewayConfig(
