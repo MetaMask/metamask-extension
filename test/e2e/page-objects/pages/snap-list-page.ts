@@ -66,6 +66,10 @@ class SnapListPage {
     tag: 'p',
   };
 
+  private readonly snapEnabledToggle = '.toggle-button > div';
+
+  private readonly popoverRemoveSnapButton = '#popoverRemoveSnapButton';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -142,33 +146,40 @@ class SnapListPage {
     await this.driver.clickElement(this.backButton);
   }
 
-  /**
-   * Opens a snap's detail view by clicking on the snap name.
-   *
-   * @param snapName - The name of the snap to open (e.g. 'Ethereum Provider Example Snap').
-   */
   async openSnapByName(snapName: string): Promise<void> {
     console.log(`Opening snap: ${snapName}`);
     await this.driver.waitForSelector({ text: snapName, tag: 'p' });
     await this.driver.clickElement({ text: snapName, tag: 'p' });
   }
 
-  /**
-   * Clicks the options menu for a permission (e.g. endowment:caip25).
-   *
-   * @param permissionTestId - The data-testid of the permission row (e.g. 'endowment:caip25').
-   */
   async clickPermissionOptionsMenu(permissionTestId: string): Promise<void> {
     console.log(`Clicking permission options menu: ${permissionTestId}`);
     await this.driver.clickElement(`[data-testid="${permissionTestId}"]`);
   }
 
-  /**
-   * Clicks the "Revoke permission" option in the permission menu.
-   */
   async clickRevokePermission(): Promise<void> {
     console.log('Clicking Revoke permission');
     await this.driver.clickElement(this.revokePermissionOption);
+  }
+
+  async toggleSnapEnabled(): Promise<void> {
+    await this.driver.clickElement(this.snapEnabledToggle);
+  }
+
+  async removeSnapViaPopover(snapName: string): Promise<void> {
+    await this.driver.clickElement({
+      text: `Remove ${snapName}`,
+      tag: 'p',
+    });
+    await this.driver.clickElement(this.popoverRemoveSnapButton);
+  }
+
+  async checkNoSnapsInstalledMessage(): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '.mm-box',
+      text: "You don't have any snaps installed.",
+      tag: 'p',
+    });
   }
 }
 
