@@ -18,7 +18,6 @@ import {
 import type { Hex } from '@metamask/utils';
 
 import { NetworkClientId } from '@metamask/network-controller';
-import { BigNumber } from 'bignumber.js';
 import { getMusdTokenAddressForChain } from '../constants';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 

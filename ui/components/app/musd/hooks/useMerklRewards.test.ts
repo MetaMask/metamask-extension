@@ -42,11 +42,7 @@ let queryClient: QueryClient;
 
 function createWrapper() {
   return ({ children }: { children: React.ReactNode }) =>
-    React.createElement(
-      QueryClientProvider,
-      { client: queryClient },
-      children,
-    );
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
 }
 
 describe('isEligibleForMerklRewards', () => {
@@ -452,10 +448,11 @@ describe('useMerklRewards', () => {
     const wrapper = createWrapper();
 
     // First mount — fetches from API
-    const { result: firstResult, waitForNextUpdate, unmount } = renderHook(
-      () => useMerklRewards(hookArgs),
-      { wrapper },
-    );
+    const {
+      result: firstResult,
+      waitForNextUpdate,
+      unmount,
+    } = renderHook(() => useMerklRewards(hookArgs), { wrapper });
 
     await act(async () => {
       await waitForNextUpdate();
