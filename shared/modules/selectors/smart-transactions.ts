@@ -50,6 +50,15 @@ export type SmartTransactionsMetaMaskState = {
   };
 };
 
+type SmartTransactionsPreferencesState = {
+  metamask?: {
+    preferences?: {
+      smartTransactionsOptInStatus?: boolean;
+      smartTransactionsMigrationApplied?: boolean;
+    };
+  };
+};
+
 export type SmartTransactionsState = SmartTransactionsMetaMaskState &
   NetworkState &
   RemoteFeatureFlagsState;
@@ -89,7 +98,7 @@ export const getSmartTransactionsFeatureFlagsForChain = createDeepEqualSelector(
  * or null if they have not explicitly opted in or out.
  */
 export const getSmartTransactionsOptInStatusInternal = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsPreferencesState,
 ): boolean => {
   const preferences = getPreferences(state as never) as {
     smartTransactionsOptInStatus?: boolean;
@@ -130,7 +139,7 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
  * or null if they have not explicitly opted in or out.
  */
 export const getSmartTransactionsOptInStatusForMetrics = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsPreferencesState,
 ): boolean => getSmartTransactionsOptInStatusInternal(state);
 
 /**
@@ -141,7 +150,7 @@ export const getSmartTransactionsOptInStatusForMetrics = (
  * @returns
  */
 export const getSmartTransactionsPreferenceEnabled = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsPreferencesState,
 ): boolean => {
   // In the absence of an explicit opt-in or opt-out,
   // the Smart Transactions toggle is enabled.

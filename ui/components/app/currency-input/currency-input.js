@@ -75,6 +75,7 @@ export default function CurrencyInput({
     useStateWithFirstTouch('0');
 
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
+  const tokenDecimalValueRef = useRef(tokenDecimalValue);
 
   const chainId = useSelector(getCurrentChainId);
   const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
@@ -129,6 +130,10 @@ export default function CurrencyInput({
     );
   };
 
+  useEffect(() => {
+    tokenDecimalValueRef.current = tokenDecimalValue;
+  }, [tokenDecimalValue]);
+
   const timeoutRef = useRef(null);
   // align input to upstream value
   useEffect(() => {
@@ -137,7 +142,7 @@ export default function CurrencyInput({
       .shiftedBy(assetDecimals)
       .toString();
 
-    if (Number(decimalizedHexValue) === Number(tokenDecimalValue)) {
+    if (Number(decimalizedHexValue) === Number(tokenDecimalValueRef.current)) {
       return;
     }
 
@@ -170,7 +175,6 @@ export default function CurrencyInput({
     isDisabled,
     isInputUnchanged,
     isMatchingUpstream,
-    tokenDecimalValue,
   ]);
 
   const renderSwapButton = () => {
