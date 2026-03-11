@@ -17,8 +17,6 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import {
-  TextColor as LegacyTextColor,
-  TextVariant as LegacyTextVariant,
   AlignItems,
   BackgroundColor,
   BorderColor,
@@ -108,11 +106,6 @@ export default function OnboardingAppHeader({
                 backgroundColor={BackgroundColor.backgroundMuted}
                 title={t('pinMetaMask')}
                 gap={4}
-                titleProps={{
-                  color: LegacyTextColor.textDefault,
-                  variant: LegacyTextVariant.bodyMdMedium,
-                  paddingRight: 2,
-                }}
                 className="onboarding-app-header__banner-tip"
                 padding={3}
                 alignItems={AlignItems.center}
