@@ -3995,7 +3995,7 @@
   },
   "musdConversionTitle": {
     "message": "Конвертировать $1 в mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
