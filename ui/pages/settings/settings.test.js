@@ -50,10 +50,12 @@ describe('SettingsPage', () => {
   });
 
   it('should render correctly', () => {
+    mockRouterLocation = { pathname: '/settings/snap', search: '' };
+
     const { queryByText } = renderWithProvider(
       <Settings {...props} />,
       mockStore,
-      '/settings',
+      '/settings/snap',
     );
 
     expect(queryByText(messages.settings.message)).toBeInTheDocument();
@@ -67,17 +69,5 @@ describe('SettingsPage', () => {
     );
 
     expect(queryByPlaceholderText(messages.search.message)).toBeInTheDocument();
-  });
-
-  it('falls back to default title when snap settings route has no snapId query', () => {
-    mockRouterLocation = { pathname: '/settings/snap', search: '' };
-
-    const { queryByText } = renderWithProvider(
-      <Settings {...props} />,
-      mockStore,
-      '/settings/snap',
-    );
-
-    expect(queryByText(messages.settings.message)).toBeInTheDocument();
   });
 });
