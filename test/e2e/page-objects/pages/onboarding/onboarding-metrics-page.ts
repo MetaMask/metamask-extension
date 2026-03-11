@@ -11,14 +11,11 @@ class OnboardingMetricsPage {
   private readonly dataParticipateInMetaMetricsCheckbox =
     '[data-testid="metametrics-checkbox"]';
 
-  private readonly dataCollectionForMarketingCheckedState =
-    'input[type="checkbox"]#metametrics-datacollection-opt-in:checked';
+  private readonly participateVisualCheckbox =
+    '[data-testid="metametrics-checkbox"] > div > div:last-child';
 
-  private readonly dataParticipateInMetaMetricsCheckedState =
-    'input[type="checkbox"]#metametrics-opt-in:checked';
-
-  private readonly dataParticipateInMetaMetricsUncheckedState =
-    'input[type="checkbox"]#metametrics-opt-in:not(:checked)';
+  private readonly marketingVisualCheckbox =
+    '[data-testid="metametrics-data-collection-checkbox"] > div > div:last-child';
 
   private readonly metametricsMessage = {
     text: 'Help improve MetaMask',
@@ -58,20 +55,41 @@ class OnboardingMetricsPage {
   }
 
   async validateDataCollectionForMarketingIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataCollectionForMarketingCheckedState,
+    await this.driver.waitUntil(
+      async () => {
+        const isChecked = await this.driver.executeScript(
+          `return document.querySelector('${this.marketingVisualCheckbox}')` +
+            `?.classList?.contains('bg-primary-default') ?? false`,
+        );
+        return isChecked === true;
+      },
+      { timeout: 10000, interval: 500 },
     );
   }
 
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataParticipateInMetaMetricsCheckedState,
+    await this.driver.waitUntil(
+      async () => {
+        const isChecked = await this.driver.executeScript(
+          `return document.querySelector('${this.participateVisualCheckbox}')` +
+            `?.classList?.contains('bg-primary-default') ?? false`,
+        );
+        return isChecked === true;
+      },
+      { timeout: 10000, interval: 500 },
     );
   }
 
   async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataParticipateInMetaMetricsUncheckedState,
+    await this.driver.waitUntil(
+      async () => {
+        const isUnchecked = await this.driver.executeScript(
+          `return document.querySelector('${this.participateVisualCheckbox}')` +
+            `?.classList?.contains('bg-default') ?? false`,
+        );
+        return isUnchecked === true;
+      },
+      { timeout: 10000, interval: 500 },
     );
   }
 
