@@ -5,12 +5,13 @@ import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichai
 import nock from 'nock';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   CHAIN_IDS,
-  FEATURED_RPCS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   getRpcUrl,
+  infuraProjectId,
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -746,12 +747,6 @@ describe('NetworkForm Component', () => {
   });
 
   it('should inject featured Infura endpoint when adding a featured network', async () => {
-    const polygonFeatured = FEATURED_RPCS.find(
-      (f) => f.chainId === CHAIN_IDS.POLYGON,
-    );
-    const featuredEndpoint =
-      polygonFeatured.rpcEndpoints[polygonFeatured.defaultRpcEndpointIndex];
-
     nock('https://custom-polygon-rpc.example.com:443')
       .post('/')
       .reply(200, { jsonrpc: '2.0', result: '0x89' });
@@ -794,7 +789,10 @@ describe('NetworkForm Component', () => {
           chainId: '0x89',
           defaultRpcEndpointIndex: 1,
           rpcEndpoints: [
-            featuredEndpoint,
+            expect.objectContaining({
+              url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
+              type: RpcEndpointType.Custom,
+            }),
             {
               url: 'https://custom-polygon-rpc.example.com',
               type: 'custom',
@@ -807,13 +805,9 @@ describe('NetworkForm Component', () => {
   });
 
   it('should not duplicate endpoint when user URL matches featured Infura URL', async () => {
-    const polygonFeatured = FEATURED_RPCS.find(
-      (f) => f.chainId === CHAIN_IDS.POLYGON,
-    );
-    const featuredUrl =
-      polygonFeatured.rpcEndpoints[polygonFeatured.defaultRpcEndpointIndex].url;
+    const infuraPolygonUrl = `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`;
 
-    nock(new URL(featuredUrl).origin).post('/').reply(200, {
+    nock('https://polygon-mainnet.infura.io:443').post('/').reply(200, {
       jsonrpc: '2.0',
       result: '0x89',
     });
@@ -831,7 +825,7 @@ describe('NetworkForm Component', () => {
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
-              url: featuredUrl,
+              url: infuraPolygonUrl,
               type: 'custom',
               name: 'Polygon',
             },
@@ -857,7 +851,7 @@ describe('NetworkForm Component', () => {
           chainId: '0x89',
           rpcEndpoints: [
             {
-              url: featuredUrl,
+              url: infuraPolygonUrl,
               type: 'custom',
               name: 'Polygon',
             },
