@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Editar apodo"
   },
-  "editAccountName": {
-    "message": "Editar el nombre de la cuenta"
-  },
   "editAccounts": {
     "message": "Editar cuentas"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Oculto"
-  },
-  "hiddenAccounts": {
-    "message": "Cuentas ocultas"
   },
   "hide": {
     "message": "Ocultar"
@@ -3996,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversión de mUSD"
+    "message": "Convertir $1 a mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversión de mUSD"
+    "message": "Convertir $1 a mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."
@@ -5878,9 +5874,6 @@
   "removeAccount": {
     "message": "Eliminar cuenta"
   },
-  "removeAccountDescription": {
-    "message": "Esta cuenta se eliminará de su billetera. Antes de continuar, asegúrese de que dispone de la frase secreta de recuperación original o de la clave privada de esta cuenta importada. Puede importar o volver a crear cuentas desde el menú desplegable de cuentas. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Asegúrate de tener la frase secreta de recuperación o la clave privada de esta cuenta antes de eliminarla.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -6260,9 +6253,6 @@
   },
   "search": {
     "message": "Buscar"
-  },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
   },
   "searchAnAcccountOrContact": {
     "message": "Buscar una cuenta o contacto"

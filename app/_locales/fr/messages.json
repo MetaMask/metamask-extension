@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Modifier le pseudonyme"
   },
-  "editAccountName": {
-    "message": "Modifier le nom du compte"
-  },
   "editAccounts": {
     "message": "Modifier les comptes"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Masqué"
-  },
-  "hiddenAccounts": {
-    "message": "Comptes cachés"
   },
   "hide": {
     "message": "Masquer"
@@ -3996,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Convertir $1 en mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Convertir $1 en mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
@@ -5875,9 +5871,6 @@
   "removeAccount": {
     "message": "Suprimer le compte"
   },
-  "removeAccountDescription": {
-    "message": "Ce compte sera supprimé de votre portefeuille. Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée d’origine pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu déroulant des comptes. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée de ce compte avant de le supprimer.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -6257,9 +6250,6 @@
   },
   "search": {
     "message": "Rechercher"
-  },
-  "searchAccounts": {
-    "message": "Rechercher des comptes"
   },
   "searchAnAcccountOrContact": {
     "message": "Rechercher un compte ou un contact"

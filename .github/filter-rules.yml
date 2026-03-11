@@ -32,6 +32,8 @@ config_files: &config_files
   - 'prettier.config.js'
   - 'stylelint.config.js'
   - 'tailwind.config.js'
+  - '.prettierrc*'
+  - '.prettierignore'
   - 'sonar-project.properties'
   - 'codecov.yml'
 
