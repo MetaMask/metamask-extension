@@ -4,7 +4,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
-import { CONTACTS_ROUTE } from '../../helpers/constants/routes';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { EditContactPage } from './edit-contact-page';
 
 const MOCK_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
@@ -50,10 +50,10 @@ describe('EditContactPage', () => {
     expect(getByDisplayValue(MOCK_ADDRESS)).toBeInTheDocument();
   });
 
-  it('navigates to contacts list when back button is clicked', () => {
+  it('navigates to previous route when back button is clicked', () => {
     const { getByTestId } = renderPage();
     fireEvent.click(getByTestId('edit-contact-back-button'));
-    expect(mockNavigate).toHaveBeenCalledWith(CONTACTS_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('navigates to default route when close button is clicked', () => {

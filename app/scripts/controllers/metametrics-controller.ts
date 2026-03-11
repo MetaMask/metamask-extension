@@ -1438,7 +1438,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.preferences.showNativeTokenAsMainBalance,
+        metamaskState.preferences?.showNativeTokenAsMainBalance ?? false,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
@@ -1449,11 +1449,11 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.preferences.tokenSortConfig?.key || '',
+        metamaskState.preferences?.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences.privacyMode,
+        metamaskState.preferences?.privacyMode ?? false,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences.tokenNetworkFilter || {},
+        metamaskState.preferences?.tokenNetworkFilter || {},
       ),
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},

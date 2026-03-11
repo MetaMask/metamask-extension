@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Προσθήκη token"
   },
-  "addTokenByContractAddress": {
-    "message": "Δεν μπορείτε να βρείτε ένα token; Μπορείτε να προσθέσετε χειροκίνητα οποιοδήποτε token επικολλώντας τη διεύθυνσή του. Οι διευθύνσεις συμβολαίων token μπορούν να βρεθούν στο $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
@@ -1020,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "Κάθε τέλος δικτύου που αναφέρθηκε στην προηγούμενη οθόνη περιλαμβάνει και τις δύο συναλλαγές και θα διαχωριστούν."
   },
-  "bridgeNetCost": {
-    "message": "Καθαρό κόστος"
-  },
   "bridgeNoMMFee": {
     "message": "Χωρίς προμήθεια στο MM"
   },
@@ -1126,10 +1119,6 @@
     "message": "Ανταλλαγή $1 για $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 ελαχ",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Διασύνδεση προς"
   },
@@ -1203,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
-  },
-  "buildContactList": {
-    "message": "Δημιουργήστε τη λίστα επαφών σας"
   },
   "builtAroundTheWorld": {
     "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
@@ -2128,9 +2114,6 @@
   "delete": {
     "message": "Διαγραφή"
   },
-  "deleteContact": {
-    "message": "Διαγραφή επαφής"
-  },
   "deleteMetaMetricsData": {
     "message": "Διαγραφή δεδομένων MetaMetrics"
   },
@@ -2361,9 +2344,6 @@
   },
   "editANickname": {
     "message": "Επεξεργασία ψευδωνύμου"
-  },
-  "editAccountName": {
-    "message": "Επεξεργασία ονόματος λογαριασμού"
   },
   "editAccounts": {
     "message": "Επεξεργασία λογαριασμών"
@@ -3125,9 +3105,6 @@
   },
   "hidden": {
     "message": "Απόκρυψη"
-  },
-  "hiddenAccounts": {
-    "message": "Κρυφοί λογαριασμοί"
   },
   "hide": {
     "message": "Απόκρυψη"
@@ -3993,10 +3970,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατροπή $1 σε mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατράπηκε σε mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε τουλάχιστον 1 token."
@@ -4264,9 +4243,6 @@
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Νέα επαφή"
   },
   "newContract": {
     "message": "Νέο συμβόλαιο"
@@ -5802,12 +5778,6 @@
   "queued": {
     "message": "Σε Αναμονή"
   },
-  "quotedReceiveAmount": {
-    "message": "$1 ποσό που θα λάβετε"
-  },
-  "quotedTotalCost": {
-    "message": "$1 συνολικό κόστος"
-  },
   "rank": {
     "message": "Κατάταξη"
   },
@@ -6254,9 +6224,6 @@
   },
   "search": {
     "message": "Αναζήτηση"
-  },
-  "searchAccounts": {
-    "message": "Αναζήτηση λογαριασμών"
   },
   "searchAnAcccountOrContact": {
     "message": "Αναζήτηση λογαριασμού ή επαφής"
@@ -8070,10 +8037,6 @@
     "message": "$1 προσφορές.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Δεν υπάρχουν διαθέσιμα tokens που να αντιστοιχούν σε $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Το $1 σας θα προστεθεί στον λογαριασμό σας μόλις ολοκληρωθεί αυτή η συναλλαγή.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8758,9 +8721,6 @@
   "usedByClients": {
     "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
-  "userName": {
-    "message": "Όνομα χρήστη"
-  },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"
   },
@@ -8779,9 +8739,6 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Προβολή επαφής"
   },
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"

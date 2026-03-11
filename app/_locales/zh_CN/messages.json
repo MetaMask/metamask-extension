@@ -333,10 +333,6 @@
   "addToken": {
     "message": "添加代币"
   },
-  "addTokenByContractAddress": {
-    "message": "找不到代币？您可以通过粘贴其地址手动添加任何代币。代币合约地址可以在 $1 上找到",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "添加 URL"
   },
@@ -1020,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "前一个屏幕中报出的任何网络费用均包含两笔交易，并将进行分割。"
   },
-  "bridgeNetCost": {
-    "message": "净成本"
-  },
   "bridgeNoMMFee": {
     "message": "无 MM 费用"
   },
@@ -1126,10 +1119,6 @@
     "message": "正在用 $1 兑换 $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 分钟",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "桥接至"
   },
@@ -1203,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
-  },
-  "buildContactList": {
-    "message": "建立您的联系人列表"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
@@ -2128,9 +2114,6 @@
   "delete": {
     "message": "删除"
   },
-  "deleteContact": {
-    "message": "删除联系信息"
-  },
   "deleteMetaMetricsData": {
     "message": "删除MetaMetrics数据"
   },
@@ -2361,9 +2344,6 @@
   },
   "editANickname": {
     "message": "编辑昵称"
-  },
-  "editAccountName": {
-    "message": "编辑账户名"
   },
   "editAccounts": {
     "message": "编辑账户"
@@ -3125,9 +3105,6 @@
   },
   "hidden": {
     "message": "隐藏"
-  },
-  "hiddenAccounts": {
-    "message": "隐藏账户"
   },
   "hide": {
     "message": "隐藏"
@@ -3993,10 +3970,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD 兑换"
+    "message": "已兑换为 mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -4264,9 +4243,6 @@
   "newAccountNumberName": {
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新联系人"
   },
   "newContract": {
     "message": "新合约"
@@ -5796,12 +5772,6 @@
   "queued": {
     "message": "队列中"
   },
-  "quotedReceiveAmount": {
-    "message": "$1 收到金额"
-  },
-  "quotedTotalCost": {
-    "message": "$1 总费用"
-  },
   "rank": {
     "message": "排名"
   },
@@ -6248,9 +6218,6 @@
   },
   "search": {
     "message": "搜索"
-  },
-  "searchAccounts": {
-    "message": "搜索账户"
   },
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"
@@ -8064,10 +8031,6 @@
     "message": "$1 报价。",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "没有与 $1 匹配的代币",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "处理完此交易后，您的 $1 将被添加到您的账户中。",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8752,9 +8715,6 @@
   "usedByClients": {
     "message": "可用于各种不同的客户端"
   },
-  "userName": {
-    "message": "用户名"
-  },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
   },
@@ -8773,9 +8733,6 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "查看联系人"
   },
   "viewDetails": {
     "message": "查看详情"

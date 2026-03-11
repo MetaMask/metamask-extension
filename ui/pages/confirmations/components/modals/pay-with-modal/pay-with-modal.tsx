@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -13,6 +14,8 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
+import { useMusdConversionTokens } from '../../../../../hooks/musd';
+import { useConfirmContext } from '../../../context/confirm';
 
 export type PayWithModalProps = {
   isOpen: boolean;
@@ -21,8 +24,13 @@ export type PayWithModalProps = {
 
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
+
+  const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
+    transactionType: currentConfirmation?.type,
+  });
 
   const handleClose = useCallback(() => {
     onClose();
@@ -46,13 +54,13 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
   const tokenFilter = useCallback(
     (tokens: AssetType[]) => {
-      return getAvailableTokens({
-        payToken,
-        requiredTokens,
-        tokens,
-      });
+      let available = getAvailableTokens({ payToken, requiredTokens, tokens });
+
+      available = musdTokenFilter(available);
+
+      return available;
     },
-    [payToken, requiredTokens],
+    [payToken, requiredTokens, musdTokenFilter],
   );
 
   return (

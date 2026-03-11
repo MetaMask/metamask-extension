@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   RequestStatus,
   formatChainIdToCaip,
@@ -110,12 +110,15 @@ jest.mock('../../../hooks/bridge/useTokenSearchResults', () => ({
 
 const ASSET_PICKER_BUTTON_TEST_ID = 'asset-picker-button';
 
-const renderBridgeInputGroup = (
-  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
-  props: Partial<React.ComponentProps<typeof BridgeInputGroup>> = {},
-) => {
-  const mockState = createBridgeMockStore({ ...stateOverrides });
-  return renderWithProvider(
+const InputGroup = ({
+  mockState,
+  ...props
+}: {
+  mockState: ReturnType<typeof createBridgeMockStore>;
+} & Partial<React.ComponentProps<typeof BridgeInputGroup>>) => {
+  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
+
+  return (
     <BridgeInputGroup
       header={'Swap'}
       token={getFromToken(mockState)}
@@ -131,8 +134,21 @@ const renderBridgeInputGroup = (
         value: '1',
       }}
       isDestination={false}
+      isAssetPickerOpen={isAssetPickerOpen}
+      setIsAssetPickerOpen={setIsAssetPickerOpen}
       {...props}
-    />,
+    />
+  );
+};
+
+const renderBridgeInputGroup = (
+  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
+  props: Partial<React.ComponentProps<typeof BridgeInputGroup>> = {},
+) => {
+  const mockState = createBridgeMockStore(stateOverrides);
+
+  return renderWithProvider(
+    <InputGroup mockState={mockState} {...props} />,
     configureStore(mockState),
   );
 };
