@@ -372,6 +372,7 @@ export const NetworksForm = ({
 
           if (
             featuredEndpoint &&
+            networkPayload.rpcEndpoints &&
             !networkPayload.rpcEndpoints.some((ep) =>
               URI.equal(ep.url, featuredEndpoint.url),
             )
