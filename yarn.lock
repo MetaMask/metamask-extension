@@ -8208,9 +8208,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^18.0.3":
-  version: 18.0.3
-  resolution: "@metamask/snaps-controllers@npm:18.0.3"
+"@metamask/snaps-controllers@npm:^18.0.4":
+  version: 18.0.4
+  resolution: "@metamask/snaps-controllers@npm:18.0.4"
   dependencies:
     "@metamask/approval-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -8247,7 +8247,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/e8b5f2274e8115d63d08e24f64394338c236f45682e1574d693ee76123abb3b5e4ca67152d3a9f121d830d4b51ea1e1bfa1f5278ff614c6792da04f47d6af786
+  checksum: 10/0857a66df4c92a2b632a2a7a4376331638a3611adc173f849c9175384c565809bbd9e2ad1eee6a3089bafcaa24460ce8f2c6db56d45b52e9a32222b08ba7a0b4
   languageName: node
   linkType: hard
 
