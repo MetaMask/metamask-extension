@@ -84,7 +84,6 @@ export const Default: Story = {
     approveConnection: (request) => {
       console.log('Approved connection:', request);
     },
-    activeTabOrigin: 'https://metamask.github.io',
     targetSubjectMetadata: mockTargetSubjectMetadata,
   },
 };
