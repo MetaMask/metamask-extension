@@ -1390,6 +1390,9 @@
     "ui/pages/bridge/hooks/useGasIncluded7702.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/bridge/hooks/useRWAToken.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
