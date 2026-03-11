@@ -22,7 +22,9 @@ jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useSearchParams: () => [new URLSearchParams('origin=https%3A%2F%2Ftest.dapp')],
+    useSearchParams: () => [
+      new URLSearchParams('origin=https%3A%2F%2Ftest.dapp'),
+    ],
     useLocation: () => ({
       pathname: '/test',
       search: '?origin=https%3A%2F%2Ftest.dapp',
