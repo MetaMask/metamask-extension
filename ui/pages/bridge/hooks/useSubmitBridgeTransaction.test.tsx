@@ -18,6 +18,8 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
+import * as sharedSelectors from '../../../../shared/modules/selectors';
+import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
@@ -30,6 +32,7 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
 jest.mock('../../../ducks/bridge/utils', () => ({
   ...jest.requireActual('../../../ducks/bridge/utils'),
   getTxGasEstimates: jest.fn(() => ({
@@ -38,6 +41,7 @@ jest.mock('../../../ducks/bridge/utils', () => ({
     maxPriorityFeePerGas: '0x0',
   })),
 }));
+
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
@@ -103,6 +107,17 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
   };
 });
 
+jest.mock('../../../../shared/modules/selectors', () => {
+  const smartTransactions = jest.requireActual(
+    '../../../../shared/modules/selectors/smart-transactions',
+  );
+  return {
+    ...smartTransactions,
+    getHardwareWalletType: jest.fn(() => undefined),
+    isHardwareWallet: jest.fn(() => false),
+  };
+});
+
 jest.mock('../../../selectors', () => {
   const original = jest.requireActual('../../../selectors');
   return {
@@ -120,7 +135,7 @@ const makeMockStore = (
 ) => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const store = configureMockStore<any>(middleware)(
+  return configureMockStore<any>(middleware)(
     createBridgeMockStore({
       metamaskStateOverrides: {
         gasFeeEstimates: {
@@ -137,25 +152,26 @@ const makeMockStore = (
       ...(stateOverrides ?? {}),
     }),
   );
-  return store;
 };
 
 const makeWrapper =
   (store: ReturnType<typeof makeMockStore>) =>
-  ({ children }: { children: React.ReactNode }) => {
-    return (
-      <Provider store={store}>
-        <MemoryRouter>
-          <HardwareWalletProvider>{children}</HardwareWalletProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-  };
+  ({ children }: { children: React.ReactNode }) => (
+    <Provider store={store}>
+      <MemoryRouter>
+        <HardwareWalletProvider>{children}</HardwareWalletProvider>
+      </MemoryRouter>
+    </Provider>
+  );
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
+const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
+const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
+const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 
 setBackgroundConnection({
   submitTx: submitTxSpy,
+  submitIntent: submitIntentSpy,
   getStatePatches: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
 } as never);
@@ -164,6 +180,15 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      isHardwareWalletSpy.mockImplementation(() => false);
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      captureExceptionSpy.mockReturnValue(undefined);
+      setBackgroundConnection({
+        submitTx: submitTxSpy,
+        submitIntent: submitIntentSpy,
+        getStatePatches: jest.fn(),
+        setEnabledAllPopularNetworks: jest.fn(),
+      } as never);
     });
 
     it('executes EVM bridge transaction', async () => {
@@ -172,7 +197,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      // Execute
       await act(async () => {
         await result.current.submitBridgeTransaction(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -181,8 +205,21 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
       expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -192,7 +229,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      // Execute
       await act(async () => {
         await result.current.submitBridgeTransaction(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -201,7 +237,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
       expect(result.current.isSubmitting).toBe(false);
     });
@@ -212,7 +247,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      // Execute
       await act(async () => {
         await result.current.submitBridgeTransaction(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -221,11 +255,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      // Assert
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
         {
-          state: { stayOnHomePage: true },
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+            token: null,
+          },
         },
       );
       expect(result.current.isSubmitting).toBe(false);
@@ -244,11 +281,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           },
         },
       });
+      isHardwareWalletSpy.mockImplementation(() => true);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
 
-      // Execute
       await act(async () => {
         await result.current.submitBridgeTransaction(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -257,9 +294,26 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-      );
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/cross-chain/swaps/awaiting-signatures",
+            {
+              "state": {},
+            },
+          ],
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalledTimes(1);
     });
@@ -281,7 +335,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      // Execute
       await act(async () => {
         await result.current.submitBridgeTransaction(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -293,6 +346,141 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('submits intent quotes via submitBridgeIntent', async () => {
+      const store = makeMockStore();
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          },
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          quoteWithIntent as any,
+        );
+      });
+
+      expect(submitIntentSpy).toHaveBeenCalledWith({
+        quoteResponse: quoteWithIntent,
+        accountAddress: expect.any(String),
+      });
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+            token: null,
+          },
+        },
+      );
+    });
+
+    it('routes to activity with replace when non-HW intent submission fails', async () => {
+      const store = makeMockStore();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      try {
+        await setBackgroundConnection({
+          submitTx: submitTxSpy,
+          submitIntent: jest.fn().mockRejectedValue(new Error('submit failed')),
+          getStatePatches: jest.fn(),
+          setEnabledAllPopularNetworks: jest.fn(),
+        } as never);
+        const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+          wrapper: makeWrapper(store),
+        });
+
+        const quoteWithIntent = {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          quote: {
+            ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+            intent: {
+              order: {},
+            },
+          },
+        };
+
+        await act(async () => {
+          await result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            quoteWithIntent as any,
+          );
+        });
+
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?tab=activity`,
+          {
+            replace: true,
+            state: {
+              stayOnHomePage: true,
+              token: null,
+            },
+          },
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
+
+    it('routes hardware-wallet intent quotes to activity after submit', async () => {
+      const store = makeMockStore();
+      isHardwareWalletSpy.mockImplementation(() => true);
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          },
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          quoteWithIntent as any,
+        );
+      });
+
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        1,
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        { state: {} },
+      );
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        2,
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+            token: null,
+          },
+        },
+      );
     });
   });
 });

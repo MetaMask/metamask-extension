@@ -3,9 +3,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  addLeadingZeroIfNeeded,
   fromTokenMinUnitsNumeric,
   isValidPositiveNumericString,
+  normalizeAmount,
 } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { Asset, AssetStandard } from '../../types/send';
@@ -31,41 +31,50 @@ export const useAmountValidation = () => {
     return errorMessage;
   }, []);
 
-  const validateNonEvmAmount = useCallback(async (): Promise<
-    string | undefined
-  > => {
-    if (!isNonEvmSendType) {
-      return undefined;
-    }
-
-    if (rawBalanceNumeric.isZero()) {
-      return t('insufficientFundsSend');
-    }
-
-    try {
-      const result = (await validateAmountWithSnap(
-        addLeadingZeroIfNeeded(value) || '0',
-      )) as SnapOnAmountInputResult;
-
-      if (result.errors?.length > 0) {
-        return mapSnapErrorCodeIntoTranslation(result.errors[0].code, t);
+  const validateNonEvmAmount = useCallback(
+    async (amount: string): Promise<string | undefined> => {
+      if (!isNonEvmSendType) {
+        return undefined;
       }
-      return undefined;
-    } catch (error) {
-      return t('invalidValue');
-    }
-  }, [t, value, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric]);
+
+      if (rawBalanceNumeric.isZero()) {
+        return t('insufficientFundsSend');
+      }
+
+      try {
+        const result = (await validateAmountWithSnap(
+          amount || '0',
+        )) as SnapOnAmountInputResult;
+
+        if (result.errors?.length > 0) {
+          return mapSnapErrorCodeIntoTranslation(result.errors[0].code, t);
+        }
+        return undefined;
+      } catch (error) {
+        return t('invalidValue');
+      }
+    },
+    [t, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric],
+  );
 
   const validateAmountAsync = useCallback(async () => {
     if (!value) {
       return setAndReturnError(undefined);
     }
 
+    const normalizedValue = normalizeAmount(value);
+
     const validations = [
-      () => validatePositiveNumericString(value, t),
-      () => validateERC1155Balance(asset as Asset, value, t),
-      () => validateTokenBalance(value, rawBalanceNumeric, asset?.decimals, t),
-      validateNonEvmAmount,
+      () => validatePositiveNumericString(normalizedValue, t),
+      () => validateERC1155Balance(asset as Asset, normalizedValue, t),
+      () =>
+        validateTokenBalance(
+          normalizedValue,
+          rawBalanceNumeric,
+          asset?.decimals,
+          t,
+        ),
+      () => validateNonEvmAmount(normalizedValue),
     ];
 
     for (const validation of validations) {
@@ -87,9 +96,9 @@ export const useAmountValidation = () => {
 
   // This callback is needed for non-EVM validation when nothing is typed into amount
   const validateNonEvmAmountAsync = useCallback(async () => {
-    const error = await validateNonEvmAmount();
+    const error = await validateNonEvmAmount(normalizeAmount(value));
     return setAndReturnError(error);
-  }, [validateNonEvmAmount, setAndReturnError]);
+  }, [value, validateNonEvmAmount, setAndReturnError]);
 
   useEffect(() => {
     validateAmountAsync();

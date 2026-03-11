@@ -3,8 +3,10 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import LoginPage from '../../page-objects/pages/login-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  loginWithBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 
 describe('Migrate vault with old encryption', function (this: Suite) {
   it('successfully unlocks an old vault, locks it, and unlocks again', async function () {
@@ -20,9 +22,7 @@ describe('Migrate vault with old encryption', function (this: Suite) {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.lockMetaMask();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
+        await lockAndWaitForLoginPage(driver);
         await loginWithBalanceValidation(driver);
       },
     );
