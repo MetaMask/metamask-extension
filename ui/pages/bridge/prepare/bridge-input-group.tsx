@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
