@@ -1082,6 +1082,7 @@
   },
   "bridgeLowestCost": {
     "message": "Lowest cost"
+  },
   "bridgeMarketClosedAction": {
     "message": "Market is closed"
   },
