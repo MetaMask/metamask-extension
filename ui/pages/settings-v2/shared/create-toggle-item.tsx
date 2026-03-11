@@ -17,13 +17,23 @@ export type ToggleEventConfig = {
   properties: (newValue: boolean) => Record<string, Json>;
 };
 
+/** Translate function signature for custom description renderers */
+export type ToggleItemDescriptionRenderer = (
+  t: (key: string, ...args: unknown[]) => React.ReactNode,
+) => React.ReactNode;
+
 export type ToggleItemConfig = {
   name: string;
   titleKey: string;
+  /** Simple i18n key for description (plain text). */
   descriptionKey?: string;
+  /** Custom description with links etc. When set, takes precedence over descriptionKey. */
+  description?: ToggleItemDescriptionRenderer;
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
+  /** Wrapper element test id (e.g. for the row container). */
+  containerDataTestId?: string;
   disabledSelector?: (state: MetaMaskReduxState) => boolean;
   trackEvent?: ToggleEventConfig;
 };
@@ -53,14 +63,24 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
       }
     };
 
+    let descriptionContent: React.ReactNode;
+    if (config.description) {
+      descriptionContent = config.description(
+        t as (...args: unknown[]) => React.ReactNode,
+      );
+    } else if (config.descriptionKey) {
+      descriptionContent = t(config.descriptionKey);
+    } else {
+      descriptionContent = undefined;
+    }
+
     return (
       <SettingsToggleItem
         title={t(config.titleKey)}
-        description={
-          config.descriptionKey ? t(config.descriptionKey) : undefined
-        }
+        description={descriptionContent}
         value={value}
         onToggle={handleToggle}
+        containerDataTestId={config.containerDataTestId}
         dataTestId={config.dataTestId}
         disabled={disabled}
       />

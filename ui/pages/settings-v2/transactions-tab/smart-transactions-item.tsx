@@ -1,17 +1,14 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSmartTransactionsPreferenceEnabled } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import {
+  createToggleItem,
+  type ToggleItemDescriptionRenderer,
+} from '../shared/create-toggle-item';
 
-export const SmartTransactionsItem = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-  const value = useSelector(getSmartTransactionsPreferenceEnabled);
-
-  const description = t('stxOptInSupportedNetworksDescription', [
+const description: ToggleItemDescriptionRenderer = (t) =>
+  t('stxOptInSupportedNetworksDescription', [
     <a
       key="learn_more"
       href={SMART_TRANSACTIONS_LEARN_MORE_URL}
@@ -23,16 +20,12 @@ export const SmartTransactionsItem = () => {
     </a>,
   ]);
 
-  return (
-    <SettingsToggleItem
-      title={t('smartTransactions')}
-      description={description}
-      value={value}
-      onToggle={(oldValue: boolean) =>
-        dispatch(setSmartTransactionsPreferenceEnabled(!oldValue))
-      }
-      containerDataTestId="advanced-setting-enable-smart-transactions"
-      dataTestId="settings-page-stx-opt-in-toggle"
-    />
-  );
-};
+export const SmartTransactionsItem = createToggleItem({
+  name: 'SmartTransactionsItem',
+  titleKey: 'smartTransactions',
+  description,
+  selector: getSmartTransactionsPreferenceEnabled,
+  action: setSmartTransactionsPreferenceEnabled,
+  dataTestId: 'settings-page-stx-opt-in-toggle',
+  containerDataTestId: 'advanced-setting-enable-smart-transactions',
+});
