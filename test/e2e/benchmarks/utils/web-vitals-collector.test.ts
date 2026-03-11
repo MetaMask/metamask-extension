@@ -565,8 +565,8 @@ describe('collectWebVitals', () => {
     });
   });
 
-  describe('maxDur > 0 guard removed', () => {
-    it('read script does not gate INP on maxDur > 0', async () => {
+  describe('maxDur > 0 guard', () => {
+    it('read script gates INP fallback on maxDur > 0 when stateHooks unavailable', async () => {
       const execScript = jest
         .fn()
         .mockResolvedValueOnce(undefined)
@@ -576,7 +576,7 @@ describe('collectWebVitals', () => {
       await collectWebVitals(driver);
 
       const readScript = execScript.mock.calls[1][0] as string;
-      expect(readScript).not.toContain('if (maxDur > 0)');
+      expect(readScript).toContain('if (maxDur > 0)');
     });
 
     it('INP is set when event durations are reported', async () => {
