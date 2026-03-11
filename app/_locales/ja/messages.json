@@ -2359,9 +2359,6 @@
   "editANickname": {
     "message": "ニックネームを編集"
   },
-  "editAccountName": {
-    "message": "アカウント名を編集"
-  },
   "editAccounts": {
     "message": "アカウントを編集"
   },
@@ -3122,9 +3119,6 @@
   },
   "hidden": {
     "message": "非表示"
-  },
-  "hiddenAccounts": {
-    "message": "非表示のアカウント"
   },
   "hide": {
     "message": "非表示"
@@ -6244,9 +6238,6 @@
   },
   "search": {
     "message": "検索"
-  },
-  "searchAccounts": {
-    "message": "アカウントを検索"
   },
   "searchAnAcccountOrContact": {
     "message": "アカウントまたは連絡先を検索"

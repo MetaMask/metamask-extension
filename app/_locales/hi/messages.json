@@ -2359,9 +2359,6 @@
   "editANickname": {
     "message": "उपनाम बदलें"
   },
-  "editAccountName": {
-    "message": "अकाउंट नाम बदलें"
-  },
   "editAccounts": {
     "message": "एकाउंट्स बदलें"
   },
@@ -3122,9 +3119,6 @@
   },
   "hidden": {
     "message": "छिपा हुआ"
-  },
-  "hiddenAccounts": {
-    "message": "छिपाए गए अकाउंट"
   },
   "hide": {
     "message": "छुपाएं"
@@ -6244,9 +6238,6 @@
   },
   "search": {
     "message": "ढूंढें"
-  },
-  "searchAccounts": {
-    "message": "अकाउंट्स खोजें"
   },
   "searchAnAcccountOrContact": {
     "message": "किसी अकाउंट या कॉन्टेक्ट को ढूंढें"

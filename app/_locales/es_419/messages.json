@@ -1347,9 +1347,6 @@
   "search": {
     "message": "Buscar"
   },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },

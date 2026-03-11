@@ -709,9 +709,6 @@
     "ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/multichain-accounts/edit-account-name-modal/edit-account-name-modal.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/multichain-accounts/multichain-account-cell/multichain-account-cell.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -730,10 +727,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-account-network-group-with-default-address/multichain-account-network-group-with-default-address.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/multichain-accounts/multichain-accounts-tree/multichain-accounts-tree.test.tsx": {
-      "React: Missing key props in lists": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-address-rows-hovered-list/default-address.test.tsx": {
@@ -796,12 +789,6 @@
       "MetaMask: Background connection not initialized": 56,
       "React: Act warnings (component updates not wrapped)": 2,
       "React: PropTypes validation failures": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/multichain/account-list-menu/account-list-menu.test.tsx": {
-      "MetaMask: Background connection not initialized": 2,
-      "Reselect: Input stability warnings": 1,
-      "error: Warning: Encountered two children with": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/account-menu/account-menu.test.tsx": {
@@ -1173,13 +1160,16 @@
       "MetaMask: Background connection not initialized": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/hooks/bridge/useBridgeQueryParams.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/hooks/bridge/useBridging.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/bridge/useCountdownTimer.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/hooks/bridge/usePrefillFromBridgeState.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/hooks/bridge/usePrefillFromSearchQuery.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/bridge/useRewards.test.ts": {
@@ -1397,6 +1387,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/hooks/useGasIncluded7702.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/hooks/useRWAToken.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {

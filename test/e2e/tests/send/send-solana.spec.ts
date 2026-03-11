@@ -20,9 +20,13 @@ describe('Send Solana', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+
+        // Switch to Solana via the UI. Enabling it through fixtures causes a redirect
+        // back to the default network because the snap is not yet initialized
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
+        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

@@ -2359,9 +2359,6 @@
   "editANickname": {
     "message": "编辑昵称"
   },
-  "editAccountName": {
-    "message": "编辑账户名"
-  },
   "editAccounts": {
     "message": "编辑账户"
   },
@@ -3122,9 +3119,6 @@
   },
   "hidden": {
     "message": "隐藏"
-  },
-  "hiddenAccounts": {
-    "message": "隐藏账户"
   },
   "hide": {
     "message": "隐藏"
@@ -6244,9 +6238,6 @@
   },
   "search": {
     "message": "搜索"
-  },
-  "searchAccounts": {
-    "message": "搜索账户"
   },
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"

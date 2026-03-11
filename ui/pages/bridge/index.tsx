@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import {
   UnifiedSwapBridgeEventName,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import {
-  DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
-  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -26,17 +24,18 @@ import {
   Header,
   Page,
 } from '../../components/multichain/pages/page';
-import {
-  resetBridgeState,
-  restoreQuoteRequestFromState,
-  trackUnifiedSwapBridgeEvent,
-} from '../../ducks/bridge/actions';
+import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { getFromChain } from '../../ducks/bridge/selectors';
+import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
+import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
+import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
+import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
+import { transitionBack } from '../../components/ui/transition';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -45,23 +44,18 @@ import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTran
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
   useBridging();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { search } = useLocation();
 
-  const isFromTransactionShield = new URLSearchParams(search || '').get(
-    'isFromTransactionShield',
-  );
+  const { navigateToDefaultRoute } = useBridgeNavigation();
+  // Pre-fill the src chain balances, slippage and other quote params before rendering the bridge page
+  // This also resets any search query parameters and navigation states
+  usePrefillFromSearchQuery();
+  usePrefillFromBridgeState();
+  useSmartSlippage();
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-
-  const resetControllerAndInputStates = async () => {
-    await dispatch(resetBridgeState());
-  };
-
-  const { activeQuote } = useSelector(getBridgeQuotes);
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
@@ -77,21 +71,6 @@ const CrossChainSwap = () => {
     dispatch(
       trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
     );
-
-    if (activeQuote) {
-      dispatch(restoreQuoteRequestFromState(activeQuote.quote));
-    }
-
-    // Reset controller and inputs before unloading the page
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    window.addEventListener('beforeunload', resetControllerAndInputStates);
-    return () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      window.removeEventListener('beforeunload', resetControllerAndInputStates);
-      resetControllerAndInputStates();
-    };
   }, []);
 
   // Needed for refreshing gas estimates (only for EVM chains)
@@ -103,16 +82,11 @@ const CrossChainSwap = () => {
   // Sets tx alerts for the active quote
   useTxAlerts();
 
-  const redirectToDefaultRoute = async () => {
-    await resetControllerAndInputStates();
-    if (isFromTransactionShield) {
-      navigate(TRANSACTION_SHIELD_ROUTE);
-    } else {
-      navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
-    }
-  };
-
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const handleBack = () => {
+    transitionBack(() => navigateToDefaultRoute());
+  };
 
   return (
     <Page className="bridge__container">
@@ -125,7 +99,7 @@ const CrossChainSwap = () => {
             ariaLabel={t('back')}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={redirectToDefaultRoute}
+            onClick={handleBack}
           />
         }
         endAccessory={
