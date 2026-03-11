@@ -131,12 +131,15 @@ describe('Onboarding Metametrics Component', () => {
     expect(checkboxLabel).toBeInTheDocument();
 
     const checkbox = getAllByRole('checkbox')[0];
+    const participateContainer = getByTestId('metametrics-checkbox').closest(
+      '[role="button"]',
+    ) as HTMLElement;
 
     expect(checkbox).toBeChecked();
     expect(checkbox).toBeInTheDocument();
 
     await act(() => {
-      fireEvent.click(checkbox);
+      fireEvent.click(participateContainer);
     });
 
     await waitFor(() => {
@@ -157,7 +160,7 @@ describe('Onboarding Metametrics Component', () => {
   });
 
   it('when the participate in MetaMetrics checkbox is unchecked, setDataCollectionForMarketing should be called with false', async () => {
-    const { queryByText, getAllByRole, getByTestId } = renderWithProvider(
+    const { queryByText, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
     );
@@ -172,15 +175,13 @@ describe('Onboarding Metametrics Component', () => {
     expect(title).toBeInTheDocument();
     expect(description).toBeInTheDocument();
 
-    const participateCheckbox = getAllByRole('checkbox')[0];
-    const marketingCheckbox = getAllByRole('checkbox')[1];
-
-    expect(participateCheckbox).toBeChecked();
-    expect(marketingCheckbox).not.toBeChecked();
+    const participateContainer = getByTestId('metametrics-checkbox').closest(
+      '[role="button"]',
+    ) as HTMLElement;
 
     // Opt out of MetaMetrics; this should clear marketing consent
     await act(() => {
-      fireEvent.click(participateCheckbox);
+      fireEvent.click(participateContainer);
     });
 
     const continueButton = getByTestId('metametrics-i-agree');
@@ -205,19 +206,24 @@ describe('Onboarding Metametrics Component', () => {
   });
 
   it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {
-    const { getAllByRole } = renderWithProvider(
+    const { getAllByRole, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
     );
 
-    const participateCheckbox = getAllByRole('checkbox')[0];
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
-    expect(participateCheckbox).toBeChecked();
+    const participateContainer = getByTestId('metametrics-checkbox').closest(
+      '[role="button"]',
+    ) as HTMLElement;
+    const marketingContainer = getByTestId(
+      'metametrics-data-collection-checkbox',
+    ).closest('[role="button"]') as HTMLElement;
+
     expect(marketingCheckbox).not.toBeChecked();
 
     await act(() => {
-      fireEvent.click(marketingCheckbox);
+      fireEvent.click(marketingContainer);
     });
 
     await waitFor(() => {
@@ -225,7 +231,7 @@ describe('Onboarding Metametrics Component', () => {
     });
 
     await act(() => {
-      fireEvent.click(participateCheckbox);
+      fireEvent.click(participateContainer);
     });
 
     await waitFor(() => {

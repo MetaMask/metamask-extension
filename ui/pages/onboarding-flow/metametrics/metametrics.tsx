@@ -215,12 +215,15 @@ export default function OnboardingMetametrics() {
           isSelected={isParticipateInMetaMetricsChecked}
           onChange={handleParticipateInMetaMetricsChange}
           ref={participateCheckboxRef}
-          onClick={(e: React.MouseEvent<HTMLLabelElement>) =>
-            e.stopPropagation()
-          }
+          onClick={(e: React.MouseEvent<HTMLLabelElement>) => {
+            e.stopPropagation();
+            e.preventDefault();
+            participateCheckboxRef.current?.toggle();
+          }}
           inputProps={{
-            onClick: (e: React.MouseEvent<HTMLInputElement>) =>
-              e.stopPropagation(),
+            onClick: (e: React.MouseEvent<HTMLInputElement>) => {
+              e.preventDefault();
+            },
           }}
           label={
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
@@ -276,12 +279,15 @@ export default function OnboardingMetametrics() {
             setIsDataCollectionForMarketingChecked((prev) => !prev);
           }}
           ref={marketingCheckboxRef}
-          onClick={(e: React.MouseEvent<HTMLLabelElement>) =>
-            e.stopPropagation()
-          }
+          onClick={(e: React.MouseEvent<HTMLLabelElement>) => {
+            e.stopPropagation();
+            e.preventDefault();
+            marketingCheckboxRef.current?.toggle();
+          }}
           inputProps={{
-            onClick: (e: React.MouseEvent<HTMLInputElement>) =>
-              e.stopPropagation(),
+            onClick: (e: React.MouseEvent<HTMLInputElement>) => {
+              e.preventDefault();
+            },
           }}
           label={
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
