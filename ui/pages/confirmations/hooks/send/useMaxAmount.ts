@@ -97,7 +97,7 @@ export const useMaxAmount = () => {
       from: from as Hex,
       value: (value ?? '0') as string,
     });
-  }, [asset, chainId, from, value]);
+  }, [asset, chainId, from, isEvmNativeSendType, value]);
 
   const getMaxAmount = useCallback(() => {
     return getMaxAmountFn({

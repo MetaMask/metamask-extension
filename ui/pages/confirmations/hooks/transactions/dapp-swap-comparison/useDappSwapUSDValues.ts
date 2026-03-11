@@ -48,7 +48,7 @@ export function useDappSwapUSDValues({
     }
 
     return exchangeRates;
-  }, [chainId, tokenAddresses?.length]);
+  }, [chainId, tokenAddresses]);
 
   const { value: tokenDetails, pending: tokenDetailsPending } = useAsyncResult<
     Record<Hex, TokenStandAndDetails>
@@ -63,7 +63,7 @@ export function useDappSwapUSDValues({
       }
     });
     return result;
-  }, [chainId, tokenAddresses?.length]);
+  }, [chainId, tokenAddresses]);
 
   const getTokenUSDValue = useCallback(
     (tokenAmount: string, tokenAddress: Hex, decimalsToDisplay?: number) => {

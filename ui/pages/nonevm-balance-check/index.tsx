@@ -107,13 +107,15 @@ export const NonEvmBalanceCheck = () => {
           );
     }
   }, [
+    dispatch,
     chainId,
     assetsWithBalance,
+    lastSelectedNonEvmAccount?.address,
+    lastSelectedNonEvmAccount?.scopes,
     metaMetricsId,
     isMetaMetricsEnabled,
     isMarketingEnabled,
     hasAccountForChain,
-    accounts,
   ]);
 
   if (!hasAccountForChain) {

@@ -110,7 +110,7 @@ const useLedgerConnection = () => {
     return () => {
       dispatch(setLedgerTransportStatus(HardwareTransportStates.none));
     };
-  }, [dispatch]);
+  }, [dispatch, isLedgerWallet]);
 
   return { isLedgerWallet };
 };

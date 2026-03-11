@@ -54,7 +54,9 @@ export function GasFeeTokenToast() {
       <Toast
         onClose={hideToast}
         text={t('confirmGasFeeTokenToast', [
-          <b key="selected-gas-fee-token-symbol">{selectedGasFeeToken?.symbol}</b>,
+          <b key="selected-gas-fee-token-symbol">
+            {selectedGasFeeToken?.symbol}
+          </b>,
         ])}
         startAdornment={
           <>
