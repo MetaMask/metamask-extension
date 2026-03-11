@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray, parseCaipAccountId } from '@metamask/utils';
-import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   AvatarFavicon,
@@ -27,7 +27,6 @@ import {
   getInternalAccountByAddress,
   getOriginOfCurrentTab,
   getPermissionSubjects,
-  getSelectedInternalAccount,
   getSubjectMetadata,
 } from '../../../selectors';
 import {
@@ -77,7 +76,6 @@ export const DappConnectionControlBar: React.FC = () => {
       selectedAccountGroupId,
     ),
   );
-  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
   const allPermittedAddresses = useMemo(() => {
     return permittedAccounts
@@ -120,28 +118,18 @@ export const DappConnectionControlBar: React.FC = () => {
       : undefined,
   );
 
-  const connectedAccountAddresses = useMemo(
-    () => (activePermittedAddress ? [activePermittedAddress] : []),
-    [activePermittedAddress],
-  );
   const connectedAccountGroups = useSelector((state) =>
-    connectedAccountAddresses.length > 0
+    activePermittedAddress
       ? getAccountGroupsByAddress(
           state as Parameters<typeof getAccountGroupsByAddress>[0],
-          connectedAccountAddresses,
+          [activePermittedAddress],
         )
       : [],
   );
 
-  const isConnectedToAccountGroup =
-    selectedAccountGroupId &&
-    accountGroupInternalAccounts?.some((account) =>
-      isInternalAccountInPermittedAccountIds(account, permittedAccounts),
-    );
-  const isConnected = isConnectedToAccountGroup || permittedAccounts.length > 0;
+  const isConnected = permittedAccounts.length > 0;
 
-  const selectedConnectedAccount =
-    connectedAccountByAddress ?? selectedInternalAccount;
+  const selectedConnectedAccount = connectedAccountByAddress;
   const selectedAccountAddress = selectedConnectedAccount?.address ?? '';
   const selectedAccountName = useMemo(() => {
     if (connectedAccountGroups.length > 0) {
