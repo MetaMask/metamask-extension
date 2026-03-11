@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   CHAIN_IDS,
+  FEATURED_RPCS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   getRpcUrl,
@@ -741,6 +742,128 @@ describe('NetworkForm Component', () => {
           to_rpc_domain: 'monad-mainnet.infura.io',
         },
       });
+    });
+  });
+
+  it('should inject featured Infura endpoint when adding a featured network', async () => {
+    const polygonFeatured = FEATURED_RPCS.find(
+      (f) => f.chainId === CHAIN_IDS.POLYGON,
+    );
+    const featuredEndpoint =
+      polygonFeatured.rpcEndpoints[polygonFeatured.defaultRpcEndpointIndex];
+
+    nock('https://custom-polygon-rpc.example.com:443')
+      .post('/')
+      .reply(200, { jsonrpc: '2.0', result: '0x89' });
+
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '137',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: 'Polygon',
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://custom-polygon-rpc.example.com',
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'POL',
+      },
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(addNetwork).toHaveBeenCalledTimes(1);
+      expect(addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x89',
+          defaultRpcEndpointIndex: 1,
+          rpcEndpoints: [
+            featuredEndpoint,
+            {
+              url: 'https://custom-polygon-rpc.example.com',
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        }),
+      );
+    });
+  });
+
+  it('should not duplicate endpoint when user URL matches featured Infura URL', async () => {
+    const polygonFeatured = FEATURED_RPCS.find(
+      (f) => f.chainId === CHAIN_IDS.POLYGON,
+    );
+    const featuredUrl =
+      polygonFeatured.rpcEndpoints[polygonFeatured.defaultRpcEndpointIndex].url;
+
+    nock(new URL(featuredUrl).origin).post('/').reply(200, {
+      jsonrpc: '2.0',
+      result: '0x89',
+    });
+
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '137',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: 'Polygon',
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: featuredUrl,
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'POL',
+      },
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(addNetwork).toHaveBeenCalledTimes(1);
+      // Should only have 1 endpoint (no duplicate)
+      expect(addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x89',
+          rpcEndpoints: [
+            {
+              url: featuredUrl,
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        }),
+      );
     });
   });
 });
