@@ -45,10 +45,12 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
   const [value, setValue] = useState(initialValue ?? '');
 
   useEffect(() => {
-    if (initialValue && value !== initialValue) {
-      setValue(initialValue);
+    if (initialValue) {
+      setValue((currentValue) =>
+        currentValue === initialValue ? currentValue : initialValue,
+      );
     }
-  }, [initialValue, value]);
+  }, [initialValue]);
 
   const handleChange = (newValue: string) => {
     setValue(newValue);
