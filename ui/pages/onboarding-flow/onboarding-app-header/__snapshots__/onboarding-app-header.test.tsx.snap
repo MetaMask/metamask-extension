@@ -6,7 +6,7 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
     class="items-center p-4 bg-default onboarding-app-header w-full"
   >
     <div
-      class="justify-between onboarding-app-header__contents w-full"
+      class="flex flex-row justify-between onboarding-app-header__contents w-full mx-auto"
     >
       <button
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"
@@ -99,7 +99,7 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
     class="items-center p-4 bg-default onboarding-app-header w-full"
   >
     <div
-      class="justify-between onboarding-app-header__contents w-full"
+      class="flex flex-row justify-between onboarding-app-header__contents w-full mx-auto"
     >
       <button
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"

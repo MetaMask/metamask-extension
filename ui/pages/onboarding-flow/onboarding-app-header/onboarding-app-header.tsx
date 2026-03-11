@@ -14,6 +14,7 @@ import {
   IconName,
   IconColor,
   IconSize,
+  BoxFlexDirection,
 } from '@metamask/design-system-react';
 import {
   TextColor as LegacyTextColor,
@@ -84,12 +85,13 @@ export default function OnboardingAppHeader({
     >
       {showLogoAndLocaleDropdown ? (
         <Box
+          flexDirection={BoxFlexDirection.Row}
           justifyContent={
             pathname === ONBOARDING_WELCOME_ROUTE
               ? BoxJustifyContent.End
               : BoxJustifyContent.Between
           }
-          className="onboarding-app-header__contents w-full"
+          className="onboarding-app-header__contents w-full mx-auto"
         >
           {pathname !== ONBOARDING_WELCOME_ROUTE && (
             <MetaFoxLogo unsetIconHeight isOnboarding />
