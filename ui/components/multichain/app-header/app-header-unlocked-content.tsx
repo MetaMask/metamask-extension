@@ -46,10 +46,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import {
-  ACCOUNT_LIST_PAGE_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
