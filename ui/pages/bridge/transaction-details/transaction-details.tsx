@@ -313,6 +313,7 @@ const CrossChainSwapTxDetails = () => {
                 <Text
                   textTransform={TextTransform.Capitalize}
                   color={status ? STATUS_TO_COLOR_MAP[status] : undefined}
+                  data-testid="bridge-transaction-details-tx-status"
                 >
                   {status?.toLowerCase()}
                 </Text>

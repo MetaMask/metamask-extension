@@ -15,7 +15,12 @@ describe('Swap Eth for another Token', function () {
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       ),
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$225,730.11',
+        );
 
         await bridgeTransaction({
           driver,
