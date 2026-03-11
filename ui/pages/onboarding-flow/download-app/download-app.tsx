@@ -5,7 +5,6 @@ import {
   TextVariant,
   BoxFlexDirection,
   BoxJustifyContent,
-  BoxAlignItems,
   TextColor,
   Box,
   Button,
@@ -50,11 +49,7 @@ export default function OnboardingDownloadApp() {
         <Text variant={TextVariant.HeadingLg} className="mb-4">
           {t('downloadAppTitle')}
         </Text>
-        <Box
-          alignItems={BoxAlignItems.Start}
-          justifyContent={BoxJustifyContent.Center}
-          className="mb-4"
-        >
+        <Box className="mb-4">
           <img
             src="/images/onboarding-download-app.png"
             alt="Download the app"
