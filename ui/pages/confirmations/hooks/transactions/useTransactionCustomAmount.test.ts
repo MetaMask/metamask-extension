@@ -7,6 +7,7 @@ import * as TransactionPayControllerActions from '../../../../store/controller-a
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
+import * as ConfirmContext from '../../context/confirm';
 import {
   useTransactionCustomAmount,
   MAX_LENGTH,
@@ -399,6 +400,88 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountFiat).toBe('50');
+    });
+  });
+
+  describe('transaction replacement with zero amount', () => {
+    function mockConfirmContext(id: string) {
+      return jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: { id, chainId: '0x5' },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ConfirmContext.ConfirmContextType);
+    }
+
+    it('resets amountFiat to "0" when transactionId changes and new amount is zero', () => {
+      const contextSpy = mockConfirmContext('tx-original');
+
+      const mockRequiredTokens = jest
+        .mocked(useTransactionPayDataModule.useTransactionPayRequiredTokens)
+        .mockReturnValue([
+          { amountUsd: '50', skipIfBalance: false },
+        ] as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayRequiredTokens
+        >);
+
+      const { result, rerender } = runHook({
+        requiredTokens: [{ amountUsd: '50', skipIfBalance: false }],
+      });
+
+      expect(result.current.amountFiat).toBe('50');
+
+      contextSpy.mockReturnValue({
+        currentConfirmation: { id: 'tx-replacement', chainId: '0x5' },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ConfirmContext.ConfirmContextType);
+
+      mockRequiredTokens.mockReturnValue([
+        { amountUsd: '0', skipIfBalance: false },
+      ] as ReturnType<
+        typeof useTransactionPayDataModule.useTransactionPayRequiredTokens
+      >);
+
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.amountFiat).toBe('0');
+    });
+
+    it('resets amountFiat to "0" when transactionId changes and new amount is undefined', () => {
+      const contextSpy = mockConfirmContext('tx-original');
+
+      const mockRequiredTokens = jest
+        .mocked(useTransactionPayDataModule.useTransactionPayRequiredTokens)
+        .mockReturnValue([
+          { amountUsd: '75.50', skipIfBalance: false },
+        ] as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayRequiredTokens
+        >);
+
+      const { result, rerender } = runHook({
+        requiredTokens: [{ amountUsd: '75.50', skipIfBalance: false }],
+      });
+
+      expect(result.current.amountFiat).toBe('75.5');
+
+      contextSpy.mockReturnValue({
+        currentConfirmation: { id: 'tx-replacement', chainId: '0x5' },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ConfirmContext.ConfirmContextType);
+
+      mockRequiredTokens.mockReturnValue([
+        { amountUsd: undefined, skipIfBalance: false },
+      ] as unknown as ReturnType<
+        typeof useTransactionPayDataModule.useTransactionPayRequiredTokens
+      >);
+
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.amountFiat).toBe('0');
     });
   });
 });

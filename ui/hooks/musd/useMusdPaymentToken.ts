@@ -77,10 +77,7 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
   const callbacks: TransactionControllerCallbacks = useMemo(
     () => ({
       addTransaction: async (txParams, options) => {
-        return addTransaction(txParams, {
-          networkClientId: options.networkClientId,
-          type: options.type,
-        });
+        return addTransaction(txParams, options);
       },
 
       findNetworkClientIdByChainId: async (chainId: Hex) => {
