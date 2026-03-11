@@ -389,13 +389,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader].filter(Boolean),
+        use: tsxLoader,
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader].filter(Boolean),
+        use: jsxLoader,
       },
       // React Compiler for UI component files (must appear after SWC rules)
       ...reactCompilerRule,
