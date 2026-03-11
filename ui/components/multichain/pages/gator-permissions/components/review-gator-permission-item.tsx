@@ -248,7 +248,7 @@ export const ReviewGatorPermissionItem = ({
 
       const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
       if (typeof decimals === 'number') {
-        return `${formattedValueWithSymbol}`;
+        return formattedValueWithSymbol;
       }
 
       return `${formattedValueWithSymbol} (raw units)`;
@@ -316,7 +316,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate, permissionResponse.rules],
+    [t, formatValue, formatValueAsRatePerSecond, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -359,7 +359,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, getExpirationDate, permissionResponse.rules],
+    [formatValue, getExpirationDate, permissionResponse.rules],
   );
 
   /**
