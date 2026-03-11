@@ -671,7 +671,7 @@ export const routeConfig = [
     basicFunctionalityRequired: false,
   }),
   createRouteWithLayout({
-    path: `${REVIEW_PERMISSIONS}/:origin`,
+    path: REVIEW_PERMISSIONS,
     component: MultichainReviewPermissions,
     layout: RootLayout,
     authenticated: true,

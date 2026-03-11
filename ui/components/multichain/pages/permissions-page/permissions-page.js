@@ -123,7 +123,7 @@ const PermissionsPage = () => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
 
-    navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+    navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>
