@@ -104,6 +104,8 @@
     "fromTokenBalance": "null",
     "fromTokenExchangeRate": "null",
     "fromTokenInputValue": "null",
+    "isDestAssetPickerOpen": "boolean",
+    "isSrcAssetPickerOpen": "boolean",
     "selectedQuote": "null",
     "slippage": "number",
     "sortOrder": "string",

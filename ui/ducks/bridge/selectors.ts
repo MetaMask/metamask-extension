@@ -976,3 +976,11 @@ export const getIsGasIncluded = createSelector(
     return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
+
+export const getIsSrcAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isSrcAssetPickerOpen;
+
+export const getIsDestAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isDestAssetPickerOpen;
+
+export const getBridgeState = (state: BridgeAppState) => state.bridge;
