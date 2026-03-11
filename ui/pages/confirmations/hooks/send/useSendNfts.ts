@@ -25,16 +25,13 @@ export const useSendNfts = () => {
     getAccountGroupWithInternalAccounts,
   );
 
-  const selectedAccountGroupWithInternalAccounts = useMemo(
-    () =>
-      accountGroupWithInternalAccounts?.find(
-        (accountGroup) => accountGroup.id === selectedAccountGroup,
-      )?.accounts,
-    [accountGroupWithInternalAccounts, selectedAccountGroup],
-  );
-
   // Memoize the transformed NFTs to prevent unnecessary recalculations
   const transformedNfts = useMemo(() => {
+    const selectedAccountGroupWithInternalAccounts =
+      accountGroupWithInternalAccounts?.find(
+        (accountGroup) => accountGroup.id === selectedAccountGroup,
+      )?.accounts;
+
     const allNfts = transformNftsToAssets(
       nftsOwnedByAccounts,
       selectedAccountGroupWithInternalAccounts as InternalAccount[],
@@ -43,9 +40,11 @@ export const useSendNfts = () => {
 
     return allNfts;
   }, [
+    // using accountGroupWithInternalAccounts as dependency is somehow causing repeated renders
+    accountGroupWithInternalAccounts?.length,
     chainNetworkNAmeAndImageMap,
     nftsOwnedByAccounts,
-    selectedAccountGroupWithInternalAccounts,
+    selectedAccountGroup,
   ]);
 
   // Memoize the balance fetching function

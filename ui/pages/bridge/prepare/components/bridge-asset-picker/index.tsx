@@ -128,13 +128,17 @@ export const BridgeAssetPicker = ({
 
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Persist selected chain id to restore the selected chain id if the modal is closed before a new token is selected
   const [persistedChainId, setPersistedChainId] = useState<CaipChainId | null>(
     selectedChainId,
   );
+  const wasOpenRef = useRef(isOpen);
+
   useEffect(() => {
+    const isOpening = !wasOpenRef.current && isOpen;
+    wasOpenRef.current = isOpen;
+
     if (
-      isOpen &&
+      isOpening &&
       selectedChainId &&
       selectedAsset.chainId !== selectedChainId
     ) {
@@ -145,10 +149,7 @@ export const BridgeAssetPicker = ({
           : persistedChainId,
       );
     }
-    // This effect is intentionally only triggered on modal open.
-    // Including selectedChainId in deps would immediately reset a user-picked network.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, persistedChainId, selectedAsset.chainId, selectedChainId]);
 
   const handleClose = useCallback(() => {
     setSearchQuery('');

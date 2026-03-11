@@ -249,12 +249,11 @@ describe('useSendNfts', () => {
 
     await waitFor(() => {
       expect(result.current.length).toBe(3);
-      expect(
-        result.current.every(
-          (nft: Asset) => nft.accountAddress === '0xAccount1',
-        ),
-      ).toBe(true);
     });
+
+    expect(
+      result.current.every((nft: Asset) => nft.accountAddress === '0xAccount1'),
+    ).toBe(true);
   });
 
   it('adds network information when available in chain map', async () => {

@@ -181,7 +181,7 @@ describe('CurrencyInput Component', () => {
       expect(queryByTitle('$231.06')).toBeInTheDocument();
     });
 
-    it('should call onChange on input changes with the hex value for fiat', () => {
+    it('should call onChange on input changes with the hex value for fiat', async () => {
       const store = configureMockStore()(mockStore);
 
       const props = {
@@ -203,7 +203,10 @@ describe('CurrencyInput Component', () => {
         '0xf604b06968000',
         '0.004328',
       );
-      expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
+      });
     });
 
     it('should swap selected currency when swap icon is clicked', async () => {
@@ -223,7 +226,9 @@ describe('CurrencyInput Component', () => {
       const currencyInput = queryByTestId('currency-input');
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
+      });
 
       const currencySwap = queryByTestId('currency-swap');
       fireEvent.click(currencySwap);

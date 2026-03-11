@@ -21,7 +21,7 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });
 
-// eslint-disable-next-line
+// eslint-disable-next-line no-undef -- Storybook preview runs in browser context and intentionally sets a window global for feature flags.
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 

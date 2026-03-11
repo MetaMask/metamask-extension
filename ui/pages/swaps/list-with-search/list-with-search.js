@@ -21,8 +21,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import { fetchToken } from '../swaps.util';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
-let timeoutIdForSearch;
-
 export default function ListWithSearch({
   itemsToSearch = [],
   listTitle,
@@ -39,6 +37,7 @@ export default function ListWithSearch({
 }) {
   const itemListRef = useRef();
   const t = useContext(I18nContext);
+  const timeoutIdForSearchRef = useRef();
 
   const [items, setItems] = useState(itemsToSearch);
   const chainId = useSelector(getCurrentChainId);
@@ -66,11 +65,11 @@ export default function ListWithSearch({
 
   const handleSearch = async (newSearchQuery) => {
     setSearchQuery(newSearchQuery);
-    if (timeoutIdForSearch) {
-      clearTimeout(timeoutIdForSearch);
+    if (timeoutIdForSearchRef.current) {
+      clearTimeout(timeoutIdForSearchRef.current);
     }
-    timeoutIdForSearch = setTimeout(async () => {
-      timeoutIdForSearch = null;
+    timeoutIdForSearchRef.current = setTimeout(async () => {
+      timeoutIdForSearchRef.current = null;
       const trimmedNewSearchQuery = newSearchQuery.trim();
       const trimmedNewSearchQueryUpperCase =
         trimmedNewSearchQuery.toUpperCase();
@@ -110,6 +109,15 @@ export default function ListWithSearch({
   useEffect(() => {
     handleSearchRef.current(searchQuery);
   }, [searchQuery, itemsToSearch]);
+
+  useEffect(
+    () => () => {
+      if (timeoutIdForSearchRef.current) {
+        clearTimeout(timeoutIdForSearchRef.current);
+      }
+    },
+    [],
+  );
 
   const handleOnClear = () => {
     setSearchQuery('');

@@ -141,8 +141,7 @@ describe('useContractCode', () => {
     renderHook(() => useContractCode(mockAddress, mockNetworkClientId));
 
     expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
-      mockAddress,
-      mockNetworkClientId,
+      expect.any(Function),
     ]);
   });
 

@@ -19,9 +19,9 @@ export default function useProcessNewDecimalValue(
   const tokenToFiatConversionRateToString =
     tokenToFiatConversionRate?.toString();
   const tokenToFiatConversionRateNumeric =
-    tokenToFiatConversionRateToString !== undefined
-      ? new Numeric(tokenToFiatConversionRateToString, 10)
-      : undefined;
+    tokenToFiatConversionRateToString === undefined
+      ? undefined
+      : new Numeric(tokenToFiatConversionRateToString, 10);
 
   return useCallback(
     (newDecimalValue: string, isTokenPrimaryOverride?: boolean) => {
