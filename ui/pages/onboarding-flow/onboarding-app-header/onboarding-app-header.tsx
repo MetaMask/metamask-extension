@@ -5,7 +5,6 @@ import classnames from 'clsx';
 import {
   Box,
   BoxJustifyContent,
-  BoxAlignItems,
   BoxBackgroundColor,
   Text,
   TextColor,
@@ -17,7 +16,6 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import {
-  AlignItems,
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
@@ -74,7 +72,6 @@ export default function OnboardingAppHeader({
 
   return (
     <Box
-      alignItems={BoxAlignItems.Center}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       padding={4}
       className={classnames('onboarding-app-header w-full', {
@@ -105,10 +102,8 @@ export default function OnboardingAppHeader({
                 borderColor={BorderColor.borderMuted}
                 backgroundColor={BackgroundColor.backgroundMuted}
                 title={t('pinMetaMask')}
-                gap={4}
                 className="onboarding-app-header__banner-tip"
                 padding={3}
-                alignItems={AlignItems.center}
               >
                 <Text
                   variant={TextVariant.BodySm}
