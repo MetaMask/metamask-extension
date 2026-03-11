@@ -7,9 +7,26 @@ import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import {
   setUse4ByteResolution,
   setUseAddressBarEnsResolution,
+  setUseExternalNameSources,
+  setUseSafeChainsListValidation,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { IpfsGatewayItem } from './ipfs-gateway-item';
+
+const NetworkDetailsCheckToggleItem = createToggleItem({
+  name: 'NetworkDetailsCheckToggleItem',
+  titleKey: 'useSafeChainsListValidation',
+  formatDescription: (t) =>
+    t('useSafeChainsListValidationDescriptionV2', [
+      <b key="network-details-website">
+        {t('useSafeChainsListValidationWebsite')}
+      </b>,
+    ]),
+  selector: (state: MetaMaskReduxState) =>
+    state.metamask.useSafeChainsListValidation,
+  action: setUseSafeChainsListValidation,
+  dataTestId: 'network-details-check-toggle',
+});
 
 const ShowENSDomainsToggleItem = createToggleItem({
   name: 'ShowENSDomainsToggleItem',
@@ -51,8 +68,19 @@ const MakeSmartContractsEasierToggleItem = createToggleItem({
   dataTestId: 'make-smart-contracts-easier-toggle',
 });
 
+const ProposedNicknamesToggleItem = createToggleItem({
+  name: 'ProposedNicknamesToggleItem',
+  titleKey: 'externalNameSourcesSetting',
+  descriptionKey: 'externalNameSourcesSettingDescriptionV2',
+  selector: (state: MetaMaskReduxState) =>
+    state.metamask.useExternalNameSources,
+  action: setUseExternalNameSources,
+  dataTestId: 'proposed-nicknames-toggle',
+});
+
 /** Registry of setting items for the Third-party APIs sub-page */
 const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
+  { id: 'network-details-check', component: NetworkDetailsCheckToggleItem },
   { id: 'show-ens-domains', component: ShowENSDomainsToggleItem },
   {
     id: 'make-smart-contracts-easier',
@@ -65,6 +93,11 @@ const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
     hasDividerBefore: true,
   },
   { id: 'autodetect-nfts', component: AutodetectNftsToggleItem },
+  {
+    id: 'proposed-nicknames',
+    component: ProposedNicknamesToggleItem,
+    hasDividerBefore: true,
+  },
 ];
 
 const ThirdPartyApisSubPage = () => (
