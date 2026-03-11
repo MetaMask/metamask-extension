@@ -167,7 +167,7 @@ describe('useTokenContractAlert', () => {
       );
     });
 
-    it('includes content in the alert', async () => {
+    it('includes message in the alert', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC20',
       } as TokenStandAndDetails);
@@ -185,7 +185,7 @@ describe('useTokenContractAlert', () => {
       // Wait for async resolution
       await new Promise((resolve) => setTimeout(resolve, 0));
 
-      expect(result.current[0].content).toBeDefined();
+      expect(result.current[0].message).toBe('smartContractAddressWarning');
     });
 
     it('calls getTokenStandardAndDetailsByChain with correct params', async () => {

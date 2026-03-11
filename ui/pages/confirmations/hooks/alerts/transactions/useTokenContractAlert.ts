@@ -11,7 +11,6 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
-import { TokenContractAlertMessage } from './TokenContractAlertMessage';
 
 export function useTokenContractAlert(): Alert[] {
   const t = useI18nContext();
@@ -43,7 +42,7 @@ export function useTokenContractAlert(): Alert[] {
       {
         key: 'tokenContractAddress',
         field: RowAlertKey.InteractingWith,
-        content: TokenContractAlertMessage(),
+        message: t('smartContractAddressWarning'),
         reason: t('tokenContractWarning'),
         severity: Severity.Warning,
       },
