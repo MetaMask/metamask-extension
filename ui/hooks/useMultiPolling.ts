@@ -18,6 +18,7 @@ type UseMultiPollingOptions<PollingInput extends Json> = {
 const useMultiPolling = <PollingInput extends Json>(
   usePollingOptions: UseMultiPollingOptions<PollingInput>,
 ) => {
+  const { startPolling, stopPollingByPollingToken } = usePollingOptions;
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const pollingTokens = useRef<Map<string, string>>(new Map());
   const pendingPolls = useRef<Set<string>>(new Set());
@@ -33,8 +34,8 @@ const useMultiPolling = <PollingInput extends Json>(
   }, [pollingInputs]);
 
   // Keep ref to latest stop function for use in unmount cleanup
-  const stopPollingRef = useRef(usePollingOptions.stopPollingByPollingToken);
-  stopPollingRef.current = usePollingOptions.stopPollingByPollingToken;
+  const stopPollingRef = useRef(stopPollingByPollingToken);
+  stopPollingRef.current = stopPollingByPollingToken;
 
   const isMounted = useRef(true);
   useEffect(() => {
@@ -67,8 +68,7 @@ const useMultiPolling = <PollingInput extends Json>(
     for (const [key, input] of inputKeyMap) {
       if (!pollingTokens.current.has(key) && !pendingPolls.current.has(key)) {
         pendingPolls.current.add(key);
-        usePollingOptions
-          .startPolling(input)
+        startPolling(input)
           .then((token) => {
             if (!inputKeyMapRef.current.has(key)) {
               stopPollingRef.current(token);
@@ -100,14 +100,14 @@ const useMultiPolling = <PollingInput extends Json>(
     // stop existing polls for removed inputs
     for (const [inputKey, token] of pollingTokens.current.entries()) {
       if (!inputKeyMap.has(inputKey)) {
-        usePollingOptions.stopPollingByPollingToken(token);
+        stopPollingByPollingToken(token);
         pollingTokens.current.delete(inputKey);
       }
     }
   }, [
     inputKeyMap,
-    usePollingOptions.startPolling,
-    usePollingOptions.stopPollingByPollingToken,
+    startPolling,
+    stopPollingByPollingToken,
     completedOnboarding,
   ]);
 };

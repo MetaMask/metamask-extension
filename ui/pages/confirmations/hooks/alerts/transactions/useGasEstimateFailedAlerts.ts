@@ -34,5 +34,5 @@ export function useGasEstimateFailedAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [estimationFailed]);
+  }, [estimationFailed, t]);
 }

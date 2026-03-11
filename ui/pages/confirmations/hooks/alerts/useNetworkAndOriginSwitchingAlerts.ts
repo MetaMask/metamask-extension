@@ -61,6 +61,7 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
       isMounted = false;
     };
   }, [
+    currentConfirmation,
     currentConfirmationId,
     newChainId,
     newOrigin,

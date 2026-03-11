@@ -41,5 +41,5 @@ export function useContractCode(address: Hex, networkClientId: string) {
     return { contractCode, isContractAddress };
   }, [address, networkClientId]);
 
-  return useAsyncResult(getCodeAsync, [address, networkClientId]);
+  return useAsyncResult(getCodeAsync, [getCodeAsync]);
 }

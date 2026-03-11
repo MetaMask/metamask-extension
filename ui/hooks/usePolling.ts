@@ -12,6 +12,8 @@ type UsePollingOptions<PollingInput extends Json> = {
 const usePolling = <PollingInput extends Json>(
   usePollingOptions: UsePollingOptions<PollingInput>,
 ) => {
+  const { enabled, startPolling, stopPollingByPollingToken } =
+    usePollingOptions;
   const pollTokenRef = useRef<null | string>(null);
   const pollingInput = useSyncEqualityCheck(usePollingOptions.input);
 
@@ -32,12 +34,12 @@ const usePolling = <PollingInput extends Json>(
 
     const cleanup = () => {
       if (pollTokenRef.current) {
-        usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
+        stopPollingByPollingToken(pollTokenRef.current);
         pollTokenRef.current = null;
       }
     };
 
-    if (usePollingOptions.enabled === false) {
+    if (enabled === false) {
       cleanup();
       return () => {
         // no-op
@@ -45,11 +47,11 @@ const usePolling = <PollingInput extends Json>(
     }
 
     // Start polling when the component mounts
-    usePollingOptions.startPolling(pollingInput).then((pollToken) => {
+    startPolling(pollingInput).then((pollToken) => {
       // Check if this is still the current call (handles race conditions)
       if (currentCallId !== callIdRef.current) {
         // Stale call - stop the poll immediately to prevent orphaned tokens
-        usePollingOptions.stopPollingByPollingToken(pollToken);
+        stopPollingByPollingToken(pollToken);
         return;
       }
 
@@ -61,12 +63,7 @@ const usePolling = <PollingInput extends Json>(
 
     // Return a cleanup function to stop polling when the component unmounts or dependencies change
     return cleanup;
-  }, [
-    pollingInput,
-    usePollingOptions.enabled,
-    usePollingOptions.startPolling,
-    usePollingOptions.stopPollingByPollingToken,
-  ]);
+  }, [enabled, pollingInput, startPolling, stopPollingByPollingToken]);
 };
 
 export default usePolling;

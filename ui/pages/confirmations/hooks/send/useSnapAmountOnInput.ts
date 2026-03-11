@@ -6,7 +6,7 @@ import { useSendContext } from '../../context/send';
 import { validateAmountMultichain } from '../../utils/multichain-snaps';
 
 export const useSnapAmountOnInput = () => {
-  const { asset, fromAccount, value } = useSendContext();
+  const { asset, fromAccount } = useSendContext();
 
   const validateAmountWithSnap = useCallback(
     async (amount: string) => {
@@ -20,7 +20,7 @@ export const useSnapAmountOnInput = () => {
       );
       return result;
     },
-    [fromAccount, value, asset],
+    [asset, fromAccount],
   );
 
   return { validateAmountWithSnap };

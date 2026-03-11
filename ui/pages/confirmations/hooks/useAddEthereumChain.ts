@@ -11,11 +11,11 @@ import type { AddEthereumChainContext } from '../external/add-ethereum-chain/typ
 export const useAddEthereumChain = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { currentConfirmation } = useConfirmContext<AddEthereumChainContext>();
-  const { id, origin, requestData } = currentConfirmation ?? {};
+  const { id, requestData } = currentConfirmation ?? {};
 
   const onSubmit = useCallback(async () => {
     await dispatch(resolvePendingApproval(id, requestData));
-  }, [id, origin, requestData, dispatch]);
+  }, [dispatch, id, requestData]);
 
   return {
     onSubmit,

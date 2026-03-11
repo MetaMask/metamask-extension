@@ -69,10 +69,12 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
       },
     });
   }, [
+    decodingData?.error?.message,
     decodingResponse,
     decodingLoading,
     decodingChangeTypes,
     loadingTime,
+    supportedByDecodingAPI,
     updateSignatureEventFragment,
   ]);
 }

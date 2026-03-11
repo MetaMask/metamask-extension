@@ -64,5 +64,6 @@ export function useNonContractAddressAlerts(): Alert[] {
     isSendingHexDataWhileInteractingWithNonContractAddress,
     isUpgrade,
     networkConfigurations,
+    t,
   ]);
 }

@@ -89,6 +89,7 @@ export const useSendQueryParams = () => {
     paramAmount,
     paramAsset,
     paramChainId,
+    paramHexData,
     paramTokenId,
     paramMaxValueMode,
     paramRecipient,
