@@ -289,7 +289,9 @@ export async function collectWebVitals(
   // Ensure driver context is the extension page (not a dapp tab).
   // Benchmarks run in extension; explicit switch avoids wrong-context reads.
   try {
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.ExtensionInFullScreenView,
+    );
   } catch {
     // Fallback: try MetaMask Dialog (e.g. confirmation popup)
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
