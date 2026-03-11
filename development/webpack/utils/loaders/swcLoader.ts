@@ -186,6 +186,8 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
       // for debugging.
       // [0]: https://github.com/trezor/trezor-suite/issues/20298
       // [1]: https://github.com/swc-project/swc/issues/9416
+      // React Compiler outputs source maps as objects; SWC's inputSourceMap
+      // accepts only boolean | string. Stringify object maps before passing.
       // eslint-disable-next-line no-nested-ternary
       this.resourcePath.includes(`${sep}node_modules${sep}`)
         ? false
