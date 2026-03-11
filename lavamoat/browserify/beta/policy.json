@@ -788,7 +788,7 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/account-tree-controller>@metamask/profile-sync-controller": true,
+        "@metamask/profile-sync-controller": true,
         "@metamask/account-tree-controller>@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1915,30 +1915,6 @@
         "addEventListener": true,
         "atob": true,
         "btoa": true,
-        "console.error": true,
-        "console.warn": true,
-        "dispatchEvent": true,
-        "fetch": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-controller": true,
-        "@noble/ciphers": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "@metamask/profile-sync-controller>siwe": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/profile-sync-controller": {
-      "globals": {
-        "Event": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "addEventListener": true,
         "console.error": true,
         "console.warn": true,
         "dispatchEvent": true,
