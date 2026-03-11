@@ -507,6 +507,11 @@ describe('useHandleSubscriptionSupportAction', () => {
       metaMetricsId: 'test-metametrics-id',
       srpSessionData: {
         someKey: {
+          token: {
+            accessToken: 'test-access-token',
+            expiresIn: 0,
+            obtainedAt: 0,
+          },
           profile: {
             identifierId: 'test-identifier-id',
             profileId: 'test-profile-id',
@@ -547,9 +552,7 @@ describe('useHandleSubscriptionSupportAction', () => {
       ...state,
       metamask: {
         ...state.metamask,
-        // @ts-expect-error customerId exists on metamask state but may not be in mock type
         customerId: 'test-shield-customer-id',
-        // @ts-expect-error subscriptions exists on metamask state but may not be in mock type
         subscriptions: [
           {
             customerId: 'test-shield-customer-id',
