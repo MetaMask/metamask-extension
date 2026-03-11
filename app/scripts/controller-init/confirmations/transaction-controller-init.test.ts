@@ -266,6 +266,9 @@ describe('Transaction Controller Init', () => {
       ['swapApproval', TransactionType.swapApproval, false],
       ['bridge', TransactionType.bridge, false],
       ['bridgeApproval', TransactionType.bridgeApproval, false],
+      ['relayDeposit', TransactionType.relayDeposit, false],
+      ['perpsRelayDeposit', TransactionType.perpsRelayDeposit, false],
+      ['predictRelayDeposit', TransactionType.predictRelayDeposit, false],
       ['contractInteraction', TransactionType.contractInteraction, true],
     ])('returns %s for %s transactions', (_label, type, expected) => {
       const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
@@ -275,42 +278,6 @@ describe('Transaction Controller Init', () => {
       expect(
         isAutomaticGasFeeUpdateEnabled?.(buildTransactionMeta({ type })),
       ).toBe(expected);
-    });
-
-    it('returns false for relayDeposit transactions', () => {
-      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
-        'isAutomaticGasFeeUpdateEnabled',
-      );
-
-      expect(
-        isAutomaticGasFeeUpdateEnabled?.(
-          buildTransactionMeta({ type: TransactionType.relayDeposit }),
-        ),
-      ).toBe(false);
-    });
-
-    it('returns false for perpsRelayDeposit transactions', () => {
-      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
-        'isAutomaticGasFeeUpdateEnabled',
-      );
-
-      expect(
-        isAutomaticGasFeeUpdateEnabled?.(
-          buildTransactionMeta({ type: TransactionType.perpsRelayDeposit }),
-        ),
-      ).toBe(false);
-    });
-
-    it('returns false for predictRelayDeposit transactions', () => {
-      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
-        'isAutomaticGasFeeUpdateEnabled',
-      );
-
-      expect(
-        isAutomaticGasFeeUpdateEnabled?.(
-          buildTransactionMeta({ type: TransactionType.predictRelayDeposit }),
-        ),
-      ).toBe(false);
     });
 
     it('returns false for transactions with nested relayDeposit type', () => {
