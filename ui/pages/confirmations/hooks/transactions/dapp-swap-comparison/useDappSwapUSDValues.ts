@@ -3,7 +3,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
@@ -28,11 +28,16 @@ export function useDappSwapUSDValues({
     txParams: {},
   };
   const { maxFeePerGas } = txParams ?? {};
+  const tokenAddressesKey = tokenAddresses.join(',');
+  const stableTokenAddresses = useMemo(
+    () => tokenAddresses,
+    [tokenAddressesKey],
+  );
 
   const { value: fiatRates, pending: fiatRatesPending } = useAsyncResult<
     Record<Hex, number | undefined>
   >(async () => {
-    const addresses = tokenAddresses.filter(
+    const addresses = stableTokenAddresses.filter(
       (tokenAddress) => !isNativeAddress(tokenAddress),
     );
     const exchangeRates = await fetchTokenExchangeRates(
@@ -48,13 +53,16 @@ export function useDappSwapUSDValues({
     }
 
     return exchangeRates;
-  }, [chainId, tokenAddresses]);
+  }, [chainId, stableTokenAddresses]);
 
   const { value: tokenDetails, pending: tokenDetailsPending } = useAsyncResult<
     Record<Hex, TokenStandAndDetails>
   >(async () => {
-    let result = await fetchAllTokenDetails(tokenAddresses as Hex[], chainId);
-    tokenAddresses.forEach((tokenAddress) => {
+    let result = await fetchAllTokenDetails(
+      stableTokenAddresses as Hex[],
+      chainId,
+    );
+    stableTokenAddresses.forEach((tokenAddress) => {
       if (isNativeAddress(tokenAddress)) {
         result = {
           ...result,
@@ -63,7 +71,7 @@ export function useDappSwapUSDValues({
       }
     });
     return result;
-  }, [chainId, tokenAddresses]);
+  }, [chainId, stableTokenAddresses]);
 
   const getTokenUSDValue = useCallback(
     (tokenAmount: string, tokenAddress: Hex, decimalsToDisplay?: number) => {

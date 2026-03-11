@@ -41,5 +41,7 @@ export function useContractCode(address: Hex, networkClientId: string) {
     return { contractCode, isContractAddress };
   }, [address, networkClientId]);
 
-  return useAsyncResult(getCodeAsync, [getCodeAsync]);
+  // `useAsyncResult` should re-run when the concrete lookup inputs change.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useAsyncResult(getCodeAsync, [address, networkClientId]);
 }

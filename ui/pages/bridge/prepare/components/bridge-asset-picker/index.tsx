@@ -145,7 +145,10 @@ export const BridgeAssetPicker = ({
           : persistedChainId,
       );
     }
-  }, [isOpen, persistedChainId, selectedAsset.chainId, selectedChainId]);
+    // This effect is intentionally only triggered on modal open.
+    // Including selectedChainId in deps would immediately reset a user-picked network.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const handleClose = useCallback(() => {
     setSearchQuery('');
