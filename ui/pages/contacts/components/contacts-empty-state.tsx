@@ -12,8 +12,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
-const EMPTY_CONTACTS_IMAGE_SRC = './images/empty-contacts.svg';
+import { useTheme } from '../../../hooks/useTheme';
+import { ThemeType } from '../../../../shared/constants/preferences';
 
 export function ContactsEmptyState({
   onAddContact,
@@ -21,6 +21,12 @@ export function ContactsEmptyState({
   onAddContact: () => void;
 }) {
   const t = useI18nContext();
+  const theme = useTheme();
+
+  const emptyContactsImageSrc =
+    theme === ThemeType.light
+      ? './images/empty-contacts-light.svg'
+      : './images/empty-contacts.svg';
 
   return (
     <Box
@@ -34,7 +40,7 @@ export function ContactsEmptyState({
       data-testid="contacts-empty-state"
     >
       <img
-        src={EMPTY_CONTACTS_IMAGE_SRC}
+        src={emptyContactsImageSrc}
         alt=""
         width={72}
         height={72}
