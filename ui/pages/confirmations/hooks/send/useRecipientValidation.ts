@@ -6,7 +6,7 @@ import {
   isBtcMainnetAddress,
   isTronAddress,
 } from '../../../../../shared/lib/multichain/accounts';
-import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { isResolvableName } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../types/send';

@@ -7,7 +7,7 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarTokenSize } from '../../component-library';

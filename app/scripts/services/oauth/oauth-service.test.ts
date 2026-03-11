@@ -6,7 +6,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';

@@ -8,7 +8,7 @@ import {
   MetaMetricsEventUiCustomization,
   MetaMetricsRequestedThrough,
 } from '../../../shared/constants/metametrics';
-import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../shared/lib/transaction.utils';
 
 import {
   BlockaidResultType,
@@ -20,7 +20,7 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { getErrorMessage } from '../../../shared/modules/error';
+import { getErrorMessage } from '../../../shared/lib/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,

@@ -1,5 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../../shared/lib/selectors/util';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import {
