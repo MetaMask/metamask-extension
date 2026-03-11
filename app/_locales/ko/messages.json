@@ -2366,9 +2366,6 @@
   "editANickname": {
     "message": "닉네임 편집"
   },
-  "editAccountName": {
-    "message": "계정 이름 편집"
-  },
   "editAccounts": {
     "message": "계정 편집"
   },
@@ -3129,9 +3126,6 @@
   },
   "hidden": {
     "message": "숨겨짐"
-  },
-  "hiddenAccounts": {
-    "message": "숨긴 계정"
   },
   "hide": {
     "message": "숨기기"
@@ -3997,10 +3991,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD 전환"
+    "message": "$1을(를) mUSD로 전환",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD 전환"
+    "message": "$1을(를) mUSD로 전환",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
@@ -6258,9 +6254,6 @@
   },
   "search": {
     "message": "검색"
-  },
-  "searchAccounts": {
-    "message": "계정 검색"
   },
   "searchAnAcccountOrContact": {
     "message": "계정 또는 연락처 검색"

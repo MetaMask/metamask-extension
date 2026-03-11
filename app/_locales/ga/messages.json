@@ -2064,9 +2064,6 @@
   "editANickname": {
     "message": "Cuir leasainm in eagar"
   },
-  "editAccountName": {
-    "message": "Cuir ainm an chuntais in eagar"
-  },
   "editAccounts": {
     "message": "Cuir cuntais in eagar"
   },
@@ -2648,9 +2645,6 @@
   },
   "hexDataPlaceholder": {
     "message": "Cuir isteach sonraí heicsidheachúlach (roghnach)"
-  },
-  "hiddenAccounts": {
-    "message": "Cuntais i bhfolach"
   },
   "hide": {
     "message": "Folaigh"
@@ -5030,9 +5024,6 @@
   },
   "search": {
     "message": "Cuardaigh"
-  },
-  "searchAccounts": {
-    "message": "Cuardaigh cuntais"
   },
   "searchAnAcccountOrContact": {
     "message": "Cuardaigh cuntas nó teagmhálaí"

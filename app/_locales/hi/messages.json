@@ -2366,9 +2366,6 @@
   "editANickname": {
     "message": "उपनाम बदलें"
   },
-  "editAccountName": {
-    "message": "अकाउंट नाम बदलें"
-  },
   "editAccounts": {
     "message": "एकाउंट्स बदलें"
   },
@@ -3129,9 +3126,6 @@
   },
   "hidden": {
     "message": "छिपा हुआ"
-  },
-  "hiddenAccounts": {
-    "message": "छिपाए गए अकाउंट"
   },
   "hide": {
     "message": "छुपाएं"
@@ -3997,10 +3991,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD कन्वर्शन"
+    "message": "$1 को mUSD में बदलें",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD कन्वर्शन"
+    "message": "$1 को mUSD में बदलें",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
@@ -6252,9 +6248,6 @@
   },
   "search": {
     "message": "ढूंढें"
-  },
-  "searchAccounts": {
-    "message": "अकाउंट्स खोजें"
   },
   "searchAnAcccountOrContact": {
     "message": "किसी अकाउंट या कॉन्टेक्ट को ढूंढें"

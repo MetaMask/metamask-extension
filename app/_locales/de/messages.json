@@ -2366,9 +2366,6 @@
   "editANickname": {
     "message": "Spitznamen bearbeiten"
   },
-  "editAccountName": {
-    "message": "Kontonamen bearbeiten"
-  },
   "editAccounts": {
     "message": "Konten bearbeiten"
   },
@@ -3129,9 +3126,6 @@
   },
   "hidden": {
     "message": "Verborgen"
-  },
-  "hiddenAccounts": {
-    "message": "Versteckte Konten"
   },
   "hide": {
     "message": "Verbergen"
@@ -3997,10 +3991,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD-Umrechnung"
+    "message": "$1 in mUSD umrechnen",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD-Umrechnung"
+    "message": "$1 in mUSD umrechnen",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Sie müssen mindestens 1 Token auswählen."
@@ -6258,9 +6254,6 @@
   },
   "search": {
     "message": "Suchen"
-  },
-  "searchAccounts": {
-    "message": "Konten durchsuchen"
   },
   "searchAnAcccountOrContact": {
     "message": "Ein Konto oder einen Kontakt suchen"
