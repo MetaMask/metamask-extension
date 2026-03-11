@@ -135,17 +135,18 @@ if (sh && sh.getWebVitalsMetrics) {
 }
 
 // INP fallback: direct PerformanceObserver event entries (probe + buffered)
+// Only set when maxDur > 0 — all-zero durations (passive listeners, pre-registration)
+// means no meaningful interaction data; keep null to avoid masking missing data.
 if (result.inp === null && cwv.event.length > 0) {
   var maxDur = 0;
   for (var i = 0; i < cwv.event.length; i++) {
     if (cwv.event[i].duration > maxDur) maxDur = cwv.event[i].duration;
   }
-  result.inp = maxDur;
-  result.inpRating = rate(maxDur, 200, 500);
+  if (maxDur > 0) {
+    result.inp = maxDur;
+    result.inpRating = rate(maxDur, 200, 500);
+  }
 }
-
-// No fallback — null INP means no PerformanceEventTiming data was available.
-// The 0 fallback was masking missing data and getting filtered by statistics bounds.
 
 // LCP: real largest-contentful-paint entries first
 if (result.lcp === null && cwv.lcp.length > 0) {

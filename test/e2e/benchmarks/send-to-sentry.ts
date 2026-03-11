@@ -16,6 +16,7 @@ import { promises as fs, readFileSync } from 'fs';
 import path from 'path';
 import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
+import { isNullOrUndefined } from '@metamask/utils';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
@@ -79,11 +80,11 @@ function sendWebVitalsToSentry(
           const value = run[key];
           const rating = run[ratingKey];
 
-          if (value !== null) {
+          if (!isNullOrUndefined(value)) {
             span.setAttribute(`benchmark.${key}`, value);
           }
 
-          if (rating !== null) {
+          if (!isNullOrUndefined(rating)) {
             span.setAttribute(`${key}.rating`, rating);
           }
         }
@@ -107,7 +108,8 @@ function sendWebVitalsToSentry(
       aggAttributes[`webVitals.${key}.dataQuality`] = stats.dataQuality;
     }
 
-    const ratings = aggregated.ratings?.[key as keyof typeof aggregated.ratings];
+    const ratings =
+      aggregated.ratings?.[key as keyof typeof aggregated.ratings];
     if (ratings) {
       aggAttributes[`webVitals.${key}.ratings.good`] = ratings.good;
       aggAttributes[`webVitals.${key}.ratings.needsImprovement`] =
@@ -276,6 +278,33 @@ async function main() {
         'ci.testTitle': userAction.testTitle,
         ...metrics,
       });
+
+      // Web vitals: send per-run span for user action benchmarks
+      if (userAction.webVitals) {
+        const emptyRatings = {
+          inp: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
+          fcp: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
+          lcp: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
+          cls: { good: 0, 'needs-improvement': 0, poor: 0, null: 0 },
+        };
+        const webVitalsSummary: WebVitalsSummary = {
+          runs: [{ ...userAction.webVitals, iteration: 0 }],
+          aggregated: {
+            inp: null,
+            fcp: null,
+            lcp: null,
+            cls: null,
+            ratings: emptyRatings,
+          },
+        };
+        sendWebVitalsToSentry(
+          name,
+          webVitalsSummary,
+          userAction.persona || BENCHMARK_PERSONA.STANDARD,
+          userAction.testTitle,
+          baseCiAttributes,
+        );
+      }
       sentCount += 1;
     }
   }
