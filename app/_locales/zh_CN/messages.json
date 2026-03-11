@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "编辑昵称"
   },
-  "editAccountName": {
-    "message": "编辑账户名"
-  },
   "editAccounts": {
     "message": "编辑账户"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "隐藏"
-  },
-  "hiddenAccounts": {
-    "message": "隐藏账户"
   },
   "hide": {
     "message": "隐藏"
@@ -3996,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD 兑换"
+    "message": "将 $1 兑换为 mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -5872,9 +5868,6 @@
   "removeAccount": {
     "message": "删除账户"
   },
-  "removeAccountDescription": {
-    "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
-  },
   "removeAccountModalBannerDescription": {
     "message": "删除之前，请确保您拥有此账户的私钥助记词或私钥。",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -6254,9 +6247,6 @@
   },
   "search": {
     "message": "搜索"
-  },
-  "searchAccounts": {
-    "message": "搜索账户"
   },
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"

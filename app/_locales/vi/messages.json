@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Chỉnh sửa biệt danh"
   },
-  "editAccountName": {
-    "message": "Chỉnh sửa tên tài khoản"
-  },
   "editAccounts": {
     "message": "Chỉnh sửa tài khoản"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Đã ẩn"
-  },
-  "hiddenAccounts": {
-    "message": "Tài khoản ẩn"
   },
   "hide": {
     "message": "Ẩn"
@@ -3996,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Chuyển đổi mUSD"
+    "message": "Chuyển đổi $1 sang mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Chuyển đổi mUSD"
+    "message": "Chuyển đổi $1 sang mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."
@@ -5878,9 +5874,6 @@
   "removeAccount": {
     "message": "Xóa tài khoản"
   },
-  "removeAccountDescription": {
-    "message": "Tài khoản này sẽ bị xóa khỏi ví của bạn. Hãy chắc chắn rằng bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư gốc cho tài khoản đã nhập này trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn thả xuống tài khoản. "
-  },
   "removeAccountModalBannerDescription": {
     "message": "Đảm bảo bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư cho tài khoản này trước khi xóa.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -6260,9 +6253,6 @@
   },
   "search": {
     "message": "Tìm kiếm"
-  },
-  "searchAccounts": {
-    "message": "Tìm kiếm tài khoản"
   },
   "searchAnAcccountOrContact": {
     "message": "Tìm kiếm tài khoản hoặc liên hệ"

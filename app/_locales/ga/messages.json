@@ -2063,9 +2063,6 @@
   "editANickname": {
     "message": "Cuir leasainm in eagar"
   },
-  "editAccountName": {
-    "message": "Cuir ainm an chuntais in eagar"
-  },
   "editAccounts": {
     "message": "Cuir cuntais in eagar"
   },
@@ -2647,9 +2644,6 @@
   },
   "hexDataPlaceholder": {
     "message": "Cuir isteach sonraí heicsidheachúlach (roghnach)"
-  },
-  "hiddenAccounts": {
-    "message": "Cuntais i bhfolach"
   },
   "hide": {
     "message": "Folaigh"
@@ -4829,9 +4823,6 @@
   "removeAccount": {
     "message": "Bain cuntas"
   },
-  "removeAccountDescription": {
-    "message": "Bainfear an cuntas seo as do sparán. Déan cinnte go bhfuil an Frása Aisghabhála Rúnda bunaidh nó an eochair phríobháideach agat don chuntas allmhairithe seo sula leanann tú ar aghaidh. Is féidir leat cuntais a allmhairiú nó a chruthú arís ón roghchlár anuas cuntais."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Cinntigh go bhfuil an Frása Aisghabhála Rúnda nó an eochair phríobháideach agat don chuntas seo sula mbaintear é.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -5032,9 +5023,6 @@
   },
   "search": {
     "message": "Cuardaigh"
-  },
-  "searchAccounts": {
-    "message": "Cuardaigh cuntais"
   },
   "searchAnAcccountOrContact": {
     "message": "Cuardaigh cuntas nó teagmhálaí"
