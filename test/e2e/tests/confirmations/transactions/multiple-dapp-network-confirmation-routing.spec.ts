@@ -88,22 +88,16 @@ describe('Routing confirmations from Multiple Dapps and different networks', fun
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          // NEW: Refactored to PO - TransactionConfirmation.checkPageNumbers
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageNumbers(1, 5);
-          // NEW: Refactored to PO - TransactionConfirmation.checkNetworkIsDisplayed
           await transactionConfirmation.checkNetworkIsDisplayed(
             'Localhost 8546',
           );
-          // NEW: Refactored to PO - Confirmation.clickNextPage (via TransactionConfirmation)
           await transactionConfirmation.clickNextPage();
-          // NEW: Refactored to PO - Confirmation.clickNextPage (via TransactionConfirmation)
           await transactionConfirmation.clickNextPage();
-          // NEW: Refactored to PO - TransactionConfirmation.checkNetworkIsDisplayed
           await transactionConfirmation.checkNetworkIsDisplayed(
             'Localhost 8545',
           );
-          // NEW: Refactored to PO - Confirmation.clickRejectAll (via TransactionConfirmation)
           await transactionConfirmation.clickRejectAll();
         }
       },
