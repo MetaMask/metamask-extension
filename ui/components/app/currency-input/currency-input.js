@@ -162,7 +162,6 @@ export default function CurrencyInput({
       () => inputRef.current?.updateIsOverflowing?.(),
       500,
     );
-
   }, [
     hexValue,
     asset?.address,

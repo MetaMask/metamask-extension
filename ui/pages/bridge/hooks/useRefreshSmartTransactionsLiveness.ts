@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { isCaipChainId, Hex, CaipChainId } from '@metamask/utils';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import { fetchSmartTransactionsLiveness } from '../../../store/actions';
 import { isNonEvmChain } from '../../../ducks/bridge/utils';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
@@ -18,7 +17,9 @@ export function useRefreshSmartTransactionsLiveness(
   chainId: Hex | CaipChainId | null | undefined,
 ): void {
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsPreferenceEnabled,
+    (state: {
+      metamask?: { preferences?: { smartTransactionsOptInStatus?: boolean } };
+    }) => state?.metamask?.preferences?.smartTransactionsOptInStatus ?? true,
   );
 
   useEffect(() => {

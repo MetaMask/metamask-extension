@@ -88,12 +88,15 @@ export const getSmartTransactionsFeatureFlagsForChain = createDeepEqualSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-export const getSmartTransactionsOptInStatusInternal = createSelector(
-  getPreferences,
-  (preferences: { smartTransactionsOptInStatus?: boolean }): boolean => {
-    return preferences?.smartTransactionsOptInStatus ?? true;
-  },
-);
+export const getSmartTransactionsOptInStatusInternal = (
+  state: SmartTransactionsMetaMaskState,
+): boolean => {
+  const preferences = getPreferences(state as never) as {
+    smartTransactionsOptInStatus?: boolean;
+  };
+
+  return preferences?.smartTransactionsOptInStatus ?? true;
+};
 
 /**
  * Returns whether the smart transactions migration has been applied to the user's settings.
@@ -126,11 +129,9 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
-export const getSmartTransactionsOptInStatusForMetrics = createSelector(
-  getSmartTransactionsOptInStatusInternal,
-  (optInStatus: boolean): boolean => optInStatus,
-);
+export const getSmartTransactionsOptInStatusForMetrics = (
+  state: SmartTransactionsMetaMaskState,
+): boolean => getSmartTransactionsOptInStatusInternal(state);
 
 /**
  * Returns the user's preference for the smart transactions feature.
@@ -139,16 +140,16 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
-export const getSmartTransactionsPreferenceEnabled = createSelector(
-  getSmartTransactionsOptInStatusInternal,
-  (optInStatus: boolean): boolean => {
-    // In the absence of an explicit opt-in or opt-out,
-    // the Smart Transactions toggle is enabled.
-    const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
-    return optInStatus ?? DEFAULT_SMART_TRANSACTIONS_ENABLED;
-  },
-);
+export const getSmartTransactionsPreferenceEnabled = (
+  state: SmartTransactionsMetaMaskState,
+): boolean => {
+  // In the absence of an explicit opt-in or opt-out,
+  // the Smart Transactions toggle is enabled.
+  const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
+  const optInStatus = getSmartTransactionsOptInStatusInternal(state);
+
+  return optInStatus ?? DEFAULT_SMART_TRANSACTIONS_ENABLED;
+};
 
 export const getChainSupportsSmartTransactions = (
   state: NetworkState,

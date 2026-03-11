@@ -246,18 +246,22 @@ const getEvmExchangeRates = createSelector(
 // Creates a map of asset IDs to balances for all non-EVM accounts
 const getNonEvmBalances = createSelector(
   [
-    getNonEvmAccountIds,
+    (state: BridgeAppState) => state,
+    (_state: BridgeAppState, id: AccountGroupId) => id,
     getAccountAssets,
     getMultichainBalances,
     (state) => state.metamask.internalAccounts,
   ],
   (
-    accountIds,
+    state,
+    accountGroupId,
     assetIdsByAccountId,
     balanceByAccountIdByAssetId,
     internalAccounts,
-  ) =>
-    accountIds.reduce<
+  ) => {
+    const accountIds = getNonEvmAccountIds(state, accountGroupId);
+
+    return accountIds.reduce<
       Record<
         CaipAssetType,
         { balance: string; accountType: KeyringAccountType }
@@ -279,7 +283,8 @@ const getNonEvmBalances = createSelector(
         ) ?? {}),
       }),
       {},
-    ),
+    );
+  },
 );
 
 // Creates a map of asset IDs to token data for all non-EVM accounts with a balance
@@ -362,7 +367,7 @@ const getBridgeAssetsForAccountGroupId = createSelector(
 export const getBridgeSortedAssets = createSelector(
   [getBridgeAssetsForAccountGroupId],
   (assetsWithBalances) =>
-    assetsWithBalances.sort(
+    [...assetsWithBalances].sort(
       (a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0),
     ),
 );

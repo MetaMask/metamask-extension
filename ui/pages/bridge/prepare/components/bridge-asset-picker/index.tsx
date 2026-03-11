@@ -72,8 +72,10 @@ export const BridgeAssetPicker = ({
     React.ComponentProps<typeof BridgeAssetList>,
     'onAssetChange' | 'isDestination'
   >) => {
+  const selectedAddresses = useMemo(() => [accountAddress], [accountAddress]);
+
   const [accountGroup] = useSelector((state: BridgeAppState) =>
-    getAccountGroupsByAddress(state, [accountAddress]),
+    getAccountGroupsByAddress(state, selectedAddresses),
   );
   const assetsWithBalance = useSelector((state: BridgeAppState) =>
     getBridgeSortedAssets(state, accountGroup.id),
@@ -111,7 +113,6 @@ export const BridgeAssetPicker = ({
         }),
         (a) => a.assetId?.toLowerCase(),
       ).map((token) => toBridgeToken(token)),
-    // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
     [assetsWithBalance, chainIdsSet],
   );
 
@@ -128,6 +129,7 @@ export const BridgeAssetPicker = ({
 
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Persist selected chain id to restore the selected chain id if the modal is closed before a new token is selected
   const [persistedChainId, setPersistedChainId] = useState<CaipChainId | null>(
     selectedChainId,
   );

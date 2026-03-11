@@ -643,13 +643,16 @@ export const getInternalAccountsFromGroupById = createSelector(
 export const getAccountGroupsByAddress = createDeepEqualSelector(
   [
     getAccountGroupWithInternalAccounts,
-    (_state: MultichainAccountsState, addresses: string[]) =>
-      new Set(addresses.map((address) => address.toLowerCase())),
+    (_state: MultichainAccountsState, addresses: string[]) => addresses,
   ],
   (
     accountGroupWithInternalAccounts,
-    addressesSet: Set<string>,
+    addresses: string[],
   ): AccountGroupWithInternalAccounts[] => {
+    const addressesSet = new Set(
+      addresses.map((address) => address.toLowerCase()),
+    );
+
     const matchingGroups = new Set<AccountGroupWithInternalAccounts>();
 
     accountGroupWithInternalAccounts.forEach((group) => {
