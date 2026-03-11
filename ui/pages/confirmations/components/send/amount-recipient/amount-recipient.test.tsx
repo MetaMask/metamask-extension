@@ -396,7 +396,7 @@ describe('AmountRecipient', () => {
         .mockReturnValue({
           recipientError: 'tokenContractError',
           recipientErrorAllowAcknowledge: true,
-          isRecipientAcknowledgeable: true,
+
           acknowledgeError: jest.fn(),
           recipientWarning: null,
           recipientResolvedLookup: null,
@@ -461,7 +461,7 @@ describe('AmountRecipient', () => {
         .mockReturnValue({
           recipientError: 'tokenContractError',
           recipientErrorAllowAcknowledge: true,
-          isRecipientAcknowledgeable: true,
+
           acknowledgeError: mockAcknowledgeError,
           recipientWarning: null,
           recipientResolvedLookup: null,
@@ -507,7 +507,7 @@ describe('AmountRecipient', () => {
         .mockReturnValue({
           recipientError: 'tokenContractError',
           recipientErrorAllowAcknowledge: true,
-          isRecipientAcknowledgeable: true,
+
           acknowledgeError: mockAcknowledgeError,
           recipientWarning: null,
           recipientResolvedLookup: null,

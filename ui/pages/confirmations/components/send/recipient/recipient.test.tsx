@@ -266,7 +266,7 @@ describe('Recipient', () => {
         recipientValidationResult: {
           recipientError: 'Token contract error',
           recipientErrorAllowAcknowledge: true,
-          isRecipientAcknowledgeable: true,
+
           acknowledgeError: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },
@@ -286,27 +286,7 @@ describe('Recipient', () => {
         recipientValidationResult: {
           recipientError: 'Token contract error',
           recipientErrorAllowAcknowledge: true,
-          isRecipientAcknowledgeable: true,
-          acknowledgeError: jest.fn(),
-          toAddressValidated: tokenContractAddress,
-        },
-      });
 
-      expect(getByTestId('recipient-alert-icon')).toBeInTheDocument();
-    });
-
-    it('keeps alert icon visible after acknowledgment', () => {
-      mockUseSendContext.mockReturnValue({
-        to: tokenContractAddress,
-        updateTo: mockUpdateTo,
-        updateToResolved: jest.fn(),
-      } as unknown as ReturnType<typeof useSendContext>);
-
-      const { getByTestId } = renderComponent({
-        recipientValidationResult: {
-          recipientError: undefined,
-          recipientErrorAllowAcknowledge: false,
-          isRecipientAcknowledgeable: true,
           acknowledgeError: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },
@@ -328,7 +308,7 @@ describe('Recipient', () => {
         recipientValidationResult: {
           recipientError: 'Token contract error',
           recipientErrorAllowAcknowledge: true,
-          isRecipientAcknowledgeable: true,
+
           acknowledgeError: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },
@@ -350,7 +330,7 @@ describe('Recipient', () => {
         recipientValidationResult: {
           recipientError: 'Token contract error',
           recipientErrorAllowAcknowledge: false,
-          isRecipientAcknowledgeable: false,
+
           acknowledgeError: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },

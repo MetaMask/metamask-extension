@@ -42,7 +42,6 @@ export const Recipient = ({
   const {
     recipientError,
     recipientErrorAllowAcknowledge,
-    isRecipientAcknowledgeable,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
@@ -102,7 +101,7 @@ export const Recipient = ({
         paddingBottom={1}
       >
         <Text variant={TextVariant.bodyMdMedium}>{t('to')}</Text>
-        {to === toAddressValidated && isRecipientAcknowledgeable && (
+        {to === toAddressValidated && recipientErrorAllowAcknowledge && (
           <Icon
             name={IconName.Danger}
             size={IconSize.Sm}

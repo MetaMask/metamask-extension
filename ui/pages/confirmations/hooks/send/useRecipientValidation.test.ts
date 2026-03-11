@@ -55,7 +55,7 @@ describe('useRecipientValidation', () => {
       recipientConfusableCharacters: undefined,
       recipientError: undefined,
       recipientErrorAllowAcknowledge: false,
-      isRecipientAcknowledgeable: false,
+
       acknowledgeError: expect.any(Function),
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
@@ -84,7 +84,7 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: 'invalidAddress',
         recipientErrorAllowAcknowledge: false,
-        isRecipientAcknowledgeable: false,
+
         acknowledgeError: expect.any(Function),
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
@@ -157,7 +157,7 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientErrorAllowAcknowledge: false,
-        isRecipientAcknowledgeable: false,
+
         acknowledgeError: expect.any(Function),
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
@@ -181,7 +181,7 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientErrorAllowAcknowledge: false,
-        isRecipientAcknowledgeable: false,
+
         acknowledgeError: expect.any(Function),
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
@@ -426,7 +426,7 @@ describe('useRecipientValidation', () => {
           recipientConfusableCharacters: undefined,
           recipientError: 'invalidAddress',
           recipientErrorAllowAcknowledge: false,
-          isRecipientAcknowledgeable: false,
+
           acknowledgeError: expect.any(Function),
           recipientResolvedLookup: undefined,
           recipientWarning: undefined,
