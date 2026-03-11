@@ -60,7 +60,7 @@ async function flushBufferedWrites() {
   await flushPromises();
 }
 
-describe('patch-substream-connection', () => {
+describe('patch-store substream connection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

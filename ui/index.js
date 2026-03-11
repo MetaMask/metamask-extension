@@ -49,7 +49,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
-import { setupPatchStoreSubstreamConnection } from './store/patch-substream-connection';
+import { setupPatchStoreSubstreamConnection } from './store/patch-store-substream-connection';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -94,13 +94,16 @@ export const connectToBackground = (
 };
 
 /**
- * Handles messages coming through the patch substream from the background.
+ * Handles messages coming through the patch store substream from the
+ * background.
  *
- * @param {Substream} patchSubstream - The connection with the background
+ * @param {Substream} patchStoreSubstream - The connection with the background
  * process.
  */
-export const connectToBackgroundViaPatchStoreSubstream = (patchSubstream) => {
-  setupPatchStoreSubstreamConnection(patchSubstream, reduxStore);
+export const connectToBackgroundViaPatchStoreSubstream = (
+  patchStoreSubstream,
+) => {
+  setupPatchStoreSubstreamConnection(patchStoreSubstream, reduxStore);
 };
 
 export async function launchMetamaskUi(opts) {

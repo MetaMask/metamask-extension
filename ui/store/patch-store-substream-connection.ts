@@ -95,15 +95,16 @@ function isSendUpdateNotification(
  * @returns The response from the request.
  */
 async function sendMessage(message: JsonRpcRequest & { id: number }) {
-  if (!patchStoreSubstreamSingleton) {
-    console.error('Patch-store substream has not been initialized');
-    return;
-  }
-
   const { promise, resolve, reject } = createDeferredPromise<Patch[]>();
   pendingGetStatePatchesRequests.set(message.id, { resolve, reject });
 
-  patchStoreSubstreamSingleton.write(message);
+  if (patchStoreSubstreamSingleton) {
+    patchStoreSubstreamSingleton.write(message);
+  } else {
+    console.warn(
+      'Patch-store substream has not been initialized, not sending message',
+    );
+  }
 
   return await promise;
 }

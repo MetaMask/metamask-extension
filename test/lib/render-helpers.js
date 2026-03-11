@@ -3,10 +3,16 @@ import { render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
+import ObjectMultiplex from '@metamask/object-multiplex';
+
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
-import { setupInitialStore, connectToBackground } from '../../ui';
+import {
+  setupInitialStore,
+  connectToBackground,
+  connectToBackgroundViaPatchStoreSubstream,
+} from '../../ui';
 import Root from '../../ui/pages';
 
 export const I18nProvider = (props) => {
@@ -82,9 +88,12 @@ export function renderWithUserEvent(jsx) {
  * @returns The rendered result from testing library.
  */
 export async function integrationTestRender(extendedRenderOptions) {
+  const mux = new ObjectMultiplex();
+  const mockPatchStoreSubstream = mux.createStream('patch-store');
   const {
     preloadedState = {},
     backgroundConnection,
+    patchStoreSubstream = mockPatchStoreSubstream,
     activeTab = {
       id: 113,
       title: 'E2E Test Dapp',
@@ -96,6 +105,7 @@ export async function integrationTestRender(extendedRenderOptions) {
   } = extendedRenderOptions;
 
   connectToBackground(backgroundConnection, noop);
+  connectToBackgroundViaPatchStoreSubstream(patchStoreSubstream);
 
   const store = await setupInitialStore(preloadedState, activeTab);
 
