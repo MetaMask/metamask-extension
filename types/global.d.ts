@@ -298,13 +298,15 @@ type StateHooks = {
   initWebVitals?: () => void;
   /**
    * Get current Core Web Vitals metrics.
-   * Returns stored INP, LCP, and CLS values with their ratings.
+   * Returns stored INP, FCP, LCP, and CLS values with their ratings.
    */
   getWebVitalsMetrics?: () => {
     inp: number | null;
+    fcp: number | null;
     lcp: number | null;
     cls: number | null;
     inpRating: 'good' | 'needs-improvement' | 'poor' | null;
+    fcpRating: 'good' | 'needs-improvement' | 'poor' | null;
     lcpRating: 'good' | 'needs-improvement' | 'poor' | null;
     clsRating: 'good' | 'needs-improvement' | 'poor' | null;
   };
