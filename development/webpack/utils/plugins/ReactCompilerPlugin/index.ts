@@ -244,6 +244,16 @@ export class ReactCompilerPlugin {
       if (stats.total > 0) {
         logSummary(stats);
       }
+
+      // Clear buildMeta from all modules to prevent accumulation in watch mode
+      for (const module of compilation.modules) {
+        const buildMeta = module.buildMeta as
+          | Record<string, unknown>
+          | undefined;
+        if (buildMeta && REACT_COMPILER_STATUS_KEY in buildMeta) {
+          delete buildMeta[REACT_COMPILER_STATUS_KEY];
+        }
+      }
     });
   }
 }

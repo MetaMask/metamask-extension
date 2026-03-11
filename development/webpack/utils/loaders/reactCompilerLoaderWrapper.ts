@@ -115,13 +115,15 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
           status = 'skipped';
           break;
         case 'CompileError':
+          // This error is thrown for syntax that is not yet supported by the React Compiler.
+          // We count these separately as "unsupported" errors, since there's no actionable fix we can apply.
           status = detail?.category === 'Todo' ? 'unsupported' : 'error';
           if (verbose) {
             if (status === 'unsupported') {
               console.warn(`🔍 Unsupported: ${filename}`);
             }
             if (status === 'error') {
-              const errMsg = extractMessage(detail) ?? 'Unknown error';
+              const errMsg = detail ? JSON.stringify(detail) : 'Unknown error';
               console.error(
                 `❌ React Compiler error in ${filename}: ${errMsg}`,
               );
