@@ -241,9 +241,6 @@
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
-  "buildContactList": {
-    "message": "Crie sua lista de contatos"
-  },
   "builtAroundTheWorld": {
     "message": "A MetaMask é concebida e desenvolvida em todo o mundo."
   },
@@ -1121,9 +1118,6 @@
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Novo contato"
-  },
   "newContract": {
     "message": "Novo contrato"
   },
@@ -1352,9 +1346,6 @@
   },
   "search": {
     "message": "Buscar"
-  },
-  "searchAccounts": {
-    "message": "Buscar contas"
   },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
@@ -1856,12 +1847,6 @@
   },
   "usedByClients": {
     "message": "Usado por diversos clientes diferentes"
-  },
-  "userName": {
-    "message": "Nome de usuário"
-  },
-  "viewContact": {
-    "message": "Ver contato"
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"

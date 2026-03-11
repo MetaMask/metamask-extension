@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
   },
-  "buildContactList": {
-    "message": "Buat daftar kontak Anda"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask dirancang dan dibangun di seluruh dunia."
   },
@@ -2131,9 +2128,6 @@
   "delete": {
     "message": "Hapus"
   },
-  "deleteContact": {
-    "message": "Hapus kontak"
-  },
   "deleteMetaMetricsData": {
     "message": "Hapus data MetaMetrics"
   },
@@ -2364,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Edit nama panggilan"
-  },
-  "editAccountName": {
-    "message": "Edit nama akun"
   },
   "editAccounts": {
     "message": "Edit akun"
@@ -3128,9 +3119,6 @@
   },
   "hidden": {
     "message": "Tersembunyi"
-  },
-  "hiddenAccounts": {
-    "message": "Akun tersembunyi"
   },
   "hide": {
     "message": "Sembunyikan"
@@ -4269,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Kontak baru"
   },
   "newContract": {
     "message": "Kontrak baru"
@@ -6259,9 +6244,6 @@
   },
   "search": {
     "message": "Cari"
-  },
-  "searchAccounts": {
-    "message": "Cari akun"
   },
   "searchAnAcccountOrContact": {
     "message": "Cari akun atau kontak"
@@ -8763,9 +8745,6 @@
   "usedByClients": {
     "message": "Digunakan oleh berbagai klien yang berbeda"
   },
-  "userName": {
-    "message": "Nama pengguna"
-  },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"
   },
@@ -8784,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Lihat kontak"
   },
   "viewDetails": {
     "message": "Lihat detail"

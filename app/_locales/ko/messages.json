@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
-  "buildContactList": {
-    "message": "연락처 목록 작성하기"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask는 전 세계적으로 설계 및 구축되어 있습니다."
   },
@@ -2131,9 +2128,6 @@
   "delete": {
     "message": "삭제"
   },
-  "deleteContact": {
-    "message": "연락처 삭제"
-  },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics 데이터 삭제"
   },
@@ -2364,9 +2358,6 @@
   },
   "editANickname": {
     "message": "닉네임 편집"
-  },
-  "editAccountName": {
-    "message": "계정 이름 편집"
   },
   "editAccounts": {
     "message": "계정 편집"
@@ -3128,9 +3119,6 @@
   },
   "hidden": {
     "message": "숨겨짐"
-  },
-  "hiddenAccounts": {
-    "message": "숨긴 계정"
   },
   "hide": {
     "message": "숨기기"
@@ -4269,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "새 연락처"
   },
   "newContract": {
     "message": "새 계약"
@@ -6259,9 +6244,6 @@
   },
   "search": {
     "message": "검색"
-  },
-  "searchAccounts": {
-    "message": "계정 검색"
   },
   "searchAnAcccountOrContact": {
     "message": "계정 또는 연락처 검색"
@@ -8763,9 +8745,6 @@
   "usedByClients": {
     "message": "다양한 클라이언트에서 사용합니다."
   },
-  "userName": {
-    "message": "사용자 이름"
-  },
   "userOpContractDeployError": {
     "message": "스마트 계약 계정에서 계약 배포는 지원되지 않습니다."
   },
@@ -8784,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "연락처 보기"
   },
   "viewDetails": {
     "message": "세부 정보 보기"

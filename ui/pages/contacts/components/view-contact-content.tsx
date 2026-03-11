@@ -16,14 +16,11 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  AvatarAccount,
   AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
-  BadgeWrapper,
-  AvatarIcon,
-  AvatarIconSize,
 } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -49,144 +46,29 @@ export function ViewContactContent({
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      padding={4}
-      paddingTop={4}
-      gap={6}
-      className="flex flex-col h-full w-full flex-1 justify-between"
+      className="flex h-full w-full min-h-0 flex-1 flex-col"
     >
-      {/* Centered avatar with network badge */}
-
       <Box
         flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        gap={6}
-        className="flex flex-col"
+        padding={4}
+        paddingTop={4}
+        className="flex min-h-0 flex-1 flex-col overflow-auto"
+        style={{ scrollbarColor: 'var(--color-icon-muted) transparent' }}
       >
-        <Box>
-          <BadgeWrapper
-            badge={
-              <AvatarIcon
-                className="border-2 border-background-default rounded-md bg-primary-default"
-                size={AvatarIconSize.Sm}
-                iconName={IconName.Edit}
-                iconProps={{ color: IconColor.PrimaryInverse }}
-              />
-            }
-          >
-            <AvatarAccount address={address} size={AvatarAccountSize.Xl} />
-          </BadgeWrapper>
-        </Box>
-        {/* Fields: Nickname, Address, Network, Memo */}
         <Box
           flexDirection={BoxFlexDirection.Column}
-          gap={6}
+          alignItems={BoxAlignItems.Center}
           className="flex w-full flex-col"
         >
+          <Box className="flex flex-col items-center">
+            <PreferredAvatar address={address} size={AvatarAccountSize.Xl} />
+          </Box>
+          {/* Fields: Nickname, Address, Network, Memo */}
           <Box
             flexDirection={BoxFlexDirection.Column}
-            gap={1}
+            gap={6}
             className="flex w-full flex-col"
           >
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
-              className="mb-1"
-            >
-              {t('nickname')}
-            </Text>
-            <Box
-              padding={4}
-              className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextDefault}
-                ellipsis
-                className="min-w-0 flex-1"
-                data-testid="address-book-name"
-              >
-                {name || address}
-              </Text>
-            </Box>
-          </Box>
-
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={1}
-            className="flex w-full flex-col"
-          >
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
-              className="mb-1"
-            >
-              {t('publicAddress')}
-            </Text>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-              padding={4}
-              className="flex min-h-12 items-center rounded-xl border border-border-muted bg-background-muted"
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextDefault}
-                className="min-w-0 flex-1 break-all"
-                data-testid="address-book-view-contact-address"
-              >
-                {checkSummedAddress}
-              </Text>
-              <ButtonIcon
-                ariaLabel={t('copyToClipboard')}
-                title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-                iconName={copied ? IconName.CopySuccess : IconName.Copy}
-                size={ButtonIconSize.Sm}
-                iconProps={{ className: IconColor.IconAlternative }}
-                onClick={() => handleCopy(checkSummedAddress)}
-              />
-            </Box>
-          </Box>
-
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={1}
-            className="flex w-full flex-col"
-          >
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
-              className="mb-1"
-            >
-              {t('network')}
-            </Text>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-              padding={4}
-              className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
-            >
-              <AvatarNetwork
-                size={AvatarNetworkSize.Xs}
-                name={networkName}
-                src={networkImage}
-              />
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextDefault}
-                ellipsis
-                className="min-w-0 flex-1"
-              >
-                {networkName}
-              </Text>
-            </Box>
-          </Box>
-
-          {memo?.length > 0 ? (
             <Box
               flexDirection={BoxFlexDirection.Column}
               gap={1}
@@ -198,31 +80,141 @@ export function ViewContactContent({
                 color={TextColor.TextDefault}
                 className="mb-1"
               >
-                {t('memo')}
+                {t('nickname')}
               </Text>
               <Box
                 padding={4}
-                className="flex min-h-12 items-center rounded-xl border border-border-muted bg-background-muted"
+                className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
               >
                 <Text
                   variant={TextVariant.BodyMd}
                   color={TextColor.TextDefault}
+                  ellipsis
+                  className="min-w-0 flex-1"
+                  data-testid="address-book-name"
                 >
-                  {memo}
+                  {name || address}
                 </Text>
               </Box>
             </Box>
-          ) : null}
-        </Box>
 
-        {/* Footer: Delete + Edit */}
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              gap={1}
+              className="flex w-full flex-col"
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                className="mb-1"
+              >
+                {t('publicAddress')}
+              </Text>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Start}
+                gap={2}
+                padding={4}
+                className="flex min-h-12 items-start rounded-xl border border-border-muted bg-background-muted"
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextDefault}
+                  className="min-w-0 flex-1 break-all"
+                  data-testid="address-book-view-contact-address"
+                >
+                  {checkSummedAddress}
+                </Text>
+                <ButtonIcon
+                  ariaLabel={t('copyToClipboard')}
+                  title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+                  iconName={copied ? IconName.CopySuccess : IconName.Copy}
+                  size={ButtonIconSize.Sm}
+                  iconProps={{
+                    className: copied
+                      ? IconColor.SuccessDefault
+                      : IconColor.IconAlternative,
+                  }}
+                  onClick={() => handleCopy(checkSummedAddress)}
+                />
+              </Box>
+            </Box>
+
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              gap={1}
+              className="flex w-full flex-col"
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                className="mb-1"
+              >
+                {t('network')}
+              </Text>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+                padding={4}
+                className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
+              >
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Xs}
+                  name={networkName}
+                  src={networkImage}
+                  className="rounded-md"
+                />
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextDefault}
+                  ellipsis
+                  className="min-w-0 flex-1"
+                >
+                  {networkName}
+                </Text>
+              </Box>
+            </Box>
+
+            {memo?.length > 0 ? (
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                gap={1}
+                className="flex w-full flex-col"
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                  className="mb-1"
+                >
+                  {t('memo')}
+                </Text>
+                <Box
+                  padding={4}
+                  className="flex min-h-12 items-center rounded-xl border border-border-muted bg-background-muted"
+                >
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextDefault}
+                  >
+                    {memo}
+                  </Text>
+                </Box>
+              </Box>
+            ) : null}
+          </Box>
+        </Box>
       </Box>
       <Box
         flexDirection={BoxFlexDirection.Row}
         gap={4}
-        className="flex shrink-0 flex-row"
+        padding={4}
         paddingTop={4}
-        paddingBottom={4}
+        paddingBottom={6}
+        className="shrink-0 flex-row bg-background-default"
       >
         <Button
           variant={ButtonVariant.Secondary}

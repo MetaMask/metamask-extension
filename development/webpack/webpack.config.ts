@@ -30,7 +30,6 @@ import {
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
-import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
 import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
@@ -49,7 +48,6 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifest_version;
-const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -369,13 +367,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader, codeFenceLoader],
+        use: [tsxLoader, envValidationLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader, codeFenceLoader],
+        use: [jsxLoader, envValidationLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
@@ -456,7 +454,6 @@ const config = {
               },
             },
           },
-          codeFenceLoader,
         ],
       },
       // images, fonts, wasm, riv etc.
