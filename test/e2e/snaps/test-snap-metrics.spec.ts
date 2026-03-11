@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { strict as assert } from 'assert';
-import type { Mockttp } from 'mockttp';
+import type { MockedEndpoint, Mockttp } from 'mockttp';
 import { Driver } from '../webdriver/driver';
 import { getEventPayloads, withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
@@ -161,7 +161,7 @@ describe('Test Snap Metrics', function () {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver);
 
@@ -176,7 +176,7 @@ describe('Test Snap Metrics', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.clickButton('sendInAppNotificationButton');
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints as MockedEndpoint[]);
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
@@ -240,7 +240,7 @@ describe('Test Snap Metrics', function () {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver);
 
@@ -258,7 +258,7 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints as MockedEndpoint[]);
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
@@ -311,7 +311,7 @@ describe('Test Snap Metrics', function () {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver);
 
@@ -327,7 +327,7 @@ describe('Test Snap Metrics', function () {
 
         await driver.waitForSelector({ text: 'Connection failed' });
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints as MockedEndpoint[]);
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
@@ -379,7 +379,7 @@ describe('Test Snap Metrics', function () {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver);
 
@@ -401,7 +401,7 @@ describe('Test Snap Metrics', function () {
         await snapListPage.removeSnapViaPopover(NOTIFICATIONS_SNAP_NAME);
         await snapListPage.checkNoSnapsInstalledMessage();
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints as MockedEndpoint[]);
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           version: '2.3.0',
@@ -445,7 +445,7 @@ describe('Test Snap Metrics', function () {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver);
 
@@ -469,7 +469,7 @@ describe('Test Snap Metrics', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan('updateVersionSpan', '"2.1.3"');
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints as MockedEndpoint[]);
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
@@ -528,7 +528,7 @@ describe('Test Snap Metrics', function () {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver);
 
@@ -554,7 +554,7 @@ describe('Test Snap Metrics', function () {
 
         await driver.switchToWindowIfKnown(WINDOW_TITLES.TestSnaps);
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints as MockedEndpoint[]);
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
@@ -612,7 +612,7 @@ describe('Test Snap Metrics', function () {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver);
 
@@ -632,7 +632,7 @@ describe('Test Snap Metrics', function () {
 
         await driver.waitForSelector({ text: 'Update failed' });
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints as MockedEndpoint[]);
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',

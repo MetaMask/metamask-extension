@@ -1,3 +1,4 @@
+import type { Mockttp } from 'mockttp';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
@@ -11,9 +12,7 @@ import {
 } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
-async function mockSnapBinaries(mockServer: {
-  forGet: (url: string) => unknown;
-}) {
+async function mockSnapBinaries(mockServer: Mockttp) {
   return [await mockBip32Snap(mockServer), await mockBip44Snap(mockServer)];
 }
 
