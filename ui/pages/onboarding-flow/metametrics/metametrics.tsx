@@ -12,8 +12,6 @@ import {
   FontWeight,
   TextColor,
   BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -174,11 +172,7 @@ export default function OnboardingMetametrics() {
         {t('onboardingMetametricsTitle')}
       </Text>
 
-      <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-        className="onboarding-metametrics__user-control w-full"
-      >
+      <Box className="onboarding-metametrics__user-control w-full">
         <img
           src="images/user-control.png"
           alt="User control"
