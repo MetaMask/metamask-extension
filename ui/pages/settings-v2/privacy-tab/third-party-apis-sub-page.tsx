@@ -53,12 +53,12 @@ const MakeSmartContractsEasierToggleItem = createToggleItem({
 
 /** Registry of setting items for the Third-party APIs sub-page */
 const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
-  { id: 'ipfs-gateway', component: IpfsGatewayItem },
   { id: 'show-ens-domains', component: ShowENSDomainsToggleItem },
   {
     id: 'make-smart-contracts-easier',
     component: MakeSmartContractsEasierToggleItem,
   },
+  { id: 'ipfs-gateway', component: IpfsGatewayItem },
   {
     id: 'display-nft-media',
     component: DisplayNftMediaToggleItem,
