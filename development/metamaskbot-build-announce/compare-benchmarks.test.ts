@@ -113,8 +113,16 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, baseline);
       const comparison = result.comparisons[0];
       expect(comparison.relativeMetrics.length).toBeGreaterThan(0);
-      expect(comparison.relativeMetrics[0].percentile).toBe('p75');
-      expect(comparison.relativeMetrics[0].baseline).toBe(1400);
+      const meanMetric = comparison.relativeMetrics.find(
+        (m) => m.percentile === 'mean',
+      );
+      const p75Metric = comparison.relativeMetrics.find(
+        (m) => m.percentile === 'p75',
+      );
+      expect(meanMetric).toBeDefined();
+      expect(meanMetric?.baseline).toBe(1100);
+      expect(p75Metric).toBeDefined();
+      expect(p75Metric?.baseline).toBe(1400);
     });
 
     it('resolves page-load baseline by stripping benchmark- prefix from filename', () => {
@@ -140,7 +148,14 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, baseline);
       const comparison = result.comparisons[0];
       expect(comparison.relativeMetrics.length).toBeGreaterThan(0);
-      expect(comparison.relativeMetrics[0].baseline).toBe(1700);
+      expect(
+        comparison.relativeMetrics.find((m) => m.percentile === 'mean')
+          ?.baseline,
+      ).toBe(1400);
+      expect(
+        comparison.relativeMetrics.find((m) => m.percentile === 'p75')
+          ?.baseline,
+      ).toBe(1700);
     });
 
     it('skips entries with no matching threshold config', () => {
@@ -297,12 +312,23 @@ describe('compare-benchmarks', () => {
       expect(output).toContain('(no historical baseline data)');
     });
 
-    it('groups p75 and p95 on same line with indications', () => {
+    it('groups mean, p75, and p95 on same line with indications', () => {
       printReport({
         comparisons: [
           {
             benchmarkName: 'test-bench',
             relativeMetrics: [
+              {
+                metric: 'uiStartup',
+                percentile: 'mean',
+                current: 1050,
+                baseline: 1000,
+                delta: 50,
+                deltaPercent: 0.05,
+                direction: 'slower',
+                severity: 'warn',
+                indication: '🟡⬆️',
+              },
               {
                 metric: 'uiStartup',
                 percentile: 'p75',
@@ -337,6 +363,7 @@ describe('compare-benchmarks', () => {
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
       expect(output).toContain('uiStartup:');
+      expect(output).toContain('🟡⬆️ mean: 1050ms');
       expect(output).toContain('🟡⬆️ p75: 1100ms');
       expect(output).toContain('🟡⬆️ p95: 1300ms');
     });
@@ -377,7 +404,7 @@ describe('compare-benchmarks', () => {
       });
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('🔻 p75: 7200ms (-35.5%)');
+      expect(output).toContain('🔻 p75: 7200ms (-36%)');
     });
 
     it('overrides indication with 🔺 for absolute fail violations', () => {

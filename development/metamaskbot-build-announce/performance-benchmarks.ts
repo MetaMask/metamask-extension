@@ -12,10 +12,20 @@ import {
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
 } from '../../test/e2e/benchmarks/utils/constants';
+import type { HistoricalBaselineReference } from './historical-comparison';
+import { fetchHistoricalPerformanceData } from './historical-comparison';
+import {
+  compareBenchmarkEntries,
+  getTrafficLightIndication,
+  formatDeltaPercent,
+  COMPARISON_SEVERITY,
+} from './comparison-utils';
 
-/** A parsed benchmark entry with its name and the stats we render. */
+/** A parsed benchmark entry with its name, preset, and the stats we render. */
 export type BenchmarkEntry = {
   benchmarkName: string;
+  /** The preset name this entry was fetched under (e.g. 'interactionUserActions'). */
+  presetName: string;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
@@ -59,10 +69,12 @@ export async function fetchBenchmarkJson<
  * Extracts benchmark entries from a fetched JSON artifact.
  *
  * @param data - Raw parsed JSON from a benchmark artifact.
+ * @param presetName - The preset name these entries were fetched under.
  * @returns Flat BenchmarkEntry array with only the fields we render.
  */
 export function extractEntries(
   data: Record<string, BenchmarkResults>,
+  presetName = '',
 ): BenchmarkEntry[] {
   return Object.entries(data)
     .filter(
@@ -73,6 +85,7 @@ export function extractEntries(
     )
     .map(([name, raw]) => ({
       benchmarkName: name,
+      presetName,
       mean: raw.mean,
       min: raw.min,
       max: raw.max,
@@ -123,7 +136,7 @@ export async function fetchBenchmarkEntries(
 
   for (const { platform, buildType, preset, data } of results) {
     if (data) {
-      allEntries.push(...extractEntries(data));
+      allEntries.push(...extractEntries(data, preset));
     } else {
       missingPresets.push(`${platform}/${buildType}/${preset}`);
     }
@@ -133,9 +146,9 @@ export async function fetchBenchmarkEntries(
 }
 
 /**
- * Renders a single HTML table row cell value, rounding numbers or returning '-'.
+ * Rounds a stat value for a given metric key, returning '-' if absent.
  *
- * @param stats - The stats record (e.g. entry.stdDev).
+ * @param stats - The stats record (e.g. entry.min).
  * @param metric - The metric key.
  * @returns Rounded string or '-'.
  */
@@ -145,73 +158,247 @@ function formatCellValue(stats: StatisticalResult, metric: string): string {
 }
 
 /**
- * Builds table rows from benchmark entries.
+ * Resolves the historical baseline for a benchmark entry.
+ * Tries qualified key, bare benchmark name, suffix scan, then preset-name scan
+ * (needed for startup presets stored as "pageLoad/chrome-browserify-{presetName}").
  *
- * @param entries - Array of benchmark entries with names.
- * @returns Array of HTML table row strings.
+ * @param baseline - Full historical reference map.
+ * @param presetName - Preset name (e.g. 'startupStandardHome').
+ * @param benchmarkName - Benchmark name (e.g. 'standardHome').
+ * @returns Baseline metrics or undefined if not found.
  */
-export function buildTableRows(entries: BenchmarkEntry[]): string[] {
-  const tableRows: string[] = [];
-
-  for (const { benchmarkName, mean, min, max, stdDev, p75, p95 } of entries) {
-    const metrics = Object.keys(mean);
-    for (let i = 0; i < metrics.length; i++) {
-      const metric = metrics[i];
-      let row = '';
-      if (i === 0) {
-        row += `<td rowspan="${metrics.length}">${startCase(benchmarkName)}</td>`;
-      }
-      row += `<td>${metric}</td>`;
-      row += `<td align="right">${Math.round(mean[metric])}</td>`;
-      row += `<td align="right">${formatCellValue(min, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(max, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(stdDev, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(p75, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(p95, metric)}</td>`;
-      tableRows.push(`<tr>${row}</tr>`);
-    }
+function resolveEntryBaseline(
+  baseline: HistoricalBaselineReference,
+  presetName: string,
+  benchmarkName: string,
+): HistoricalBaselineReference[string] | undefined {
+  const qualified = `${presetName}/${benchmarkName}`;
+  if (baseline[qualified]) {
+    return baseline[qualified];
   }
-
-  return tableRows;
+  if (baseline[benchmarkName]) {
+    return baseline[benchmarkName];
+  }
+  // Suffix scan: find any key ending with "/benchmarkName"
+  const suffixKey = Object.keys(baseline).find((k) =>
+    k.endsWith(`/${benchmarkName}`),
+  );
+  if (suffixKey) {
+    return baseline[suffixKey];
+  }
+  // Preset-name scan: handles startup presets stored as
+  // "pageLoad/chrome-browserify-{presetName}" in performance_data.json.
+  const presetKey = Object.keys(baseline).find((k) => k.includes(presetName));
+  return presetKey ? baseline[presetKey] : undefined;
 }
 
 /**
- * Builds a benchmark HTML section with a collapsible table.
- * Surfaces a warning for any missing presets so reviewers can see
- * exactly which data is absent (prevents silent bypass).
+ * Builds the traffic-light indicator for the mean comparison of a metric.
+ * Returns '' when no baseline is available.
+ * Neutral returns just the icon; non-neutral returns icon + delta %.
+ * Regressions are downgraded to Warn (regression is reserved for the CI gate).
+ *
+ * @param entry - The benchmark entry.
+ * @param metric - The metric key being rendered.
+ * @param baselineMetrics - Resolved baseline for this entry (optional).
+ * @returns Indicator string e.g. '🟢⬇️ -42%', '➡️', or '' if no baseline.
+ */
+function meanCellIndicator(
+  entry: BenchmarkEntry,
+  metric: string,
+  baselineMetrics: HistoricalBaselineReference[string] | undefined,
+): string {
+  if (!baselineMetrics?.[metric]) {
+    return '';
+  }
+
+  const comparison = compareBenchmarkEntries(
+    entry.benchmarkName,
+    {
+      testTitle: entry.benchmarkName,
+      persona: 'standard' as const,
+      mean: entry.mean,
+      min: entry.min,
+      max: entry.max,
+      stdDev: entry.stdDev,
+      p75: entry.p75,
+      p95: entry.p95,
+    },
+    {}, // no absolute thresholds — informational only
+    { [metric]: baselineMetrics[metric] },
+  );
+
+  const match = comparison.relativeMetrics.find(
+    (m) => m.metric === metric && m.percentile === 'mean',
+  );
+  if (!match) {
+    return '';
+  }
+
+  // Downgrade Regression → Warn in the PR table.
+  const severity =
+    match.severity === COMPARISON_SEVERITY.Regression
+      ? COMPARISON_SEVERITY.Warn
+      : match.severity;
+
+  const icon = getTrafficLightIndication(severity, match.direction);
+  if (severity === COMPARISON_SEVERITY.Neutral) {
+    return icon;
+  }
+  return `${icon} ${formatDeltaPercent(match.deltaPercent, match.direction)}`;
+}
+
+/**
+ * Formats the Result cell by combining the mean value with a traffic-light indicator.
+ * e.g. '🟢⬇️ -90% · 621 ms', '➡️ · 218 ms', or '218 ms' when no baseline.
+ *
+ * @param meanValue - Rounded mean string (e.g. '621') or '-'.
+ * @param indicator - Indicator from meanCellIndicator, or ''.
+ * @returns Combined result string.
+ */
+function resultCellContent(meanValue: string, indicator: string): string {
+  if (meanValue === '-') {
+    return '-';
+  }
+  if (!indicator) {
+    return `${meanValue} ms`;
+  }
+  return `${indicator} · ${meanValue} ms`;
+}
+
+/**
+ * Returns true when the indicator string represents a noteworthy regression
+ * (value increased, non-neutral). Used to populate the per-benchmark summary.
+ * @param indicator
+ */
+function isRegressionIndicator(indicator: string): boolean {
+  return indicator.startsWith('🟡⬆️') || indicator.startsWith('🔺');
+}
+
+/**
+ * Returns true when the indicator string represents a significant improvement
+ * (green downward). Used to populate the per-benchmark summary.
+ * @param indicator
+ */
+function isSignificantImprovementIndicator(indicator: string): boolean {
+  return indicator.startsWith('🟢⬇️') || indicator.startsWith('🔻');
+}
+
+/**
+ * Builds table rows for a single benchmark entry in the 3-column format:
+ * Step | Result (indicator · mean ms) | P95 (ms).
+ *
+ * The 'total' metric row, when present, is ordered last and bolded.
+ *
+ * @param entry - A single benchmark entry.
+ * @param baselineMetrics - Resolved baseline metrics for this entry (optional).
+ * @returns Array of HTML table row strings.
+ */
+export function buildTableRows(
+  entry: BenchmarkEntry,
+  baselineMetrics?: HistoricalBaselineReference[string],
+): string[] {
+  const { mean, p95 } = entry;
+  const metrics = Object.keys(mean);
+  const nonTotalMetrics = metrics.filter((m) => m !== 'total');
+  const orderedMetrics = [
+    ...nonTotalMetrics,
+    ...(metrics.includes('total') ? ['total'] : []),
+  ];
+
+  return orderedMetrics.map((metric) => {
+    const isTotal = metric === 'total';
+    const meanVal = formatCellValue(mean, metric);
+    const indicator = meanCellIndicator(entry, metric, baselineMetrics);
+    const p95Val = formatCellValue(p95, metric);
+    const stepCell = isTotal ? `<b>total</b>` : metric;
+    const row =
+      `<td>${stepCell}</td>` +
+      `<td align="right">${resultCellContent(meanVal, indicator)}</td>` +
+      `<td align="right">${p95Val}</td>`;
+    return `<tr>${row}</tr>`;
+  });
+}
+
+/**
+ * Builds an h4-headed sub-section for a single benchmark entry.
+ *
+ * Structure: h4 header, optional regression/improvement summary paragraphs,
+ * then a 3-column table (Step | Result | P95 ms).
+ *
+ * @param entry - A single benchmark entry.
+ * @param baseline - Optional historical baseline for traffic-light annotations.
+ * @returns HTML string for this benchmark sub-section.
+ */
+function buildEntrySection(
+  entry: BenchmarkEntry,
+  baseline?: HistoricalBaselineReference,
+): string {
+  const { benchmarkName, presetName, mean } = entry;
+  const baselineMetrics = baseline
+    ? resolveEntryBaseline(baseline, presetName, benchmarkName)
+    : undefined;
+
+  const header = `<h4>${startCase(benchmarkName)}</h4>\n`;
+
+  // Collect regressions/improvements from non-total metrics only.
+  const nonTotalMetrics = Object.keys(mean).filter((m) => m !== 'total');
+  const regressions: string[] = [];
+  const improvements: string[] = [];
+  for (const metric of nonTotalMetrics) {
+    const ind = meanCellIndicator(entry, metric, baselineMetrics);
+    if (isRegressionIndicator(ind)) {
+      regressions.push(`<code>${metric}</code> ${ind}`);
+    } else if (isSignificantImprovementIndicator(ind)) {
+      improvements.push(`<code>${metric}</code> ${ind}`);
+    }
+  }
+
+  let summaryHtml = '';
+  if (regressions.length > 0) {
+    summaryHtml += `<p>⚠️ <b>Regressions:</b> ${regressions.join(', ')}</p>\n`;
+  }
+  if (improvements.length > 0) {
+    summaryHtml += `<p>🚀 <b>Improvements:</b> ${improvements.join(', ')}</p>\n`;
+  }
+
+  const rows = buildTableRows(entry, baselineMetrics);
+  const columns = ['Step', 'Result', 'P95 (ms)'];
+  const tableHeader = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
+  const table = `<table>${tableHeader}<tbody>${rows.join('')}</tbody></table>\n`;
+
+  return header + summaryHtml + table;
+}
+
+/**
+ * Builds a benchmark HTML section with per-benchmark sub-sections.
+ *
+ * Each entry becomes an h4-headed block with an optional regression/improvement
+ * summary and a 3-column table (Step | Result | P95 ms). Missing-preset warnings
+ * are surfaced at the top so reviewers can see exactly what data is absent.
  *
  * @param result - Fetched entries and missing preset descriptions.
  * @param summary - The collapsible header text (e.g. '👆 Interaction Benchmarks').
+ * @param baseline - Optional historical baseline for traffic-light annotations.
  * @returns HTML string or empty string if no data at all.
  */
 export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
   summary: string,
+  baseline?: HistoricalBaselineReference,
 ): string {
   try {
     const { entries, missingPresets } = result;
     if (entries.length === 0 && missingPresets.length === 0) {
       return '';
     }
-    const rows = buildTableRows(entries);
     let warningHtml = '';
     if (missingPresets.length > 0) {
       warningHtml = `<p>⚠️ <b>Missing data:</b> ${missingPresets.join(', ')}</p>\n`;
     }
-    const columns = [
-      'Benchmark',
-      'Metric',
-      'Mean (ms)',
-      'Min (ms)',
-      'Max (ms)',
-      'Std Dev (ms)',
-      'P75 (ms)',
-      'P95 (ms)',
-    ];
-    const header = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
     let content = warningHtml;
-    if (rows.length > 0) {
-      content += `<table>${header}<tbody>${rows.join('')}</tbody></table>\n`;
+    for (const entry of entries) {
+      content += buildEntrySection(entry, baseline);
     }
     return `<details><summary>${summary}</summary>${content}</details>\n\n`;
   } catch (error: unknown) {
@@ -224,6 +411,10 @@ export function buildBenchmarkSection(
  * Builds the full ⚡ Performance Benchmarks collapsible section,
  * including 👆 Interaction, 🔌 Startup, and 🧭 User Journey sub-sections.
  *
+ * Fetches the historical baseline (branch-aware, with release-branch fallback)
+ * and annotates each Mean cell with traffic-light indicators so reviewers can
+ * spot regressions and improvements at a glance.
+ *
  * @param hostUrl - Base URL for CI artifacts.
  * @returns HTML string for the collapsible section, or empty string.
  */
@@ -232,28 +423,31 @@ export async function buildPerformanceBenchmarksSection(
 ): Promise<string> {
   const sectionTitle = '⚡ Performance Benchmarks';
 
-  const [interactionResult, startupResult, userJourneyResult] =
+  const [interactionResult, startupResult, userJourneyResult, baseline] =
     await Promise.all([
       fetchBenchmarkEntries(hostUrl, Object.values(INTERACTION_PRESETS)),
       fetchBenchmarkEntries(hostUrl, Object.values(STARTUP_PRESETS)),
       fetchBenchmarkEntries(hostUrl, Object.values(USER_JOURNEY_PRESETS)),
+      fetchHistoricalPerformanceData(),
     ]);
+
+  const resolvedBaseline = baseline ?? undefined;
 
   const interactionHtml = buildBenchmarkSection(
     interactionResult,
     '👆 Interaction Benchmarks',
+    resolvedBaseline,
   );
   const startupHtml = buildBenchmarkSection(
     startupResult,
     '🔌 Startup Benchmarks',
+    resolvedBaseline,
   );
   const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
     '🧭 User Journey Benchmarks',
+    resolvedBaseline,
   );
-
-  // TODO: Introduce a Traffic Light System for Regression Detection
-  // https://github.com/MetaMask/MetaMask-planning/issues/6993
 
   if (!interactionHtml && !startupHtml && !userJourneyHtml) {
     return '';

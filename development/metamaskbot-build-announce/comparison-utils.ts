@@ -17,34 +17,36 @@ import type {
   ThresholdConfig,
   ThresholdViolation,
   RelativeThresholds,
+  ComparisonKey,
 } from '../../shared/constants/benchmarks';
 import {
-  PercentileKey,
-  ThresholdSeverity,
+  PERCENTILE_KEY,
+  STAT_KEY,
+  THRESHOLD_SEVERITY,
   DEFAULT_RELATIVE_THRESHOLDS,
 } from '../../shared/constants/benchmarks';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 
-export const ComparisonSeverity = {
+export const COMPARISON_SEVERITY = {
   Regression: 'regression',
   Warn: 'warn',
   Improvement: 'improvement',
   Neutral: 'neutral',
 } as const;
 export type ComparisonSeverity =
-  (typeof ComparisonSeverity)[keyof typeof ComparisonSeverity];
+  (typeof COMPARISON_SEVERITY)[keyof typeof COMPARISON_SEVERITY];
 
-export const ComparisonDirection = {
+export const COMPARISON_DIRECTION = {
   Faster: 'faster',
   Slower: 'slower',
   Same: 'same',
 } as const;
 export type ComparisonDirection =
-  (typeof ComparisonDirection)[keyof typeof ComparisonDirection];
+  (typeof COMPARISON_DIRECTION)[keyof typeof COMPARISON_DIRECTION];
 
 export type MetricComparison = {
   metric: string;
-  percentile: PercentileKey;
+  percentile: ComparisonKey;
   current: number;
   baseline: number;
   delta: number;
@@ -73,14 +75,14 @@ export function getTrafficLightIndication(
   severity: ComparisonSeverity,
   direction: ComparisonDirection,
 ): string {
-  if (severity === ComparisonSeverity.Regression) {
-    return direction === ComparisonDirection.Slower ? '🔺' : '🔻';
+  if (severity === COMPARISON_SEVERITY.Regression) {
+    return direction === COMPARISON_DIRECTION.Slower ? '🔺' : '🔻';
   }
-  if (severity === ComparisonSeverity.Warn) {
-    return direction === ComparisonDirection.Slower ? '🟡⬆️' : '🟡⬇️';
+  if (severity === COMPARISON_SEVERITY.Warn) {
+    return direction === COMPARISON_DIRECTION.Slower ? '🟡⬆️' : '🟡⬇️';
   }
-  if (severity === ComparisonSeverity.Improvement) {
-    return direction === ComparisonDirection.Faster ? '🟢⬇️' : '🟢⬆️';
+  if (severity === COMPARISON_SEVERITY.Improvement) {
+    return direction === COMPARISON_DIRECTION.Faster ? '🟢⬇️' : '🟢⬆️';
   }
   return '➡️';
 }
@@ -95,24 +97,24 @@ export function formatDeltaPercent(
   deltaPercent: number,
   direction: ComparisonDirection,
 ): string {
-  const pct = Math.abs(deltaPercent * 100).toFixed(1);
-  if (direction === ComparisonDirection.Slower) {
+  const pct = Math.abs(deltaPercent * 100).toFixed(0);
+  if (direction === COMPARISON_DIRECTION.Slower) {
     return `+${pct}%`;
   }
-  if (direction === ComparisonDirection.Faster) {
+  if (direction === COMPARISON_DIRECTION.Faster) {
     return `-${pct}%`;
   }
-  return '0.0%';
+  return '0%';
 }
 
 function deltaToDirection(delta: number): ComparisonDirection {
   if (delta > 0) {
-    return ComparisonDirection.Slower;
+    return COMPARISON_DIRECTION.Slower;
   }
   if (delta < 0) {
-    return ComparisonDirection.Faster;
+    return COMPARISON_DIRECTION.Faster;
   }
-  return ComparisonDirection.Same;
+  return COMPARISON_DIRECTION.Same;
 }
 
 /**
@@ -120,14 +122,14 @@ function deltaToDirection(delta: number): ComparisonDirection {
  * severity, direction, and traffic-light indication.
  *
  * @param metric - Metric name.
- * @param percentile - Which percentile this comparison is for.
+ * @param percentile - Which stat key this comparison is for ('mean', 'p75', or 'p95').
  * @param current - Current value (ms).
  * @param baseline - Baseline value (ms).
  * @param thresholds - Relative thresholds for severity classification.
  */
 export function compareMetric(
   metric: string,
-  percentile: PercentileKey,
+  percentile: ComparisonKey,
   current: number,
   baseline: number,
   thresholds: RelativeThresholds,
@@ -141,19 +143,19 @@ export function compareMetric(
   const absDelta = Math.abs(deltaPercent);
 
   if (
-    direction === ComparisonDirection.Slower &&
+    direction === COMPARISON_DIRECTION.Slower &&
     absDelta >= thresholds.regressionPercent
   ) {
-    severity = ComparisonSeverity.Regression;
+    severity = COMPARISON_SEVERITY.Regression;
   } else if (
-    direction === ComparisonDirection.Faster &&
+    direction === COMPARISON_DIRECTION.Faster &&
     absDelta >= thresholds.improvementPercent
   ) {
-    severity = ComparisonSeverity.Improvement;
+    severity = COMPARISON_SEVERITY.Improvement;
   } else if (absDelta >= thresholds.warnPercent) {
-    severity = ComparisonSeverity.Warn;
+    severity = COMPARISON_SEVERITY.Warn;
   } else {
-    severity = ComparisonSeverity.Neutral;
+    severity = COMPARISON_SEVERITY.Neutral;
   }
 
   return {
@@ -203,9 +205,13 @@ export function compareBenchmarkEntries(
 
   const relativeMetrics: MetricComparison[] = [];
   if (baselineData && results.p75) {
-    const percentiles = [PercentileKey.P75, PercentileKey.P95] as const;
-    for (const percentile of percentiles) {
-      const currentMap = results[percentile];
+    const comparisonKeys: ComparisonKey[] = [
+      STAT_KEY.Mean,
+      PERCENTILE_KEY.P75,
+      PERCENTILE_KEY.P95,
+    ];
+    for (const key of comparisonKeys) {
+      const currentMap = results[key];
       if (!currentMap) {
         continue;
       }
@@ -215,9 +221,9 @@ export function compareBenchmarkEntries(
           relativeMetrics.push(
             compareMetric(
               metric,
-              percentile,
+              key,
               currentValue,
-              baselineEntry[percentile],
+              baselineEntry[key],
               relativeThresholds,
             ),
           );
@@ -231,12 +237,12 @@ export function compareBenchmarkEntries(
     relativeMetrics,
     absoluteViolations: violations,
     hasRegression: relativeMetrics.some(
-      (m) => m.severity === ComparisonSeverity.Regression,
+      (m) => m.severity === COMPARISON_SEVERITY.Regression,
     ),
     hasWarning:
-      relativeMetrics.some((m) => m.severity === ComparisonSeverity.Warn) ||
+      relativeMetrics.some((m) => m.severity === COMPARISON_SEVERITY.Warn) ||
       violations.some(
-        (v: ThresholdViolation) => v.severity === ThresholdSeverity.Warn,
+        (v: ThresholdViolation) => v.severity === THRESHOLD_SEVERITY.Warn,
       ),
     absoluteFailed: !passed,
   };
