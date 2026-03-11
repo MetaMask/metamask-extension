@@ -232,4 +232,85 @@ describe('Onboarding Metametrics Component', () => {
       expect(marketingCheckbox).not.toBeChecked();
     });
   });
+
+  it('pressing Space on the participate checkbox container toggles the participate checkbox', async () => {
+    const { getByTestId, getAllByRole } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const participateCheckboxContainer = getByTestId(
+      'metametrics-checkbox',
+    ).closest('[role="button"]') as HTMLElement;
+    const checkbox = getAllByRole('checkbox')[0];
+
+    expect(checkbox).toBeChecked();
+
+    fireEvent.keyDown(participateCheckboxContainer, { key: ' ' });
+    await waitFor(() => {
+      expect(checkbox).not.toBeChecked();
+    });
+
+    fireEvent.keyDown(participateCheckboxContainer, { key: ' ' });
+    await waitFor(() => {
+      expect(checkbox).toBeChecked();
+    });
+  });
+
+  it('pressing Enter on the participate checkbox container toggles the participate checkbox', async () => {
+    const { getByTestId, getAllByRole } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const participateCheckboxContainer = getByTestId(
+      'metametrics-checkbox',
+    ).closest('[role="button"]') as HTMLElement;
+    const checkbox = getAllByRole('checkbox')[0];
+
+    expect(checkbox).toBeChecked();
+
+    fireEvent.keyDown(participateCheckboxContainer, { key: 'Enter' });
+    await waitFor(() => {
+      expect(checkbox).not.toBeChecked();
+    });
+  });
+
+  it('pressing Space on the marketing checkbox container toggles the marketing checkbox when participate is checked', async () => {
+    const { getByTestId, getAllByRole } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const marketingCheckboxContainer = getByTestId(
+      'metametrics-data-collection-checkbox',
+    ).closest('[role="button"]') as HTMLElement;
+    const marketingCheckbox = getAllByRole('checkbox')[1];
+
+    expect(marketingCheckbox).not.toBeChecked();
+
+    fireEvent.keyDown(marketingCheckboxContainer, { key: ' ' });
+    await waitFor(() => {
+      expect(marketingCheckbox).toBeChecked();
+    });
+  });
+
+  it('pressing Enter on the marketing checkbox container toggles the marketing checkbox when participate is checked', async () => {
+    const { getByTestId, getAllByRole } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const marketingCheckboxContainer = getByTestId(
+      'metametrics-data-collection-checkbox',
+    ).closest('[role="button"]') as HTMLElement;
+    const marketingCheckbox = getAllByRole('checkbox')[1];
+
+    expect(marketingCheckbox).not.toBeChecked();
+
+    fireEvent.keyDown(marketingCheckboxContainer, { key: 'Enter' });
+    await waitFor(() => {
+      expect(marketingCheckbox).toBeChecked();
+    });
+  });
 });
