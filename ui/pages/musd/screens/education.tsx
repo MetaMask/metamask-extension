@@ -5,7 +5,7 @@
  * Shown to users who haven't seen the education content before.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -30,6 +30,15 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  MUSD_EVENTS_CONSTANTS,
+  type MusdEducationButtonClickedEventProperties,
+} from '../../../components/app/musd/musd-events';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
@@ -69,8 +78,21 @@ const MusdEducationScreen: React.FC = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [searchParams] = useSearchParams();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
+
+  // Track education screen display on mount
+  useEffect(() => {
+    trackEvent({
+      event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: {
+        location:
+          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+      },
+    });
+  }, [trackEvent]);
 
   const { startConversionFlow } = useMusdConversion();
   const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
@@ -92,6 +114,36 @@ const MusdEducationScreen: React.FC = () => {
   const isDeeplinkNoTokensGoToBuy =
     isDeeplink && !hasEligibleConversionTokens && canBuyMusdInRegion;
 
+  // Determine button labels - must be before callbacks that use them
+  let primaryButtonLabel = t('musdEducationGetStarted') as string;
+  if (isDeeplinkNoTokensGoToBuy) {
+    primaryButtonLabel = t('musdBuyMusd') as string;
+  } else if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
+    primaryButtonLabel = t('continue') as string;
+  }
+  const secondaryButtonLabel = t('musdEducationNotNow') as string;
+
+  /**
+   * Determine redirect destination for analytics
+   */
+  const getRedirectDestination =
+    useCallback((): MusdEducationButtonClickedEventProperties['redirects_to'] => {
+      if (isDeeplinkNoTokensGoToBuy) {
+        return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
+          .BUY_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
+      }
+      if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
+        return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
+          .HOME_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
+      }
+      return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
+        .CUSTOM_AMOUNT_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
+    }, [
+      isDeeplinkNoTokensGoToBuy,
+      isDeeplinkNoTokensContinueHome,
+      isGeoBlocked,
+    ]);
+
   /**
    * Handle primary CTA click.
    * - Deeplink + no tokens + can buy: open buy flow then go home ("Buy mUSD").
@@ -100,6 +152,21 @@ const MusdEducationScreen: React.FC = () => {
    * - Otherwise (including deeplink + has tokens): start conversion flow ("Get started").
    */
   const handleContinue = useCallback(async () => {
+    // Track primary button click
+    trackEvent({
+      event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: {
+        location:
+          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.PRIMARY,
+        button_text: primaryButtonLabel,
+        redirects_to: getRedirectDestination(),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      } as MusdEducationButtonClickedEventProperties,
+    });
+
     dispatch(setMusdConversionEducationSeen(true));
 
     if (isDeeplinkNoTokensGoToBuy) {
@@ -143,6 +210,9 @@ const MusdEducationScreen: React.FC = () => {
     openBuyCryptoInPdapp,
     startConversionFlow,
     defaultPaymentToken,
+    trackEvent,
+    primaryButtonLabel,
+    getRedirectDestination,
   ]);
 
   /**
@@ -150,16 +220,24 @@ const MusdEducationScreen: React.FC = () => {
    * Marks education as seen and navigates home.
    */
   const handleSkip = useCallback(() => {
+    // Track secondary button click
+    trackEvent({
+      event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: {
+        location:
+          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.SECONDARY,
+        button_text: secondaryButtonLabel,
+        redirects_to: MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.HOME_SCREEN,
+        /* eslint-enable @typescript-eslint/naming-convention */
+      } as MusdEducationButtonClickedEventProperties,
+    });
+
     dispatch(setMusdConversionEducationSeen(true));
     navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
-
-  let primaryButtonLabel = t('musdEducationGetStarted');
-  if (isDeeplinkNoTokensGoToBuy) {
-    primaryButtonLabel = t('musdBuyMusd');
-  } else if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
-    primaryButtonLabel = t('continue');
-  }
+  }, [dispatch, navigate, trackEvent, secondaryButtonLabel]);
 
   return (
     <Box
@@ -270,7 +348,7 @@ const MusdEducationScreen: React.FC = () => {
             style={{ width: '100%', color: 'var(--color-text-default)' }}
             data-testid="musd-education-not-now-button"
           >
-            {t('musdEducationNotNow')}
+            {secondaryButtonLabel}
           </Button>
         </Box>
       </Box>
