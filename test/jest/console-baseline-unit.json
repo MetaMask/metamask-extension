@@ -2100,7 +2100,7 @@
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 6,
+      "React: Act warnings (component updates not wrapped)": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/send/amount/amount.test.tsx": {
@@ -2129,6 +2129,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/send/recipient/recipient.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/send/send-alert-modal/send-alert-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/simulation-details/asset-pill.test.tsx": {
@@ -2291,6 +2294,11 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useSuggestedGasFeeHighAlert.test.ts": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/useTokenContractAlert.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
