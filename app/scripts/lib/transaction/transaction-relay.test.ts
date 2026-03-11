@@ -203,8 +203,11 @@ describe('Transaction Relay Utils', () => {
       await flushPromises();
 
       jest.advanceTimersByTime(INTERVAL_MOCK);
+      await flushPromises();
       jest.advanceTimersByTime(INTERVAL_MOCK);
+      await flushPromises();
       jest.advanceTimersByTime(INTERVAL_MOCK);
+      await flushPromises();
 
       // Additional request to check network support
       expect(fetchMock).toHaveBeenCalledTimes(4);

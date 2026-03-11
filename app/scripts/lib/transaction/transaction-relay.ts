@@ -81,11 +81,11 @@ export async function waitForRelayResult(
   }
 
   const url = `${baseUrl}smart-transactions/${uuid}`;
-  const headers = await getSentinelApiHeadersAsync();
 
   return new Promise<RelayWaitResponse>((resolve, reject) => {
     const intervalId = setInterval(async () => {
       try {
+        const headers = await getSentinelApiHeadersAsync();
         const result = await pollResult(url, headers);
 
         if (result.status !== RelayStatus.Pending) {
