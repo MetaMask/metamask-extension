@@ -772,12 +772,6 @@
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
       }
     },
-    "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
-      }
-    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-utils": true
@@ -849,7 +843,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controller>@metamask/assets-controllers": true,
+        "@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
@@ -897,50 +891,6 @@
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
-        "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
-        "ethereumjs-util>bn.js": true,
-        "immer": true,
-        "lodash": true,
-        "@metamask/assets-controllers>multiformats": true,
-        "reselect": true,
-        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/assets-controllers": {
-      "globals": {
-        "AbortController": true,
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "ethers>@ethersproject/address": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/account-api": true,
-        "@metamask/base-controller": true,
-        "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/phishing-controller": true,
-        "@metamask/polling-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/assets-controller>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/keyring-api>async-mutex": true,
         "ethereumjs-util>bn.js": true,
@@ -1006,7 +956,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1737,19 +1687,6 @@
       }
     },
     "@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
       "globals": {
         "URL": true
       },
@@ -2654,21 +2591,6 @@
       }
     },
     "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true

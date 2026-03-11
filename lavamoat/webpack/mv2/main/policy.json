@@ -841,7 +841,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controller>@metamask/assets-controllers": true,
+        "@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
@@ -956,7 +956,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1706,11 +1706,6 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
       }
     },
     "@metamask/multichain-transactions-controller": {
