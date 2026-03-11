@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`usePrefillFromSearchQuery should not set inputs when there are no query params 1`] = `
+{
+  "fromNativeBalance": undefined,
+  "fromToken": undefined,
+  "fromTokenBalance": undefined,
+  "fromTokenInputValue": undefined,
+  "toToken": undefined,
+}
+`;
+
+exports[`usePrefillFromSearchQuery should not set params when fetchAssetMetadataForAssetIds fails 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toToken": undefined,
+}
+`;
+
+exports[`usePrefillFromSearchQuery should only set dest token 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toToken": {
+    "accountType": undefined,
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "rwaData": undefined,
+    "symbol": "USDC",
+    "tokenFiatAmount": undefined,
+  },
+}
+`;
+
+exports[`usePrefillFromSearchQuery should only set src token and amount 1`] = `
+{
+  "fromToken": {
+    "accountType": undefined,
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "rwaData": undefined,
+    "symbol": "USDC",
+    "tokenFiatAmount": undefined,
+  },
+  "fromTokenInputValue": "0.000100",
+  "toToken": undefined,
+}
+`;
+
+exports[`usePrefillFromSearchQuery should set evm bridge params 1`] = `
+{
+  "fromNativeBalance": null,
+  "fromToken": {
+    "accountType": undefined,
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "rwaData": undefined,
+    "symbol": "USDC",
+    "tokenFiatAmount": undefined,
+  },
+  "fromTokenBalance": null,
+  "fromTokenInputValue": "0.000100",
+  "toToken": {
+    "accountType": undefined,
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+    "name": "Solana",
+    "rwaData": undefined,
+    "symbol": "SOL",
+    "tokenFiatAmount": undefined,
+  },
+}
+`;
+
+exports[`usePrefillFromSearchQuery should set solana swap params 1`] = `
+{
+  "fromToken": {
+    "accountType": undefined,
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+    "name": "Solana",
+    "rwaData": undefined,
+    "symbol": "USDC",
+    "tokenFiatAmount": undefined,
+  },
+  "fromTokenInputValue": "0.000000100",
+  "toToken": {
+    "accountType": undefined,
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+    "name": "Solana",
+    "rwaData": undefined,
+    "symbol": "SOL",
+    "tokenFiatAmount": undefined,
+  },
+}
+`;
+
+exports[`usePrefillFromSearchQuery should set src token after navigating from ERC20 asset page 1`] = `
+{
+  "fromToken": {
+    "accountType": undefined,
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "rwaData": undefined,
+    "symbol": "USDC",
+    "tokenFiatAmount": undefined,
+  },
+  "fromTokenInputValue": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`usePrefillFromSearchQuery should set src token after navigating from native asset page 1`] = `
+{
+  "fromToken": {
+    "accountType": undefined,
+    "assetId": "eip155:59144/slip44:60",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 18,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
+    "name": "Ethereum",
+    "rwaData": undefined,
+    "symbol": "ETH",
+    "tokenFiatAmount": undefined,
+  },
+  "fromTokenInputValue": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`usePrefillFromSearchQuery should unset amount 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toToken": undefined,
+}
+`;
