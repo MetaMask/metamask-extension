@@ -1,5 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AccountGroupId,
@@ -77,7 +81,7 @@ export const MultichainAccountDetailsPage = () => {
     : ('' as AccountWalletId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
-  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}?id=${encodeURIComponent(walletId)}`;
+
   const isRemovable = wallet?.type !== AccountWalletType.Entropy;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
@@ -156,7 +160,12 @@ export const MultichainAccountDetailsPage = () => {
   }, [dispatch, trackEvent, navigate, wallet?.type, accountsWithAddresses]);
 
   const handleWalletAction = () => {
-    navigate(walletRoute);
+    navigate({
+      pathname: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+      search: createSearchParams({
+        id: walletId,
+      }).toString(),
+    });
   };
 
   useEffect(() => {
