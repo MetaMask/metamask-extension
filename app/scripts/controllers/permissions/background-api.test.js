@@ -7,11 +7,11 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import * as NetworkSelectors from '../../../../shared/modules/selectors/networks';
+import * as NetworkSelectors from '../../../../shared/lib/selectors/networks';
 import { getPermissionBackgroundApiMethods } from './background-api';
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../../../shared/modules/selectors/networks'),
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/networks'),
   getNetworkConfigurationsByCaipChainId: jest.fn(),
 }));
 const MockNetworkSelectors = jest.mocked(NetworkSelectors);

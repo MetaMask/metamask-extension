@@ -16,7 +16,7 @@ describe(`migration #${VERSION}`, () => {
     global.sentry = undefined;
   });
 
-  it('DOES NOT modify the controller + exception if NetworkEnablementController is missing', async () => {
+  it('DOES NOT modify the controller (with no exception thrown) if NetworkEnablementController is missing', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
@@ -34,9 +34,7 @@ describe(`migration #${VERSION}`, () => {
       OtherRandomController: {},
     });
     expect(changedControllers).toStrictEqual(new Set([]));
-    expect(mockedCaptureException).toHaveBeenCalledWith(
-      new Error(`Migration ${VERSION}: NetworkEnablementController not found.`),
-    );
+    expect(mockedCaptureException).not.toHaveBeenCalled();
   });
 
   it('DOES NOT modify the controller + exception if NetworkEnablementController has changed type', async () => {
@@ -72,7 +70,7 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  it('DOES NOT modify the controller + exception if NetworkEnablementController.nativeAssetIdentifiers is missing', async () => {
+  it('DOES NOT modify the controller (with no exception thrown) if NetworkEnablementController.nativeAssetIdentifiers is missing', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
@@ -94,11 +92,7 @@ describe(`migration #${VERSION}`, () => {
       },
     });
     expect(changedControllers).toStrictEqual(new Set([]));
-    expect(mockedCaptureException).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${VERSION}: NetworkEnablementController missing property nativeAssetIdentifiers.`,
-      ),
-    );
+    expect(mockedCaptureException).not.toHaveBeenCalled();
   });
 
   it('DOES NOT modify the controller + exception if NetworkEnablementController.nativeAssetIdentifiers has changed type', async () => {

@@ -1981,6 +1981,22 @@ class FixtureBuilder {
     return this;
   }
 
+  withConversionRates(conversionRates = {}) {
+    this.fixture.data.MultichainRatesController ??= {};
+    this.fixture.data.MultichainRatesController.conversionRates = {
+      ...conversionRates,
+    };
+    return this;
+  }
+
+  withCurrencyRates(currencyRates = {}) {
+    this.fixture.data.CurrencyController ??= {};
+    this.fixture.data.CurrencyController.currencyRates = {
+      ...currencyRates,
+    };
+    return this;
+  }
+
   build() {
     if (!this.fixture.meta) {
       this.fixture.meta = {

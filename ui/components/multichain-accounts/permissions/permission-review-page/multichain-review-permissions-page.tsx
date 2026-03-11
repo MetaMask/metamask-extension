@@ -14,7 +14,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
@@ -65,7 +65,7 @@ import {
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 
 export enum MultichainReviewPermissionsPageMode {

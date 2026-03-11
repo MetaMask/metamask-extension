@@ -14,7 +14,7 @@ import InfoTooltip from '../../ui/info-tooltip';
 import {
   decGWEIToHexWEI,
   hexWEIToDecETH,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import CancelSpeedupPopover from './cancel-speedup-popover';

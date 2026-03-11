@@ -1,6 +1,6 @@
 import { encodePacked } from '@metamask/abi-utils';
 import { Hex, bytesToHex } from '@metamask/utils';
-import { hexToDecimal } from '../../../modules/conversion.utils';
+import { hexToDecimal } from '../../conversion.utils';
 import { Caveat } from '../caveat';
 import { DeleGatorEnvironment } from '../environment';
 import { isAddress, isHex } from '../utils';
