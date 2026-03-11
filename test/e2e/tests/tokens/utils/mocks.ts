@@ -46,7 +46,7 @@ export const mockSpotPrices = async (
 export async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -62,6 +62,7 @@ export async function mockPriceApi(mockServer: Mockttp) {
     }));
   const mockExchangeRates = await mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
