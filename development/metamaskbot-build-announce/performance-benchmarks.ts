@@ -205,6 +205,9 @@ export function buildTableRows(entries: BenchmarkEntry[]): string[] {
     }
 
     const totalRows = timerMetrics.length + cwvRows.length;
+    if (totalRows === 0) {
+      continue;
+    }
     let nameCellEmitted = false;
     for (let i = 0; i < timerMetrics.length; i++) {
       const metric = timerMetrics[i];
