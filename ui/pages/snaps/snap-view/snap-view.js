@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,11 +23,10 @@ import SnapSettings from './snap-settings';
 
 function SnapView() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
 
-  const { pathname } = location;
-  // The snap ID is in URI-encoded form in the last path segment of the URL.
-  const snapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);
+  // The snap ID is in URI-encoded form in the query parameter.
+  const snapId = searchParams.get('snapId');
   const snaps = useSelector(getSnaps);
   const snap = Object.entries(snaps)
     .map(([_, snapState]) => snapState)

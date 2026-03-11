@@ -326,7 +326,7 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${SNAP_SETTINGS_ROUTE}/:snapId`,
+    path: SNAP_SETTINGS_ROUTE,
     label: 'Snap Settings Page',
     trackInAnalytics: true,
   },
@@ -445,7 +445,7 @@ export const ROUTES = [
   },
   { path: SNAPS_ROUTE, label: 'Snaps List Page', trackInAnalytics: true },
   {
-    path: `${SNAPS_VIEW_ROUTE}/:snapId`,
+    path: SNAPS_VIEW_ROUTE,
     label: 'Snap View Page',
     trackInAnalytics: true,
   },

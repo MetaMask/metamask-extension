@@ -407,7 +407,7 @@ class SettingsPage extends PureComponent {
             style={{ '--size': '20px' }}
           />
         ),
-        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(id)}`,
+        key: `${SNAP_SETTINGS_ROUTE}?snapId=${encodeURIComponent(id)}`,
       };
     });
 
@@ -507,7 +507,7 @@ class SettingsPage extends PureComponent {
           element={<InfoTab />}
         />
         <Route
-          path={`${toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}/:snapId`}
+          path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
           element={<SnapSettingsRenderer />}
         />
         <Route

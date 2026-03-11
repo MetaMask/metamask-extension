@@ -751,7 +751,7 @@ export const getSnapName = (snapsMetadata) => {
 };
 
 export const getSnapRoute = (snapId) => {
-  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
+  return `${SNAPS_VIEW_ROUTE}?snapId=${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {
