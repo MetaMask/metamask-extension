@@ -4,6 +4,7 @@ import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { SendAlertModal } from './send-alert-modal';
 
 jest.mock('../../../../../hooks/useI18nContext');
@@ -41,7 +42,7 @@ describe('SendAlertModal', () => {
   it('renders modal with title and message when open', () => {
     const { getByText, getByTestId } = renderComponent();
 
-    expect(getByText('Smart contract address')).toBeInTheDocument();
+    expect(getByText(messages.smartContractAddressWarning.message)).toBeInTheDocument();
     expect(getByTestId('send-alert-modal-message')).toHaveTextContent(
       'This may result in fund loss.',
     );
@@ -50,7 +51,7 @@ describe('SendAlertModal', () => {
   it('does not render modal content when closed', () => {
     const { queryByText } = renderComponent({ isOpen: false });
 
-    expect(queryByText('Smart contract address')).not.toBeInTheDocument();
+    expect(queryByText(messages.smartContractAddressWarning.message)).not.toBeInTheDocument();
   });
 
   it('calls onAcknowledge when I understand button is clicked', () => {
