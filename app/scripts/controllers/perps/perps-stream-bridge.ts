@@ -68,6 +68,18 @@ export class PerpsStreamBridge {
   }
 
   /**
+   * Ensures the controller is initialized and static subscriptions are
+   * established. Idempotent — skips activation if already activated or
+   * if the connection has closed.
+   */
+  async #initAndActivate(): Promise<void> {
+    await this.#controllerApi.perpsInit();
+    if (this.#controller && !this.#activated && this.#isConnectionAlive()) {
+      this.activate();
+    }
+  }
+
+  /**
    * Returns API method overrides for the metamask-controller RPC api object.
    * Encapsulates all perps-specific orchestration logic (init guards,
    * streaming lifecycle, view activation) so metamask-controller.js only
@@ -97,14 +109,14 @@ export class PerpsStreamBridge {
         self.setViewActive(active);
       },
       perpsActivateStreaming: async (params: ActivateStreamingParams) => {
-        await self.#controllerApi.perpsInit();
+        await self.#initAndActivate();
         if (self.#controller && self.#isConnectionAlive()) {
           self.activateStreaming(params);
         }
         return 'ok';
       },
       perpsActivatePriceStream: async ({ symbols }: { symbols: string[] }) => {
-        await self.#controllerApi.perpsInit();
+        await self.#initAndActivate();
         if (self.#controller && self.#isConnectionAlive()) {
           self.activatePriceStream(symbols);
         }
@@ -114,7 +126,7 @@ export class PerpsStreamBridge {
         self.deactivatePriceStream();
       },
       perpsActivateOrderBookStream: async ({ symbol }: { symbol: string }) => {
-        await self.#controllerApi.perpsInit();
+        await self.#initAndActivate();
         if (self.#controller && self.#isConnectionAlive()) {
           self.activateOrderBookStream(symbol);
         }
@@ -132,7 +144,7 @@ export class PerpsStreamBridge {
         interval: CandlePeriod;
         duration?: TimeDuration;
       }) => {
-        await self.#controllerApi.perpsInit();
+        await self.#initAndActivate();
         if (self.#controller && self.#isConnectionAlive()) {
           self.activateCandleStream({ symbol, interval, duration });
         }

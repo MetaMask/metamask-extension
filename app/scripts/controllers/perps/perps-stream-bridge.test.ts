@@ -1056,6 +1056,51 @@ describe('PerpsStreamBridge', () => {
       expect(controller.subscribeToCandles).toHaveBeenCalled();
     });
 
+    it('streaming methods activate static subscriptions when called first', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      expect(bridge.isActivated).toBe(false);
+
+      await (
+        api.perpsActivateStreaming as (
+          params: Record<string, unknown>,
+        ) => Promise<string>
+      )({ priceSymbols: ['ETH'] });
+
+      expect(bridge.isActivated).toBe(true);
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToOrders).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToAccount).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
+    });
+
+    it('streaming methods do not re-activate if already activated', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+
+      await (
+        api.perpsActivatePriceStream as (
+          params: Record<string, unknown>,
+        ) => Promise<string>
+      )({ symbols: ['ETH'] });
+
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+    });
+
     it('streaming api overrides skip activation when connection is dead', async () => {
       const controller = createMockController();
       const controllerApi = createMockControllerApi();
