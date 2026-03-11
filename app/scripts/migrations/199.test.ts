@@ -16,9 +16,7 @@ import { migrate, version, FEATURED_INFURA_NETWORKS } from './199';
 const VERSION = version;
 const OLD_VERSION = VERSION - 1;
 
-function makeState(
-  networkConfigurationsByChainId: Record<string, unknown>,
-) {
+function makeState(networkConfigurationsByChainId: Record<string, unknown>) {
   return {
     meta: { version: OLD_VERSION },
     data: {
@@ -32,7 +30,12 @@ function makeState(
 
 function makeNetworkConfig(
   chainId: string,
-  rpcEndpoints: { url: string; networkClientId?: string; type?: string; failoverUrls?: string[] }[],
+  rpcEndpoints: {
+    url: string;
+    networkClientId?: string;
+    type?: string;
+    failoverUrls?: string[];
+  }[],
   defaultRpcEndpointIndex = 0,
 ) {
   return {
@@ -105,7 +108,13 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string; failoverUrls: string[] }[]; defaultRpcEndpointIndex: number }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          {
+            rpcEndpoints: { url: string; failoverUrls: string[] }[];
+            defaultRpcEndpointIndex: number;
+          }
+        >;
       }
     ).networkConfigurationsByChainId[polygonChainId];
 
@@ -128,9 +137,7 @@ describe(`migration #${VERSION}`, () => {
     const polygonChainId = '0x89';
     const infuraUrl = `https://polygon-mainnet.infura.io/v3/${mockInfuraIdValue}`;
     const state = makeState({
-      [polygonChainId]: makeNetworkConfig(polygonChainId, [
-        { url: infuraUrl },
-      ]),
+      [polygonChainId]: makeNetworkConfig(polygonChainId, [{ url: infuraUrl }]),
     });
 
     const changed = new Set<string>();
@@ -138,7 +145,10 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string }[] }
+        >;
       }
     ).networkConfigurationsByChainId[polygonChainId];
 
@@ -164,7 +174,10 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string }[]; defaultRpcEndpointIndex: number }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string }[]; defaultRpcEndpointIndex: number }
+        >;
       }
     ).networkConfigurationsByChainId[arbitrumChainId];
 
@@ -192,7 +205,10 @@ describe(`migration #${VERSION}`, () => {
 
     const configs = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string }[] }
+        >;
       }
     ).networkConfigurationsByChainId;
 
@@ -215,7 +231,10 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string }[] }
+        >;
       }
     ).networkConfigurationsByChainId[polygonChainId];
 
@@ -241,7 +260,10 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string }[] }
+        >;
       }
     ).networkConfigurationsByChainId[customChainId];
 
@@ -262,7 +284,10 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string; failoverUrls: string[] }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string; failoverUrls: string[] }[] }
+        >;
       }
     ).networkConfigurationsByChainId[polygonChainId];
 
@@ -285,7 +310,10 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       state.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { url: string; failoverUrls: string[] }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string; failoverUrls: string[] }[] }
+        >;
       }
     ).networkConfigurationsByChainId[polygonChainId];
 

@@ -88,6 +88,9 @@ type NetworkConfiguration = {
  * HyperEVM (0x3e7) is excluded as it was already handled by migration 197.
  *
  * @param versionedData - Versioned MetaMask extension state.
+ * @param versionedData.meta - The metadata object.
+ * @param versionedData.meta.version - The current migration version.
+ * @param versionedData.data - The state data keyed by controller name.
  * @param localChangedControllers - A set of controller keys modified by the migration.
  */
 export async function migrate(
@@ -177,9 +180,7 @@ function validateNetworkController(state: Record<string, unknown>):
   | undefined {
   if (!hasProperty(state, 'NetworkController')) {
     captureException(
-      new Error(
-        `Migration ${version}: Missing NetworkController state`,
-      ),
+      new Error(`Migration ${version}: Missing NetworkController state`),
     );
     return undefined;
   }
@@ -208,9 +209,7 @@ function isValidNetworkControllerState(value: unknown): value is {
 
   if (!hasProperty(value, 'networkConfigurationsByChainId')) {
     captureException(
-      new Error(
-        `Migration ${version}: Missing networkConfigurationsByChainId`,
-      ),
+      new Error(`Migration ${version}: Missing networkConfigurationsByChainId`),
     );
     return false;
   }
@@ -222,18 +221,14 @@ function isValidNetworkControllerState(value: unknown): value is {
     )
   ) {
     captureException(
-      new Error(
-        `Migration ${version}: Invalid networkConfigurationsByChainId`,
-      ),
+      new Error(`Migration ${version}: Invalid networkConfigurationsByChainId`),
     );
     return false;
   }
 
   if (!hasProperty(value, 'selectedNetworkClientId')) {
     captureException(
-      new Error(
-        `Migration ${version}: Missing selectedNetworkClientId`,
-      ),
+      new Error(`Migration ${version}: Missing selectedNetworkClientId`),
     );
     return false;
   }
@@ -261,7 +256,8 @@ function isValidNetworkConfiguration(
     hasProperty(object, 'rpcEndpoints') &&
     Array.isArray(object.rpcEndpoints) &&
     object.rpcEndpoints.every(
-      (ep) => isObject(ep) && hasProperty(ep, 'url') && typeof ep.url === 'string',
+      (ep) =>
+        isObject(ep) && hasProperty(ep, 'url') && typeof ep.url === 'string',
     ) &&
     hasProperty(object, 'defaultRpcEndpointIndex') &&
     typeof object.defaultRpcEndpointIndex === 'number'

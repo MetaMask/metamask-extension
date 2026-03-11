@@ -2,10 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import nock from 'nock';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { RpcEndpointType } from '@metamask/network-controller';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,

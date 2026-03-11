@@ -7,12 +7,12 @@ import {
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
+import * as URI from 'uri-js';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
 } from '../../../../../shared/constants/metametrics';
-import * as URI from 'uri-js';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
