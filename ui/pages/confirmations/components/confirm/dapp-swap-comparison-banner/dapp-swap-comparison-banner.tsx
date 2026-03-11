@@ -127,7 +127,6 @@ const DappSwapComparisonInner = ({
     captureDappSwapComparisonDisplayProperties,
     setQuotedSwapDisplayedInInfo,
     setSelectedSwapType,
-    selectedQuote,
   ]);
 
   const onTabClick = useCallback(

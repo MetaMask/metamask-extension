@@ -16,13 +16,13 @@ const useSetConfirmationAlerts = () => {
 
   useEffect(() => {
     dispatch(updateAlerts(ownerId, alerts));
-  }, [alerts, ownerId]);
+  }, [alerts, dispatch, ownerId]);
 
   useEffect(() => {
     return () => {
       dispatch(clearAlerts(ownerId));
     };
-  }, [ownerId]);
+  }, [dispatch, ownerId]);
 };
 
 export default useSetConfirmationAlerts;

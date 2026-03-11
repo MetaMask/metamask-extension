@@ -70,7 +70,7 @@ export const AdvancedGasPriceModal = ({
       }),
     );
     handleCloseModals();
-  }, [transactionMeta.id, gasParams, handleCloseModals]);
+  }, [dispatch, transactionMeta.id, gasParams, handleCloseModals]);
 
   const navigateToEstimatesModal = useCallback(() => {
     setActiveModal(GasModalType.EstimatesModal);

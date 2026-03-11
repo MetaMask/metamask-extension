@@ -71,7 +71,7 @@ const CrossChainSwap = () => {
     dispatch(
       trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
     );
-  }, []);
+  }, [dispatch]);
 
   // Needed for refreshing gas estimates (only for EVM chains)
   useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);

@@ -126,7 +126,6 @@ export default {
  * No name has been saved for the value and type.
  */
 export const NoSavedName = {
-  name: 'No Saved Name',
   args: {
     value: ADDRESS_MOCK,
     type: NameType.ETHEREUM_ADDRESS,
@@ -139,7 +138,6 @@ export const NoSavedName = {
  * The component will still display a modal when clicked to edit the name.
  */
 export const SavedNameStory = {
-  name: 'Saved Name',
   args: {
     value: ADDRESS_MOCK,
     type: NameType.ETHEREUM_ADDRESS,
@@ -157,7 +155,6 @@ export const SavedNameStory = {
  * The component will still display a modal when clicked to edit the name.
  */
 export const DefaultTokenNameStory = {
-  name: 'Default ERC-20 Token Name',
   args: {
     value: ADDRESS_MOCK,
     type: NameType.ETHEREUM_ADDRESS,
@@ -185,7 +182,6 @@ export const DefaultTokenNameStory = {
  * The component will still display a modal when clicked to edit the name.
  */
 export const DefaultWatchedNFTNameStory = {
-  name: 'Default Watched NFT Name',
   args: {
     value: ADDRESS_MOCK,
     type: NameType.ETHEREUM_ADDRESS,
@@ -210,7 +206,6 @@ export const DefaultWatchedNFTNameStory = {
  * The component will still display a modal when clicked to edit the name.
  */
 export const DefaultNFTNameStory = {
-  name: 'Default NFT Name',
   args: {
     value: ADDRESS_NFT_MOCK,
     type: NameType.ETHEREUM_ADDRESS,

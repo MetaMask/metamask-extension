@@ -93,7 +93,7 @@ export const useExternalAccountResolution = ({
       dispatch(initializeDomainSlice());
       dispatch(lookupDomainName(validEnsName));
     }
-  }, [validEnsName]);
+  }, [dispatch, validEnsName]);
 
   const resolvedAddress =
     validAddress ?? domainResolutionsFromStore?.[0]?.resolvedAddress;

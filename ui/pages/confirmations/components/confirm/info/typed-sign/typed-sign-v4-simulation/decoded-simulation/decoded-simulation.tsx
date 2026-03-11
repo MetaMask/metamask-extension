@@ -174,6 +174,7 @@ const DecodedSimulation: React.FC<object> = () => {
     return Object.entries(stateChangesGrouped).flatMap(([_, changeList]) =>
       changeList.map((change: DecodingDataStateChange, index: number) => (
         <StateChangeRow
+          key={`${change.changeType}-${change.contractAddress ?? 'native'}-${change.tokenID ?? 'none'}-${index}`}
           stateChangeList={decodingData?.stateChanges ?? []}
           stateChange={change}
           chainId={chainId}
@@ -181,7 +182,7 @@ const DecodedSimulation: React.FC<object> = () => {
         />
       )),
     );
-  }, [decodingData?.stateChanges]);
+  }, [chainId, decodingData?.stateChanges]);
 
   return (
     <StaticSimulation
