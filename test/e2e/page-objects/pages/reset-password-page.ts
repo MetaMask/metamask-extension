@@ -22,7 +22,7 @@ class ResetPasswordPage {
     this.confirmPasswordInput = '[data-testid="create-password-confirm-input"]';
     this.restoreButton = '[data-testid="create-password-submit"]';
     this.srpWordInputContinueButton = '[data-testid="import-srp-confirm"]';
-    this.createPasswordTermsCheckbox = '[data-testid="create-password-terms"]';
+    this.createPasswordTermsCheckbox = 'label[for="create-password-terms"]';
   }
 
   async checkPageIsLoaded(): Promise<void> {

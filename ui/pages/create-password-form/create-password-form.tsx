@@ -13,7 +13,6 @@ import {
   Checkbox,
   BoxFlexDirection,
   BoxJustifyContent,
-  BoxAlignItems,
   BoxBackgroundColor,
   IconColor,
 } from '@metamask/design-system-react';
@@ -94,7 +93,7 @@ const CreatePasswordForm = ({
     >
       <form onSubmit={handleCreatePassword}>
         <Box>
-          <Box justifyContent={BoxJustifyContent.Start} className="mb-4 w-full">
+          <Box className="mb-4 w-full">
             <ButtonIcon
               iconName={IconName.ArrowLeft}
               color={loading ? IconColor.IconMuted : IconColor.IconDefault}
@@ -106,7 +105,7 @@ const CreatePasswordForm = ({
               disabled={loading}
             />
           </Box>
-          <Box justifyContent={BoxJustifyContent.Start} className="mb-4 w-full">
+          <Box className="mb-4 w-full">
             <Text variant={TextVariant.HeadingLg}>{t('createPassword')}</Text>
             {isSocialLoginFlow ? (
               <Text
@@ -139,15 +138,13 @@ const CreatePasswordForm = ({
           />
           <Box
             className="create-password__terms-container rounded-lg"
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Between}
             marginTop={6}
             backgroundColor={BoxBackgroundColor.BackgroundMuted}
             padding={3}
           >
             <Checkbox
               id="create-password-terms"
-              inputProps={{ 'data-testid': 'create-password-terms' }}
+              data-testid="create-password-terms"
               className="items-start"
               isSelected={termsChecked}
               isDisabled={loading}

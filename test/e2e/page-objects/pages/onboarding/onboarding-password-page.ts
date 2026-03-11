@@ -11,7 +11,7 @@ class OnboardingPasswordPage {
   private readonly confirmPasswordInput =
     '[data-testid="create-password-confirm-input"]';
 
-  private readonly passwordTerms = '[data-testid="create-password-terms"]';
+  private readonly passwordTerms = 'label[for="create-password-terms"]';
 
   private readonly createPasswordMessage = {
     text: 'MetaMask password',
