@@ -12,13 +12,13 @@ class OnboardingMetricsPage {
     '[data-testid="metametrics-checkbox"]';
 
   private readonly dataCollectionForMarketingCheckedState =
-    '.mm-checkbox__input--checked#metametrics-datacollection-opt-in';
+    'input[type="checkbox"]#metametrics-datacollection-opt-in:checked';
 
   private readonly dataParticipateInMetaMetricsCheckedState =
-    '.mm-checkbox__input--checked#metametrics-opt-in';
+    'input[type="checkbox"]#metametrics-opt-in:checked';
 
   private readonly dataParticipateInMetaMetricsUncheckedState =
-    '.mm-checkbox__input#metametrics-opt-in';
+    'input[type="checkbox"]#metametrics-opt-in:not(:checked)';
 
   private readonly metametricsMessage = {
     text: 'Help improve MetaMask',
