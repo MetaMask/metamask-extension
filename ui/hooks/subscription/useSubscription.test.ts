@@ -508,7 +508,9 @@ describe('useHandleSubscriptionSupportAction', () => {
       srpSessionData: {
         someKey: {
           profile: {
+            identifierId: 'test-identifier-id',
             profileId: 'test-profile-id',
+            metaMetricsId: 'test-metametrics-id',
           },
         },
       },
@@ -541,20 +543,25 @@ describe('useHandleSubscriptionSupportAction', () => {
   });
 
   it('includes shield customer ID when available', () => {
-    state.metamask = {
-      ...state.metamask,
-      customerId: 'test-shield-customer-id',
-      subscriptions: [
-        {
-          customerId: 'test-shield-customer-id',
-          status: 'active',
-        },
-      ],
+    const testState = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        // @ts-expect-error customerId exists on metamask state but may not be in mock type
+        customerId: 'test-shield-customer-id',
+        // @ts-expect-error subscriptions exists on metamask state but may not be in mock type
+        subscriptions: [
+          {
+            customerId: 'test-shield-customer-id',
+            status: 'active',
+          },
+        ],
+      },
     };
 
     const { result } = renderHookWithProvider(
       () => useHandleSubscriptionSupportAction(),
-      state,
+      testState,
     );
 
     act(() => {
@@ -568,7 +575,7 @@ describe('useHandleSubscriptionSupportAction', () => {
   it('opens support link without optional params when not available', () => {
     state.metamask = {
       ...state.metamask,
-      metaMetricsId: undefined,
+      metaMetricsId: null,
       srpSessionData: undefined,
     };
 
