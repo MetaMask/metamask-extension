@@ -205,11 +205,13 @@ export function buildTableRows(entries: BenchmarkEntry[]): string[] {
     }
 
     const totalRows = timerMetrics.length + cwvRows.length;
+    let nameCellEmitted = false;
     for (let i = 0; i < timerMetrics.length; i++) {
       const metric = timerMetrics[i];
       let row = '';
       if (i === 0) {
         row += `<td rowspan="${totalRows}">${startCase(benchmarkName)}</td>`;
+        nameCellEmitted = true;
       }
       row += `<td>${metric}</td>`;
       row += `<td align="right">${Math.round(mean[metric])}</td>`;
@@ -221,8 +223,14 @@ export function buildTableRows(entries: BenchmarkEntry[]): string[] {
       tableRows.push(`<tr>${row}</tr>`);
     }
 
-    for (const { label, unit, stats } of cwvRows) {
-      let row = `<td><em>${label}</em></td>`;
+    for (let j = 0; j < cwvRows.length; j++) {
+      const { label, unit, stats } = cwvRows[j];
+      let row = '';
+      if (!nameCellEmitted && j === 0) {
+        row += `<td rowspan="${totalRows}">${startCase(benchmarkName)}</td>`;
+        nameCellEmitted = true;
+      }
+      row += `<td><em>${label}</em></td>`;
       row += `<td align="right">${formatCwvValue(stats.mean, unit)}</td>`;
       row += `<td align="right">${formatCwvValue(stats.min, unit)}</td>`;
       row += `<td align="right">${formatCwvValue(stats.max, unit)}</td>`;
