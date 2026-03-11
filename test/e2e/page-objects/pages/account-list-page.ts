@@ -844,7 +844,7 @@ class AccountListPage {
         text: wallet,
       });
       await this.driver.findNestedElement(walletHeader, {
-        xpath: `../following-sibling::*//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//p[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+        xpath: `../following-sibling::*//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
       });
     } else {
       // Single wallet (no wallet header rendered): find the account cell directly.
