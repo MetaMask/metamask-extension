@@ -14,12 +14,16 @@ import {
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversionToastStatus } from '../../../hooks/musd/useMusdConversionToastStatus';
+import { useMusdConversionConfirmTrace } from '../../../hooks/musd/useMusdConversionConfirmTrace';
 import { Toast } from '../../multichain/toast';
 
 export function MusdConversionToast() {
   const t = useI18nContext();
   const { toastState, sourceTokenSymbol, dismissToast } =
     useMusdConversionToastStatus();
+
+  // Track conversion confirmation time via Sentry trace
+  useMusdConversionConfirmTrace();
 
   const autoHideDelay = 5 * SECOND;
 
