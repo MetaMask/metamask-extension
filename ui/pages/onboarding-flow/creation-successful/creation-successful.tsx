@@ -310,7 +310,7 @@ export default function CreationSuccessful() {
         : MetaMetricsEventAccountType.Imported;
       const accountType =
         isSocialLoginFlow && socialLoginType
-          ? `${baseAccountType}_${String(socialLoginType).toLowerCase()}`
+          ? `${baseAccountType}_${socialLoginType}`
           : baseAccountType;
 
       trackEvent(

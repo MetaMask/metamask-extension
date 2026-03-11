@@ -31,6 +31,7 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt In',
             properties: {
               category: 'Onboarding',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               account_type: 'metamask',
             },
           },
@@ -50,6 +51,7 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt Out',
             properties: {
               category: 'Onboarding',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               account_type: 'metamask',
             },
           },
