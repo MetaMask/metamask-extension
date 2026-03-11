@@ -136,12 +136,12 @@ export const fetchErc20DecimalsOrThrow = async (
   address: Hex | string,
   chainId?: Hex | string,
 ): Promise<number> => {
-  const result = (await getTokenStandardAndDetailsByChain(
+  const result = await getTokenStandardAndDetailsByChain(
     address,
     undefined,
     undefined,
     chainId,
-  )) as TokenDetailsERC20 | undefined | null;
+  );
 
   if (!result) {
     throw new Error(
