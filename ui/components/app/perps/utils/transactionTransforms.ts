@@ -8,6 +8,12 @@
  */
 
 import { BigNumber } from 'bignumber.js';
+import type {
+  Funding,
+  Order,
+  OrderFill,
+  UserHistoryItem,
+} from '@metamask/perps-controller';
 import {
   FillType,
   PerpsOrderTransactionStatus,
@@ -15,12 +21,6 @@ import {
   type PerpsTransaction,
 } from '../types/transactionHistory';
 import { getDisplaySymbol } from '../utils';
-import type {
-  Funding,
-  Order,
-  OrderFill,
-  UserHistoryItem,
-} from '@metamask/perps-controller';
 
 /**
  * Determines the close direction category for aggregation purposes.
