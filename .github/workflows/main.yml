@@ -671,6 +671,9 @@ jobs:
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
+      E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+      E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
 
   trigger-regression-validation:
     name: Trigger Regression Validation
