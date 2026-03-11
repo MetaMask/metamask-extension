@@ -1,9 +1,9 @@
-import { By } from 'selenium-webdriver';
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Routing confirmations from Multiple Dapps and different networks', function () {
@@ -88,32 +88,23 @@ describe('Routing confirmations from Multiple Dapps and different networks', fun
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          await driver.waitForSelector(
-            By.xpath("//p[normalize-space(.)='1 of 5']"),
+          // NEW: Refactored to PO - TransactionConfirmation.checkPageNumbers
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageNumbers(1, 5);
+          // NEW: Refactored to PO - TransactionConfirmation.checkNetworkIsDisplayed
+          await transactionConfirmation.checkNetworkIsDisplayed(
+            'Localhost 8546',
           );
-
-          await driver.findElement({
-            css: 'p',
-            text: 'Localhost 8546',
-          });
-
-          await driver.clickElement(
-            '[data-testid="confirm-nav__next-confirmation"]',
+          // NEW: Refactored to PO - Confirmation.clickNextPage (via TransactionConfirmation)
+          await transactionConfirmation.clickNextPage();
+          // NEW: Refactored to PO - Confirmation.clickNextPage (via TransactionConfirmation)
+          await transactionConfirmation.clickNextPage();
+          // NEW: Refactored to PO - TransactionConfirmation.checkNetworkIsDisplayed
+          await transactionConfirmation.checkNetworkIsDisplayed(
+            'Localhost 8545',
           );
-          await driver.clickElement(
-            '[data-testid="confirm-nav__next-confirmation"]',
-          );
-
-          await driver.findElement({
-            css: 'p',
-            text: 'Localhost 8545',
-          });
-
-          // Reject All Transactions
-          await driver.clickElementAndWaitForWindowToClose({
-            text: 'Reject all',
-            tag: 'button',
-          });
+          // NEW: Refactored to PO - Confirmation.clickRejectAll (via TransactionConfirmation)
+          await transactionConfirmation.clickRejectAll();
         }
       },
     );
