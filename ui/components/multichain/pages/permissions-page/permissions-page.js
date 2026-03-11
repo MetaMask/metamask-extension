@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
@@ -120,10 +124,12 @@ const PermissionsPage = () => {
   }, [dispatch, mergedConnectionsList, subjects]);
 
   const handleConnectionClick = (connection) => {
-    const hostName = connection.origin;
-    const safeEncodedHost = encodeURIComponent(hostName);
-
-    navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
+    navigate({
+      pathname: REVIEW_PERMISSIONS,
+      search: createSearchParams({
+        origin: connection.origin,
+      }).toString(),
+    });
   };
 
   const renderConnectionsList = (connectionList) =>
