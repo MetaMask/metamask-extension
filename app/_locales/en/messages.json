@@ -2010,12 +2010,6 @@
   "customerSupport": {
     "message": "customer support"
   },
-  "customizeTransactionNonce": {
-    "message": "Customize transaction nonce"
-  },
-  "customizeTransactionNonceDescription": {
-    "message": "Set a custom nonce when confirming a transaction. Only change this if you know what you're doing."
-  },
   "customizeYourNotifications": {
     "message": "Customize your notifications"
   },
