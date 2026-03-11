@@ -973,6 +973,7 @@ function setupBundlerDefaults(
             './**/node_modules/@myx-trade',
             './**/node_modules/lodash-es',
             './**/node_modules/wretch',
+            './**/node_modules/crypto-es',
             // Ledger WebHID transport
             './**/node_modules/@ledgerhq/hw-transport-webhid',
             './**/node_modules/@ledgerhq/hw-transport',

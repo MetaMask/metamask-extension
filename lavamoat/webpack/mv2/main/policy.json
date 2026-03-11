@@ -2431,7 +2431,7 @@
       "packages": {
         "@ethersproject/bytes": true,
         "@ethersproject/providers": true,
-        "@metamask/ppom-validator>crypto-js": true,
+        "@metamask/perps-controller>@myx-trade/sdk>crypto-es": true,
         "@metamask/perps-controller>@myx-trade/sdk>dayjs": true,
         "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": true,
         "@metamask/perps-controller>@myx-trade/sdk>ethers": true,
@@ -4002,6 +4002,11 @@
         "crypto-browserify>public-encrypt": true,
         "crypto-browserify>randombytes": true,
         "crypto-browserify>randomfill": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>crypto-es": {
+      "packages": {
+        "@swc/helpers": true
       }
     },
     "@metamask/ppom-validator>crypto-js": {
