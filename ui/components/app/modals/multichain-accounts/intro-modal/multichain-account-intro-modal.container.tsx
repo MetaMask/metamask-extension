@@ -84,7 +84,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page
     window.open(SUPPORT_URL, '_blank', 'noopener,noreferrer');
-  }, []);
+  }, [SUPPORT_URL]);
 
   const handleClose = useCallback(async () => {
     // Prevent race condition if alignment is handling the close

@@ -29,7 +29,7 @@ export default function SimulationErrorMessage({
         ],
       },
     });
-  }, []);
+  }, [trackEvent]);
 
   return userAcknowledgedGasMissing === true ? (
     <BannerAlert severity={Severity.Danger}>

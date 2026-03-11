@@ -79,7 +79,16 @@ export default function AwaitingSignatures() {
         token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
       },
     });
-  }, []);
+  }, [
+    activeQuote?.quote?.destTokenAmount,
+    activeQuote?.quote?.srcTokenAmount,
+    fromToken?.symbol,
+    hardwareWalletType,
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    toToken?.symbol,
+    trackEvent,
+  ]);
 
   const isSwap =
     fromChain && !isCrossChain(fromChain.chainId, toChain?.chainId);

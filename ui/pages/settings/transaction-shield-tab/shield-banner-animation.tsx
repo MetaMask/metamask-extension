@@ -112,7 +112,7 @@ const ShieldBannerAnimation = ({
       isInitializedRef.current = true;
     }
     // it's intended to trigger the animation when the rive is loaded
-  }, [rive, isWasmReady, bufferLoading, buffer, cacheInputs]);
+  }, [buffer, bufferLoading, cacheInputs, isInactive, isWasmReady, rive]);
 
   // Watch for changes to isInactive and update the dark toggle
   useEffect(() => {
@@ -129,7 +129,7 @@ const ShieldBannerAnimation = ({
       start.fire();
     }
     // it's intended to trigger the animation when the isInactive changes
-  }, [isInactive]);
+  }, [isInactive, rive]);
 
   // Stop animation on unmount or when rive instance changes
   useEffect(() => {
@@ -140,7 +140,7 @@ const ShieldBannerAnimation = ({
       isInitializedRef.current = false;
     };
     // it's intended to stop the animation when the component unmounts
-  }, []);
+  }, [rive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (

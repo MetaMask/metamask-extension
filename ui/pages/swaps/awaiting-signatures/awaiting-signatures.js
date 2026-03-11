@@ -71,7 +71,20 @@ export default function AwaitingSignatures() {
         stx_user_opt_in: smartTransactionsOptInStatus,
       },
     });
-  }, []);
+  }, [
+    currentSmartTransactionsEnabled,
+    destinationTokenInfo?.symbol,
+    fetchParams?.balanceError,
+    fetchParams?.slippage,
+    fetchParams?.value,
+    hardwareWalletType,
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    smartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+    sourceTokenInfo?.symbol,
+    trackEvent,
+  ]);
 
   const headerText = needsTwoConfirmations
     ? t('swapTwoTransactions')

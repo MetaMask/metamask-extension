@@ -68,7 +68,7 @@ export default function FeeDetailsComponent({
         </div>
       );
     },
-    [txData],
+    [shouldShowFiat, txData],
   );
 
   const renderTotalDetailValue = useCallback(
@@ -94,7 +94,7 @@ export default function FeeDetailsComponent({
         </Box>
       );
     },
-    [txData],
+    [shouldShowFiat, txData],
   );
 
   const hasLayer1GasFee = layer1GasFee !== null;

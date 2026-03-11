@@ -181,7 +181,16 @@ const ShieldIconAnimation = ({
       isInitializedRef.current = true;
     }
     // it's intended to trigger the animation when the rive is loaded
-  }, [rive, isWasmReady, bufferLoading, buffer, cacheInputs]);
+  }, [
+    buffer,
+    bufferLoading,
+    cacheInputs,
+    isDisabled,
+    isWasmReady,
+    rive,
+    severity,
+    theme,
+  ]);
 
   // Watch for changes to severity and isDisabled after initialization
   useEffect(() => {
@@ -207,7 +216,7 @@ const ShieldIconAnimation = ({
       }
     }
     // it's intended to trigger the animation when the severity or isDisabled changes
-  }, [severity, isDisabled]);
+  }, [isDisabled, rive, severity]);
 
   // Watch for theme changes
   useEffect(() => {
@@ -221,7 +230,7 @@ const ShieldIconAnimation = ({
       dark.value = theme === ThemeType.dark;
     }
     // it's intended to trigger the animation when the theme changes
-  }, [theme]);
+  }, [rive, theme]);
 
   // Stop animation on unmount or when rive instance changes
   useEffect(() => {
@@ -232,7 +241,7 @@ const ShieldIconAnimation = ({
       isInitializedRef.current = false;
     };
     // it's intended to stop the animation when the component unmounts
-  }, []);
+  }, [rive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (

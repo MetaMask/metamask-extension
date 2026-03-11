@@ -334,18 +334,28 @@ const PrepareBridgePage = ({
       quoteParams,
       eventProperties,
     );
-  }, [quoteParams]);
+  }, [
+    dispatch,
+    fromAmountInCurrency.usd,
+    fromToken?.symbol,
+    quoteParams,
+    securityWarnings,
+    smartTransactionsEnabled,
+    toToken?.symbol,
+  ]);
 
   // Trace swap/bridge view loaded
   useEffect(() => {
+    const debouncedUpdateQuoteRequest =
+      debouncedUpdateQuoteRequestInController.current;
+
     endTrace({
       name: TraceName.SwapViewLoaded,
       timestamp: Date.now(),
     });
 
     return () => {
-      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
-      debouncedUpdateQuoteRequestInController.current.cancel();
+      debouncedUpdateQuoteRequest.cancel();
     };
   }, []);
 

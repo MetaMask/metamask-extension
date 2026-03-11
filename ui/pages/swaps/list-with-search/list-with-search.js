@@ -104,8 +104,11 @@ export default function ListWithSearch({
     }, 350);
   };
 
+  const handleSearchRef = useRef(handleSearch);
+  handleSearchRef.current = handleSearch;
+
   useEffect(() => {
-    handleSearch(searchQuery);
+    handleSearchRef.current(searchQuery);
   }, [searchQuery, itemsToSearch]);
 
   const handleOnClear = () => {

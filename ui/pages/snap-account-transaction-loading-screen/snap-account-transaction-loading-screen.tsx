@@ -32,7 +32,11 @@ const SnapAccountTransactionLoadingScreen = ({
         account_type: MetaMetricsEventAccountType.Snap,
       },
     });
-  }, []);
+  }, [
+    internalAccount?.metadata.snap?.id,
+    internalAccount?.metadata.snap?.name,
+    trackEvent,
+  ]);
 
   return <span>{t('loadingScreenSnapMessage')}</span>;
 };

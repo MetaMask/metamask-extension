@@ -50,7 +50,7 @@ const TokenListContainer = React.memo(
           },
         });
       },
-      [],
+      [onClickAsset, primaryCurrencyProperties.suffix, trackEvent],
     );
 
     return <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />;

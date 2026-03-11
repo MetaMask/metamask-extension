@@ -171,6 +171,10 @@ export default function CurrencyInput({
     isTokenPrimary,
     assetDecimals,
     isDisabled,
+    isInputUnchanged,
+    isMatchingUpstream,
+    setTokenDecimalValue,
+    tokenDecimalValue,
   ]);
 
   const renderSwapButton = () => {

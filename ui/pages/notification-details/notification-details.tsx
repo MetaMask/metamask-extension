@@ -56,7 +56,7 @@ function useEffectOnNotificationView(notificationData?: INotification) {
         setNotificationTimeout(notificationData.id);
       }
     };
-  }, []);
+  }, [markNotificationAsRead, notificationData, setNotificationTimeout]);
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

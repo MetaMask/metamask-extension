@@ -151,7 +151,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
     t,
   ]);
 
-  const checkEnvironment = async () => {
+  const checkEnvironment = useCallback(async () => {
     try {
       const { environmentReady } = await WebcamUtils.checkStatus();
       if (
@@ -164,13 +164,11 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
         global.platform.openExtensionInBrowser(currentRoute);
       }
     } catch (error) {
-      if (isMounted) {
-        setErrorData({ error });
-      }
+      setErrorData({ error });
     }
     // initial attempt is required to trigger permission prompt
     await initCamera();
-  };
+  }, [initCamera]);
 
   useEffect(() => {
     // Anything in here is fired on component mount.
@@ -178,8 +176,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
     (async () => {
       await checkEnvironment();
     })();
-    // only renders when component is mounted and unmounted
-  }, []);
+  }, [checkEnvironment]);
 
   useEffect(() => {
     (async () => {

@@ -37,8 +37,7 @@ const ApiErrorHandler = ({
       errorMessage: error?.message || 'Unknown error',
       location,
     });
-    // we only want to capture the event once when the component is mounted
-  }, []);
+  }, [captureShieldUnexpectedErrorEvent, error?.message, location]);
 
   return (
     <Box

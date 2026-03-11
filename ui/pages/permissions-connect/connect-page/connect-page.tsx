@@ -129,13 +129,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   activeTabOrigin,
   targetSubjectMetadata,
 }) => {
-  void activeTabOrigin;
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [activeTab, setActiveTab] = useState('accounts');
+  const effectiveOrigin = activeTabOrigin || request.metadata?.origin;
 
   const existingPermissions = useSelector((state) =>
-    getPermissions(state, request.metadata?.origin),
+    getPermissions(state, effectiveOrigin),
   );
 
   const existingCaip25CaveatValue = useMemo(
@@ -383,10 +383,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       });
     }
   }, [
+    defaultCaipAccountAddresses,
     userHasModifiedSelection,
     handleCaipAccountAddressesSelected,
     selectedCaipAccountAddresses,
-    JSON.stringify(defaultCaipAccountAddresses),
   ]);
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {

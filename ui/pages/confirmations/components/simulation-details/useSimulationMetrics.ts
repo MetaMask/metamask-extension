@@ -128,6 +128,7 @@ export function useSimulationMetrics({
   };
 
   const params = { properties, sensitiveProperties };
+  const serializedParams = JSON.stringify(params);
 
   const shouldSkipMetrics =
     !enableMetrics ||
@@ -141,12 +142,17 @@ export function useSimulationMetrics({
       return;
     }
 
-    updateTransactionEventFragment(params, transactionId);
+    const parsedParams = JSON.parse(serializedParams) as {
+      properties: typeof properties;
+      sensitiveProperties: typeof sensitiveProperties;
+    };
+
+    updateTransactionEventFragment(parsedParams, transactionId);
   }, [
     shouldSkipMetrics,
+    serializedParams,
     updateTransactionEventFragment,
     transactionId,
-    JSON.stringify(params),
   ]);
 }
 

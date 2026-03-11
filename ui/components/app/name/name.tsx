@@ -95,8 +95,7 @@ const Name = memo(
           has_petname: Boolean(name?.length),
         },
       });
-      // using `[]` as we only want to call `trackEvent` on the initial render
-    }, []);
+    }, [name?.length, trackEvent, type]);
 
     const handleClick = useCallback(() => {
       if (isAccount || disableNameClick) {

@@ -18,6 +18,10 @@ export default function useProcessNewDecimalValue(
 ) {
   const tokenToFiatConversionRateToString =
     tokenToFiatConversionRate?.toString();
+  const tokenToFiatConversionRateNumeric =
+    tokenToFiatConversionRateToString !== undefined
+      ? new Numeric(tokenToFiatConversionRateToString, 10)
+      : undefined;
 
   return useCallback(
     (newDecimalValue: string, isTokenPrimaryOverride?: boolean) => {
@@ -42,15 +46,17 @@ export default function useProcessNewDecimalValue(
       const numericDecimalValue = new Numeric(newDecimalValue, 10);
 
       if (isTokenPrimaryOverride ?? isTokenPrimary) {
-        newFiatDecimalValue = tokenToFiatConversionRate
-          ? numericDecimalValue.times(tokenToFiatConversionRate).toFixed(2)
+        newFiatDecimalValue = tokenToFiatConversionRateNumeric
+          ? numericDecimalValue
+              .times(tokenToFiatConversionRateNumeric)
+              .toFixed(2)
           : undefined;
         newTokenDecimalValue = truncateToDecimals(numericDecimalValue);
       } else {
         newFiatDecimalValue = numericDecimalValue.toFixed(2);
-        newTokenDecimalValue = tokenToFiatConversionRate
+        newTokenDecimalValue = tokenToFiatConversionRateNumeric
           ? truncateToDecimals(
-              numericDecimalValue.divide(tokenToFiatConversionRate),
+              numericDecimalValue.divide(tokenToFiatConversionRateNumeric),
               MAX_DECIMALS_TOKEN_SECONDARY,
             )
           : undefined;
@@ -58,7 +64,6 @@ export default function useProcessNewDecimalValue(
 
       return { newFiatDecimalValue, newTokenDecimalValue };
     },
-    // `tokenToFiatConversionRate` intentionally excluded to ensure that re-renders are only triggered when conversion rate value actually changes.
     [tokenToFiatConversionRateToString, isTokenPrimary, assetDecimals],
   );
 }
