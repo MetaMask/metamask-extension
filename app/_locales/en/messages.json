@@ -2479,9 +2479,6 @@
   "editANickname": {
     "message": "Edit nickname"
   },
-  "editAccountName": {
-    "message": "Edit account name"
-  },
   "editAccounts": {
     "message": "Edit accounts"
   },
@@ -3245,9 +3242,6 @@
   },
   "hidden": {
     "message": "Hidden"
-  },
-  "hiddenAccounts": {
-    "message": "Hidden accounts"
   },
   "hide": {
     "message": "Hide"
@@ -6578,9 +6572,6 @@
   },
   "search": {
     "message": "Search"
-  },
-  "searchAccounts": {
-    "message": "Search accounts"
   },
   "searchAnAcccountOrContact": {
     "message": "Search an account or contact"

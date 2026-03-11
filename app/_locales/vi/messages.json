@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Chỉnh sửa biệt danh"
   },
-  "editAccountName": {
-    "message": "Chỉnh sửa tên tài khoản"
-  },
   "editAccounts": {
     "message": "Chỉnh sửa tài khoản"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Đã ẩn"
-  },
-  "hiddenAccounts": {
-    "message": "Tài khoản ẩn"
   },
   "hide": {
     "message": "Ẩn"
@@ -6259,9 +6253,6 @@
   },
   "search": {
     "message": "Tìm kiếm"
-  },
-  "searchAccounts": {
-    "message": "Tìm kiếm tài khoản"
   },
   "searchAnAcccountOrContact": {
     "message": "Tìm kiếm tài khoản hoặc liên hệ"

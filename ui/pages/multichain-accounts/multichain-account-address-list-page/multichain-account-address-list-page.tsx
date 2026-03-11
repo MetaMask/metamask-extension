@@ -27,6 +27,7 @@ import { getMultichainAccountGroupById } from '../../../selectors/multichain-acc
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { transitionBack } from '../../../components/ui/transition';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -97,6 +98,10 @@ export const MultichainAccountAddressListPage = ({
     endTrace({ name: TraceName.ShowAccountAddressList });
   }, []);
 
+  const handleBack = useCallback(() => {
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
+  }, [navigate]);
+
   return (
     <Page>
       <Header
@@ -108,7 +113,7 @@ export const MultichainAccountAddressListPage = ({
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
+            onClick={handleBack}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }
