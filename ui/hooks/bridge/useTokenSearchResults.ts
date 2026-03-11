@@ -128,6 +128,9 @@ export const useTokenSearchResults = ({
   }, [searchQuery, assetsToInclude]);
 
   useEffect(() => {
+    if (!jwt) {
+      return;
+    }
     // Reset state on search query change
     abortControllerRef.current.abort('Search query changed');
     setSearchResultsWithBalance([]);

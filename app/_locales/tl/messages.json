@@ -1060,9 +1060,6 @@
   "bridgePriceImpact": {
     "message": "Epekto ng presyo"
   },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Sinasalamin ng epekto ng presyo kung paanong naapektuhan ng iyong swap ang presyong merkado. Kung wala kang sapat para sa gas, gagamitin ang ilan sa iyong token para sa pagbabayad, na magpapataas ng price impact. Hindi ang MetaMask ang nagtatakda kumokontrol nito."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Epekto ng presyo"
   },
@@ -2368,9 +2365,6 @@
   "editANickname": {
     "message": "I-edit ang palayaw"
   },
-  "editAccountName": {
-    "message": "I-edit ang pangalan ng account"
-  },
   "editAccounts": {
     "message": "I-edit ang mga account"
   },
@@ -3131,9 +3125,6 @@
   },
   "hidden": {
     "message": "Nakatago"
-  },
-  "hiddenAccounts": {
-    "message": "Nakatagong mga account"
   },
   "hide": {
     "message": "Itago"
@@ -3999,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Palitan ng mUSD"
+    "message": "I-convert ang $1 sa mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Palitan ng mUSD"
+    "message": "I-convert ang $1 sa mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
@@ -5271,12 +5264,6 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Tuklasin ang crypto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Tuklasin ang mga stock at commodity"
-  },
   "perpsFees": {
     "message": "Mga Bayarin"
   },
@@ -5396,9 +5383,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
-  },
-  "perpsOrderAmount": {
-    "message": "Halaga ng Order"
   },
   "perpsOrders": {
     "message": "Mga Order"
@@ -5546,12 +5530,6 @@
   },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
-  },
-  "perpsYourOrders": {
-    "message": "Ang mga order mo"
-  },
-  "perpsYourPositions": {
-    "message": "Mga position mo"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -5895,9 +5873,6 @@
   },
   "removeAccount": {
     "message": "Alisin ang account"
-  },
-  "removeAccountDescription": {
-    "message": "Aalisin ang account na ito sa wallet mo. Tiyakin na mayroon ka ng orihinal na Lihim na Parirala sa Pagbawi o pribadong key para sa in-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa muli ng mga account mula sa account drop-down. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Tiyaking mayroon kang Lihim na Parirala sa Pagbawi o pribadong key para sa account na ito bago alisin.",
@@ -6278,9 +6253,6 @@
   },
   "search": {
     "message": "Maghanap"
-  },
-  "searchAccounts": {
-    "message": "Maghanap ng mga account"
   },
   "searchAnAcccountOrContact": {
     "message": "Maghanap ng account o contact"

@@ -1307,9 +1307,6 @@
   "removeAccount": {
     "message": "Remover conta"
   },
-  "removeAccountDescription": {
-    "message": "Essa conta será removida da sua carteira. Antes de continuar, você precisa garantir que tem a Frase de Recuperação Secreta original ou chave privada para essa conta importada. Você pode importar ou criar contas novamente a partir do menu suspenso da conta. "
-  },
   "removeNFT": {
     "message": "Remover NFT"
   },
@@ -1355,9 +1352,6 @@
   },
   "search": {
     "message": "Buscar"
-  },
-  "searchAccounts": {
-    "message": "Buscar contas"
   },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"

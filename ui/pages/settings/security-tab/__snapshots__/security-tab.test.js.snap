@@ -124,7 +124,7 @@ exports[`Security Tab should match snapshot 1`] = `
               class="mm-box mm-box--min-width-0"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Secret Recovery Phrase backed up
               </p>
@@ -1039,7 +1039,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="autoDetectTokens"
+          data-testid="autodetect-tokens"
         >
           <label
             class="toggle-button toggle-button--on"
@@ -1172,7 +1172,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="displayNftMedia"
+          data-testid="display-nft-media"
         >
           <label
             class="toggle-button toggle-button--on"
@@ -1238,7 +1238,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="useNftDetection"
+          data-testid="use-nft-detection"
         >
           <label
             class="toggle-button toggle-button--on"
@@ -1383,7 +1383,7 @@ exports[`Security Tab should match snapshot 1`] = `
               class="settings-page__content-description"
             >
               <span>
-                We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
+                We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
               </span>
             </div>
           </div>

@@ -53,8 +53,8 @@ notes.txt
 .nyc_output
 
 # MetaMask configuration
-.metamaskrc
-.metamaskprodrc
+/.metamaskrc
+/.metamaskprodrc
 
 # Customized manifest configuration
 .manifest-overrides*.json
@@ -102,3 +102,6 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+
+# llm workflow playwright temp files
+temp-llm-workflow-*
