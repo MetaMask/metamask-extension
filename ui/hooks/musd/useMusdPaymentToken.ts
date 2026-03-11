@@ -10,7 +10,9 @@
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
@@ -59,6 +61,7 @@ export type UseMusdPaymentTokenResult = {
 export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { setPayToken } = useTransactionPayToken();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [isReplacing, setIsReplacing] = useState(false);
@@ -88,11 +91,16 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
         updateTransactionPaymentToken(params);
       },
 
-      rejectApproval: (id, error) => {
-        rejectPendingApproval(id, error);
+      rejectApproval: async (id) => {
+        const serializedError = serializeError(
+          providerErrors.userRejectedRequest(),
+        );
+        await (dispatch(
+          rejectPendingApproval(id, serializedError),
+        ) as unknown as Promise<void>);
       },
     }),
-    [],
+    [dispatch],
   );
 
   const onPaymentTokenChange = useCallback(
@@ -116,6 +124,7 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
         isReplacingRef.current = true;
         setIsReplacing(true);
 
+        let didNavigate = false;
         try {
           const newTransactionId =
             await replaceMusdConversionTransactionForPayToken(
@@ -125,8 +134,7 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
             );
 
           if (newTransactionId) {
-            // Navigate to the new transaction's confirmation screen
-            // Preserve any query params (like ?bypass_education=true)
+            didNavigate = true;
             const searchParams = location.search;
             navigate(
               `${CONFIRM_TRANSACTION_ROUTE}/${newTransactionId}${searchParams}`,
@@ -140,7 +148,9 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
           );
         } finally {
           isReplacingRef.current = false;
-          setIsReplacing(false);
+          if (!didNavigate) {
+            setIsReplacing(false);
+          }
         }
 
         return;

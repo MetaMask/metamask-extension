@@ -63,6 +63,23 @@ export function useTransactionCustomAmount({
     [requiredTokens],
   );
 
+  const syncedForTransactionId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (syncedForTransactionId.current === transactionId) {
+      return;
+    }
+    const targetAmountUsd = primaryRequiredToken?.amountUsd;
+    if (targetAmountUsd && targetAmountUsd !== '0') {
+      syncedForTransactionId.current = transactionId ?? null;
+      setAmountFiat(
+        new BigNumber(targetAmountUsd)
+          .round(2, BigNumber.ROUND_HALF_UP)
+          .toString(10),
+      );
+    }
+  }, [transactionId, primaryRequiredToken?.amountUsd]);
+
   const amountFiat = useMemo(() => {
     const targetAmountUsd = primaryRequiredToken?.amountUsd;
 

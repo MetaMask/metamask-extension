@@ -1,16 +1,33 @@
 import { renderHook, act } from '@testing-library/react-hooks';
+import { useDispatch } from 'react-redux';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { replaceMusdConversionTransactionForPayToken } from '../../components/app/musd/utils/transaction-utils';
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
+import { rejectPendingApproval } from '../../store/actions';
 import { useMusdPaymentToken } from './useMusdPaymentToken';
 
-// Mock dependencies
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: jest.fn(),
+}));
+
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(() => jest.fn()),
   useLocation: jest.fn(() => ({ search: '' })),
+}));
+
+jest.mock('@metamask/rpc-errors', () => ({
+  providerErrors: {
+    userRejectedRequest: jest.fn(() => ({
+      code: 4001,
+      message: 'User rejected the request.',
+    })),
+  },
+  serializeError: jest.fn((err) => ({ ...err, serialized: true })),
 }));
 
 jest.mock('../../pages/confirmations/context/confirm', () => ({
@@ -35,20 +52,25 @@ jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
   updateTransactionPaymentToken: jest.fn(),
 }));
 
+const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
 const mockUseConfirmContext = useConfirmContext as jest.Mock;
 const mockUseTransactionPayToken = useTransactionPayToken as jest.Mock;
 const mockReplaceTransaction =
   replaceMusdConversionTransactionForPayToken as jest.Mock;
+const mockRejectPendingApproval = rejectPendingApproval as jest.Mock;
+const mockSerializeError = serializeError as jest.Mock;
+const mockProviderErrors = providerErrors as jest.Mocked<typeof providerErrors>;
 const mockUseNavigate = useNavigate as jest.Mock;
 const mockUseLocation = useLocation as jest.Mock;
 
 describe('useMusdPaymentToken', () => {
+  const mockDispatch = jest.fn((x) => x);
   const mockSetPayToken = jest.fn();
   const mockNavigate = jest.fn();
 
   const mockTransactionMeta = {
     id: 'tx-123',
-    chainId: '0x1' as Hex, // Ethereum mainnet
+    chainId: '0x1' as Hex,
     type: TransactionType.musdConversion,
     txParams: {
       from: '0xabc123' as Hex,
@@ -59,6 +81,8 @@ describe('useMusdPaymentToken', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockUseDispatch.mockReturnValue(mockDispatch);
 
     mockUseConfirmContext.mockReturnValue({
       currentConfirmation: mockTransactionMeta,
@@ -74,12 +98,12 @@ describe('useMusdPaymentToken', () => {
   });
 
   describe('same-chain token selection', () => {
-    it('should call setPayToken directly when token is on the same chain', async () => {
+    it('calls setPayToken directly when token is on the same chain', async () => {
       const { result } = renderHook(() => useMusdPaymentToken());
 
       const sameChainToken = {
         address: '0xnewtoken' as Hex,
-        chainId: '0x1' as Hex, // Same as transaction chain
+        chainId: '0x1' as Hex,
       };
 
       await act(async () => {
@@ -91,12 +115,11 @@ describe('useMusdPaymentToken', () => {
       expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it('should handle case-insensitive chain comparison', async () => {
-      // Transaction is on 0x1, token reports 0X1 (uppercase X)
+    it('handles case-insensitive chain comparison', async () => {
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: {
           ...mockTransactionMeta,
-          chainId: '0xE708' as Hex, // Linea with uppercase
+          chainId: '0xE708' as Hex,
         },
       });
 
@@ -104,38 +127,35 @@ describe('useMusdPaymentToken', () => {
 
       const sameChainToken = {
         address: '0xnewtoken' as Hex,
-        chainId: '0xe708' as Hex, // Linea with lowercase
+        chainId: '0xe708' as Hex,
       };
 
       await act(async () => {
         await result.current.onPaymentTokenChange(sameChainToken);
       });
 
-      // Should treat as same chain (case-insensitive)
       expect(mockSetPayToken).toHaveBeenCalledWith(sameChainToken);
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
   });
 
   describe('cross-chain token selection', () => {
-    it('should call replaceMusdConversionTransactionForPayToken when chains differ', async () => {
+    it('calls replaceMusdConversionTransactionForPayToken when chains differ', async () => {
       mockReplaceTransaction.mockResolvedValue('new-tx-456');
 
       const { result } = renderHook(() => useMusdPaymentToken());
 
       const crossChainToken = {
         address: '0xlineaToken' as Hex,
-        chainId: '0xe708' as Hex, // Linea - different from transaction's 0x1
+        chainId: '0xe708' as Hex,
       };
 
       await act(async () => {
         await result.current.onPaymentTokenChange(crossChainToken);
       });
 
-      // Should NOT call setPayToken
       expect(mockSetPayToken).not.toHaveBeenCalled();
 
-      // Should call replacement function
       expect(mockReplaceTransaction).toHaveBeenCalledWith(
         mockTransactionMeta,
         crossChainToken,
@@ -148,7 +168,7 @@ describe('useMusdPaymentToken', () => {
       );
     });
 
-    it('should navigate to new transaction after successful replacement', async () => {
+    it('navigates to new transaction after successful replacement', async () => {
       const newTransactionId = 'new-tx-789';
       mockReplaceTransaction.mockResolvedValue(newTransactionId);
 
@@ -169,7 +189,7 @@ describe('useMusdPaymentToken', () => {
       );
     });
 
-    it('should preserve query params when navigating after replacement', async () => {
+    it('preserves query params when navigating after replacement', async () => {
       const newTransactionId = 'new-tx-789';
       mockReplaceTransaction.mockResolvedValue(newTransactionId);
       mockUseLocation.mockReturnValue({ search: '?bypass_education=true' });
@@ -192,8 +212,40 @@ describe('useMusdPaymentToken', () => {
     });
   });
 
+  describe('rejectApproval callback', () => {
+    it('serializes the error and awaits dispatch', async () => {
+      const mockThunk = jest.fn();
+      mockRejectPendingApproval.mockReturnValue(mockThunk);
+      mockDispatch.mockResolvedValue(undefined);
+
+      mockReplaceTransaction.mockImplementation(
+        async (_tx, _token, callbacks) => {
+          await callbacks.rejectApproval?.('tx-123');
+          return 'new-tx-id';
+        },
+      );
+
+      const { result } = renderHook(() => useMusdPaymentToken());
+
+      await act(async () => {
+        await result.current.onPaymentTokenChange({
+          address: '0xtoken' as Hex,
+          chainId: '0xe708' as Hex,
+        });
+      });
+
+      expect(mockProviderErrors.userRejectedRequest).toHaveBeenCalled();
+      expect(mockSerializeError).toHaveBeenCalled();
+      expect(mockRejectPendingApproval).toHaveBeenCalledWith(
+        'tx-123',
+        expect.objectContaining({ serialized: true }),
+      );
+      expect(mockDispatch).toHaveBeenCalledWith(mockThunk);
+    });
+  });
+
   describe('error handling', () => {
-    it('should log error and not navigate when replacement fails', async () => {
+    it('logs error and does not navigate when replacement fails', async () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
@@ -219,7 +271,7 @@ describe('useMusdPaymentToken', () => {
       consoleSpy.mockRestore();
     });
 
-    it('should not navigate when replacement returns undefined', async () => {
+    it('does not navigate when replacement returns undefined', async () => {
       mockReplaceTransaction.mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useMusdPaymentToken());
@@ -238,8 +290,7 @@ describe('useMusdPaymentToken', () => {
   });
 
   describe('rapid token switching prevention', () => {
-    it('should prevent duplicate replacement attempts', async () => {
-      // Make replacement take some time
+    it('prevents duplicate replacement attempts', async () => {
       mockReplaceTransaction.mockImplementation(
         () =>
           new Promise((resolve) => setTimeout(() => resolve('new-tx'), 100)),
@@ -252,24 +303,20 @@ describe('useMusdPaymentToken', () => {
         chainId: '0xe708' as Hex,
       };
 
-      // Start first replacement
       const promise1 = act(async () => {
         await result.current.onPaymentTokenChange(crossChainToken);
       });
 
-      // Immediately try second replacement (should be ignored)
       const promise2 = act(async () => {
         await result.current.onPaymentTokenChange(crossChainToken);
       });
 
       await Promise.all([promise1, promise2]);
 
-      // Should only have been called once
       expect(mockReplaceTransaction).toHaveBeenCalledTimes(1);
     });
 
-    it('should track isReplacing state during replacement', async () => {
-      // Use a wrapper object to avoid non-null assertion
+    it('tracks isReplacing state during replacement', async () => {
       const resolver: { resolve?: (value: string) => void } = {};
       mockReplaceTransaction.mockImplementation(
         () =>
@@ -287,17 +334,14 @@ describe('useMusdPaymentToken', () => {
         chainId: '0xe708' as Hex,
       };
 
-      // Start replacement
       let replacementPromise: Promise<void>;
       act(() => {
         replacementPromise =
           result.current.onPaymentTokenChange(crossChainToken);
       });
 
-      // isReplacing should be true during replacement
       expect(result.current.isReplacing).toBe(true);
 
-      // Complete replacement
       await act(async () => {
         if (resolver.resolve) {
           resolver.resolve('new-tx');
@@ -305,13 +349,28 @@ describe('useMusdPaymentToken', () => {
         await replacementPromise;
       });
 
-      // isReplacing should be false after completion
+      // isReplacing stays true after navigation (didNavigate flag skips setState)
+      expect(result.current.isReplacing).toBe(true);
+    });
+
+    it('resets isReplacing when replacement returns no transaction ID', async () => {
+      mockReplaceTransaction.mockResolvedValue(undefined);
+
+      const { result } = renderHook(() => useMusdPaymentToken());
+
+      await act(async () => {
+        await result.current.onPaymentTokenChange({
+          address: '0xlineaToken' as Hex,
+          chainId: '0xe708' as Hex,
+        });
+      });
+
       expect(result.current.isReplacing).toBe(false);
     });
   });
 
   describe('edge cases', () => {
-    it('should handle missing currentConfirmation gracefully', async () => {
+    it('calls setPayToken when currentConfirmation is null', async () => {
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: null,
       });
@@ -327,12 +386,11 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(token);
       });
 
-      // Should call setPayToken since we can't detect chain mismatch
       expect(mockSetPayToken).toHaveBeenCalledWith(token);
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
 
-    it('should handle missing chainId in transaction gracefully', async () => {
+    it('calls setPayToken when transaction chainId is undefined', async () => {
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: {
           ...mockTransactionMeta,
@@ -351,7 +409,6 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(token);
       });
 
-      // Should call setPayToken since we can't detect chain mismatch
       expect(mockSetPayToken).toHaveBeenCalledWith(token);
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
