@@ -2365,9 +2365,6 @@
   "editANickname": {
     "message": "Chỉnh sửa biệt danh"
   },
-  "editAccountName": {
-    "message": "Chỉnh sửa tên tài khoản"
-  },
   "editAccounts": {
     "message": "Chỉnh sửa tài khoản"
   },
@@ -3128,9 +3125,6 @@
   },
   "hidden": {
     "message": "Đã ẩn"
-  },
-  "hiddenAccounts": {
-    "message": "Tài khoản ẩn"
   },
   "hide": {
     "message": "Ẩn"
@@ -3996,10 +3990,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Chuyển đổi mUSD"
+    "message": "Chuyển đổi $1 sang mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Chuyển đổi mUSD"
+    "message": "Chuyển đổi $1 sang mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."
@@ -6257,9 +6253,6 @@
   },
   "search": {
     "message": "Tìm kiếm"
-  },
-  "searchAccounts": {
-    "message": "Tìm kiếm tài khoản"
   },
   "searchAnAcccountOrContact": {
     "message": "Tìm kiếm tài khoản hoặc liên hệ"
