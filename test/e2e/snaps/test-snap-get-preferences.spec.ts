@@ -16,6 +16,8 @@ describe('Test Snap get preferences', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withPreferencesController({
+            openSeaEnabled: false,
+            useNftDetection: false,
             preferences: {
               privacyMode: true,
               showTestNetworks: true,
