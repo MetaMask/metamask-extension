@@ -316,7 +316,14 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [t, formatValue, formatValueAsRatePerSecond, getExpirationDate, permissionResponse.rules],
+    [
+      t,
+      formatValue,
+      formatValueAsRatePerSecond,
+      getExpirationDate,
+      permissionResponse.rules,
+      tokenMetadata,
+    ],
   );
 
   /**
