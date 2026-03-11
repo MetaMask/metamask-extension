@@ -3686,9 +3686,6 @@
   "lockTimeInvalid": {
     "message": "Ang lock time ay dapat na isang numero sa pagitan ng 0 at 10080"
   },
-  "logOut": {
-    "message": "Mag-log out"
-  },
   "loginErrorConnectButton": {
     "message": "Subukang muli"
   },

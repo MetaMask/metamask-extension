@@ -3686,9 +3686,6 @@
   "lockTimeInvalid": {
     "message": "Waktu kunci harus berupa angka antara 0 dan 10080"
   },
-  "logOut": {
-    "message": "Keluar"
-  },
   "loginErrorConnectButton": {
     "message": "Coba lagi"
   },

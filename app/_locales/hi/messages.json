@@ -3686,9 +3686,6 @@
   "lockTimeInvalid": {
     "message": "लॉक का समय 0 और 10080 के बीच की कोई संख्या होनी चाहिए"
   },
-  "logOut": {
-    "message": "लॉग आउट करें"
-  },
   "loginErrorConnectButton": {
     "message": "फिर से कोशिश करें"
   },

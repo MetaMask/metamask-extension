@@ -3686,9 +3686,6 @@
   "lockTimeInvalid": {
     "message": "Le temps de verrouillage doit être un nombre compris entre 0 et 10 080"
   },
-  "logOut": {
-    "message": "Déconnexion"
-  },
   "loginErrorConnectButton": {
     "message": "Réessayer"
   },
