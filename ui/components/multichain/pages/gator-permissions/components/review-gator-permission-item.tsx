@@ -229,11 +229,11 @@ export const ReviewGatorPermissionItem = ({
       const { symbol, decimals } = tokenMetadata;
 
       const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
-      if (!decimals) {
-        return `${formattedValueWithSymbol}/sec (raw units)`;
+      if (typeof decimals === 'number') {
+        return `${formattedValueWithSymbol}/sec`;
       }
 
-      return `${formattedValueWithSymbol}/sec`;
+      return `${formattedValueWithSymbol}/sec (raw units)`;
     },
     [tokenMetadata],
   );
@@ -247,11 +247,11 @@ export const ReviewGatorPermissionItem = ({
       const { symbol, decimals } = tokenMetadata;
 
       const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
-      if (decimals === undefined) {
-        return `${formattedValueWithSymbol} (raw units)`;
+      if (typeof decimals === 'number') {
+        return `${formattedValueWithSymbol}`;
       }
 
-      return `${formattedValueWithSymbol}`;
+      return `${formattedValueWithSymbol} (raw units)`;
     },
     [tokenMetadata],
   );
