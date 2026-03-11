@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray, parseCaipAccountId } from '@metamask/utils';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
@@ -94,11 +95,21 @@ export const DappConnectionControlBar: React.FC = () => {
     if (allPermittedAddresses.length === 0) {
       return undefined;
     }
-    const selectedAddr = selectedInternalAccount?.address?.toLowerCase();
-    const match = selectedAddr
-      ? allPermittedAddresses.find((a) => a.toLowerCase() === selectedAddr)
-      : undefined;
-    return match ?? allPermittedAddresses[0];
+    const selectedAddr = selectedInternalAccount?.address;
+    if (selectedAddr) {
+      const isEvm =
+        selectedInternalAccount?.type &&
+        isEvmAccountType(selectedInternalAccount.type);
+      const match = allPermittedAddresses.find((addr) =>
+        isEvm
+          ? addr.toLowerCase() === selectedAddr.toLowerCase()
+          : addr === selectedAddr,
+      );
+      if (match) {
+        return match;
+      }
+    }
+    return allPermittedAddresses[0];
   }, [allPermittedAddresses, selectedInternalAccount]);
 
   const connectedAccountByAddress = useSelector((state) =>
