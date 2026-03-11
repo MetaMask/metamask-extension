@@ -20,10 +20,10 @@ import type {
   PerpsAnalyticsProperties,
   PerpsTraceName,
   PerpsTraceValue,
-  VersionGatedFeatureFlag,
   InvalidateCacheParams,
 } from '@metamask/perps-controller';
 import { captureException } from '../../../../shared/lib/sentry';
+import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
 
 const debugLog = createProjectLogger('perps');
 
@@ -97,10 +97,7 @@ function createStreamManager(): PerpsStreamManager {
 
 function createFeatureFlags(): PerpsPlatformDependencies['featureFlags'] {
   return {
-    validateVersionGated: (_flag: VersionGatedFeatureFlag) => {
-      // TODO: Implement version-gated feature flag validation using browser.runtime
-      return true;
-    },
+    validateVersionGated: (flag) => validatedVersionGatedFeatureFlag(flag),
   };
 }
 
