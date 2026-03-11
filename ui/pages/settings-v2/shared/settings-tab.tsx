@@ -6,25 +6,23 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { SettingItemConfig } from '../types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Divider } from './divider';
 
 type SettingsTabProps = {
   items: SettingItemConfig[];
-  subHeaderKey?: string;
+  subHeader?: string;
 };
 
-export const SettingsTab = ({ items, subHeaderKey }: SettingsTabProps) => {
-  const t = useI18nContext();
+export const SettingsTab = ({ items, subHeader }: SettingsTabProps) => {
   return (
     <Box paddingHorizontal={4} paddingBottom={4}>
-      {subHeaderKey && (
+      {subHeader && (
         <Text
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
           className="py-2"
         >
-          {t(subHeaderKey)}
+          {subHeader}
         </Text>
       )}
       {items.map(({ id, component: Component, hasDividerBefore }) => (

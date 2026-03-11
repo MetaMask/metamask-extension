@@ -11,6 +11,7 @@ import {
   setUseSafeChainsListValidation,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IpfsGatewayItem } from './ipfs-gateway-item';
 
 const NetworkDetailsCheckToggleItem = createToggleItem({
@@ -100,11 +101,14 @@ const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
   },
 ];
 
-const ThirdPartyApisSubPage = () => (
-  <SettingsTab
-    subHeaderKey="thirdPartyApisDescription"
-    items={THIRD_PARTY_APIS_ITEMS}
-  />
-);
+const ThirdPartyApisSubPage = () => {
+  const t = useI18nContext();
+  return (
+    <SettingsTab
+      subHeader={t('thirdPartyApisDescription')}
+      items={THIRD_PARTY_APIS_ITEMS}
+    />
+  );
+};
 
 export default ThirdPartyApisSubPage;
