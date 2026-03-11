@@ -57,8 +57,11 @@ export const WalletDetailsPage = ({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const id = propsParams?.id || searchParams.get('id');
-  const walletId = decodeURIComponent(id as string) as AccountWalletId;
+  const walletId = (
+    propsParams?.id
+      ? decodeURIComponent(propsParams.id)
+      : searchParams.get('id')
+  ) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
   const { multichainAccounts, keyringId, isSRPBackedUp } =

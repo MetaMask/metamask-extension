@@ -1,7 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
 import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
@@ -62,12 +66,15 @@ export const MultichainAccountDetailsPage = () => {
   const { trackEvent } = useContext(MetaMetricsContext);
   const [searchParams] = useSearchParams();
 
-  const accountGroupId = searchParams.get('accountGroupId') as AccountGroupId;
+  const accountGroupId = (searchParams.get('accountGroupId') ??
+    '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
 
-  const walletId = extractWalletIdFromGroupId(accountGroupId);
+  const walletId = accountGroupId
+    ? extractWalletIdFromGroupId(accountGroupId)
+    : ('' as AccountWalletId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
   const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}?id=${encodeURIComponent(walletId)}`;

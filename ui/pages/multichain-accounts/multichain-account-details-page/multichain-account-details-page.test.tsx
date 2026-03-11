@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import configureStore from '../../../store/store';
@@ -7,6 +7,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
+  DEFAULT_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -33,11 +34,15 @@ jest.mock('../../../../shared/lib/trace', () => ({
 const mockUseNavigate = jest.fn();
 const mockUseSearchParams = jest.fn();
 
-const setSearchParams = (accountGroupId = DEFAULT_ACCOUNT_GROUP_ID) => {
-  mockUseSearchParams.mockReturnValue([
-    new URLSearchParams({ accountGroupId }),
-    jest.fn(),
-  ]);
+const setSearchParams = (
+  accountGroupId: string | null = DEFAULT_ACCOUNT_GROUP_ID,
+) => {
+  const searchParams = new URLSearchParams();
+  if (accountGroupId) {
+    searchParams.set('accountGroupId', accountGroupId);
+  }
+
+  mockUseSearchParams.mockReturnValue([searchParams, jest.fn()]);
 };
 
 jest.mock('react-router-dom', () => {
@@ -118,6 +123,16 @@ describe('MultichainAccountDetailsPage', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(
       `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}?id=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
     );
+  });
+
+  it('navigates to default route when accountGroupId is missing', async () => {
+    setSearchParams(null);
+
+    expect(() => renderComponent()).not.toThrow();
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
   });
 
   it('does not render remove account section for Entropy wallet type', () => {
