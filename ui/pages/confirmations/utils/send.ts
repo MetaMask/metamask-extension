@@ -315,3 +315,17 @@ export const addLeadingZeroIfNeeded = (value?: string) => {
   }
   return value;
 };
+
+export const normalizeAmount = (value?: string): string => {
+  if (!value) {
+    return '0';
+  }
+  const str = String(value);
+  if (str === '.') {
+    return '0';
+  }
+  if (str.endsWith('.')) {
+    return str.slice(0, -1);
+  }
+  return str;
+};
