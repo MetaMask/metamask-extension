@@ -2932,7 +2932,6 @@
     },
     "ui/pages/settings/networks-tab/networks-form/networks-form.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
-      "React: Missing key props in lists": 1,
       "React: State updates on unmounted components": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

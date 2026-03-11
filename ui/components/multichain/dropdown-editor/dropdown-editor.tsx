@@ -133,7 +133,7 @@ export const DropdownEditor = <Item,>({
 
         const tooltip = renderTooltip(item, true);
         return tooltip ? (
-          <Tooltip title={tooltip} position="bottom">
+          <Tooltip key={itemKey(item)} title={tooltip} position="bottom">
             {row}
           </Tooltip>
         ) : (
