@@ -89,7 +89,7 @@ function collectStats(compilation: Compilation): ReactCompilerStats {
     const buildMeta = module.buildMeta as Record<string, unknown> | undefined;
     const stored = buildMeta?.[REACT_COMPILER_STATUS_KEY];
 
-    if (stored === null) {
+    if (stored === null || stored === undefined) {
       return;
     }
 
