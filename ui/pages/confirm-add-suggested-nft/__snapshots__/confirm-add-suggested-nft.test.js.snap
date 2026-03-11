@@ -24,11 +24,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 class="box box--display-flex box--flex-direction-row box--align-items-center"
               >
                 <div
-                  class=""
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 >
                   <div
-                    class="identicon"
-                    style="height: 32px; width: 32px; border-radius: 16px;"
+                    class="flex [&>div]:!rounded-none"
                   >
                     <div
                       style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
@@ -239,11 +238,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               class="box box--display-flex box--flex-direction-row box--align-items-center"
             >
               <div
-                class=""
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
               >
                 <div
-                  class="identicon"
-                  style="height: 32px; width: 32px; border-radius: 16px;"
+                  class="flex [&>div]:!rounded-none"
                 >
                   <div
                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
