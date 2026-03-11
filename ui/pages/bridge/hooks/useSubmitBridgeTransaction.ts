@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
@@ -16,6 +16,7 @@ import {
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
   getWarningLabels,
+  type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
   useHardwareWalletActions,
@@ -72,7 +73,10 @@ export default function useSubmitBridgeTransaction() {
 
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
@@ -131,6 +135,7 @@ export default function useSubmitBridgeTransaction() {
           smartTransactionsEnabled,
           getQuotesReceivedProperties(
             quoteResponse,
+            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
             warnings,
             true,
             recommendedQuote,
