@@ -8315,17 +8315,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^10.4.0":
-  version: 10.4.0
-  resolution: "@metamask/snaps-sdk@npm:10.4.0"
+"@metamask/snaps-sdk@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/snaps-sdk@npm:11.0.0"
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.2.1"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.10.0"
     luxon: "npm:^3.5.0"
-  checksum: 10/215a73f41f5043ca9767241da83308bb25b3faae96521ed71a63a9d29078461bcf278a01799e014bb20b49e34d96a05ea1822648c9bcf81e92f22e8c9b6c0f94
+  checksum: 10/83dc24c9c583ca257874498ed2b124160c559afd56f043a6e0f617fc3edc4fcbd4b1ef15efb4a197a71a8a6dd2ab20b6da87463b4261928311d39eb29f64668a
   languageName: node
   linkType: hard
 
@@ -8360,38 +8360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "@metamask/snaps-utils@npm:12.1.0"
-  dependencies:
-    "@babel/core": "npm:^7.23.2"
-    "@babel/types": "npm:^7.23.0"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/permission-controller": "npm:^12.2.0"
-    "@metamask/rpc-errors": "npm:^7.0.3"
-    "@metamask/slip44": "npm:^4.4.0"
-    "@metamask/snaps-registry": "npm:^4.0.0"
-    "@metamask/snaps-sdk": "npm:^10.4.0"
-    "@metamask/superstruct": "npm:^3.2.1"
-    "@metamask/utils": "npm:^11.9.0"
-    "@scure/base": "npm:^1.1.1"
-    chalk: "npm:^4.1.2"
-    cron-parser: "npm:^4.5.0"
-    fast-deep-equal: "npm:^3.1.3"
-    fast-json-stable-stringify: "npm:^2.1.0"
-    fast-xml-parser: "npm:^5.3.4"
-    luxon: "npm:^3.5.0"
-    marked: "npm:^12.0.1"
-    rfdc: "npm:^1.3.0"
-    semver: "npm:^7.5.4"
-    ses: "npm:^1.14.0"
-    validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/f81a66a0f0d7710f18cfcebceacf2ec7ca9c468a4839b8cc15652cc046a15455c55a3fff846061ff7d1ecd4368c182566db4f73b3c8b4ed4b2a09adc57e2e711
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-utils@npm:^12.1.1":
+"@metamask/snaps-utils@npm:^12.1.0, @metamask/snaps-utils@npm:^12.1.1":
   version: 12.1.1
   resolution: "@metamask/snaps-utils@npm:12.1.1"
   dependencies:
@@ -41127,7 +41096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:1.14.0, ses@npm:^1.1.0, ses@npm:^1.14.0":
+"ses@npm:1.14.0":
   version: 1.14.0
   resolution: "ses@npm:1.14.0"
   dependencies:
@@ -41138,7 +41107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^1.15.0":
+"ses@npm:^1.1.0, ses@npm:^1.14.0, ses@npm:^1.15.0":
   version: 1.15.0
   resolution: "ses@npm:1.15.0"
   dependencies:
