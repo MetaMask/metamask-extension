@@ -6,10 +6,7 @@ import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
@@ -67,9 +64,8 @@ export async function withMultichainAccountsDesignEnabled(
       dappOptions,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      // Skip strict balance validation for hardware wallets
       if (accountType === AccountType.HardwareWallet) {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '0');
       } else {
         await loginWithBalanceValidation(
           driver,
