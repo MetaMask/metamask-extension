@@ -22,10 +22,10 @@ jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => ({ origin: 'https%3A//test.dapp' }),
+    useSearchParams: () => [new URLSearchParams('origin=https%3A%2F%2Ftest.dapp')],
     useLocation: () => ({
       pathname: '/test',
-      search: '',
+      search: '?origin=https%3A%2F%2Ftest.dapp',
       hash: '',
       state: null,
     }),
@@ -155,7 +155,8 @@ const render = (state = {}) => {
       origin: 'https://test.dapp',
     },
   });
-  return renderWithProvider(<MultichainReviewPermissions />, store);
+  const pathname = `/test?origin=${encodeURIComponent('https://test.dapp')}`;
+  return renderWithProvider(<MultichainReviewPermissions />, store, pathname);
 };
 
 describe('MultichainReviewPermissions', () => {
