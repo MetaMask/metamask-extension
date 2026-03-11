@@ -843,7 +843,7 @@
       "knownMethodData": {},
       "ledgerTransportType": "webhid",
       "manageInstitutionalWallets": false,
-      "openSeaEnabled": true,
+      "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
@@ -890,7 +890,7 @@
       "useExternalNameSources": true,
       "useExternalServices": true,
       "useMultiAccountBalanceChecker": true,
-      "useNftDetection": true,
+      "useNftDetection": false,
       "usePhishDetect": true,
       "useSafeChainsListValidation": true,
       "useTokenDetection": true,

@@ -114,6 +114,11 @@ class FixtureBuilderV2 {
     });
   }
 
+  withMetaVersion(version: number): this {
+    this.fixture.meta.version = version;
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -555,6 +560,9 @@ class FixtureBuilderV2 {
         },
       },
     }).withSnapController({
+      isReady: true,
+      snapStates: {},
+      unencryptedSnapStates: {},
       snaps: {
         'npm:@metamask/lifecycle-hooks-example-snap': {
           auxiliaryFiles: [],

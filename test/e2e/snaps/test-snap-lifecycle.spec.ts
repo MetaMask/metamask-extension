@@ -58,7 +58,9 @@ describe('Test Snap Lifecycle Hooks', function () {
         fixtures: new FixtureBuilderV2()
           .withSnapControllerOnStartLifecycleSnap()
           .withSnapsPrivacyWarningAlreadyShown()
+          .withMetaVersion(192)
           .build(),
+        testSpecificMock: mockLifecycleHooksSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
