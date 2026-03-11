@@ -19,6 +19,7 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 import { trace } from '../../../../shared/lib/trace';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
@@ -49,6 +50,16 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
+
+const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
+  TransactionType.swap,
+  TransactionType.swapApproval,
+  TransactionType.bridge,
+  TransactionType.bridgeApproval,
+  TransactionType.relayDeposit,
+  TransactionType.perpsRelayDeposit,
+  TransactionType.predictRelayDeposit,
+];
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -454,24 +465,7 @@ export function publishBatchHook({
   });
 }
 
-const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
-  TransactionType.swap,
-  TransactionType.swapApproval,
-  TransactionType.bridge,
-  TransactionType.bridgeApproval,
-];
-
-const RELAY_DEPOSIT_TYPES = [
-  TransactionType.relayDeposit,
-  TransactionType.perpsRelayDeposit,
-  TransactionType.predictRelayDeposit,
-];
-
 function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
-  if (hasRelayDepositType(transaction)) {
-    return false;
-  }
-
   if (
     transaction.origin === ORIGIN_METAMASK &&
     transaction.type === TransactionType.tokenMethodApprove
@@ -479,22 +473,8 @@ function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
     return false;
   }
 
-  return (
-    !transaction.type ||
-    !DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES.includes(transaction.type)
-  );
-}
-
-function hasRelayDepositType(transaction: TransactionMeta) {
-  const { nestedTransactions, type } = transaction;
-
-  if (RELAY_DEPOSIT_TYPES.includes(type as TransactionType)) {
-    return true;
-  }
-
-  return (
-    nestedTransactions?.some((tx) =>
-      RELAY_DEPOSIT_TYPES.includes(tx.type as TransactionType),
-    ) ?? false
+  return !hasTransactionType(
+    transaction,
+    DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES,
   );
 }
