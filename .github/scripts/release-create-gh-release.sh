@@ -41,10 +41,6 @@ echo "=== Release Creation ==="
 echo "Tag: ${tag}"
 echo "SHA: ${RELEASE_SHA}"
 
-git config user.email "metamaskbot@users.noreply.github.com"
-git config user.name "MetaMask Bot"
-
-# Function to create and push a tag with idempotency
 publish_tag() {
     local tag_name="${1}"
     local target_sha="${2}"
@@ -53,28 +49,58 @@ publish_tag() {
     echo ""
     echo "Checking tag: ${tag_name}"
 
-    # Check if tag already exists
-    if git rev-parse "${tag_name}" >/dev/null 2>&1; then
-        local existing_sha
-        existing_sha=$(git rev-parse "${tag_name}^{}")
-
-        if [[ "${existing_sha}" == "${target_sha}" ]]; then
-            printf '%s\n' "✅ Tag ${tag_name} already exists at correct SHA (${target_sha:0:7}). Skipping."
-            return 0
-        else
-            echo "::error::Tag ${tag_name} exists at different SHA!"
-            echo "::error::  Expected: ${target_sha:0:7}"
-            echo "::error::  Actual:   ${existing_sha:0:7}"
-            echo "::error::This indicates a version conflict. Cannot proceed."
-            return 1
-        fi
+    # Check if tag already exists via API
+    if gh api "/repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag_name}" >/dev/null 2>&1; then
+        printf '%s\n' "✅ Tag ${tag_name} already exists. Skipping."
+        return 0
     fi
 
-    # Tag doesn't exist, create it
     echo "Creating tag ${tag_name} at ${target_sha:0:7}..."
-    git tag -a "${tag_name}" "${target_sha}" -m "${tag_message}"
-    git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "${tag_name}"
-    printf '%s\n' "✅ Tag ${tag_name} created and pushed successfully"
+
+    local tag_date
+    tag_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    local tag_payload
+    tag_payload=$(jq -n \
+        --arg tag "$tag_name" \
+        --arg message "$tag_message" \
+        --arg object "$target_sha" \
+        --arg email "metamaskbot@users.noreply.github.com" \
+        --arg date "$tag_date" \
+        '{
+            tag: $tag,
+            message: $message,
+            object: $object,
+            type: "commit",
+            tagger: {
+                name: "MetaMask Bot",
+                email: $email,
+                date: $date
+            }
+        }')
+
+    local tag_sha
+    tag_sha=$(echo "$tag_payload" | gh api \
+        --method POST \
+        "/repos/${GITHUB_REPOSITORY}/git/tags" \
+        --input - \
+        --jq '.sha')
+
+    if [[ -z "${tag_sha}" ]]; then
+        echo "::error::Failed to create tag object for ${tag_name}"
+        return 1
+    fi
+
+    if ! gh api \
+        --method POST \
+        "/repos/${GITHUB_REPOSITORY}/git/refs" \
+        -f ref="refs/tags/${tag_name}" \
+        -f sha="${tag_sha}"; then
+        echo "::error::Failed to create ref for tag ${tag_name}"
+        return 1
+    fi
+
+    printf '%s\n' "✅ Tag ${tag_name} created successfully via API."
 }
 
 # Create main release tag
