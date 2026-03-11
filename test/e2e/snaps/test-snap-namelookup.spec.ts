@@ -18,6 +18,7 @@ describe('Name lookup', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork()
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => [

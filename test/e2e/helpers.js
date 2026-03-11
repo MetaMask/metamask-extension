@@ -272,10 +272,7 @@ async function withFixtures(options, testSuite) {
     }
 
     await fixtureServer.start();
-    // Support both fixture builder (e.g. FixtureBuilderV2) and plain fixture object
-    const fixtureState =
-      typeof fixtures?.build === 'function' ? fixtures.build() : fixtures;
-    fixtureServer.loadJsonState(fixtureState, contractRegistry);
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
 
     if (localNodes[0] && useBundler) {
       await initBundler(
