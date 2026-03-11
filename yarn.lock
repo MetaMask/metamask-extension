@@ -5513,7 +5513,7 @@ __metadata:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/core-backend": "npm:^6.1.0"
+    "@metamask/core-backend": "npm:^6.0.0"
     "@metamask/keyring-api": "npm:^21.5.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/keyring-internal-api": "npm:^10.0.0"
@@ -5523,7 +5523,7 @@ __metadata:
     "@metamask/network-enablement-controller": "npm:^4.2.0"
     "@metamask/permission-controller": "npm:^12.2.0"
     "@metamask/polling-controller": "npm:^16.0.3"
-    "@metamask/preferences-controller": "npm:^23.0.0"
+    "@metamask/preferences-controller": "npm:^22.1.0"
     "@metamask/snaps-controllers": "npm:^17.2.0"
     "@metamask/snaps-utils": "npm:^11.7.0"
     "@metamask/transaction-controller": "npm:^62.20.0"
@@ -5532,10 +5532,11 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-<<<<<<< HEAD
-  checksum: 10/b1ef8cffec8e648356063517af2c18322ac5891c83f436bc28fc0387598a85e3bdd94a24e3d593746cb00c821b2c659c918644433d05edd8b8c7a42890476c9c
-=======
   checksum: 10/a34bffb003431947fefd4605e2024c5b8f9e18f3d32a0d29e08af7ac874c1da2b45b73b0e3e587e80c4a3c1ec68c369313baaa297358086bc12a173c50cd1ba3
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@npm:^100.0.3, @metamask/assets-controllers@npm:^100.2.0":
   version: 100.2.0
   resolution: "@metamask/assets-controllers@npm:100.2.0"
   dependencies:
@@ -5591,11 +5592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@metamask/assets-controllers@npm:^100.2.1":
-=======
-"@metamask/assets-controllers@npm:^100.1.0":
->>>>>>> usd-prices-assets-controller
+"@metamask/assets-controllers@npm:^100.1.0, @metamask/assets-controllers@npm:^100.2.1":
   version: 100.2.1
   resolution: "@metamask/assets-controllers@npm:100.2.1"
   dependencies:
@@ -6081,7 +6078,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.1.0":
+"@metamask/core-backend@npm:^6.0.0, @metamask/core-backend@npm:^6.1.0":
   version: 6.1.0
   resolution: "@metamask/core-backend@npm:6.1.0"
   dependencies:
@@ -33593,11 +33590,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^8.0.0"
-<<<<<<< HEAD
-    "@metamask/assets-controller": "npm:^2.2.0"
-=======
     "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.2.0-preview-84240e41c"
->>>>>>> usd-prices-assets-controller
     "@metamask/assets-controllers": "npm:^100.2.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.0"
