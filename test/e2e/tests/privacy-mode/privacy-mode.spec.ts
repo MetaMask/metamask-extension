@@ -65,7 +65,6 @@ describe('Privacy Mode', function () {
         await accountList.checkPageIsLoaded();
 
         await accountList.checkMultichainAccountBalanceDisplayed({
-          wallet: 'Wallet 1',
           account: 'Account 1',
           balance: '$85,025',
         });

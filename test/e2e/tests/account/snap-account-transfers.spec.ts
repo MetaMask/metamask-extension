@@ -87,7 +87,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await accountList.checkPageIsLoaded();
 
         // Account balance doesn't update after transaction is completed
-        // await accountList.checkMultichainAccountBalanceDisplayed({ balance: '$88,426' });
+        // await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
         await accountList.checkMultichainAccountBalanceDisplayed({
           wallet: 'MetaMask Simple Snap Keyring',
           account: 'Snap Account 1',
@@ -155,7 +155,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await accountList.checkPageIsLoaded();
 
         // Account balance doesn't update after transaction is completed
-        // await accountList.checkMultichainAccountBalanceDisplayed({ balance: '$88,426' });
+        // await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
         await accountList.checkMultichainAccountBalanceDisplayed({
           wallet: 'MetaMask Simple Snap Keyring',
           account: 'Snap Account 1',
