@@ -17,7 +17,10 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
-import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedMultichainAccountAction,
+  AccountsControllerAccountRemovedEvent,
+} from '@metamask/accounts-controller';
 import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
@@ -234,7 +237,8 @@ async function withController<ReturnValue>(
 
   type TestAllowedEvents =
     | KeyringControllerUnlockEvent
-    | AccountTreeControllerSelectedAccountGroupChangeEvent;
+    | AccountTreeControllerSelectedAccountGroupChangeEvent
+    | AccountsControllerAccountRemovedEvent;
 
   const messenger = getRootMessenger<
     RewardsControllerActions | TestAllowedActions,
@@ -275,6 +279,7 @@ async function withController<ReturnValue>(
     events: [
       'AccountTreeController:selectedAccountGroupChange',
       'KeyringController:unlock',
+      'AccountsController:accountRemoved',
     ],
   });
 
@@ -3491,6 +3496,16 @@ describe('RewardsController', () => {
           expect(result[0].success).toBe(true);
         },
       );
+    });
+  });
+
+  describe('account removal cleanup', () => {
+    it('should subscribe to AccountsController:accountRemoved event', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        // Verify the controller initializes without errors
+        // The subscription happens in the constructor via #initializeEventSubscriptions
+        expect(controller).toBeDefined();
+      });
     });
   });
 

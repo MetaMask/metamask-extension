@@ -585,6 +585,41 @@ export class RewardsController extends BaseController<
     this.messenger.subscribe('KeyringController:unlock', () =>
       this.handleAuthenticationTrigger('KeyringController unlocked'),
     );
+
+    // Subscribe to account removal events to clean up stale references
+    this.messenger.subscribe(
+      'AccountsController:accountRemoved',
+      (account: InternalAccount) => this.#handleAccountRemoved(account),
+    );
+  }
+
+  /**
+   * Handle account removal by cleaning up stale references
+   *
+   * @param account - The account that was removed
+   */
+  #handleAccountRemoved(account: InternalAccount): void {
+    const caipAccount = this.convertInternalAccountToCaipAccountId(account);
+    if (!caipAccount) {
+      return;
+    }
+
+    this.update((state: RewardsControllerState) => {
+      // Remove the account from rewardsAccounts if it exists
+      if (state.rewardsAccounts[caipAccount]) {
+        delete state.rewardsAccounts[caipAccount];
+      }
+
+      // If the removed account is the active account, clear it
+      if (state.rewardsActiveAccount?.account === caipAccount) {
+        state.rewardsActiveAccount = null;
+      }
+    });
+
+    log.debug(
+      'RewardsController: Cleaned up stale references for removed account',
+      caipAccount,
+    );
   }
 
   /**

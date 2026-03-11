@@ -8,6 +8,7 @@ import {
 import {
   AccountsControllerGetSelectedMultichainAccountAction,
   AccountsControllerListMultichainAccountsAction,
+  AccountsControllerAccountRemovedEvent,
 } from '@metamask/accounts-controller';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
@@ -111,7 +112,8 @@ type AllowedActions =
 
 type AllowedEvents =
   | KeyringControllerUnlockEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent;
+  | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | AccountsControllerAccountRemovedEvent;
 
 export type RewardsControllerMessenger = Messenger<
   typeof name,
@@ -159,6 +161,7 @@ export function getRewardsControllerMessenger(
     events: [
       'AccountTreeController:selectedAccountGroupChange',
       'KeyringController:unlock',
+      'AccountsController:accountRemoved',
     ],
   });
   return controllerMessenger;
