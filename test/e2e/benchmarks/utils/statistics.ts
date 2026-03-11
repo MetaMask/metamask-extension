@@ -710,7 +710,7 @@ export function aggregateWebVitals(
   }
 
   return result;
-};
+}
 
 /**
  * Log threshold validation results to the console.
