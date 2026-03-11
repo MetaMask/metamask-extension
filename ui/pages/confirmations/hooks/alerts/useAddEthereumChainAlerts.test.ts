@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as confirmContext from '../../context/confirm';
 import * as safeChains from '../../../settings/networks-tab/networks-form/use-safe-chains';
-import * as rpcUtils from '../../../../../shared/modules/rpc.utils';
+import * as rpcUtils from '../../../../../shared/lib/rpc.utils';
 import { useAddEthereumChainAlerts } from './useAddEthereumChainAlerts';
 
 const mockSafeChains = [

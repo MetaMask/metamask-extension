@@ -3,7 +3,6 @@ import semver from 'semver';
 import type { Mockttp } from 'mockttp';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -28,7 +27,7 @@ describe('Update modal', function (this: Suite) {
     const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAppStateController({
             pendingExtensionVersion: minimumVersion,
           })
@@ -52,7 +51,7 @@ describe('Update modal', function (this: Suite) {
     const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAppStateController({
             pendingExtensionVersion: version,
           })
@@ -76,7 +75,7 @@ describe('Update modal', function (this: Suite) {
     const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAppStateController({
             pendingExtensionVersion: minimumVersion,
           })
@@ -102,7 +101,7 @@ describe('Update modal', function (this: Suite) {
     const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAppStateController({
             pendingExtensionVersion: minimumVersion,
           })
@@ -138,7 +137,7 @@ describe('Update modal', function (this: Suite) {
     const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAppStateController({
             pendingExtensionVersion: minimumVersion,
             updateModalLastDismissedAt: Date.now(),
@@ -163,7 +162,7 @@ describe('Update modal', function (this: Suite) {
     const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAppStateController({
             pendingExtensionVersion: minimumVersion,
             lastUpdatedAt: Date.now(),

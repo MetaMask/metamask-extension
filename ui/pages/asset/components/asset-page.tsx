@@ -38,8 +38,8 @@ import { useNavigate } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
@@ -52,7 +52,6 @@ import { StockBadge } from '../../../components/app/assets/stock-badge/stock-bad
 import { AddressCopyButton } from '../../../components/multichain';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -175,7 +174,8 @@ const AssetPage = ({
       (!address && !isEvm && item.isNative),
   );
 
-  address = assetWithBalance?.assetId || '';
+  // Display historical data for non-evm token without a balance
+  address = assetWithBalance?.assetId || address;
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
@@ -284,7 +284,7 @@ const AssetPage = ({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back') as string}
             iconName={IconName.ArrowLeft}
-            onClick={() => transitionBack(() => navigate(DEFAULT_ROUTE))}
+            onClick={() => transitionBack(() => navigate(-1))}
             className="asset-page__back-button"
           />
         </Box>

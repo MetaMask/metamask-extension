@@ -333,10 +333,6 @@
   "addToken": {
     "message": "टोकन जोड़ें"
   },
-  "addTokenByContractAddress": {
-    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का एड्रेस पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन कॉन्ट्रैक्ट एड्रेस $1 पर मिल सकते हैं।",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URL जोड़ें"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "पिछली स्क्रीन पर कोट किए गए किसी भी नेटवर्क शुल्क में दोनों ट्रांसेक्शन शामिल हैं और इसे विभाजित किया जाएगा।"
   },
-  "bridgeNetCost": {
-    "message": "नेट लागत"
-  },
   "bridgeNoMMFee": {
     "message": "कोई MM फीस नहीं"
   },
@@ -1128,10 +1121,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 को $2 से स्वैप किया जा रहा है",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 न्यूनतम",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
@@ -3988,8 +3977,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1 को mUSD में बदलें",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSD में बदला गया",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
@@ -5785,12 +5774,6 @@
   },
   "queued": {
     "message": "कतारबद्ध"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 राशि प्राप्त करें"
-  },
-  "quotedTotalCost": {
-    "message": "$1 कुल लागत"
   },
   "rank": {
     "message": "रैंक"
@@ -8050,10 +8033,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 उद्धरण.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "यह ट्रांसेक्शन संसाधित होने के बाद आपका $1 आपके अकाउंट में जोड़ दिया जाएगा।",

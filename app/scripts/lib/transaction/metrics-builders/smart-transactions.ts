@@ -1,4 +1,4 @@
-import { getSmartTransactionMetricsProperties } from '../../../../../shared/modules/metametrics';
+import { getSmartTransactionMetricsProperties } from '../../../../../shared/lib/metametrics';
 import type { TransactionMetricsBuilder } from './types';
 
 export const getSmartTransactionProperties: TransactionMetricsBuilder = ({
