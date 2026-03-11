@@ -64,6 +64,8 @@ export const AmountRecipient = () => {
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {
+      // Non EVM flows need an extra validation because "value" can be empty dependent on the blockchain (e.g it's fine for Solana but not for Bitcoin)
+      // Hence we do a call for `validateNonEvmAmountAsync` here to raise UI validation errors if exists
       const nonEvmAmountError = await validateNonEvmAmountAsync();
       if (nonEvmAmountError) {
         return;
