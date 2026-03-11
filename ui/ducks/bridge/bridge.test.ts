@@ -11,14 +11,14 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
-import bridgeReducer from './bridge';
+import bridgeReducer, { initialState } from './bridge';
 import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
   resetInputFields,
   updateQuoteRequestParams,
-  resetBridgeState,
+  resetBridgeControllerAndCache,
   setWasTxDeclined,
   setSlippage,
 } from './actions';
@@ -135,20 +135,7 @@ describe('Ducks - Bridge', () => {
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState).toStrictEqual({
-        selectedQuote: null,
-        fromToken: null,
-        toToken: null,
-        slippage: SlippageValue.BridgeDefault,
-        fromTokenInputValue: null,
-        sortOrder: 'cost_ascending',
-        fromTokenExchangeRate: null,
-        wasTxDeclined: false,
-        txAlert: null,
-        txAlertStatus: RequestStatus.FETCHED,
-        fromTokenBalance: null,
-        fromNativeBalance: null,
-      });
+      expect(newState).toStrictEqual(initialState);
     });
   });
 
@@ -226,17 +213,36 @@ describe('Ducks - Bridge', () => {
           bridgeSliceOverrides: { fromTokenInputValue: '10' },
         }),
       );
-      const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 
-      mockStore.dispatch(resetBridgeState() as never);
+      mockStore.dispatch(resetBridgeControllerAndCache() as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
       expect(mockResetBridgeState).toHaveBeenCalledWith();
+      const actions = mockStore.getActions();
+      expect(actions.map((action) => action.type)).not.toContain(
+        'bridge/resetInputFields',
+      );
+    });
+  });
+
+  describe('resetInputFields', () => {
+    it('dispatches action to the bridge controller', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore({
+          bridgeSliceOverrides: { fromTokenInputValue: '10' },
+        }),
+      );
+      const state = mockStore.getState().bridge;
+
+      mockStore.dispatch(resetInputFields() as never);
+
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
