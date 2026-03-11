@@ -133,14 +133,9 @@ describe('State logs', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
-          .withTokenBalancesController({
-            tokenBalances: {
-              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                '0x539': {
-                  '0x0000000000000000000000000000000000000000':
-                    '0x15af1d78b58c40000', // 25 ETH
-                },
-              },
+          .withAssetsController({
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              'eip155:1337/slip44:60': { amount: '25' },
             },
           })
           .build(),

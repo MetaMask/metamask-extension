@@ -3,7 +3,6 @@
     "hiddenAccountList": {},
     "pinnedAccountList": {}
   },
-  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountGroupsMetadata": "object",
     "accountTree": "object",
@@ -376,7 +375,7 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenBalancesController": { "tokenBalances": "object" },
+  "AssetsController": "object",
   "TokenListController": {
     "tokensChainsCache": { "0x539": "object" }
   },

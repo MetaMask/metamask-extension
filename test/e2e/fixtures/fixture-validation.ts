@@ -70,14 +70,18 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountsController.internalAccounts.accounts',
+  'data.AccountTracker',
+  'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
   'data.MultichainAssetsController',
+  'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
+  'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',

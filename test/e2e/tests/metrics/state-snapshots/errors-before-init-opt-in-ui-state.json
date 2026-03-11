@@ -4,7 +4,6 @@
       "hiddenAccountList": {},
       "pinnedAccountList": {}
     },
-    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountWalletsMetadata": "object",
@@ -295,7 +294,7 @@
     "StaticAssetsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
-    "TokenBalancesController": { "tokenBalances": "object" },
+    "AssetsController": "object",
     "TokenListController": {},
     "TokenRatesController": { "marketData": "object" },
     "TokensController": {

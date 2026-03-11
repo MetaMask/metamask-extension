@@ -98,6 +98,22 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAssetsController(data: Record<string, Record<string, { amount: string }>>): this {
+    if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
+      (this.fixture.data as Record<string, unknown>).AssetsController = {
+        assetsBalance: {},
+      };
+    }
+    const ac = (this.fixture.data as Record<string, unknown>).AssetsController as {
+      assetsBalance: Record<string, Record<string, { amount: string }>>;
+    };
+    if (!ac.assetsBalance) {
+      ac.assetsBalance = {};
+    }
+    merge(ac.assetsBalance, data);
+    return this;
+  }
+
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
@@ -430,7 +446,15 @@ class FixtureBuilderV2 {
   }
 
   withTrezorAccount(): this {
-    return this.withAccountsController({
+    return this.withAssetsController({
+      'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+        'eip155:1337/slip44:60': { amount: '25' },
+      },
+      [HARDWARE_WALLET_ACCOUNT_ID]: {
+        'eip155:1337/slip44:60': { amount: '100' },
+      },
+    })
+      .withAccountsController({
       internalAccounts: {
         accounts: {
           'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {

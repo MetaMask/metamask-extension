@@ -44,6 +44,10 @@ export const NETWORK_CLIENT_ID = Object.freeze({
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
+/** Account ID for the default fixture account (used in AssetsController state). */
+export const DEFAULT_FIXTURE_ACCOUNT_ID =
+  'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
+
 export const DEFAULT_FIXTURE_ACCOUNT_LOWERCASE =
   DEFAULT_FIXTURE_ACCOUNT.toLowerCase();
 
