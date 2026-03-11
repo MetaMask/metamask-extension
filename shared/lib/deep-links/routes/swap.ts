@@ -3,21 +3,21 @@ import { Route, SWAP_ROUTE } from './route';
 
 export enum BridgeQueryParams {
   /**
-   * @deprecated not needed anymore since default value is true
-   */
-  SWAPS = 'swaps',
-  AMOUNT = 'amount',
-  /**
    * This is the Caip asset type of the token to bridge or swap from
    */
-  FROM = 'from',
+  From = 'from',
   /**
    * This is the Caip asset type of the token to bridge or swap to
    */
-  TO = 'to',
+  To = 'to',
   /**
    * This is the amount of the token to bridge or swap from
    */
+  Amount = 'amount',
+  /**
+   * This is a flag to indicate if the swap is from the transaction shield entry modal
+   */
+  IsFromTransactionShield = 'isFromTransactionShield',
 }
 
 export const swap = new Route({
@@ -26,32 +26,25 @@ export const swap = new Route({
   handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams();
 
-    const from = params.get(BridgeQueryParams.FROM);
-    const to = params.get(BridgeQueryParams.TO);
-    const amount = params.get(BridgeQueryParams.AMOUNT);
+    const from = params.get(BridgeQueryParams.From);
+    const to = params.get(BridgeQueryParams.To);
+    const amount = params.get(BridgeQueryParams.Amount);
     // add the params to the query if they exist
     let parsedFrom;
     if (from) {
       parsedFrom = parseAssetID(from);
       if (parsedFrom) {
-        query.set(BridgeQueryParams.FROM, from);
+        query.set(BridgeQueryParams.From, from);
       }
     }
     if (to) {
       const parsedTo = parseAssetID(to);
       if (parsedTo) {
-        query.set(BridgeQueryParams.TO, to);
-        if (parsedFrom) {
-          // if `from` and `to` reference the same chain, add the `swap` param
-          // to trigger the "Swap" screen by default
-          if (parsedFrom.chainId.id === parsedTo.chainId.id) {
-            query.set(BridgeQueryParams.SWAPS, 'true');
-          }
-        }
+        query.set(BridgeQueryParams.To, to);
       }
     }
     if (amount) {
-      query.set(BridgeQueryParams.AMOUNT, amount);
+      query.set(BridgeQueryParams.Amount, amount);
     }
 
     return {

@@ -2,8 +2,8 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_HOST_ADDRESS } from '../../constants';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -23,7 +23,7 @@ describe('Permissions', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // open permissions page and check that the dapp is connected
-        await new HeaderNavbar(driver).openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);

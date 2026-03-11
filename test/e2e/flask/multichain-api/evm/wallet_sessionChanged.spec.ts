@@ -16,6 +16,7 @@ import PermissionListPage from '../../../page-objects/pages/permission/permissio
 import SitePermissionPage from '../../../page-objects/pages/permission/site-permission-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { openPermissionsPageFlow } from '../../../page-objects/flows/permissions.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
@@ -78,7 +79,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         /**
          * We make sure to update selected accounts via wallet extension UI
          */
-        await homePage.headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);

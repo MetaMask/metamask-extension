@@ -5,8 +5,8 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
@@ -36,7 +36,7 @@ describe('Edit Networks Permissions', function () {
         await new Homepage(driver).checkPageIsLoaded();
 
         // Open permission page for dapp
-        new HeaderNavbar(driver).openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);

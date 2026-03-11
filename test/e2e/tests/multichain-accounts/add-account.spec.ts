@@ -9,7 +9,10 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { Driver } from '../../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithoutBalanceValidation,
+  lockAndWaitForLoginPage,
+} from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import {
   withImportedAccount,
@@ -63,7 +66,7 @@ describe('Add account', function () {
         await accountListPage.closeMultichainAccountsPage();
 
         // Lock wallet and recover via SRP in "forget password" option
-        await headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
         await new LoginPage(driver).gotoResetPasswordPage();
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.checkPageIsLoaded();
@@ -199,7 +202,7 @@ describe('Add account', function () {
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
 
         // Lock and unlock wallet
-        await headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
         await loginWithoutBalanceValidation(driver);
 
         // Verify both account labels persist after unlock

@@ -99,9 +99,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
         >
           Hide tokens without balance
         </p>
-        <div
-          data-testid="hide-zero-balance-tokens"
-        >
+        <div>
           <label
             class="toggle-button toggle-button--off"
             tabindex="0"

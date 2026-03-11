@@ -29,6 +29,7 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.tokenMethodTransfer:
     case TransactionType.tokenMethodSafeTransferFrom:
     case TransactionType.musdConversion:
+    case TransactionType.musdClaim:
     case TransactionType.simpleSend: {
       return GroupCategory.send;
     }
