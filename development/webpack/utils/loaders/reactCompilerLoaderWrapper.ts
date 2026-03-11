@@ -163,7 +163,8 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
     const opts = (
       schema === undefined ? originalGetOptions() : originalGetOptions(schema)
     ) as LoaderOptions;
-    return (logger ? { ...opts, logger } : opts) as LoaderOptions;
+    const { __verbose: _verbose, ...rest } = opts;
+    return (logger ? { ...rest, logger } : rest) as LoaderOptions;
   };
 
   // Do not restore getOptions. react-compiler-loader uses this.async() and may
