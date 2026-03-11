@@ -2,27 +2,26 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
-  Display,
-  FlexDirection,
-  BlockSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Text,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-
+  TextColor,
+  FontWeight,
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
 import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
   Modal,
-  Box,
-  Text,
-  AvatarNetworkSize,
 } from '../../../components/component-library';
-
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
-import { NetworkListItem } from '../../../components/multichain';
 import { getImageForChainId } from '../../../selectors/multichain';
 
 export const ContactNetworks = ({
@@ -51,28 +50,57 @@ export const ContactNetworks = ({
       ),
     [networkConfigurations],
   );
-  const renderNetworkListItems = (
-    networks: { name: string; chainId: string }[],
-  ) =>
-    networks.map(({ name, chainId }) => (
-      <NetworkListItem
+
+  const renderNetworkRow = (
+    name: string,
+    chainId: string,
+    iconSrc: string | undefined,
+  ) => {
+    const displayName =
+      NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+        chainId as unknown as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+      ] ?? name;
+    const selected = selectedChainId === chainId;
+
+    return (
+      <Box
         key={chainId}
-        name={
-          NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-            chainId as unknown as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-          ] ?? name
-        }
-        selected={selectedChainId === chainId}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
+        padding={4}
+        className={`flex cursor-pointer rounded-xl ${
+          selected ? 'bg-background-muted' : 'bg-transparent'
+        }`}
         onClick={() => {
           onSelect?.(chainId);
           onClose();
         }}
-        iconSrc={getImageForChainId(chainId)}
-        iconSize={AvatarNetworkSize.Sm}
-        focus={false}
-        variant={TextVariant.bodyMdMedium}
-      />
-    ));
+        data-testid={`network-list-item-${chainId}`}
+      >
+        <AvatarNetwork
+          size={AvatarNetworkSize.Sm}
+          name={displayName}
+          src={iconSrc}
+          className="rounded-xl"
+        />
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextDefault}
+          fontWeight={selected ? FontWeight.Medium : undefined}
+          ellipsis
+          className="min-w-0 flex-1"
+        >
+          {displayName}
+        </Text>
+      </Box>
+    );
+  };
+
+  const renderNetworkList = (networks: { name: string; chainId: string }[]) =>
+    networks.map(({ name, chainId }) =>
+      renderNetworkRow(name, chainId, getImageForChainId(chainId)),
+    );
 
   return (
     <Modal
@@ -86,19 +114,30 @@ export const ContactNetworks = ({
           {t('bridgeSelectNetwork')}
         </ModalHeader>
         <Box
-          className="multichain-asset-picker__network-list"
-          display={Display.Flex}
+          flexDirection={BoxFlexDirection.Column}
+          className="flex w-full flex-col overflow-auto"
         >
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
+            flexDirection={BoxFlexDirection.Column}
+            className="flex w-full flex-col"
           >
-            {renderNetworkListItems(nonTestNetworks)}
+            {renderNetworkList(nonTestNetworks)}
 
-            <Box padding={4}>
-              <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
-              {renderNetworkListItems(testNetworks)}
+            <Box
+              padding={4}
+              paddingLeft={0}
+              flexDirection={BoxFlexDirection.Column}
+              className="flex flex-col"
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                className="mb-2"
+              >
+                {t('testnets')}
+              </Text>
+              {renderNetworkList(testNetworks)}
             </Box>
           </Box>
         </Box>
