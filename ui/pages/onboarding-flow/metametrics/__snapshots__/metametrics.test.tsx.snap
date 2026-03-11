@@ -12,7 +12,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
       Help improve MetaMask
     </h2>
     <div
-      class="items-center justify-center onboarding-metametrics__user-control w-full"
+      class="onboarding-metametrics__user-control w-full"
     >
       <img
         alt="User control"
@@ -159,7 +159,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
       Help improve MetaMask
     </h2>
     <div
-      class="items-center justify-center onboarding-metametrics__user-control w-full"
+      class="onboarding-metametrics__user-control w-full"
     >
       <img
         alt="User control"
