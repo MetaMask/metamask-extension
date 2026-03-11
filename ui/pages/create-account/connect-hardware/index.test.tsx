@@ -463,8 +463,17 @@ describe('ConnectHardwareForm', () => {
       await simulateScanCompletion(store);
 
       await waitFor(() => {
-        expect(mockCheckHardwareStatus).toHaveBeenCalled();
-        expect(mockConnectHardware).toHaveBeenCalled();
+        expect(mockCheckHardwareStatus).toHaveBeenCalledWith(
+          HardwareDeviceNames.qr,
+          "m/44'/60'/0'",
+        );
+        expect(mockConnectHardware).toHaveBeenCalledWith(
+          HardwareDeviceNames.qr,
+          0,
+          "m/44'/60'/0'",
+          undefined,
+          expect.any(Function),
+        );
       });
     });
 
@@ -536,6 +545,91 @@ describe('ConnectHardwareForm', () => {
       await simulateScanCompletion(store);
 
       expect(mockCheckHardwareStatus).not.toHaveBeenCalled();
+    });
+
+    it('passes undefined hdPath when defaultHdPaths has no QR entry', async () => {
+      mockGetActiveQrCodeScanRequest.mockReturnValue({
+        type: QrScanRequestType.PAIR,
+      });
+
+      const storeWithoutQrPath = configureMockStore([thunk])({
+        ...mockState,
+        appState: {
+          ...mockState.appState,
+        },
+      });
+      const origGetState = storeWithoutQrPath.getState.bind(storeWithoutQrPath);
+      storeWithoutQrPath.getState = () => ({
+        ...(origGetState() as Record<string, unknown>),
+      });
+
+      const result = renderWithProvider(
+        <ConnectHardwareForm {...mockProps} />,
+        storeWithoutQrPath,
+      );
+      await waitFor(() =>
+        expect(mockCheckHardwareStatus).toHaveBeenCalledTimes(4),
+      );
+
+      mockCheckHardwareStatus.mockReset().mockResolvedValue(true);
+      mockConnectHardware
+        .mockReset()
+        .mockResolvedValue([{ address: '0xQR1', balance: null, index: 0 }]);
+
+      mockGetActiveQrCodeScanRequest.mockReturnValue(null);
+      await act(async () => {
+        storeWithoutQrPath.dispatch({ type: 'FORCE_UPDATE' });
+      });
+
+      await waitFor(() => {
+        expect(mockCheckHardwareStatus).toHaveBeenCalledWith(
+          HardwareDeviceNames.qr,
+          undefined,
+        );
+        expect(mockConnectHardware).toHaveBeenCalledWith(
+          HardwareDeviceNames.qr,
+          0,
+          undefined,
+          undefined,
+          expect.any(Function),
+        );
+      });
+    });
+
+    it('does not overwrite device when user selects another device while checkHardwareStatus is pending', async () => {
+      mockGetActiveQrCodeScanRequest.mockReturnValue({
+        type: QrScanRequestType.PAIR,
+      });
+
+      const store = createStoreWithFreshRefs();
+      const { getByLabelText, getByText } = await renderAndWaitForMount(store);
+
+      let resolveStatus: (value: boolean) => void;
+      const deferredStatus = new Promise<boolean>((resolve) => {
+        resolveStatus = resolve;
+      });
+      mockCheckHardwareStatus.mockReset().mockReturnValue(deferredStatus);
+      mockConnectHardware
+        .mockReset()
+        .mockResolvedValue([{ address: '0xLedger1', balance: null, index: 0 }]);
+
+      await simulateScanCompletion(store);
+
+      const ledgerButton = getByLabelText(messages.ledger.message);
+      const continueButton = getByText(messages.continue.message);
+      fireEvent.click(ledgerButton);
+      fireEvent.click(continueButton);
+
+      await act(async () => {
+        resolveStatus!(true);
+      });
+
+      await waitFor(() => {
+        const qrCalls = mockConnectHardware.mock.calls.filter(
+          (call: unknown[]) => call[0] === HardwareDeviceNames.qr,
+        );
+        expect(qrCalls).toHaveLength(0);
+      });
     });
   });
 });

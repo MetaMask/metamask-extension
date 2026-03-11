@@ -145,16 +145,17 @@ class ConnectHardwareForm extends Component {
       this.state.accounts.length === 0 &&
       !this.state.device
     ) {
+      const hdPath = this.props.defaultHdPaths[HardwareDeviceNames.qr];
       this.props
-        .checkHardwareStatus(HardwareDeviceNames.qr)
+        .checkHardwareStatus(HardwareDeviceNames.qr, hdPath)
         .then((isUnlocked) => {
-          if (isUnlocked && this.state.accounts.length === 0) {
+          if (
+            isUnlocked &&
+            this.state.accounts.length === 0 &&
+            !this.state.device
+          ) {
             this.setState({ device: HardwareDeviceNames.qr });
-            this.getPage(
-              HardwareDeviceNames.qr,
-              0,
-              this.props.defaultHdPaths[HardwareDeviceNames.qr],
-            );
+            this.getPage(HardwareDeviceNames.qr, 0, hdPath);
           }
         })
         .catch((e) => {
