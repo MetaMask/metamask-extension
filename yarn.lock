@@ -5893,23 +5893,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@metamask/core-backend@npm:6.1.0"
-  dependencies:
-    "@metamask/accounts-controller": "npm:^37.0.0"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/keyring-controller": "npm:^25.1.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^27.1.0"
-    "@metamask/utils": "npm:^11.9.0"
-    "@tanstack/query-core": "npm:^5.62.16"
-    uuid: "npm:^8.3.2"
-  checksum: 10/9271cb7eea6c8122c505b66ebced1861572bd781f4ed294e4d9dc2d9f7f100412f5c44a8e53f9b6dc02aa2801f64daeb9fcc398d19cdb04222ae121438017686
-  languageName: node
-  linkType: hard
-
-"@metamask/core-backend@npm:^6.1.1":
+"@metamask/core-backend@npm:^6.1.0, @metamask/core-backend@npm:^6.1.1":
   version: 6.1.1
   resolution: "@metamask/core-backend@npm:6.1.1"
   dependencies:
