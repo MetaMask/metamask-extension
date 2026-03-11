@@ -3172,6 +3172,12 @@
     "message": "$1 locked",
     "description": "$1 is the hardware wallet type"
   },
+  "hardwareWalletErrorTrezorPopupClosedDescription": {
+    "message": "Please try again and confirm the request in the popup."
+  },
+  "hardwareWalletErrorTrezorPopupClosedTitle": {
+    "message": "Trezor popup closed"
+  },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Make sure your $1 device is set up with the Secret Recovery Phrase or passphrase for the selected account",
     "description": "$1 is the hardware wallet type"
