@@ -1,6 +1,7 @@
 import { NetworkController } from '@metamask/network-controller';
 // Mocha type definitions are conflicting with Jest
 import { it as jestIt } from '@jest/globals';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   TransactionMeta,
   TransactionType,
@@ -242,22 +243,13 @@ describe('Transaction Controller Init', () => {
     expect(pendingTransactions?.isResubmitEnabled?.()).toBe(false);
   });
 
-  jestIt.each([
-    ['swap', TransactionType.swap, false],
-    ['swapApproval', TransactionType.swapApproval, false],
-    ['bridge', TransactionType.bridge, false],
-    ['bridgeApproval', TransactionType.bridgeApproval, false],
-    ['contractInteraction', TransactionType.contractInteraction, true],
-  ])(
-    'disables automatic gas fee updates for %s transactions',
-    (_label, type, gasFeeUpdateEnabled) => {
-      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
-        'isAutomaticGasFeeUpdateEnabled',
-      );
-
-      const tx: TransactionMeta = {
+  describe('isAutomaticGasFeeUpdateEnabled', () => {
+    function buildTransactionMeta(
+      overrides: Partial<TransactionMeta> = {},
+    ): TransactionMeta {
+      return {
         id: '1',
-        type,
+        type: TransactionType.contractInteraction,
         chainId: CHAIN_ID_MOCK,
         networkClientId: 'test-network',
         status: TransactionStatus.unapproved,
@@ -265,11 +257,107 @@ describe('Transaction Controller Init', () => {
         txParams: {
           from: '0x0000000000000000000000000000000000000000',
         },
+        ...overrides,
       };
+    }
 
-      expect(isAutomaticGasFeeUpdateEnabled?.(tx)).toBe(gasFeeUpdateEnabled);
-    },
-  );
+    jestIt.each([
+      ['swap', TransactionType.swap, false],
+      ['swapApproval', TransactionType.swapApproval, false],
+      ['bridge', TransactionType.bridge, false],
+      ['bridgeApproval', TransactionType.bridgeApproval, false],
+      ['contractInteraction', TransactionType.contractInteraction, true],
+    ])('returns %s for %s transactions', (_label, type, expected) => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(buildTransactionMeta({ type })),
+      ).toBe(expected);
+    });
+
+    it('returns false for relayDeposit transactions', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({ type: TransactionType.relayDeposit }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for perpsRelayDeposit transactions', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({ type: TransactionType.perpsRelayDeposit }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for predictRelayDeposit transactions', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({ type: TransactionType.predictRelayDeposit }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for transactions with nested relayDeposit type', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({
+            type: TransactionType.contractInteraction,
+            nestedTransactions: [{ type: TransactionType.relayDeposit }],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for tokenMethodApprove with ORIGIN_METAMASK', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({
+            type: TransactionType.tokenMethodApprove,
+            origin: ORIGIN_METAMASK,
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true for tokenMethodApprove with non-MetaMask origin', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({
+            type: TransactionType.tokenMethodApprove,
+            origin: 'https://external-dapp.com',
+          }),
+        ),
+      ).toBe(true);
+    });
+  });
 
   describe('publish hook', () => {
     const mockTransactionMeta: TransactionMeta = {
