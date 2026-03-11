@@ -156,11 +156,35 @@ describe(`migration #${VERSION}`, () => {
     expect(changed.has('NetworkController')).toBe(false);
   });
 
-  it('does not duplicate when Infura URL exists without project ID path', async () => {
+  it('does not duplicate when Infura URL exists with trailing slash', async () => {
     const arbitrumChainId = '0xa4b1';
     const state = makeState({
       [arbitrumChainId]: makeNetworkConfig(arbitrumChainId, [
         { url: 'https://arbitrum-mainnet.infura.io/' },
+      ]),
+    });
+
+    const changed = new Set<string>();
+    await migrate(state, changed);
+
+    const config = (
+      state.data.NetworkController as {
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { url: string }[] }
+        >;
+      }
+    ).networkConfigurationsByChainId[arbitrumChainId];
+
+    expect(config.rpcEndpoints).toHaveLength(1);
+    expect(changed.has('NetworkController')).toBe(false);
+  });
+
+  it('does not duplicate when Infura URL exists without trailing slash', async () => {
+    const arbitrumChainId = '0xa4b1';
+    const state = makeState({
+      [arbitrumChainId]: makeNetworkConfig(arbitrumChainId, [
+        { url: 'https://arbitrum-mainnet.infura.io' },
       ]),
     });
 

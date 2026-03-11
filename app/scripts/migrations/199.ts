@@ -147,9 +147,10 @@ function transformState(
     }
 
     const infuraUrl = `https://${config.infuraSubdomain}.infura.io/v3/${infuraProjectId}`;
-    const infuraHost = `https://${config.infuraSubdomain}.infura.io/`;
-    const hasInfura = networkConfig.rpcEndpoints.some((ep) =>
-      ep.url.startsWith(infuraHost),
+    const infuraOrigin = `https://${config.infuraSubdomain}.infura.io`;
+    const hasInfura = networkConfig.rpcEndpoints.some(
+      (ep) =>
+        ep.url === infuraOrigin || ep.url.startsWith(`${infuraOrigin}/`),
     );
 
     if (!hasInfura) {
