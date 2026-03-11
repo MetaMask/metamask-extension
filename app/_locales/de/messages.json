@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Die auf dem vorherigen Bildschirm angegebenen Netzwerkgebühren umfassen beide Transaktionen und werden aufgeteilt."
   },
-  "bridgeNetCost": {
-    "message": "Nettokosten"
-  },
   "bridgeNoMMFee": {
     "message": "Keine MM-Gebühr"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping von $1 für $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 Min.",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Bridge zu"
@@ -5791,12 +5784,6 @@
   },
   "queued": {
     "message": "In Warteschlange"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 Betrag empfangen"
-  },
-  "quotedTotalCost": {
-    "message": "$1 Gesamtkosten"
   },
   "rank": {
     "message": "Rang"

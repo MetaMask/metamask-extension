@@ -617,11 +617,20 @@ export const getBridgeQuotes = createSelector(
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) =>
-    selectBridgeQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote) => {
+    const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-    }),
+    });
+    return {
+      ...quotes,
+      activeQuote:
+        // TODO move this to controller
+        quotes.sortedQuotes.find(
+          (q) => q.quote.requestId === selectedQuote?.quote.requestId,
+        ) ?? quotes.recommendedQuote,
+    };
+  },
 );
 
 export const getValidatedFromValue = createSelector(
@@ -967,3 +976,11 @@ export const getIsGasIncluded = createSelector(
     return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
+
+export const getIsSrcAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isSrcAssetPickerOpen;
+
+export const getIsDestAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isDestAssetPickerOpen;
+
+export const getBridgeState = (state: BridgeAppState) => state.bridge;

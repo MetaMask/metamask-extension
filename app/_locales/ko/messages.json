@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "이전 화면에 표시된 네트워크 수수료에는 두 트랜잭션이 모두 포함된 것입니다. 이는 각각의 트랜잭션으로 분할됩니다."
   },
-  "bridgeNetCost": {
-    "message": "순비용"
-  },
   "bridgeNoMMFee": {
     "message": "MM 수수료 없음"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1을(를) $2(으)로 스왑 중",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "최소 $1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "브릿지 대상:"
@@ -5791,12 +5784,6 @@
   },
   "queued": {
     "message": "대기열에 지정됨"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 수령 금액"
-  },
-  "quotedTotalCost": {
-    "message": "$1 총비용"
   },
   "rank": {
     "message": "순위"

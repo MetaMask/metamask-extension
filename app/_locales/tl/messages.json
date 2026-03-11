@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Saklaw ng anumang na-quote na bayad sa network sa nakaraang screen ang parehong transaksyon at hahatiin ito."
   },
-  "bridgeNetCost": {
-    "message": "Net na gastos"
-  },
   "bridgeNoMMFee": {
     "message": "Walang bayad sa MM"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Nagsa-swap ng $1 para sa $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "I-bridge sa"
@@ -5791,12 +5784,6 @@
   },
   "queued": {
     "message": "Naka-queue"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 na matatanggap na halaga"
-  },
-  "quotedTotalCost": {
-    "message": "$1 na kabuuang halaga"
   },
   "rank": {
     "message": "Rank"

@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Κάθε τέλος δικτύου που αναφέρθηκε στην προηγούμενη οθόνη περιλαμβάνει και τις δύο συναλλαγές και θα διαχωριστούν."
   },
-  "bridgeNetCost": {
-    "message": "Καθαρό κόστος"
-  },
   "bridgeNoMMFee": {
     "message": "Χωρίς προμήθεια στο MM"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Ανταλλαγή $1 για $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 ελαχ",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Διασύνδεση προς"
@@ -5791,12 +5784,6 @@
   },
   "queued": {
     "message": "Σε Αναμονή"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 ποσό που θα λάβετε"
-  },
-  "quotedTotalCost": {
-    "message": "$1 συνολικό κόστος"
   },
   "rank": {
     "message": "Κατάταξη"
