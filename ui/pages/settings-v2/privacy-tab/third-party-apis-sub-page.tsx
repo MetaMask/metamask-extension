@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
@@ -34,24 +33,12 @@ const ShowENSDomainsToggleItem = createToggleItem({
   titleKey: 'ensDomainsSettingTitle',
   formatDescription: (t) => (
     <>
-      <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
-        {t('ensDomainsSettingDescriptionIntroduction')}
-      </Text>
-      <ul className="list-disc pl-6">
-        <li>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
-            {t('ensDomainsSettingDescriptionPart1')}
-          </Text>
-        </li>
-        <li>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
-            {t('ensDomainsSettingDescriptionPart2')}
-          </Text>
-        </li>
+      {t('ensDomainsSettingDescriptionIntroduction')}
+      <ul className="list-disc pl-6 my-1">
+        <li>{t('ensDomainsSettingDescriptionPart1')}</li>
+        <li>{t('ensDomainsSettingDescriptionPart2')}</li>
       </ul>
-      <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
-        {t('ensDomainsSettingDescriptionOutroduction')}
-      </Text>
+      {t('ensDomainsSettingDescriptionOutroduction')}
     </>
   ),
   selector: (state: MetaMaskReduxState) =>

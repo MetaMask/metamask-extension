@@ -56,7 +56,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           </label>
         </div>
       </div>
-      <p
+      <div
         class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         <span>
@@ -68,7 +68,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
            to show accurate and standardized network details.
            
         </span>
-      </p>
+      </div>
     </div>
     <div
       class="flex flex-col gap-1 py-3"
@@ -116,38 +116,22 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           </label>
         </div>
       </div>
-      <p
+      <div
         class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:
-        </p>
+        MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:
         <ul
-          class="list-disc pl-6"
+          class="list-disc pl-6 my-1"
         >
           <li>
-            <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            >
-              MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
-            </p>
+            MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
           </li>
           <li>
-            <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            >
-              If the code links to IPFS, you can see the content associated with it (usually a website).
-            </p>
+            If the code links to IPFS, you can see the content associated with it (usually a website).
           </li>
         </ul>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Keep in mind that using this feature exposes your IP address to IPFS third-party services.
-        </p>
-      </p>
+        Keep in mind that using this feature exposes your IP address to IPFS third-party services.
+      </div>
     </div>
     <div
       class="flex flex-col gap-1 py-3"

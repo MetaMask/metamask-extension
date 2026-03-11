@@ -2847,7 +2847,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
-      "React: DOM nesting violations": 2,
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
