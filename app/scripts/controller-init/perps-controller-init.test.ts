@@ -270,14 +270,20 @@ describe('PerpsControllerInit', () => {
       ['perpsMarkTutorialCompleted', 'markTutorialCompleted'],
       ['perpsMarkFirstOrderCompleted', 'markFirstOrderCompleted'],
       ['perpsResetFirstTimeUserState', 'resetFirstTimeUserState'],
-      ['perpsClearPendingTransactionRequests', 'clearPendingTransactionRequests'],
+      [
+        'perpsClearPendingTransactionRequests',
+        'clearPendingTransactionRequests',
+      ],
       ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
       ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
       ['perpsClearDepositResult', 'clearDepositResult'],
       ['perpsClearWithdrawResult', 'clearWithdrawResult'],
       ['perpsGetBlockExplorerUrl', 'getBlockExplorerUrl'],
       ['perpsGetCurrentNetwork', 'getCurrentNetwork'],
-      ['perpsIsFirstTimeUserOnCurrentNetwork', 'isFirstTimeUserOnCurrentNetwork'],
+      [
+        'perpsIsFirstTimeUserOnCurrentNetwork',
+        'isFirstTimeUserOnCurrentNetwork',
+      ],
       ['perpsGetWatchlistMarkets', 'getWatchlistMarkets'],
       ['perpsToggleWatchlistMarket', 'toggleWatchlistMarket'],
       ['perpsIsWatchlistMarket', 'isWatchlistMarket'],
@@ -290,7 +296,9 @@ describe('PerpsControllerInit', () => {
         await (api as Record<string, CallableFunction>)[apiMethod]();
 
         expect(
-          (controller as unknown as Record<string, jest.Mock>)[controllerMethod],
+          (controller as unknown as Record<string, jest.Mock>)[
+            controllerMethod
+          ],
         ).toHaveBeenCalled();
       });
     }
