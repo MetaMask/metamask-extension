@@ -3994,8 +3994,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1 mUSD'ye dönüştür",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSD'ye dönüştürüldü",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "En az bir token seçilmeli."

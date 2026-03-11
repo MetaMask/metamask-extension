@@ -3994,8 +3994,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1 को mUSD में बदलें",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSD में बदला गया",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
