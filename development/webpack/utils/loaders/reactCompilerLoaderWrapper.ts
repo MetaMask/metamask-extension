@@ -83,15 +83,6 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
     if (typeof d.reason === 'string') {
       return d.reason;
     }
-    if (
-      typeof (detail as { toString?: () => string }).toString === 'function'
-    ) {
-      try {
-        return (detail as { toString: () => string }).toString();
-      } catch {
-        return undefined;
-      }
-    }
     try {
       return JSON.stringify(detail);
     } catch {
