@@ -286,7 +286,8 @@ export const ReviewGatorPermissionItem = ({
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
             value: formatValue(
-              permission.data.initialAmount, `0 ${tokenMetadata?.symbol}`
+              permission.data.initialAmount,
+              `0 ${tokenMetadata?.symbol}`
             ),
             testId: 'review-gator-permission-initial-allowance',
           },
