@@ -1082,9 +1082,6 @@
     "ui/components/ui/hex-to-decimal/hex-to-decimal.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/ui/identicon/identicon.component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/ui/list-item/list-item.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1386,6 +1383,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/hooks/useGasIncluded7702.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/hooks/useRWAToken.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
@@ -2734,6 +2734,9 @@
       "MetaMask: Background connection not initialized": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/onboarding-flow/account-status-layout/account-status-layout.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -2915,20 +2918,6 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings/contact-list-tab/add-contact/add-contact.test.js": {
-      "React: State updates on unmounted components": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/edit-contact/edit-contact.container.test.tsx": {
-      "React: PropTypes validation failures": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/edit-contact/edit-contact.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/view-contact/view-contact.container.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings/developer-options-tab/backup-and-sync.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3072,12 +3061,6 @@
     "ui/pages/swaps/import-token/import-token.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/swaps/list-with-search/list-with-search.test.js": {
-      "React: PropTypes validation failures": 2,
-      "error: Error: Insufficient number of substitutions": 1,
-      "error: Warning: React.createElement: type is invalid": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/swaps/loading-swaps-quotes/background-animation.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3090,9 +3073,6 @@
     },
     "ui/pages/swaps/notification-page/notification-page.test.js": {
       "React: PropTypes validation failures": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/swaps/searchable-item-list/item-list/item-list.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/swaps/select-quote-popover/quote-details/quote-details.test.js": {

@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Ajouter le jeton"
   },
-  "addTokenByContractAddress": {
-    "message": "Vous n’arrivez pas à trouver un jeton ? Vous pouvez ajouter manuellement n’importe quel jeton en copiant et collant son adresse. Les adresses des contrats de jetons sont disponibles sur $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Ajouter l'URL"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "Les frais de réseau indiqués sur l’écran précédent comprennent les deux transactions et seront divisés."
   },
-  "bridgeNetCost": {
-    "message": "Coût net"
-  },
   "bridgeNoMMFee": {
     "message": "Pas de frais MM"
   },
@@ -1129,10 +1122,6 @@
     "message": "Échange de $1 contre $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Établir une passerelle vers"
   },
@@ -1206,9 +1195,6 @@
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
-  },
-  "buildContactList": {
-    "message": "Créez votre liste de contacts"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask est conçu et établi dans le monde entier."
@@ -2130,9 +2116,6 @@
   },
   "delete": {
     "message": "Supprimer"
-  },
-  "deleteContact": {
-    "message": "Supprimer le contact"
   },
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
@@ -4264,9 +4247,6 @@
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Nouveau contact"
-  },
   "newContract": {
     "message": "Nouveau contrat"
   },
@@ -5797,12 +5777,6 @@
   },
   "queued": {
     "message": "En attente"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 reçoit le montant"
-  },
-  "quotedTotalCost": {
-    "message": "Coût total de $1"
   },
   "rank": {
     "message": "Rang"
@@ -8063,10 +8037,6 @@
     "message": "$1 cotations.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Aucun jeton disponible correspondant à $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Vos $1 seront ajoutés à votre compte une fois que cette transaction sera traitée.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8751,9 +8721,6 @@
   "usedByClients": {
     "message": "Utilisé par plusieurs clients différents"
   },
-  "userName": {
-    "message": "Nom d’utilisateur"
-  },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"
   },
@@ -8772,9 +8739,6 @@
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Voir le contact"
   },
   "viewDetails": {
     "message": "Afficher les détails"

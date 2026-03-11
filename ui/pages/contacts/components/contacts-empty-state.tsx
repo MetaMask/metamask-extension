@@ -3,29 +3,44 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  Button,
+  ButtonVariant,
+  ButtonSize,
   Text,
   TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTheme } from '../../../hooks/useTheme';
+import { ThemeType } from '../../../../shared/constants/preferences';
 
-const EMPTY_CONTACTS_IMAGE_SRC = './images/empty-contacts.svg';
-
-export function ContactsEmptyState() {
+export function ContactsEmptyState({
+  onAddContact,
+}: {
+  onAddContact: () => void;
+}) {
   const t = useI18nContext();
+  const theme = useTheme();
+
+  const emptyContactsImageSrc =
+    theme === ThemeType.light
+      ? './images/empty-contacts-light.svg'
+      : './images/empty-contacts.svg';
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
       padding={6}
+      paddingBottom={0}
+      paddingTop={0}
       gap={6}
-      className="flex w-full flex-col items-center justify-center py-12"
+      className="flex flex-col items-center justify-center"
       data-testid="contacts-empty-state"
     >
       <img
-        src={EMPTY_CONTACTS_IMAGE_SRC}
+        src={emptyContactsImageSrc}
         alt=""
         width={72}
         height={72}
@@ -34,16 +49,9 @@ export function ContactsEmptyState() {
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
-        gap={2}
-        className="flex max-w-64 flex-col items-center"
+        gap={4}
+        className="flex max-w-[218px] flex-col items-center"
       >
-        <Text
-          variant={TextVariant.HeadingMd}
-          color={TextColor.TextDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('buildContactList')}
-        </Text>
         <Text
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
@@ -51,6 +59,16 @@ export function ContactsEmptyState() {
         >
           {t('addFriendsAndAddresses')}
         </Text>
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          isFullWidth
+          onClick={onAddContact}
+          data-testid="contacts-add-contact-button"
+          className="max-w-[218px]"
+        >
+          {t('addContact')}
+        </Button>
       </Box>
     </Box>
   );

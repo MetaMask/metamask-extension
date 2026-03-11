@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
@@ -91,7 +91,7 @@ export const MultichainBridgeQuoteCard = ({
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
   const { isEstimatedReturnLow, isPriceImpactWarning, isPriceImpactError } =
-    useSelector(getValidationErrors);
+    useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
   const gasFeesSponsoredNetworkEnabled = useSelector(
