@@ -7,6 +7,7 @@ import {
   type QuoteResponse,
   isNativeAddress,
   RequestStatus,
+  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
@@ -16,7 +17,7 @@ import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, TokenPayload } from './types';
 
-const initialState: BridgeState = {
+export const initialState: BridgeState = {
   fromToken: null,
   toToken: null,
   fromTokenInputValue: null,
@@ -29,6 +30,8 @@ const initialState: BridgeState = {
   slippage: SlippageValue.BridgeDefault,
   txAlert: null,
   txAlertStatus: RequestStatus.FETCHED,
+  isSrcAssetPickerOpen: false,
+  isDestAssetPickerOpen: false,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -103,6 +106,7 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: { payload: TokenPayload }) => {
       const currentFromToken = state.fromToken;
       const newFromToken = toBridgeToken(payload);
+      state.isSrcAssetPickerOpen = false;
       // Set toToken to previous fromToken if new fromToken is the same as the current toToken
       if (
         state.toToken?.assetId &&
@@ -122,6 +126,7 @@ const bridgeSlice = createSlice({
     },
     setToToken: (state, { payload }: { payload: TokenPayload }) => {
       state.toToken = payload ? toBridgeToken(payload) : null;
+      state.isDestAssetPickerOpen = false;
     },
     setFromTokenInputValue: (
       state,
@@ -129,15 +134,51 @@ const bridgeSlice = createSlice({
     ) => {
       state.fromTokenInputValue = payload;
     },
-    resetInputFields: () => ({
-      ...initialState,
-    }),
+    resetInputFields: (state: BridgeState) => {
+      state.fromToken = initialState.fromToken;
+      state.toToken = initialState.toToken;
+      state.fromTokenInputValue = initialState.fromTokenInputValue;
+      state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
+      state.fromTokenBalance = initialState.fromTokenBalance;
+      state.fromNativeBalance = initialState.fromNativeBalance;
+      state.sortOrder = initialState.sortOrder;
+      state.selectedQuote = initialState.selectedQuote;
+      state.wasTxDeclined = initialState.wasTxDeclined;
+      state.slippage = initialState.slippage;
+      state.txAlert = initialState.txAlert;
+      state.txAlertStatus = initialState.txAlertStatus;
+      state.isSrcAssetPickerOpen = initialState.isSrcAssetPickerOpen;
+      state.isDestAssetPickerOpen = initialState.isDestAssetPickerOpen;
+    },
+    rehydrateBridgeStore: (
+      state,
+      { payload: { bridgeState: maybeBridgeState } },
+    ) => {
+      const bridgeState = maybeBridgeState ?? (initialState as BridgeState);
+      state.fromToken = bridgeState.fromToken;
+      state.toToken = bridgeState.toToken;
+      state.fromTokenInputValue = bridgeState.fromTokenInputValue;
+      state.fromTokenExchangeRate = bridgeState.fromTokenExchangeRate;
+      state.fromTokenBalance = bridgeState.fromTokenBalance;
+      state.fromNativeBalance = bridgeState.fromNativeBalance;
+      state.sortOrder = bridgeState.sortOrder;
+      state.selectedQuote = bridgeState.selectedQuote;
+      state.wasTxDeclined = bridgeState.wasTxDeclined;
+      state.slippage = bridgeState.slippage;
+      state.txAlert = bridgeState.txAlert;
+      state.txAlertStatus = bridgeState.txAlertStatus;
+      state.isSrcAssetPickerOpen = bridgeState.isSrcAssetPickerOpen;
+      state.isDestAssetPickerOpen = bridgeState.isDestAssetPickerOpen;
+    },
     restoreQuoteRequestFromState: (
       state,
-      { payload: quote }: { payload: QuoteResponse['quote'] },
+      {
+        payload: { sentAmount, quote },
+      }: { payload: QuoteResponse & QuoteMetadata },
     ) => {
       state.fromToken = toBridgeToken(quote.srcAsset);
       state.toToken = toBridgeToken(quote.destAsset);
+      state.fromTokenInputValue = sentAmount.amount;
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
@@ -150,6 +191,12 @@ const bridgeSlice = createSlice({
     },
     setSlippage: (state, action) => {
       state.slippage = action.payload;
+    },
+    setIsSrcAssetPickerOpen: (state, action) => {
+      state.isSrcAssetPickerOpen = action.payload;
+    },
+    setIsDestAssetPickerOpen: (state, action) => {
+      state.isDestAssetPickerOpen = action.payload;
     },
   },
   extraReducers: (builder) => {

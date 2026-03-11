@@ -16,6 +16,7 @@ import {
   TextButtonSize,
   TextColor,
   TextVariant,
+  FontWeight,
 } from '@metamask/design-system-react';
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
@@ -136,11 +137,12 @@ export const ConfirmInfoRowAddressDisplay = memo(
             onClose={handleModalClose}
           />
         )}
-        <TrustIcon displayState={displayState} image={image} />
+        {name && <TrustIcon displayState={displayState} image={image} />}
         {name && isClickable && (
           <TextButton
             size={TextButtonSize.BodyMd}
             onClick={handleClick}
+            className="hover:bg-transparent active:bg-transparent"
             data-testid="confirm-info-row-display-name"
           >
             {name}
@@ -149,6 +151,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
           >
@@ -156,17 +159,21 @@ export const ConfirmInfoRowAddressDisplay = memo(
           </Text>
         )}
         {!name && isClickable && (
-          <TextButton
-            size={TextButtonSize.BodyMd}
-            onClick={handleClick}
-            data-testid="confirm-info-row-display-name"
-          >
-            {display}
-          </TextButton>
+          <span className="address-display-no-name">
+            <TextButton
+              size={TextButtonSize.BodyMd}
+              onClick={handleClick}
+              className="hover:bg-transparent active:bg-transparent whitespace-nowrap"
+              data-testid="confirm-info-row-display-name"
+            >
+              {display}
+            </TextButton>
+          </span>
         )}
         {!name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             ellipsis
             data-testid="confirm-info-row-display-name"

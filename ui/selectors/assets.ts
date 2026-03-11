@@ -55,6 +55,7 @@ import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import {
+  getNetworkConfigurationsByChainId,
   getNonTestNetworks,
   NetworkState,
 } from '../../shared/modules/selectors/networks';
@@ -907,6 +908,7 @@ export const selectBalanceForAllWallets = createSelector(
     selectTokensStateForBalances,
     selectCurrencyRateStateForBalances,
     selectEnabledNetworkMapForBalances,
+    getNetworkConfigurationsByChainId,
   ],
   (
     accountTreeState,
@@ -919,6 +921,7 @@ export const selectBalanceForAllWallets = createSelector(
     tokensState,
     currencyRateState,
     enabledNetworkMap,
+    networkConfigurationsByChainId,
   ) =>
     calculateBalanceForAllWallets(
       // TODO: fix this by ensuring @metamask/assets-controllers has proper types
@@ -932,6 +935,7 @@ export const selectBalanceForAllWallets = createSelector(
       tokensState,
       currencyRateState,
       enabledNetworkMap,
+      networkConfigurationsByChainId ?? {},
     ),
 );
 

@@ -49,7 +49,10 @@ export const WalletInitiatedHeader = () => {
     }
 
     if (currentConfirmation.type === TransactionType.musdClaim) {
-      onCancel({ location: MetaMetricsEventLocation.Confirmation });
+      onCancel({
+        location: MetaMetricsEventLocation.Confirmation,
+        navigateBackToPreviousPage: true,
+      });
       return;
     }
 

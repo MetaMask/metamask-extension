@@ -72,6 +72,7 @@ import type { OnboardingControllerState } from '../../app/scripts/controllers/on
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { IsEquivalent } from './type-level-utils';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
@@ -390,10 +391,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
   ConnectivityControllerState;
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export type IsEquivalent<A, B> = [A, B] extends [B, A] ? true : false;
 
 /**
  * This type contains all controller state top-level properties, and

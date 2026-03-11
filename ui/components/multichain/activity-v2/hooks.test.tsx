@@ -5,10 +5,20 @@ import {
   act,
   renderHook as renderHookBase,
 } from '@testing-library/react-hooks';
+import thunk from 'redux-thunk';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
+import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import {
   useGetTitle,
   usePrefetchTransactions,
@@ -17,17 +27,27 @@ import {
 
 const mockUseInfiniteQuery = jest.fn();
 const mockUseQueryClient = jest.fn();
-const mockQueriesTransactions = jest.fn();
+const mockGetV4MultiAccountTransactionsInfiniteQueryOptions = jest.fn();
 
 jest.mock('@tanstack/react-query', () => ({
   useInfiniteQuery: (...args: unknown[]) => mockUseInfiniteQuery(...args),
   useQueryClient: () => mockUseQueryClient(),
 }));
 
-jest.mock('../../../helpers/queries', () => ({
-  queries: {
-    transactions: (...args: unknown[]) => mockQueriesTransactions(...args),
+jest.mock('../../../helpers/api-client', () => ({
+  apiClient: {
+    accounts: {
+      getV4MultiAccountTransactionsInfiniteQueryOptions: (...args: unknown[]) =>
+        mockGetV4MultiAccountTransactionsInfiniteQueryOptions(...args),
+    },
   },
+}));
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate,
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -536,7 +556,7 @@ describe('Query hooks', () => {
 
   beforeEach(() => {
     mockUseInfiniteQuery.mockReturnValue({ data: undefined });
-    mockQueriesTransactions.mockReturnValue({
+    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue({
       queryKey: ['transactions'],
       queryFn: jest.fn(),
       getNextPageParam: jest.fn(),
@@ -556,16 +576,18 @@ describe('Query hooks', () => {
   it('useTransactionsQuery composes query options and delegates to useInfiniteQuery', () => {
     renderQueryHook(() => useTransactionsQuery());
 
-    expect(mockQueriesTransactions).toHaveBeenCalledWith(
-      {
-        accountAddresses: [`eip155:0:${expectedEvmAddress}`],
-        evmAddress: expectedEvmAddress,
-        networks: expectedNetworks,
-      },
-      { enabled: true, keepPreviousData: true },
-    );
+    expect(
+      mockGetV4MultiAccountTransactionsInfiniteQueryOptions,
+    ).toHaveBeenCalledWith({
+      accountAddresses: [`eip155:0:${expectedEvmAddress}`],
+      networks: expectedNetworks,
+      includeTxMetadata: true,
+    });
     expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ select: expect.any(Function) }),
+      expect.objectContaining({
+        select: expect.any(Function),
+        enabled: true,
+      }),
     );
   });
 
@@ -583,7 +605,9 @@ describe('Query hooks', () => {
     };
 
     mockUseQueryClient.mockReturnValue(mockQueryClient);
-    mockQueriesTransactions.mockReturnValue(queryOptions);
+    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue(
+      queryOptions,
+    );
 
     const { result } = renderQueryHook(() => usePrefetchTransactions());
 
@@ -593,6 +617,117 @@ describe('Query hooks', () => {
 
     expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
       queryOptions,
+    );
+  });
+});
+
+describe('useBridgeTxHistoryData', () => {
+  const middleware = [thunk];
+
+  const bridgeStore = configureMockStore(middleware)(
+    createBridgeMockStore({
+      metamaskStateOverrides: {
+        transactions: [
+          {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: mockBridgeTxData.bridgeHistoryItem.approvalTxId,
+            hash: '0xapprovalhash',
+            type: TransactionType.tokenMethodApprove,
+            status: TransactionStatus.confirmed,
+          },
+        ],
+      },
+      bridgeStatusStateOverrides: {
+        txHistory: {
+          intentOrderUid: {
+            ...mockBridgeTxData.bridgeHistoryItem,
+            approvalTxId: mockBridgeTxData.bridgeHistoryItem.approvalTxId,
+            status: {
+              ...mockBridgeTxData.bridgeHistoryItem.status,
+              status: StatusTypes.FAILED,
+            },
+          },
+        },
+      },
+    }),
+  );
+
+  it('does not treat completed approval txs as failed bridge rows', () => {
+    const { result } = renderHookBase(
+      () =>
+        useBridgeTxHistoryData({
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: '0xapprovalhash-1',
+            hash: '0xapprovalhash',
+            type: TransactionType.tokenMethodApprove,
+            status: TransactionStatus.confirmed,
+          } as never,
+        }),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={bridgeStore}>{children}</Provider>
+        ),
+      },
+    );
+
+    expect(result.current.isBridgeFailed).toBeNull();
+    expect(result.current.isBridgeComplete).toBeNull();
+    expect(result.current.showBridgeTxDetails).toBeUndefined();
+  });
+
+  it('uses originalTransactionId lookup for intent transactions without treating them as approvals', () => {
+    const intentStore = configureMockStore(middleware)(
+      createBridgeMockStore({
+        bridgeStatusStateOverrides: {
+          txHistory: {
+            intentOrderUid: {
+              ...mockBridgeTxData.bridgeHistoryItem,
+              originalTransactionId: 'intent-tx-meta-id',
+              approvalTxId: undefined,
+              status: {
+                ...mockBridgeTxData.bridgeHistoryItem.status,
+                status: StatusTypes.FAILED,
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    const { result } = renderHookBase(
+      () =>
+        useBridgeTxHistoryData({
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: 'intent-tx-meta-id',
+            hash: undefined,
+            type: TransactionType.swap,
+            status: TransactionStatus.submitted,
+          } as never,
+        }),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={intentStore}>{children}</Provider>
+        ),
+      },
+    );
+
+    expect(result.current.isBridgeFailed).toBe(true);
+    expect(result.current.isBridgeComplete).toBe(false);
+    expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+
+    act(() => result.current.showBridgeTxDetails?.());
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/intent-tx-meta-id`,
+      expect.objectContaining({
+        state: expect.objectContaining({
+          transaction: expect.objectContaining({
+            id: 'intent-tx-meta-id',
+          }),
+        }),
+      }),
     );
   });
 });
