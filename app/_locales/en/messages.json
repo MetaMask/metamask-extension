@@ -1080,6 +1080,9 @@
   "bridgeGasFeesSplit": {
     "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
   },
+  "bridgeLowestCost": {
+    "message": "Lowest cost"
+  },
   "bridgeMarketClosedAction": {
     "message": "Market is closed"
   },
@@ -1097,9 +1100,6 @@
   },
   "bridgeMarketClosedTitle": {
     "message": "Market closed"
-  },
-  "bridgeNetCost": {
-    "message": "Net cost"
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
@@ -1162,6 +1162,9 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeQuotesSortedByCost": {
+    "message": "Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee."
+  },
   "bridgeReceive": {
     "message": "Receive $1 on $2",
     "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
@@ -1177,6 +1180,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectQuote": {
+    "message": "Select quote"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Select token, amount and destination account"
@@ -1221,10 +1227,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Bridge to"
@@ -6118,11 +6120,8 @@
   "quizIntroduction": {
     "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
   },
-  "quotedReceiveAmount": {
-    "message": "$1 receive amount"
-  },
   "quotedTotalCost": {
-    "message": "$1 total cost"
+    "message": "Total cost: $1"
   },
   "rank": {
     "message": "Rank"

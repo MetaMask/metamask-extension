@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "पिछली स्क्रीन पर कोट किए गए किसी भी नेटवर्क शुल्क में दोनों ट्रांसेक्शन शामिल हैं और इसे विभाजित किया जाएगा।"
   },
-  "bridgeNetCost": {
-    "message": "नेट लागत"
-  },
   "bridgeNoMMFee": {
     "message": "कोई MM फीस नहीं"
   },
@@ -1128,10 +1125,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 को $2 से स्वैप किया जा रहा है",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 न्यूनतम",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
@@ -5785,12 +5778,6 @@
   },
   "queued": {
     "message": "कतारबद्ध"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 राशि प्राप्त करें"
-  },
-  "quotedTotalCost": {
-    "message": "$1 कुल लागत"
   },
   "rank": {
     "message": "रैंक"
