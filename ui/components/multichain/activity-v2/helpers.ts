@@ -8,7 +8,10 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import { MERKL_DISTRIBUTOR_ADDRESS } from '../../app/musd/constants';
 import { formatUnits } from '../../../../shared/lib/unit';
+
+const MERKL_DISTRIBUTOR_ADDRESS_LOWER = MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
 
 export type AssetScope =
   | { kind: 'native'; caipAssetType?: string }
@@ -281,6 +284,11 @@ export function calculateFiatFromMarketRates(
 export function resolveTransactionType(
   tx: TransactionViewModel,
 ): TransactionType {
+  // Detect Merkl claim transactions by the distributor address
+  if (tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS_LOWER) {
+    return TransactionType.musdClaim;
+  }
+
   const { transactionCategory, transactionType } = tx;
 
   if (transactionCategory === 'APPROVE') {

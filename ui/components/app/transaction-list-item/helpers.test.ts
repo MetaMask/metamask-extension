@@ -1,7 +1,11 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import transactions from '../../../../test/data/transaction-data.json';
-import { mapTransactionTypeToCategory } from './helpers';
+import { MERKL_DISTRIBUTOR_ADDRESS } from '../musd/constants';
+import {
+  mapTransactionTypeToCategory,
+  resolveTransactionType,
+} from './helpers';
 
 const expectedResults = [
   {
@@ -72,6 +76,28 @@ describe('mapTransactionTypeToCategory', () => {
   it('returns send category for musdClaim', () => {
     expect(mapTransactionTypeToCategory(TransactionType.musdClaim)).toBe(
       TransactionGroupCategory.send,
+    );
+  });
+
+  it('returns send category for contractInteraction addressed to Merkl distributor', () => {
+    const resolved = resolveTransactionType(
+      TransactionType.contractInteraction,
+      MERKL_DISTRIBUTOR_ADDRESS,
+    );
+    expect(resolved).toBe(TransactionType.musdClaim);
+    expect(mapTransactionTypeToCategory(resolved)).toBe(
+      TransactionGroupCategory.send,
+    );
+  });
+
+  it('returns interaction category for contractInteraction with a different address', () => {
+    const resolved = resolveTransactionType(
+      TransactionType.contractInteraction,
+      '0x0000000000000000000000000000000000000001',
+    );
+    expect(resolved).toBe(TransactionType.contractInteraction);
+    expect(mapTransactionTypeToCategory(resolved)).toBe(
+      TransactionGroupCategory.interaction,
     );
   });
 

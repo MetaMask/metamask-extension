@@ -10,6 +10,7 @@ import {
   ModalHeader,
   Text,
 } from '../../../../../components/component-library';
+import { resolveTransactionType } from '../../../../../components/app/transaction-list-item/helpers';
 import {
   Display,
   FlexDirection,
@@ -33,7 +34,12 @@ export function TransactionDetailsModal({
   const t = useI18nContext();
 
   const title = useMemo(() => {
-    switch (transactionMeta.type) {
+    const type = resolveTransactionType(
+      transactionMeta.type,
+      transactionMeta.txParams?.to,
+    );
+
+    switch (type) {
       case TransactionType.musdClaim:
         return t('musdClaimTitle');
       case TransactionType.musdConversion:
@@ -43,7 +49,7 @@ export function TransactionDetailsModal({
       default:
         return t('transaction');
     }
-  }, [transactionMeta.type, t]);
+  }, [transactionMeta.type, transactionMeta.txParams?.to, t]);
 
   return (
     <Modal
