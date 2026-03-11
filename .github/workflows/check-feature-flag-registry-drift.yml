@@ -1,4 +1,4 @@
-name: Check feature flag registry drift
+name: Check Feature Flag Registry Drift PROD
 
 on:
   schedule:
@@ -44,7 +44,7 @@ jobs:
 
       - name: Notify Slack on drift
         if: ${{ always() && steps.check.outputs.HAS_DRIFT == 'true' }}
-        uses: slackapi/slack-github-action@v2.0.0
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
           webhook-type: incoming-webhook

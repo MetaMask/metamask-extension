@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Любая комиссия сети, указанная на предыдущем экране, включает обе транзакции и будет разделена."
   },
-  "bridgeNetCost": {
-    "message": "Чистая стоимость"
-  },
   "bridgeNoMMFee": {
     "message": "Без комиссии MM"
   },
@@ -1129,10 +1126,6 @@
     "message": "Обменивается $1 на $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 мин.",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Мост к"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
-  },
-  "buildContactList": {
-    "message": "Создайте список контактов"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "Удалить"
-  },
-  "deleteContact": {
-    "message": "Удалить контакт"
   },
   "deleteMetaMetricsData": {
     "message": "Удалить данные MetaMetrics"
@@ -4264,9 +4251,6 @@
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Новый контакт"
-  },
   "newContract": {
     "message": "Новый контракт"
   },
@@ -5800,12 +5784,6 @@
   },
   "queued": {
     "message": "В очереди"
-  },
-  "quotedReceiveAmount": {
-    "message": "Сумма к получению $1"
-  },
-  "quotedTotalCost": {
-    "message": "Общая стоимость: $1"
   },
   "rank": {
     "message": "Рейтинг"
@@ -8754,9 +8732,6 @@
   "usedByClients": {
     "message": "Используется множеством разных клиентов"
   },
-  "userName": {
-    "message": "Имя пользователя"
-  },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"
   },
@@ -8775,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Смотреть контакт"
   },
   "viewDetails": {
     "message": "Просмотр сведений"

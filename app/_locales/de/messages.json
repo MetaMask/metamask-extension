@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Die auf dem vorherigen Bildschirm angegebenen Netzwerkgebühren umfassen beide Transaktionen und werden aufgeteilt."
   },
-  "bridgeNetCost": {
-    "message": "Nettokosten"
-  },
   "bridgeNoMMFee": {
     "message": "Keine MM-Gebühr"
   },
@@ -1129,10 +1126,6 @@
     "message": "Swapping von $1 für $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 Min.",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Bridge zu"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
-  },
-  "buildContactList": {
-    "message": "Erstellen Sie Ihre Kontaktliste."
   },
   "builtAroundTheWorld": {
     "message": "MetaMask ist weltweit konzipiert und aufgebaut."
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "Löschen"
-  },
-  "deleteContact": {
-    "message": "Kontakt löschen"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics-Daten löschen"
@@ -4264,9 +4251,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Neuer Kontakt"
-  },
   "newContract": {
     "message": "Neuer Contract"
   },
@@ -5800,12 +5784,6 @@
   },
   "queued": {
     "message": "In Warteschlange"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 Betrag empfangen"
-  },
-  "quotedTotalCost": {
-    "message": "$1 Gesamtkosten"
   },
   "rank": {
     "message": "Rang"
@@ -8754,9 +8732,6 @@
   "usedByClients": {
     "message": "Verwendet von einer Reihe von Kunden"
   },
-  "userName": {
-    "message": "Nutzername"
-  },
   "userOpContractDeployError": {
     "message": "Contract-Bereitstellung von einem Smart-Konto wird nicht unterstützt"
   },
@@ -8775,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Auf $1 ansehen",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Kontakt anzeigen"
   },
   "viewDetails": {
     "message": "Details anzeigen"

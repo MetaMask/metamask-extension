@@ -1023,9 +1023,6 @@
   "bridgeGasFeesSplit": {
     "message": "Saklaw ng anumang na-quote na bayad sa network sa nakaraang screen ang parehong transaksyon at hahatiin ito."
   },
-  "bridgeNetCost": {
-    "message": "Net na gastos"
-  },
   "bridgeNoMMFee": {
     "message": "Walang bayad sa MM"
   },
@@ -1129,10 +1126,6 @@
     "message": "Nagsa-swap ng $1 para sa $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "I-bridge sa"
   },
@@ -1206,9 +1199,6 @@
   },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
-  },
-  "buildContactList": {
-    "message": "Buuin ang iyong listahan ng contact"
   },
   "builtAroundTheWorld": {
     "message": "Ang MetaMask ay dinisenyo at itinatag sa buong mundo."
@@ -2130,9 +2120,6 @@
   },
   "delete": {
     "message": "Tanggalin"
-  },
-  "deleteContact": {
-    "message": "Tanggalin ang kontak"
   },
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
@@ -4264,9 +4251,6 @@
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Bagong Contact"
-  },
   "newContract": {
     "message": "Bagong kontrata"
   },
@@ -5800,12 +5784,6 @@
   },
   "queued": {
     "message": "Naka-queue"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 na matatanggap na halaga"
-  },
-  "quotedTotalCost": {
-    "message": "$1 na kabuuang halaga"
   },
   "rank": {
     "message": "Rank"
@@ -8754,9 +8732,6 @@
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang kliyente"
   },
-  "userName": {
-    "message": "Username"
-  },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"
   },
@@ -8775,9 +8750,6 @@
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Tingnan ang Contact"
   },
   "viewDetails": {
     "message": "Tingnan ang mga detalye"

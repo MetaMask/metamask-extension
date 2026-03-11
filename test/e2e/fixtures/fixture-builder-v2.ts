@@ -2,6 +2,8 @@ import { merge, cloneDeep } from 'lodash';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
+import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
@@ -161,6 +163,11 @@ class FixtureBuilderV2 {
     data: Partial<SelectedNetworkControllerState>,
   ): this {
     merge(this.fixture.data.SelectedNetworkController, data);
+    return this;
+  }
+
+  withNameController(data: Partial<NameControllerState>): this {
+    merge(this.fixture.data.NameController, data);
     return this;
   }
 
@@ -335,13 +342,21 @@ class FixtureBuilderV2 {
     });
   }
 
+  withNoNames(): this {
+    // Direct assignment instead of merge so existing petname entries are cleared if any
+    this.fixture.data.NameController.names = {
+      [NameType.ETHEREUM_ADDRESS]: {},
+    };
+    return this;
+  }
+
   withPermissionControllerConnectedToTestDapp({
     account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
     useLocalhostHostname = false,
     numberOfDapps = 1,
     chainIds = [1337],
   }: {
-    account?: string;
+    account?: string | string[];
     useLocalhostHostname?: boolean;
     numberOfDapps?: number;
     chainIds?: number[];
@@ -353,7 +368,9 @@ class FixtureBuilderV2 {
       );
     }
 
-    const selectedAccount = account.toLowerCase();
+    const resolvedAccounts = (Array.isArray(account) ? account : [account]).map(
+      (a) => a.toLowerCase(),
+    );
 
     const dappUrls = [
       useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
@@ -366,11 +383,11 @@ class FixtureBuilderV2 {
     for (const chainId of chainIds) {
       const scopeKey = `eip155:${chainId}`;
       optionalScopes[scopeKey] = {
-        accounts: [`${scopeKey}:${selectedAccount}`],
+        accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
       };
     }
     optionalScopes['wallet:eip155'] = {
-      accounts: [`wallet:eip155:${selectedAccount}`],
+      accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
     };
 
     // Unique random IDs for each dapp subject's permission
