@@ -27,6 +27,7 @@ import type {
   BenchmarkResults,
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
+import { toKebabCase } from '../../shared/lib/string-utils';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import {
   compareBenchmarkEntries,
@@ -35,7 +36,6 @@ import {
   ComparisonSeverity,
   ComparisonDirection,
   type BenchmarkEntryComparison,
-  type MetricComparison,
 } from './comparison-utils';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import { fetchHistoricalPerformanceData } from './historical-comparison';
@@ -64,19 +64,6 @@ export async function loadCurrentBenchmarks(
     results.push({ name, data });
   }
   return results;
-}
-
-/**
- * Converts a camelCase or PascalCase string to kebab-case.
- * Handles leading uppercase letters without creating a leading hyphen.
- *
- * @param str - Input string (e.g., "startupStandardHome" or "SwapPage").
- * @returns Kebab-case string (e.g., "startup-standard-home" or "swap-page").
- */
-function toKebabCase(str: string): string {
-  return str
-    .replace(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
-    .replace(/^-/u, '');
 }
 
 /**
@@ -222,13 +209,16 @@ type MetricLine = { metric: string; parts: string[] };
 /**
  * Builds display lines for a single benchmark comparison.
  * Metrics with baseline show relative deltas; metrics without show "(no baseline)".
- * Absolute fail violations override the indication icon with 🔺.
+ * Absolute violations override the indication icon with the appropriate indicator.
+ *
+ * @param comparison - A single benchmark entry comparison result.
  */
 function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
-  const failKeys = new Set(
-    comparison.absoluteViolations
-      .filter((v) => v.severity === ThresholdSeverity.Fail)
-      .map((v) => `${v.metricId}:${v.percentile}`),
+  const violationsByKey = new Map(
+    comparison.absoluteViolations.map((v) => [
+      `${v.metricId}:${v.percentile}`,
+      v.severity,
+    ]),
   );
 
   const relativeByKey = new Map(
@@ -255,10 +245,16 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
       const rel = relativeByKey.get(key);
       if (rel) {
         const delta = formatDeltaPercent(rel.deltaPercent, rel.direction);
+        const absoluteSeverity = violationsByKey.get(key);
         let icon: string;
-        if (failKeys.has(key)) {
+        if (absoluteSeverity === ThresholdSeverity.Fail) {
           icon = getTrafficLightIndication(
             ComparisonSeverity.Regression,
+            rel.direction,
+          );
+        } else if (absoluteSeverity === ThresholdSeverity.Warn) {
+          icon = getTrafficLightIndication(
+            ComparisonSeverity.Warn,
             rel.direction,
           );
         } else if (rel.severity === ComparisonSeverity.Regression) {
