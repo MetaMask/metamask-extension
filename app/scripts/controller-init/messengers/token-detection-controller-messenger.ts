@@ -46,7 +46,7 @@ type AllowedActions =
   | TokensControllerAddDetectedTokensAction
   | TokensControllerAddTokensAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | AuthenticationController.AuthenticationControllerGetBearerToken;
+  | AuthenticationController.AuthenticationControllerGetBearerTokenAction;
 
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent

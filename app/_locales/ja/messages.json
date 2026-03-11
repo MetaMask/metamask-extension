@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
-  "buildContactList": {
-    "message": "連絡先リストを作成する"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
   },
@@ -2130,9 +2127,6 @@
   },
   "delete": {
     "message": "削除"
-  },
-  "deleteContact": {
-    "message": "連絡先を削除"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetricsデータを削除"
@@ -4263,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新しい連絡先"
   },
   "newContract": {
     "message": "新しいコントラクト"
@@ -8748,9 +8739,6 @@
   "usedByClients": {
     "message": "さまざまな異なるクライアントによって使用されています"
   },
-  "userName": {
-    "message": "ユーザー名"
-  },
   "userOpContractDeployError": {
     "message": "スマートコントラクトアカウントからのコントラクトの展開はサポートされていません"
   },
@@ -8769,9 +8757,6 @@
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "連絡先を表示"
   },
   "viewDetails": {
     "message": "詳細を表示"
