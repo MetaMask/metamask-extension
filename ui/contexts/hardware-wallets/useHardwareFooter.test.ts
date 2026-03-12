@@ -49,15 +49,16 @@ describe('useHardwareFooter', () => {
     originalInTest = process.env.IN_TEST;
     originalJestWorkerId = process.env.JEST_WORKER_ID;
     delete process.env.IN_TEST;
+    delete process.env.JEST_WORKER_ID;
 
     mockConnectionState = {
       status: ConnectionStatus.Ready,
     };
     mockEnsureDeviceReady = jest.fn();
     mockShowErrorModal = jest.fn();
-    mockOnUserRejectedHardwareWalletError = jest.fn().mockResolvedValue(
-      undefined,
-    );
+    mockOnUserRejectedHardwareWalletError = jest
+      .fn()
+      .mockResolvedValue(undefined);
 
     (useHardwareWalletState as jest.Mock).mockReturnValue({
       connectionState: mockConnectionState,
@@ -94,7 +95,7 @@ describe('useHardwareFooter', () => {
     ({
       id: 'confirmation-id',
       type,
-    } as TransactionMeta);
+    }) as TransactionMeta;
 
   const renderUseHardwareFooter = ({
     currentConfirmation = createConfirmation(TransactionType.simpleSend),
@@ -103,17 +104,20 @@ describe('useHardwareFooter', () => {
     currentConfirmation?: TransactionMeta;
     currentConfirmationId?: string;
   } = {}) =>
-    renderHook((props) =>
-      useHardwareFooter({
-        ...props,
-        onUserRejectedHardwareWalletError: mockOnUserRejectedHardwareWalletError,
-      }),
-    {
-      initialProps: {
-        currentConfirmation,
-        currentConfirmationId,
+    renderHook(
+      (props) =>
+        useHardwareFooter({
+          ...props,
+          onUserRejectedHardwareWalletError:
+            mockOnUserRejectedHardwareWalletError,
+        }),
+      {
+        initialProps: {
+          currentConfirmation,
+          currentConfirmationId,
+        },
       },
-    });
+    );
 
   describe('preflight state', () => {
     it('returns preflight disabled and ready for non-hardware wallet accounts', () => {
