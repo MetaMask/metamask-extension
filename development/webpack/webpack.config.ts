@@ -30,9 +30,10 @@ import {
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
-import { getSwcLoader } from './utils/loaders/swcLoader';
+import { getSwcLoader } from './utils/loaders/getSwcLoader';
 import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
+import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
@@ -236,15 +237,32 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const reactCompilerLoader = getReactCompilerLoader(
-  '17',
-  args.reactCompilerVerbose,
-  args.reactCompilerDebug,
-);
+const threadLoaderConfig = getThreadLoader({
+  threads: args.resolvedThreads,
+  jobsPerThread: args.resolvedJobs,
+  watch: args.watch,
+});
+const reactCompilerConfig = getReactCompilerLoader({
+  target: '17',
+  verbose: args.reactCompilerVerbose,
+  debug: args.reactCompilerDebug,
+  threadLoaderEnabled: threadLoaderConfig !== null,
+});
+
+const UI_COMPONENT_RE =
+  /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u;
+
+const threadLoaderRule = threadLoaderConfig
+  ? [{ test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [threadLoaderConfig] }]
+  : [];
+const reactCompilerRule = [
+  { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [reactCompilerConfig] },
+];
+
 const envValidationLoader = args.validateEnv
   ? {
       loader: require.resolve('./utils/loaders/envValidationLoader'),
-      options: { declarations: buildEnvVarDeclarations },
+      options: { declarations: Array.from(buildEnvVarDeclarations) },
     }
   : null;
 
@@ -351,23 +369,36 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
+      // Source preprocessing (enforce: 'pre' ensures these run before normal
+      // loaders; options must be JSON-serializable for thread-loader compatibility)
       {
-        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
-        include: UI_DIR_RE,
-        use: [reactCompilerLoader],
+        test: /\.(?:ts|mts|tsx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre',
+        use: [envValidationLoader].filter(Boolean),
       },
+      {
+        test: /\.(?:js|mjs|jsx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre',
+        use: [envValidationLoader].filter(Boolean),
+      },
+      // thread-loader pool for UI component files (must appear before SWC rules)
+      ...threadLoaderRule,
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader],
+        use: tsxLoader,
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader],
+        use: jsxLoader,
       },
+      // React Compiler for UI component files (must appear after SWC rules)
+      ...reactCompilerRule,
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {
