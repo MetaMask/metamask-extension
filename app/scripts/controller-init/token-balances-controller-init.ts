@@ -1,4 +1,5 @@
 import { TokenBalancesController } from '@metamask/assets-controllers';
+import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { ControllerInitFunction } from './types';
 import {
   TokenBalancesControllerMessenger,
@@ -10,18 +11,20 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  const { useMultiAccountBalanceChecker } = initMessenger.call(
-    'PreferencesController:getState',
-  );
+  // Extension uses a custom PreferencesController that has custom state
+  const getRetypedPrefState = () =>
+    initMessenger.call(
+      'PreferencesController:getState',
+    ) as unknown as PreferencesControllerState;
+  const { useMultiAccountBalanceChecker } = getRetypedPrefState();
 
   const controller = new TokenBalancesController({
-    // @ts-expect-error - TokenBalancesControllerMessenger type is incorrect - to investigate
     messenger: controllerMessenger,
     state: persistedState.TokenBalancesController,
-    queryMultipleAccounts: useMultiAccountBalanceChecker,
+    queryMultipleAccounts: Boolean(useMultiAccountBalanceChecker),
     interval: 30_000,
     allowExternalServices: () =>
-      initMessenger.call('PreferencesController:getState').useExternalServices,
+      Boolean(getRetypedPrefState().useExternalServices),
     accountsApiChainIds: () => {
       const state = initMessenger.call('RemoteFeatureFlagController:getState');
 

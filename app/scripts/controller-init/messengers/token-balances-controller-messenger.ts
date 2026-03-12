@@ -38,10 +38,10 @@ import type {
   AccountActivityServiceStatusChangedEvent,
   AccountActivityServiceBalanceUpdatedEvent,
 } from '@metamask/core-backend';
-import {
+import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
-} from '../../controllers/preferences-controller';
+} from '@metamask/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import { RootMessenger } from '../../lib/messenger';
 
