@@ -54,7 +54,10 @@ import {
   lookupDomainName,
   initializeDomainSlice,
 } from '../../../ducks/domains';
-import { getAddressBook, getInternalAccounts } from '../../../selectors';
+import {
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../../selectors';
 import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
@@ -74,7 +77,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const addressBook = useSelector(getAddressBook);
+  const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
   const domainError = useSelector(getDomainError);
