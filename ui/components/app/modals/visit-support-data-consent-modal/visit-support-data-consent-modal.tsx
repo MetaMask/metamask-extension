@@ -56,23 +56,22 @@ const VisitSupportDataConsentModal: React.FC<
       shieldCustomerId?: string;
     }) => {
       onClose();
-      let supportLinkWithUserId = SUPPORT_LINK as string;
-      const queryParams = new URLSearchParams();
-      queryParams.append('metamask_version', params.version);
+      const url = new URL(SUPPORT_LINK as string);
+      url.searchParams.append('metamask_version', params.version);
       if (params.profileId) {
-        queryParams.append('metamask_profile_id', params.profileId);
+        url.searchParams.append('metamask_profile_id', params.profileId);
       }
       if (params.metaMetricsId) {
-        queryParams.append('metamask_metametrics_id', params.metaMetricsId);
+        url.searchParams.append(
+          'metamask_metametrics_id',
+          params.metaMetricsId,
+        );
       }
       if (params.shieldCustomerId) {
-        queryParams.append('shield_id', params.shieldCustomerId);
+        url.searchParams.append('shield_id', params.shieldCustomerId);
       }
 
-      const queryString = queryParams.toString();
-      if (queryString) {
-        supportLinkWithUserId += `?${queryString}`;
-      }
+      const supportLinkWithUserId = url.toString();
 
       trackEvent(
         {
@@ -93,19 +92,37 @@ const VisitSupportDataConsentModal: React.FC<
 
   const handleClickNoShare = useCallback(() => {
     onClose();
+    // When user doesn't consent, strip only personal data while preserving
+    // non-personal attribution parameters like utm_source
+    let supportLinkWithoutPersonalData = SUPPORT_LINK as string;
+
+    if (SUPPORT_LINK) {
+      const url = new URL(SUPPORT_LINK);
+      const personalParams = [
+        'metamask_profile_id',
+        'metamask_metametrics_id',
+        'shield_id',
+        'metamask_version',
+      ];
+
+      // Remove only personal parameters, keep others like utm_source
+      personalParams.forEach((param) => url.searchParams.delete(param));
+      supportLinkWithoutPersonalData = url.toString();
+    }
+
     trackEvent(
       {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SupportLinkClicked,
         properties: {
-          url: SUPPORT_LINK,
+          url: supportLinkWithoutPersonalData,
         },
       },
       {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    openWindow(SUPPORT_LINK as string);
+    openWindow(supportLinkWithoutPersonalData);
   }, [onClose, trackEvent]);
 
   return (

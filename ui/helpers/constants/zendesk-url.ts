@@ -1,87 +1,89 @@
 const ZENDESK_URLS = {
   ACCOUNT_UPGRADE:
-    'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts',
+    'https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts',
   ADD_CUSTOM_TOKENS:
-    'https://support.metamask.io/managing-my-tokens/custom-tokens/how-to-display-tokens-in-metamask/',
+    'https://support.metamask.io/managing-my-tokens/custom-tokens/how-to-display-tokens-in-metamask/?utm_source=extension',
   ADD_SOLANA_ACCOUNTS:
-    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts',
+    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/?utm_source=extension#solana-accounts',
   CUSTOMIZE_NONCE:
-    'https://support.metamask.io/transactions-and-gas/transactions/how-to-customize-a-transaction-nonce/',
-  GAS_FEES: 'https://support.metamask.io/transactions-and-gas/gas-fees/',
+    'https://support.metamask.io/transactions-and-gas/transactions/how-to-customize-a-transaction-nonce/?utm_source=extension',
+  GAS_FEES:
+    'https://support.metamask.io/transactions-and-gas/gas-fees/?utm_source=extension',
   HARDWARE_CONNECTION:
-    'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
+    'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/?utm_source=extension',
   HARDWARE_CONNECTION_TREZOR_LEDGER:
-    'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/',
+    'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/?utm_source=extension',
   IMPORT_ACCOUNT_MOBILE:
-    'https://support.metamask.io/start/use-an-existing-wallet?client=mobile',
+    'https://support.metamask.io/start/use-an-existing-wallet?client=mobile&utm_source=extension',
   IMPORTED_ACCOUNTS:
-    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/',
+    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/?utm_source=extension',
   IMPORTED_ACCOUNT_JSON:
-    'https://support.metamask.io/start/how-to-import-an-account/#how-can-i-import-my-private-key-using-a-json-file',
+    'https://support.metamask.io/start/how-to-import-an-account/?utm_source=extension#how-can-i-import-my-private-key-using-a-json-file',
   IMPORTED_ACCOUNTS_PRIVATE_KEY:
-    'https://support.metamask.io/start/use-an-existing-wallet/#import-using-a-private-key',
+    'https://support.metamask.io/start/use-an-existing-wallet/?utm_source=extension#import-using-a-private-key',
   INFURA_BLOCKAGE:
-    'https://support.metamask.io/troubleshooting/why-infura-cannot-serve-certain-areas/',
+    'https://support.metamask.io/troubleshooting/why-infura-cannot-serve-certain-areas/?utm_source=extension',
   LEDGER_FIREFOX_U2F_GUIDE:
     'https://support.ledger.com/hc/en-us/articles/10371387758493-MetaMask-Firefox-Ledger-Integration-Issue?support=true',
   LEGACY_WEB3:
-    'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/',
+    'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/?utm_source=extension',
   PASSWORD_ARTICLE:
-    'https://support.metamask.io/configure/wallet/passwords-and-metamask/',
+    'https://support.metamask.io/configure/wallet/passwords-and-metamask/?utm_source=extension',
   PASSWORD_AND_SRP_ARTICLE:
-    'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/',
+    'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/?utm_source=extension',
   PRIVATE_KEY_GUIDE:
-    'https://support.metamask.io/start/user-guide-secret-recovery-phrase-password-and-private-keys/#private-keys',
+    'https://support.metamask.io/start/user-guide-secret-recovery-phrase-password-and-private-keys/?utm_source=extension#private-keys',
   PASSWORD_RESET:
-    'https://support.metamask.io/configure/wallet/how-can-i-reset-my-password/',
+    'https://support.metamask.io/configure/wallet/how-can-i-reset-my-password/?utm_source=extension',
   SECRET_RECOVERY_PHRASE:
-    'https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/',
+    'https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/?utm_source=extension',
   NON_CUSTODIAL_WALLET:
-    'https://support.metamask.io/getting-started/metamask-is-a-self-custodial-wallet/',
+    'https://support.metamask.io/getting-started/metamask-is-a-self-custodial-wallet/?utm_source=extension',
   SPEEDUP_CANCEL:
-    'https://support.metamask.io/transactions-and-gas/transactions/how-to-speed-up-or-cancel-a-pending-transaction/',
-  SUPPORT_URL: 'https://support.metamask.io',
+    'https://support.metamask.io/transactions-and-gas/transactions/how-to-speed-up-or-cancel-a-pending-transaction/?utm_source=extension',
+  SUPPORT_URL: 'https://support.metamask.io?utm_source=extension',
   TOKEN_SAFETY_PRACTICES:
-    'https://support.metamask.io/managing-my-tokens/token-safety-practices/',
+    'https://support.metamask.io/managing-my-tokens/token-safety-practices/?utm_source=extension',
   UNKNOWN_NETWORK:
-    'https://support.metamask.io/networks-and-sidechains/managing-networks/the-risks-of-connecting-to-an-unknown-network/',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/the-risks-of-connecting-to-an-unknown-network/?utm_source=extension',
   USER_GUIDE_CUSTOM_NETWORKS:
-    'https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/?utm_source=extension',
   USER_GUIDE_DAPPS:
-    'https://support.metamask.io/third-party-platforms-and-dapps/user-guide-dapps/',
+    'https://support.metamask.io/third-party-platforms-and-dapps/user-guide-dapps/?utm_source=extension',
   USER_GUIDE_GAS:
-    'https://support.metamask.io/transactions-and-gas/gas-fees/user-guide-gas/',
+    'https://support.metamask.io/transactions-and-gas/gas-fees/user-guide-gas/?utm_source=extension',
   VERIFY_CUSTOM_NETWORK:
-    'https://support.metamask.io/networks-and-sidechains/managing-networks/verifying-custom-network-information/',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/verifying-custom-network-information/?utm_source=extension',
   NETWORK_DEPRECATED:
-    'https://support.metamask.io/networks-and-sidechains/eth-on-testnets/',
+    'https://support.metamask.io/networks-and-sidechains/eth-on-testnets/?utm_source=extension',
   SOLANA_ACCOUNTS:
-    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts',
+    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/?utm_source=extension#solana-accounts',
   METAMETRICS_SETTINGS:
-    'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings',
+    'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings?utm_source=extension',
   PROFILE_PRIVACY:
-    'https://support.metamask.io/privacy-and-security/profile-privacy',
+    'https://support.metamask.io/privacy-and-security/profile-privacy?utm_source=extension',
   CONTRACT_ADDRESS_WARNING:
-    'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/',
+    'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/?utm_source=extension',
   TRANSACTION_SHIELD:
-    'https://support.metamask.io/manage-crypto/transactions/transaction-shield',
+    'https://support.metamask.io/manage-crypto/transactions/transaction-shield?utm_source=extension',
   FIND_TRANSACTION_HASH:
-    'https://support.metamask.io/manage-crypto/transactions/how-to-find-a-transaction-id',
+    'https://support.metamask.io/manage-crypto/transactions/how-to-find-a-transaction-id?utm_source=extension',
   MULTICHAIN_ACCOUNTS:
-    'https://support.metamask.io/configure/accounts/multichain-accounts/',
+    'https://support.metamask.io/configure/accounts/multichain-accounts/?utm_source=extension',
   CONNECTING_TO_DAPP:
-    'https://support.metamask.io/more-web3/dapps/connecting-to-a-dapp/',
+    'https://support.metamask.io/more-web3/dapps/connecting-to-a-dapp/?utm_source=extension',
   PRIVACY_BEST_PRACTICES:
-    'https://support.metamask.io/privacy-and-security/privacy-best-practices',
+    'https://support.metamask.io/privacy-and-security/privacy-best-practices?utm_source=extension',
   BASIC_SAFETY_TIPS:
-    'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/',
+    'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/?utm_source=extension',
   METAMASK_REWARDS:
-    'https://support.metamask.io/manage-crypto/metamask-rewards',
+    'https://support.metamask.io/manage-crypto/metamask-rewards?utm_source=extension',
   DECEPTIVE_SITE:
-    'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/',
-  SWAPS_USER_GUIDE: 'https://support.metamask.io/token-swaps/user-guide-swaps/',
+    'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/?utm_source=extension',
+  SWAPS_USER_GUIDE:
+    'https://support.metamask.io/token-swaps/user-guide-swaps/?utm_source=extension',
   UPDATE_VERSION:
-    'https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/' as const,
+    'https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/?utm_source=extension' as const,
 } as const;
 
 export type ZendeskUrl = (typeof ZENDESK_URLS)[keyof typeof ZENDESK_URLS];

@@ -168,7 +168,10 @@ describe('App Header', () => {
         fireEvent.click(rejectButton);
 
         await waitFor(() => {
-          expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+          // When user doesn't consent, non-personal params (utm_source) are preserved
+          // URL constructor normalizes the URL (adds / before ?)
+          const expectedUrl = new URL(SUPPORT_LINK).toString();
+          expect(openWindow).toHaveBeenCalledWith(expectedUrl);
         });
       });
     });

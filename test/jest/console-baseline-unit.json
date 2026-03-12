@@ -435,7 +435,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/modals/visit-support-data-consent-modal/visit-support-data.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4,
+      "React: Act warnings (component updates not wrapped)": 7,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx": {
@@ -1271,6 +1271,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/subscription/useSubscription.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {

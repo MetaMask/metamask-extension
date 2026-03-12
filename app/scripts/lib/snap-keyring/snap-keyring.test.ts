@@ -134,10 +134,10 @@ const createControllerMessenger = ({
         return mockEndFlow.mockReturnValue(true)(params);
 
       case 'ApprovalController:showSuccess':
-        return mockShowSuccess();
+        return mockShowSuccess(params);
 
       case 'ApprovalController:showError':
-        return mockShowError();
+        return mockShowError(params);
 
       case 'KeyringController:getAccounts':
         return mockGetAccounts.mockResolvedValue([])();
@@ -325,6 +325,15 @@ describe('Snap Keyring Methods', () => {
         },
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
+      expect(mockShowSuccess).toHaveBeenCalledWith([
+        expect.objectContaining({
+          message: expect.objectContaining({
+            properties: expect.objectContaining({
+              learnMoreLink: expect.stringMatching(/\?utm_source=extension/u),
+            }),
+          }),
+        }),
+      ]);
       expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
