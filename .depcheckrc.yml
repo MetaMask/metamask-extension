@@ -105,6 +105,7 @@ ignores:
   - '@metamask/permissions-kernel-snap'
   # perps poc
   - '@metamask/perps-controller'
+  - '@metamask/browser-playground'
 
 # files depcheck should not parse
 ignorePatterns:
