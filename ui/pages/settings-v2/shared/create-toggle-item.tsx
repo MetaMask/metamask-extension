@@ -29,8 +29,6 @@ export type ToggleItemConfig = {
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
-  /** Wrapper element test id (e.g. for the row container). */
-  containerDataTestId?: string;
   disabledSelector?: (state: MetaMaskReduxState) => boolean;
   trackEvent?: ToggleEventConfig;
 };
@@ -73,7 +71,6 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
         description={description}
         value={value}
         onToggle={handleToggle}
-        containerDataTestId={config.containerDataTestId}
         dataTestId={config.dataTestId}
         disabled={disabled}
       />
