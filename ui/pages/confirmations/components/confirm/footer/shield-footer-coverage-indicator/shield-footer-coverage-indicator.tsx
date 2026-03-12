@@ -61,7 +61,11 @@ const ShieldFooterCoverageIndicator = () => {
         ownerId={currentConfirmation.id}
         label=""
         labelChildren={
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium} color={TextColor.Inherit}>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.Inherit}
+          >
             {t('transactionShield')}
           </Text>
         }
