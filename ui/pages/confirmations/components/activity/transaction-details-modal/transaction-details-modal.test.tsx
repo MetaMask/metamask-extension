@@ -91,6 +91,15 @@ describe('TransactionDetailsModal', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders mUSD Claim title for musdClaim transactions', () => {
+    const { getByRole } = render(TransactionType.musdClaim);
+    expect(
+      getByRole('heading', {
+        name: messages.musdClaimTitle.message,
+      }),
+    ).toBeInTheDocument();
+  });
+
   it('renders Funded Perps title for perpsDeposit transactions', () => {
     const { getByRole } = render(TransactionType.perpsDeposit);
     expect(

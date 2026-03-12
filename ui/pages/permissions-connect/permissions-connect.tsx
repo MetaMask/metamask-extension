@@ -590,7 +590,6 @@ function PermissionsConnect() {
     const connectPageProps = {
       rejectPermissionsRequest: (requestId: string) =>
         cancelPermissionsRequest(requestId),
-      activeTabOrigin: origin,
       request: permissionsRequest || {},
       permissionsRequestId: permissionsRequestId || '',
       approveConnection,
@@ -600,7 +599,6 @@ function PermissionsConnect() {
     return <MultichainAccountsConnectPage {...connectPageProps} />;
   }, [
     cancelPermissionsRequest,
-    origin,
     permissionsRequest,
     permissionsRequestId,
     approveConnection,

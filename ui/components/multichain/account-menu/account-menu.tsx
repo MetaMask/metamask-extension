@@ -68,6 +68,7 @@ import {
   WalletClientType,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { getSnapRoute } from '../../../helpers/utils/util';
 import { CreateEthAccount } from '../create-eth-account';
 import { CreateSnapAccount } from '../create-snap-account';
 import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
@@ -209,7 +210,7 @@ export const AccountMenu = ({
       },
     });
     onClose();
-    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+    navigate(getSnapRoute(ACCOUNT_WATCHER_SNAP_ID));
   }, [trackEvent, hdEntropyIndex, onClose, navigate]);
 
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
@@ -631,11 +632,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   onClick={() => {
                     onClose();
-                    navigate(
-                      `/snaps/view/${encodeURIComponent(
-                        INSTITUTIONAL_WALLET_SNAP_ID,
-                      )}`,
-                    );
+                    navigate(getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID));
                   }}
                 >
                   {t('manageInstitutionalWallets')}
