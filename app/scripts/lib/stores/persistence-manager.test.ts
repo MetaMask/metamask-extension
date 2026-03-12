@@ -274,6 +274,45 @@ describe('PersistenceManager', () => {
         MISSING_VAULT_ERROR,
       );
     });
+
+    it('reports get-failure to Sentry only on first failure (deduplication)', async () => {
+      const storageError = new Error('Corruption: block checksum mismatch');
+      mockStoreGet.mockRejectedValueOnce(storageError);
+      mockStoreGet.mockRejectedValueOnce(storageError);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        storageError,
+      );
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        storageError,
+      );
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureException).toHaveBeenCalledWith(storageError, {
+        tags: { 'persistence.error': 'get-failed' },
+        fingerprint: ['persistence-error', 'get-failed'],
+      });
+    });
+
+    it('reports get-recovered when get() succeeds after a previous failure', async () => {
+      const storageError = new Error('Corruption: block checksum mismatch');
+      mockStoreGet.mockRejectedValueOnce(storageError);
+      mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        storageError,
+      );
+      await manager.get({ validateVault: false });
+
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data retrieval recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'get-recovered' },
+          fingerprint: ['persistence-event', 'get-recovered'],
+        },
+      );
+    });
   });
   describe('persist', () => {
     it('throws if storageKind is not split', async () => {
