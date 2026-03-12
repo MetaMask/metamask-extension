@@ -2851,15 +2851,7 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings-v2/assets-tab/autodetect-nfts-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/assets-tab/currency-sub-page.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings-v2/assets-tab/display-nft-media-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/assets-tab/local-currency-item.test.tsx": {
@@ -2900,7 +2892,22 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/settings-v2/privacy-tab/privacy-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/third-party-apis-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings-v2/settings-v2.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/autodetect-nfts-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2908,6 +2915,10 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/shared/create-toggle-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
