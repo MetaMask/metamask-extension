@@ -42,14 +42,14 @@ function render(totalFiat?: string) {
 }
 
 describe('TransactionDetailsTotalRow', () => {
-  it('renders with correct test id', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('transaction-details-total-row')).toBeInTheDocument();
+  it('renders nothing when totalFiat is not provided', () => {
+    const { container } = render();
+    expect(container.firstChild).toBeNull();
   });
 
-  it('renders dash when totalFiat is not provided', () => {
-    const { getByText } = render();
-    expect(getByText('-')).toBeInTheDocument();
+  it('renders with correct test id when totalFiat is provided', () => {
+    const { getByTestId } = render('150.75');
+    expect(getByTestId('transaction-details-total-row')).toBeInTheDocument();
   });
 
   it('renders formatted total when totalFiat is provided', () => {

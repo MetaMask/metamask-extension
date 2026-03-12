@@ -22,12 +22,16 @@ export function TransactionDetailsNetworkFeeRow() {
     return fiatFormatter(Number(payNetworkFeeFiat));
   }, [fiatFormatter, payNetworkFeeFiat]);
 
+  if (!payNetworkFeeFiat) {
+    return null;
+  }
+
   return (
     <TransactionDetailsRow
       label={t('networkFee')}
       data-testid="transaction-details-network-fee-row"
     >
-      <Text variant={TextVariant.bodyMd}>{networkFeeFormatted ?? '-'}</Text>
+      <Text variant={TextVariant.bodyMd}>{networkFeeFormatted}</Text>
     </TransactionDetailsRow>
   );
 }

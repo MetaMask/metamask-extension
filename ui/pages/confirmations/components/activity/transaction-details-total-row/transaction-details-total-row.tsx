@@ -22,12 +22,16 @@ export function TransactionDetailsTotalRow() {
     return fiatFormatter(Number(payTotal));
   }, [fiatFormatter, payTotal]);
 
+  if (!payTotal) {
+    return null;
+  }
+
   return (
     <TransactionDetailsRow
       label={t('total')}
       data-testid="transaction-details-total-row"
     >
-      <Text variant={TextVariant.bodyMd}>{totalFormatted ?? '-'}</Text>
+      <Text variant={TextVariant.bodyMd}>{totalFormatted}</Text>
     </TransactionDetailsRow>
   );
 }
