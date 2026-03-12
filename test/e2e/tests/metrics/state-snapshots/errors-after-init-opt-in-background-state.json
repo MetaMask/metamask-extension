@@ -293,6 +293,7 @@
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": false,
       "skipDeepLinkInterstitial": "boolean",
+      "smartAccountRequestsFromDapps": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
       "tokenNetworkFilter": { "0x539": "boolean" },
@@ -378,9 +379,7 @@
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": {
-    "tokensChainsCache": { "0x539": "object" }
-  },
+  "TokenListController": { "tokensChainsCache": { "0x539": "object" } },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},

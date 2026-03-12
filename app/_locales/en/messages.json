@@ -7667,6 +7667,12 @@
   "smartAccountLabel": {
     "message": "Smart Account"
   },
+  "smartAccountRequestsFromDapps": {
+    "message": "Smart account requests from dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
   },

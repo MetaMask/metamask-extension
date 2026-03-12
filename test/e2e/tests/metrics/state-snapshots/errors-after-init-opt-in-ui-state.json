@@ -290,6 +290,7 @@
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": false,
       "skipDeepLinkInterstitial": "boolean",
+      "smartAccountRequestsFromDapps": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
       "tokenNetworkFilter": { "0x539": "boolean" },

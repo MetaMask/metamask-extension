@@ -861,6 +861,7 @@
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": true,
         "skipDeepLinkInterstitial": false,
+        "smartAccountRequestsFromDapps": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {

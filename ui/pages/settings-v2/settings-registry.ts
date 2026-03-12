@@ -8,6 +8,7 @@ import {
   LANGUAGE_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
+  TRANSACTIONS_V2_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
@@ -47,6 +48,10 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
   [CURRENCY_ROUTE]: {
     labelKey: 'localCurrency',
     parentPath: ASSETS_ROUTE,
+  },
+  [TRANSACTIONS_V2_ROUTE]: {
+    labelKey: 'transactions',
+    parentPath: SETTINGS_V2_ROUTE,
   },
   // Preferences and display tab
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
@@ -94,6 +99,16 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'assets',
     iconName: IconName.Dollar,
     component: mmLazy(() => import('./assets-tab/index.ts')),
+  },
+  {
+    id: 'transactions',
+    path: TRANSACTIONS_V2_ROUTE,
+    labelKey: 'transactions',
+    iconName: IconName.Setting,
+    component: mmLazy(
+      (() =>
+        import('./transactions-tab/index.ts')) as unknown as DynamicImportType,
+    ),
   },
   {
     id: 'preferences-and-display',

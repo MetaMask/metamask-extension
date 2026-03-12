@@ -2925,6 +2925,11 @@
     "ui/pages/settings-v2/shared/settings-tab.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Identity function warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings/advanced-tab/advanced-tab.component.test.js": {
       "React: Missing key props in lists": 1,
       "React: PropTypes validation failures": 1,

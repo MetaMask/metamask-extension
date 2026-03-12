@@ -4342,6 +4342,15 @@ export function setDismissSmartAccountSuggestionEnabled(
   };
 }
 
+export function setSmartAccountRequestsFromDapps(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    await dispatch(setPreference('smartAccountRequestsFromDapps', value));
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }

@@ -17,6 +17,7 @@ export const SETTINGS_ROUTE = '/settings';
 export const SETTINGS_V2_ROUTE = '/settings-v2';
 export const ASSETS_ROUTE = '/settings-v2/assets';
 export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
+export const TRANSACTIONS_V2_ROUTE = '/settings-v2/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings-v2/preferences-and-display';
 export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
