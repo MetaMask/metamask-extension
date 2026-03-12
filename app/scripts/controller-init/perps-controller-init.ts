@@ -1,4 +1,4 @@
-import { PerpsController } from '@metamask/perps-controller';
+import { PerpsController, UserHistoryItem } from '@metamask/perps-controller';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { ControllerApi, ControllerInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
@@ -98,7 +98,33 @@ type PerpsActionName =
   | 'perpsToggleWatchlistMarket'
   | 'perpsIsWatchlistMarket';
 
-type PerpsBackgroundApi = Record<PerpsActionName, ControllerApi>;
+// TODO: These methods have custom signatures that don't match their controller
+// counterparts. Once the controller package is updated to return the deposit
+// transaction ID directly and expose getUserHistory as a proper controller
+// method, these can be removed and the mapped type will cover them automatically.
+type PerpsCustomApiNames =
+  | 'perpsDepositWithConfirmation'
+  | 'perpsGetUserHistory';
+
+type PerpsBackgroundApi = {
+  [ActionName in Exclude<
+    PerpsActionName,
+    PerpsCustomApiNames
+  >]: ActionName extends `perps${infer firstLetter}${infer remainingLetters}`
+    ? `${Lowercase<firstLetter>}${remainingLetters}` extends keyof PerpsController
+      ? PerpsController[`${Lowercase<firstLetter>}${remainingLetters}`]
+      : never
+    : never;
+} & {
+  perpsDepositWithConfirmation: (
+    ...args: Parameters<PerpsController['depositWithConfirmation']>
+  ) => Promise<string | null>;
+  perpsGetUserHistory: (params: {
+    startTime?: number;
+    endTime?: number;
+    accountId?: `${string}:${string}:${string}`;
+  }) => Promise<UserHistoryItem[]>;
+};
 
 function getApi(controller: PerpsController): PerpsBackgroundApi {
   return {
