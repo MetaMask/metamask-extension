@@ -82,6 +82,30 @@ ignores:
   - 'nyc' # coverage
   - 'core-js-pure' # polyfills
   - 'react-compiler-webpack' # build tool
+  # eslint — imported in eslint.config.mjs (which depcheck cannot parse)
+  # or required as peer dependencies of @metamask/eslint-config-*
+  - '@metamask/eslint-config'
+  - '@metamask/eslint-config-jest'
+  - '@metamask/eslint-config-mocha'
+  - '@metamask/eslint-config-nodejs'
+  - '@metamask/eslint-config-typescript'
+  - '@metamask/eslint-plugin-design-tokens'
+  - 'eslint-config-prettier'
+  - 'eslint-import-resolver-typescript'
+  - 'eslint-plugin-import-x'
+  - 'eslint-plugin-jest'
+  - 'eslint-plugin-jsdoc'
+  - 'eslint-plugin-mocha'
+  - 'eslint-plugin-n'
+  - 'eslint-plugin-prettier'
+  - 'eslint-plugin-promise'
+  - 'eslint-plugin-react'
+  - 'eslint-plugin-react-compiler'
+  - 'eslint-plugin-react-hooks'
+  - 'eslint-plugin-storybook'
+  - 'eslint-plugin-tailwindcss'
+  - 'globals'
+  - 'typescript-eslint'
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
   - 'babel-plugin-react-compiler'
