@@ -10,7 +10,7 @@ import {
   getPreferences,
   getSelectedInternalAccount,
 } from '../../../selectors';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import {
@@ -39,7 +39,7 @@ jest.mock('../../../selectors', () => ({
   selectAnyEnabledNetworksAreAvailable: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
 }));
 

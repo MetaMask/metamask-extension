@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Добавить токен"
   },
-  "addTokenByContractAddress": {
-    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Добавить URL-адрес"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "Любая комиссия сети, указанная на предыдущем экране, включает обе транзакции и будет разделена."
   },
-  "bridgeNetCost": {
-    "message": "Чистая стоимость"
-  },
   "bridgeNoMMFee": {
     "message": "Без комиссии MM"
   },
@@ -1128,10 +1121,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Обменивается $1 на $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 мин.",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Мост к"
@@ -1798,7 +1787,8 @@
     "message": "Разблокирует MetaMask только на этом устройстве."
   },
   "createPasswordDetailsSocial": {
-    "message": "Потеря этого пароля означает потерю доступа к кошельку на всех устройствах, "
+    "message": "Потеря этого пароля означает потерю доступа к кошельку на всех устройствах, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask не может ее сбросить."
@@ -3988,8 +3978,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Конвертировать $1 в mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Конвертировано в mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
@@ -5791,12 +5781,6 @@
   },
   "queued": {
     "message": "В очереди"
-  },
-  "quotedReceiveAmount": {
-    "message": "Сумма к получению $1"
-  },
-  "quotedTotalCost": {
-    "message": "Общая стоимость: $1"
   },
   "rank": {
     "message": "Рейтинг"
@@ -8056,10 +8040,6 @@
   "swapNQuotesWithDot": {
     "message": "Котировок: $1.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "Нет доступных токенов, соответствующих $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Ваш $1 будет зачислен на ваш счет после обработки этой транзакции.",

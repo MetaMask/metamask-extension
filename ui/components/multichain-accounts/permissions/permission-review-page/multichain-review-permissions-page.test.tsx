@@ -9,7 +9,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
@@ -22,10 +22,12 @@ jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => ({ origin: 'https%3A//test.dapp' }),
+    useSearchParams: () => [
+      new URLSearchParams('origin=https%3A%2F%2Ftest.dapp'),
+    ],
     useLocation: () => ({
       pathname: '/test',
-      search: '',
+      search: '?origin=https%3A%2F%2Ftest.dapp',
       hash: '',
       state: null,
     }),
@@ -54,7 +56,7 @@ jest.mock('../../../../store/actions', () => ({
   setPermittedChains: jest.fn(() => ({ type: 'SET_PERMITTED_CHAINS' })),
 }));
 
-jest.mock('../../../../../shared/modules/environment');
+jest.mock('../../../../../shared/lib/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
@@ -155,7 +157,8 @@ const render = (state = {}) => {
       origin: 'https://test.dapp',
     },
   });
-  return renderWithProvider(<MultichainReviewPermissions />, store);
+  const pathname = `/test?origin=${encodeURIComponent('https://test.dapp')}`;
+  return renderWithProvider(<MultichainReviewPermissions />, store, pathname);
 };
 
 describe('MultichainReviewPermissions', () => {

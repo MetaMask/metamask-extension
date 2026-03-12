@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';

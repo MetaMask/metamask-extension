@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Ajouter le jeton"
   },
-  "addTokenByContractAddress": {
-    "message": "Vous n’arrivez pas à trouver un jeton ? Vous pouvez ajouter manuellement n’importe quel jeton en copiant et collant son adresse. Les adresses des contrats de jetons sont disponibles sur $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Ajouter l'URL"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "Les frais de réseau indiqués sur l’écran précédent comprennent les deux transactions et seront divisés."
   },
-  "bridgeNetCost": {
-    "message": "Coût net"
-  },
   "bridgeNoMMFee": {
     "message": "Pas de frais MM"
   },
@@ -1128,10 +1121,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Échange de $1 contre $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Établir une passerelle vers"
@@ -1798,7 +1787,8 @@
     "message": "Déverrouille MetaMask sur cet appareil uniquement."
   },
   "createPasswordDetailsSocial": {
-    "message": "La perte de ce mot de passe entraîne la perte de l’accès au portefeuille sur tous les appareils. "
+    "message": "La perte de ce mot de passe entraîne la perte de l’accès au portefeuille sur tous les appareils. ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask ne peut pas le réinitialiser."
@@ -3988,8 +3978,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Convertir $1 en mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Converti en mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
@@ -5788,12 +5778,6 @@
   },
   "queued": {
     "message": "En attente"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 reçoit le montant"
-  },
-  "quotedTotalCost": {
-    "message": "Coût total de $1"
   },
   "rank": {
     "message": "Rang"
@@ -8053,10 +8037,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 cotations.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "Aucun jeton disponible correspondant à $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Vos $1 seront ajoutés à votre compte une fois que cette transaction sera traitée.",

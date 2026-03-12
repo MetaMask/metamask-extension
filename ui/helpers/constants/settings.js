@@ -1,7 +1,7 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { isExperimental, isFlask } from '../../../shared/lib/build-types';
-import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,

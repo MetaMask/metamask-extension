@@ -21,7 +21,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';

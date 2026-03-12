@@ -28,8 +28,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { SmartAccountTab } from '../../../pages/confirmations/components/confirm/smart-account-tab/smart-account-tab';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';

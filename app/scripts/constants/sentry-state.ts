@@ -1,4 +1,4 @@
-import { AllProperties } from '../../../shared/modules/object.utils';
+import { AllProperties } from '../../../shared/lib/object.utils';
 
 type SentryMaskValue =
   | boolean

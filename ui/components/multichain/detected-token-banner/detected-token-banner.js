@@ -7,7 +7,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   getDetectedTokensInCurrentNetwork,
   getAllDetectedTokensForSelectedAddress,

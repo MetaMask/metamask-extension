@@ -44,7 +44,7 @@ import {
   getIsSocialLoginFlow,
   getDataCollectionForMarketing,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
