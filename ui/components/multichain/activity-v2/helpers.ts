@@ -8,10 +8,8 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
-import { MERKL_DISTRIBUTOR_ADDRESS } from '../../app/musd/constants';
+import { resolveTransactionType as resolveMusdClaimType } from '../../app/transaction-list-item/helpers';
 import { formatUnits } from '../../../../shared/lib/unit';
-
-const MERKL_DISTRIBUTOR_ADDRESS_LOWER = MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
 
 export type AssetScope =
   | { kind: 'native'; caipAssetType?: string }
@@ -327,9 +325,11 @@ export function resolveTransactionType(
 
   // Detect Merkl claim transactions — only when the tx would otherwise be
   // a generic contractInteraction, matching the legacy activity list guard.
-  if (tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS_LOWER) {
-    return TransactionType.musdClaim;
-  }
-
-  return TransactionType.contractInteraction;
+  return (
+    resolveMusdClaimType(
+      TransactionType.contractInteraction,
+      tx.txParams?.to,
+      tx.txParams?.data,
+    ) ?? TransactionType.contractInteraction
+  );
 }

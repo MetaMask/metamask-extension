@@ -3,7 +3,10 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
-import { MERKL_DISTRIBUTOR_ADDRESS } from '../../app/musd/constants';
+import {
+  MERKL_DISTRIBUTOR_ADDRESS,
+  MERKL_CLAIM_METHOD_ID,
+} from '../../app/musd/constants';
 import type {
   Token,
   TransactionGroup,
@@ -365,17 +368,32 @@ describe('resolveTransactionType', () => {
     expect(result).toBe(TransactionType.tokenMethodTransferFrom);
   });
 
-  it('returns musdClaim for a contract interaction to the Merkl distributor', () => {
+  it('returns musdClaim for a contract interaction to the Merkl distributor with claim method', () => {
     const result = resolveTransactionType(
       makeApiTx({
         time: Date.now(),
         txParams: {
           from: '0x0000000000000000000000000000000000000000',
           to: MERKL_DISTRIBUTOR_ADDRESS,
+          data: `${MERKL_CLAIM_METHOD_ID}0000000000000000`,
         },
       }),
     );
     expect(result).toBe(TransactionType.musdClaim);
+  });
+
+  it('returns contractInteraction for Merkl distributor with non-claim method', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          data: '0x12345678', // Different method ID
+        },
+      }),
+    );
+    expect(result).toBe(TransactionType.contractInteraction);
   });
 
   it('does not override APPROVE transactions to the Merkl distributor', () => {
