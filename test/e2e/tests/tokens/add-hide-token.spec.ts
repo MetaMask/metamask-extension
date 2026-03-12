@@ -87,7 +87,7 @@ describe('Add hide token', function () {
             tokenBalances: {
               [account]: {
                 [toHex(chainId)]: {
-                  [tokenAddress]: '0x186a0',
+                  [tokenAddress]: '0x186a0', // 100000 raw = 10 TST (4 decimals)
                 },
               },
             },
