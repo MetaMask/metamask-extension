@@ -7,7 +7,7 @@ import MetafoxLogo from '../../ui/metafox-logo';
 import { PickerNetwork } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 
 type AppHeaderLockedContentProps = {
   currentNetwork: MultichainNetworkConfiguration;

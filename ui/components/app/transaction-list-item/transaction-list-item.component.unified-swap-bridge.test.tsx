@@ -96,6 +96,57 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     expect(getByText(messages.failed.message)).toBeInTheDocument();
   });
 
+  it('should render pending for submitted unified swap tx even when not earliest nonce', () => {
+    const { getByText, queryByText, queryByTestId } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockUnifiedSwapTxGroup,
+          primaryTransaction: {
+            ...mockUnifiedSwapTxGroup.primaryTransaction,
+            status: TransactionStatus.submitted,
+          },
+        }}
+        isEarliestNonce={false}
+      />,
+      configureStore()(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              {
+                ...mockUnifiedSwapTxGroup.primaryTransaction,
+                status: TransactionStatus.submitted,
+              },
+            ],
+          },
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              intentOrderUid: {
+                ...mockBridgeTxData.bridgeHistoryItem,
+                quote: {
+                  ...mockBridgeTxData.bridgeHistoryItem.quote,
+                  intent: {
+                    protocol: 'cowswap',
+                  },
+                },
+                originalTransactionId:
+                  mockUnifiedSwapTxGroup.initialTransaction.id,
+                status: {
+                  ...mockBridgeTxData.bridgeHistoryItem.status,
+                  destChain: {},
+                  status: StatusTypes.PENDING,
+                },
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    expect(getByText(messages.pending.message)).toBeInTheDocument();
+    expect(queryByText(messages.queued.message)).not.toBeInTheDocument();
+    expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
+  });
+
   it('should render pending confirmed bridge tx summary', () => {
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
     const { queryByTestId } = renderWithProvider(

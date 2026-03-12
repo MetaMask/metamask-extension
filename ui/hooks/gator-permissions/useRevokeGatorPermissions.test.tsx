@@ -398,7 +398,9 @@ describe('useRevokeGatorPermissions', () => {
       };
 
       // Return undefined for the different address that doesn't exist
-      mockGetInternalAccountByAddress.mockReturnValue(undefined);
+      mockGetInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () =>
@@ -764,7 +766,9 @@ describe('useRevokeGatorPermissions', () => {
       };
 
       // Return undefined for the different address that doesn't exist
-      mockGetInternalAccountByAddress.mockReturnValue(undefined);
+      mockGetInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () =>

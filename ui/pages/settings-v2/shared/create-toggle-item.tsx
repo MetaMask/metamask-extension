@@ -17,18 +17,15 @@ export type ToggleEventConfig = {
   properties: (newValue: boolean) => Record<string, Json>;
 };
 
-/** Translate function signature for custom description renderers */
-export type ToggleItemDescriptionRenderer = (
-  t: (key: string, ...args: unknown[]) => React.ReactNode,
-) => React.ReactNode;
+type TranslateFunction = ReturnType<typeof useI18nContext>;
 
 export type ToggleItemConfig = {
   name: string;
   titleKey: string;
-  /** Simple i18n key for description (plain text). */
+  /** Simple description via i18n key */
   descriptionKey?: string;
-  /** Custom description with links etc. When set, takes precedence over descriptionKey. */
-  description?: ToggleItemDescriptionRenderer;
+  /** Custom description formatter. Receives translation function for i18n. Takes precedence over descriptionKey. */
+  formatDescription?: (t: TranslateFunction) => string | React.ReactNode;
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
@@ -63,21 +60,17 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
       }
     };
 
-    let descriptionContent: React.ReactNode;
-    if (config.description) {
-      descriptionContent = config.description(
-        t as (...args: unknown[]) => React.ReactNode,
-      );
+    let description: string | React.ReactNode;
+    if (config.formatDescription) {
+      description = config.formatDescription(t);
     } else if (config.descriptionKey) {
-      descriptionContent = t(config.descriptionKey);
-    } else {
-      descriptionContent = undefined;
+      description = t(config.descriptionKey);
     }
 
     return (
       <SettingsToggleItem
         title={t(config.titleKey)}
-        description={descriptionContent}
+        description={description}
         value={value}
         onToggle={handleToggle}
         containerDataTestId={config.containerDataTestId}

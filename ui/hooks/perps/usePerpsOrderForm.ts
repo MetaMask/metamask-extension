@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import type { OrderType } from '@metamask/perps-controller';
 import { useFormatters } from '../useFormatters';
 import type {
   OrderFormState,
@@ -10,7 +11,6 @@ import {
   calculatePositionSize,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
-import type { OrderType } from '@metamask/perps-controller';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */

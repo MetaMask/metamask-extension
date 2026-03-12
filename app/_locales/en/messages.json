@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Add token"
   },
-  "addTokenByContractAddress": {
-    "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Add URL"
   },
@@ -1080,8 +1076,26 @@
   "bridgeGasFeesSplit": {
     "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
   },
-  "bridgeNetCost": {
-    "message": "Net cost"
+  "bridgeLowestCost": {
+    "message": "Lowest cost"
+  },
+  "bridgeMarketClosedAction": {
+    "message": "Market is closed"
+  },
+  "bridgeMarketClosedDescription": {
+    "message": "This stock token is currently outside trading hours. Try again when the market reopens."
+  },
+  "bridgeMarketClosedModalDescription": {
+    "message": "The market that backs this token is currently closed. Tokens can be transferred on-chain at any time."
+  },
+  "bridgeMarketClosedModalLearnMore": {
+    "message": "Learn more"
+  },
+  "bridgeMarketClosedModalTitle": {
+    "message": "Market is closed"
+  },
+  "bridgeMarketClosedTitle": {
+    "message": "Market closed"
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
@@ -1144,6 +1158,9 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeQuotesSortedByCost": {
+    "message": "Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee."
+  },
   "bridgeReceive": {
     "message": "Receive $1 on $2",
     "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
@@ -1159,6 +1176,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectQuote": {
+    "message": "Select quote"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Select token, amount and destination account"
@@ -1203,10 +1223,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Bridge to"
@@ -1281,9 +1297,6 @@
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
-  },
-  "buildContactList": {
-    "message": "Build your contact list"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
@@ -1818,6 +1831,9 @@
   "contactDetails": {
     "message": "Contact details"
   },
+  "contactUpdated": {
+    "message": "Contact updated"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -1903,7 +1919,8 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Losing this password means losing wallet access on all devices, "
+    "message": "Losing this password means losing wallet access on all devices, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
@@ -2242,9 +2259,6 @@
   "delete": {
     "message": "Delete"
   },
-  "deleteContact": {
-    "message": "Delete contact"
-  },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
@@ -2478,9 +2492,6 @@
   },
   "editANickname": {
     "message": "Edit nickname"
-  },
-  "editAccountName": {
-    "message": "Edit account name"
   },
   "editAccounts": {
     "message": "Edit accounts"
@@ -2835,6 +2846,9 @@
   },
   "externalNameSourcesSettingDescription": {
     "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see those addresses and your IP address. Your account address won’t be exposed to third parties."
+  },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol."
   },
   "failed": {
     "message": "Failed"
@@ -3246,9 +3260,6 @@
   "hidden": {
     "message": "Hidden"
   },
-  "hiddenAccounts": {
-    "message": "Hidden accounts"
-  },
   "hide": {
     "message": "Hide"
   },
@@ -3575,6 +3586,9 @@
   "ipfsGatewayDescription": {
     "message": "MetaMask uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
   },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Choose your preferred IPFS gateway below."
+  },
   "ipfsToggleModalDescriptionOne": {
     "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
   },
@@ -3879,6 +3893,12 @@
   "makeAnotherSwap": {
     "message": "Create a new swap"
   },
+  "makeSmartContractsEasier": {
+    "message": "Make smart contracts easier to read"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask uses 4byte.directory and Sourcify to translate this information."
+  },
   "manage": {
     "message": "Manage"
   },
@@ -4125,7 +4145,7 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdBonusExplanation": {
-    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. Powered by Relay. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
   "musdBoostDescription": {
@@ -4150,13 +4170,21 @@
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
+  "musdClaimableBonus": {
+    "message": "Claimable bonus",
+    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
+  },
+  "musdClaimableBonusTooltip": {
+    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $1",
+    "description": "$1 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Convert $1 to mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Converted to mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConversionToastFailed": {
     "message": "mUSD conversion failed"
@@ -4167,6 +4195,13 @@
   },
   "musdConversionToastSuccess": {
     "message": "Your mUSD is here!"
+  },
+  "musdConvert": {
+    "message": "Convert"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Convert and get $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
@@ -4183,7 +4218,7 @@
     "message": "Not now"
   },
   "musdGetBonusPercentage": {
-    "message": "Get $1% bonus",
+    "message": "Get $1% mUSD bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
@@ -4458,9 +4493,6 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "New contact"
   },
   "newContract": {
     "message": "New contract"
@@ -6112,11 +6144,8 @@
   "quizIntroduction": {
     "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
   },
-  "quotedReceiveAmount": {
-    "message": "$1 receive amount"
-  },
   "quotedTotalCost": {
-    "message": "$1 total cost"
+    "message": "Total cost: $1"
   },
   "rank": {
     "message": "Rank"
@@ -6578,9 +6607,6 @@
   },
   "search": {
     "message": "Search"
-  },
-  "searchAccounts": {
-    "message": "Search accounts"
   },
   "searchAnAcccountOrContact": {
     "message": "Search an account or contact"
@@ -8418,10 +8444,6 @@
     "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "No tokens available matching $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Your $1 will be added to your account once this transaction has processed.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8648,6 +8670,12 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
+  "thirdPartyApis": {
+    "message": "Third-party APIs"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Choose how you share your IP address or Ethereum address with third-party APIs. Changes will impact your MetaMask experience."
+  },
   "thirdPartySoftware": {
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8717,6 +8745,9 @@
   },
   "tokenStandard": {
     "message": "Token standard"
+  },
+  "tokenStock": {
+    "message": "Stock"
   },
   "tokenStream": {
     "message": "Token stream"
@@ -9114,6 +9145,9 @@
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask uses a third-party service called $1 to show accurate and standardized network details. This reduces your chances of connecting to malicious or incorrect network. When using this feature, your IP address is exposed to chainid.network."
   },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Reduces your chances of connecting to a malicious or incorrect network. MetaMask uses $1 to show accurate and standardized network details."
+  },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
@@ -9123,9 +9157,6 @@
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
-  },
-  "userName": {
-    "message": "Username"
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart account is not supported"
@@ -9145,9 +9176,6 @@
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "View contact"
   },
   "viewDetails": {
     "message": "View details"

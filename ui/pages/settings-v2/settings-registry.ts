@@ -11,9 +11,10 @@ import {
   TRANSACTIONS_V2_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
+  THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
-import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 
 export type SettingsV2MenuListItem = {
   id: string;
@@ -74,6 +75,10 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'privacy',
     parentPath: SETTINGS_V2_ROUTE,
   },
+  [THIRD_PARTY_APIS_ROUTE]: {
+    labelKey: 'thirdPartyApis',
+    parentPath: PRIVACY_ROUTE,
+  },
 };
 
 /**
@@ -93,9 +98,7 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     path: ASSETS_ROUTE,
     labelKey: 'assets',
     iconName: IconName.Dollar,
-    component: mmLazy(
-      (() => import('./assets-tab/index.ts')) as unknown as DynamicImportType,
-    ),
+    component: mmLazy(() => import('./assets-tab/index.ts')),
   },
   {
     id: 'transactions',
@@ -112,20 +115,13 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     labelKey: 'preferencesAndDisplay',
     iconName: IconName.Setting,
-    component: mmLazy(
-      (() =>
-        import(
-          './preferences-and-display-tab/index.ts'
-        )) as unknown as DynamicImportType,
-    ),
+    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
   },
   {
     id: 'privacy',
     path: PRIVACY_ROUTE,
     labelKey: 'privacy',
     iconName: IconName.Lock,
-    component: mmLazy(
-      (() => import('./privacy-tab/index.ts')) as unknown as DynamicImportType,
-    ),
+    component: mmLazy(() => import('./privacy-tab/index.ts')),
   },
 ];

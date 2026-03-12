@@ -24,7 +24,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
-import { addHexes } from '../../../../../shared/modules/conversion.utils';
+import { addHexes } from '../../../../../shared/lib/conversion.utils';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 export default function FeeDetailsComponent({
