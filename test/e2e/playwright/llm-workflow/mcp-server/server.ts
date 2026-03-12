@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-/* eslint-disable import-x/extensions */
+
 import {
   createMcpServer,
   setSessionManager,
   createKnowledgeStore,
   setKnowledgeStore,
 } from '@metamask/client-mcp-core';
-/* eslint-enable import-x/extensions */
 
 import type { WorkflowContext } from '@metamask/client-mcp-core';
 import { createMetaMaskE2EContext } from '../capabilities/factory';

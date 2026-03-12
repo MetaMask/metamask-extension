@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';

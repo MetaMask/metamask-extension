@@ -14,7 +14,6 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 
-// eslint-disable-next-line import-x/first
 import PerpsMarketDetailPage from './perps-market-detail-page';
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests

@@ -1,6 +1,5 @@
 import { execSync } from 'child_process';
 
-// eslint-disable-next-line import-x/first
 import { getGitCommitHash, getGitBranch } from './send-to-sentry-utils';
 
 // Mock child_process before importing implementation

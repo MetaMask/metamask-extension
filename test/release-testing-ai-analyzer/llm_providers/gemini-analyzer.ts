@@ -58,7 +58,7 @@ export class GeminiAnalyzer implements LLMAnalyzer {
         );
       }
       // Use dynamic import for ESM module (devDependency for release-testing tooling)
-      // eslint-disable-next-line import-x/no-extraneous-dependencies
+
       const { GoogleGenAI } = await import('@google/genai');
       this.client = new GoogleGenAI({ apiKey: this.apiKey }) as GoogleGenAI;
     }

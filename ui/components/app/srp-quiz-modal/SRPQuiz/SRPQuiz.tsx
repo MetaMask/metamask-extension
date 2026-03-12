@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { To } from 'react-router-dom';
