@@ -74,7 +74,7 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { getDefaultToToken, isNetworkAdded } from '../../../ducks/bridge/utils';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getCurrentKeyring } from '../../../selectors';
@@ -318,7 +318,6 @@ const PrepareBridgePage = ({
       dispatch(updateQuoteRequestParams(...args));
     }, 300),
   );
-  const usdAmountSource = fromAmountInCurrency.usd.toNumber();
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
@@ -340,21 +339,13 @@ const PrepareBridgePage = ({
       security_warnings: securityWarnings,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      usd_amount_source: usdAmountSource,
+      usd_amount_source: fromAmountInCurrency.usd.toNumber(),
     };
     debouncedUpdateQuoteRequestInController.current(
       quoteParams,
       eventProperties,
     );
-  }, [
-    dispatch,
-    fromToken?.symbol,
-    quoteParams,
-    securityWarnings,
-    smartTransactionsEnabled,
-    toToken?.symbol,
-    usdAmountSource,
-  ]);
+  }, [quoteParams]);
 
   // Trace swap/bridge view loaded
   useEffect(() => {
@@ -362,12 +353,10 @@ const PrepareBridgePage = ({
       name: TraceName.SwapViewLoaded,
       timestamp: Date.now(),
     });
-    const debouncedUpdateQuoteRequest =
-      debouncedUpdateQuoteRequestInController.current;
 
     return () => {
       // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
-      debouncedUpdateQuoteRequest.cancel();
+      debouncedUpdateQuoteRequestInController.current.cancel();
     };
   }, []);
 
@@ -587,36 +576,7 @@ const PrepareBridgePage = ({
                 ? fromChain.chainId
                 : undefined
             }
-            onAssetChange={(newToToken) => {
-              const currentFromAmount = fromAmount;
-
-              // If the new toToken is the same as the current fromToken,
-              // try to set the fromToken to the old toToken.
-              if (
-                fromToken?.assetId.toLowerCase() ===
-                newToToken.assetId.toLowerCase()
-              ) {
-                let fromTokenToUse = toToken;
-
-                // If the old toToken's chain is disabled, it can't be set as the
-                // fromToken, so fall back to a supported default token.
-                if (
-                  fromChains.every(
-                    ({ chainId }) => chainId !== fromTokenToUse.chainId,
-                  )
-                ) {
-                  fromTokenToUse = getDefaultToToken(
-                    fromToken.chainId,
-                    fromToken.assetId,
-                  );
-                }
-
-                dispatch(setFromToken(fromTokenToUse));
-              }
-
-              dispatch(setToToken(newToToken));
-              dispatch(setFromTokenInputValue(currentFromAmount));
-            }}
+            onAssetChange={(newToToken) => dispatch(setToToken(newToToken))}
             networks={toChains}
             amountInFiat={
               unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined
