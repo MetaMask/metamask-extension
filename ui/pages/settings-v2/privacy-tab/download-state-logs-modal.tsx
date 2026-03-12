@@ -40,13 +40,7 @@ export default function DownloadStateLogsModal({
   const t = useI18nContext();
 
   const handleDownload = () => {
-    (
-      globalThis as unknown as {
-        logStateString: (
-          cb: (err: Error | null, result: string) => void,
-        ) => void;
-      }
-    ).logStateString(async (err: Error | null, result: string) => {
+    globalThis.logStateString(async (err, result) => {
       if (err) {
         onError();
       } else {
@@ -90,7 +84,7 @@ export default function DownloadStateLogsModal({
         </Box>
         <ModalFooter>
           <Button
-            data-testid="download-state-logs-button"
+            data-testid="download-state-logs-modal-button"
             className="w-full"
             variant={ButtonVariant.Primary}
             onClick={handleDownload}

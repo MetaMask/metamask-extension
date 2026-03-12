@@ -24,11 +24,12 @@ describe('DownloadStateLogsItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLogStateString = jest.fn();
-    (globalThis as Record<string, unknown>).logStateString = mockLogStateString;
+    globalThis.logStateString = mockLogStateString as unknown as typeof globalThis.logStateString;
   });
 
   afterEach(() => {
-    delete (globalThis as Record<string, unknown>).logStateString;
+    // @ts-expect-error - resetting mock
+    delete globalThis.logStateString;
   });
 
   it('renders the button with correct text', () => {
@@ -37,7 +38,9 @@ describe('DownloadStateLogsItem', () => {
     expect(
       screen.getByTestId('download-state-logs-button'),
     ).toBeInTheDocument();
-    expect(screen.getByText(messages.downloadStateLogs.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.downloadStateLogs.message),
+    ).toBeInTheDocument();
   });
 
   it('opens modal when button is clicked', async () => {

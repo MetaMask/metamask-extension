@@ -302,6 +302,10 @@ export declare global {
 
   var stateHooks: StateHooks;
 
+  var logStateString: (
+    callback: (err: Error | null, result: string) => void,
+  ) => void;
+
   var browser: Browser;
 
   var INFURA_PROJECT_ID: string | undefined;
