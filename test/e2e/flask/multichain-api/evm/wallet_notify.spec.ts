@@ -1,5 +1,5 @@
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
@@ -12,8 +12,8 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToMultichainTestDapp()
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },

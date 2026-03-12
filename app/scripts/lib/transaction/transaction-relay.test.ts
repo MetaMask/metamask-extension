@@ -1,7 +1,7 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
   RELAY_RPC_METHOD,
@@ -14,8 +14,8 @@ import {
 
 jest.useFakeTimers();
 
-jest.mock('../../../../shared/modules/rpc.utils');
-jest.mock('../../../../shared/modules/fetch-with-timeout');
+jest.mock('../../../../shared/lib/rpc.utils');
+jest.mock('../../../../shared/lib/fetch-with-timeout');
 
 const TRANSACTION_HASH_MOCK = '0x123';
 const ERROR_BODY_MOCK = 'test error';

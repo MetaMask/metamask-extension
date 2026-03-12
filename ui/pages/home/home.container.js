@@ -30,7 +30,7 @@ import {
   getPendingShieldCohort,
   getPendingRedirectRoute,
 } from '../../selectors';
-import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
+import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,

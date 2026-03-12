@@ -15,7 +15,7 @@ import {
   TEST_CHAINS,
 } from '../../../../../../../../shared/constants/network';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
