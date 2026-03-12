@@ -26,14 +26,18 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
+import { AdvancedDetails } from '../../confirm/info/shared/advanced-details/advanced-details';
 import { GasFeesDetails } from '../../confirm/info/shared/gas-fees-details/gas-fees-details';
 import MusdClaimHeading from './musd-claim-heading';
-import { AdvancedDetails } from '../../confirm/info/shared/advanced-details/advanced-details';
 
 /**
  * Custom section wrapper for mUSD claim confirmation.
  * Matches Figma: 16px padding, 8px border radius, backgroundMuted color.
  * Use reducedPadding for sections with components that have their own internal 8px padding.
+ *
+ * @param options - Component props
+ * @param options.children - Child elements to render inside the section
+ * @param options.reducedPadding - Whether to use reduced padding (8px vs 16px)
  */
 const ClaimSection = ({
   children,

@@ -61,6 +61,7 @@ export function ClaimableBonusRow({
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
             {t('musdClaimableBonusTooltip', [
+              MUSD_CONVERSION_APY,
               <TextButton
                 key="terms-link"
                 size={TextButtonSize.BodyMd}
