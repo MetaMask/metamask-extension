@@ -4527,7 +4527,9 @@ describe('MetaMaskController', () => {
           mockNewConnectionTriggerType,
         );
 
-        expect(metamaskController.approvalController.hasRequest).toHaveBeenCalledWith({
+        expect(
+          metamaskController.approvalController.hasRequest,
+        ).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
         });

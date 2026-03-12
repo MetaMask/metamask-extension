@@ -86,7 +86,10 @@ type EncryptionPublicKeyManagerStateChange = {
   payload: [EncryptionPublicKeyManagerState, Patch[]];
 };
 
-export type AllowedActions = ApprovalControllerAddRequestAction | ApprovalControllerAcceptRequestAction | ApprovalControllerRejectRequestAction;
+export type AllowedActions =
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction;
 
 export type AllowedEvents =
   | EncryptionPublicKeyManagerStateChange
