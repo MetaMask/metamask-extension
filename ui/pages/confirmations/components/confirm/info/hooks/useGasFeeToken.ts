@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/lib/selectors/networks';
 import { getCurrencyRates } from '../../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';

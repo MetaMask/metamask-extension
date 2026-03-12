@@ -1,6 +1,6 @@
 import { DefaultRootState } from 'react-redux';
 
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,

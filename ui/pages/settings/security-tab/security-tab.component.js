@@ -61,7 +61,7 @@ import {
 
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
 import MetametricsToggle from './metametrics-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 

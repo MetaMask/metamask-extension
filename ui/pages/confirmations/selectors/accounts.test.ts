@@ -1,4 +1,4 @@
-import { MultichainNetworkConfigurationsByChainIdState } from '../../../../shared/modules/selectors/networks';
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../../shared/lib/selectors/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';

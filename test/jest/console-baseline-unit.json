@@ -181,29 +181,29 @@
     "app/scripts/services/subscription/subscription-service.test.ts": {
       "Reselect: Identity function warnings": 1
     },
+    "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
+      "warn: Missing token alert translation for": 1
+    },
+    "shared/lib/contract-utils.test.js": {
+      "Third-party: Bindings failed, using pure JS": 1,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
+    },
+    "shared/lib/metametrics.test.ts": {
+      "Third-party: Bindings failed, using pure JS": 1,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
+    },
+    "shared/lib/selectors/index.test.ts": {
+      "Reselect: Identity function warnings": 2
+    },
     "shared/lib/sentry.test.ts": {
       "error: Error: Test error": 2
     },
-    "shared/modules/bridge-utils/security-alerts-api.util.test.ts": {
-      "warn: Missing token alert translation for": 1
-    },
-    "shared/modules/contract-utils.test.js": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
-    "shared/modules/metametrics.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
-    "shared/modules/selectors/index.test.ts": {
-      "Reselect: Identity function warnings": 2
-    },
-    "shared/modules/shield/shield.test.ts": {
+    "shared/lib/shield/shield.test.ts": {
       "error: Failed to get bearer token": 1
     },
-    "shared/modules/transaction.utils.test.js": {
+    "shared/lib/transaction.utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
@@ -1082,9 +1082,6 @@
     "ui/components/ui/hex-to-decimal/hex-to-decimal.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/ui/identicon/identicon.component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/ui/list-item/list-item.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1511,6 +1508,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/activity/transaction-details-summary/transaction-details-summary.test.tsx": {
+      "warn: No tokens found for chainId:": 6,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/activity/transaction-details-total-row/transaction-details-total-row.test.tsx": {
@@ -1565,6 +1563,10 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/confirm/footer/single-action-footer.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/confirm/header/advanced-details-button.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1578,6 +1580,11 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/header/header.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2028,12 +2035,20 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/info-popover-tooltip/info-popover-tooltip.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
+    },
     "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
+      "MetaMask: Background connection not initialized": 16,
       "Reselect: Identity function warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/musd-conversion-info/musd-conversion-info.test.tsx": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx": {
@@ -2081,6 +2096,11 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/bridge-time-row/bridge-time-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
@@ -2720,6 +2740,7 @@
     },
     "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
+      "React: DOM nesting violations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {
@@ -2899,20 +2920,6 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings/contact-list-tab/add-contact/add-contact.test.js": {
-      "React: State updates on unmounted components": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/edit-contact/edit-contact.container.test.tsx": {
-      "React: PropTypes validation failures": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/edit-contact/edit-contact.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings/contact-list-tab/view-contact/view-contact.container.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings/developer-options-tab/backup-and-sync.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3056,12 +3063,6 @@
     "ui/pages/swaps/import-token/import-token.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/swaps/list-with-search/list-with-search.test.js": {
-      "React: PropTypes validation failures": 2,
-      "error: Error: Insufficient number of substitutions": 1,
-      "error: Warning: React.createElement: type is invalid": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/swaps/loading-swaps-quotes/background-animation.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3074,9 +3075,6 @@
     },
     "ui/pages/swaps/notification-page/notification-page.test.js": {
       "React: PropTypes validation failures": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/swaps/searchable-item-list/item-list/item-list.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/swaps/select-quote-popover/quote-details/quote-details.test.js": {
