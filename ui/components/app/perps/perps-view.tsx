@@ -19,13 +19,13 @@ import {
 } from './perps-skeletons';
 
 /**
- * PerpsTabView component displays the perpetuals trading tab
+ * PerpsView component displays the perpetuals trading view
  * with positions and orders sections using stream data.
  *
  * Uses PerpsStreamManager for cached data, enabling smooth navigation
  * without loading skeletons when switching between views.
  */
-export const PerpsTabView: React.FC = () => {
+export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
   // Use stream hooks for real-time data
@@ -114,4 +114,4 @@ export const PerpsTabView: React.FC = () => {
   );
 };
 
-export default PerpsTabView;
+export default PerpsView;

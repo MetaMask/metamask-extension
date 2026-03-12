@@ -3,9 +3,9 @@ import { PERPS_TAB_HASH } from '../../../tests/perps/helpers';
 
 /**
  * Page object for the Perps tab (wallet home with perps tab selected).
- * Content merged from former PerpsHomePage into PerpsTabView.
+ * Content merged from former PerpsHomePage into PerpsView.
  *
- * @see ui/components/app/perps/perps-tab-view.tsx
+ * @see ui/components/app/perps/perps-view.tsx
  */
 export class PerpsHomePage {
   private readonly driver: Driver;

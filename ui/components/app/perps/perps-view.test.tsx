@@ -4,7 +4,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import * as mocks from './mocks';
-import { PerpsTabView } from './perps-tab-view';
+import { PerpsView } from './perps-view';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
@@ -51,20 +51,20 @@ const mockStore = configureStore({
   },
 });
 
-describe('PerpsTabView', () => {
+describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('with default mock data (positions and orders)', () => {
     it('renders the perps tab view', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByTestId('perps-tab-view')).toBeInTheDocument();
     });
 
     it('renders the balance dropdown', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByTestId('perps-balance-dropdown')).toBeInTheDocument();
     });
@@ -73,7 +73,7 @@ describe('PerpsTabView', () => {
       // Default mocks have positions
       expect(mocks.mockPositions.length).toBeGreaterThan(0);
 
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByTestId('perps-positions-section')).toBeInTheDocument();
     });
@@ -82,13 +82,13 @@ describe('PerpsTabView', () => {
       // Default mocks have orders
       expect(mocks.mockOrders.length).toBeGreaterThan(0);
 
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByTestId('perps-orders-section')).toBeInTheDocument();
     });
 
     it('shows explore markets section', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(
         screen.getByTestId('perps-explore-markets-row'),
@@ -96,46 +96,46 @@ describe('PerpsTabView', () => {
     });
 
     it('renders position cards for each position', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       // Check that at least the first position is rendered
       expect(screen.getByTestId('position-card-ETH')).toBeInTheDocument();
     });
 
     it('renders order cards for each order', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       // Check that at least the first order is rendered
       expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
     });
 
     it('displays position section header', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByText(/positions/iu)).toBeInTheDocument();
     });
 
     it('displays orders section header', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByText(/open orders/iu)).toBeInTheDocument();
     });
 
     it('displays close all option in positions section', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       const closeAllElements = screen.getAllByText(/close all/iu);
       expect(closeAllElements.length).toBeGreaterThanOrEqual(1);
     });
 
     it('shows Support & Learn section with Learn basics', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByTestId('perps-learn-basics')).toBeInTheDocument();
     });
 
     it('shows Recent Activity section', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(
         screen.getByTestId('perps-recent-activity-empty'),
@@ -143,7 +143,7 @@ describe('PerpsTabView', () => {
     });
 
     it('shows watchlist when mock watchlist symbols match market data', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(screen.getByTestId('perps-watchlist')).toBeInTheDocument();
     });
@@ -151,7 +151,7 @@ describe('PerpsTabView', () => {
 
   describe('component structure', () => {
     it('renders positions before orders', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       const positionsSection = screen.getByTestId('perps-positions-section');
       const ordersSection = screen.getByTestId('perps-orders-section');

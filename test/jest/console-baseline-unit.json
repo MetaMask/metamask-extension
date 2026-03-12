@@ -513,7 +513,7 @@
     "ui/components/app/perps/perps-recent-activity/perps-recent-activity.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/perps/perps-tab-view.test.tsx": {
+    "ui/components/app/perps/perps-view.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/perps-token-logo/perps-token-logo.test.tsx": {
