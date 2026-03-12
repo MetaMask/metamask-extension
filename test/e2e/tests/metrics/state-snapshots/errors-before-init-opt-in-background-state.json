@@ -147,7 +147,6 @@
       },
       "referrals": "object",
       "theme": "light",
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalServices": "boolean",
       "useMultiAccountBalanceChecker": true,

@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 198,
+      "currentMigrationVersion": 199,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -1949,7 +1949,6 @@
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": true,
       "useExternalServices": true,
@@ -2153,6 +2152,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 198
+    "version": 199
   }
 }

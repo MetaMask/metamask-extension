@@ -252,7 +252,6 @@ export type ControllerStatePropertiesEnumerated = {
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
   useSafeChainsListValidation: PreferencesControllerState['useSafeChainsListValidation'];
-  useBlockie: PreferencesControllerState['useBlockie'];
   usePhishDetect: PreferencesControllerState['usePhishDetect'];
   dismissSeedBackUpReminder: PreferencesControllerState['dismissSeedBackUpReminder'];
   overrideContentSecurityPolicyHeader: PreferencesControllerState['overrideContentSecurityPolicyHeader'];

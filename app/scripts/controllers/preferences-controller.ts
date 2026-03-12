@@ -139,8 +139,6 @@ export type PreferencesControllerState = Omit<
   theme: ThemeType;
   use4ByteResolution: boolean;
   useAddressBarEnsResolution: boolean;
-  /** @deprecated Use avatarType instead */
-  useBlockie: boolean;
   useCurrencyRateCheck: boolean;
   useExternalNameSources: boolean;
   useExternalServices: boolean;
@@ -209,7 +207,6 @@ export const getDefaultPreferencesControllerState =
     theme: ThemeType.os,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
-    useBlockie: false,
     useCurrencyRateCheck: true,
     useExternalNameSources: true,
     // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
@@ -374,13 +371,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  /** @deprecated Use avatarType instead */
-  useBlockie: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   useCurrencyRateCheck: {
     includeInStateLogs: true,
     persist: true,
@@ -508,18 +498,6 @@ export class PreferencesController extends BaseController<
   setPasswordForgotten(forgottenPassword: boolean): void {
     this.update((state) => {
       state.forgottenPassword = forgottenPassword;
-    });
-  }
-
-  /**
-   * Setter for the `useBlockie` property
-   *
-   * @deprecated Use setAvatarType instead
-   * @param val - Whether or not the user prefers blockie indicators
-   */
-  setUseBlockie(val: boolean): void {
-    this.update((state) => {
-      state.useBlockie = val;
     });
   }
 

@@ -241,7 +241,6 @@
       "theme": "light",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": "boolean",
       "useExternalServices": "boolean",
@@ -319,5 +318,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 198 }
+  "meta": { "version": 199 }
 }
