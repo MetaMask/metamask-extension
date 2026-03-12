@@ -35,8 +35,7 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="custom-nonce-input"]';
 
   private readonly dappInitiatedHeadingTitle: RawLocator = {
-    css: 'h4',
-    text: tEn('transferRequest'),
+    text: tEn('confirmTitleSending'),
   };
 
   private readonly editGasFeeIcon: RawLocator =
@@ -90,8 +89,7 @@ class TransactionConfirmation extends Confirmation {
   });
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
-    css: 'h4',
-    text: tEn('review'),
+    text: tEn('confirmTitleSending'),
   };
 
   private readonly tokenGasFeeDropdown =

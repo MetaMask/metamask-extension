@@ -395,9 +395,6 @@
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Новий контакт"
-  },
   "newContract": {
     "message": "Новий контракт"
   },
@@ -489,9 +486,6 @@
   },
   "removeAccount": {
     "message": "Видалення облікового запису"
-  },
-  "removeAccountDescription": {
-    "message": "Цей обліковий запис буде видалено з вашого гаманця. Будь ласка, переконайтесь, що у вас є оригінальна seed-фраза чи секретний ключ для цього облікового запису. Ви можете імпортувати або створювати облікові записи у випадаючому меню вашого облікового запису."
   },
   "required": {
     "message": "Обов'язкове"
@@ -658,12 +652,6 @@
   },
   "usedByClients": {
     "message": "Використовується низкою різних клієнтів"
-  },
-  "userName": {
-    "message": "Ім’я користувача"
-  },
-  "viewContact": {
-    "message": "Переглянути контакт"
   },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"

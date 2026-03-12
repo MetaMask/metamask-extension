@@ -25,6 +25,7 @@ import {
 import { SHIELD_PLAN_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
@@ -33,6 +34,10 @@ export const WalletInitiatedHeader = () => {
   const { onCancel } = useConfirmActions();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const navigate = useNavigate();
+
+  const isSendTransaction =
+    currentConfirmation?.type &&
+    SEND_TRANSACTION_TYPES.includes(currentConfirmation.type);
 
   const handleBackButtonClick = useCallback(() => {
     if (
@@ -44,7 +49,10 @@ export const WalletInitiatedHeader = () => {
     }
 
     if (currentConfirmation.type === TransactionType.musdClaim) {
-      onCancel({ location: MetaMetricsEventLocation.Confirmation });
+      onCancel({
+        location: MetaMetricsEventLocation.Confirmation,
+        navigateBackToPreviousPage: true,
+      });
       return;
     }
 
@@ -63,6 +71,20 @@ export const WalletInitiatedHeader = () => {
       });
     }
   }, [currentConfirmation, navigate, onCancel]);
+
+  const getHeaderTitle = () => {
+    if (isSendTransaction) {
+      return null;
+    }
+    if (
+      currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
+    ) {
+      return t('shieldConfirmMembership');
+    }
+    return t('review');
+  };
+
+  const headerTitle = getHeaderTitle();
 
   return (
     <Box
@@ -86,11 +108,11 @@ export const WalletInitiatedHeader = () => {
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}
       />
-      <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
-        {currentConfirmation.type === TransactionType.shieldSubscriptionApprove
-          ? t('shieldConfirmMembership')
-          : t('review')}
-      </Text>
+      {headerTitle && (
+        <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
+          {headerTitle}
+        </Text>
+      )}
       <AdvancedDetailsButton />
     </Box>
   );

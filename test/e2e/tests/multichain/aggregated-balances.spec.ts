@@ -85,9 +85,9 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           'usd',
         );
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          EXPECTED_BALANCE_USD,
-        );
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          balance: EXPECTED_BALANCE_USD,
+        });
         await accountListPage.closeMultichainAccountsPage();
 
         console.log('Step 5: Switch to Sepolia test network');

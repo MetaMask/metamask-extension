@@ -60,6 +60,7 @@ import {
   ACCOUNT_LIST_PAGE_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../helpers/constants/routes';
+import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
   getShowSupportDataConsentModal,
@@ -176,7 +177,7 @@ export const AppHeaderUnlockedContent = ({
   }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
 
   const handleConnectionsRoute = () => {
-    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
+    navigate(`${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(origin)}`);
   };
 
   const multichainAccountAppContent = useMemo(() => {
@@ -199,7 +200,7 @@ export const AppHeaderUnlockedContent = ({
                 name: TraceName.ShowAccountList,
                 op: TraceOperation.AccountUi,
               });
-              navigate(ACCOUNT_LIST_PAGE_ROUTE);
+              transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
                 category: MetaMetricsEventCategory.Navigation,

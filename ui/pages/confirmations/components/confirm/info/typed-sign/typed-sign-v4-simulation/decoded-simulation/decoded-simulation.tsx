@@ -113,7 +113,7 @@ const StateChangeRow = ({
           ? getStateChangeLabelMap(t, changeType, nftTransactionType)
           : ''
       }
-      tooltip={tooltip}
+      tooltip={shouldDisplayLabel ? tooltip : undefined}
     >
       {(assetType === TokenStandard.ERC20 ||
         assetType === TokenStandard.ERC721 ||

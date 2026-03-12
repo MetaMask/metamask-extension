@@ -396,33 +396,6 @@
     "@lydell/node-pty>@lydell/node-pty-win32-x64": {
       "native": true
     },
-    "@metamask/build-utils": {
-      "packages": {
-        "@metamask/build-utils>@metamask/utils": true
-      }
-    },
-    "@metamask/build-utils>@metamask/utils": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@scure/base": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@noble/hashes": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
     "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": {
       "builtin": {
         "fs.lstat": true,
@@ -475,12 +448,6 @@
       "packages": {
         "schema-utils": true,
         "webpack": true
-      }
-    },
-    "@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
       }
     },
     "@swc/core": {
@@ -761,12 +728,12 @@
         "mockttp>body-parser>debug": true,
         "koa>cookies>depd": true,
         "koa>destroy": true,
-        "mockttp>express>http-errors": true,
+        "mockttp>body-parser>http-errors": true,
         "mockttp>body-parser>iconv-lite": true,
         "koa>on-finished": true,
         "mockttp>express>qs": true,
         "mockttp>body-parser>raw-body": true,
-        "mockttp>express>type-is": true,
+        "mockttp>body-parser>type-is": true,
         "mockttp>body-parser>unpipe": true
       }
     },
@@ -1176,26 +1143,6 @@
         "mockttp>express>debug>ms": true
       }
     },
-    "mockttp>express>finalhandler>debug": {
-      "builtin": {
-        "fs.SyncWriteStream": true,
-        "net.Socket": true,
-        "tty.WriteStream": true,
-        "tty.isatty": true,
-        "util": true
-      },
-      "globals": {
-        "chrome": true,
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "mockttp>express>finalhandler>debug>ms": true
-      }
-    },
     "nock>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -1213,26 +1160,6 @@
       "packages": {
         "mocha>ms": true,
         "mocha>supports-color": true
-      }
-    },
-    "mockttp>express>send>debug": {
-      "builtin": {
-        "fs.SyncWriteStream": true,
-        "net.Socket": true,
-        "tty.WriteStream": true,
-        "tty.isatty": true,
-        "util": true
-      },
-      "globals": {
-        "chrome": true,
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "mockttp>express>send>debug>ms": true
       }
     },
     "webpack-dev-server>serve-index>debug": {
@@ -1622,7 +1549,7 @@
         "setImmediate": true
       },
       "packages": {
-        "mockttp>express>finalhandler>debug": true,
+        "mockttp>express>debug": true,
         "koa>encodeurl": true,
         "koa>escape-html": true,
         "koa>on-finished": true,
@@ -1798,6 +1725,15 @@
         "terser": true
       }
     },
+    "mockttp>body-parser>http-errors": {
+      "packages": {
+        "koa>cookies>depd": true,
+        "pumpify>inherits": true,
+        "koa>http-errors>setprototypeof": true,
+        "mockttp>body-parser>http-errors>statuses": true,
+        "koa>http-errors>toidentifier": true
+      }
+    },
     "mockttp>express>http-errors": {
       "packages": {
         "koa>cookies>depd": true,
@@ -1864,27 +1800,6 @@
       }
     },
     "mockttp>body-parser>iconv-lite": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "buffer.SlowBuffer.byteLength": true,
-        "buffer.SlowBuffer.prototype.toString": true,
-        "buffer.SlowBuffer.prototype.write": true,
-        "stream.Readable.prototype.collect": true,
-        "stream.Readable.prototype.setEncoding": true,
-        "stream.Transform.call": true,
-        "stream.Transform.prototype": true,
-        "string_decoder.StringDecoder.call": true,
-        "string_decoder.StringDecoder.prototype": true
-      },
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "jsdom>whatwg-encoding>iconv-lite>safer-buffer": true
-      }
-    },
-    "mockttp>body-parser>raw-body>iconv-lite": {
       "builtin": {
         "buffer.Buffer": true,
         "buffer.SlowBuffer.byteLength": true,
@@ -2510,8 +2425,8 @@
       },
       "packages": {
         "mockttp>body-parser>bytes": true,
-        "mockttp>express>http-errors": true,
-        "mockttp>body-parser>raw-body>iconv-lite": true,
+        "mockttp>body-parser>http-errors": true,
+        "mockttp>body-parser>iconv-lite": true,
         "mockttp>body-parser>unpipe": true
       }
     },
@@ -2769,7 +2684,7 @@
         "Buffer.byteLength": true
       },
       "packages": {
-        "mockttp>express>send>debug": true,
+        "mockttp>express>debug": true,
         "koa>cookies>depd": true,
         "koa>destroy": true,
         "mockttp>express>send>encodeurl": true,
@@ -3100,6 +3015,12 @@
     "webpack>chrome-trace-event>tslib": {
       "globals": {
         "define": true
+      }
+    },
+    "mockttp>body-parser>type-is": {
+      "packages": {
+        "mockttp>body-parser>type-is>media-typer": true,
+        "webpack>mime-types": true
       }
     },
     "mockttp>express>type-is": {

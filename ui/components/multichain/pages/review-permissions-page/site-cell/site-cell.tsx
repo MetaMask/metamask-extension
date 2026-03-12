@@ -15,7 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/lib/string-utils';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 

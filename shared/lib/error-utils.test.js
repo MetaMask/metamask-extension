@@ -1,8 +1,8 @@
-import { fetchLocale } from '../modules/i18n';
+import { fetchLocale } from './i18n';
 import { SUPPORT_LINK } from './ui-utils';
 import { maybeGetLocaleContext, getErrorHtml } from './error-utils';
 
-jest.mock('../modules/i18n', () => ({
+jest.mock('./i18n', () => ({
   fetchLocale: jest.fn(),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
