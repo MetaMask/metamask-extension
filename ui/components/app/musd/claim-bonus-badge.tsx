@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import type { Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import {
   Text,
   TextVariant,
@@ -11,8 +12,18 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import { useMerklClaim } from './hooks/useMerklClaim';
 import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
+import {
+  MUSD_EVENTS_CONSTANTS,
+  type MusdClaimBonusButtonClickedEventProperties,
+} from './musd-events';
 
 export const ClaimBonusBadge = ({
   label,
@@ -26,6 +37,14 @@ export const ClaimBonusBadge = ({
   refetchRewards: () => void;
 }) => {
   const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
+
+  // Get network name for analytics
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const networkConfig = networkConfigurationsByChainId[chainId];
+  const networkName = networkConfig?.name ?? 'Unknown Network';
 
   // Refetch rewards when a pending claim is confirmed
   useOnMerklClaimConfirmed(refetchRewards);
@@ -38,9 +57,25 @@ export const ClaimBonusBadge = ({
   const handleBadgeClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
+
+      // Track claim bonus button click
+      trackEvent({
+        event: MetaMetricsEventName.MusdClaimBonusButtonClicked,
+        category: MetaMetricsEventCategory.MusdConversion,
+        properties: {
+          location:
+            MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CLAIM_BONUS_BOTTOM_SHEET,
+          /* eslint-disable @typescript-eslint/naming-convention */
+          claim_amount: label,
+          network_chain_id: chainId,
+          network_name: networkName,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        } as MusdClaimBonusButtonClickedEventProperties,
+      });
+
       claimRewards();
     },
-    [claimRewards],
+    [claimRewards, trackEvent, label, chainId, networkName],
   );
 
   if (isClaiming) {

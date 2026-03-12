@@ -190,6 +190,37 @@ export type MusdClaimBonusButtonClickedEventProperties = {
 };
 
 /**
+ * Properties for MUSD_CLAIM_BONUS_STATUS_UPDATED event
+ * Tracks Merkl claim transaction status changes
+ */
+export type MusdClaimBonusStatusUpdatedEventProperties = {
+  /** Transaction ID */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  transaction_id: string;
+  /** Current transaction status */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  transaction_status: 'approved' | 'confirmed' | 'failed' | 'dropped';
+  /** Transaction type - always 'merklClaim' */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  transaction_type: 'merklClaim';
+  /** Network chain ID (hex) */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  network_chain_id: string;
+  /** Network name */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  network_name: string;
+  /** Amount claimed in decimal format (only for confirmed/failed/dropped) */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  amount_claimed_decimal?: string;
+};
+
+/**
  * Properties for quote-related events
  */
 export type MusdQuoteEventProperties = {
