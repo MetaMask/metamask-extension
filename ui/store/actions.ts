@@ -216,7 +216,10 @@ import type {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import type { Features as TrezorGetFeaturesResponse } from '@trezor/connect-web';
+import type {
+  Features as TrezorFeatures,
+  Response as TrezorResponse,
+} from '@trezor/connect-web';
 
 type CustomGasSettings = {
   gas?: string;
@@ -224,6 +227,8 @@ type CustomGasSettings = {
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
 };
+
+type TrezorGetFeaturesResponse = Awaited<TrezorResponse<TrezorFeatures>>;
 
 export function goHome() {
   return {

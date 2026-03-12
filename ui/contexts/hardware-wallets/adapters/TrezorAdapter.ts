@@ -183,12 +183,12 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Note: Unlike Ledger, Trezor doesn't require checking for a specific app being open.
    * The device just needs to be connected and unlocked, which is verified during signing operations.
    *
+   * @param options
    * @returns true if device is ready
    */
   async ensureDeviceReady(
     options?: EnsureDeviceReadyOptions,
   ): Promise<boolean> {
-    debugger;
     if (!this.isConnected()) {
       await this.connect();
     }
@@ -204,12 +204,20 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       }
 
       const featuresResponse = await getTrezorFeatures();
-      console.log('[hw debug] featuresResponse', featuresResponse);
-      if (!isTrezorFeaturesResponse(featuresResponse)) {
+
+      if (!featuresResponse.success) {
         throw createHardwareWalletError(
           ErrorCode.ConnectionClosed,
           HardwareWalletType.Trezor,
           'Unable to read Trezor status. Please reconnect your device.',
+        );
+      }
+
+      if (featuresResponse.payload.initialized === false) {
+        throw createHardwareWalletError(
+          ErrorCode.DeviceNotReady,
+          HardwareWalletType.Trezor,
+          'Trezor device is not initialized. Please complete device setup and try again.',
         );
       }
 
@@ -240,7 +248,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
       return true;
     } catch (error) {
-      debugger;
       const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
       const deviceEvent = getDeviceEventForError(
         hwError.code,
@@ -264,34 +271,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       throw hwError;
     }
   }
-}
-
-function isTrezorFeaturesResponse(value: unknown): value is {
-  success: true;
-  payload: { unlocked?: boolean | null; model?: string };
-} {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  const result = value as {
-    success?: unknown;
-    payload?: { unlocked?: unknown; model?: unknown };
-  };
-
-  if (result.success !== true || !result.payload) {
-    return false;
-  }
-
-  const { unlocked, model } = result.payload;
-  const unlockedIsValid =
-    unlocked === undefined ||
-    unlocked === null ||
-    typeof unlocked === 'boolean';
-  const modelIsValid =
-    model === undefined || model === null || typeof model === 'string';
-
-  return unlockedIsValid && modelIsValid;
 }
 
 function isTrezorModelOne(model: unknown, connectedDevice: USBDevice): boolean {

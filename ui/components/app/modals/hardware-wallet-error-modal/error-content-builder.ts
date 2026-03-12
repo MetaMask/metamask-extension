@@ -52,10 +52,39 @@ export function buildErrorContent(
   t: (key: string, substitutions?: string[]) => string,
 ): ErrorContent {
   const errorCode = getHardwareWalletErrorCode(error);
+  const unknownErrorContent: ErrorContent = {
+    variant: 'description',
+    icon: IconName.Danger,
+    iconColor: IconColor.warningDefault,
+    title: t('hardwareWalletErrorUnknownErrorTitle'),
+    description: t('hardwareWalletErrorUnknownErrorDescription', [
+      t(walletType),
+    ]),
+  };
+  const errorMessage =
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof error.message === 'string'
+      ? error.message
+      : undefined;
 
   switch (errorCode) {
     // Locked device errors
     case ErrorCode.AuthenticationDeviceLocked:
+      if (walletType === HardwareWalletType.Trezor) {
+        return {
+          variant: 'recovery',
+          icon: IconName.Lock,
+          iconColor: IconColor.iconDefault,
+          title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
+          recoveryInstructions: [
+            t('hardwareWalletErrorTrezorUnlockInstruction1'),
+            t('hardwareWalletErrorTrezorUnlockInstruction2'),
+          ],
+        };
+      }
+
       return {
         variant: 'recovery',
         icon: IconName.Lock,
@@ -74,6 +103,19 @@ export function buildErrorContent(
         title: t('hardwareWalletTitleEthAppNotOpen'),
         recoveryInstructions: [t('hardwareWalletEthAppNotOpenDescription')],
       };
+
+    case ErrorCode.DeviceNotReady:
+      if (walletType === HardwareWalletType.Trezor) {
+        return {
+          variant: 'recovery',
+          title: t('hardwareWalletErrorTrezorNotInitializedTitle'),
+          recoveryInstructions: [
+            t('hardwareWalletErrorTrezorNotInitializedInstruction1'),
+            t('hardwareWalletErrorTrezorNotInitializedInstruction2'),
+          ],
+        };
+      }
+      return unknownErrorContent;
 
     case ErrorCode.DeviceStateBlindSignNotSupported:
       return {
@@ -125,16 +167,22 @@ export function buildErrorContent(
       }
     }
 
+    case ErrorCode.DeviceMissingCapability:
+      if (walletType === HardwareWalletType.Trezor) {
+        return {
+          variant: 'description',
+          icon: IconName.Danger,
+          iconColor: IconColor.warningDefault,
+          title: t('hardwareWalletErrorTrezorMessageTooLargeTitle'),
+          description:
+            errorMessage ??
+            t('hardwareWalletErrorTrezorMessageTooLargeDescription'),
+        };
+      }
+      return unknownErrorContent;
+
     // Unknown/default
     default:
-      return {
-        variant: 'description',
-        icon: IconName.Danger,
-        iconColor: IconColor.warningDefault,
-        title: t('hardwareWalletErrorUnknownErrorTitle'),
-        description: t('hardwareWalletErrorUnknownErrorDescription', [
-          t(walletType),
-        ]),
-      };
+      return unknownErrorContent;
   }
 }

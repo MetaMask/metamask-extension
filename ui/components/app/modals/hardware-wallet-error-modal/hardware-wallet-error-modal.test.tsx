@@ -34,10 +34,11 @@ const createTestError = (
   code: ErrorCode,
   message: string,
   userMessage?: string,
+  walletType: HardwareWalletType = HardwareWalletType.Ledger,
 ): HardwareWalletError => {
   return createHardwareWalletError(
     code,
-    'ledger' as HardwareWalletType,
+    walletType,
     userMessage || message,
   );
 };
@@ -139,6 +140,27 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
+    it('displays Trezor-specific unlock instructions for AuthenticationDeviceLocked', () => {
+      const error = createTestError(
+        ErrorCode.AuthenticationDeviceLocked,
+        'Trezor device is locked. Please unlock your device.',
+        'Trezor device is locked. Please unlock your device.',
+        HardwareWalletType.Trezor,
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorTrezorUnlockInstruction1]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorTrezorUnlockInstruction2]'),
+      ).toBeInTheDocument();
+    });
+
     it('displays blind signing instructions for DeviceStateBlindSignNotSupported', () => {
       const error = createTestError(
         ErrorCode.DeviceStateBlindSignNotSupported,
@@ -220,6 +242,47 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
       expect(
         getByText('[hardwareWalletErrorRecoveryUnlock2]'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Trezor setup instructions for DeviceNotReady', () => {
+      const error = createTestError(
+        ErrorCode.DeviceNotReady,
+        'Trezor device is not initialized. Please complete device setup and try again.',
+        'Trezor device is not initialized. Please complete device setup and try again.',
+        HardwareWalletType.Trezor,
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('[hardwareWalletErrorTrezorNotInitializedTitle]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorTrezorNotInitializedInstruction1]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorTrezorNotInitializedInstruction2]'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Trezor capability description for DeviceMissingCapability', () => {
+      const error = createTestError(
+        ErrorCode.DeviceMissingCapability,
+        'Trezor Model One does not support signing messages larger than 1024 bytes.',
+        'Trezor Model One does not support signing messages larger than 1024 bytes.',
+        HardwareWalletType.Trezor,
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('[hardwareWalletErrorTrezorMessageTooLargeTitle]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          'Trezor Model One does not support signing messages larger than 1024 bytes.',
+        ),
       ).toBeInTheDocument();
     });
 
