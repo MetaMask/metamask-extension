@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 import {
   selectIsMusdConversionFlowEnabled,
   selectMusdConversionEducationSeen,
@@ -196,6 +197,17 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       const chainId =
         (preferredToken?.chainId as Hex) ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
+
+      // Start navigation trace - measures time from CTA click to conversion screen render
+      trace({
+        name: TraceName.MusdConversionNavigation,
+        op: TraceOperation.MusdConversionOperation,
+        tags: {
+          paymentTokenChainId: chainId,
+          paymentTokenAddress: preferredToken?.address ?? 'unknown',
+          hasPreferredToken: Boolean(preferredToken),
+        },
+      });
 
       try {
         setError(null);

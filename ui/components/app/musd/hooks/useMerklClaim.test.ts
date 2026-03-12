@@ -27,6 +27,9 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('../merkl-client');
 
+<<<<<<< HEAD
+const { useSelector } = jest.requireMock('react-redux');
+=======
 jest.mock('../../../../hooks/musd/useMusdGeoBlocking', () => ({
   useMusdGeoBlocking: jest.fn(() => ({
     isBlocked: false,
@@ -39,6 +42,7 @@ const { useSelector } = jest.requireMock('react-redux');
 const { useMusdGeoBlocking } = jest.requireMock(
   '../../../../hooks/musd/useMusdGeoBlocking',
 );
+>>>>>>> 3b51ef8253243501970d78456da0b11ad43c1826
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TOKEN_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
@@ -66,10 +70,13 @@ const mockRewardData = {
 };
 
 describe('useMerklClaim', () => {
+<<<<<<< HEAD
+=======
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
+>>>>>>> 3b51ef8253243501970d78456da0b11ad43c1826
   beforeEach(() => {
     jest.clearAllMocks();
 

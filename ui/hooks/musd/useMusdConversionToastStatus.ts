@@ -1,4 +1,11 @@
-import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
+import {
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
@@ -10,6 +17,13 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../selectors/transactionPayController';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import type { MusdConversionStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
+import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
 
 /**
  * Transaction statuses that indicate a conversion is "in flight":
@@ -59,6 +73,10 @@ export const useMusdConversionToastStatus = (): {
   dismissToast: () => void;
 } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const [completionState, setCompletionState] = useState<
     'success' | 'failed' | null
   >(null);
@@ -68,6 +86,8 @@ export const useMusdConversionToastStatus = (): {
   const pendingConversionIdsRef = useRef<Set<string>>(new Set());
   // Track IDs of conversions we've already shown completion toasts for
   const shownCompletionIdsRef = useRef<Set<string>>(new Set());
+  // Track IDs of conversions we've already tracked analytics for (by status)
+  const trackedAnalyticsRef = useRef<Map<string, Set<string>>>(new Map());
 
   const musdConversions = useMemo(
     () => transactions.filter(isMusdConversionTx),
@@ -119,12 +139,63 @@ export const useMusdConversionToastStatus = (): {
 
   const sourceTokenSymbol = paymentToken?.symbol ?? cachedSymbol;
 
-  // Detect transitions from pending → confirmed/failed
+  /**
+   * Track mUSD conversion status update analytics
+   */
+  const trackConversionStatusUpdate = useCallback(
+    (
+      tx: TransactionMeta,
+      status: 'approved' | 'confirmed' | 'failed' | 'dropped',
+      tokenSymbol: string | undefined,
+    ) => {
+      const { chainId } = tx;
+      const networkConfig = chainId
+        ? networkConfigurationsByChainId[chainId]
+        : null;
+      const networkName = networkConfig?.name ?? 'Unknown Network';
+
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const properties: MusdConversionStatusUpdatedEventProperties = {
+        transaction_id: tx.id,
+        transaction_status: status,
+        transaction_type: 'musdConversion',
+        asset_symbol: tokenSymbol ?? 'Unknown',
+        network_chain_id: chainId ?? '',
+        network_name: networkName,
+        amount_decimal: tx.txParams?.value ?? '0',
+        amount_hex: tx.txParams?.value ?? '0x0',
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
+
+      trackEvent({
+        event: MetaMetricsEventName.MusdConversionStatusUpdated,
+        category: MetaMetricsEventCategory.MusdConversion,
+        properties,
+      });
+    },
+    [trackEvent, networkConfigurationsByChainId],
+  );
+
+  // Detect transitions from pending → confirmed/failed and track analytics
   useEffect(() => {
     const currentPendingIds = new Set(pendingConversions.map((tx) => tx.id));
     let hasNewCompletion = false;
 
     for (const tx of musdConversions) {
+      // Track analytics for status changes
+      const trackedStatuses =
+        trackedAnalyticsRef.current.get(tx.id) ?? new Set();
+
+      // Track approved status when transaction first enters pending
+      if (
+        tx.status === TransactionStatus.approved &&
+        !trackedStatuses.has('approved')
+      ) {
+        trackConversionStatusUpdate(tx, 'approved', sourceTokenSymbol);
+        trackedStatuses.add('approved');
+        trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+      }
+
       if (shownCompletionIdsRef.current.has(tx.id)) {
         continue;
       }
@@ -132,6 +203,12 @@ export const useMusdConversionToastStatus = (): {
       const wasPending = pendingConversionIdsRef.current.has(tx.id);
 
       if (tx.status === TransactionStatus.confirmed && wasPending) {
+        // Track confirmed status
+        if (!trackedStatuses.has('confirmed')) {
+          trackConversionStatusUpdate(tx, 'confirmed', sourceTokenSymbol);
+          trackedStatuses.add('confirmed');
+          trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+        }
         setCompletionState('success');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
@@ -141,6 +218,14 @@ export const useMusdConversionToastStatus = (): {
           tx.status === TransactionStatus.dropped) &&
         wasPending
       ) {
+        // Track failed/dropped status
+        const statusKey =
+          tx.status === TransactionStatus.failed ? 'failed' : 'dropped';
+        if (!trackedStatuses.has(statusKey)) {
+          trackConversionStatusUpdate(tx, statusKey, sourceTokenSymbol);
+          trackedStatuses.add(statusKey);
+          trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+        }
         setCompletionState('failed');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
@@ -163,7 +248,12 @@ export const useMusdConversionToastStatus = (): {
     }
 
     pendingConversionIdsRef.current = currentPendingIds;
-  }, [musdConversions, pendingConversions]);
+  }, [
+    musdConversions,
+    pendingConversions,
+    sourceTokenSymbol,
+    trackConversionStatusUpdate,
+  ]);
 
   const dismissToast = useCallback(() => {
     setCompletionState(null);

@@ -53,3 +53,8 @@ export {
 } from './useCustomAmount';
 
 export { useCanBuyMusd, type UseCanBuyMusdResult } from './useCanBuyMusd';
+
+export {
+  useMusdConversionConfirmTrace,
+  useMusdConversionConfirmTraceWithDetails,
+} from './useMusdConversionConfirmTrace';

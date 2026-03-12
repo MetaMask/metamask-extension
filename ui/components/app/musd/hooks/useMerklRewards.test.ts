@@ -122,15 +122,18 @@ describe('useMerklRewards', () => {
     jest.clearAllMocks();
     setupSelectorMock();
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-    });
+
     useMusdGeoBlocking.mockReturnValue({
       isBlocked: false,
       userCountry: 'US',
       isLoading: false,
+    });
+
+    // Initialize query client
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
     });
   });
 
