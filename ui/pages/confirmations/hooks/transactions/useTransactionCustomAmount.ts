@@ -21,11 +21,19 @@ export function useTransactionCustomAmount({
   currency,
   disableUpdate = false,
 }: { currency?: string; disableUpdate?: boolean } = {}) {
-  const [amountFiatState, setAmountFiat] = useState('0');
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
   const requiredTokens = useTransactionPayRequiredTokens();
+  const primaryRequiredToken = useMemo(
+    () => requiredTokens?.find((t) => !t.skipIfBalance),
+    [requiredTokens],
+  );
+  const [amountFiatState, setAmountFiat] = useState(
+    new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
+      .round(2, BigNumber.ROUND_HALF_UP)
+      .toString(10),
+  );
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -57,31 +65,6 @@ export function useTransactionCustomAmount({
     debounceRef.current = debouncedFn;
     return debouncedFn;
   }, [disableUpdate, updateTokenAmountCallback]);
-
-  const primaryRequiredToken = useMemo(
-    () => requiredTokens?.find((t) => !t.skipIfBalance),
-    [requiredTokens],
-  );
-
-  const syncedForTransactionId = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (syncedForTransactionId.current === transactionId) {
-      return;
-    }
-    syncedForTransactionId.current = transactionId ?? null;
-
-    const targetAmountUsd = primaryRequiredToken?.amountUsd;
-    if (targetAmountUsd && targetAmountUsd !== '0') {
-      setAmountFiat(
-        new BigNumber(targetAmountUsd)
-          .round(2, BigNumber.ROUND_HALF_UP)
-          .toString(10),
-      );
-    } else {
-      setAmountFiat('0');
-    }
-  }, [transactionId, primaryRequiredToken?.amountUsd]);
 
   const amountFiat = useMemo(() => {
     const targetAmountUsd = primaryRequiredToken?.amountUsd;
