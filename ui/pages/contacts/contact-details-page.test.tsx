@@ -15,9 +15,7 @@ const MOCK_CHAIN_ID = '0x5';
 const MOCK_NAME = 'Address Book Account 1';
 
 const mockNavigate = jest.fn();
-const mockDispatch = jest.fn().mockResolvedValue(undefined);
 const mockUseParams = jest.fn();
-const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -64,7 +62,9 @@ describe('ContactDetailsPage', () => {
 
   it('displays the contact address', () => {
     const { getByTestId } = renderPage();
-    expect(getByTestId('address-book-view-contact-address')).toBeInTheDocument();
+    expect(
+      getByTestId('address-book-view-contact-address'),
+    ).toBeInTheDocument();
   });
 
   it('navigates to contacts list when back button is clicked', () => {
@@ -88,7 +88,10 @@ describe('ContactDetailsPage', () => {
   });
 
   it('redirects to contacts list when address param is missing', () => {
-    mockUseParams.mockReturnValue({ chainId: MOCK_CHAIN_ID, address: undefined });
+    mockUseParams.mockReturnValue({
+      chainId: MOCK_CHAIN_ID,
+      address: undefined,
+    });
     const { container } = renderWithProvider(
       <ContactDetailsPage />,
       configureStore(mockState),
@@ -99,7 +102,10 @@ describe('ContactDetailsPage', () => {
   });
 
   it('redirects to contacts list when chainId param is missing', () => {
-    mockUseParams.mockReturnValue({ chainId: undefined, address: MOCK_ADDRESS });
+    mockUseParams.mockReturnValue({
+      chainId: undefined,
+      address: MOCK_ADDRESS,
+    });
     const { container } = renderWithProvider(
       <ContactDetailsPage />,
       configureStore(mockState),
