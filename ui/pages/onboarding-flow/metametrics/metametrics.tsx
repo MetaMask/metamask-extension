@@ -215,7 +215,7 @@ export default function OnboardingMetametrics() {
       >
         <Checkbox
           id="metametrics-opt-in"
-          data-testid="metametrics-checkbox"
+          data-testid={`metametrics-checkbox-${isParticipateInMetaMetricsChecked ? 'checked' : 'unchecked'}`}
           isSelected={isParticipateInMetaMetricsChecked}
           onChange={handleParticipateInMetaMetricsChange}
           ref={participateCheckboxRef}
@@ -271,7 +271,7 @@ export default function OnboardingMetametrics() {
       >
         <Checkbox
           id="metametrics-datacollection-opt-in"
-          data-testid="metametrics-data-collection-checkbox"
+          data-testid={`metametrics-data-collection-checkbox-${isParticipateInMetaMetricsChecked && isDataCollectionForMarketingChecked ? 'checked' : 'unchecked'}`}
           isSelected={
             isParticipateInMetaMetricsChecked &&
             isDataCollectionForMarketingChecked

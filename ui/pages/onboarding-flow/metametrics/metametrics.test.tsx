@@ -131,7 +131,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(checkboxLabel).toBeInTheDocument();
 
     const checkbox = getAllByRole('checkbox')[0];
-    const participateContainer = getByTestId('metametrics-checkbox').closest(
+    const participateContainer = getByTestId(/^metametrics-checkbox-/u).closest(
       '[role="button"]',
     ) as HTMLElement;
 
@@ -175,7 +175,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(title).toBeInTheDocument();
     expect(description).toBeInTheDocument();
 
-    const participateContainer = getByTestId('metametrics-checkbox').closest(
+    const participateContainer = getByTestId(/^metametrics-checkbox-/u).closest(
       '[role="button"]',
     ) as HTMLElement;
 
@@ -213,11 +213,11 @@ describe('Onboarding Metametrics Component', () => {
 
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
-    const participateContainer = getByTestId('metametrics-checkbox').closest(
+    const participateContainer = getByTestId(/^metametrics-checkbox-/u).closest(
       '[role="button"]',
     ) as HTMLElement;
     const marketingContainer = getByTestId(
-      'metametrics-data-collection-checkbox',
+      /^metametrics-data-collection-checkbox-/u,
     ).closest('[role="button"]') as HTMLElement;
 
     expect(marketingCheckbox).not.toBeChecked();
@@ -246,7 +246,7 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const participateCheckboxContainer = getByTestId(
-      'metametrics-checkbox',
+      /^metametrics-checkbox-/u,
     ).closest('[role="button"]') as HTMLElement;
     const checkbox = getAllByRole('checkbox')[0];
 
@@ -270,7 +270,7 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const participateCheckboxContainer = getByTestId(
-      'metametrics-checkbox',
+      /^metametrics-checkbox-/u,
     ).closest('[role="button"]') as HTMLElement;
     const checkbox = getAllByRole('checkbox')[0];
 
@@ -294,7 +294,7 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const participateCheckboxContainer = getByTestId(
-      'metametrics-checkbox',
+      /^metametrics-checkbox-/u,
     ).closest('[role="button"]') as HTMLElement;
     const checkbox = getAllByRole('checkbox')[0];
 
@@ -313,7 +313,7 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const marketingCheckboxContainer = getByTestId(
-      'metametrics-data-collection-checkbox',
+      /^metametrics-data-collection-checkbox-/u,
     ).closest('[role="button"]') as HTMLElement;
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
@@ -337,7 +337,7 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const marketingCheckboxContainer = getByTestId(
-      'metametrics-data-collection-checkbox',
+      /^metametrics-data-collection-checkbox-/u,
     ).closest('[role="button"]') as HTMLElement;
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
@@ -356,7 +356,7 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const marketingCheckboxContainer = getByTestId(
-      'metametrics-data-collection-checkbox',
+      /^metametrics-data-collection-checkbox-/u,
     ).closest('[role="button"]') as HTMLElement;
     const marketingCheckbox = getAllByRole('checkbox')[1];
 

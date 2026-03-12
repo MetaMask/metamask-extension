@@ -34,7 +34,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-checkbox"
+        data-testid="metametrics-checkbox-checked"
         for="metametrics-opt-in"
       >
         <div
@@ -85,7 +85,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-data-collection-checkbox"
+        data-testid="metametrics-data-collection-checkbox-unchecked"
         for="metametrics-datacollection-opt-in"
       >
         <div
@@ -181,7 +181,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-checkbox"
+        data-testid="metametrics-checkbox-checked"
         for="metametrics-opt-in"
       >
         <div
@@ -232,7 +232,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-data-collection-checkbox"
+        data-testid="metametrics-data-collection-checkbox-unchecked"
         for="metametrics-datacollection-opt-in"
       >
         <div
