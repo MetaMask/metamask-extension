@@ -118,7 +118,7 @@ export default function useSubmitBridgeTransaction() {
       return;
     }
 
-    // Navigate to HW signing page (QR wallets handled by useNavigateOnQrScanComplete)
+    // Navigate to HW signing page
     if (hardwareWalletUsed) {
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
       setIsSubmitting(false);
