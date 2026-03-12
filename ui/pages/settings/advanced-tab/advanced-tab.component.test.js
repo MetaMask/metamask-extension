@@ -216,10 +216,7 @@ describe('AdvancedTab Component', () => {
       });
     });
     it('should call displayErrorInSettings when the state file download fails', async () => {
-      // Mock failed state log retrieval
-      mockLogStateString.mockImplementation((callback) => {
-        callback(new Error('state file error'), null);
-      });
+      mockLogStateString.mockRejectedValue(new Error('state file error'));
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId(
         'advanced-setting-state-logs-button',
