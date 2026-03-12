@@ -1,6 +1,10 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import { PAYMENT_TYPES, PaymentType } from '@metamask/subscription-controller';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
   BadgeWrapper,
   Box,
   BoxBackgroundColor,
@@ -14,16 +18,11 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
-import { BorderColor } from '../../helpers/constants/design-system';
 import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -123,7 +122,7 @@ export const ShieldPaymentModal = ({
               size={AvatarNetworkSize.Xs}
               name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
               src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]}
-              borderColor={BorderColor.borderMuted}
+              className="border border-muted rounded-md"
             />
           }
         >
@@ -176,24 +175,29 @@ export const ShieldPaymentModal = ({
               )}
               <Box className="flex items-center justify-between w-full">
                 <Box className="flex items-center gap-4">
-                  {hasStableTokenWithBalance ? (
+                  {hasStableTokenWithBalance && selectedToken ? (
                     <BadgeWrapper
                       badge={
                         <AvatarNetwork
                           size={AvatarNetworkSize.Xs}
-                          name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
-                          src={
-                            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]
+                          name={
+                            NETWORK_TO_NAME_MAP[
+                              selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                            ]
                           }
-                          borderColor={BorderColor.borderMuted}
+                          src={
+                            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                              selectedToken.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                            ]
+                          }
+                          className="border border-muted rounded-md"
                         />
                       }
                     >
                       <AvatarToken
-                        name={selectedToken?.symbol}
-                        src={selectedToken?.image}
-                        marginTop={1}
-                        borderColor={BorderColor.borderMuted}
+                        name={selectedToken.symbol}
+                        src={selectedToken.image}
+                        className="mt-1 border border-muted"
                       />
                     </BadgeWrapper>
                   ) : (
