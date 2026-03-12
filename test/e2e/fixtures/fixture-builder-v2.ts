@@ -481,9 +481,6 @@ class FixtureBuilderV2 {
         },
       },
     }).withSnapController({
-      isReady: true,
-      snapStates: {},
-      unencryptedSnapStates: {},
       snaps: {
         'npm:@metamask/lifecycle-hooks-example-snap': {
           auxiliaryFiles: [],
