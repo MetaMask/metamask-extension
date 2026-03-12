@@ -9,7 +9,7 @@ import { EditContactPage } from './edit-contact-page';
 export const contactsRoutes: RouteObject[] = [
   { index: true, element: <ContactsListPage /> },
   { path: 'add', element: <AddContactPage /> },
-  { path: 'view/:address', element: <ContactDetailsPage /> },
-  { path: 'edit/:address', element: <EditContactPage /> },
+  { path: 'view/:chainId/:address', element: <ContactDetailsPage /> },
+  { path: 'edit/:chainId/:address', element: <EditContactPage /> },
   { path: '*', element: <Navigate to="." replace /> },
 ];

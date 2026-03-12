@@ -389,7 +389,7 @@ export const routeConfig = [
       'basicFunctionalityRequired_openSnapsPage',
   }),
   createRouteWithLayout({
-    path: `${SNAPS_VIEW_ROUTE}/*`,
+    path: SNAPS_VIEW_ROUTE,
     component: SnapView,
     layout: RootLayout,
     authenticated: true,

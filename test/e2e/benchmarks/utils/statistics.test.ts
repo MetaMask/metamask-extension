@@ -1,3 +1,4 @@
+import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
 import {
   calculateMean,
   calculateStdDev,
@@ -16,7 +17,7 @@ import {
   getEffectiveThreshold,
   MAX_METRIC_DURATION_MS,
 } from './statistics';
-import type { ThresholdConfig, TimerStatistics } from './types';
+import type { TimerStatistics } from './types';
 
 function createMockStats(
   overrides: Partial<TimerStatistics> = {},
