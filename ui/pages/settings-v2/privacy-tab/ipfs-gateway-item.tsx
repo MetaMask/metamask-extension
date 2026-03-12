@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { FormTextField } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
-import TextField from '../../../components/ui/text-field';
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
@@ -84,15 +84,13 @@ export const IpfsGatewayItem = () => {
       />
       {ipfsToggle && (
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          <TextField
-            type="text"
+          <FormTextField
             value={ipfsGatewayValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleIpfsGatewayChange(e.target.value)
             }
-            error={ipfsGatewayError}
-            fullWidth
-            margin="dense"
+            error={Boolean(ipfsGatewayError)}
+            helpText={ipfsGatewayError}
           />
         </Box>
       )}
