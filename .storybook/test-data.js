@@ -5,8 +5,6 @@ import {
   CHAIN_IDS,
   LINEA_MAINNET_DISPLAY_NAME,
 } from '../shared/constants/network';
-import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
-import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
 import {
@@ -301,15 +299,47 @@ const state = {
     },
     interfaces: {
       'test-interface': {
-        content: getJsxElementFromComponent(
-          panel([
-            heading('Foo bar'),
-            text('Description'),
-            divider(),
-            text('More text'),
-            copyable('Text you can copy'),
-          ]),
-        ),
+        content: {
+          type: 'Box',
+          props: {
+            children: [
+              {
+                type: 'Heading',
+                props: {
+                  children: 'Foo bar',
+                },
+                key: null,
+              },
+              {
+                type: 'Text',
+                props: {
+                  children: 'Description',
+                },
+                key: null,
+              },
+              {
+                type: 'Divider',
+                props: {},
+                key: null,
+              },
+              {
+                type: 'Text',
+                props: {
+                  children: 'More text',
+                },
+                key: null,
+              },
+              {
+                type: 'Copyable',
+                props: {
+                  value: 'Text you can copy',
+                },
+                key: null,
+              },
+            ],
+          },
+          key: null,
+        },
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
@@ -367,21 +397,22 @@ const state = {
           id: 'snap:npm:@metamask/test-snap-bip44',
           type: 'snap',
           groups: {
-            'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0': {
-              id: 'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0',
-              type: 'single-account',
-              accounts: ['64f9d02e-47e6-4dfd-8232-f3518606cad3'],
-              metadata: {
-                name: 'Snap Account 1',
+            'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0':
+              {
+                id: 'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+                type: 'single-account',
+                accounts: ['64f9d02e-47e6-4dfd-8232-f3518606cad3'],
+                metadata: {
+                  name: 'Snap Account 1',
+                },
               },
-            },
           },
           metadata: {
             name: 'BIP-44',
             snap: {
               id: 'npm:@metamask/test-snap-bip44',
             },
-          }
+          },
         },
       },
     },

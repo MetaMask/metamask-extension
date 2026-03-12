@@ -2,10 +2,16 @@ import { MetaMaskBuildCapability } from './build';
 
 type ExitSignal = NodeJS.Signals | null;
 
+type MockReadable = {
+  on: jest.Mock;
+};
+
 type MockChildProcess = {
   on: jest.Mock;
   kill: jest.Mock;
   killed: boolean;
+  stdout: MockReadable;
+  stderr: MockReadable;
   emitError: (error: Error) => void;
   emitExit: (code: number | null, signal?: ExitSignal) => void;
 };
@@ -25,6 +31,10 @@ describe('MetaMaskBuildCapability', () => {
   const originalCwd = process.cwd;
   let activeChild: MockChildProcess;
   let nextSpawnOutcome: 'success' | 'failure' | 'error' | 'pending';
+
+  const createMockReadable = (): MockReadable => ({
+    on: jest.fn().mockReturnThis(),
+  });
 
   const createMockChildProcess = (): MockChildProcess => {
     const handlers: {
@@ -55,6 +65,8 @@ describe('MetaMaskBuildCapability', () => {
         return true;
       }),
       killed: false,
+      stdout: createMockReadable(),
+      stderr: createMockReadable(),
       emitError: (error: Error) => {
         handlers.error?.(error);
       },
@@ -106,17 +118,18 @@ describe('MetaMaskBuildCapability', () => {
     it('uses custom command when provided', async () => {
       mockExistsSync.mockReturnValue(false);
       const capability = new MetaMaskBuildCapability({
-        command: 'yarn build:flask',
+        command: 'yarn build:test:flask',
       });
 
       await capability.build();
 
       expect(mockSpawn).toHaveBeenCalledWith(
-        'yarn build:flask',
+        'yarn',
+        ['build:test:flask'],
         expect.objectContaining({
           cwd: '/test/metamask-extension',
-          stdio: 'inherit',
-          shell: true,
+          stdio: ['ignore', 'pipe', 'pipe'],
+          shell: false,
         }),
       );
     });
@@ -140,11 +153,12 @@ describe('MetaMaskBuildCapability', () => {
       await capability.build();
 
       expect(mockSpawn).toHaveBeenCalledWith(
-        expect.any(String),
+        'yarn',
+        ['build:test'],
         expect.objectContaining({
           cwd: '/test/metamask-extension',
-          stdio: 'inherit',
-          shell: true,
+          stdio: ['ignore', 'pipe', 'pipe'],
+          shell: false,
         }),
       );
     });
@@ -169,11 +183,12 @@ describe('MetaMaskBuildCapability', () => {
 
       expect(result.success).toBe(true);
       expect(mockSpawn).toHaveBeenCalledWith(
-        'yarn build:test',
+        'yarn',
+        ['build:test'],
         expect.objectContaining({
           cwd: '/test/metamask-extension',
-          stdio: 'inherit',
-          shell: true,
+          stdio: ['ignore', 'pipe', 'pipe'],
+          shell: false,
         }),
       );
     });
@@ -195,9 +210,23 @@ describe('MetaMaskBuildCapability', () => {
       await capability.build({ buildType: 'build:test:flask' });
 
       expect(mockSpawn).toHaveBeenCalledWith(
-        'yarn build:test:flask',
-        expect.objectContaining({ shell: true }),
+        'yarn',
+        ['build:test:flask'],
+        expect.objectContaining({ shell: false }),
       );
+    });
+
+    it('rejects invalid buildType values', async () => {
+      mockExistsSync.mockReturnValue(false);
+      const capability = new MetaMaskBuildCapability();
+
+      const result = await capability.build({
+        buildType: 'malicious; rm -rf /',
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Invalid buildType');
+      expect(mockSpawn).not.toHaveBeenCalled();
     });
 
     it('returns error result on build failure', async () => {
