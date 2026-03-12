@@ -2,7 +2,7 @@
 import { getSmartTransactionProperties } from './smart-transactions';
 import { createBuilderRequest } from './test-utils';
 
-jest.mock('../../../../../shared/modules/metametrics', () => ({
+jest.mock('../../../../../shared/lib/metametrics', () => ({
   getSmartTransactionMetricsProperties: jest.fn().mockReturnValue({
     is_smart_transaction: true,
     gas_included: true,

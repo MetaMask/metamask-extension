@@ -8,8 +8,8 @@
 
 [
   [
-    "shared/modules/selectors/account.ts",
-    "shared/modules/selectors/index.ts",
+    "shared/lib/selectors/account.ts",
+    "shared/lib/selectors/index.ts",
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"

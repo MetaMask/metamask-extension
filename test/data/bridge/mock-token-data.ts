@@ -1,7 +1,7 @@
 import { EthScope } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { decimalToPrefixedHex } from '../../../shared/modules/conversion.utils';
+import { decimalToPrefixedHex } from '../../../shared/lib/conversion.utils';
 
 export const mockTokenData = {
   allTokens: {

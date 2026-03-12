@@ -6,7 +6,7 @@ import {
   TRIGGER_TYPES,
   defaultState,
 } from '@metamask/notification-services-controller/notification-services';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
