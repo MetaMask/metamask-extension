@@ -1,8 +1,4 @@
-import {
-  PerpsController,
-  getDefaultPerpsControllerState,
-  type PerpsControllerState,
-} from '@metamask/perps-controller';
+import { PerpsController } from '@metamask/perps-controller';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { ControllerApi, ControllerInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
@@ -31,10 +27,7 @@ export const PerpsControllerInit: ControllerInitFunction<
 
   const controller = new PerpsController({
     messenger: controllerMessenger,
-    state: {
-      ...getDefaultPerpsControllerState(),
-      ...(persistedState.PerpsController as Partial<PerpsControllerState>),
-    },
+    state: persistedState.PerpsController,
     infrastructure,
     clientConfig: {
       fallbackHip3Enabled: true,
