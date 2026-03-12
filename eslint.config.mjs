@@ -303,7 +303,6 @@ export default createConfig([
    */
   {
     files: [
-      'eslint.config.mjs',
       '.mocharc.js',
       '*.config.js',
       'app/scripts/lockdown-run.js',
@@ -679,6 +678,12 @@ export default createConfig([
       'jest/no-large-snapshots': 'off',
       'jest/no-restricted-matchers': 'off',
 
+      // jest/unbound-method requires type information which is not available
+      // for JavaScript test files. The @metamask/eslint-config-jest config
+      // enables this only for .test.ts files, but createConfig's `extends`
+      // applies the parent file list, widening it to .test.js files too.
+      'jest/unbound-method': 'off',
+
       /**
        * jest/prefer-to-be is a new rule that was disabled to reduce churn
        */
@@ -918,6 +923,9 @@ export default createConfig([
    */
   {
     files: ['development/webpack/**/*.{js,ts,tsx}'],
+    plugins: {
+      '@typescript-eslint': typescriptEslint.plugin,
+    },
     rules: {
       '@typescript-eslint/no-shadow': [
         'error',
