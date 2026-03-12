@@ -737,6 +737,16 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.build-test-mv2-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-dist-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-beta-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-beta-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-flask-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-flask-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
