@@ -8,6 +8,7 @@ import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { EditContactPage } from './edit-contact-page';
 
 const MOCK_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const MOCK_CHAIN_ID = '0x5';
 const MOCK_NAME = 'Address Book Account 1';
 
 const mockNavigate = jest.fn();
@@ -22,7 +23,10 @@ jest.mock('react-router-dom', () => ({
 describe('EditContactPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseParams.mockReturnValue({ address: MOCK_ADDRESS });
+    mockUseParams.mockReturnValue({
+      chainId: MOCK_CHAIN_ID,
+      address: MOCK_ADDRESS,
+    });
   });
 
   const renderPage = () => {
@@ -63,7 +67,10 @@ describe('EditContactPage', () => {
   });
 
   it('redirects to contacts list when address param is missing', () => {
-    mockUseParams.mockReturnValue({ address: undefined });
+    mockUseParams.mockReturnValue({
+      chainId: MOCK_CHAIN_ID,
+      address: undefined,
+    });
     const { container } = renderWithProvider(
       <EditContactPage />,
       configureStore(mockState),
@@ -75,6 +82,7 @@ describe('EditContactPage', () => {
 
   it('redirects to contacts list when contact is not in address book', () => {
     mockUseParams.mockReturnValue({
+      chainId: MOCK_CHAIN_ID,
       address: '0x0000000000000000000000000000000000000001',
     });
     const { container } = renderWithProvider(

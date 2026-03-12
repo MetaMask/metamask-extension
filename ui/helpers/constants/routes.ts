@@ -317,12 +317,12 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACTS_VIEW_ROUTE}/:address`,
+    path: `${CONTACTS_VIEW_ROUTE}/:chainId/:address`,
     label: 'Contact Details Page',
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACTS_EDIT_ROUTE}/:address`,
+    path: `${CONTACTS_EDIT_ROUTE}/:chainId/:address`,
     label: 'Edit Contact Page',
     trackInAnalytics: true,
   },
