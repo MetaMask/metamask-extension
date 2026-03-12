@@ -22048,7 +22048,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"content-disposition@npm:0.5.4, content-disposition@npm:~0.5.4":
+"content-disposition@npm:0.5.4":
   version: 0.5.4
   resolution: "content-disposition@npm:0.5.4"
   dependencies:
@@ -22057,7 +22057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"content-disposition@npm:^1.0.0":
+"content-disposition@npm:^1.0.0, content-disposition@npm:~1.0.1":
   version: 1.0.1
   resolution: "content-disposition@npm:1.0.1"
   checksum: 10/0718d861dfec56f532fd9acd714f173782ce5257b243344fecab5196621746cf8623bf1c833441612f1ac84559c546b59277cf0e91c3a646b0712a806decb1c8
@@ -32454,12 +32454,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "koa@npm:3.1.1"
+"koa@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "koa@npm:3.1.2"
   dependencies:
     accepts: "npm:^1.3.8"
-    content-disposition: "npm:~0.5.4"
+    content-disposition: "npm:~1.0.1"
     content-type: "npm:^1.0.5"
     cookies: "npm:~0.9.1"
     delegates: "npm:^1.0.0"
@@ -32476,7 +32476,7 @@ __metadata:
     statuses: "npm:^2.0.1"
     type-is: "npm:^2.0.1"
     vary: "npm:^1.1.2"
-  checksum: 10/b9f53e98752e73d2d3ed2df28a8062387e116d7053f3d655815ea7f1bae672f4f6afe41d6ff5f6cf429aad76aea4fd4424655bdcf6f8291a658108fe3aa2cf43
+  checksum: 10/0f89a4c69b5d0cc72ff4e971cbaf1e85ae4865c96612c6efab6d21218b25582c064cba202b1c9e678aeb121aee5908d415b45f3098d3e297f4723e49648e5ce7
   languageName: node
   linkType: hard
 
@@ -34128,7 +34128,7 @@ __metadata:
     jsdom: "npm:^16.7.0"
     json-schema-to-ts: "npm:^3.0.1"
     jsonwebtoken: "npm:^9.0.2"
-    koa: "npm:^3.1.1"
+    koa: "npm:^3.1.2"
     labeled-stream-splicer: "npm:^2.0.2"
     lavamoat: "npm:10.0.5"
     lavamoat-browserify: "npm:^19.0.2"

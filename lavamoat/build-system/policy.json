@@ -1399,7 +1399,7 @@
       },
       "packages": {
         "vinyl-buffer>bl>readable-stream": true,
-        "koa>content-disposition>safe-buffer": true
+        "mockttp>express>safe-buffer": true
       }
     },
     "gulp-livereload>tiny-lr>body": {
@@ -1462,7 +1462,7 @@
         "browserify>JSONStream": true,
         "@lavamoat/lavapack>combine-source-map": true,
         "watchify>defined": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "browserify>browser-pack>through2": true,
         "@lavamoat/lavapack>umd": true
       }
@@ -5404,7 +5404,7 @@
     "gulp>vinyl-fs>remove-bom-stream": {
       "packages": {
         "gulp>vinyl-fs>remove-bom-buffer": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "gulp>vinyl-fs>remove-bom-stream>through2": true
       }
     },
@@ -5575,7 +5575,7 @@
         "setTimeout.apply": true
       }
     },
-    "koa>content-disposition>safe-buffer": {
+    "mockttp>express>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -6052,7 +6052,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "koa>content-disposition>safe-buffer": true
+        "mockttp>express>safe-buffer": true
       }
     },
     "gulp-livereload>tiny-lr>body>raw-body>string_decoder": {
@@ -6986,7 +6986,7 @@
       },
       "packages": {
         "webpack-dev-server>sockjs>websocket-driver>http-parser-js": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },
