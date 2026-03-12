@@ -1,0 +1,31 @@
+name: QA Stats
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+    - cron: '0 15 * * *'
+
+jobs:
+  collect-qa-stats:
+    name: Collect QA Stats
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Collect QA stats
+        run: node .github/scripts/collect-qa-stats.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Upload QA stats artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: qa-stats
+          path: ./qa-stats.json
+          if-no-files-found: error
