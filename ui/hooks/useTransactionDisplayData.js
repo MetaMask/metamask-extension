@@ -27,7 +27,7 @@ import {
 } from '../helpers/constants/transactions';
 import { getNfts } from '../ducks/metamask/metamask';
 import { captureSingleException } from '../store/actions';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';

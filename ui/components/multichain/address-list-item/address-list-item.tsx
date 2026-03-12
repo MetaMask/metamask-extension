@@ -26,7 +26,7 @@ import { PreferredAvatar } from '../../app/preferred-avatar';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { I18nContext } from '../../../contexts/i18n';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 
 type AddressListItemProps = {

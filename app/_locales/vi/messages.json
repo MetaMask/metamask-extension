@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Thêm token"
   },
-  "addTokenByContractAddress": {
-    "message": "Bạn không tìm thấy token? Bạn có thể dán địa chỉ của bất kỳ token nào để thêm token đó theo cách thủ công. Bạn có thể tìm thấy địa chỉ hợp đồng token trên $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Thêm URL"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "Bất kỳ khoản phí mạng nào được báo trên màn hình trước đó đều bao gồm cả hai giao dịch và sẽ được chia nhỏ."
   },
-  "bridgeNetCost": {
-    "message": "Chi phí ròng"
-  },
   "bridgeNoMMFee": {
     "message": "Không có phí MM"
   },
@@ -1128,10 +1121,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 phút",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Cầu nối đến"
@@ -1798,7 +1787,8 @@
     "message": "Chỉ mở khóa MetaMask trên thiết bị này."
   },
   "createPasswordDetailsSocial": {
-    "message": "Mất mật khẩu này đồng nghĩa với việc mất quyền truy cập ví trên tất cả các thiết bị, "
+    "message": "Mất mật khẩu này đồng nghĩa với việc mất quyền truy cập ví trên tất cả các thiết bị, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask không thể đặt lại mật khẩu này."
@@ -3988,8 +3978,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Chuyển đổi $1 sang mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Đã chuyển đổi sang mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."
@@ -5791,12 +5781,6 @@
   },
   "queued": {
     "message": "Đã đưa vào hàng đợi"
-  },
-  "quotedReceiveAmount": {
-    "message": "Số tiền nhận $1"
-  },
-  "quotedTotalCost": {
-    "message": "Tổng chi phí $1"
   },
   "rank": {
     "message": "Xếp hạng"
@@ -8056,10 +8040,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 báo giá.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "Không có token nào khớp với $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "$1 của bạn sẽ được thêm vào tài khoản sau khi xử lý xong giao dịch.",

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
-import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.utils';
+import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
