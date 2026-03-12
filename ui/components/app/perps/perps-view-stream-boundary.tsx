@@ -1,9 +1,9 @@
 import React, { type ReactNode } from 'react';
 import { usePerpsViewActive } from '../../../hooks/perps/stream/usePerpsViewActive';
 
-type PerpsViewStreamBoundaryProps = {
+type PerpsViewStreamBoundaryProps = Readonly<{
   children: ReactNode;
-};
+}>;
 
 /**
  * Perps-only boundary for non-route surfaces (e.g. account overview tab)
