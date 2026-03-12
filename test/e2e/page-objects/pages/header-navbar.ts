@@ -253,6 +253,25 @@ class HeaderNavbar {
   }
 
   /**
+   * Opens the connection menu popover and verifies the network shown for the
+   * connected dapp matches the expected name.
+   *
+   * @param expectedNetwork - The network name expected to appear in the popover.
+   */
+  async checkConnectedSitePopoverNetwork(
+    expectedNetwork: string,
+  ): Promise<void> {
+    console.log(
+      `Verify the connected site popover network is: ${expectedNetwork}`,
+    );
+    await this.openConnectionMenu();
+    await this.driver.waitForSelector({
+      css: this.connectedSitePopoverNetworkButton,
+      text: expectedNetwork,
+    });
+  }
+
+  /**
    * Click the network addresses link
    */
   async clickNetworkAddresses(): Promise<void> {
