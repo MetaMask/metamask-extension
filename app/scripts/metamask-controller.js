@@ -1549,7 +1549,9 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Start perps eligibility monitoring (deferred during onboarding to avoid geo API call)
-    this.controllerApi.perpsStartEligibilityMonitoring?.();
+    this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+      console.error(error);
+    });
   }
 
   /**
