@@ -150,15 +150,17 @@ export function getGasValuesForReplacement(txParams, previousGas, rate) {
     ? txParams.maxPriorityFeePerGas
     : minMaxPriorityFeePerGas;
 
+  const effectiveGasLimit =
+    txParams?.gas ??
+    txParams?.gasLimit ??
+    previousGas?.gas ??
+    previousGas?.gasLimit;
+
   return {
     ...txParams,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    gas: txParams?.gas ?? previousGas.gasLimit ?? previousGas.gas,
-    gasLimit:
-      txParams?.gasLimit ??
-      previousGas.gasLimit ??
-      previousGas.gas ??
-      txParams?.gas,
+    gas: effectiveGasLimit,
+    gasLimit: effectiveGasLimit,
   };
 }

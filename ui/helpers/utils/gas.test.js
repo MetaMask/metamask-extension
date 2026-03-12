@@ -202,5 +202,23 @@ describe('Gas utils', () => {
       expect(result.maxFeePerGas).toBe('174876e800');
       expect(result.maxPriorityFeePerGas).toBe('174876e800');
     });
+
+    it('returns same value for gas and gasLimit (no mixed fallback chains)', () => {
+      // txParams has gas but no gasLimit; previousGas has different gasLimit.
+      // Result must use one effective gas limit for both fields.
+      const txParams = {
+        maxFeePerGas: '0x100',
+        maxPriorityFeePerGas: '0x100',
+        gas: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x10',
+        maxPriorityFeePerGas: '0x10',
+        gasLimit: '0x30d4',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(result.gas).toBe(result.gasLimit);
+      expect(result.gas).toBe('0x5208');
+    });
   });
 });
