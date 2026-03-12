@@ -80,6 +80,10 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
     `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
   ],
+  // Single-transition profiling (cascade-fix: isolated round-trips + React Profiler)
+  [INTERACTION_PRESETS.SINGLE_TRANSITION_PROFILING]: [
+    `${BENCHMARK_DIR}/interaction/single-route-transition.ts`,
+  ],
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/dapp-page-load-benchmark.spec.ts',
