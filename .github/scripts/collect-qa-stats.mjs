@@ -37,9 +37,7 @@ import { join } from 'path';
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
-const WORKFLOW_RUN_ID = process.env.WORKFLOW_RUN_ID;
-
-
+const WORKFLOW_RUN_ID = "23010648370";
 
 
 if (!GITHUB_TOKEN) throw new Error('Missing required GITHUB_TOKEN env var');
@@ -191,28 +189,32 @@ function getStringAttribute(tag, name) {
  * Parses JUnit XML and returns { total, perFile } where perFile maps
  * test file path to executed test count.
  *
- * Each <testsuite> in jest-junit output corresponds to one test file,
- * and its `name` attribute is the file path (relative to the root).
+ * Relies on jest-junit's `addFileAttribute: 'true'` option, which adds a
+ * `file` attribute to each <testcase> element with the absolute path to the
+ * test file. Skipped tests are identified by a <skipped> child element and
+ * excluded from the count.
  *
  * @param {string} rawXml
  * @returns {{ total: number, perFile: Record<string, number> }}
  */
 function parseJUnitXml(rawXml) {
-  const suiteTags = rawXml.match(/<testsuite\b[^>]*>/g) ?? [];
+  // Match each <testcase> — either self-closing or with a body
+  const testcasePattern = /<testcase\b([^>]*)(?:\/>|>([\s\S]*?)<\/testcase>)/g;
   const perFile = {};
   let total = 0;
 
-  for (const tag of suiteTags) {
-    const tests = getNumericAttribute(tag, 'tests');
-    const skipped = getNumericAttribute(tag, 'skipped');
-    const executed = Math.max(0, tests - skipped);
-    if (executed === 0) continue;
+  for (const match of rawXml.matchAll(testcasePattern)) {
+    const attrs = match[1];
+    const body = match[2] ?? '';
 
-    total += executed;
-    const filePath = getStringAttribute(tag, 'file') || getStringAttribute(tag, 'name');
-    if (filePath) {
-      perFile[filePath] = (perFile[filePath] ?? 0) + executed;
-    }
+    // Exclude skipped tests (<skipped/> or <skipped ...> child element)
+    if (body.includes('<skipped')) continue;
+
+    const filePath = getStringAttribute(attrs, 'file');
+    if (!filePath) continue;
+
+    total++;
+    perFile[filePath] = (perFile[filePath] ?? 0) + 1;
   }
 
   return { total, perFile };
