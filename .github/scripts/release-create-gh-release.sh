@@ -152,7 +152,7 @@ for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
                 build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
                 build-flask-browserify/builds/metamask-flask-chrome-*.zip \
                 build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
-    if ! ls "$artifact" >/dev/null 2>&1; then
+    if ! compgen -G "$artifact" > /dev/null; then
         echo "::error::Required artifact not found: ${artifact}"
         exit 1
     fi
