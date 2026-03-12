@@ -5937,9 +5937,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^68.0.0, @metamask/bridge-status-controller@npm:^68.1.0":
-  version: 68.1.0
-  resolution: "@metamask/bridge-status-controller@npm:68.1.0"
+"@metamask/bridge-status-controller@npm:@metamask-previews/bridge-status-controller@68.1.0-preview-cd2daacf2":
+  version: 68.1.0-preview-cd2daacf2
+  resolution: "@metamask-previews/bridge-status-controller@npm:68.1.0-preview-cd2daacf2"
   dependencies:
     "@metamask/accounts-controller": "npm:^37.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -5956,7 +5956,7 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/62ada7df014c0b435a375d40e67987bdc477d04f659d1ad523a3915ab5b40f96ec29ed0a60dce601bd3bb5baa954dd4dede0a54b4fec96fb7a76300ce1afba9e
+  checksum: 10/a5f35d0505dfc0121b9fdb84d3cb93f4f7126027dcadad89a2b455d6493416b397a7ea1c8cb9c175cfa969c8a1ce01cb5e1e77e64929be773633d6248f41364c
   languageName: node
   linkType: hard
 

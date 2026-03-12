@@ -19,7 +19,6 @@ import type {
 } from '@metamask/bridge-controller';
 import type { GetGasFeeState } from '@metamask/gas-fee-controller';
 import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
-import { MultichainTransactionsControllerTransactionConfirmedEvent } from '@metamask/multichain-transactions-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
@@ -37,7 +36,6 @@ type AllowedActions =
   | AuthenticationControllerGetBearerTokenAction;
 
 type AllowedEvents =
-  | MultichainTransactionsControllerTransactionConfirmedEvent
   | TransactionControllerTransactionFailedEvent
   | TransactionControllerTransactionConfirmedEvent;
 
@@ -81,7 +79,6 @@ export function getBridgeStatusControllerMessenger(
       'AuthenticationController:getBearerToken',
     ],
     events: [
-      'MultichainTransactionsController:transactionConfirmed',
       'TransactionController:transactionFailed',
       'TransactionController:transactionConfirmed',
     ],
