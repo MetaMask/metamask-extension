@@ -19,6 +19,9 @@ import { normalizeTestPath, XML } from './shared/utils';
  * - Attempt 3+: Would lose information about tests that passed in attempt 1
  *
  * By merging, we ensure all historical pass/fail information is preserved.
+ *
+ * @param previousResultsDir
+ * @param currentResultsDir
  */
 export async function mergeTestResults(
   previousResultsDir: string,
@@ -67,6 +70,8 @@ export async function mergeTestResults(
 
 /**
  * Gets all test file paths from XML results in a directory
+ *
+ * @param resultsDir
  */
 async function getTestFilesFromResults(
   resultsDir: string,
@@ -89,6 +94,8 @@ async function getTestFilesFromResults(
 
 /**
  * Extracts test file paths from an XML result file
+ *
+ * @param xmlPath
  */
 async function getTestFilesFromXml(xmlPath: string): Promise<string[]> {
   try {
@@ -124,4 +131,3 @@ if (require.main === module) {
       process.exit(1);
     });
 }
-

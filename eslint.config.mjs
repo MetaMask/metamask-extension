@@ -50,6 +50,62 @@ const baseCustomRules = {
 
   // Override the @metamask/eslint-config defaults to only restrict 'event'
   'no-restricted-globals': ['error', 'event'],
+
+  // Keep builtinGlobals: true from the base config, but allow commonly-used
+  // names that happen to collide with browser / extension globals.  Without
+  // this list every `name`, `origin`, `event`, `screen`, … parameter or
+  // variable would be flagged once browser globals are declared.
+  'no-shadow': [
+    'error',
+    {
+      builtinGlobals: true,
+      allow: [
+        'addEventListener',
+        'alert',
+        'browser',
+        'chrome',
+        'close',
+        'console',
+        'CSSTransition',
+        'currentTime',
+        'document',
+        'DragEvent',
+        'Element',
+        'event',
+        'File',
+        'history',
+        'Image',
+        'location',
+        'Location',
+        'Map',
+        'model',
+        'name',
+        'navigator',
+        'Node',
+        'Number',
+        'open',
+        'origin',
+        'outerWidth',
+        'parent',
+        'removeEventListener',
+        'ResizeObserver',
+        'screen',
+        'screenX',
+        'screenY',
+        'scroll',
+        'showSaveFilePicker',
+        'setTimeout',
+        'status',
+        'stop',
+        'Text',
+        'top',
+        'version',
+        'WebSocket',
+        'window',
+      ],
+    },
+  ],
+
   // These rules are too noisy for the existing codebase; re-enable later
   // with error suppression comments.
   'id-denylist': 'off',
@@ -889,6 +945,7 @@ export default createConfig([
       ...baseCustomRules,
       ...nodeCustomRules,
       'no-undef': 'off',
+      'n/no-process-exit': 'off',
     },
   },
 

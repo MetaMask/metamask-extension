@@ -57,8 +57,8 @@ export async function retrievePullRequest(
     id: retrievePullRequestResult?.repository?.pullRequest?.id,
     type: LabelableType.PullRequest,
     number: prNumber,
-    repoOwner: repoOwner,
-    repoName: repoName,
+    repoOwner,
+    repoName,
     createdAt: retrievePullRequestResult?.repository?.pullRequest?.createdAt,
     body: retrievePullRequestResult?.repository?.pullRequest?.body,
     author: retrievePullRequestResult?.repository?.pullRequest?.author?.login,
@@ -72,14 +72,15 @@ export type PullRequestFile = {
   filename: string;
   additions: number;
   deletions: number;
-}
+};
 
 /**
  * Retrieves files changed in a specific pull request
- * @param octokit GitHub API client
- * @param repoOwner Repository owner (e.g., "MetaMask")
- * @param repoName Repository name (e.g., "metamask-extension")
- * @param prNumber Pull request number
+ *
+ * @param octokit - GitHub API client
+ * @param repoOwner - Repository owner (e.g., "MetaMask")
+ * @param repoName - Repository name (e.g., "metamask-extension")
+ * @param prNumber - Pull request number
  * @returns Array of filenames that were changed in the PR
  */
 export async function retrievePullRequestFiles(

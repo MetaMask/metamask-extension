@@ -76,8 +76,8 @@ export async function retrieveIssue(
     id: retrieveIssueResult?.repository?.issue?.id,
     type: LabelableType.Issue,
     number: issueNumber,
-    repoOwner: repoOwner,
-    repoName: repoName,
+    repoOwner,
+    repoName,
     createdAt: retrieveIssueResult?.repository?.issue?.createdAt,
     body: retrieveIssueResult?.repository?.issue?.body,
     author: retrieveIssueResult?.repository?.issue?.author?.login,
@@ -140,15 +140,17 @@ export async function retrieveIssueByTitle(
     searchQuery,
   });
 
-  const issueWithSameTitle = retrieveIssueByTitleResult?.search?.nodes?.find(rawIssue => rawIssue.title === issueTitle);
+  const issueWithSameTitle = retrieveIssueByTitleResult?.search?.nodes?.find(
+    (rawIssue) => rawIssue.title === issueTitle,
+  );
 
   const issue: Labelable | undefined = issueWithSameTitle
     ? {
         id: issueWithSameTitle?.id,
         type: LabelableType.Issue,
         number: issueWithSameTitle?.number,
-        repoOwner: repoOwner,
-        repoName: repoName,
+        repoOwner,
+        repoName,
         createdAt: issueWithSameTitle?.createdAt,
         body: issueWithSameTitle?.body,
         author: issueWithSameTitle?.author?.login,
@@ -166,7 +168,6 @@ export async function retrieveLinkedIssues(
   repoName: string,
   prNumber: number,
 ): Promise<Labelable[]> {
-
   // We assume there won't be more than 100 linked issues
   const retrieveLinkedIssuesQuery = `
   query ($repoOwner: String!, $repoName: String!, $prNumber: Int!) {

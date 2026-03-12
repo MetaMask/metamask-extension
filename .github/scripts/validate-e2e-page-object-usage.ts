@@ -1,5 +1,5 @@
-import * as core from '@actions/core';
 import fs from 'fs';
+import * as core from '@actions/core';
 import { filterE2eChangedFiles } from '../../test/e2e/changedFilesUtil';
 
 async function verifyE2ePageObjectsUsage(
