@@ -416,6 +416,20 @@ const state = {
         },
       },
     },
+    accountIdByAddress: {
+      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4':
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e':
+        '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+      '0x9d0ba4ddac06032527b140912ec808ab9451b788':
+        '15e69915-2a1a-4019-93b3-916e11fd432f',
+      '0xeb9e64b93097bc15f01f13eae97015c57ab64823':
+        '784225f4-d30b-4e77-a900-c8bbce735b88',
+      '0x71c7656ec7ab88b098defb751b7401b5f6d8976f':
+        'b990b846-b384-4508-93d9-587461f1123e',
+      '0xde939393dde455081ffb3dfd027e189919f04bd0':
+        '64f9d02e-47e6-4dfd-8232-f3518606cad3',
+    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
