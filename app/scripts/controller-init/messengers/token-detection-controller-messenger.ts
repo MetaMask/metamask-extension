@@ -26,10 +26,10 @@ import {
   GetTokenListState,
 } from '@metamask/assets-controllers';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
-import {
+import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
-} from '../../controllers/preferences-controller';
+} from '@metamask/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
