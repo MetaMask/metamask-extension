@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Nothing to see yet. Swap your first token today."
   },
-  "activityLog": {
-    "message": "Activity log"
-  },
   "add": {
     "message": "Add"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
-  },
-  "addImportAccount": {
-    "message": "Add account or hardware wallet"
   },
   "addMemo": {
     "message": "Add memo"
@@ -654,10 +648,6 @@
   "allowNotifications": {
     "message": "Allow notifications"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Allow $1 to withdraw and spend up to the following amount:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Amount"
   },
@@ -744,6 +734,10 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Get 4% back on trades with a MetaMask referral code.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
@@ -762,6 +756,9 @@
   "autoDetectTokensDescription": {
     "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. $1",
     "description": "$1 is a link to a support article"
+  },
+  "autoDetectTokensDescriptionV2": {
+    "message": "Displays new tokens sent to your wallet."
   },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
@@ -1310,6 +1307,12 @@
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
+  "cancelTransactionDescription": {
+    "message": "This transaction will be canceled and this network fee will replace the original."
+  },
+  "cancelTransactionTitle": {
+    "message": "Cancel transaction"
+  },
   "cancelled": {
     "message": "Cancelled"
   },
@@ -1662,9 +1665,6 @@
   "connectAccount": {
     "message": "Connect account"
   },
-  "connectAccountOrCreate": {
-    "message": "Connect account or create new"
-  },
   "connectAccounts": {
     "message": "Connect accounts"
   },
@@ -1824,6 +1824,9 @@
   "copiedExclamation": {
     "message": "Copied."
   },
+  "copiedToClipboard": {
+    "message": "Copied to clipboard"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -1838,6 +1841,9 @@
   },
   "copyTransactionId": {
     "message": "Copy transaction ID"
+  },
+  "correct": {
+    "message": "Correct"
   },
   "create": {
     "message": "Create"
@@ -1930,6 +1936,9 @@
     "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
+  "currentQuestion": {
+    "message": "Question $1 of 2"
+  },
   "currentTitle": {
     "message": "Current:"
   },
@@ -1957,9 +1966,6 @@
   },
   "customSlippage": {
     "message": "Custom"
-  },
-  "customSpendLimit": {
-    "message": "Custom spend limit"
   },
   "customToken": {
     "message": "Custom token"
@@ -2251,9 +2257,6 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Deselect all"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
   },
@@ -2346,6 +2349,9 @@
   },
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
+  "displayNftMediaDescriptionV2": {
+    "message": "NFT autodetection relies on this feature."
   },
   "doNotShare": {
     "message": "Do not share this with anyone"
@@ -2533,9 +2539,6 @@
   "editNonceMessage": {
     "message": "This is an advanced feature, use cautiously."
   },
-  "editPermission": {
-    "message": "Edit permission"
-  },
   "editPermissions": {
     "message": "Edit permissions"
   },
@@ -2619,9 +2622,6 @@
   },
   "enterChainId": {
     "message": "Enter Chain ID"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Enter max spend limit"
   },
   "enterNetworkName": {
     "message": "Enter network name"
@@ -3413,12 +3413,12 @@
   "includesXTransactions": {
     "message": "Includes $1 transactions"
   },
+  "incorrect": {
+    "message": "Incorrect"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
   "insights": {
     "message": "Insights"
@@ -3603,9 +3603,6 @@
   "l2FeeTooltip": {
     "message": "L2 gas fee"
   },
-  "lastConnected": {
-    "message": "Last connected"
-  },
   "lastSold": {
     "message": "Last sold"
   },
@@ -3766,6 +3763,9 @@
   "loadingTokenList": {
     "message": "Loading token list"
   },
+  "localCurrency": {
+    "message": "Local currency"
+  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -3838,10 +3838,6 @@
   },
   "makeAnotherSwap": {
     "message": "Create a new swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Make sure nobody is looking",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manage": {
     "message": "Manage"
@@ -4091,10 +4087,6 @@
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
-  "musdClaimDescription": {
-    "message": "Bonus payout will be on Linea network.",
-    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
   },
   "musdClaimTitle": {
     "message": "Claim bonus",
@@ -4695,10 +4687,10 @@
     "message": "Something went wrong. Please try again."
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1"
+    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Learn how we protect your privacy while using this feature."
+    "message": "Learn how"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
@@ -5822,9 +5814,6 @@
   "productAnnouncements": {
     "message": "Product announcements"
   },
-  "proposedApprovalLimit": {
-    "message": "Proposed approval limit"
-  },
   "provide": {
     "message": "Provide"
   },
@@ -5981,6 +5970,9 @@
   "queued": {
     "message": "Queued"
   },
+  "quizIntroduction": {
+    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
@@ -6044,18 +6036,6 @@
   },
   "rejectAll": {
     "message": "Reject all"
-  },
-  "rejectRequestsDescription": {
-    "message": "You are about to batch reject $1 requests."
-  },
-  "rejectRequestsN": {
-    "message": "Reject $1 requests"
-  },
-  "rejectTxsDescription": {
-    "message": "You are about to batch reject $1 transactions."
-  },
-  "rejectTxsN": {
-    "message": "Reject $1 transactions"
   },
   "rejected": {
     "message": "Rejected"
@@ -6225,39 +6205,27 @@
   "revealSecretRecoveryPhrase": {
     "message": "Back up Secret Recovery Phrase"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWordsDescription1": {
-    "message": "The $1 provides $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask is a $1. That means you're the owner of your SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "full access to your wallet and funds.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial wallet"
+    "message": "Your $1 gives full access to your wallet, funds, and accounts.",
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Secret Recovery Phrase (SRP)"
+    "message": "Secret Recovery Phrase"
   },
   "revealSeedWordsText": {
     "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "Make sure no one is looking at your screen. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask Support will never request this.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
+    "message": "Make sure nobody is looking at your screen. MetaMask Support will never ask for this."
   },
   "revealSensitiveContent": {
     "message": "Reveal sensitive content"
@@ -6619,12 +6587,6 @@
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
-  "selectAccounts": {
-    "message": "Select the account(s) to use on this site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Select the account(s) to use with this snap"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -6663,9 +6625,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
   },
   "send": {
     "message": "Send"
@@ -7486,21 +7445,6 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage tolerance"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Set a difference you're comfortable with for balance changes. Transactions won't go through if the difference is higher."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Enforce balance changes"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "To keep your money safe, this transaction won't go through if the balance changes or the slippage tolerance isn't met."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Transaction settings"
-  },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
@@ -7827,24 +7771,11 @@
   "speedUpTooltipText": {
     "message": "New gas fee"
   },
-  "speedUpTransaction": {
-    "message": "Speed up this transaction"
+  "speedUpTransactionDescription": {
+    "message": "This network fee will replace the original."
   },
-  "spendLimitInsufficient": {
-    "message": "Spend limit insufficient"
-  },
-  "spendLimitInvalid": {
-    "message": "Spend limit invalid; must be a positive number"
-  },
-  "spendLimitPermission": {
-    "message": "Spend limit permission"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Spend limit requested by $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Spend limit too large"
+  "speedUpTransactionTitle": {
+    "message": "Speed up transaction"
   },
   "spender": {
     "message": "Spender"
@@ -8680,18 +8611,6 @@
   "transaction": {
     "message": "transaction"
   },
-  "transactionCancelAttempted": {
-    "message": "Transaction cancel attempted with estimated gas fee of $1 at $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaction successfully cancelled at $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaction confirmed at $2."
-  },
-  "transactionCreated": {
-    "message": "Transaction created with a value of $1 at $2."
-  },
   "transactionDataFunction": {
     "message": "Function"
   },
@@ -8701,17 +8620,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Amount + fees"
   },
-  "transactionDropped": {
-    "message": "Transaction dropped at $2."
-  },
   "transactionError": {
     "message": "Transaction error. Exception thrown in contract code."
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
-  },
-  "transactionErrored": {
-    "message": "Transaction encountered an error."
   },
   "transactionFee": {
     "message": "Transaction fee"
@@ -8747,24 +8660,15 @@
   "transactionIncludesTypes": {
     "message": "This transaction includes: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
-  },
   "transactionSettings": {
     "message": "Transaction settings"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Transaction submitted with estimated gas fee of $1 at $2."
-  },
   "transactionTotalGasFee": {
     "message": "Total gas fee",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaction updated at $2."
   },
   "transactions": {
     "message": "Transactions"
@@ -9029,6 +8933,9 @@
   "useNftDetection": {
     "message": "Autodetect NFTs"
   },
+  "useNftDetectionDescription": {
+    "message": "Displays all NFTs, including fake ones airdropped by scammers."
+  },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
   },
@@ -9081,9 +8988,6 @@
   },
   "viewDetails": {
     "message": "View details"
-  },
-  "viewMore": {
-    "message": "View more"
   },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
@@ -9250,9 +9154,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Your Secret Recovery Phrase"
   },
   "yourTransactionConfirmed": {
     "message": "Transaction already confirmed"

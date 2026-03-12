@@ -794,6 +794,7 @@ export enum MetaMetricsEventName {
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
+  EnabledDisabledOpenSea = 'Enabled/Disable OpenSea',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -857,6 +858,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
@@ -951,9 +953,7 @@ export enum MetaMetricsEventName {
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
-  // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
-  // END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',

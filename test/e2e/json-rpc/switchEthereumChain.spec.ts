@@ -7,6 +7,7 @@ import {
 } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
@@ -20,7 +21,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -214,7 +215,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfTestDapps: 2 },

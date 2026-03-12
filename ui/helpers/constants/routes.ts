@@ -12,6 +12,9 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
+export const SETTINGS_V2_ROUTE = '/settings-v2';
+export const ASSETS_ROUTE = '/settings-v2/assets';
+export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -100,7 +103,7 @@ export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
-export const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
+export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -132,11 +135,8 @@ export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
-///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
 
@@ -215,6 +215,17 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
+  {
+    path: SETTINGS_V2_ROUTE,
+    label: 'Settings V2 Page',
+    trackInAnalytics: true,
+  },
+  { path: ASSETS_ROUTE, label: 'Assets Settings Page', trackInAnalytics: true },
+  {
+    path: CURRENCY_ROUTE,
+    label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
   {
     path: GENERAL_ROUTE,
     label: 'General Settings Page',
@@ -564,7 +575,6 @@ export const ROUTES = [
     label: 'Swaps Awaiting Signatures',
     trackInAnalytics: false,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   {
     path: INITIALIZE_EXPERIMENTAL_AREA,
     label: 'Initialize Experimental Area',
@@ -575,7 +585,6 @@ export const ROUTES = [
     label: 'Onboarding Experimental Area',
     trackInAnalytics: false,
   },
-  ///: END:ONLY_INCLUDE_IF
   {
     path: SHIELD_PLAN_ROUTE,
     label: 'Shield Plan',
