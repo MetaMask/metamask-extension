@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました"
   },
-  "bridgeCalculatingAmount": {
-    "message": "計算中..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
   },
@@ -1787,7 +1784,8 @@
     "message": "このデバイスでのみMetaMaskのロックが解除されます。"
   },
   "createPasswordDetailsSocial": {
-    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。"
+    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask側でリセットすることはできません。"
