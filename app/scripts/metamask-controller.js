@@ -15,7 +15,12 @@ import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
+import {
+  errorCodes,
+  JsonRpcError,
+  providerErrors,
+  rpcErrors,
+} from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -212,6 +217,7 @@ import {
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
 import {
+  isUserRejectedHardwareWalletError,
   toHardwareWalletError,
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
@@ -7238,10 +7244,10 @@ export default class MetamaskController extends EventEmitter {
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
-            'SnapInterfaceController:getInterface',
+            'SnapInterfaceController:getInterfaceState',
             origin,
             ...args,
-          ).state,
+          ),
         getInterfaceContext: (...args) =>
           this.controllerMessenger.call(
             'SnapInterfaceController:getInterface',
@@ -8492,9 +8498,12 @@ export default class MetamaskController extends EventEmitter {
    */
   async #handleHardwareWalletError(error, walletType) {
     const hwError = toHardwareWalletError(error, walletType);
+    const createRpcError = isUserRejectedHardwareWalletError(hwError)
+      ? providerErrors.userRejectedRequest
+      : rpcErrors.internal;
     // Throw a JsonRpcError with hardware wallet error data preserved
     // This ensures the error properties survive serialization across the RPC boundary
-    throw rpcErrors.internal({
+    throw createRpcError({
       message: hwError.message,
       data: {
         code: hwError.code,

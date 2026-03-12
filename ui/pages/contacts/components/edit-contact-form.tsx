@@ -32,7 +32,10 @@ import {
   addToAddressBook,
   removeFromAddressBook,
 } from '../../../store/actions';
-import { getAddressBook, getInternalAccounts } from '../../../selectors';
+import {
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../../selectors';
 import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
@@ -56,7 +59,7 @@ export function EditContactForm({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const addressBook = useSelector(getAddressBook);
+  const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
 
@@ -75,7 +78,13 @@ export function EditContactForm({
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nameValue = e.target.value;
-    setNameError(validateName(nameValue) ? '' : t('nameAlreadyInUse'));
+    if (!nameValue.trim()) {
+      setNameError(t('fieldRequired', [t('nickname')]));
+    } else if (validateName(nameValue)) {
+      setNameError('');
+    } else {
+      setNameError(t('nameAlreadyInUse'));
+    }
     setContactName(nameValue);
   };
 
@@ -258,7 +267,7 @@ export function EditContactForm({
               >
                 <AvatarNetwork
                   size={AvatarNetworkSize.Xs}
-                  className="rounded-xl"
+                  className="rounded-md"
                   src={
                     contactChainId
                       ? getImageForChainId(contactChainId) || undefined

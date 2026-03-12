@@ -76,6 +76,7 @@ import type { IsEquivalent } from './type-level-utils';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
+  accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
   addressBook: AddressBookControllerState['addressBook'];
   alertEnabledness: AlertControllerState['alertEnabledness'];

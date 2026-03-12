@@ -8,14 +8,16 @@
  * - Sanity checks for metric validation
  */
 
+import { ThresholdSeverity } from '../../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
+  PercentileKey,
   PercentileThreshold,
   StatisticalResult,
   ThresholdConfig,
   ThresholdViolation,
-  TimerStatistics,
-} from './types';
+} from '../../../../shared/constants/benchmarks';
+import type { TimerStatistics } from './types';
 
 /**
  * CV (Coefficient of Variation) thresholds for data quality assessment
@@ -415,7 +417,7 @@ export const getEffectiveThreshold = (
  */
 const validatePercentile = (
   metricId: string,
-  percentile: 'p75' | 'p95',
+  percentile: PercentileKey,
   value: number,
   thresholds: PercentileThreshold,
   ciMultiplier?: number,
@@ -423,25 +425,23 @@ const validatePercentile = (
   const warnThreshold = getEffectiveThreshold(thresholds.warn, ciMultiplier);
   const failThreshold = getEffectiveThreshold(thresholds.fail, ciMultiplier);
 
-  // Check fail threshold first (more severe)
   if (value > failThreshold) {
     return {
       metricId,
       percentile,
       value,
       threshold: failThreshold,
-      severity: 'fail',
+      severity: ThresholdSeverity.Fail,
     };
   }
 
-  // Check warn threshold
   if (value > warnThreshold) {
     return {
       metricId,
       percentile,
       value,
       threshold: warnThreshold,
-      severity: 'warn',
+      severity: ThresholdSeverity.Warn,
     };
   }
 
@@ -522,8 +522,7 @@ export const validateThresholds = (
     violations.push(...timerViolations);
   }
 
-  // Passed if no 'fail' severity violations
-  const passed = !violations.some((v) => v.severity === 'fail');
+  const passed = !violations.some((v) => v.severity === ThresholdSeverity.Fail);
 
   return { violations, passed };
 };
@@ -571,7 +570,7 @@ export const validateResultThresholds = (
     }
   }
 
-  const passed = !violations.some((v) => v.severity === 'fail');
+  const passed = !violations.some((v) => v.severity === ThresholdSeverity.Fail);
   return { violations, passed };
 };
 
@@ -582,14 +581,14 @@ export const validateResultThresholds = (
  */
 export function logThresholdResult(violations: ThresholdViolation[]): void {
   if (violations.length > 0) {
-    console.log('\n⚠️  Threshold Violations:');
+    console.log('\n  Threshold Violations:');
     violations.forEach((v) => {
-      const icon = v.severity === 'fail' ? '❌' : '⚠️';
+      const icon = v.severity === ThresholdSeverity.Fail ? '🔺' : '🔼';
       console.log(
-        `  ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
+        `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
       );
     });
   } else {
-    console.log('✅ All thresholds passed');
+    console.log('  All thresholds passed');
   }
 }

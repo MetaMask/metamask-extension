@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-import { getGitCommitHash, getGitBranch } from './send-to-sentry-utils';
+import { getGitCommitHash, getGitBranch } from './utils/git';
 
 // Mock child_process before importing implementation
 jest.mock('child_process', () => ({

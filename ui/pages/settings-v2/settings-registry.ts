@@ -8,6 +8,7 @@ import {
   SETTINGS_V2_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
+  THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -66,6 +67,10 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
   [PRIVACY_ROUTE]: {
     labelKey: 'privacy',
     parentPath: SETTINGS_V2_ROUTE,
+  },
+  [THIRD_PARTY_APIS_ROUTE]: {
+    labelKey: 'thirdPartyApis',
+    parentPath: PRIVACY_ROUTE,
   },
 };
 

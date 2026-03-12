@@ -1,4 +1,4 @@
-import type { ThresholdConfig } from './types';
+import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
 
 export {
   BENCHMARK_PLATFORMS,

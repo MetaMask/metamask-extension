@@ -73,7 +73,7 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import { getSelectedInternalAccount } from './accounts';
+import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
@@ -794,9 +794,11 @@ const selectAccountsStateForBalances = createSelector(
   [
     (state: BalanceCalculationState) =>
       getMetamaskState(state).internalAccounts,
+    (state: BalanceCalculationState) => getAccountIdByAddress(state),
   ],
-  (internalAccounts) => ({
+  (internalAccounts, accountIdByAddress) => ({
     internalAccounts: internalAccounts ?? { accounts: {}, selectedAccount: '' },
+    accountIdByAddress: accountIdByAddress ?? {},
   }),
 );
 

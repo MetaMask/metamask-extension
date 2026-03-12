@@ -86,6 +86,9 @@ const defaultState = {
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
+    accountIdByAddress: {
+      '0xFirstAddress': 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
   },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
@@ -610,9 +613,7 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.resolves({
-        addedAccountAddress: '0x123',
-      });
+      const addNewAccount = background.addNewAccount.resolves('0x123');
 
       setBackgroundConnection(background);
 
@@ -645,9 +646,7 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.resolves({
-        addedAccountAddress: '0x123',
-      });
+      const addNewAccount = background.addNewAccount.resolves('0x123');
 
       setBackgroundConnection(background);
 
@@ -660,9 +659,7 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.resolves({
-        addedAccountAddress: '0x123',
-      });
+      const addNewAccount = background.addNewAccount.resolves('0x123');
 
       setBackgroundConnection(background);
 
@@ -1396,6 +1393,7 @@ describe('Actions', () => {
             },
             selectedAccount: 'mock-id',
           },
+          accountIdByAddress: { '0x123': 'mock-id' },
         },
       });
 
@@ -1442,6 +1440,7 @@ describe('Actions', () => {
             },
             selectedAccount: 'mock-id',
           },
+          accountIdByAddress: { '0x123': 'mock-id' },
         },
       });
 

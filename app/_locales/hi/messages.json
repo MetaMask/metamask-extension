@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "ब्लॉक एक्सप्लोरर लिंक कॉपी किया गया"
   },
-  "bridgeCalculatingAmount": {
-    "message": "गणना की जा रही है..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "आपको अपने हार्डवेयर वॉलेट पर 2 ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
@@ -1787,7 +1784,8 @@
     "message": "केवल इस डिवाइस पर MetaMask को अनलॉक करता है।"
   },
   "createPasswordDetailsSocial": {
-    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, "
+    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask इसे रीसेट नहीं कर सकता।"

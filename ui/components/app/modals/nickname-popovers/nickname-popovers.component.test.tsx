@@ -58,6 +58,10 @@ const render = (
         },
         selectedAccount: mockAccount.id,
       },
+      accountIdByAddress: {
+        [mockAccount.address]: mockAccount.id,
+        [mockNonEvmAccount.address]: mockNonEvmAccount.id,
+      },
       ...mockNetworkState({
         chainId: '0x5',
         blockExplorerUrl: mockEvmExplorer(mockAccount.address),
