@@ -66,7 +66,10 @@ describe('Approval Utils', () => {
       rejectAllApprovals({ approvalController });
 
       expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
-      expect(approvalController.acceptRequest).toHaveBeenCalledWith(ID_MOCK, null);
+      expect(approvalController.acceptRequest).toHaveBeenCalledWith(
+        ID_MOCK,
+        null,
+      );
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -83,7 +86,10 @@ describe('Approval Utils', () => {
       rejectAllApprovals({ approvalController });
 
       expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
-      expect(approvalController.acceptRequest).toHaveBeenCalledWith(ID_MOCK, false);
+      expect(approvalController.acceptRequest).toHaveBeenCalledWith(
+        ID_MOCK,
+        false,
+      );
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions

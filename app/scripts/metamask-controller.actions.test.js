@@ -502,11 +502,9 @@ describe('MetaMaskController', function () {
         null,
       );
 
-      expect(metamaskController.approvalController.acceptRequest).toHaveBeenCalledWith(
-        approvalId,
-        approvalValue,
-        undefined,
-      );
+      expect(
+        metamaskController.approvalController.acceptRequest,
+      ).toHaveBeenCalledWith(approvalId, approvalValue, undefined);
     });
 
     it('should pass only waitForResult to approvalController.acceptRequest options', async function () {
@@ -525,13 +523,11 @@ describe('MetaMaskController', function () {
         },
       );
 
-      expect(metamaskController.approvalController.acceptRequest).toHaveBeenCalledWith(
-        approvalId,
-        approvalValue,
-        {
-          waitForResult: true,
-        },
-      );
+      expect(
+        metamaskController.approvalController.acceptRequest,
+      ).toHaveBeenCalledWith(approvalId, approvalValue, {
+        waitForResult: true,
+      });
     });
 
     it('should transform hardware wallet errors to internal JSON-RPC errors', async function () {
