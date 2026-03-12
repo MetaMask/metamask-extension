@@ -75,6 +75,7 @@ jest.mock('@metamask/perps-controller', () => ({
     calculateFees: jest.fn(),
     getAvailableDexs: jest.fn(),
     refreshEligibility: jest.fn(),
+    startEligibilityMonitoring: jest.fn(),
     toggleTestnet: jest.fn(),
     saveTradeConfiguration: jest.fn(),
     getTradeConfiguration: jest.fn(),
@@ -160,7 +161,32 @@ describe('PerpsControllerInit', () => {
           fallbackHip3AllowlistMarkets: [],
           fallbackBlockedRegions: [],
         },
+        deferEligibilityCheck: true,
       });
+    });
+
+    it('passes deferEligibilityCheck true when onboarding is not complete', () => {
+      const request = getInitRequestMock();
+      request.persistedState.OnboardingController = {
+        completedOnboarding: false,
+      } as never;
+
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(constructorCall.deferEligibilityCheck).toBe(true);
+    });
+
+    it('passes deferEligibilityCheck false when onboarding is complete', () => {
+      const request = getInitRequestMock();
+      request.persistedState.OnboardingController = {
+        completedOnboarding: true,
+      } as never;
+
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(constructorCall.deferEligibilityCheck).toBe(false);
     });
 
     it('passes persisted state directly to the controller', () => {
@@ -254,6 +280,7 @@ describe('PerpsControllerInit', () => {
       ['perpsCalculateFees', 'calculateFees'],
       ['perpsGetAvailableDexs', 'getAvailableDexs'],
       ['perpsRefreshEligibility', 'refreshEligibility'],
+      ['perpsStartEligibilityMonitoring', 'startEligibilityMonitoring'],
       ['perpsToggleTestnet', 'toggleTestnet'],
       ['perpsSaveTradeConfiguration', 'saveTradeConfiguration'],
       ['perpsGetTradeConfiguration', 'getTradeConfiguration'],

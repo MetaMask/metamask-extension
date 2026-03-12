@@ -24,6 +24,8 @@ export const PerpsControllerInit: ControllerInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const infrastructure = createPerpsInfrastructure();
   const fallbackBlockedRegions = getFallbackBlockedRegions();
+  const completedOnboarding =
+    persistedState.OnboardingController?.completedOnboarding ?? false;
 
   const controller = new PerpsController({
     messenger: controllerMessenger,
@@ -34,6 +36,7 @@ export const PerpsControllerInit: ControllerInitFunction<
       fallbackHip3AllowlistMarkets: [],
       fallbackBlockedRegions,
     },
+    deferEligibilityCheck: !completedOnboarding,
   });
 
   const api = getApi(controller);
@@ -72,6 +75,7 @@ type PerpsActionName =
   | 'perpsCalculateFees'
   | 'perpsGetAvailableDexs'
   | 'perpsRefreshEligibility'
+  | 'perpsStartEligibilityMonitoring'
   | 'perpsToggleTestnet'
   | 'perpsSaveTradeConfiguration'
   | 'perpsGetTradeConfiguration'
@@ -171,6 +175,8 @@ function getApi(controller: PerpsController): PerpsBackgroundApi {
 
     // -- Eligibility --
     perpsRefreshEligibility: controller.refreshEligibility.bind(controller),
+    perpsStartEligibilityMonitoring:
+      controller.startEligibilityMonitoring.bind(controller),
 
     // -- Toggle --
     perpsToggleTestnet: controller.toggleTestnet.bind(controller),
