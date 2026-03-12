@@ -28,9 +28,7 @@ describe('Send - Hex Address Normalization', function () {
     it('normalizes address without 0x prefix and sends ETH', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2()
-            .withPetnamesDisabled()
-            .build(),
+          fixtures: new FixtureBuilderV2().withPetnamesDisabled().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {

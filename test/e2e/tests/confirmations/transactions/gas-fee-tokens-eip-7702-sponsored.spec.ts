@@ -1,4 +1,3 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';

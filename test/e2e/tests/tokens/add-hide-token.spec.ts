@@ -61,8 +61,7 @@ describe('Add hide token', function () {
 
   it('updates token balance when a WebSocket balance update is received', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE as Hex;
-    const tokenAddress: Hex =
-      '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
+    const tokenAddress: Hex = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
     const chainId = 1337;
 
     await withFixtures(

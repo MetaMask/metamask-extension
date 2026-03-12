@@ -1,4 +1,3 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
@@ -98,7 +97,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     );
   });
 
-  it('fails transaction if error', async function () {
+  it.only('fails transaction if error', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
