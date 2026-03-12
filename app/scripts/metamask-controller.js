@@ -1388,7 +1388,7 @@ export default class MetamaskController extends EventEmitter {
       this.signatureController.resetState.bind(this.signatureController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
-      this.approvalController.clear.bind(this.approvalController),
+      this.approvalController.clearRequests.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -2149,7 +2149,7 @@ export default class MetamaskController extends EventEmitter {
             approval.type.startsWith(RestrictedMethods.snap_dialog),
         );
         for (const approval of approvals) {
-          this.approvalController.reject(
+          this.approvalController.rejectRequest(
             approval.id,
             new Error('Snap was terminated.'),
           );
@@ -5664,7 +5664,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Only continue if there is no pending approval
-    const hasPendingApproval = this.approvalController.has({
+    const hasPendingApproval = this.approvalController.hasRequest({
       origin: partner.origin,
       type: partner.approvalType,
     });
@@ -7174,7 +7174,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         hasApprovalRequestsForOrigin: () =>
-          this.approvalController.has({ origin }),
+          this.approvalController.hasRequest({ origin }),
       }),
     );
 
@@ -8460,7 +8460,7 @@ export default class MetamaskController extends EventEmitter {
       typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
 
     try {
-      await this.approvalController.accept(id, value, approvalOptions);
+      await this.approvalController.acceptRequest(id, value, approvalOptions);
     } catch (error) {
       // Ignore if approval was already handled
       if (error instanceof ApprovalRequestNotFoundError) {
@@ -8478,7 +8478,7 @@ export default class MetamaskController extends EventEmitter {
 
   rejectPendingApproval = (id, error) => {
     try {
-      this.approvalController.reject(
+      this.approvalController.rejectRequest(
         id,
         new JsonRpcError(error.code, error.message, error.data),
       );

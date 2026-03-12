@@ -468,7 +468,7 @@ describe('MetaMaskController', function () {
     it('should not propagate ApprovalRequestNotFoundError', async function () {
       const error = new ApprovalRequestNotFoundError('123');
       metamaskController.approvalController = {
-        accept: () => {
+        acceptRequest: () => {
           throw error;
         },
       };
@@ -480,7 +480,7 @@ describe('MetaMaskController', function () {
     it('should propagate Error other than ApprovalRequestNotFoundError', async function () {
       const error = new Error();
       metamaskController.approvalController = {
-        accept: () => {
+        acceptRequest: () => {
           throw error;
         },
       };
@@ -489,11 +489,11 @@ describe('MetaMaskController', function () {
       ).rejects.toThrow(error);
     });
 
-    it('should normalize null options before calling approvalController.accept', async function () {
+    it('should normalize null options before calling approvalController.acceptRequest', async function () {
       const approvalId = mockULIDs[0];
       const approvalValue = { txMeta: { id: '0x1' } };
       metamaskController.approvalController = {
-        accept: jest.fn().mockResolvedValue(undefined),
+        acceptRequest: jest.fn().mockResolvedValue(undefined),
       };
 
       await metamaskController.resolvePendingApproval(
@@ -502,18 +502,16 @@ describe('MetaMaskController', function () {
         null,
       );
 
-      expect(metamaskController.approvalController.accept).toHaveBeenCalledWith(
-        approvalId,
-        approvalValue,
-        undefined,
-      );
+      expect(
+        metamaskController.approvalController.acceptRequest,
+      ).toHaveBeenCalledWith(approvalId, approvalValue, undefined);
     });
 
-    it('should pass only waitForResult to approvalController.accept options', async function () {
+    it('should pass only waitForResult to approvalController.acceptRequest options', async function () {
       const approvalId = mockULIDs[1];
       const approvalValue = { txMeta: { id: '0x2' } };
       metamaskController.approvalController = {
-        accept: jest.fn().mockResolvedValue(undefined),
+        acceptRequest: jest.fn().mockResolvedValue(undefined),
       };
 
       await metamaskController.resolvePendingApproval(
@@ -525,13 +523,11 @@ describe('MetaMaskController', function () {
         },
       );
 
-      expect(metamaskController.approvalController.accept).toHaveBeenCalledWith(
-        approvalId,
-        approvalValue,
-        {
-          waitForResult: true,
-        },
-      );
+      expect(
+        metamaskController.approvalController.acceptRequest,
+      ).toHaveBeenCalledWith(approvalId, approvalValue, {
+        waitForResult: true,
+      });
     });
 
     it('should transform hardware wallet errors to internal JSON-RPC errors', async function () {
@@ -539,7 +535,7 @@ describe('MetaMaskController', function () {
       const approvalValue = { txMeta: { id: '0x3' } };
       const error = new Error('Ledger transport disconnected');
       metamaskController.approvalController = {
-        accept: () => {
+        acceptRequest: () => {
           throw error;
         },
       };
@@ -613,7 +609,7 @@ describe('MetaMaskController', function () {
     it('should not propagate ApprovalRequestNotFoundError', function () {
       const error = new ApprovalRequestNotFoundError('123');
       metamaskController.approvalController = {
-        reject: () => {
+        rejectRequest: () => {
           throw error;
         },
       };
@@ -629,7 +625,7 @@ describe('MetaMaskController', function () {
     it('should propagate Error other than ApprovalRequestNotFoundError', function () {
       const error = new Error();
       metamaskController.approvalController = {
-        reject: () => {
+        rejectRequest: () => {
           throw error;
         },
       };

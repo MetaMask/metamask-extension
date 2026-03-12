@@ -34,7 +34,6 @@ export function getTransactionPayControllerMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
       'TokenBalancesController:getState',
-      'TokenListController:getState',
       'TokenRatesController:getState',
       'TokensController:getState',
       'TransactionController:estimateGas',

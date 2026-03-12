@@ -16,9 +16,9 @@ import type {
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  RejectRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerRejectRequestAction,
 } from '@metamask/approval-controller';
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
@@ -115,9 +115,9 @@ export type DecryptMessageControllerEvents =
   DecryptMessageControllerStateChange;
 
 export type AllowedActions =
-  | AddApprovalRequest
-  | AcceptRequest
-  | RejectRequest
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction
   | KeyringControllerDecryptMessageAction;
 
 type DecryptMessageManagerStateChangeEvent = {
