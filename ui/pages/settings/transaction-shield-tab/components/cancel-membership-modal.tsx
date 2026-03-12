@@ -12,8 +12,10 @@ import {
 import { AlignItems } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getShortDateFormatterV2 } from '../../../asset/util';
-import { getIsShieldSubscriptionPaused } from '../../../../../shared/lib/shield';
-import { getIsSubscriptionCancelNotAllowed } from '../../../../../shared/modules/shield';
+import {
+  getIsShieldSubscriptionPaused,
+  getIsSubscriptionCancelNotAllowed,
+} from '../../../../../shared/lib/shield';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

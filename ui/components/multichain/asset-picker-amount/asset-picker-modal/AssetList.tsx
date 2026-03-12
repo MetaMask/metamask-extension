@@ -34,7 +34,7 @@ import {
   useSafeChains,
 } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 

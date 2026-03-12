@@ -28,7 +28,7 @@ import {
 import { Box } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {
   forceUpdateMetamaskState,
   getIsSeedlessOnboardingUserAuthenticated,
