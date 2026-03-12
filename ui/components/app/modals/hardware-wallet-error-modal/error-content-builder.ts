@@ -3,12 +3,19 @@ import { IconName } from '../../../component-library';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { IconColor } from '../../../../helpers/constants/design-system';
 import { getHardwareWalletErrorCode } from '../../../../contexts/hardware-wallets';
-import { getBrowserName } from '../../../../../shared/lib/browser-runtime.utils';
-import {
-  PLATFORM_BRAVE,
-  PLATFORM_FIREFOX,
-  PLATFORM_EDGE,
-} from '../../../../../shared/constants/app';
+import WebcamUtils from '../../../../helpers/utils/webcam-utils';
+
+/**
+ * A recovery instruction that includes a clickable link.
+ */
+export type RecoveryLinkInstruction = {
+  type: 'link';
+  linkText: string;
+  linkUrl: string;
+  suffix: string;
+};
+
+export type RecoveryInstruction = string | RecoveryLinkInstruction;
 
 /**
  * Error content structure
@@ -19,7 +26,7 @@ type ErrorContentBase = {
 
 type ErrorContentWithRecovery = ErrorContentBase & {
   variant: 'recovery';
-  recoveryInstructions: string[];
+  recoveryInstructions: RecoveryInstruction[];
 };
 
 type ErrorContentWithIcon = ErrorContentWithRecovery & {
@@ -66,31 +73,29 @@ export function buildErrorContent(
     errorCode === ErrorCode.ConnectionTransportMissing &&
     walletType === HardwareWalletType.Qr
   ) {
-    const browser = getBrowserName();
-    let browserInstruction: string;
-    if (browser === PLATFORM_BRAVE) {
-      browserInstruction = t('qrHardwareCameraPermissionInstructionsBrave');
-    } else if (browser === PLATFORM_FIREFOX) {
-      browserInstruction = t(
-        'qrHardwareCameraPermissionInstructionsFirefox',
-      );
-    } else if (browser === PLATFORM_EDGE) {
-      browserInstruction = t('qrHardwareCameraPermissionInstructionsEdge');
-    } else {
-      browserInstruction = t(
-        'qrHardwareCameraPermissionInstructionsChrome',
-      );
+    const settingsUrl = WebcamUtils.getCameraSettingsUrl();
+    const instructions: RecoveryInstruction[] = [
+      t('qrHardwareCameraPermissionBlockedDescription'),
+    ];
+    if (settingsUrl) {
+      instructions.push({
+        type: 'link',
+        linkText: t('qrHardwareCameraPermissionOpenSettings'),
+        linkUrl: settingsUrl,
+        suffix: t('qrHardwareCameraPermissionAllowCamera'),
+      });
     }
+    if (WebcamUtils.isFirefox()) {
+      instructions.push(t('qrHardwareCameraPermissionFirefoxExtraStep'));
+    }
+    instructions.push(t('qrHardwareCameraPermissionAutoRecover'));
+
     return {
       variant: 'recovery',
       icon: IconName.Camera,
       iconColor: IconColor.iconDefault,
       title: t('qrHardwareCameraPermissionBlockedTitle'),
-      recoveryInstructions: [
-        t('qrHardwareCameraPermissionBlockedDescription'),
-        browserInstruction,
-        t('qrHardwareCameraPermissionAutoRecover'),
-      ],
+      recoveryInstructions: instructions,
     };
   }
 

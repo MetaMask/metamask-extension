@@ -9311,22 +9311,19 @@
     "message": "Camera access is blocked"
   },
   "qrHardwareCameraPermissionBlockedDescription": {
-    "message": "To complete this transaction, allow MetaMask to use your camera in your browser settings."
+    "message": "Allow MetaMask to use your camera in your browser settings."
   },
-  "qrHardwareCameraPermissionInstructionsChrome": {
-    "message": "Click the camera icon in the address bar and select \"Always allow\"."
+  "qrHardwareCameraPermissionOpenSettings": {
+    "message": "Open MetaMask permission settings"
   },
-  "qrHardwareCameraPermissionInstructionsBrave": {
-    "message": "Click the camera icon in the address bar and select \"Always allow\", or go to brave://settings/content/camera and allow this site."
+  "qrHardwareCameraPermissionAllowCamera": {
+    "message": "and allow camera access."
   },
-  "qrHardwareCameraPermissionInstructionsFirefox": {
-    "message": "Click the camera icon in the address bar and select \"Allowed\", or go to Settings → Privacy & Security → Permissions → Camera → Settings and remove the block."
-  },
-  "qrHardwareCameraPermissionInstructionsEdge": {
-    "message": "Click the camera icon in the address bar and select \"Always allow\"."
+  "qrHardwareCameraPermissionFirefoxExtraStep": {
+    "message": "Then go to Permissions → Camera → Settings and allow MetaMask."
   },
   "qrHardwareCameraPermissionAutoRecover": {
-    "message": "This will update automatically once access is granted."
+    "message": "This page will update automatically once access is granted."
   },
   "youReceived": {
     "message": "You received",

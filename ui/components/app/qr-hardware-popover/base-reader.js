@@ -1,17 +1,11 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  PLATFORM_BRAVE,
-  PLATFORM_FIREFOX,
-  PLATFORM_EDGE,
-} from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -46,19 +40,7 @@ const BaseReader = ({
     setProgress(0);
   };
 
-  const getBrowserInstructions = useCallback(() => {
-    const browser = getBrowserName();
-    if (browser === PLATFORM_BRAVE) {
-      return t('qrHardwareCameraPermissionInstructionsBrave');
-    }
-    if (browser === PLATFORM_FIREFOX) {
-      return t('qrHardwareCameraPermissionInstructionsFirefox');
-    }
-    if (browser === PLATFORM_EDGE) {
-      return t('qrHardwareCameraPermissionInstructionsEdge');
-    }
-    return t('qrHardwareCameraPermissionInstructionsChrome');
-  }, [t]);
+  const settingsUrl = useMemo(() => WebcamUtils.getCameraSettingsUrl(), []);
 
   const attachPermissionChangeListener = useCallback((permissionStatus) => {
     permissionStatus.onchange = () => {
@@ -269,7 +251,25 @@ const BaseReader = ({
         <div className="qr-scanner__status">
           {t('qrHardwareCameraPermissionBlockedDescription')}
         </div>
-        <div className="qr-scanner__status">{getBrowserInstructions()}</div>
+        {settingsUrl && (
+          <div className="qr-scanner__settings-card">
+            <span>
+              <button
+                className="qr-scanner__settings-link"
+                onClick={() => WebcamUtils.openCameraSettings()}
+                type="button"
+              >
+                {t('qrHardwareCameraPermissionOpenSettings')}
+              </button>{' '}
+              {t('qrHardwareCameraPermissionAllowCamera')}
+            </span>
+            {WebcamUtils.isFirefox() && (
+              <span className="qr-scanner__settings-card-extra">
+                {t('qrHardwareCameraPermissionFirefoxExtraStep')}
+              </span>
+            )}
+          </div>
+        )}
         <div className="qr-scanner__status">
           {t('qrHardwareCameraPermissionAutoRecover')}
         </div>

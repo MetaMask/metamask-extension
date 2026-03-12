@@ -36,7 +36,12 @@ import {
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
 // HardwareWalletType is used as a default fallback when walletType cannot be extracted
-import { buildErrorContent } from './error-content-builder';
+import WebcamUtils from '../../../../helpers/utils/webcam-utils';
+import {
+  buildErrorContent,
+  type RecoveryInstruction,
+  type RecoveryLinkInstruction,
+} from './error-content-builder';
 
 type HardwareWalletErrorModalProps = {
   isOpen?: boolean;
@@ -242,7 +247,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                     {t('hardwareWalletErrorRecoveryTitle')}
                   </Text>
                   {errorContent.recoveryInstructions.map(
-                    (instruction, index) => (
+                    (instruction: RecoveryInstruction, index: number) => (
                       <Box
                         key={index}
                         display={Display.Flex}
@@ -257,7 +262,30 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                             variant={TextVariant.bodyMd}
                             color={TextColor.textDefault}
                           >
-                            {instruction}
+                            {isRecoveryLink(instruction) ? (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    WebcamUtils.openCameraSettings()
+                                  }
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: 0,
+                                    font: 'inherit',
+                                    color: 'var(--color-primary-default)',
+                                    cursor: 'pointer',
+                                    display: 'inline',
+                                  }}
+                                >
+                                  {instruction.linkText}
+                                </button>{' '}
+                                {instruction.suffix}
+                              </>
+                            ) : (
+                              instruction
+                            )}
                           </Text>
                         </Box>
                       </Box>
@@ -300,3 +328,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       </Modal>
     );
   });
+
+function isRecoveryLink(
+  instruction: RecoveryInstruction,
+): instruction is RecoveryLinkInstruction {
+  return typeof instruction === 'object' && instruction.type === 'link';
+}
