@@ -37,6 +37,7 @@ export function TransactionDetailsModal({
     const type = resolveTransactionType(
       transactionMeta.type,
       transactionMeta.txParams?.to,
+      transactionMeta.txParams?.data,
     );
 
     switch (type) {
@@ -49,7 +50,7 @@ export function TransactionDetailsModal({
       default:
         return t('transaction');
     }
-  }, [transactionMeta.type, transactionMeta.txParams?.to, t]);
+  }, [transactionMeta.type, transactionMeta.txParams?.to, transactionMeta.txParams?.data, t]);
 
   return (
     <Modal

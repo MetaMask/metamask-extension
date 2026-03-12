@@ -103,6 +103,7 @@ function TransactionSummaryLine({
   const type = resolveTransactionType(
     transactionMeta.type,
     transactionMeta.txParams?.to,
+    transactionMeta.txParams?.data,
   );
 
   if (hasTransactionType(transactionMeta, [TransactionType.relayDeposit])) {

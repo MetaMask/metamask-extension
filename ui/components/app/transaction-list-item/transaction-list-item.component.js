@@ -185,6 +185,7 @@ function TransactionListItemInner({
   const resolvedType = resolveTransactionType(
     transactionGroup.initialTransaction.type,
     transactionGroup.initialTransaction.txParams?.to,
+    transactionGroup.initialTransaction.txParams?.data,
   );
 
   const category = mapTransactionTypeToCategory(resolvedType);
