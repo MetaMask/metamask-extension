@@ -116,6 +116,7 @@ export const AmountRecipient = () => {
         <HexData setHexDataError={setHexDataError} />
       </Box>
       <Button
+        data-testid="send-continue-button"
         disabled={isDisabled}
         onClick={onClick}
         size={ButtonSize.Lg}
