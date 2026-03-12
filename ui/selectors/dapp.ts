@@ -1,6 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import {
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,

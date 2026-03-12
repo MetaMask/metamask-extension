@@ -86,6 +86,7 @@ export function renderInterface(
               state: action.state ?? reduxState,
               context: null,
               contentType: null,
+              displayed: true,
             },
           },
         },

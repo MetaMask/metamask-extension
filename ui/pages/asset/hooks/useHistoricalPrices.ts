@@ -12,7 +12,7 @@ import {
 import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
 import type { SupportedCurrency } from '@metamask/core-backend';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { getShouldShowFiat } from '../../../selectors';
 import { getHistoricalPrices } from '../../../selectors/assets';
 import {

@@ -90,7 +90,7 @@ import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
   getIsTrialedSubscription,
-} from '../../../shared/modules/shield';
+} from '../../../shared/lib/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import {

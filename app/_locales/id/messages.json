@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Tautan block explorer disalin"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Menghitung..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Anda perlu mengonfirmasikan 2 transaksi pada dompet perangkat keras:"
   },
@@ -1787,7 +1784,8 @@
     "message": "Membuka MetaMask hanya pada perangkat ini."
   },
   "createPasswordDetailsSocial": {
-    "message": "Kehilangan kata sandi ini berarti kehilangan akses dompet di semua perangkat, "
+    "message": "Kehilangan kata sandi ini berarti kehilangan akses dompet di semua perangkat, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask tidak dapat meresetnya."

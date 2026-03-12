@@ -14,11 +14,9 @@ import {
   CONTACTS_EDIT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getAddressBookEntry,
-  getInternalAccountByAddress,
-} from '../../selectors';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { getInternalAccountByAddress } from '../../selectors';
+import { getAddressBookEntryByNetwork } from '../../selectors/snaps/address-book';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -33,9 +31,14 @@ export function ContactDetailsPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { address } = useParams<{ address: string }>();
+  const { chainId, address } = useParams<{
+    chainId: string;
+    address: string;
+  }>();
   const contact = useSelector((state) =>
-    address ? getAddressBookEntry(state, address) : null,
+    address && chainId
+      ? getAddressBookEntryByNetwork(state, address, chainId as `0x${string}`)
+      : null,
   );
   const internalAccount = useSelector((state) =>
     address ? getInternalAccountByAddress(state, address) : null,
@@ -106,8 +109,8 @@ export function ContactDetailsPage() {
         contact_address: address,
       },
     });
-    await dispatch(removeFromAddressBook(contact.chainId, address));
     navigate(CONTACTS_ROUTE, { state: { showContactDeletedToast: true } });
+    dispatch(removeFromAddressBook(contact.chainId, address));
   }, [address, contact?.chainId, dispatch, navigate, trackEvent]);
 
   if (!address) {
@@ -168,7 +171,7 @@ export function ContactDetailsPage() {
                   contact_address: address,
                 },
               });
-              navigate(`${CONTACTS_EDIT_ROUTE}/${address}`);
+              navigate(`${CONTACTS_EDIT_ROUTE}/${chainId}/${address}`);
             }}
             onDelete={openDeleteModal}
           />

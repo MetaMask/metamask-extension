@@ -33,7 +33,7 @@ import {
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateFeatureEnabled,
   type AssetsUnifyStateFeatureFlag,
-} from '../../lib/assets-unify-state/remote-feature-flag';
+} from '../assets-unify-state/remote-feature-flag';
 import { AssetType } from '../../constants/transaction';
 import { createDeepEqualSelector } from './selector-creators';
 

@@ -23,7 +23,7 @@ import {
 } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
-import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
@@ -33,7 +33,7 @@ import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { captureException } from '../../../shared/lib/sentry';
-import { createSentryError } from '../../../shared/modules/error';
+import { createSentryError } from '../../../shared/lib/error';
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;

@@ -19,15 +19,12 @@ const mockResponse = {
   titleId: 'unstableTokenPriceTitle',
   descriptionId: 'unstableTokenPriceDescription',
 };
-jest.mock(
-  '../../../shared/modules/bridge-utils/security-alerts-api.util',
-  () => ({
-    ...jest.requireActual(
-      '../../../shared/modules/bridge-utils/security-alerts-api.util',
-    ),
-    fetchTokenAlert: () => mockResponse,
-  }),
-);
+jest.mock('../../../shared/lib/bridge-utils/security-alerts-api.util', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/bridge-utils/security-alerts-api.util',
+  ),
+  fetchTokenAlert: () => mockResponse,
+}));
 
 describe('useTokenAlerts', () => {
   it('should set token alert when toChain is Solana', async () => {

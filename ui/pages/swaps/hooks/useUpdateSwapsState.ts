@@ -12,7 +12,7 @@ import {
   setTopAssets,
 } from '../../../ducks/swaps/swaps';
 import { setSwapsTokens } from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,

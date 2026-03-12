@@ -9,8 +9,8 @@ import {
 import {
   hexToDecimal,
   hexWEIToDecGWEI,
-} from '../../../../../shared/modules/conversion.utils';
-import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
+} from '../../../../../shared/lib/conversion.utils';
+import { isEIP1559Transaction } from '../../../../../shared/lib/transaction.utils';
 import type { TransactionMetricsBuilder } from './types';
 
 export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =

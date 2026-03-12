@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  RequestStatus,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { CaipAssetType } from '@metamask/utils';
@@ -334,6 +337,34 @@ describe('BridgeInputGroup', () => {
         overscan: 10,
       }),
     ]);
+  });
+
+  it('renders a destination amount skeleton while the quote is loading', () => {
+    setupFetchMock();
+
+    const { getByTestId, queryByTestId, queryByText } = renderBridgeInputGroup(
+      {
+        bridgeStateOverrides: {
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      },
+      {
+        isDestination: true,
+        showAmountSkeleton: true,
+        amountFieldProps: {
+          testId: 'to-amount',
+          autoFocus: false,
+          value: '0',
+          readOnly: true,
+          disabled: true,
+          className: 'amount-input',
+        },
+      },
+    );
+
+    expect(getByTestId('to-amount-loading-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('to-amount')).not.toBeInTheDocument();
+    expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });
 
   // @ts-expect-error - each is a valid test function
