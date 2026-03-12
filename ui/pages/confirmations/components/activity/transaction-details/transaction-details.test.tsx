@@ -128,16 +128,18 @@ describe('TransactionDetails', () => {
     expect(getByTestId('transaction-details-account-row')).toBeInTheDocument();
   });
 
-  it('renders network fee row', () => {
-    const { getByTestId } = render();
+  it('does not render network fee row without metamaskPay', () => {
+    const { queryByTestId } = render();
     expect(
-      getByTestId('transaction-details-network-fee-row'),
-    ).toBeInTheDocument();
+      queryByTestId('transaction-details-network-fee-row'),
+    ).not.toBeInTheDocument();
   });
 
-  it('renders total row', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('transaction-details-total-row')).toBeInTheDocument();
+  it('does not render total row without metamaskPay', () => {
+    const { queryByTestId } = render();
+    expect(
+      queryByTestId('transaction-details-total-row'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders summary section', () => {

@@ -42,16 +42,16 @@ function render(networkFeeFiat?: string) {
 }
 
 describe('TransactionDetailsNetworkFeeRow', () => {
-  it('renders with correct test id', () => {
-    const { getByTestId } = render();
+  it('renders nothing when networkFeeFiat is not provided', () => {
+    const { container } = render();
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('renders with correct test id when networkFeeFiat is provided', () => {
+    const { getByTestId } = render('5.25');
     expect(
       getByTestId('transaction-details-network-fee-row'),
     ).toBeInTheDocument();
-  });
-
-  it('renders dash when networkFeeFiat is not provided', () => {
-    const { getByText } = render();
-    expect(getByText('-')).toBeInTheDocument();
   });
 
   it('renders formatted fee when networkFeeFiat is provided', () => {
