@@ -2459,18 +2459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/config-array@npm:^0.21.1":
-  version: 0.21.1
-  resolution: "@eslint/config-array@npm:0.21.1"
-  dependencies:
-    "@eslint/object-schema": "npm:^2.1.7"
-    debug: "npm:^4.3.1"
-    minimatch: "npm:^3.1.2"
-  checksum: 10/6eaa0435972f735ce52d581f355a0b616e50a9b8a73304a7015398096e252798b9b3b968a67b524eefb0fdeacc57c4d960f0ec6432abe1c1e24be815b88c5d18
-  languageName: node
-  linkType: hard
-
-"@eslint/config-array@npm:^0.21.2":
+"@eslint/config-array@npm:0.21.2":
   version: 0.21.2
   resolution: "@eslint/config-array@npm:0.21.2"
   dependencies:
@@ -2481,12 +2470,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/config-helpers@npm:^0.4.2":
+"@eslint/config-array@patch:@eslint/config-array@npm%3A0.21.2#~/.yarn/patches/@eslint-config-array-npm-0.21.2-a0cc6c6855.patch":
+  version: 0.21.2
+  resolution: "@eslint/config-array@patch:@eslint/config-array@npm%3A0.21.2#~/.yarn/patches/@eslint-config-array-npm-0.21.2-a0cc6c6855.patch::version=0.21.2&hash=138843"
+  dependencies:
+    "@eslint/object-schema": "npm:^2.1.7"
+    debug: "npm:^4.3.1"
+    minimatch: "npm:^3.1.5"
+  checksum: 10/ca3e694057a091488bc3ef67c18abe97f62d563fdd982da109a8efd020ba187ad578e20224131f86cdabad05966264d50aeb5ce08a1577070e16b8f3b3f30127
+  languageName: node
+  linkType: hard
+
+"@eslint/config-helpers@npm:0.4.2":
   version: 0.4.2
   resolution: "@eslint/config-helpers@npm:0.4.2"
   dependencies:
     "@eslint/core": "npm:^0.17.0"
   checksum: 10/3f2b4712d8e391c36ec98bc200f7dea423dfe518e42956569666831b89ede83b33120c761dfd3ab6347d8e8894a6d4af47254a18d464a71c6046fd88065f6daf
+  languageName: node
+  linkType: hard
+
+"@eslint/config-helpers@patch:@eslint/config-helpers@npm%3A0.4.2#~/.yarn/patches/@eslint-config-helpers-npm-0.4.2-a55655f805.patch":
+  version: 0.4.2
+  resolution: "@eslint/config-helpers@patch:@eslint/config-helpers@npm%3A0.4.2#~/.yarn/patches/@eslint-config-helpers-npm-0.4.2-a55655f805.patch::version=0.4.2&hash=7eba92"
+  dependencies:
+    "@eslint/core": "npm:^0.17.0"
+  checksum: 10/9f1e07969a552ceab37ad2e023e575d96cf8bf0956cdd5205e788b7155b949846cbb4328d0ba81cfec712bb5f736e4db16d5a6fb94d9fb84ec5c1c9c4a76fcb0
   languageName: node
   linkType: hard
 
@@ -2547,20 +2556,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/object-schema@npm:^2.1.7":
+"@eslint/object-schema@npm:2.1.7":
   version: 2.1.7
   resolution: "@eslint/object-schema@npm:2.1.7"
   checksum: 10/946ef5d6235b4d1c0907c6c6e6429c8895f535380c562b7705c131f63f2e961b06e8785043c86a293da48e0a60c6286d98ba395b8b32ea55561fe6e4417cb7e4
   languageName: node
   linkType: hard
 
-"@eslint/plugin-kit@npm:^0.4.1":
+"@eslint/object-schema@patch:@eslint/object-schema@npm%3A2.1.7#~/.yarn/patches/@eslint-object-schema-npm-2.1.7-cb962a5b9b.patch":
+  version: 2.1.7
+  resolution: "@eslint/object-schema@patch:@eslint/object-schema@npm%3A2.1.7#~/.yarn/patches/@eslint-object-schema-npm-2.1.7-cb962a5b9b.patch::version=2.1.7&hash=6bcca0"
+  checksum: 10/74f84d3532ea9af07fbac97ba1f05c93ea1292ee22966cb0a004ad850702470dd027ad470510ede2c94bf8690b24f81bc52b612fb63e74705676c2e402278b43
+  languageName: node
+  linkType: hard
+
+"@eslint/plugin-kit@npm:0.4.1":
   version: 0.4.1
   resolution: "@eslint/plugin-kit@npm:0.4.1"
   dependencies:
     "@eslint/core": "npm:^0.17.0"
     levn: "npm:^0.4.1"
   checksum: 10/c5947d0ffeddca77d996ac1b886a66060c1a15ed1d5e425d0c7e7d7044a4bd3813fc968892d03950a7831c9b89368a2f7b281e45dd3c74a048962b74bf3a1cb4
+  languageName: node
+  linkType: hard
+
+"@eslint/plugin-kit@patch:@eslint/plugin-kit@npm%3A0.4.1#~/.yarn/patches/@eslint-plugin-kit-npm-0.4.1-3df70dd079.patch":
+  version: 0.4.1
+  resolution: "@eslint/plugin-kit@patch:@eslint/plugin-kit@npm%3A0.4.1#~/.yarn/patches/@eslint-plugin-kit-npm-0.4.1-3df70dd079.patch::version=0.4.1&hash=25c6ac"
+  dependencies:
+    "@eslint/core": "npm:^0.17.0"
+    levn: "npm:^0.4.1"
+  checksum: 10/5ce2c78fa94f45bc9087b27923774e19a961b096314085b149ab9d9eb0e9fce3e919ab2cf2b8b3934b16834868ebf0fac47f58610354cf8967d6372490e085ae
   languageName: node
   linkType: hard
 

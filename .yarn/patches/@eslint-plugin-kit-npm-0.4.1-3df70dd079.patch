@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index d1ac94f38c46e9e321fbf26bd6fca578697fafdd..6988c50c805f8c9a017c70f3cb1acef23391283f 100644
+--- a/package.json
++++ b/package.json
+@@ -4,7 +4,7 @@
+   "description": "Utilities for building ESLint plugins.",
+   "author": "Nicholas C. Zakas",
+   "type": "module",
+-  "main": "dist/esm/index.js",
++  "main": "dist/cjs/index.cjs",
+   "types": "dist/esm/index.d.ts",
+   "exports": {
+     "require": {

@@ -258,7 +258,12 @@
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
     "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
     "prettier-eslint/eslint": "^9.39.4",
-    "prettier-eslint/@typescript-eslint/parser": "^8.39.0"
+    "prettier-eslint/@typescript-eslint/parser": "^8.39.0",
+    "@eslint/plugin-kit@npm:^0.4.1": "patch:@eslint/plugin-kit@npm%3A0.4.1#~/.yarn/patches/@eslint-plugin-kit-npm-0.4.1-3df70dd079.patch",
+    "@eslint/config-array@npm:^0.21.2": "patch:@eslint/config-array@npm%3A0.21.2#~/.yarn/patches/@eslint-config-array-npm-0.21.2-a0cc6c6855.patch",
+    "@eslint/config-array@npm:^0.21.1": "patch:@eslint/config-array@npm%3A0.21.2#~/.yarn/patches/@eslint-config-array-npm-0.21.2-a0cc6c6855.patch",
+    "@eslint/config-helpers@npm:^0.4.2": "patch:@eslint/config-helpers@npm%3A0.4.2#~/.yarn/patches/@eslint-config-helpers-npm-0.4.2-a55655f805.patch",
+    "@eslint/object-schema@npm:^2.1.7": "patch:@eslint/object-schema@npm%3A2.1.7#~/.yarn/patches/@eslint-object-schema-npm-2.1.7-cb962a5b9b.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",

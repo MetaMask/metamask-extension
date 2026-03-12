@@ -834,6 +834,17 @@
         "eslint>@eslint-community/eslint-utils>eslint-visitor-keys": true
       }
     },
+    "eslint>@eslint/config-array": {
+      "globals": {
+        "Deno": true,
+        "URL": true
+      },
+      "packages": {
+        "eslint>@eslint/config-array>@eslint/object-schema": true,
+        "nock>debug": true,
+        "eslint>minimatch": true
+      }
+    },
     "eslint>@eslint/eslintrc": {
       "builtin": {
         "node:assert": true,
@@ -858,6 +869,11 @@
         "eslint>@eslint/eslintrc>import-fresh": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true
+      }
+    },
+    "eslint>@eslint/plugin-kit": {
+      "packages": {
+        "eslint>optionator>levn": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
@@ -3693,6 +3709,12 @@
       },
       "packages": {
         "gulp>vinyl-fs>lead>flush-write-stream": true
+      }
+    },
+    "eslint>optionator>levn": {
+      "packages": {
+        "eslint>optionator>prelude-ls": true,
+        "eslint>optionator>type-check": true
       }
     },
     "gulp-postcss>postcss-load-config>lilconfig": {
@@ -6686,6 +6708,11 @@
       "packages": {
         "tslib": true,
         "typescript": true
+      }
+    },
+    "eslint>optionator>type-check": {
+      "packages": {
+        "eslint>optionator>prelude-ls": true
       }
     },
     "typescript": {
