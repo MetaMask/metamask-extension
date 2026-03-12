@@ -13,9 +13,11 @@ import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { HandlerWrapper } from './types';
 
-type HandleWatchAssetRequest = (
-  options: Record<string, string | Record<string, string>>,
-) => Promise<void>;
+type HandleWatchAssetRequest = (options: {
+  asset: Record<string, string | Record<string, string>>;
+  type: string;
+  origin: string;
+}) => Promise<void>;
 
 type WatchAssetRequest<Params extends JsonRpcParams> = JsonRpcRequest<Params> &
   Partial<{ origin: string; networkClientId: string }> & {
@@ -64,7 +66,6 @@ async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
     const {
       params: { options: asset, type },
       origin,
-      networkClientId,
     } = req;
 
     const { tokenId } = asset;
@@ -85,7 +86,6 @@ async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
       asset,
       type,
       origin: origin ?? '',
-      networkClientId: networkClientId ?? '',
     });
     res.result = true;
     return end();
