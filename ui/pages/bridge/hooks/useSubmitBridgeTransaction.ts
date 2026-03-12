@@ -120,7 +120,14 @@ export default function useSubmitBridgeTransaction() {
 
     // Navigate to HW signing page
     if (hardwareWalletUsed) {
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      const { requestId } = quoteResponse.quote;
+      // Preserve requestId in URL for fullscreen mode (when popup state is lost)
+      const awaitingUrl = requestId
+        ? `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
+            requestId,
+          )}`
+        : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
+      navigate(awaitingUrl);
       setIsSubmitting(false);
     }
 
