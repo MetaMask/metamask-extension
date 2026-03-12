@@ -67,9 +67,7 @@ export class SignUpPage {
     this.passwordConfirmTxt = page.getByTestId('create-password-confirm');
     this.agreeCheck = page.getByTestId('create-new-vault__terms-checkbox');
     this.agreeTandCCheck = page.getByTestId('onboarding-terms-checkbox');
-    this.agreePasswordTermsCheck = page.locator(
-      'label[for="create-password-terms"]',
-    );
+    this.agreePasswordTermsCheck = page.getByTestId('create-password-terms');
     this.secureWalletBtn = page.getByTestId('secure-wallet-later');
     this.skipBackupBtn = page.getByTestId('skip-srp-backup-checkbox');
     this.skipSrpBackupBtn = page.getByTestId('skip-srp-backup');
