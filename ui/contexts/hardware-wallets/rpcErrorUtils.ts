@@ -345,7 +345,11 @@ function convertDataToHardwareWalletError(
 }
 
 /**
- * Map a numeric error code from serialized error to an ErrorCode enum value
+ * Map a numeric hardware-wallet error code to an ErrorCode enum value.
+ *
+ * Raw numeric collisions such as EIP-1193 `4001` are intentionally resolved in
+ * favor of the hardware-wallet enum here. Provider-specific fallback handling
+ * belongs in shape-aware callers such as `isUserRejectedHardwareWalletError()`.
  *
  * @param numericCode - The numeric error code
  * @returns The corresponding ErrorCode enum value
@@ -357,10 +361,6 @@ function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
 
   if (errorCodeValues.includes(numericCode)) {
     return numericCode as ErrorCode;
-  }
-
-  if (numericCode === errorCodes.provider.userRejectedRequest) {
-    return ErrorCode.UserRejected;
   }
 
   return ErrorCode.Unknown;

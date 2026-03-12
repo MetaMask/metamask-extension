@@ -155,9 +155,9 @@ describe('rpcErrorUtils', () => {
       expect(getHardwareWalletErrorCode(undefined)).toBe(null);
     });
 
-    it('prefers matching hardware wallet ErrorCode values over EIP-1193 collisions', () => {
+    it('prefers raw hardware-wallet code 4001 over the EIP-1193 collision', () => {
       const error = {
-        code: ErrorCode.ConnectionClosed,
+        code: 4001,
         message: 'Connection closed',
       };
 
