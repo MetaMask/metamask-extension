@@ -15,7 +15,12 @@ import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
+import {
+  errorCodes,
+  JsonRpcError,
+  providerErrors,
+  rpcErrors,
+} from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -169,20 +174,20 @@ import {
   fetchTokenBalance,
   fetchERC1155Balance,
 } from '../../shared/lib/token-util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
+import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { convertNetworkId } from '../../shared/modules/network.utils';
-import { getIsSmartTransaction } from '../../shared/modules/selectors';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { convertNetworkId } from '../../shared/lib/network.utils';
+import { getIsSmartTransaction } from '../../shared/lib/selectors';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { selectAllEnabledNetworkClientIds } from '../../shared/modules/selectors/multichain';
+import { getProviderConfig } from '../../shared/lib/selectors/networks';
+import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
 import {
   trace,
   endTrace,
@@ -198,20 +203,21 @@ import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
-} from '../../shared/modules/environment';
+} from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   getShieldGatewayConfig,
   updatePreferencesAndMetricsForShieldSubscription,
-} from '../../shared/modules/shield';
-import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
-import { createSentryError } from '../../shared/modules/error';
+  getIsShieldSubscriptionActive,
+} from '../../shared/lib/shield';
+import { createSentryError } from '../../shared/lib/error';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
-} from '../../shared/modules/selectors/assets-migration';
+} from '../../shared/lib/selectors/assets-migration';
 import {
+  isUserRejectedHardwareWalletError,
   toHardwareWalletError,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
@@ -423,6 +429,7 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 
@@ -472,6 +479,7 @@ export default class MetamaskController extends EventEmitter {
     this.sendUpdate = debounce(
       this.privateSendUpdate.bind(this),
       MILLISECOND * 200,
+      { maxWait: SECOND }, // Force flush to avoid indefinite sync starvation
     );
     this.opts = opts;
     this.requestSafeReload =
@@ -3267,6 +3275,10 @@ export default class MetamaskController extends EventEmitter {
       submitTx: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitTx'}`,
+      ),
+      submitIntent: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
       ),
 
       // Smart Transactions
@@ -6546,101 +6558,44 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    // Per-connection Perps streaming bridge — manages subscription lifecycle
-    // for a single UI connection. See PerpsStreamBridge for details.
-    // Static subscriptions (positions/orders/account) are NOT registered here;
-    // they are registered in perpsInit after the controller provider is ready.
-    const perpsController = this.controllersByName.PerpsController;
-    const perpsStream = new PerpsStreamBridge((channel, data, extra) => {
-      if (!perpsStream.isActive || !isStreamWritable(outStream)) {
-        return;
-      }
-      outStream.write({
-        jsonrpc: '2.0',
-        method: 'perpsStreamUpdate',
-        params: [{ channel, data, ...extra }],
-      });
+    const messengerSubscriptions = new MessengerSubscriptions(
+      this.controllerMessenger,
+      outStream,
+    );
+
+    const perpsStream = new PerpsStreamBridge({
+      controller: this.controllersByName.PerpsController,
+      controllerApi: this.controllerApi,
+      isConnectionAlive: () => !outStream.mmFinished,
+      emit: (channel, data, extra) => {
+        if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+          return;
+        }
+        outStream.write({
+          jsonrpc: '2.0',
+          method: 'perpsStreamUpdate',
+          params: [{ channel, data, ...extra }],
+        });
+      },
     });
 
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
-      perpsInit: async (...args) => {
-        const result = await this.controllerApi.perpsInit(...args);
-        // Guard against two race conditions before activating static subscriptions:
-        // 1. Subscription churn: skip re-activation if subscriptions are already established
-        // 2. Zombie subscriptions: skip activation if the outstream closed while the await above was in flight (mmFinished).
-        if (
-          perpsController &&
-          !perpsStream.isActivated &&
-          !outStream.mmFinished
-        ) {
-          perpsStream.activate(perpsController);
-        }
-        return result;
-      },
-      perpsDisconnect: async (...args) => {
-        // destroy() tears down stale static subscriptions and resets #activated,
-        // so a subsequent perpsInit re-establishes them cleanly after reconnect.
-        // also sets perps view active to false
-        perpsStream.destroy();
-        return this.controllerApi.perpsDisconnect(...args);
-      },
-      perpsToggleTestnet: async (...args) => {
-        // destroy() resets #activated so the next perpsInit re-establishes
-        // static subscriptions against the new testnet/mainnet provider.
-        perpsStream.destroy();
-        return this.controllerApi.perpsToggleTestnet(...args);
-      },
-      perpsViewActive: (active) => {
-        perpsStream.setViewActive(active);
-      },
-      perpsActivateStreaming: async (params) => {
-        await api.perpsInit();
-        if (perpsController && !outStream.mmFinished) {
-          perpsStream.activateStreaming(perpsController, params);
-        }
-        return 'ok';
-      },
-      perpsActivatePriceStream: async ({ symbols }) => {
-        await api.perpsInit();
-        if (perpsController && !outStream.mmFinished) {
-          perpsStream.activatePriceStream(perpsController, symbols);
-        }
-        return 'ok';
-      },
-      perpsDeactivatePriceStream: () => {
-        perpsStream.deactivatePriceStream();
-      },
-      perpsActivateOrderBookStream: async ({ symbol }) => {
-        await api.perpsInit();
-        if (perpsController && !outStream.mmFinished) {
-          perpsStream.activateOrderBookStream(perpsController, symbol);
-        }
-        return 'ok';
-      },
-      perpsDeactivateOrderBookStream: () => {
-        perpsStream.deactivateOrderBookStream();
-      },
-      perpsActivateCandleStream: async ({ symbol, interval, duration }) => {
-        await api.perpsInit();
-        if (perpsController && !outStream.mmFinished) {
-          perpsStream.activateCandleStream(perpsController, {
-            symbol,
-            interval,
-            duration,
-          });
-        }
-        return 'ok';
-      },
-      perpsDeactivateCandleStream: () => {
-        perpsStream.deactivateCandleStream();
-      },
+      ...perpsStream.bridgeApi(),
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
       },
       getStatePatches: () => patchStore.flushPendingPatches(),
+      messengerSubscribe: messengerSubscriptions.subscribe.bind(
+        messengerSubscriptions,
+      ),
+      messengerUnsubscribe: messengerSubscriptions.unsubscribe.bind(
+        messengerSubscriptions,
+      ),
+      messengerCall: (method, params = []) =>
+        this.controllerMessenger.call(method, ...params),
     };
 
     this.on('update', handleUpdate);
@@ -6685,6 +6640,7 @@ export default class MetamaskController extends EventEmitter {
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
+        messengerSubscriptions.clear();
         perpsStream.destroy();
       }
     };
@@ -7312,10 +7268,10 @@ export default class MetamaskController extends EventEmitter {
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
-            'SnapInterfaceController:getInterface',
+            'SnapInterfaceController:getInterfaceState',
             origin,
             ...args,
-          ).state,
+          ),
         getInterfaceContext: (...args) =>
           this.controllerMessenger.call(
             'SnapInterfaceController:getInterface',
@@ -8566,9 +8522,12 @@ export default class MetamaskController extends EventEmitter {
    */
   async #handleHardwareWalletError(error, walletType) {
     const hwError = toHardwareWalletError(error, walletType);
+    const createRpcError = isUserRejectedHardwareWalletError(hwError)
+      ? providerErrors.userRejectedRequest
+      : rpcErrors.internal;
     // Throw a JsonRpcError with hardware wallet error data preserved
     // This ensures the error properties survive serialization across the RPC boundary
-    throw rpcErrors.internal({
+    throw createRpcError({
       message: hwError.message,
       data: {
         code: hwError.code,

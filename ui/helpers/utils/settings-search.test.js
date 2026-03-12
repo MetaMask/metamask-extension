@@ -180,10 +180,6 @@ describe('Settings Search Utils', () => {
       ).toStrictEqual(3);
     });
 
-    it('returns "Contact" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
-    });
-
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),

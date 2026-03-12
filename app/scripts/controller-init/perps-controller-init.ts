@@ -1,10 +1,6 @@
-import {
-  PerpsController,
-  getDefaultPerpsControllerState,
-  type PerpsControllerState,
-} from '@metamask/perps-controller';
+import { PerpsController, UserHistoryItem } from '@metamask/perps-controller';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
-import { ControllerApi, ControllerInitFunction } from './types';
+import { ControllerInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 
 /**
@@ -31,10 +27,7 @@ export const PerpsControllerInit: ControllerInitFunction<
 
   const controller = new PerpsController({
     messenger: controllerMessenger,
-    state: {
-      ...getDefaultPerpsControllerState(),
-      ...(persistedState.PerpsController as Partial<PerpsControllerState>),
-    },
+    state: persistedState.PerpsController,
     infrastructure,
     clientConfig: {
       fallbackHip3Enabled: true,
@@ -43,74 +36,14 @@ export const PerpsControllerInit: ControllerInitFunction<
     },
   });
 
-  let initPromise: Promise<void> | null = null;
-  let initCompleted = false;
-
-  /**
-   * Defensive init guard invoked by every API method.
-   *
-   * The primary init path is the explicit `perpsInit` call issued by the UI
-   * (via `submitRequestToBackground('perpsInit')`) before any streaming or
-   * trading operations begin. Under normal operation, `perpsInit` will have
-   * already resolved by the time any mutation (e.g. `placeOrder`) is called,
-   * so this guard is a no-op.
-   *
-   * This guard exists as a safety net for edge cases where call ordering is
-   * violated (deep links, restored state, race conditions, etc.). It is
-   * idempotent: if init is already complete it returns immediately; if an
-   * init is in flight it awaits the same shared promise rather than starting
-   * a second one.
-   *
-   * Failure semantics: a failed init resets `initPromise` to `null` so that
-   * subsequent calls retry. This handles transient network failures without
-   * leaving the controller permanently stuck.
-   *
-   * Re-init semantics: if a lifecycle event (toggleTestnet, disconnect) resets
-   * `initializationState`, `initCompleted` flags the stale promise so the next
-   * call clears it and starts a fresh init, rather than returning a resolved
-   * promise that bypasses re-initialization.
-   *
-   * Inspired by the mobile pattern where multiple app lifecycle events
-   * (backgrounding, foregrounding, etc.) can trigger API calls before an
-   * explicit init has had a chance to run.
-   */
-  const ensureInitialized = async (): Promise<void> => {
-    if (controller.state.initializationState === 'initialized') {
-      return;
-    }
-    // If initPromise is non-null here but the state is no longer 'initialized',
-    // it means either: (a) init is still in-flight — reuse the promise, or
-    // (b) a lifecycle event (toggleTestnet, disconnect) reset the state after
-    // a previous successful init — in that case initPromise holds a stale
-    // resolved promise and must be cleared so a fresh init can start.
-    //
-    // We track this with a flag that init() sets on success.
-    if (initCompleted) {
-      initPromise = null;
-      initCompleted = false;
-    }
-    if (initPromise === null) {
-      initPromise = controller.init().then(
-        () => {
-          initCompleted = true;
-        },
-        (error) => {
-          initPromise = null;
-          throw error;
-        },
-      );
-    }
-    return initPromise;
-  };
-
-  const api = getApi(controller, ensureInitialized);
+  const api = getApi(controller);
 
   return { controller, api };
 };
 
 /**
  * All background action names exposed by the Perps API.
- * TypeScript will error at the Record type below if any are missing from getApi().
+ * TypeScript will error at the Record below if any name is missing from getApi().
  */
 type PerpsActionName =
   | 'perpsInit'
@@ -165,180 +98,84 @@ type PerpsActionName =
   | 'perpsToggleWatchlistMarket'
   | 'perpsIsWatchlistMarket';
 
-type PerpsBackgroundApi = Record<PerpsActionName, ControllerApi>;
+// TODO: These methods have custom signatures that don't match their controller
+// counterparts. Once the controller package is updated to return the deposit
+// transaction ID directly and expose getUserHistory as a proper controller
+// method, these can be removed and the mapped type will cover them automatically.
+type PerpsCustomApiNames =
+  | 'perpsDepositWithConfirmation'
+  | 'perpsGetUserHistory';
 
-function getApi(
-  controller: PerpsController,
-  ensureInitialized: () => Promise<void>,
-): PerpsBackgroundApi {
+type PerpsBackgroundApi = {
+  [ActionName in Exclude<
+    PerpsActionName,
+    PerpsCustomApiNames
+  >]: ActionName extends `perps${infer firstLetter}${infer remainingLetters}`
+    ? `${Lowercase<firstLetter>}${remainingLetters}` extends keyof PerpsController
+      ? PerpsController[`${Lowercase<firstLetter>}${remainingLetters}`]
+      : never
+    : never;
+} & {
+  perpsDepositWithConfirmation: (
+    ...args: Parameters<PerpsController['depositWithConfirmation']>
+  ) => Promise<string | null>;
+  perpsGetUserHistory: (params: {
+    startTime?: number;
+    endTime?: number;
+    accountId?: `${string}:${string}:${string}`;
+  }) => Promise<UserHistoryItem[]>;
+};
+
+function getApi(controller: PerpsController): PerpsBackgroundApi {
   return {
     // -- Lifecycle --
-    // Primary init entrypoint. The UI calls this explicitly before starting
-    // streaming or trading. All other methods also call ensureInitialized()
-    // as a defensive guard, but this is the intended first call.
-    perpsInit: async () => ensureInitialized(),
+    perpsInit: controller.init.bind(controller),
     perpsDisconnect: controller.disconnect.bind(controller),
 
     // -- Trading mutations --
-    perpsPlaceOrder: async (
-      ...args: Parameters<typeof controller.placeOrder>
-    ) => {
-      await ensureInitialized();
-      return controller.placeOrder(...args);
-    },
-    perpsClosePosition: async (
-      ...args: Parameters<typeof controller.closePosition>
-    ) => {
-      await ensureInitialized();
-      return controller.closePosition(...args);
-    },
-    perpsClosePositions: async (
-      ...args: Parameters<typeof controller.closePositions>
-    ) => {
-      await ensureInitialized();
-      return controller.closePositions(...args);
-    },
-    perpsEditOrder: async (
-      ...args: Parameters<typeof controller.editOrder>
-    ) => {
-      await ensureInitialized();
-      return controller.editOrder(...args);
-    },
-    perpsCancelOrder: async (
-      ...args: Parameters<typeof controller.cancelOrder>
-    ) => {
-      await ensureInitialized();
-      return controller.cancelOrder(...args);
-    },
-    perpsCancelOrders: async (
-      ...args: Parameters<typeof controller.cancelOrders>
-    ) => {
-      await ensureInitialized();
-      return controller.cancelOrders(...args);
-    },
-    perpsUpdatePositionTPSL: async (
-      ...args: Parameters<typeof controller.updatePositionTPSL>
-    ) => {
-      await ensureInitialized();
-      return controller.updatePositionTPSL(...args);
-    },
-    perpsUpdateMargin: async (
-      ...args: Parameters<typeof controller.updateMargin>
-    ) => {
-      await ensureInitialized();
-      return controller.updateMargin(...args);
-    },
-    perpsFlipPosition: async (
-      ...args: Parameters<typeof controller.flipPosition>
-    ) => {
-      await ensureInitialized();
-      return controller.flipPosition(...args);
-    },
-    perpsWithdraw: async (...args: Parameters<typeof controller.withdraw>) => {
-      await ensureInitialized();
-      return controller.withdraw(...args);
-    },
+    perpsPlaceOrder: controller.placeOrder.bind(controller),
+    perpsClosePosition: controller.closePosition.bind(controller),
+    perpsClosePositions: controller.closePositions.bind(controller),
+    perpsEditOrder: controller.editOrder.bind(controller),
+    perpsCancelOrder: controller.cancelOrder.bind(controller),
+    perpsCancelOrders: controller.cancelOrders.bind(controller),
+    perpsUpdatePositionTPSL: controller.updatePositionTPSL.bind(controller),
+    perpsUpdateMargin: controller.updateMargin.bind(controller),
+    perpsFlipPosition: controller.flipPosition.bind(controller),
+    perpsWithdraw: controller.withdraw.bind(controller),
     perpsDepositWithConfirmation: async (
       ...args: Parameters<typeof controller.depositWithConfirmation>
     ) => {
-      await ensureInitialized();
       await controller.depositWithConfirmation(...args);
-      // lastDepositTransactionId is written synchronously inside depositWithConfirmation
-      // via this.update() before the method resolves, so the read below is safe in
-      // practice. A concurrent deposit from a second UI connection is not a realistic
-      // scenario (deposits are single-user, one-at-a-time operations). The proper fix
-      // is for depositWithConfirmation to return the transaction ID directly — that
-      // requires a controller package change.
+      // TODO: depositWithConfirmation should return the transaction ID
+      // directly — that requires a controller package change.
       return controller.state.lastDepositTransactionId;
     },
 
     // -- Data fetches --
-    perpsGetPositions: async (
-      ...args: Parameters<typeof controller.getPositions>
-    ) => {
-      await ensureInitialized();
-      return controller.getPositions(...args);
-    },
-    perpsGetMarkets: async (
-      ...args: Parameters<typeof controller.getMarkets>
-    ) => {
-      await ensureInitialized();
-      return controller.getMarkets(...args);
-    },
-    perpsGetMarketDataWithPrices: async (
-      ...args: Parameters<typeof controller.getMarketDataWithPrices>
-    ) => {
-      await ensureInitialized();
-      return controller.getMarketDataWithPrices(...args);
-    },
-    perpsGetOrderFills: async (
-      ...args: Parameters<typeof controller.getOrderFills>
-    ) => {
-      await ensureInitialized();
-      return controller.getOrderFills(...args);
-    },
-    perpsGetOrders: async (
-      ...args: Parameters<typeof controller.getOrders>
-    ) => {
-      await ensureInitialized();
-      return controller.getOrders(...args);
-    },
-    perpsGetOpenOrders: async (
-      ...args: Parameters<typeof controller.getOpenOrders>
-    ) => {
-      await ensureInitialized();
-      return controller.getOpenOrders(...args);
-    },
-    perpsGetFunding: async (
-      ...args: Parameters<typeof controller.getFunding>
-    ) => {
-      await ensureInitialized();
-      return controller.getFunding(...args);
-    },
-    perpsGetAccountState: async (
-      ...args: Parameters<typeof controller.getAccountState>
-    ) => {
-      await ensureInitialized();
-      return controller.getAccountState(...args);
-    },
-    perpsGetHistoricalPortfolio: async (
-      ...args: Parameters<typeof controller.getHistoricalPortfolio>
-    ) => {
-      await ensureInitialized();
-      return controller.getHistoricalPortfolio(...args);
-    },
-    perpsFetchHistoricalCandles: async (
-      ...args: Parameters<typeof controller.fetchHistoricalCandles>
-    ) => {
-      await ensureInitialized();
-      return controller.fetchHistoricalCandles(...args);
-    },
-    perpsCalculateFees: async (
-      ...args: Parameters<typeof controller.calculateFees>
-    ) => {
-      await ensureInitialized();
-      return controller.calculateFees(...args);
-    },
-    perpsGetAvailableDexs: async (
-      ...args: Parameters<typeof controller.getAvailableDexs>
-    ) => {
-      await ensureInitialized();
-      return controller.getAvailableDexs(...args);
-    },
+    perpsGetPositions: controller.getPositions.bind(controller),
+    perpsGetMarkets: controller.getMarkets.bind(controller),
+    perpsGetMarketDataWithPrices:
+      controller.getMarketDataWithPrices.bind(controller),
+    perpsGetOrderFills: controller.getOrderFills.bind(controller),
+    perpsGetOrders: controller.getOrders.bind(controller),
+    perpsGetOpenOrders: controller.getOpenOrders.bind(controller),
+    perpsGetFunding: controller.getFunding.bind(controller),
+    perpsGetAccountState: controller.getAccountState.bind(controller),
+    perpsGetHistoricalPortfolio:
+      controller.getHistoricalPortfolio.bind(controller),
+    perpsFetchHistoricalCandles:
+      controller.fetchHistoricalCandles.bind(controller),
+    perpsCalculateFees: controller.calculateFees.bind(controller),
+    perpsGetAvailableDexs: controller.getAvailableDexs.bind(controller),
 
     // -- Eligibility --
-    perpsRefreshEligibility: async () => {
-      await ensureInitialized();
-      return controller.refreshEligibility();
-    },
+    perpsRefreshEligibility: controller.refreshEligibility.bind(controller),
 
     // -- Toggle --
-    perpsToggleTestnet: async () => {
-      await ensureInitialized();
-      return controller.toggleTestnet();
-    },
+    perpsToggleTestnet: controller.toggleTestnet.bind(controller),
 
-    // -- Preferences (synchronous, no init needed) --
+    // -- Preferences --
     perpsSaveTradeConfiguration:
       controller.saveTradeConfiguration.bind(controller),
     perpsGetTradeConfiguration:
@@ -369,13 +206,12 @@ function getApi(
       controller.saveOrderBookGrouping.bind(controller),
     perpsGetOrderBookGrouping: controller.getOrderBookGrouping.bind(controller),
 
-    // -- Provider passthrough (methods that live on the provider, not the controller) --
+    // -- Provider passthrough --
     perpsGetUserHistory: async (params: {
       startTime?: number;
       endTime?: number;
       accountId?: `${string}:${string}:${string}`;
     }) => {
-      await ensureInitialized();
       return controller.getActiveProvider().getUserHistory(params);
     },
 

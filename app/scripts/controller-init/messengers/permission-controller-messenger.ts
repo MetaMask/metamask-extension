@@ -116,6 +116,7 @@ export function getPermissionControllerInitMessenger(
       'SnapController:updateSnapState',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'SnapInterfaceController:setInterfaceDisplayed',
     ],
   });
   return controllerInitMessenger;

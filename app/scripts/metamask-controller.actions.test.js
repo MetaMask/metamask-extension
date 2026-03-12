@@ -25,6 +25,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
 jest.mock('./controller-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
@@ -38,6 +39,8 @@ jest.mock('./controller-init/perps-controller-init', () => ({
 
 jest.mock('../../ui/contexts/hardware-wallets', () => ({
   toHardwareWalletError: (...args) => mockToHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args) =>
+    mockIsUserRejectedHardwareWalletError(...args),
 }));
 
 jest.mock('webextension-polyfill', () => ({

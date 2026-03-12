@@ -386,6 +386,7 @@ describe('BridgeCTAButton', () => {
         isInsufficientBalance: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
+        isStockMarketClosed: false,
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         ...validationErrors,

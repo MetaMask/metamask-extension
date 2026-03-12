@@ -1,10 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
-import {
-  UnifiedSwapBridgeEventName,
-  isNonEvmChainId,
-} from '@metamask/bridge-controller';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
@@ -16,7 +13,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -24,7 +21,6 @@ import {
   Header,
   Page,
 } from '../../components/multichain/pages/page';
-import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -35,6 +31,7 @@ import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
+import { transitionBack } from '../../components/ui/transition';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -43,7 +40,6 @@ import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTran
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
 
   useBridging();
 
@@ -66,12 +62,6 @@ const CrossChainSwap = () => {
   const shouldFetchGasEstimates =
     fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
 
-  useEffect(() => {
-    dispatch(
-      trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
-    );
-  }, []);
-
   // Needed for refreshing gas estimates (only for EVM chains)
   useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);
   // Needed for fetching exchange rates for tokens that have not been imported
@@ -82,6 +72,10 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const handleBack = () => {
+    transitionBack(() => navigateToDefaultRoute());
+  };
 
   return (
     <Page className="bridge__container">
@@ -94,7 +88,7 @@ const CrossChainSwap = () => {
             ariaLabel={t('back')}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={navigateToDefaultRoute}
+            onClick={handleBack}
           />
         }
         endAccessory={

@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';

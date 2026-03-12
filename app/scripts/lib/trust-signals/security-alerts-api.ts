@@ -1,5 +1,5 @@
 import { SECOND } from '../../../../shared/constants/time';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import {
   AddAddressSecurityAlertResponse,
   createCacheKey,
