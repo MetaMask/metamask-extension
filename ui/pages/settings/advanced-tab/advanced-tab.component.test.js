@@ -205,10 +205,7 @@ describe('AdvancedTab Component', () => {
     });
 
     it('should call exportAsFile when the toggle button is clicked', async () => {
-      // Mock successful state log retrieval
-      mockLogStateString.mockImplementation((callback) => {
-        callback(null, '{"state": "data"}');
-      });
+      mockLogStateString.mockResolvedValue('{"state": "data"}');
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId(
         'advanced-setting-state-logs-button',
