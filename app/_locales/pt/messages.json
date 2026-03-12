@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Link do explorador de blocos copiado"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Calculando..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Será necessário confirmar 2 transações na sua carteira de hardware:"
   },
