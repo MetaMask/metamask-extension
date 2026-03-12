@@ -23,7 +23,7 @@ import {
   MockServerCapability,
 } from '@metamask/client-mcp-core';
 
-import { MetaMaskExtensionLauncher, launchMetaMask } from '..';
+import { MetaMaskExtensionLauncher } from '..';
 import {
   createMetaMaskE2EContext,
   createMetaMaskProdContext,
@@ -34,11 +34,12 @@ import type {
 } from '../capabilities/factory';
 import type { LauncherLaunchOptions } from '../launcher-types';
 import type { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
-import type { MetaMaskFixtureCapability } from '../capabilities/fixture';
-import type { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
+import { MetaMaskFixtureCapability } from '../capabilities/fixture';
+import { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+const HEADLESS = true;
 
 export class MetaMaskSessionManager implements ISessionManager {
   private activeSession: {
@@ -112,6 +113,8 @@ export class MetaMaskSessionManager implements ISessionManager {
       return;
     }
 
+    this.disposeCurrentCapabilities();
+
     const newContext =
       context === 'e2e'
         ? createMetaMaskE2EContext(options as CreateMetaMaskContextOptions)
@@ -120,6 +123,28 @@ export class MetaMaskSessionManager implements ISessionManager {
           );
 
     this.setWorkflowContext(newContext as WorkflowContext);
+  }
+
+  private disposeCurrentCapabilities(): void {
+    if (!this.workflowContext) {
+      return;
+    }
+
+    const stops: Promise<void>[] = [];
+
+    if (this.workflowContext.fixture) {
+      stops.push(this.workflowContext.fixture.stop().catch(() => undefined));
+    }
+    if (this.workflowContext.mockServer) {
+      stops.push(this.workflowContext.mockServer.stop().catch(() => undefined));
+    }
+    if (this.workflowContext.chain) {
+      stops.push(this.workflowContext.chain.stop().catch(() => undefined));
+    }
+
+    if (stops.length > 0) {
+      Promise.allSettled(stops).catch(() => undefined);
+    }
   }
 
   getContextInfo(): {
@@ -182,9 +207,7 @@ export class MetaMaskSessionManager implements ISessionManager {
       throw new Error('No active session. Call launch() first.');
     }
 
-    const contractSeeding = this.getContractSeedingCapability() as
-      | MetaMaskContractSeedingCapability
-      | undefined;
+    const contractSeeding = this.getMetaMaskContractSeedingCapability();
     if (!contractSeeding) {
       throw new Error('ContractSeedingCapability not available.');
     }
@@ -192,14 +215,35 @@ export class MetaMaskSessionManager implements ISessionManager {
     return contractSeeding.getSeeder();
   }
 
+  private getMetaMaskFixtureCapability():
+    | MetaMaskFixtureCapability
+    | undefined {
+    const capability = this.getFixtureCapability();
+    if (capability instanceof MetaMaskFixtureCapability) {
+      return capability;
+    }
+    return undefined;
+  }
+
+  private getMetaMaskContractSeedingCapability():
+    | MetaMaskContractSeedingCapability
+    | undefined {
+    const capability = this.getContractSeedingCapability();
+    if (capability instanceof MetaMaskContractSeedingCapability) {
+      return capability;
+    }
+    return undefined;
+  }
+
   private isActivePageValid(): boolean {
     return Boolean(this.activePage && !this.activePage.isClosed());
   }
 
   private fallbackToExtensionPage(): Page {
-    const extensionPage = (
-      this.activeSession as { launcher: MetaMaskExtensionLauncher }
-    ).launcher.getPage();
+    if (!this.activeSession) {
+      throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
+    }
+    const extensionPage = this.activeSession.launcher.getPage();
     this.activePage = extensionPage;
     this.clearRefMap();
     return extensionPage;
@@ -246,7 +290,10 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const extPrefix = `chrome-extension://${extensionId}`;
     if (url.startsWith(extPrefix)) {
-      return url.includes('notification.html') ? 'notification' : 'extension';
+      if (url.includes('notification.html')) {
+        return 'notification';
+      }
+      return 'extension';
     }
     if (url.startsWith('http')) {
       return 'dapp';
@@ -346,70 +393,97 @@ export class MetaMaskSessionManager implements ISessionManager {
       }
     }
 
-    // Handle fixture capability based on environment
-    const fixtureCapability = this.getFixtureCapability() as
-      | MetaMaskFixtureCapability
-      | undefined;
-
-    // In e2e mode, fixture capability is required
-    // In prod mode, fixture capability is never started (even if available)
-    if (!isProdMode) {
-      if (!fixtureCapability) {
-        throw new Error(
-          'FixtureCapability is not available.\n\n' +
-            'Ensure FixtureCapability is registered in the workflow context.',
-        );
-      }
-
-      const fixtureState = fixtureCapability.resolveState({
-        stateMode,
-        fixturePreset: input.fixturePreset,
-        fixture: input.fixture,
-      });
-
-      await fixtureCapability.start(fixtureState);
-    }
-
+    const fixtureCapability = this.getMetaMaskFixtureCapability();
     const chainCapability = this.getChainCapability();
-    if (chainCapability) {
-      const anvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
-      if (chainCapability.setPort) {
-        chainCapability.setPort(anvilPort);
-      }
-      await chainCapability.start();
-    }
-
     const mockServerCapability = this.getMockServerCapability();
-    let proxyServer: string | undefined;
-    if (mockServerCapability) {
-      await mockServerCapability.start();
+    const contractSeedingCapability = this.getContractSeedingCapability();
 
-      if (mockServerCapability.isRunning()) {
-        proxyServer = `127.0.0.1:${mockServerCapability.getPort()}`;
-      }
+    if (!isProdMode && !fixtureCapability) {
+      throw new Error(
+        'FixtureCapability is not available.\n\n' +
+          'Ensure FixtureCapability is registered in the workflow context.',
+      );
     }
 
-    const contractSeedingCapability = this.getContractSeedingCapability();
-    if (contractSeedingCapability) {
-      contractSeedingCapability.initialize();
-
-      if (input.seedContracts?.length) {
-        await contractSeedingCapability.deployContracts(input.seedContracts);
-      }
-    } else if (input.seedContracts?.length) {
+    if (input.seedContracts?.length && !contractSeedingCapability) {
       throw new Error(
         'seedContracts provided but ContractSeedingCapability is not available.',
       );
     }
 
-    const launchOptions: LauncherLaunchOptions = {
-      stateMode,
-      slowMo: input.slowMo ?? 0,
-      extensionPath,
-      proxyServer,
-    };
+    const startedCapabilities: {
+      fixture?: boolean;
+      chain?: boolean;
+      mockServer?: boolean;
+    } = {};
 
-    const launcher = await launchMetaMask(launchOptions);
+    let launcher: MetaMaskExtensionLauncher | undefined;
+
+    try {
+      if (!isProdMode && fixtureCapability) {
+        const fixturePort = input.ports?.fixtureServer;
+        if (fixturePort !== undefined && fixtureCapability.setPort) {
+          fixtureCapability.setPort(fixturePort);
+        }
+
+        const fixtureState = fixtureCapability.resolveState({
+          stateMode,
+          fixturePreset: input.fixturePreset,
+          fixture: input.fixture,
+        });
+
+        await fixtureCapability.start(fixtureState);
+        startedCapabilities.fixture = true;
+      }
+
+      if (chainCapability) {
+        const anvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
+        if (chainCapability.setPort) {
+          chainCapability.setPort(anvilPort);
+        }
+        await chainCapability.start();
+        startedCapabilities.chain = true;
+      }
+
+      let proxyServer: string | undefined;
+      if (mockServerCapability) {
+        await mockServerCapability.start();
+        startedCapabilities.mockServer = true;
+
+        if (mockServerCapability.isRunning()) {
+          proxyServer = `127.0.0.1:${mockServerCapability.getPort()}`;
+        }
+      }
+
+      if (contractSeedingCapability) {
+        contractSeedingCapability.initialize();
+
+        if (input.seedContracts?.length) {
+          await contractSeedingCapability.deployContracts(input.seedContracts);
+        }
+      }
+
+      const launchOptions: LauncherLaunchOptions = {
+        headless: HEADLESS,
+        stateMode,
+        slowMo: input.slowMo ?? 0,
+        extensionPath,
+        proxyServer,
+      };
+
+      launcher = new MetaMaskExtensionLauncher(launchOptions);
+      await launcher.launch();
+    } catch (error) {
+      await this.rollbackStartedCapabilities(
+        startedCapabilities,
+        launcher,
+        fixtureCapability,
+        mockServerCapability,
+        chainCapability,
+      );
+      throw error;
+    }
+
     const extensionId = launcher.getExtensionId();
     const stateSnapshot = this.getStateSnapshotCapability();
     if (!stateSnapshot) {
@@ -422,6 +496,9 @@ export class MetaMaskSessionManager implements ISessionManager {
       chainId,
     });
     const startedAt = new Date().toISOString();
+    const resolvedAnvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
+    const resolvedFixturePort =
+      input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT;
 
     this.activeSession = {
       state: {
@@ -429,9 +506,8 @@ export class MetaMaskSessionManager implements ISessionManager {
         extensionId,
         startedAt,
         ports: {
-          anvil: input.ports?.anvil ?? DEFAULT_ANVIL_PORT,
-          fixtureServer:
-            input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
+          anvil: resolvedAnvilPort,
+          fixtureServer: resolvedFixturePort,
         },
         stateMode,
       },
@@ -449,16 +525,15 @@ export class MetaMaskSessionManager implements ISessionManager {
       tags: input.tags ?? [],
       build: {
         buildType: 'build:test',
-        extensionPathResolved: input.extensionPath,
+        extensionPathResolved: extensionPath,
       },
       launch: {
         stateMode,
         fixturePreset: input.fixturePreset ?? null,
-        extensionPath: input.extensionPath,
+        extensionPath,
         ports: {
-          anvil: input.ports?.anvil ?? DEFAULT_ANVIL_PORT,
-          fixtureServer:
-            input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
+          anvil: resolvedAnvilPort,
+          fixtureServer: resolvedFixturePort,
         },
       },
     };
@@ -473,32 +548,78 @@ export class MetaMaskSessionManager implements ISessionManager {
     };
   }
 
+  private async rollbackStartedCapabilities(
+    started: { fixture?: boolean; chain?: boolean; mockServer?: boolean },
+    launcher: MetaMaskExtensionLauncher | undefined,
+    fixtureCapability: FixtureCapability | undefined,
+    mockServerCapability: MockServerCapability | undefined,
+    chainCapability: ChainCapability | undefined,
+  ): Promise<void> {
+    const stops: Promise<void>[] = [];
+
+    if (launcher) {
+      stops.push(launcher.cleanup().catch(() => undefined));
+    }
+    if (started.mockServer && mockServerCapability) {
+      stops.push(mockServerCapability.stop().catch(() => undefined));
+    }
+    if (started.fixture && fixtureCapability) {
+      stops.push(fixtureCapability.stop().catch(() => undefined));
+    }
+    if (started.chain && chainCapability) {
+      stops.push(chainCapability.stop().catch(() => undefined));
+    }
+
+    await Promise.allSettled(stops);
+  }
+
   async cleanup(): Promise<boolean> {
     if (!this.activeSession) {
       return false;
     }
 
-    await this.activeSession.launcher.cleanup();
+    const stops: Promise<void>[] = [
+      this.activeSession.launcher.cleanup().catch((e) => {
+        console.warn('Failed to cleanup launcher:', e);
+      }),
+    ];
 
     const fixtureCapability = this.getFixtureCapability();
     if (fixtureCapability) {
-      await fixtureCapability.stop();
+      stops.push(
+        fixtureCapability.stop().catch((e) => {
+          console.warn('Failed to stop fixture server:', e);
+        }),
+      );
     }
 
     const mockServerCapability = this.getMockServerCapability();
     if (mockServerCapability) {
-      await mockServerCapability.stop();
+      stops.push(
+        mockServerCapability.stop().catch((e) => {
+          console.warn('Failed to stop mock server:', e);
+        }),
+      );
     }
 
     const chainCapability = this.getChainCapability();
     if (chainCapability) {
-      await chainCapability.stop();
+      stops.push(
+        chainCapability.stop().catch((e) => {
+          console.warn('Failed to stop chain:', e);
+        }),
+      );
     }
 
-    this.activeSession = null;
-    this.activePage = undefined;
-    this.sessionMetadata = undefined;
-    this.clearRefMap();
+    try {
+      await Promise.allSettled(stops);
+    } finally {
+      this.activeSession = null;
+      this.activePage = undefined;
+      this.sessionMetadata = undefined;
+      this.clearRefMap();
+    }
+
     return true;
   }
 
@@ -537,13 +658,15 @@ export class MetaMaskSessionManager implements ISessionManager {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
 
+    const notificationPath = HEADLESS ? 'sidepanel' : 'notification';
+
     const context = this.getContext();
     const { extensionId } = this.activeSession.state;
-    const notificationUrl = `chrome-extension://${extensionId}/notification.html`;
+    const notificationUrl = `chrome-extension://${extensionId}/${notificationPath}.html`;
 
     const existingNotification = context
       .pages()
-      .find((p) => p.url().includes('notification.html'));
+      .find((p) => p.url().includes(`${notificationPath}.html`));
 
     if (existingNotification) {
       await existingNotification.bringToFront();
@@ -563,10 +686,12 @@ export class MetaMaskSessionManager implements ISessionManager {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    const notificationPage =
-      await this.activeSession.launcher.waitForNotificationPage(timeoutMs);
-    this.setActivePage(notificationPage);
-    return notificationPage;
+    const page = await this.activeSession.launcher.waitForNotificationPage(
+      HEADLESS,
+      timeoutMs,
+    );
+    this.setActivePage(page);
+    return page;
   }
 
   async screenshot(

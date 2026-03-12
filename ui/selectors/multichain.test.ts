@@ -23,6 +23,7 @@ import {
   MOCK_ACCOUNT_TRON_MAINNET,
   MOCK_ACCOUNT_TRON_NILE,
   MOCK_ACCOUNT_TRON_SHASTA,
+  MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
 import {
   CHAIN_IDS,
@@ -31,7 +32,7 @@ import {
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import type { MetaMaskReduxState } from '../store/store';
 import { AccountsState } from './accounts';
 import {
@@ -88,6 +89,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         selectedAccount: MOCK_ACCOUNT_EOA.id,
         accounts: MOCK_ACCOUNTS,
       },
+      accountIdByAddress: MOCK_ACCOUNT_ID_BY_ADDRESS,
       accountsByChainId: {
         '0x1': {
           [MOCK_ACCOUNT_EOA.address]: {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import {
   BlockSize,

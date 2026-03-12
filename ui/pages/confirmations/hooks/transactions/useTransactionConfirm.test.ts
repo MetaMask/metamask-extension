@@ -20,7 +20,7 @@ import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupported
 import { useTransactionConfirm } from './useTransactionConfirm';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 
-jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../../shared/lib/selectors');
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),

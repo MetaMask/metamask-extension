@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Προσθήκη token"
   },
-  "addTokenByContractAddress": {
-    "message": "Δεν μπορείτε να βρείτε ένα token; Μπορείτε να προσθέσετε χειροκίνητα οποιοδήποτε token επικολλώντας τη διεύθυνσή του. Οι διευθύνσεις συμβολαίων token μπορούν να βρεθούν στο $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ο σύνδεσμος από το Block explorer αντιγράφηκε"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Υπολογισμός..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Θα πρέπει να επιβεβαιώσετε 2 συναλλαγές στο πορτοφόλι υλικού σας:"
   },
@@ -1022,9 +1015,6 @@
   },
   "bridgeGasFeesSplit": {
     "message": "Κάθε τέλος δικτύου που αναφέρθηκε στην προηγούμενη οθόνη περιλαμβάνει και τις δύο συναλλαγές και θα διαχωριστούν."
-  },
-  "bridgeNetCost": {
-    "message": "Καθαρό κόστος"
   },
   "bridgeNoMMFee": {
     "message": "Χωρίς προμήθεια στο MM"
@@ -1128,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Ανταλλαγή $1 για $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 ελαχ",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Διασύνδεση προς"
@@ -1798,7 +1784,8 @@
     "message": "Ξεκλειδώνει το MetaMask μόνο σε αυτή τη συσκευή."
   },
   "createPasswordDetailsSocial": {
-    "message": "Η απώλεια αυτού του κωδικού σημαίνει απώλεια πρόσβασης στο πορτοφόλι σε όλες τις συσκευές, "
+    "message": "Η απώλεια αυτού του κωδικού σημαίνει απώλεια πρόσβασης στο πορτοφόλι σε όλες τις συσκευές, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Το MetaMask δεν μπορεί να την επαναφέρει."
@@ -3988,8 +3975,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Μετατροπή $1 σε mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Μετατράπηκε σε mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε τουλάχιστον 1 token."
@@ -5791,12 +5778,6 @@
   },
   "queued": {
     "message": "Σε Αναμονή"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 ποσό που θα λάβετε"
-  },
-  "quotedTotalCost": {
-    "message": "$1 συνολικό κόστος"
   },
   "rank": {
     "message": "Κατάταξη"
@@ -8056,10 +8037,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 προσφορές.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "Δεν υπάρχουν διαθέσιμα tokens που να αντιστοιχούν σε $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Το $1 σας θα προστεθεί στον λογαριασμό σας μόλις ολοκληρωθεί αυτή η συναλλαγή.",

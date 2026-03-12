@@ -10,7 +10,7 @@ import {
   JsonRpcParams,
 } from '@metamask/utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
-import getNextId from '../../../shared/modules/random-id';
+import getNextId from '../../../shared/lib/random-id';
 
 const JSON_RPC_VERSION = '2.0' as const;
 

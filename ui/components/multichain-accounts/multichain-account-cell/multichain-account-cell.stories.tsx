@@ -103,7 +103,6 @@ const Template: StoryFn<typeof MultichainAccountCell> = (
 );
 
 export const Default = Template.bind({});
-Default.storyName = 'Default';
 
 export const Selected = Template.bind({});
 Selected.args = {
@@ -210,7 +209,6 @@ const HoverableAvatarWrapper = ({
 };
 
 export const WithAvatarWrapper = Template.bind({});
-WithAvatarWrapper.storyName = 'With Avatar Wrapper';
 WithAvatarWrapper.args = {
   accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Account with wrapped avatar',

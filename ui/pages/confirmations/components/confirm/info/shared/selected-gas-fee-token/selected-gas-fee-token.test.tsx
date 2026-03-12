@@ -16,7 +16,7 @@ import { Severity } from '../../../../../../../helpers/constants/design-system';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
-jest.mock('../../../../../../../../shared/modules/selectors');
+jest.mock('../../../../../../../../shared/lib/selectors');
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',

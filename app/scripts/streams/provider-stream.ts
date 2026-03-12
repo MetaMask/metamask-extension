@@ -20,7 +20,7 @@ import {
   PHISHING_STREAM,
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 

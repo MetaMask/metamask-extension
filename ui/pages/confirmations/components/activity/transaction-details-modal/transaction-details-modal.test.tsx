@@ -86,7 +86,16 @@ describe('TransactionDetailsModal', () => {
     const { getByRole } = render(TransactionType.musdConversion);
     expect(
       getByRole('heading', {
-        name: messages.musdConversionActivityTitle.message,
+        name: messages.musdConversionTitle.message,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('renders mUSD Claim title for musdClaim transactions', () => {
+    const { getByRole } = render(TransactionType.musdClaim);
+    expect(
+      getByRole('heading', {
+        name: messages.musdClaimTitle.message,
       }),
     ).toBeInTheDocument();
   });

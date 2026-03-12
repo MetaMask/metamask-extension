@@ -333,10 +333,6 @@
   "addToken": {
     "message": "添加代币"
   },
-  "addTokenByContractAddress": {
-    "message": "找不到代币？您可以通过粘贴其地址手动添加任何代币。代币合约地址可以在 $1 上找到",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "添加 URL"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "区块浏览器链接已复制"
   },
-  "bridgeCalculatingAmount": {
-    "message": "正在计算……"
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "您需要在您的硬件钱包上确认 2 笔交易："
   },
@@ -1022,9 +1015,6 @@
   },
   "bridgeGasFeesSplit": {
     "message": "前一个屏幕中报出的任何网络费用均包含两笔交易，并将进行分割。"
-  },
-  "bridgeNetCost": {
-    "message": "净成本"
   },
   "bridgeNoMMFee": {
     "message": "无 MM 费用"
@@ -1128,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "正在用 $1 兑换 $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 分钟",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "桥接至"
@@ -1798,7 +1784,8 @@
     "message": "仅在此设备上解锁 MetaMask。"
   },
   "createPasswordDetailsSocial": {
-    "message": "丢失此密码将导致您在所有设备上失去对钱包的访问权限， "
+    "message": "丢失此密码将导致您在所有设备上失去对钱包的访问权限， ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask 无法重设该密码。"
@@ -3988,8 +3975,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "将 $1 兑换为 mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "已兑换为 mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -5785,12 +5772,6 @@
   },
   "queued": {
     "message": "队列中"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 收到金额"
-  },
-  "quotedTotalCost": {
-    "message": "$1 总费用"
   },
   "rank": {
     "message": "排名"
@@ -8050,10 +8031,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 报价。",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "没有与 $1 匹配的代币",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "处理完此交易后，您的 $1 将被添加到您的账户中。",

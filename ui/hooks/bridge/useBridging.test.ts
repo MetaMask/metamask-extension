@@ -2,6 +2,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -10,6 +11,7 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
+import * as bridgeActions from '../../ducks/bridge/actions';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -24,10 +26,14 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
+const mockDispatch = jest.fn((...args: unknown[]) => jest.fn()(...args));
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
+  useDispatch:
+    () =>
+    (...args: unknown[]) =>
+      mockDispatch(...args),
 }));
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
@@ -124,15 +130,19 @@ describe('useBridging', () => {
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      async (...args) => {
-        const [expectedUrl, token, location, isSwap, expectedState = {}] =
-          args as [
-            string,
-            Record<string, unknown>,
-            string,
-            boolean,
-            BridgeExpectedState?,
-          ];
+      async (
+        expectedUrl: string,
+        token: Record<string, unknown>,
+        location: string,
+        isSwap: boolean,
+        expectedState: { token: { chainId: string } | null } = { token: null },
+      ) => {
+        const trackUnifiedSwapBridgeEventSpy = jest
+          .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const resetBridgeControllerAndCacheSpy = jest
+          .spyOn(bridgeActions, 'resetBridgeControllerAndCache')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging(
           createBridgeMockStore({
@@ -176,7 +186,28 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, isSwap);
 
-        expect(mockDispatch.mock.calls).toHaveLength(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
+        expect(mockDispatch.mock.calls[0]).toStrictEqual([
+          {
+            payload: undefined,
+            type: 'bridge/resetInputFields',
+          },
+        ]);
+        expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
+          [
+            UnifiedSwapBridgeEventName.ButtonClicked,
+            {
+              location: location as never,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol_source: token?.symbol ?? 'ETH',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol_destination: '',
+            },
+          ],
+          [UnifiedSwapBridgeEventName.PageViewed, {}],
+        ]);
+        expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+
         expect(mockUseNavigate).toHaveBeenCalledWith(
           { pathname: expectedUrl, search: '' },
           {
@@ -304,22 +335,37 @@ describe('useBridging', () => {
         '/',
         {
           pathname: BRIDGE_PREPARE_PATH,
-          search: `from=${encodeURIComponent('eip155:1/slip44:60')}`,
+          search: '',
         },
         getNativeAssetForChainId(MultichainNetworks.TRON),
         MetaMetricsSwapsEventSource.TokenView,
+        {
+          token: {
+            address: '0x0000000000000000000000000000000000000000',
+            assetId: 'tron:728126428/slip44:195',
+            chainId: 'tron:728126428',
+            decimals: 6,
+            iconUrl: '',
+            name: 'Tron',
+            symbol: 'TRX',
+          },
+        },
       ],
     ])(
       'should open swap with correct token pair when pathname is %s',
-      async (...args) => {
-        const [pathname, expectedUrl, token, location, expectedState = {}] =
-          args as [
-            string,
-            { pathname: string; search: string },
-            Record<string, unknown> | undefined,
-            string,
-            BridgeExpectedState?,
-          ];
+      async (
+        pathname: string,
+        expectedUrl: string,
+        token: { symbol: string },
+        location: string,
+        expectedState: { token: { chainId: string } | null } = { token: null },
+      ) => {
+        const trackUnifiedSwapBridgeEventSpy = jest
+          .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const resetBridgeControllerAndCacheSpy = jest
+          .spyOn(bridgeActions, 'resetBridgeControllerAndCache')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')
@@ -370,7 +416,28 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, true);
 
-        expect(mockDispatch.mock.calls).toHaveLength(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
+        expect(mockDispatch.mock.calls[0]).toStrictEqual([
+          {
+            payload: undefined,
+            type: 'bridge/resetInputFields',
+          },
+        ]);
+        expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
+          [
+            UnifiedSwapBridgeEventName.ButtonClicked,
+            {
+              location: location as never,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol_destination: '',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol_source: token?.symbol ?? 'ETH',
+            },
+          ],
+          [UnifiedSwapBridgeEventName.PageViewed, {}],
+        ]);
+        expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           replace: false,
           state: {
