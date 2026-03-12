@@ -353,16 +353,16 @@ function convertDataToHardwareWalletError(
  * @returns The corresponding ErrorCode enum value
  */
 function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
-  if (numericCode === errorCodes.provider.userRejectedRequest) {
-    return ErrorCode.UserRejected;
-  }
-
   const errorCodeValues = Object.values(ErrorCode).filter(
     (v): v is number => typeof v === 'number',
   );
 
   if (errorCodeValues.includes(numericCode)) {
     return numericCode as ErrorCode;
+  }
+
+  if (numericCode === errorCodes.provider.userRejectedRequest) {
+    return ErrorCode.UserRejected;
   }
 
   return ErrorCode.Unknown;
@@ -572,7 +572,8 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
 
   // If the error was recognised as a HW error with a different code
   // (e.g. ConnectionClosed = 4001), don't fall through to the EIP-1193
-  if (errorCode !== null) {
+  // fallback.
+  if (errorCode !== null && isHardwareWalletError(error)) {
     return false;
   }
 

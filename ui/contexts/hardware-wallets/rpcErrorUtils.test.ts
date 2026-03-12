@@ -155,15 +155,15 @@ describe('rpcErrorUtils', () => {
       expect(getHardwareWalletErrorCode(undefined)).toBe(null);
     });
 
-    it('maps EIP-1193 userRejectedRequest code to UserRejected', () => {
+    it('prefers matching hardware wallet ErrorCode values over EIP-1193 collisions', () => {
       const error = {
-        code: 4001,
-        message: 'User rejected the request.',
+        code: ErrorCode.ConnectionClosed,
+        message: 'Connection closed',
       };
 
       const result = getHardwareWalletErrorCode(error);
 
-      expect(result).toBe(ErrorCode.UserRejected);
+      expect(result).toBe(ErrorCode.ConnectionClosed);
     });
 
     it('extracts code from serialized RPC error with hardware wallet cause', () => {
@@ -670,6 +670,16 @@ describe('rpcErrorUtils', () => {
       };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns false for hardware wallet errors whose numeric code collides with EIP-1193 4001', () => {
+      const error = {
+        name: 'HardwareWalletError',
+        code: ErrorCode.ConnectionClosed,
+        message: 'Connection closed',
+      };
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(false);
     });
   });
 });
