@@ -56,7 +56,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
       amount: string,
       tokenName: string,
       frequency: string,
-      tokenDecimals: number,
+      tokenDecimals?: number,
     ) =>
       formatGatorAmountLabel({
         amount,

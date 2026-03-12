@@ -90,7 +90,7 @@ export function useGatorPermissionTokenInfo(
     );
   }, [tokenAddress, chainId, erc20TokensByChain, allTokens, isNativeToken]);
 
-  // Determine if we should fetch token info
+  // Determine whether we should fetch token info
   const shouldFetch = Boolean(
     !isNativeToken && !cachedOrImportedTokenInfo && tokenAddress && chainId,
   );
@@ -111,9 +111,10 @@ export function useGatorPermissionTokenInfo(
   }, [shouldFetch, tokenAddress, chainId, allowExternalServices]);
 
   // Extract fetched token info from async result
-  const fetchedTokenInfo =
-    asyncResult.status === 'success' ? asyncResult.value : null;
-  const error = asyncResult.status === 'error' ? asyncResult.error : null;
+  const fetchedTokenInfo = asyncResult.value ?? null;
+
+  const error = asyncResult.error ?? null;
+
   // Only consider it fetching if we actually should fetch
   const isFetching = shouldFetch && asyncResult.pending;
 
@@ -144,11 +145,11 @@ export function useGatorPermissionTokenInfo(
       };
     }
 
+    // cannot resolve token info, return some placeholder data
     return {
       tokenInfo: {
         symbol: 'Unknown Token',
-        decimals: 18,
-        chainId: chainId || ('0x0' as const),
+        chainId: chainId || '0x0',
       },
       loading: isFetching,
     };
@@ -158,6 +159,7 @@ export function useGatorPermissionTokenInfo(
     fetchedTokenInfo,
     chainId,
     isFetching,
+    error,
   ]);
 
   return { ...result, error };

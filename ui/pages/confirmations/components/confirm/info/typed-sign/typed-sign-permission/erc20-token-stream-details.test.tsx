@@ -6,10 +6,11 @@ import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
+import { TestErrorBoundary } from './test-error-boundary';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
-  fetchErc20Decimals: jest.fn().mockResolvedValue(2),
+  fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(2),
 }));
 
 describe('Erc20TokenStreamDetails', () => {
@@ -60,7 +61,8 @@ describe('Erc20TokenStreamDetails', () => {
 
     await waitFor(() =>
       expect(
-        (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
+        (tokenUtils as jest.Mocked<typeof tokenUtils>)
+          .fetchErc20DecimalsOrThrow,
       ).toHaveBeenCalled(),
     );
 
@@ -135,7 +137,7 @@ describe('Erc20TokenStreamDetails', () => {
     it('formats the allowance based on the resolved token decimals', async () => {
       (
         tokenUtils as jest.Mocked<typeof tokenUtils>
-      ).fetchErc20Decimals.mockResolvedValue(3);
+      ).fetchErc20DecimalsOrThrow.mockResolvedValue(3);
 
       const { detailsSection } = await renderAndGetSections(defaultProps);
 
@@ -154,6 +156,9 @@ describe('Erc20TokenStreamDetails', () => {
     });
   });
 
+  // These tests intentionally throw; React may still log "Error: Uncaught [Error ...]"
+  // before the error boundary catches it, so the console baseline "Test errors: Uncaught Errors"
+  // for this file is expected to include those counts.
   describe('error handling', () => {
     it('throws error when start time is missing', () => {
       const permissionWithoutStartTime = {
@@ -174,11 +179,38 @@ describe('Erc20TokenStreamDetails', () => {
         ),
       ).toThrow('Start time is required');
     });
+
+    it('throws error when decimals cannot be resolved', async () => {
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20DecimalsOrThrow.mockRejectedValue(
+        new Error('Unable to resolve token decimals'),
+      );
+
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TestErrorBoundary>
+          <Erc20TokenStreamDetails {...defaultProps} />
+        </TestErrorBoundary>,
+        getMockStore(),
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('error-boundary')).toBeInTheDocument();
+        expect(getByTestId('error-boundary')).toHaveTextContent(
+          'Unable to resolve token decimals',
+        );
+      });
+
+      // Restore default mock so later tests get resolved decimals
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20DecimalsOrThrow.mockResolvedValue(2);
+    });
   });
 
   describe('edge cases', () => {
     it('handles very large amounts', async () => {
-      const permissionWithLargeAmounts = {
+      const permissionWithLargeAmounts: Erc20TokenStreamPermission = {
         ...mockPermission,
         data: {
           ...mockPermission.data,
@@ -186,7 +218,8 @@ describe('Erc20TokenStreamDetails', () => {
           maxAmount: '0xffffffffffffffffffffffffffffffffffffffff',
           amountPerSecond: '0xffffffffffffffffffffffffffffffffffffffff',
         },
-      } as Erc20TokenStreamPermission;
+      };
+
       const { detailsSection } = await renderAndGetSections({
         ...defaultProps,
         permission: permissionWithLargeAmounts,

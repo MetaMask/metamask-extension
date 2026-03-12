@@ -1879,7 +1879,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission.test.tsx": {
-      "MetaMask: Background connection not initialized": 6,
       "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 6,
@@ -1888,7 +1887,7 @@
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-periodic-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
       "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 1,
+      "Test errors: Uncaught Errors": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-revocation-details.test.tsx": {
@@ -1897,7 +1896,7 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-stream-details.test.tsx": {
       "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 1,
+      "Test errors: Uncaught Errors": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/expiry.test.tsx": {
