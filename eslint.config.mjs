@@ -9,6 +9,7 @@ import nodejs from '@metamask/eslint-config-nodejs';
 import typescript from '@metamask/eslint-config-typescript';
 import * as designTokensPlugin from '@metamask/eslint-plugin-design-tokens';
 import * as typescriptResolver from 'eslint-import-resolver-typescript';
+import jestPlugin from 'eslint-plugin-jest';
 import globals from 'globals';
 import reactPlugin from 'eslint-plugin-react';
 import reactCompilerPlugin from 'eslint-plugin-react-compiler';
@@ -847,6 +848,12 @@ export default createConfig([
         ...globals.webextensions,
       },
     },
+    rules: {
+      // This is a vendored livereload client; suppress violations instead
+      // of modifying the generated code.
+      'no-restricted-syntax': 'off',
+      'no-undef': 'off',
+    },
   },
 
   /**
@@ -1113,6 +1120,7 @@ export default createConfig([
       'ui/**/*.js',
       'ui/**/*.ts',
       'ui/**/*.tsx',
+      'types/**/*.ts',
       'test/lib/**/*.js',
       'test/mocks/**/*.js',
       'test/jest/**/*.js',
@@ -1120,18 +1128,20 @@ export default createConfig([
       'test/unit-global/**/*.js',
       'test/helpers/*.js',
       'test/e2e/**/*.js',
+      'test/e2e/**/*.ts',
       '**/*.test.js',
       '**/*.test.ts',
       '**/*.test.tsx',
       'development/**/*.js',
       'development/**/*.ts',
+      '.github/scripts/**/*.ts',
+      '.devcontainer/**/*.ts',
     ],
     rules: {
       // --- variables & scoping ---
       'no-unused-vars': 'warn',
       'no-shadow': 'warn',
       'no-use-before-define': 'warn',
-      'no-undef': 'warn',
 
       // --- style / best practice ---
       'no-empty-function': 'warn',
@@ -1159,7 +1169,6 @@ export default createConfig([
       'new-cap': 'warn',
       'no-unused-private-class-members': 'warn',
       'default-case': 'warn',
-      'no-restricted-syntax': 'warn',
 
       // --- promises ---
       'promise/always-return': 'warn',
@@ -1183,6 +1192,7 @@ export default createConfig([
    */
   {
     files: [
+      'app/**/*.js',
       'development/**/*.js',
       'test/e2e/**/*.js',
       'test/helpers/*.js',
@@ -1191,6 +1201,7 @@ export default createConfig([
       '*.config.js',
       'app/scripts/lockdown-run.js',
       'app/scripts/lockdown-more.js',
+      'app/scripts/migrations/*.test.js',
     ],
     rules: {
       'n/global-require': 'warn',
@@ -1238,6 +1249,10 @@ export default createConfig([
 
   /**
    * Jest-specific code-debt downgrades.
+   *
+   * The jest plugin is registered explicitly so the rule references are
+   * valid even for test files that are not in the main Jest config block
+   * (e.g. ui/**\/*.test.tsx).
    */
   {
     files: [
@@ -1266,10 +1281,15 @@ export default createConfig([
       'test/e2e/helpers.test.js',
       'test/unit-global/*.test.js',
       'ui/**/*.test.js',
+      'ui/**/*.test.ts',
+      'ui/**/*.test.tsx',
       'ui/__mocks__/*.js',
       'test/mocks/**/*.js',
       'shared/lib/error-utils.test.js',
     ],
+    plugins: {
+      jest: jestPlugin,
+    },
     rules: {
       'jest/require-top-level-describe': 'warn',
       'jest/no-conditional-in-test': 'warn',

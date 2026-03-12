@@ -117,11 +117,9 @@ MaxLength.args = { maxLength: 13, value: 'Max length 13' };
 export const ReadOnly = Template.bind({});
 ReadOnly.args = { readOnly: true, value: 'Read only' };
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
 export const Required = Template.bind({});
 Required.args = { required: true, placeholder: 'Required' };
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
 export const Resize: StoryFn<typeof Textarea> = (args) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
     <Textarea

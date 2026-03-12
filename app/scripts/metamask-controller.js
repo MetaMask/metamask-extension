@@ -4618,11 +4618,8 @@ export default class MetamaskController extends EventEmitter {
           event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
           properties: {
             status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: newHdEntropyIndex,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
           },
         });
