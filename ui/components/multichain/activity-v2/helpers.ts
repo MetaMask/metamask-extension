@@ -284,11 +284,6 @@ export function calculateFiatFromMarketRates(
 export function resolveTransactionType(
   tx: TransactionViewModel,
 ): TransactionType {
-  // Detect Merkl claim transactions by the distributor address
-  if (tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS_LOWER) {
-    return TransactionType.musdClaim;
-  }
-
   const { transactionCategory, transactionType } = tx;
 
   if (transactionCategory === 'APPROVE') {
@@ -328,6 +323,12 @@ export function resolveTransactionType(
     if (tx.amounts?.from) {
       return TransactionType.simpleSend;
     }
+  }
+
+  // Detect Merkl claim transactions — only when the tx would otherwise be
+  // a generic contractInteraction, matching the legacy activity list guard.
+  if (tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS_LOWER) {
+    return TransactionType.musdClaim;
   }
 
   return TransactionType.contractInteraction;

@@ -3,6 +3,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import { MERKL_DISTRIBUTOR_ADDRESS } from '../../app/musd/constants';
 import type {
   Token,
   TransactionGroup,
@@ -362,5 +363,37 @@ describe('resolveTransactionType', () => {
       makeApiTx({ time: Date.now(), transactionType: 'ERC_1155_TRANSFER' }),
     );
     expect(result).toBe(TransactionType.tokenMethodTransferFrom);
+  });
+
+  it('returns musdClaim for a contract interaction to the Merkl distributor', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+      }),
+    );
+    expect(result).toBe(TransactionType.musdClaim);
+  });
+
+  it('does not override APPROVE transactions to the Merkl distributor', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        transactionCategory: 'APPROVE',
+        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+      }),
+    );
+    expect(result).toBe(TransactionType.tokenMethodApprove);
+  });
+
+  it('does not override SWAP transactions to the Merkl distributor', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        transactionCategory: 'SWAP',
+        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+      }),
+    );
+    expect(result).toBe(TransactionType.swap);
   });
 });
