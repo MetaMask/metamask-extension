@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
 import { Expiry } from './expiry';
+import { TotalExposure } from './total-exposure';
 
 /**
  * Component for displaying ERC20 token stream permission details.
@@ -93,6 +94,17 @@ export const Erc20TokenStreamDetails: React.FC<{
           decimals={decimals}
           tokenAddress={permission.data.tokenAddress}
           chainId={chainId}
+        />
+        <TotalExposure
+          variant="erc20"
+          initialAmount={initialAmount}
+          maxAmount={maxAmount}
+          amountPerSecond={amountPerSecond}
+          startTime={startTime}
+          expiry={expiry}
+          tokenAddress={permission.data.tokenAddress}
+          chainId={chainId}
+          decimals={decimals}
         />
       </ConfirmInfoSection>
     </>

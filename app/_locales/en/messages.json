@@ -1547,6 +1547,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
+  "confirmFieldTotalExposure": {
+    "message": "Total exposure"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "Bal:"
   },
