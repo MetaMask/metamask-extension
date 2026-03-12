@@ -2,7 +2,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { is } from '@metamask/superstruct';
 
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
-import * as randomId from '../../shared/modules/random-id';
+import * as randomId from '../../shared/lib/random-id';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { updateMetamaskState } from './actions';

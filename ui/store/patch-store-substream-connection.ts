@@ -22,7 +22,7 @@ import {
   unknown,
 } from '@metamask/superstruct';
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
-import getNextId from '../../shared/modules/random-id';
+import getNextId from '../../shared/lib/random-id';
 import { Store } from './store';
 import { updateMetamaskState } from './actions';
 
