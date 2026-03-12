@@ -1,4 +1,4 @@
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 
 const MIN_GAS_LIMIT_DEC = new Numeric('21000', 10);
 const MAX_GAS_LIMIT_DEC = '30000000';

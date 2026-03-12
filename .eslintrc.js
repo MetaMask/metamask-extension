@@ -663,6 +663,41 @@ module.exports = {
       },
     },
     /**
+     * Proof files for type-level testing (compile-time assertions, no runtime code)
+     */
+    {
+      files: ['**/*.proof.ts'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            vars: 'all',
+            args: 'after-used',
+            ignoreRestSiblings: true,
+            varsIgnorePattern: '^Describe_',
+          },
+        ],
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            selector: 'typeLike',
+            format: ['PascalCase'],
+            leadingUnderscore: 'allow',
+            filter: { regex: '^Describe_', match: false },
+          },
+          {
+            selector: 'typeLike',
+            format: null,
+            filter: { regex: '^Describe_', match: true },
+          },
+          {
+            selector: 'typeProperty',
+            format: ['camelCase', 'PascalCase'],
+          },
+        ],
+      },
+    },
+    /**
      * TypeScript declaration files.
      *
      * TODO: Move this to `@metamask/eslint-config-typescript`

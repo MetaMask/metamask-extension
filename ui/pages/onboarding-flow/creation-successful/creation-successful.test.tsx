@@ -15,15 +15,17 @@ import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/typ
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import CreationSuccessful from './creation-successful';
 
 const mockUseNavigate = jest.fn();
+let mockUseLocationSearch = '';
 
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useLocation: () => ({ search: '' }),
+    useLocation: () => ({ search: mockUseLocationSearch }),
   };
 });
 
@@ -31,6 +33,10 @@ jest.mock('./wallet-ready-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="wallet-ready-animation" />,
+}));
+
+jest.mock('../../../components/component-library/lottie-animation', () => ({
+  LottieAnimation: () => <div data-testid="lottie-fox" />,
 }));
 
 jest.mock('webextension-polyfill', () => ({
@@ -135,6 +141,32 @@ describe('Wallet Ready Page', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
     );
+  });
+
+  it('opens learn more link in new tab when "Learn how" is clicked (from SRP backup reminder)', () => {
+    const openTabMock = jest.fn();
+    const previousSearch = mockUseLocationSearch;
+    const previousPlatform = global.platform;
+
+    mockUseLocationSearch = '?isFromReminder=true';
+    global.platform = { openTab: openTabMock } as never;
+
+    try {
+      const mockStore = configureMockStore([thunk])(mockState);
+      const { getByText } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+      const learnHowButton = getByText(messages.learnHow.message);
+      fireEvent.click(learnHowButton);
+      expect(openTabMock).toHaveBeenCalledTimes(1);
+      expect(openTabMock).toHaveBeenCalledWith({
+        url: ZENDESK_URLS.BASIC_SAFETY_TIPS,
+      });
+    } finally {
+      mockUseLocationSearch = previousSearch;
+      global.platform = previousPlatform;
+    }
   });
 
   it('should route to pin extension route when "Done" button is clicked', async () => {

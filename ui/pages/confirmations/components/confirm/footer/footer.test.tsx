@@ -1,5 +1,10 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { TransactionType } from '@metamask/transaction-controller';
+import {
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
+} from '../../../../../../shared/constants/hardware-wallets';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
@@ -44,6 +49,10 @@ import Footer from './footer';
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
+  useIsTransactionPayLoading: jest.fn(() => false),
+  useTransactionPayRequiredTokens: jest.fn(() => []),
+}));
 
 const mockOnTransactionConfirm = jest.fn();
 const ensureDeviceReadyMock = jest.fn();
@@ -88,6 +97,10 @@ jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
     navigateNext: mockNavigateNext,
     navigateToId: mockNavigateToId,
+  })),
+  useConfirmationNavigationOptions: jest.fn(() => ({
+    loader: 'default',
+    returnTo: undefined,
   })),
 }));
 jest.mock(
@@ -1105,5 +1118,23 @@ describe('ConfirmFooter', () => {
         });
       });
     });
+  });
+
+  it('renders SingleActionFooter for musdConversion transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.musdConversion,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 });

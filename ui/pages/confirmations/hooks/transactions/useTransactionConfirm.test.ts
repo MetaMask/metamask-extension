@@ -31,7 +31,6 @@ import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 
 const mockGetEnvironmentType = jest.fn();
 
-jest.mock('../../../../../shared/modules/selectors');
 jest.mock('../../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
 }));
@@ -54,6 +53,7 @@ jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
+jest.mock('../../../../../shared/lib/selectors');
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),

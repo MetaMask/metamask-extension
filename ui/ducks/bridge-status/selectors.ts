@@ -4,8 +4,8 @@ import type {
   BridgeStatusControllerState,
 } from '@metamask/bridge-status-controller';
 import { type TransactionControllerState } from '@metamask/transaction-controller';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { Numeric } from '../../../shared/lib/Numeric';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   getInternalAccountsFromGroupById,
@@ -15,6 +15,13 @@ import {
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
 };
+
+type BridgeHistoryItemWithOriginalTransactionId = BridgeHistoryItem & {
+  originalTransactionId?: string;
+};
+
+const normalizeBridgeHistoryLookupKey = (value: unknown) =>
+  typeof value === 'string' ? value.toLowerCase() : String(value);
 
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
   state.metamask.txHistory;
@@ -74,6 +81,67 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
     return bridgeHistory[txMetaId];
   },
 );
+
+const selectBridgeHistoryByOriginalTransactionId = createSelector(
+  [selectBridgeHistory],
+  (bridgeHistory) =>
+    Object.values(bridgeHistory).reduce<
+      Record<string, BridgeHistoryItemWithOriginalTransactionId>
+    >((acc, bridgeHistoryItem: BridgeHistoryItemWithOriginalTransactionId) => {
+      if (bridgeHistoryItem.originalTransactionId) {
+        acc[bridgeHistoryItem.originalTransactionId] = bridgeHistoryItem;
+      }
+      return acc;
+    }, {}),
+);
+
+const selectBridgeHistoryByApprovalTxId = createSelector(
+  [selectBridgeHistory],
+  (bridgeHistory) =>
+    Object.values(bridgeHistory).reduce<Record<string, BridgeHistoryItem>>(
+      (acc, bridgeHistoryItem) => {
+        if (bridgeHistoryItem.approvalTxId) {
+          acc[normalizeBridgeHistoryLookupKey(bridgeHistoryItem.approvalTxId)] =
+            bridgeHistoryItem;
+        }
+        return acc;
+      },
+      {},
+    ),
+);
+
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a bridge history item for a given original tx meta id.
+ * Used by intent flows where txHistory key is orderUid and tx meta id is stored separately.
+ */
+export const selectBridgeHistoryForOriginalTxMetaId = (
+  state: BridgeStatusAppState,
+  originalTxMetaId?: string,
+) => {
+  if (!originalTxMetaId) {
+    return undefined;
+  }
+
+  return selectBridgeHistoryByOriginalTransactionId(state)[originalTxMetaId];
+};
+
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a bridge history item for a given approval tx id
+ */
+export const selectBridgeHistoryForApprovalTxId = (
+  state: BridgeStatusAppState,
+  approvalTxId?: string,
+) => {
+  if (!approvalTxId) {
+    return undefined;
+  }
+
+  return selectBridgeHistoryByApprovalTxId(state)[
+    normalizeBridgeHistoryLookupKey(approvalTxId)
+  ];
+};
 
 /**
  * Returns a pending/local transaction for the given tx hash

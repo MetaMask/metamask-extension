@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -60,7 +60,11 @@ export const BridgeInputGroup = ({
   disabledChainId,
   containerProps = {},
   isDestination,
+  isAssetPickerOpen,
+  setIsAssetPickerOpen,
 }: {
+  isAssetPickerOpen: boolean;
+  setIsAssetPickerOpen: (isOpen: boolean) => void;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
@@ -84,8 +88,10 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
 
   const { isLoading } = useSelector(getBridgeQuotes);
-  const { isInsufficientBalance, isEstimatedReturnLow } =
-    useSelector(getValidationErrors);
+  const { isInsufficientBalance, isEstimatedReturnLow } = useSelector(
+    getValidationErrors,
+    shallowEqual,
+  );
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
@@ -153,7 +159,6 @@ export const BridgeInputGroup = ({
       }
     }
   };
-  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
 
   return (
     <Column gap={1} {...containerProps}>

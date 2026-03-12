@@ -25,10 +25,9 @@ export type SwapQuoteOptions = {
 };
 
 export type SwapQuote = {
-  amount: string;
   totalCost: string;
   receivedAmount: string;
-  estimatedTime?: string;
+  receivedAmountInCurrency?: string;
   provider?: string;
 };
 
@@ -141,15 +140,15 @@ class SwapPage {
 
   async checkQuote(quote: SwapQuote): Promise<void> {
     await this.driver.waitForSelector({
-      text: `${quote.totalCost} total cost`,
+      text: `Total cost: ${quote.totalCost}`,
       tag: 'p',
     });
     await this.driver.waitForSelector({
-      text: `${quote.receivedAmount} receive amount`,
+      text: `${quote.receivedAmount}`,
       tag: 'p',
     });
     await this.driver.waitForSelector({
-      text: quote.estimatedTime,
+      text: quote.receivedAmountInCurrency,
       tag: 'p',
     });
     await this.driver.waitForSelector({
