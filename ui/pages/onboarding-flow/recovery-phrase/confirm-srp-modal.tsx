@@ -1,17 +1,9 @@
 import React from 'react';
 import {
-  AlignItems,
+  Box,
   IconColor,
   TextAlign,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  Box,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Text,
   ButtonSize,
   Button,
@@ -19,7 +11,15 @@ import {
   Icon,
   IconSize,
   IconName,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from '../../../components/component-library';
+import { AlignItems } from '../../../helpers/constants/design-system';
 
 type ConfirmSrpModalProps = {
   onContinue: () => void;
@@ -54,20 +54,19 @@ export default function ConfirmSrpModal({
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader>
-          <Box textAlign={TextAlign.Center}>
+          <Box className="text-center">
             <Icon
               name={isError ? IconName.CircleX : IconName.Confirmation}
               size={IconSize.Xl}
               className="skip-srp-backup-popover__icon"
               color={
-                isError ? IconColor.errorDefault : IconColor.successDefault
+                isError ? IconColor.ErrorDefault : IconColor.SuccessDefault
               }
             />
             <Text
-              variant={TextVariant.headingMd}
+              variant={TextVariant.HeadingMd}
               textAlign={TextAlign.Center}
-              marginTop={2}
-              as="h2"
+              className="mt-2"
             >
               {isError
                 ? t('confirmSrpErrorTitle')
@@ -76,7 +75,7 @@ export default function ConfirmSrpModal({
           </Box>
         </ModalHeader>
         <Box paddingLeft={4} paddingRight={4}>
-          <Text variant={TextVariant.bodyMd}>
+          <Text variant={TextVariant.BodyMd}>
             {isError
               ? t('confirmSrpErrorDescription')
               : t('confirmSrpSuccessDescription')}
@@ -87,7 +86,7 @@ export default function ConfirmSrpModal({
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={handleContinue}
-              block
+              className="w-full"
             >
               {isError ? t('tryAgain') : t('gotIt')}
             </Button>

@@ -3,54 +3,73 @@
 exports[`Review Recovery Phrase Component renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params 1`] = `
 <div>
   <div
-    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
+    class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
     data-testid="recovery-phrase"
   >
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box recovery-phrase__header mm-box--margin-bottom-4 mm-box--display-grid mm-box--gap-3 mm-box--align-items-center mm-box--width-full"
+        class="gap-3 items-center mb-4 recovery-phrase__header grid w-full"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          color="text-icon-default"
           data-testid="reveal-recovery-phrase-review-back-button"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
+          <svg
+            class="inline-block w-6 h-6 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            />
+          </svg>
         </button>
         <h4
-          class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+          class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
         >
           Save Secret Recovery Phrase
         </h4>
         <button
           aria-label="Close"
-          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          color="text-icon-default"
           data-testid="reveal-recovery-phrase-review-close-button"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/close.svg');"
-          />
+          <svg
+            class="inline-block w-6 h-6 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+            />
+          </svg>
         </button>
       </div>
       <div
-        class="mm-box"
+        class=""
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
           <span>
              
             This is your 
             <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent w-fit"
+              role="button"
             >
-              Secret Recovery Phrase
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Secret Recovery Phrase
+              </span>
             </button>
             . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
@@ -58,248 +77,259 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
         </p>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="flex flex-col gap-4"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+          class="bg-section recovery-phrase__secret rounded-lg w-full"
         >
           <div
-            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
+            class="items-center justify-center recovery-phrase__chips grid recovery-phrase__chips--hidden"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
           >
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-0"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 1
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 candy
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-1"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 2
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 maple
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-2"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 3
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 cake
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-3"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 4
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 sugar
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-4"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 5
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 pudding
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-5"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 6
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 cream
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-6"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 7
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 honey
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-7"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 8
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 rich
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-8"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 9
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 smooth
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-9"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 10
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 crumble
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-10"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 11
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 sweet
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-11"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 12
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 treat
-              </span>
+              </p>
             </div>
           </div>
           <div
-            class="mm-box recovery-phrase__secret-blocker-container mm-box--width-full mm-box--height-full"
+            class="recovery-phrase__secret-blocker-container w-full h-full"
           >
             <div
-              class="mm-box recovery-phrase__secret-blocker mm-box--padding-top-2 mm-box--padding-bottom-9 mm-box--padding-inline-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--rounded-sm"
+              class="flex flex-col items-center justify-center pt-2 pb-9 recovery-phrase__secret-blocker rounded-sm w-full h-full px-0"
             />
-            <button
-              class="mm-box recovery-phrase__secret-blocker-text mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+            <div
+              class="flex flex-col gap-2 items-center justify-center bg-transparent recovery-phrase__secret-blocker-text w-full h-full"
               data-testid="recovery-phrase-reveal"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
-                style="mask-image: url('./images/icons/eye-slash.svg');"
-              />
+              <svg
+                class="inline-block w-5 h-5 text-icon-default"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m16.1 13.186-1.45-1.45q.225-1.176-.675-2.2t-2.325-.8l-1.45-1.45a4.2 4.2 0 0 1 .863-.3 4.2 4.2 0 0 1 .937-.1q1.875 0 3.188 1.312C16.5 9.51 16.5 10.135 16.5 11.386q0 .5-.1.937t-.3.863m3.2 3.15-1.45-1.4q.95-.726 1.688-1.588c.738-.862.912-1.23 1.262-1.963q-1.25-2.524-3.587-4.012T12 5.886q-.725 0-1.425.1a10 10 0 0 0-1.375.3l-1.55-1.55a11.1 11.1 0 0 1 4.35-.85q3.775 0 6.725 2.087T23 11.385a11.7 11.7 0 0 1-1.512 2.738 11 11 0 0 1-2.188 2.212m.5 6.15-4.2-4.15q-.874.274-1.762.412T12 18.886q-3.775 0-6.725-2.088T1 11.386q.525-1.326 1.325-2.463A11.5 11.5 0 0 1 4.15 6.886l-2.75-2.8 1.4-1.4 18.4 18.4zM5.55 8.286q-.725.65-1.325 1.425A9 9 0 0 0 3.2 11.386q1.25 2.524 3.588 4.012T12 16.886q.5 0 .975-.063t.975-.137l-.9-.95q-.274.075-.525.112a3 3 0 0 1-.525.038q-1.875 0-3.188-1.313C7.5 13.26 7.5 12.636 7.5 11.386q0-.276.037-.525.038-.25.113-.525z"
+                />
+              </svg>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Tap to reveal
               </p>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
               >
                 Make sure no one is watching your screen.
               </p>
-            </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+      class="flex flex-col gap-2 w-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default recovery-phrase__footer--button w-full"
         data-testid="recovery-phrase-continue"
         disabled=""
+        role="button"
       >
-        Continue
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Continue
+        </span>
       </button>
     </div>
   </div>
@@ -309,34 +339,39 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
 exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
+    class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
     data-testid="recovery-phrase"
   >
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
+        class="justify-start mb-4 w-full"
       >
         <h2
-          class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+          class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
         >
           Save your Secret Recovery Phrase
         </h2>
       </div>
       <div
-        class="mm-box"
+        class=""
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
           <span>
              
             This is your 
             <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent w-fit"
+              role="button"
             >
-              Secret Recovery Phrase
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Secret Recovery Phrase
+              </span>
             </button>
             . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
@@ -344,255 +379,270 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         </p>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="flex flex-col gap-4"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+          class="bg-section recovery-phrase__secret rounded-lg w-full"
         >
           <div
-            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
+            class="items-center justify-center recovery-phrase__chips grid recovery-phrase__chips--hidden"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
           >
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-0"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 1
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 candy
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-1"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 2
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 maple
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-2"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 3
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 cake
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-3"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 4
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 sugar
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-4"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 5
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 pudding
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-5"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 6
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 cream
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-6"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 7
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 honey
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-7"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 8
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 rich
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-8"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 9
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 smooth
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-9"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 10
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 crumble
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-10"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 11
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 sweet
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-11"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 12
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 treat
-              </span>
+              </p>
             </div>
           </div>
           <div
-            class="mm-box recovery-phrase__secret-blocker-container mm-box--width-full mm-box--height-full"
+            class="recovery-phrase__secret-blocker-container w-full h-full"
           >
             <div
-              class="mm-box recovery-phrase__secret-blocker mm-box--padding-top-2 mm-box--padding-bottom-9 mm-box--padding-inline-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--rounded-sm"
+              class="flex flex-col items-center justify-center pt-2 pb-9 recovery-phrase__secret-blocker rounded-sm w-full h-full px-0"
             />
-            <button
-              class="mm-box recovery-phrase__secret-blocker-text mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+            <div
+              class="flex flex-col gap-2 items-center justify-center bg-transparent recovery-phrase__secret-blocker-text w-full h-full"
               data-testid="recovery-phrase-reveal"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
-                style="mask-image: url('./images/icons/eye-slash.svg');"
-              />
+              <svg
+                class="inline-block w-5 h-5 text-icon-default"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m16.1 13.186-1.45-1.45q.225-1.176-.675-2.2t-2.325-.8l-1.45-1.45a4.2 4.2 0 0 1 .863-.3 4.2 4.2 0 0 1 .937-.1q1.875 0 3.188 1.312C16.5 9.51 16.5 10.135 16.5 11.386q0 .5-.1.937t-.3.863m3.2 3.15-1.45-1.4q.95-.726 1.688-1.588c.738-.862.912-1.23 1.262-1.963q-1.25-2.524-3.587-4.012T12 5.886q-.725 0-1.425.1a10 10 0 0 0-1.375.3l-1.55-1.55a11.1 11.1 0 0 1 4.35-.85q3.775 0 6.725 2.087T23 11.385a11.7 11.7 0 0 1-1.512 2.738 11 11 0 0 1-2.188 2.212m.5 6.15-4.2-4.15q-.874.274-1.762.412T12 18.886q-3.775 0-6.725-2.088T1 11.386q.525-1.326 1.325-2.463A11.5 11.5 0 0 1 4.15 6.886l-2.75-2.8 1.4-1.4 18.4 18.4zM5.55 8.286q-.725.65-1.325 1.425A9 9 0 0 0 3.2 11.386q1.25 2.524 3.588 4.012T12 16.886q.5 0 .975-.063t.975-.137l-.9-.95q-.274.075-.525.112a3 3 0 0 1-.525.038q-1.875 0-3.188-1.313C7.5 13.26 7.5 12.636 7.5 11.386q0-.276.037-.525.038-.25.113-.525z"
+                />
+              </svg>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Tap to reveal
               </p>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
               >
                 Make sure no one is watching your screen.
               </p>
-            </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+      class="flex flex-col gap-2 w-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default recovery-phrase__footer--button w-full"
         data-testid="recovery-phrase-continue"
         disabled=""
+        role="button"
       >
-        Continue
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Continue
+        </span>
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+        class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed w-full hover:bg-transparent active:bg-transparent"
         data-testid="recovery-phrase-remind-later"
-        type="button"
+        role="button"
       >
-        Remind me later
+        <span
+          class="text-inherit text-s-body-lg leading-s-body-lg tracking-s-body-lg md:text-l-body-lg md:leading-l-body-lg md:tracking-l-body-lg font-medium font-default"
+        >
+          Remind me later
+        </span>
       </button>
     </div>
   </div>
@@ -602,34 +652,39 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
 <div>
   <div
-    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
+    class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
     data-testid="recovery-phrase"
   >
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
+        class="justify-start mb-4 w-full"
       >
         <h2
-          class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+          class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
         >
           Save your Secret Recovery Phrase
         </h2>
       </div>
       <div
-        class="mm-box"
+        class=""
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
           <span>
              
             This is your 
             <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent w-fit"
+              role="button"
             >
-              Secret Recovery Phrase
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Secret Recovery Phrase
+              </span>
             </button>
             . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
@@ -637,228 +692,237 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         </p>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="flex flex-col gap-4"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+          class="bg-section recovery-phrase__secret rounded-lg w-full"
         >
           <div
-            class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
+            class="items-center justify-center recovery-phrase__chips grid"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
           >
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-0"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 1
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 debris
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-1"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 2
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 dizzy
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-2"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 3
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 just
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-3"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 4
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 program
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-4"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 5
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 just
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-5"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 6
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 float
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-6"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 7
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 decrease
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-7"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 8
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 vacant
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-8"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 9
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 alarm
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-9"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 10
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 reduce
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-10"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 11
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 speak
-              </span>
+              </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
               data-testid="recovery-phrase-chip-11"
             >
-              <span
-                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
               >
                 12
                 .
-              </span>
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 stadium
-              </span>
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+      class="flex flex-col gap-2 w-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg recovery-phrase__footer--button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default recovery-phrase__footer--button w-full"
         data-testid="recovery-phrase-continue"
+        role="button"
       >
-        Continue
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Continue
+        </span>
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+        class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed w-full hover:bg-transparent active:bg-transparent"
         data-testid="recovery-phrase-remind-later"
-        type="button"
+        role="button"
       >
-        Remind me later
+        <span
+          class="text-inherit text-s-body-lg leading-s-body-lg tracking-s-body-lg md:text-l-body-lg md:leading-l-body-lg md:tracking-l-body-lg font-medium font-default"
+        >
+          Remind me later
+        </span>
       </button>
     </div>
   </div>
