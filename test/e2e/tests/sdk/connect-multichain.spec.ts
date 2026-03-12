@@ -13,6 +13,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import { getPermissionsPageForHost } from '../../page-objects/flows/permission.flow';
 import { Driver } from '../../webdriver/driver';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 
 // CAIP-2 EVM chain IDs used across tests
@@ -104,14 +105,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
           await testDapp.triggerMethod(chainId, 'personal_sign');
 
           // Handle the signing dialog in the extension.
-          // clickElementAndWaitForWindowToClose prevents NoSuchWindowError by
-          // waiting for the dialog window to close before returning, so the
-          // driver is never left focused on a dead window handle.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.waitForSelector('[data-testid="confirm-footer-button"]');
-          await driver.clickElementAndWaitForWindowToClose(
-            '[data-testid="confirm-footer-button"]',
-          );
+          const signingConfirmation = new Confirmation(driver);
+          await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
           // Back in test dapp: the result entry should now be visible
           await testDapp.switchTo();
