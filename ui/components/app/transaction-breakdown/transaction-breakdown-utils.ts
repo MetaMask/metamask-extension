@@ -5,12 +5,12 @@ import {
 } from '@metamask/transaction-controller';
 import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { isEIP1559Transaction } from '../../../../shared/lib/transaction.utils';
 
 import {
   subtractHexes,
   sumHexes,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 import {
   calcTokenAmount,
   getSwapsTokensReceivedFromTxMeta,

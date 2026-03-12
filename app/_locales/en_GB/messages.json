@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Add token"
   },
-  "addTokenByContractAddress": {
-    "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Add URL"
   },
@@ -1923,7 +1919,8 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Losing this password means losing wallet access on all devices, "
+    "message": "Losing this password means losing wallet access on all devices, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
@@ -4136,7 +4133,7 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdBonusExplanation": {
-    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. Powered by Relay. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
   "musdBoostDescription": {
@@ -4161,13 +4158,21 @@
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
+  "musdClaimableBonus": {
+    "message": "Claimable bonus",
+    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
+  },
+  "musdClaimableBonusTooltip": {
+    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $1",
+    "description": "$1 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Convert $1 to mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "Converted to mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "musdConversionToastFailed": {
     "message": "mUSD conversion failed"
@@ -4178,6 +4183,13 @@
   },
   "musdConversionToastSuccess": {
     "message": "Your mUSD is here!"
+  },
+  "musdConvert": {
+    "message": "Convert"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Convert and get $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
@@ -4194,7 +4206,7 @@
     "message": "Not now"
   },
   "musdGetBonusPercentage": {
-    "message": "Get $1% bonus",
+    "message": "Get $1% mUSD bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
@@ -8413,10 +8425,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "No tokens available matching $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Your $1 will be added to your account once this transaction has processed.",

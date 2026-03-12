@@ -6778,9 +6778,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/gator-permissions-controller@npm:2.0.0"
+"@metamask/gator-permissions-controller@npm:^2.0.0, @metamask/gator-permissions-controller@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/gator-permissions-controller@npm:2.1.0"
   dependencies:
     "@metamask/7715-permission-types": "npm:^0.5.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -6790,15 +6790,15 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^17.2.0"
     "@metamask/snaps-sdk": "npm:^10.3.0"
     "@metamask/snaps-utils": "npm:^11.7.0"
-    "@metamask/transaction-controller": "npm:^62.17.0"
+    "@metamask/transaction-controller": "npm:^62.21.0"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/78564cb9928fa4bb7fea7dbeeac379cf62629b1ec0bdb685fa1264c536942707fd8acd64ece0c016fccad02592ae97dbc7fbab607463019c06ed9a06800ccf58
+  checksum: 10/0a6ec127fdc25e67420afb4d6a7f84c4a15f41b12a32f84e151e78a1577b3bd7bfbc420ccfd16f3e39020fa4fd26347e92734c0c24bdc5e37a16800df5ca8748
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-snap@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@metamask/gator-permissions-snap@npm:1.1.1"
+"@metamask/gator-permissions-snap@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/gator-permissions-snap@npm:1.2.0"
   dependencies:
     "@metamask/abi-utils": "npm:3.0.0"
     "@metamask/delegation-core": "npm:0.3.0"
@@ -6806,7 +6806,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:10.2.0"
     "@metamask/utils": "npm:11.4.2"
     zod: "npm:3.25.76"
-  checksum: 10/39815fb819d532969ede5ceb29401762c88d5ceb998327bf1f39a524f6d59d9e51326752b9c0864e4ea8a4dd5d4a151c0ef36a13864edcbb4386ca3533563232
+  checksum: 10/3da76215f5333927af302b8fc9841180c27766889afd6e793b8ef249832b6f14b3ba93ddb469ae638faae0f1a20ccd21bba66e5ac9b1ec51633a946f5c44046f
   languageName: node
   linkType: hard
 
@@ -7533,13 +7533,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permissions-kernel-snap@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/permissions-kernel-snap@npm:1.0.0"
+"@metamask/permissions-kernel-snap@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/permissions-kernel-snap@npm:1.1.0"
   dependencies:
     "@metamask/snaps-sdk": "npm:10.2.0"
     zod: "npm:3.25.76"
-  checksum: 10/a9c545316c91794ef3482b60bfb110f7414de01c6d5735abfe54d65526b77802a842bc1dfe78852147dbd437ab469f74f24255c57aef0d921e04ad646fabcb1c
+  checksum: 10/1858373f0020428f77e1ec2b4e9ebda0f1811c00d2b14b6de8329c1eef0c85852d8b353a89bbb82aa1c870a3c390dabdec2b2bc5f276712956910c8786b7d23d
   languageName: node
   linkType: hard
 
@@ -33829,8 +33829,8 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^25.0.0"
-    "@metamask/gator-permissions-controller": "npm:^2.0.0"
-    "@metamask/gator-permissions-snap": "npm:^1.1.1"
+    "@metamask/gator-permissions-controller": "npm:^2.1.0"
+    "@metamask/gator-permissions-snap": "npm:^1.2.0"
     "@metamask/hw-wallet-sdk": "npm:^0.5.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
@@ -33861,7 +33861,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
-    "@metamask/permissions-kernel-snap": "npm:^1.0.0"
+    "@metamask/permissions-kernel-snap": "npm:^1.1.0"
     "@metamask/perps-controller": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^16.3.0"
     "@metamask/phishing-warning": "npm:^5.1.0"

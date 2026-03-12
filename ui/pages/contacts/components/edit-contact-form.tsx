@@ -27,7 +27,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   addToAddressBook,
   removeFromAddressBook,
@@ -37,7 +37,7 @@ import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+} from '../../../../shared/lib/hexstring-utils';
 import type { EditContactFormProps } from '../contacts.types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {

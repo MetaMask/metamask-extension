@@ -333,10 +333,6 @@
   "addToken": {
     "message": "토큰 추가"
   },
-  "addTokenByContractAddress": {
-    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URL 추가"
   },
@@ -1791,7 +1787,8 @@
     "message": "이 기기에서만 MetaMask 잠금해제에 사용됩니다."
   },
   "createPasswordDetailsSocial": {
-    "message": "이 비밀번호를 분실하면 모든 기기에서 지갑에 액세스할 수 없습니다. "
+    "message": "이 비밀번호를 분실하면 모든 기기에서 지갑에 액세스할 수 없습니다. ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask는 비밀번호를 재설정해 드릴 수 없습니다."
@@ -3981,8 +3978,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1을(를) mUSD로 전환",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSD로 전환됨",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
@@ -8043,10 +8040,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 견적.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1와(과) 일치하는 토큰이 없습니다.",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "$1토큰은 이 트랜잭션이 처리되면 회원님의 계정에 추가됩니다.",

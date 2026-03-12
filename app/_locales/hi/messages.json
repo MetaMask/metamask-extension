@@ -333,10 +333,6 @@
   "addToken": {
     "message": "टोकन जोड़ें"
   },
-  "addTokenByContractAddress": {
-    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का एड्रेस पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन कॉन्ट्रैक्ट एड्रेस $1 पर मिल सकते हैं।",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URL जोड़ें"
   },
@@ -1791,7 +1787,8 @@
     "message": "केवल इस डिवाइस पर MetaMask को अनलॉक करता है।"
   },
   "createPasswordDetailsSocial": {
-    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, "
+    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask इसे रीसेट नहीं कर सकता।"
@@ -3981,8 +3978,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1 को mUSD में बदलें",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSD में बदला गया",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
@@ -8037,10 +8034,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 उद्धरण.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "यह ट्रांसेक्शन संसाधित होने के बाद आपका $1 आपके अकाउंट में जोड़ दिया जाएगा।",

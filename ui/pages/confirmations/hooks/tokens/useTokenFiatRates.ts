@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import type { Hex } from '@metamask/utils';
 import { getMarketData, getCurrencyRates } from '../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useDeepMemo } from '../useDeepMemo';
 

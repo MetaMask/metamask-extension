@@ -26,7 +26,7 @@ jest.mock('@metamask/multichain-network-controller');
 jest.mock('@metamask/controller-utils');
 
 const mockFetchWithTimeout = jest.fn();
-jest.mock('../modules/fetch-with-timeout', () => ({
+jest.mock('./fetch-with-timeout', () => ({
   // eslint-disable-next-line  @typescript-eslint/naming-convention
   __esModule: true,
   default: jest
