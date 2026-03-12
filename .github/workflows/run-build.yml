@@ -47,7 +47,8 @@ jobs:
       # Environment variables used in production builds
       # Keep this list synchronized with:
       # * The environment variables exported by `.github/scripts/bundle.sh`
-      # * The environment variables used by the `publish-release` step in `.github/workflows/publish-release.yml`.
+      # * The environment variables used by the publish workflow in
+      #   `.github/workflows/publish-release-from-release-head.yml`.
       APPLE_BETA_CLIENT_ID: ${{ secrets.APPLE_BETA_CLIENT_ID }}
       APPLE_EXPERIMENTAL_CLIENT_ID: ${{ secrets.APPLE_EXPERIMENTAL_CLIENT_ID }}
       APPLE_FLASK_CLIENT_ID: ${{ secrets.APPLE_FLASK_CLIENT_ID }}

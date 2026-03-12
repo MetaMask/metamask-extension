@@ -14,9 +14,11 @@ import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
+import { StatKey } from '../../../shared/constants/benchmarks';
+import type { BenchmarkResults } from '../../../shared/constants/benchmarks';
+import { getGitBranch, getGitCommitHash } from './utils/git';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
-import type { BenchmarkResults, UserActionResult } from './utils/types';
+import type { UserActionResult } from './utils/types';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
 const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
@@ -119,7 +121,7 @@ async function main() {
       }
 
       const allMetrics: Record<string, number> = {};
-      const statTypes = ['mean', 'p75', 'p95'] as const;
+      const statTypes = Object.values(StatKey);
       for (const statType of statTypes) {
         const statData = benchmark[statType];
         if (statData && Object.keys(statData).length > 0) {
