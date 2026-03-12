@@ -121,6 +121,34 @@ export function getBuildLinks(
   };
 }
 
+export function getWebpackBuildLinks(
+  hostUrl: string,
+  version: string,
+): Record<string, BuildType> {
+  return {
+    'webpack builds': {
+      chrome: `${hostUrl}/build-dist-webpack/builds/metamask-chrome-${version}.zip`,
+      firefox: `${hostUrl}/build-dist-mv2-webpack/builds/metamask-firefox-${version}.zip`,
+    },
+    'webpack builds (beta)': {
+      chrome: `${hostUrl}/build-beta-webpack/builds/metamask-beta-chrome-${version}-beta.0.zip`,
+      firefox: `${hostUrl}/build-beta-mv2-webpack/builds/metamask-beta-firefox-${version}-beta.0.zip`,
+    },
+    'webpack builds (flask)': {
+      chrome: `${hostUrl}/build-flask-webpack/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+      firefox: `${hostUrl}/build-flask-mv2-webpack/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+    },
+    'webpack builds (test)': {
+      chrome: `${hostUrl}/build-test-webpack/builds/metamask-chrome-${version}.zip`,
+      firefox: `${hostUrl}/build-test-mv2-webpack/builds/metamask-firefox-${version}.zip`,
+    },
+    'webpack builds (test-flask)': {
+      chrome: `${hostUrl}/build-test-flask-webpack/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+      firefox: `${hostUrl}/build-test-flask-mv2-webpack/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+    },
+  };
+}
+
 /**
  * Renders build links as HTML content rows (e.g. "builds: chrome, firefox").
  *
@@ -208,6 +236,9 @@ export async function buildArtifactsBody({
 
   if (postNewBuilds) {
     contentRows.push(...formatBuildLinks(getBuildLinks(hostUrl, version)));
+    contentRows.push(
+      ...formatBuildLinks(getWebpackBuildLinks(hostUrl, version)),
+    );
   }
 
   if (lavamoatPolicyChanged) {

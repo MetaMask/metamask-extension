@@ -37,23 +37,6 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
-  test-e2e-chrome-webpack:
-    uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-    strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-webpack'] }}
-    with:
-      test-suite-name: test-e2e-chrome-webpack
-      build-artifact: build-test-webpack
-      build-command: yarn build:test:webpack
-      test-command: yarn test:e2e:chrome
-      builds-from-run: ${{ inputs.builds-from-run }}
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
-
   test-e2e-chrome-multiple-providers:
     uses: ./.github/workflows/run-e2e.yml
     with:
@@ -116,16 +99,105 @@ jobs:
       test-artifacts-path: html-report-multichain
       builds-from-run: ${{ inputs.builds-from-run }}
 
+  test-e2e-chrome-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-webpack'] }}
+    with:
+      test-suite-name: test-e2e-chrome-webpack
+      build-artifact: build-test-webpack
+      build-command: yarn build:test:webpack
+      test-command: yarn test:e2e:chrome
+      builds-from-run: ${{ inputs.builds-from-run }}
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-multiple-providers-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    with:
+      test-suite-name: test-e2e-chrome-multiple-providers-webpack
+      build-artifact: build-test-webpack
+      build-command: yarn build:test:webpack
+      test-command: yarn test:e2e:chrome:multi-provider
+      builds-from-run: ${{ inputs.builds-from-run }}
+
+  test-e2e-chrome-rpc-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    with:
+      test-suite-name: test-e2e-chrome-rpc-webpack
+      build-artifact: build-test-webpack
+      build-command: yarn build:test:webpack
+      test-command: yarn test:e2e:chrome:rpc
+      builds-from-run: ${{ inputs.builds-from-run }}
+
+  test-e2e-chrome-flask-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-flask-webpack'] }}
+    with:
+      test-suite-name: test-e2e-chrome-flask-webpack
+      build-artifact: build-test-flask-webpack
+      build-command: yarn build:test:flask:webpack
+      test-command: yarn test:e2e:chrome:flask
+      builds-from-run: ${{ inputs.builds-from-run }}
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-dist-webpack:
+    if: ${{ github.event_name != 'merge_group' && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-dist-webpack
+      build-artifact: build-dist-webpack
+      test-command: yarn test:e2e:chrome:dist
+      builds-from-run: ${{ inputs.builds-from-run }}
+
+  test-e2e-chrome-api-specs-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    with:
+      test-suite-name: test-e2e-chrome-api-specs-webpack
+      build-artifact: build-test-webpack
+      build-command: yarn build:test:webpack
+      test-command: yarn test:api-specs
+      test-artifacts-path: html-report
+      builds-from-run: ${{ inputs.builds-from-run }}
+
+  test-e2e-chrome-api-specs-multichain-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    with:
+      test-suite-name: test-e2e-chrome-api-specs-multichain-webpack
+      build-artifact: build-test-flask-webpack
+      build-command: yarn build:test:flask:webpack
+      test-command: yarn test:api-specs-multichain
+      test-artifacts-path: html-report-multichain
+      builds-from-run: ${{ inputs.builds-from-run }}
+
   test-e2e-chrome-report:
     needs:
       - test-e2e-chrome-browserify
-      - test-e2e-chrome-webpack
       - test-e2e-chrome-multiple-providers
       - test-e2e-chrome-rpc
       - test-e2e-chrome-flask
       - test-e2e-chrome-dist
       - test-e2e-chrome-api-specs
       - test-e2e-chrome-api-specs-multichain
+      - test-e2e-chrome-webpack
+      - test-e2e-chrome-multiple-providers-webpack
+      - test-e2e-chrome-rpc-webpack
+      - test-e2e-chrome-flask-webpack
+      - test-e2e-chrome-dist-webpack
+      - test-e2e-chrome-api-specs-webpack
+      - test-e2e-chrome-api-specs-multichain-webpack
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
     env:
