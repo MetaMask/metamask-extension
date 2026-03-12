@@ -13,7 +13,7 @@
   "gitlens.advanced.blame.customArguments": [
     "--ignore-revs-file .git-blame-ignore-revs"
   ],
-  "javascript.preferences.importModuleSpecifier": "relative",
+  "js/ts.preferences.importModuleSpecifier": "relative",
   "json.schemas": [
     {
       "fileMatch": ["app/manifest/*/*.json"],
@@ -28,6 +28,5 @@
   "tailwindCSS.classFunctions": ["classnames", "classNames"],
   "tailwindCSS.lint.cssConflict": "error",
   "tailwindCSS.validate": true,
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
