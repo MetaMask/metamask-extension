@@ -8,13 +8,20 @@ const fetchWithTimeout = getFetchWithTimeout();
  * @param {string} rpcUrl - The RPC endpoint URL to target.
  * @param {string} rpcMethod - The RPC method to request.
  * @param {Array<unknown>} [rpcParams] - The RPC method params.
+ * @param {{ headers?: Record<string, string> }} [options] - Optional extra headers (e.g. Authorization).
  * @returns {Promise<unknown|undefined>} Returns the result of the RPC method call,
  * or throws an error in case of failure.
  */
-export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
+export async function jsonRpcRequest(
+  rpcUrl,
+  rpcMethod,
+  rpcParams = [],
+  options = {},
+) {
   let fetchUrl = rpcUrl;
   const headers = {
     'Content-Type': 'application/json',
+    ...options.headers,
   };
   // Convert basic auth URL component to Authorization header
   const { origin, pathname, username, password, search } = new URL(rpcUrl);

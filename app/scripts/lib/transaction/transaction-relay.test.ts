@@ -80,13 +80,18 @@ describe('Transaction Relay Utils', () => {
   });
 
   describe('submitRelayTransaction', () => {
-    it('submits request to API', async () => {
+    it('submits request to API with auth headers', async () => {
       await submitRelayTransaction(SUBMIT_REQUEST_MOCK);
 
       expect(jsonRpcRequestMock).toHaveBeenCalledWith(
         expect.any(String),
         RELAY_RPC_METHOD,
         [SUBMIT_REQUEST_MOCK],
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'X-Client-Id': 'extension',
+          }),
+        }),
       );
     });
 
@@ -198,8 +203,11 @@ describe('Transaction Relay Utils', () => {
       await flushPromises();
 
       jest.advanceTimersByTime(INTERVAL_MOCK);
+      await flushPromises();
       jest.advanceTimersByTime(INTERVAL_MOCK);
+      await flushPromises();
       jest.advanceTimersByTime(INTERVAL_MOCK);
+      await flushPromises();
 
       // Additional request to check network support
       expect(fetchMock).toHaveBeenCalledTimes(4);

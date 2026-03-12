@@ -366,6 +366,7 @@ import { applyTransactionContainersExisting } from './lib/transaction/containers
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
+  setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
@@ -906,6 +907,9 @@ export default class MetamaskController extends EventEmitter {
         );
       return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
+
+    // Authenticate Sentinel and Transaction API calls via core-backend (AuthenticationController)
+    setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
     this.snapController.init();
