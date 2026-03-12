@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import nock from 'nock';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -10,6 +11,7 @@ import {
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   getRpcUrl,
+  infuraProjectId,
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -741,6 +743,119 @@ describe('NetworkForm Component', () => {
           to_rpc_domain: 'monad-mainnet.infura.io',
         },
       });
+    });
+  });
+
+  it('should inject featured Infura endpoint when adding a featured network', async () => {
+    nock('https://custom-polygon-rpc.example.com:443')
+      .post('/')
+      .reply(200, { jsonrpc: '2.0', result: '0x89' });
+
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '137',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: 'Polygon',
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://custom-polygon-rpc.example.com',
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'POL',
+      },
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(addNetwork).toHaveBeenCalledTimes(1);
+      expect(addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x89',
+          defaultRpcEndpointIndex: 1,
+          rpcEndpoints: [
+            expect.objectContaining({
+              url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
+              type: RpcEndpointType.Custom,
+            }),
+            {
+              url: 'https://custom-polygon-rpc.example.com',
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        }),
+      );
+    });
+  });
+
+  it('should not duplicate endpoint when user URL matches featured Infura URL', async () => {
+    const infuraPolygonUrl = `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`;
+
+    nock('https://polygon-mainnet.infura.io:443')
+      .post(`/v3/${infuraProjectId}`)
+      .reply(200, { jsonrpc: '2.0', result: '0x89' });
+
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '137',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: 'Polygon',
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: infuraPolygonUrl,
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'POL',
+      },
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(addNetwork).toHaveBeenCalledTimes(1);
+      expect(addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x89',
+          rpcEndpoints: [
+            {
+              url: infuraPolygonUrl,
+              type: 'custom',
+              name: 'Polygon',
+            },
+          ],
+        }),
+      );
     });
   });
 });

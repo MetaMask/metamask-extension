@@ -7,6 +7,7 @@ import {
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
+import * as URI from 'uri-js';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -15,6 +16,7 @@ import {
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
+  FEATURED_RPCS,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
@@ -362,6 +364,27 @@ export const NetworksForm = ({
             }
           }
         } else {
+          // If a featured RPC endpoint exists for this chain, include it alongside the user's RPC
+          const featured = FEATURED_RPCS.find((f) => f.chainId === chainIdHex);
+          const featuredEndpoint = featured
+            ? featured.rpcEndpoints[featured.defaultRpcEndpointIndex]
+            : undefined;
+
+          if (
+            featuredEndpoint &&
+            networkPayload.rpcEndpoints &&
+            !networkPayload.rpcEndpoints.some((ep) =>
+              URI.equal(ep.url, featuredEndpoint.url),
+            )
+          ) {
+            networkPayload.defaultRpcEndpointIndex =
+              (networkPayload.defaultRpcEndpointIndex ?? 0) + 1;
+            networkPayload.rpcEndpoints = [
+              featuredEndpoint,
+              ...networkPayload.rpcEndpoints,
+            ];
+          }
+
           await dispatch(addNetwork(networkPayload));
           await dispatch(setEnabledNetworks(networkPayload.chainId));
         }
