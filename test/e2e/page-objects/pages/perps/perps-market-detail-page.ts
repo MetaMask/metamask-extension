@@ -9,104 +9,61 @@ import { PERPS_MARKET_DETAIL_ROUTE } from '../../../tests/perps/helpers';
 export class PerpsMarketDetailPage {
   private readonly driver: Driver;
 
+  private readonly amountInputField = { testId: 'amount-input-field' };
+
+  private readonly amountInputFieldInput =
+    '[data-testid="amount-input-field"] input';
+
+  private readonly closeCtaButton = { testId: 'perps-close-cta-button' };
+
+  private readonly longCtaButton = { testId: 'perps-long-cta-button' };
+
   private readonly marketDetailPage = { testId: 'perps-market-detail-page' };
 
-  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
+  private readonly marketDetailBackButton = {
+    testId: 'perps-market-detail-back-button',
+  };
+
+  private readonly modifyCtaButton = { testId: 'perps-modify-cta-button' };
+
+  private readonly orderEntry = { testId: 'order-entry' };
 
   private readonly positionCtaButtons = {
     testId: 'perps-position-cta-buttons',
   };
 
-  private readonly longCtaButton = { testId: 'perps-long-cta-button' };
-
   private readonly shortCtaButton = { testId: 'perps-short-cta-button' };
 
   private readonly submitOrderButton = { testId: 'submit-order-button' };
 
-  private readonly orderEntry = { testId: 'order-entry' };
-
-  /** Container for amount (testId is on TextField wrapper). */
-  private readonly amountInputField = { testId: 'amount-input-field' };
-
-  /** Actual input element to fill (inside the TextField wrapper). */
-  private readonly amountInputFieldInput =
-    '[data-testid="amount-input-field"] input';
-
-  private readonly percentPreset25 = { testId: 'percent-preset-25' };
+  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   /**
-   * Navigates to the market detail page for the given symbol.
-   * Use a symbol with no existing position (e.g. AVAX) to see Long/Short buttons.
-   * @param symbol
+   * Asserts that the Close button is visible.
+   * Requires an open position in this market.
    */
-  async navigateToMarket(symbol: string): Promise<void> {
-    const encoded = encodeURIComponent(symbol);
-    await this.driver.executeScript(
-      `window.location.hash = '${PERPS_MARKET_DETAIL_ROUTE}/${encoded}';`,
-    );
-    await this.waitForPageLoaded();
+  async checkCloseButtonVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.closeCtaButton);
   }
 
   /**
-   * Waits for the market detail page to be loaded.
+   * Asserts that the Modify button is visible.
+   * Requires an open position in this market.
    */
-  async waitForPageLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.marketDetailPage);
-  }
-
-  /**
-   * Waits for the Long/Short trade buttons (visible when user has no position in this market).
-   * @param timeout
-   */
-  async waitForTradeCtaButtons(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.tradeCtaButtons, { timeout });
-  }
-
-  /**
-   * Waits for the Modify/Close buttons (visible when user has an open position in this market).
-   * Use after placing an order to confirm the position was opened and the stream updated.
-   * Fails the test if the buttons do not appear within the timeout.
-   * @param timeout
-   */
-  async waitForPositionCtaButtons(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.positionCtaButtons, { timeout });
+  async checkModifyButtonVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.modifyCtaButton);
   }
 
   /**
    * Asserts that the position CTA buttons (Modify/Close) are visible.
    * Call after placing an order to verify the position was opened.
-   * @param timeout
    */
-  async checkPositionCtaButtonsVisible(timeout?: number): Promise<void> {
-    await this.waitForPositionCtaButtons(timeout);
-  }
-
-  /**
-   * Asserts that the Modify button is visible (same as Close: only checks the button).
-   * Requires an open position in this market.
-   * @param timeout
-   */
-  async checkModifyButtonVisible(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(
-      { testId: 'perps-modify-cta-button' },
-      { timeout },
-    );
-  }
-
-  /**
-   * Asserts that the Close button is visible (only checks the button).
-   * Requires an open position in this market.
-   * @param timeout
-   */
-  async checkCloseButtonVisible(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(
-      { testId: 'perps-close-cta-button' },
-      { timeout },
-    );
+  async checkPositionCtaButtonsVisible(): Promise<void> {
+    await this.waitForPositionCtaButtons();
   }
 
   /**
@@ -117,6 +74,17 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Clicks a balance preset button by percentage (e.g. 25, 50, 75, 100).
+   *
+   * @param percentage - The preset percentage (e.g. 25 for 25%).
+   */
+  async clickPercentPreset(percentage: number): Promise<void> {
+    await this.driver.clickElement({
+      testId: `percent-preset-${percentage}`,
+    });
+  }
+
+  /**
    * Clicks the Short button to open the order entry for a new short position.
    */
   async clickShort(): Promise<void> {
@@ -124,22 +92,22 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Waits for the order entry form to be visible.
+   * Clicks the Submit order button and waits for it to disappear (e.g. modal closes).
+   * Optional custom timeout for slow environments.
+   *
+   * @param timeout - Optional wait timeout in ms (default 3000).
    */
-  async waitForOrderEntry(): Promise<void> {
-    await this.driver.waitForSelector(this.orderEntry);
-  }
-
-  /**
-   * Clicks the 25% balance preset to set order amount.
-   */
-  async clickPercentPreset25(): Promise<void> {
-    await this.driver.clickElement(this.percentPreset25);
+  async clickSubmitOrder(timeout = 3000): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.submitOrderButton,
+      timeout,
+    );
   }
 
   /**
    * Types an amount in the amount input (USD).
    * Targets the actual input inside the amount field so fill works.
+   *
    * @param amount
    */
   async fillAmount(amount: string): Promise<void> {
@@ -152,42 +120,52 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Clicks the Submit order button.
-   * clickElement uses findClickableElement and waits for the button to be visible and enabled.
+   * Navigates to the market detail page for the given symbol.
+   * Uses window.location.hash so the SPA router switches view without a full page reload,
+   * which keeps the extension context and avoids re-injecting the extension.
+   * Use a symbol with no existing position (e.g. AVAX) to see Long/Short buttons.
+   *
+   * @param symbol - Market symbol (e.g. 'AVAX', 'ETH').
    */
-  async clickSubmitOrder(): Promise<void> {
-    await this.driver.clickElement(this.submitOrderButton);
+  async navigateToMarket(symbol: string): Promise<void> {
+    const encoded = encodeURIComponent(symbol);
+    await this.driver.executeScript(
+      `window.location.hash = '${PERPS_MARKET_DETAIL_ROUTE}/${encoded}';`,
+    );
+    await this.checkPageIsLoaded();
   }
 
   /**
-   * Waits for the submit button to be present (order form visible).
+   * Waits for the order entry form to be visible.
    */
-  async waitForSubmitButton(): Promise<void> {
-    await this.driver.waitForSelector(this.submitOrderButton);
+  async waitForOrderEntry(): Promise<void> {
+    await this.driver.waitForSelector(this.orderEntry);
   }
 
   /**
-   * Waits for the submit button to be enabled (form valid and ready to submit).
-   * Use after filling amount to avoid clicking while the button is still disabled.
-   * @param timeout
+   * Waits for the market detail page to be loaded.
+   * Uses multiple selectors for robustness (convention).
    */
-  async waitForSubmitButtonEnabled(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.submitOrderButton, {
-      state: 'enabled',
-      timeout,
-    });
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.marketDetailBackButton,
+      this.marketDetailPage,
+    ]);
   }
 
   /**
-   * Waits for the order form to close after submit (submit button removed from DOM).
-   * The UI switches to detail view when the position appears in the stream or after a fallback timeout.
-   * Use after clickSubmitOrder() to know when submission finished and we left the order view.
-   * @param timeout
+   * Waits for the Modify/Close buttons (visible when user has an open position in this market).
+   * Use after placing an order to confirm the position was opened and the stream updated.
+   * Fails the test if the buttons do not appear within the timeout.
    */
-  async waitForOrderFormClosed(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.submitOrderButton, {
-      state: 'detached',
-      timeout,
-    });
+  async waitForPositionCtaButtons(): Promise<void> {
+    await this.driver.waitForSelector(this.positionCtaButtons);
+  }
+
+  /**
+   * Waits for the Long/Short trade buttons (visible when user has no position in this market).
+   */
+  async waitForTradeCtaButtons(): Promise<void> {
+    await this.driver.waitForSelector(this.tradeCtaButtons);
   }
 }

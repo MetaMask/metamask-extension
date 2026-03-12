@@ -17,6 +17,9 @@
 /** Hash to show the Perps tab on the account overview (home). Tab is controlled by search param. */
 export const PERPS_TAB_HASH = '#/?tab=perps';
 
+/** Perps Home page route. */
+export const PERPS_HOME_ROUTE = '#/perps/home';
+
 /** Base route for Perps market detail. Append encoded symbol, e.g. PERPS_MARKET_DETAIL_ROUTE + '/AVAX' */
 export const PERPS_MARKET_DETAIL_ROUTE = '#/perps/market';
 
@@ -28,9 +31,9 @@ export const PERPS_MARKET_LIST_ROUTE = '#/perps/market-list';
 
 /**
  * Default withFixtures config for Perps tests (feature flag enabled).
- * Implemented in fixtures/perps-fixture-config.ts; re-exported here for backward compatibility.
+ * Implemented in perps-fixture-config.ts in this directory; re-exported here for convenience.
  *
  * @param title - The test title (e.g. this.test?.fullTitle()) for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
  */
-export { getPerpsConfig as getConfig } from '../../fixtures/perps-fixture-config';
+export { getPerpsConfig as getConfig } from './perps-fixture-config';
