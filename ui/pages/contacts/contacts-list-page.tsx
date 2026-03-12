@@ -28,7 +28,7 @@ import {
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getCompleteAddressBook, getInternalAccounts } from '../../selectors';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   buildDuplicateContactMap,
   hasDuplicateContacts,
@@ -231,7 +231,9 @@ export function ContactsListPage() {
                     name={entry.name ?? ''}
                     chainId={entry.chainId}
                     onSelect={() =>
-                      navigate(`${CONTACTS_VIEW_ROUTE}/${entry.address}`)
+                      navigate(
+                        `${CONTACTS_VIEW_ROUTE}/${entry.chainId}/${entry.address}`,
+                      )
                     }
                     isDuplicate={
                       (

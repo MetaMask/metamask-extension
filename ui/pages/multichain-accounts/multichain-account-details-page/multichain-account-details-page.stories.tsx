@@ -10,9 +10,9 @@ const meta: Meta<typeof MultichainAccountDetailsPage> = {
       default: 'light',
     },
     initialEntries: [
-      `/multichain-account-details/${encodeURIComponent('entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0')}`,
+      `/multichain-account-details?accountGroupId=${encodeURIComponent('entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0')}`,
     ],
-    path: '/multichain-account-details/:id',
+    path: '/multichain-account-details',
   },
 };
 

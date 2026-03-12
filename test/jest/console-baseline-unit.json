@@ -181,29 +181,29 @@
     "app/scripts/services/subscription/subscription-service.test.ts": {
       "Reselect: Identity function warnings": 1
     },
+    "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
+      "warn: Missing token alert translation for": 1
+    },
+    "shared/lib/contract-utils.test.js": {
+      "Third-party: Bindings failed, using pure JS": 1,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
+    },
+    "shared/lib/metametrics.test.ts": {
+      "Third-party: Bindings failed, using pure JS": 1,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
+    },
+    "shared/lib/selectors/index.test.ts": {
+      "Reselect: Identity function warnings": 2
+    },
     "shared/lib/sentry.test.ts": {
       "error: Error: Test error": 2
     },
-    "shared/modules/bridge-utils/security-alerts-api.util.test.ts": {
-      "warn: Missing token alert translation for": 1
-    },
-    "shared/modules/contract-utils.test.js": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
-    "shared/modules/metametrics.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
-    "shared/modules/selectors/index.test.ts": {
-      "Reselect: Identity function warnings": 2
-    },
-    "shared/modules/shield/shield.test.ts": {
+    "shared/lib/shield/shield.test.ts": {
       "error: Failed to get bearer token": 1
     },
-    "shared/modules/transaction.utils.test.js": {
+    "shared/lib/transaction.utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
@@ -443,9 +443,6 @@
     },
     "ui/components/app/multichain-transaction-details-modal/multichain-transaction-details-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/musd/hooks/useMerklRewards.test.ts": {
-      "React: State updates on unmounted components": 1
     },
     "ui/components/app/musd/musd-asset-cta.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -2622,7 +2619,15 @@
     "ui/pages/contacts/components/delete-contact-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/contacts/contact-details-page.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/contacts/contacts-list-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/contacts/edit-contact-page.test.tsx": {
+      "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/core/defi-referral-consent/defi-referral-consent.test.tsx": {
@@ -2741,6 +2746,7 @@
     },
     "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
+      "React: DOM nesting violations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {
@@ -2843,15 +2849,7 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings-v2/assets-tab/autodetect-nfts-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/assets-tab/currency-sub-page.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/settings-v2/assets-tab/display-nft-media-item.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/assets-tab/local-currency-item.test.tsx": {
@@ -2892,7 +2890,22 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/settings-v2/privacy-tab/privacy-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/third-party-apis-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings-v2/settings-v2.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/autodetect-nfts-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2900,6 +2913,10 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/shared/create-toggle-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

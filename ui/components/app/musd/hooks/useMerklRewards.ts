@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import type { Hex } from '@metamask/utils';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
 import { ELIGIBLE_TOKENS } from '../constants';
 import {
   fetchMerklRewardsForAsset,
@@ -69,6 +70,7 @@ export const useMerklRewards = ({
   showMerklBadge,
 }: UseMerklRewardsOptions): UseMerklRewardsReturn => {
   const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
+  const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -77,8 +79,9 @@ export const useMerklRewards = ({
     () =>
       showMerklBadge &&
       merklRewardsEnabled &&
+      !isGeoBlocked &&
       isEligibleForMerklRewards(chainId, tokenAddress),
-    [showMerklBadge, merklRewardsEnabled, chainId, tokenAddress],
+    [showMerklBadge, merklRewardsEnabled, isGeoBlocked, chainId, tokenAddress],
   );
 
   const { data: hasClaimableReward = false, refetch: refetchQuery } = useQuery({

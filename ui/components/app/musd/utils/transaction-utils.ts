@@ -19,7 +19,7 @@ import type { Hex } from '@metamask/utils';
 
 import { NetworkClientId } from '@metamask/network-controller';
 import { getMusdTokenAddressForChain } from '../constants';
-import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
 
 // ============================================================================
 // Types
