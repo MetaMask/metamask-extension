@@ -30,7 +30,8 @@ describe('ContactsListPage', () => {
     mockLocation.mockReturnValue({ state: {}, pathname: '/contacts' });
   });
 
-  const renderPage = (state = mockState) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderPage = (state: any = mockState) => {
     const store = configureStore(state);
     return renderWithProvider(<ContactsListPage />, store);
   };
@@ -77,11 +78,9 @@ describe('ContactsListPage', () => {
         addressBook: {},
       },
     };
-    const { queryByTestId } = renderPage(emptyState);
+    const { queryByTestId, getByTestId } = renderPage(emptyState);
     expect(queryByTestId('contact-list-item')).not.toBeInTheDocument();
-    expect(
-      queryByTestId('contacts-add-contact-button'),
-    ).not.toBeInTheDocument();
+    expect(getByTestId('contacts-empty-state')).toBeInTheDocument();
   });
 
   it('navigates to default route when back button is clicked', () => {
