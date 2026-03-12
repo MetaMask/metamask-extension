@@ -9,7 +9,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE, SNAPS_ROUTE } from '../../../helpers/constants/routes';
-import { getSnaps, getPermissions } from '../../../selectors';
+import { getPermissions, getSnap } from '../../../selectors';
 import {
   ButtonIcon,
   Box,
@@ -26,11 +26,8 @@ function SnapView() {
   const [searchParams] = useSearchParams();
 
   // The snap ID is in URI-encoded form in the query parameter.
-  const snapId = searchParams.get('snapId') ?? '';
-  const snaps = useSelector(getSnaps);
-  const snap = Object.entries(snaps)
-    .map(([_, snapState]) => snapState)
-    .find((snapState) => snapState.id === snapId);
+  const snapId = searchParams.get('snapId');
+  const snap = useSelector((state) => getSnap(state, snapId));
 
   useEffect(() => {
     if (!snap) {

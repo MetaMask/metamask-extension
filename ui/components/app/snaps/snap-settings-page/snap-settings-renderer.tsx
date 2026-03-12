@@ -28,7 +28,7 @@ export const SnapSettingsRenderer: FunctionComponent<
   const dispatch = useDispatch();
   const t = useI18nContext();
 
-  const snapId = searchParams.get('snapId') ?? '';
+  const snapId = searchParams.get('snapId');
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),

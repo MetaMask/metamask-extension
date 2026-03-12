@@ -50,12 +50,10 @@ describe('SettingsPage', () => {
   });
 
   it('should render correctly', () => {
-    mockRouterLocation = { pathname: '/settings/snap', search: '' };
-
     const { queryByText } = renderWithProvider(
       <Settings {...props} />,
       mockStore,
-      '/settings/snap',
+      '/settings',
     );
 
     expect(queryByText(messages.settings.message)).toBeInTheDocument();
