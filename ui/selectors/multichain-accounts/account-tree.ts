@@ -20,6 +20,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { type NetworkConfiguration } from '@metamask/network-controller';
 
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
+import { createParameterizedSelector } from '../../../shared/lib/selectors/selector-creators';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
@@ -70,7 +71,7 @@ export const getAccountTree = (
  * @param accountTree - Account tree state.
  * @returns Consolidated wallet collection with accounts metadata.
  */
-export const getWalletsWithAccounts = createDeepEqualSelector(
+export const getWalletsWithAccounts = createSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
   getOrderedConnectedAccountsForActiveTab,
@@ -154,7 +155,7 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
  * @param internalAccountsObject - The internal accounts object.
  * @returns The normalized group metadata.
  */
-export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+export const getNormalizedGroupsMetadata = createSelector(
   getAccountTree,
   getInternalAccountsObject,
   (
@@ -186,7 +187,7 @@ export const getNormalizedGroupsMetadata = createDeepEqualSelector(
  * @param address - The address of the account to find.
  * @returns The wallet ID and name for the account, or null if not found.
  */
-export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
+export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(50)(
   getWalletsWithAccounts,
   (_, address: string) => address,
   (walletsWithAccounts: ConsolidatedWallets, address: string) => {
@@ -215,7 +216,7 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
  * @param accountId - The account group ID to find.
  * @returns The multichain account group object, or undefined if not found.
  */
-export const getMultichainAccountGroupById = createDeepEqualSelector(
+export const getMultichainAccountGroupById = createParameterizedSelector(20)(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
@@ -238,7 +239,7 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
  * @param accountTree - Account tree state.
  * @returns Array of all account groups.
  */
-export const getAllAccountGroups = createDeepEqualSelector(
+export const getAllAccountGroups = createSelector(
   getAccountTree,
   (accountTree: AccountTreeState) => {
     const { wallets } = accountTree;
@@ -259,7 +260,7 @@ export const getAllAccountGroups = createDeepEqualSelector(
  * @param accountGroups - Array of all account groups.
  * @returns Array of multichain account groups.
  */
-export const getMultichainAccountGroups = createDeepEqualSelector(
+export const getMultichainAccountGroups = createSelector(
   getAllAccountGroups,
   (accountGroups: AccountGroupObject[]) => {
     return accountGroups.filter((group) =>
@@ -274,7 +275,7 @@ export const getMultichainAccountGroups = createDeepEqualSelector(
  * @param accountGroups - Array of all account groups.
  * @returns Array of non-multichain account groups.
  */
-export const getSingleAccountGroups = createDeepEqualSelector(
+export const getSingleAccountGroups = createSelector(
   getAllAccountGroups,
   (accountGroups: AccountGroupObject[]) => {
     return accountGroups.filter(
@@ -290,7 +291,7 @@ export const getSingleAccountGroups = createDeepEqualSelector(
  * @param internalAccounts - Array of internal accounts.
  * @returns Array of account groups with internal accounts instead of account IDs.
  */
-export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
+export const getAccountGroupWithInternalAccounts = createSelector(
   getAllAccountGroups,
   getInternalAccounts,
   (
@@ -322,7 +323,7 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
  * @param internalAccounts - Array of internal accounts.
  * @returns Map from multichain account group IDs to scope-to-CAIP account ID mappings.
  */
-export const getMultichainAccountsToScopesMap = createDeepEqualSelector(
+export const getMultichainAccountsToScopesMap = createSelector(
   getMultichainAccountGroups,
   getInternalAccounts,
   (
@@ -372,18 +373,15 @@ export const getMultichainAccountsToScopesMap = createDeepEqualSelector(
  * @param scope - The CAIP chain ID scope to find.
  * @returns The CAIP-25 account ID, or undefined if not found.
  */
-export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
+export const getCaip25IdByAccountGroupAndScope = createParameterizedSelector(30)(
   getMultichainAccountsToScopesMap,
-  (_, accountGroup: AccountGroupObject, scope: CaipChainId) => ({
+  (_state, accountGroup: AccountGroupObject, _scope: CaipChainId) =>
     accountGroup,
-    scope,
-  }),
+  (_state, _accountGroup: AccountGroupObject, scope: CaipChainId) => scope,
   (
     multichainAccountsToScopesMap: MultichainAccountGroupToScopesMap,
-    {
-      accountGroup,
-      scope,
-    }: { accountGroup: AccountGroupObject; scope: CaipChainId },
+    accountGroup: AccountGroupObject,
+    scope: CaipChainId,
   ) => {
     const multichainAccountGroup = multichainAccountsToScopesMap.get(
       accountGroup.id,
@@ -500,20 +498,16 @@ const getInternalAccountFromGroup = (
  * @param caipChainId - The CAIP chain ID to search for.
  * @returns The internal account object, or null if not found.
  */
-export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
+export const getInternalAccountByGroupAndCaip = createParameterizedSelector(50)(
   getAccountTree,
   getInternalAccountsObject,
-  (_, groupId: AccountGroupId, caipChainId: CaipChainId) => ({
-    groupId,
-    caipChainId,
-  }),
+  (_state, groupId: AccountGroupId) => groupId,
+  (_state, _groupId: AccountGroupId, caipChainId: CaipChainId) => caipChainId,
   (
     accountTree: AccountTreeState,
     internalAccounts: Record<AccountId, InternalAccount>,
-    {
-      groupId,
-      caipChainId,
-    }: { groupId: AccountGroupId; caipChainId: CaipChainId },
+    groupId: AccountGroupId,
+    caipChainId: CaipChainId,
   ) => {
     const { wallets } = accountTree;
     const group = getGroupByGroupId(wallets, groupId);
@@ -528,7 +522,7 @@ export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
  * @param accountTree - The account tree state.
  * @returns The selected account group, or null if not found.
  */
-export const getSelectedAccountGroup = createDeepEqualSelector(
+export const getSelectedAccountGroup = createSelector(
   getAccountTree,
   (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
 );
@@ -540,7 +534,7 @@ export const getSelectedAccountGroup = createDeepEqualSelector(
  * @returns The internal account object, or null if not found.
  */
 export const getInternalAccountBySelectedAccountGroupAndCaip =
-  createDeepEqualSelector(
+  createParameterizedSelector(20)(
     getAccountTree,
     getInternalAccountsObject,
     getSelectedAccountGroup,
@@ -675,7 +669,7 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
  * @returns An array of internal accounts spread across different network scopes.
  */
 export const getInternalAccountListSpreadByScopesByGroupId =
-  createDeepEqualSelector(
+  createParameterizedSelector(20)(
     [
       getInternalAccountsFromGroupById,
       getMultichainNetworkConfigurationsByChainId,
@@ -739,7 +733,7 @@ export const getInternalAccountListSpreadByScopesByGroupId =
  * @param groupId - The account group ID.
  * @returns The number of accounts in the group, or 0 if the group is not found.
  */
-export const getNetworkAddressCount = createDeepEqualSelector(
+export const getNetworkAddressCount = createParameterizedSelector(20)(
   [getInternalAccountListSpreadByScopesByGroupId],
   (
     accounts: {
@@ -764,7 +758,7 @@ export const getNetworkAddressCount = createDeepEqualSelector(
  * @returns The address to be used as seed for the icon generation.
  * @throws If no accounts are found in the specified group.
  */
-export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
+export const getIconSeedAddressByAccountGroupId = createParameterizedSelector(20)(
   [getInternalAccountsFromGroupById],
   (accounts: InternalAccount[]): string => {
     if (!accounts || accounts.length === 0) {
@@ -791,7 +785,7 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
  * @returns Object with address (or null if none) and scopes (list of matching scope IDs).
  */
 export const getDefaultScopeAndAddressByAccountGroupId =
-  createDeepEqualSelector(
+  createParameterizedSelector(20)(
     [
       getInternalAccountListSpreadByScopesByGroupId,
       (state: MetaMaskReduxState) => getPreferences(state).defaultAddressScope,

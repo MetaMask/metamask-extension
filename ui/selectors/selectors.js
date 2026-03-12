@@ -159,7 +159,10 @@ import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/n
 import { hasTransactionData } from '../../shared/lib/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
-import { createParameterizedShallowEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import {
+  createParameterizedSelector,
+  createParameterizedShallowEqualSelector,
+} from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   FeatureFlagNames,
@@ -763,11 +766,10 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
-export function getMetaMaskHdKeyrings(state) {
-  return state.metamask.keyrings.filter(
-    (keyring) => keyring.type === KeyringTypes.hd,
-  );
-}
+export const getMetaMaskHdKeyrings = createSelector(
+  getMetaMaskKeyrings,
+  (keyrings) => keyrings.filter((keyring) => keyring.type === KeyringTypes.hd),
+);
 
 export function getHDEntropyIndex(state) {
   const selectedAddress = getSelectedAddress(state);
@@ -3216,7 +3218,7 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
+export const getOrderedConnectedAccountsForActiveTab = createSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
   getMetaMaskAccountsOrderedWithoutBalance,
@@ -3352,7 +3354,7 @@ export const getUpdatedAndSortedAccounts = createSelector(
 );
 
 export const getUpdatedAndSortedAccountsWithCaipAccountId =
-  createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
+  createSelector(getUpdatedAndSortedAccounts, (accounts) => {
     return accounts.map((account) => {
       const { namespace, reference } = parseCaipChainId(account.scopes[0]);
       return {
@@ -3555,15 +3557,19 @@ function getPermittedEVMChains(state, origin) {
   );
 }
 
-export function getAllPermittedAccounts(state, origin) {
-  const caip25Permission = getCaip25PermissionFromSubject(
-    subjectSelector(state, origin),
-  );
-  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
-  return caip25Caveat
-    ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
-    : [];
-}
+export const getAllPermittedAccounts = createParameterizedSelector(20)(
+  (state) => state.metamask.subjects,
+  (_state, origin) => origin,
+  (subjects, origin) => {
+    const caip25Permission = getCaip25PermissionFromSubject(
+      origin ? subjects?.[origin] : undefined,
+    );
+    const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
+    return caip25Caveat
+      ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
+      : [];
+  },
+);
 
 function getAllPermittedScopes(state, origin) {
   const caip25Permission = getCaip25PermissionFromSubject(
