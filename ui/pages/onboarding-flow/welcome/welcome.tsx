@@ -86,7 +86,7 @@ const FoxAppearAnimation = lazy(
 );
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

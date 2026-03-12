@@ -1,15 +1,15 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { AvatarAccount } from '@metamask/design-system-react';
 import { BorderColor } from '../../../helpers/constants/design-system';
 
+import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
 import {
   BadgeWrapperAnchorElementShape,
   BadgeWrapperPosition,
 } from './badge-wrapper.types';
 
 import { BadgeWrapper } from './badge-wrapper';
-import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
-import { AvatarAccount } from '@metamask/design-system-react';
 
 export default {
   title: 'Components/ComponentLibrary/BadgeWrapper (deprecated)',

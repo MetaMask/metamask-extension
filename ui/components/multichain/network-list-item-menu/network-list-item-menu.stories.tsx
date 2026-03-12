@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
 import { Button } from '@metamask/design-system-react';
+import configureStore from '../../../store/store';
 import { NetworkListItemMenu } from './network-list-item-menu';
 
 const mockStore = configureStore({

@@ -50,7 +50,6 @@ type OnboardingModalProps = {
   shieldSubscriptionId?: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingModal({
   onClose,
   rewardPoints,

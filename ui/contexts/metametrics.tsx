@@ -85,9 +85,8 @@ export type UIEndTraceMethod = (request: EndTraceRequest) => void;
  * Used when passing trace context across process boundaries.
  */
 export type SerializedTraceParentContext = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   _name: TraceName;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   _id?: string;
 };
 
@@ -140,7 +139,6 @@ type MetaMetricsProviderProps = {
   children: ReactNode;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
@@ -316,7 +314,6 @@ type LegacyMetaMetricsProviderProps = {
 export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProviderProps> {
   static contextType = MetaMetricsContext;
 
-  // eslint-disable-next-line react/static-property-placement
   static childContextTypes = {
     // This has to be different than the type name for the old metametrics file
     // using the same name would result in whichever was lower in the tree to be

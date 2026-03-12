@@ -1,7 +1,7 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
@@ -193,7 +193,7 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    */
   if (err) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupPhishingExtStreams, 1000);
   }
@@ -234,7 +234,7 @@ export function redirectToPhishingWarning(): void {
 
   const querystring = new URLSearchParams({ hostname, href });
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {

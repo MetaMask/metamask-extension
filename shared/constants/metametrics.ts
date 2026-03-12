@@ -719,7 +719,7 @@ export enum MetaMetricsUserTrait {
    * Whether the device is mobile or desktop.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   DeviceType = 'device_type',
   /**
    * The operating system (normalized).

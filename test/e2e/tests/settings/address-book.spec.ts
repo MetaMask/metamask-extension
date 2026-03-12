@@ -209,6 +209,7 @@ describe('Address Book', function (this: Suite) {
       },
     );
   });
+
   it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {

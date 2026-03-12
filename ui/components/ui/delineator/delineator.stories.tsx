@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Delineator } from '.';
-import { DelineatorType } from './delineator.types';
 import { Text, IconName } from '../../component-library';
 import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { DelineatorType } from './delineator.types';
+import { Delineator } from '.';
 
 export default {
   title: 'Components/UI/Delineator',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { SelectedAssetButton } from './selected-asset-button';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getFromAccount,
   getFromChains,
@@ -9,9 +9,9 @@ import {
 import { setFromToken } from '../../../../../ducks/bridge/actions';
 import { MultichainNetworks } from '../../../../../../shared/constants/multichain/networks';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import configureStore from '../../../../../store/store';
 import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
+import { SelectedAssetButton } from './selected-asset-button';
 import { BridgeAssetPicker } from '.';
 
 const storybook = {

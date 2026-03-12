@@ -36,6 +36,7 @@ export type ReversePositionModalProps = {
  * Modal to reverse a position (Long -> Short or Short -> Long).
  * Shows Direction, Est. size, Fees and Cancel/Save.
  * Save closes the position and places an order in the opposite direction (no dedicated reversePosition API).
+ *
  * @param options0
  * @param options0.isOpen
  * @param options0.onClose

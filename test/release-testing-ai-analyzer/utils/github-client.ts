@@ -11,6 +11,7 @@ import type {
 /**
  * Parses release version from PR title (e.g., "release: 13.21.0" -> "13.21.0").
  * Returns null if not a release PR.
+ *
  * @param title
  */
 function parseReleaseVersionFromTitle(title: string): string | null {
@@ -21,6 +22,7 @@ function parseReleaseVersionFromTitle(title: string): string | null {
 /**
  * Computes the previous release branch for a given version.
  * E.g., 13.21.0 -> release/13.20.0, 13.20.1 -> release/13.20.0, 13.20.0 -> release/13.19.0
+ *
  * @param version
  */
 function getPreviousReleaseBranch(version: string): string {
@@ -94,7 +96,7 @@ type Octokit = {
       }>;
     };
   };
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   paginate: <TItem>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fn: (params: any) => Promise<{ data: TItem[] }>,

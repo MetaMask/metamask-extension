@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';

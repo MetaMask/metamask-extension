@@ -22,6 +22,7 @@ async function mockIPFSRequest(mockServer: MockttpServer) {
 
 describe('Settings', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
+
   it('Shows nft default image when IPFS toggle is off and restore image once we toggle the ipfs modal', async function () {
     await withFixtures(
       {

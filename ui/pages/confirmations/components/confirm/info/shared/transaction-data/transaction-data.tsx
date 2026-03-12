@@ -151,7 +151,7 @@ export function Container({
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
           copyText={transactionData || undefined}
         >
           <Box>{isLoading && <Preloader size={20} />}</Box>

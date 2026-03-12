@@ -1,7 +1,7 @@
 export type { FlattenedBackgroundStateProxy } from './background';
-export * from './confirm';
-export * from './metametrics';
-export * from './origin-throttling';
+export type * from './confirm';
+export type * from './metametrics';
+export type * from './origin-throttling';
 export * from './security-alerts-api';
 export * from './transaction-decode';
-export * from './sidepanel';
+export type * from './sidepanel';

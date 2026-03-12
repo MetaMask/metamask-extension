@@ -38,7 +38,7 @@ import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupp
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -151,7 +151,7 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
                 tokenAddress.toLowerCase()
               }
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
               onClick={handleTokenClick}
             />
           ))}

@@ -2,9 +2,9 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider, useSelector } from 'react-redux';
 import configureStore from '../../../../store/store';
-import ConvertTokenToNFTModal from './convert-token-to-nft-modal';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import ConvertTokenToNFTModal from './convert-token-to-nft-modal';
 
 const storeMock = configureStore({
   metamask: {

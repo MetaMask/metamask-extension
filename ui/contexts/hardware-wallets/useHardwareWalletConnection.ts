@@ -45,7 +45,7 @@ export const useHardwareWalletConnection = ({
         refs.adapterRef.current = null;
       }
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -70,7 +70,7 @@ export const useHardwareWalletConnection = ({
 
       return abortController.signal;
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -140,7 +140,7 @@ export const useHardwareWalletConnection = ({
 
       updateConnectionState(ConnectionState.connected());
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [handleDeviceEvent, handleDisconnect, updateConnectionState],
   );
 
@@ -176,7 +176,7 @@ export const useHardwareWalletConnection = ({
         }
       }
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateConnectionState],
   );
 
@@ -239,7 +239,7 @@ export const useHardwareWalletConnection = ({
 
       return connectionPromise;
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       beginConnectionAttempt,
       connectWithAdapter,
@@ -253,7 +253,7 @@ export const useHardwareWalletConnection = ({
     () => {
       refs.connectRef.current = connect;
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [connect],
   );
 
@@ -293,7 +293,7 @@ export const useHardwareWalletConnection = ({
         }
       }
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateConnectionState],
   );
 
@@ -309,7 +309,7 @@ export const useHardwareWalletConnection = ({
         updateConnectionState(ConnectionState.disconnected());
       }
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateConnectionState],
   );
 
@@ -420,7 +420,7 @@ export const useHardwareWalletConnection = ({
 
       return ensurePromise;
     },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [connect, updateConnectionState],
   );
 

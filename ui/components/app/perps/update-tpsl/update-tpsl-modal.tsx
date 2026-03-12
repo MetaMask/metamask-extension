@@ -23,6 +23,7 @@ export type UpdateTPSLModalProps = {
 /**
  * Modal for updating Take Profit / Stop Loss on a position.
  * Visually matches the Edit Margin modal flow.
+ *
  * @param options0
  * @param options0.isOpen
  * @param options0.onClose

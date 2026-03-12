@@ -1,11 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
-import SmartTransactionStatusPage from './smart-transaction-status-page';
 import { Meta, StoryObj } from '@storybook/react';
 import { SimulationData } from '@metamask/transaction-controller';
+import configureStore from '../../../store/store';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import mockState from '../../../../test/data/mock-state.json';
+import SmartTransactionStatusPage from './smart-transaction-status-page';
 
 // Mock data
 const CHAIN_ID_MOCK = '0x1';

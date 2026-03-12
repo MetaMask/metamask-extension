@@ -281,7 +281,6 @@ async function withController<ReturnValue>(
   // Setup default mocks
   const mockMessengerCall = jest.fn();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   jest.spyOn(controllerMessenger, 'call').mockImplementation(mockMessengerCall);
 
   const controller = new RewardsController({

@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import {
   Display,
@@ -8,11 +7,12 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
+import { Box } from '../box';
+import { Icon, IconName, IconSize } from '../icon';
 import { HelpText } from './help-text';
 import { HelpTextSeverity } from './help-text.types';
 
-import { Box } from '../box';
-import { Icon, IconName, IconSize } from '../icon';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/HelpText',

@@ -13,7 +13,6 @@ import { useTransactionDetails } from '../transaction-details-context';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TokenIcon } from '../../token-icon';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsPaidWithRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();

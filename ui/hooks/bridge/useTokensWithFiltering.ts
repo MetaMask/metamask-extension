@@ -86,7 +86,7 @@ const buildTokenData = (
       image:
         image ??
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
       // Only unimported native assets are processed here so hardcode balance to 0
       balance: '0',
@@ -304,7 +304,6 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
                   (nativeAsset?.icon || nativeAsset?.iconUrl || assetImageUrl),
                 accountType: token.accountType,
               };

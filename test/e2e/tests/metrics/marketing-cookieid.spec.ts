@@ -87,6 +87,7 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
+
   it('should not be send to segment when dataCollectionForMarketing is never toggled on', async function () {
     await withFixtures(
       {
@@ -133,6 +134,7 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
+
   it('should not be send to segment when participateInMetaMetrics is never toggled on ', async function () {
     await withFixtures(
       {
@@ -172,6 +174,7 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
+
   it('should updates marketingCampaignCookieId to null when dataCollectionForMarketing is toggled off ', async function () {
     await withFixtures(
       {

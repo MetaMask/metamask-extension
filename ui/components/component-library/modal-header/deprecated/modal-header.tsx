@@ -41,7 +41,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       className={classnames('mm-modal-header', className)}
       startAccessory={
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         startAccessory ||
         (onBack && (
           <ButtonIcon
@@ -55,7 +55,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       }
       endAccessory={
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         endAccessory ||
         (onClose && (
           <ButtonIcon

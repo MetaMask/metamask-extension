@@ -61,7 +61,7 @@ export enum MultichainNetworks {
   SOLANA_TESTNET = SolScope.Testnet,
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   TRON = TrxScope.Mainnet,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

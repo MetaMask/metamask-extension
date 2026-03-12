@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { getMockTypedSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../store/store';
 
-import Header from './header';
 import { ConfirmContextProvider } from '../../../context/confirm';
+import Header from './header';
 
 const store = configureStore(getMockTypedSignConfirmState());
 

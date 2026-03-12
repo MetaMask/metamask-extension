@@ -128,7 +128,7 @@ function parseAsset(
   decimals?: number,
 ) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
   const threshold = 1 / 10 ** (decimals || 8); // Smallest unit to display given the decimals.
   const displayAmount = formatWithThreshold(
     movement.amount,
@@ -137,7 +137,7 @@ function parseAsset(
     {
       minimumFractionDigits: 0,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       maximumFractionDigits: decimals || 8,
     },
   );

@@ -231,7 +231,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
 
   // Abort controller lifecycle
   useEffect(() => {
-    // eslint-disable-next-line react-compiler/react-compiler
     refs.abortControllerRef.current = new AbortController();
     return () => {
       refs.abortControllerRef.current?.abort();

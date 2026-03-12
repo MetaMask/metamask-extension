@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AccountGroupId } from '@metamask/account-api';
-import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 import mockState from '../../../../test/data/mock-state.json';
+import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 
 const mockStore = configureStore([]);
 

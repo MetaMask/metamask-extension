@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';

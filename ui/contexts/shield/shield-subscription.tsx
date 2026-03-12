@@ -154,7 +154,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     // eslint-disable-next-line no-empty-function
   >(async () => {});
 
-  // eslint-disable-next-line react-compiler/react-compiler
   evaluateCohortEligibilityRef.current = async (
     entrypointCohort: string,
   ): Promise<void> => {

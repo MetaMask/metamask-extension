@@ -2,9 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react';
 import configureStore from '../../../../store/store';
-import { SnapUICheckbox } from './snap-ui-checkbox';
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import testData from '../../../../../.storybook/test-data';
+import { SnapUICheckbox } from './snap-ui-checkbox';
 
 // Create mock store with test data (following pattern from other snap stories)
 const store = configureStore(testData);
@@ -30,7 +30,8 @@ const meta: Meta<typeof SnapUICheckbox> = {
   parameters: {
     docs: {
       description: {
-        component: 'A customizable checkbox component that supports both checkbox and toggle variants.',
+        component:
+          'A customizable checkbox component that supports both checkbox and toggle variants.',
       },
     },
   },

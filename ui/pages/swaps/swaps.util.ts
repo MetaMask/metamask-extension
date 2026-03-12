@@ -421,7 +421,7 @@ export function getRenderableNetworkFeesForQuote({
     tradeGasFeeTotalHex,
     approveGasFeeTotalHex,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     multiLayerL1FeeTotal || '0x0',
   );
 
@@ -462,7 +462,7 @@ export function getRenderableNetworkFeesForQuote({
 
   const chainCurrencySymbolToUse =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {

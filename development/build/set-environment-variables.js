@@ -325,7 +325,6 @@ function getPhishingWarningPageUrl({ variables, testing }) {
 
   let phishingWarningPageUrlObject;
   try {
-    // eslint-disable-next-line no-new
     phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
   } catch (error) {
     throw new Error(

@@ -10,10 +10,10 @@ import {
   AccountGroupType,
   AccountGroupId,
 } from '@metamask/account-api';
-import { MultichainAccountsConnectPage } from './multichain-accounts-connect-page';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { createMockMultichainAccountsState } from '../../../selectors/multichain-accounts/test-utils';
+import { MultichainAccountsConnectPage } from './multichain-accounts-connect-page';
 
 const mockTargetSubjectMetadata = {
   extensionId: null,

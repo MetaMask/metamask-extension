@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { AssetPickerModal } from './asset-picker-modal';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { AssetPickerModal } from './asset-picker-modal';
 import type { Asset } from './types';
 import { ERC20Asset } from './types';
 

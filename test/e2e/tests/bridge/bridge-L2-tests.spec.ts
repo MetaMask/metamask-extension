@@ -5,7 +5,8 @@ import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
-  this.timeout(120000); // Needs a higher timeout as it's a longer tests
+  this.timeout(120000);
+  // Needs a higher timeout as it's a longer tests
   it('should execute bridge transactions on L2 networks', async function () {
     await withFixtures(
       getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),

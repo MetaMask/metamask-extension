@@ -9,8 +9,8 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
 import { ConfirmContextProvider } from '../../../context/confirm';
 
-import { ConfirmNav } from './nav';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { ConfirmNav } from './nav';
 
 const store = configureStore(
   getMockConfirmState({

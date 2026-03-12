@@ -1,9 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../../store/store';
-import { SimulationDetails } from './simulation-details';
-import mockState from '../../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
 import {
   SimulationErrorCode,
@@ -11,8 +8,11 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
+import mockState from '../../../../../test/data/mock-state.json';
+import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { SimulationDetails } from './simulation-details';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,

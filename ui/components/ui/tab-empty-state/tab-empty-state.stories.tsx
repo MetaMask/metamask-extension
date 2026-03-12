@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { TabEmptyState } from './tab-empty-state';
 import { useTheme } from '../../../hooks/useTheme';
+import { TabEmptyState } from './tab-empty-state';
 
 // Theme-aware image component for perps trading
 const TradingIcon = () => {

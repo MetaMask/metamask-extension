@@ -24,7 +24,7 @@ globalThis.stateHooks = globalThis.stateHooks || {};
 globalThis.stateHooks.lazyListener = lazyListener;
 
 // Represents if importAllScripts has been run
-// eslint-disable-next-line
+
 let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 

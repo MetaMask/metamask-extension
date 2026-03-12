@@ -5,8 +5,8 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarIcon } from './avatar-icon';
 import { IconName } from '../icon';
+import { AvatarIcon } from './avatar-icon';
 import { AvatarIconSize } from './avatar-icon.types';
 
 export default {

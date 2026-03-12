@@ -465,7 +465,7 @@ describe('Multichain API', function () {
            */
           OLD_SCOPES.forEach(
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
             async (scope) =>
               await driver.clickElement(`input[name="${scope}"]`),
           );

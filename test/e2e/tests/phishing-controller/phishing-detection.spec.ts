@@ -464,6 +464,7 @@ describe('Phishing Detection', function (this: Suite) {
       server.on('error', reject);
       await promise;
     });
+
     after('Shut down redirect server', async function () {
       if (server) {
         const { promise, resolve } = createDeferredPromise();
@@ -474,6 +475,7 @@ describe('Phishing Detection', function (this: Suite) {
         await promise;
       }
     });
+
     before('Set up fixtures', async function () {
       const { promise, resolve } = createDeferredPromise<Driver>();
       fixturePromise = withFixtures(
@@ -502,13 +504,16 @@ describe('Phishing Detection', function (this: Suite) {
       // we could remove this
       await loginWithBalanceValidation(driver);
     });
+
     after('Shut down fixtures', async function () {
       deferredTestSuite.resolve(); // let the fixtures know tests are complete
       await fixturePromise; // wait for fixtures to shutdown
     });
+
     afterEach('Ensure listeners are torn down between tests', function () {
       server?.removeAllListeners('request');
     });
+
     afterEach('Reset current window to about:blank', async function () {
       await driver?.openNewURL(`about:blank`);
     });

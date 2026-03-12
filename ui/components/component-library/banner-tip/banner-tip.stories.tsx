@@ -4,12 +4,12 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { BannerTip } from './banner-tip';
-import { BannerTipLogoType } from './banner-tip.types';
 import { Box } from '../box';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { Icon, IconName } from '../icon';
 import { ButtonPrimary } from '../button-primary';
+import { BannerTipLogoType } from './banner-tip.types';
+import { BannerTip } from './banner-tip';
 import README from './README.mdx';
 
 export default {

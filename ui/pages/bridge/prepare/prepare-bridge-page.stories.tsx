@@ -14,7 +14,7 @@ import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import configureStore from '../../../store/store';
-import CrossChainSwap from '../index';
+import CrossChainSwap from '..';
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',
@@ -91,7 +91,7 @@ DefaultStory.decorators = [
             },
             marketData: {
               '0x1': {
-                ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   price: 0.00039762010419237126,
                   contractPercentChange1d: 0.004,
                   priceChange1d: 0.00004,
@@ -130,7 +130,7 @@ LoadingStory.decorators = [
             },
             marketData: {
               '0x1': {
-                ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   price: 0.00039762010419237126,
                   contractPercentChange1d: 0.004,
                   priceChange1d: 0.00004,
@@ -181,7 +181,7 @@ NoQuotesStory.decorators = [
             },
             marketData: {
               '0x1': {
-                ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   price: 0.00039762010419237126,
                   contractPercentChange1d: 0.004,
                   priceChange1d: 0.00004,
@@ -223,7 +223,7 @@ QuotesFetchedStory.decorators = [
               },
               marketData: {
                 '0x1': {
-                  ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                  '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                     price: 0.00039762010419237126,
                     contractPercentChange1d: 0.004,
                     priceChange1d: 0.00004,
@@ -299,7 +299,7 @@ AlertsPresentStory.decorators = [
               },
               marketData: {
                 '0x1': {
-                  ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                  '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                     price: 0.00039762010419237126,
                     contractPercentChange1d: 0.004,
                     priceChange1d: 0.00004,

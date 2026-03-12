@@ -51,8 +51,6 @@ export const getAddressBookByNetwork = createDeepEqualSelector(
   },
 );
 
-/* eslint-disable jsdoc/require-param */
-/* eslint-disable jsdoc/check-param-names */
 /**
  * Get an address book entry for an address on a network.
  *
@@ -61,8 +59,7 @@ export const getAddressBookByNetwork = createDeepEqualSelector(
  * @param chainId - The chain ID to get the entry for.
  * @returns The address book entry for the address on the network.
  */
-/* eslint-enable jsdoc/require-param */
-/* eslint-enable jsdoc/check-param-names */
+
 export const getAddressBookEntryByNetwork = createDeepEqualSelector(
   [
     (

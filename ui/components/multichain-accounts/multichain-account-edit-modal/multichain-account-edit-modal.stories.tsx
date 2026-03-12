@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StoryObj, Meta } from '@storybook/react';
+import { AccountGroupId } from '@metamask/account-api';
 import { ButtonPrimary } from '../../component-library';
 import { MultichainAccountEditModal } from './multichain-account-edit-modal';
-import { AccountGroupId } from '@metamask/account-api';
 
 const accountGroupIds: AccountGroupId[] = [
   'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',

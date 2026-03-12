@@ -8,8 +8,8 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import { Checkbox } from './checkbox';
 import { Box } from '../box';
+import { Checkbox } from './checkbox';
 
 export default {
   title: 'Components/ComponentLibrary/Checkbox (deprecated)',

@@ -5,14 +5,14 @@ import { normalizeTestPath, XML } from './shared/utils';
 /**
  * Result of extracting test paths from previous run results.
  */
-export interface ExtractedTestResults {
+export type ExtractedTestResults = {
   /** Test files that passed (all suites passed) */
   passed: string[];
   /** Test files that failed (at least one suite failed) */
   failed: string[];
   /** All test files that were executed */
   executed: string[];
-}
+};
 
 /**
  * Extracts the paths of test files that passed and failed in a previous run.

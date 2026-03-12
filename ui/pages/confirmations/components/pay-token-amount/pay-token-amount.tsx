@@ -25,7 +25,6 @@ export type PayTokenAmountProps = {
   disabled?: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const locale = useSelector(getCurrentLocale) ?? 'en';
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -94,7 +93,6 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function PayTokenAmountSkeleton() {
   return (
     <Box data-testid="pay-token-amount-skeleton">

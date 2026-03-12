@@ -43,7 +43,6 @@ function setEnv(overrides: Record<string, string | undefined> = {}): void {
 async function flushPromises(): Promise<void> {
   // Several passes to let chained promises resolve
   for (let i = 0; i < 5; i++) {
-    // eslint-disable-next-line no-await-in-loop
     await new Promise<void>((resolve) => setImmediate(resolve));
   }
 }

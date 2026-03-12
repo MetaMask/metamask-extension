@@ -274,7 +274,6 @@ export const AccountMenu = ({
     [actionMode, t],
   );
 
-  // eslint-disable-next-line no-empty-function
   let onBack;
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
@@ -413,7 +412,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={async () => {
                     await handleMultichainSnapAccountCreation(
                       solanaWalletSnapClient,
@@ -437,7 +436,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={async () => {
                     return await handleMultichainSnapAccountCreation(
                       bitcoinWalletSnapClient,
@@ -462,7 +461,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={async () => {
                     return await handleMultichainSnapAccountCreation(
                       tronWalletSnapClient,
@@ -617,7 +616,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Eye}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={handleAddWatchAccount}
                   data-testid="multichain-account-menu-popover-add-watch-only-account"
                 >

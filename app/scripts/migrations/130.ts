@@ -9,7 +9,6 @@ export const version = 130;
 /**
  * This migration adds a tokenSortConfig to the user's preferences
  *
- *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
  * @param originalVersionedData.meta.version - The current state version.

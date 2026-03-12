@@ -116,6 +116,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       );
     });
   });
+
   describe('Rename', function () {
     it('renames account successfully', async function () {
       await withMultichainAccountsDesignEnabled(

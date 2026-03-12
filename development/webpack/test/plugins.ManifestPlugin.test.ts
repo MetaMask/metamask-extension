@@ -180,7 +180,7 @@ describe('ManifestPlugin', () => {
             if (baseManifest.manifest_version === 3) {
               // Extend expected resources for manifest version 3
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
               expectedWar = baseManifest.web_accessible_resources || [];
               expectedWar = [
                 {
@@ -195,7 +195,7 @@ describe('ManifestPlugin', () => {
               ];
             } else {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
               expectedWar = baseManifest.web_accessible_resources || [];
               // Keep or extend expected resources for manifest version 2
               expectedWar = [
@@ -205,13 +205,13 @@ describe('ManifestPlugin', () => {
             }
           } else {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             expectedWar = baseManifest.web_accessible_resources || [];
           }
 
           assert.deepStrictEqual(
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             json.web_accessible_resources || [],
             expectedWar,
             "should have the correct 'web_accessible_resources' in the manifest",
@@ -288,7 +288,7 @@ describe('ManifestPlugin', () => {
       function runTest(baseManifest: Combination<typeof manifestMatrix>) {
         const manifest = baseManifest as unknown as chrome.runtime.Manifest;
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         const hasTabsPermission = (manifest.permissions || []).includes('tabs');
         const transform = transformManifest(args, false);
 
@@ -313,7 +313,7 @@ describe('ManifestPlugin', () => {
               assert.deepStrictEqual(
                 transformed.permissions,
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
                 [...(manifest.permissions || []), 'tabs'],
                 "manifest should have 'tabs' permission",
               );

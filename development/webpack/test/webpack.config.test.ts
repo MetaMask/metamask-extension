@@ -129,7 +129,7 @@ ${Object.entries(env)
     );
 
     const manifestPlugin = options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
+      (plugin) => plugin?.constructor.name === 'ManifestPlugin',
     ) as ManifestPlugin<boolean>;
     assert(manifestPlugin, 'Manifest plugin should be present');
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, [
@@ -169,7 +169,7 @@ ${Object.entries(env)
     assert.strictEqual(manifestOpts.zipOptions, undefined);
 
     const progressPlugin = options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
+      (plugin) => plugin?.constructor.name === 'ProgressPlugin',
     );
     assert(progressPlugin, 'Progress plugin should present');
   });
@@ -222,7 +222,7 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.optimization.usedExports, true);
 
     const manifestPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
+      (plugin) => plugin?.constructor.name === 'ManifestPlugin',
     ) as WebpackPluginInstance;
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
@@ -231,7 +231,7 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
 
     const progressPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
+      (plugin) => plugin?.constructor.name === 'ProgressPlugin',
     );
     assert.strictEqual(
       progressPlugin,
@@ -286,7 +286,7 @@ ${Object.entries(env)
     delete config.watch;
     const instance = webpack(config);
     const reactRefreshPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ReactRefreshPlugin',
+      (plugin) => plugin?.constructor.name === 'ReactRefreshPlugin',
     );
     assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
   });

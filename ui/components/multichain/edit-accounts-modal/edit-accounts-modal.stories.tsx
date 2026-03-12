@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { EditAccountsModal } from '.';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
+import { EditAccountsModal } from '.';
 
 const store = configureStore(testData);
 

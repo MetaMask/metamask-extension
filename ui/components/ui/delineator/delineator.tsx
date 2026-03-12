@@ -150,7 +150,7 @@ export const Delineator: React.FC<DelineatorProps> = ({
   contentBoxProps,
 }) => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
   const [isExpanded, setIsExpanded] = useState(isExpandedProp || false);
   const shouldShowContent = !isCollapsible || (isCollapsible && isExpanded);
 

@@ -1,5 +1,8 @@
 import { execSync } from 'child_process';
 
+// eslint-disable-next-line import/first
+import { getGitCommitHash, getGitBranch } from './send-to-sentry-utils';
+
 // Mock child_process before importing implementation
 jest.mock('child_process', () => ({
   execSync: jest.fn((cmd: string) => {
@@ -12,9 +15,6 @@ jest.mock('child_process', () => ({
     throw new Error('Unknown command');
   }),
 }));
-
-// eslint-disable-next-line import/first
-import { getGitCommitHash, getGitBranch } from './send-to-sentry-utils';
 
 describe('send-to-sentry', () => {
   beforeEach(() => {

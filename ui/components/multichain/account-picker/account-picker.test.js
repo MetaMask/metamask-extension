@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import 'jest-canvas-mock';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';

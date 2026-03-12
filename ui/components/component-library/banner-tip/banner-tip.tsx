@@ -35,7 +35,7 @@ export const BannerTip: BannerTipComponent = React.forwardRef(
       ref={ref}
       startAccessory={
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         startAccessory || (
           <Box
             display={Display.Flex}

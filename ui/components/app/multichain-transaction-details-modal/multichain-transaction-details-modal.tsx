@@ -98,7 +98,7 @@ const AccountRow = ({ label, address, chain }: Props) => {
             size={IconSize.Sm}
             color={IconColor.primaryDefault}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
             onClick={() =>
               navigator.clipboard.writeText(
                 getAddressUrl(address as string, chain),
@@ -117,7 +117,7 @@ export type MultichainTransactionDetailsModalProps = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
@@ -296,7 +296,7 @@ export function MultichainTransactionDetailsModal({
                     size={IconSize.Sm}
                     color={IconColor.primaryDefault}
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                     onClick={() =>
                       navigator.clipboard.writeText(
                         getTransactionUrl(id, chain),

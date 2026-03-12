@@ -52,6 +52,7 @@ type GatorPermissionsMap = Partial<
 /**
  * Maps permission type from PermissionInfo to the GatorPermissionsMap key.
  * Custom permissions use 'other' key.
+ *
  * @param permissionType
  */
 function getMapKeyForPermissionType(
@@ -70,6 +71,7 @@ function getMapKeyForPermissionType(
 /**
  * Converts the flat grantedPermissions array into the legacy map structure.
  * Enables backward compatibility with selectors and hooks expecting GatorPermissionsMap.
+ *
  * @param permissions
  */
 function grantedPermissionsToMap(
@@ -148,6 +150,7 @@ const getGrantedPermissions = createSelector(
 /**
  * Filter permissions by token-transfer type, optionally by siteOrigin and/or chainId.
  * Shared utility for selectors that need token transfer permissions.
+ *
  * @param permissions
  * @param options
  * @param options.siteOrigin
@@ -186,6 +189,7 @@ function filterTokenTransferPermissions(
 
 /**
  * Count permissions per chain and return as PermissionsGroupMetaData array.
+ *
  * @param permissions
  */
 function countPermissionsByChain(

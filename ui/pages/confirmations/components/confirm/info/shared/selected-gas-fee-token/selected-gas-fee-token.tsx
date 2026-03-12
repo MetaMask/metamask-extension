@@ -26,7 +26,7 @@ import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupp
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

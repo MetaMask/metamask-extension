@@ -94,14 +94,13 @@ import OnboardingDownloadApp from './download-app/download-app';
 // to import Flask-only code and fail.
 const ExperimentalArea = mmLazy(
   // eslint-disable-next-line import/extensions, import/no-useless-path-segments -- these are needed for mmLazy
-  () => import('../../components/app/flask/experimental-area/index.js'),
+  () => import('../../components/app/flask/experimental-area'),
 ) as React.LazyExoticComponent<React.ComponentType<{ redirectTo: string }>>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>
   toRelativeRoutePath(path, ONBOARDING_ROUTE);
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);

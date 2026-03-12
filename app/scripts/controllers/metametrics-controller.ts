@@ -556,7 +556,7 @@ export default class MetaMetricsController extends BaseController<
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       Object.values(state.segmentApiCalls || {}).forEach(
         ({ eventType, payload }) => {
           try {
@@ -574,7 +574,6 @@ export default class MetaMetricsController extends BaseController<
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
-      /* eslint-disable no-undef */
       this.#extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
@@ -611,7 +610,7 @@ export default class MetaMetricsController extends BaseController<
   #getCurrentChainId(networkClientId?: NetworkClientId): Hex {
     const selectedNetworkClientId =
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       networkClientId ||
       this.messenger.call('NetworkController:getState').selectedNetworkClientId;
     const {
@@ -908,7 +907,7 @@ export default class MetaMetricsController extends BaseController<
     if (this.#extension && this.#extension.runtime) {
       this.#extension.runtime.setUninstallURL(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
@@ -1392,7 +1391,7 @@ export default class MetaMetricsController extends BaseController<
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
       ...(storageKindTrait
         ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
@@ -1656,7 +1655,6 @@ export default class MetaMetricsController extends BaseController<
       matomoEvent,
       flushImmediately,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     } = options || {};
     let idType: 'userId' | 'anonymousId' = 'userId';
     let idValue = this.state.metaMetricsId;
@@ -1766,7 +1764,7 @@ export default class MetaMetricsController extends BaseController<
     }
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     const messageId = payload.messageId || generateRandomId();
     let timestamp = new Date();
     if (payload.timestamp) {

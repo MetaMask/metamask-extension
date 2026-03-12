@@ -20,6 +20,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
     toEvmCaipAccountId(ACCOUNT_1),
     toEvmCaipAccountId(ACCOUNT_2),
   ];
+
   it('Should return empty object from `wallet_getSession` call', async function () {
     await withFixtures(
       {

@@ -41,7 +41,7 @@ async function runImportScripts() {
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
-// eslint-disable-next-line no-undef
+
 self.addEventListener('install', runImportScripts);
 
 // listen for connection events from other contexts, and respond to liveness
@@ -80,7 +80,7 @@ chrome.runtime.onConnect.addListener((port) => {
  * is 'activated'.
  */
 // @ts-expect-error - typescript doesn't know about this
-// eslint-disable-next-line no-undef
+
 if (self.serviceWorker.state === 'activated') {
   runImportScripts();
 }

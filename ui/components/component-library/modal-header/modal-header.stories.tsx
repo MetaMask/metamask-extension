@@ -1,6 +1,6 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
+import { AvatarAccount } from '@metamask/design-system-react';
 import {
   TextVariant,
   TextAlign,
@@ -10,10 +10,10 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { ModalHeader } from './modal-header';
 import { Text } from '../text';
-import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
+import { ModalHeader } from './modal-header';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/ModalHeader',

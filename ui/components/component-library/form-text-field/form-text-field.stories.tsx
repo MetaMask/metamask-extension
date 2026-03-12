@@ -1,7 +1,6 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
-import README from './README.mdx';
 
 import {
   Display,
@@ -12,8 +11,6 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import { FormTextField } from './form-text-field';
-
 import { Text } from '../text';
 import { Box } from '../box';
 import { ButtonSecondary } from '../button-secondary';
@@ -23,6 +20,8 @@ import { Label } from '../label';
 import { ButtonLink } from '../button-link';
 import { HelpText } from '../help-text';
 import { TextFieldType } from '../text-field';
+import { FormTextField } from './form-text-field';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/FormTextField',

@@ -77,7 +77,7 @@ describe('Wallet Created Events - Imported Account', function () {
           [
             (req: {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
+
               properties: {
                 category: string;
                 locale: string;
@@ -101,7 +101,7 @@ describe('Wallet Created Events - Imported Account', function () {
           [
             (req: {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
+
               properties: {
                 category: string;
                 locale: string;

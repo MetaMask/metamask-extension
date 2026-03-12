@@ -13,11 +13,11 @@ const switchToPopupTab = (event) => {
           currentWindow: true,
           active: true,
       }, (current) => {
-          if (current.length < 0) return;
+          if (current.length < 0) {return;}
           chrome.tabs.query({
               index: current[0].index - 1
           }, popup => {
-              if (popup.length < 0) return;
+              if (popup.length < 0) {return;}
               chrome.tabs.update(popup[0].id, { active: true });
           })
           chrome.tabs.remove(current[0].id);
@@ -31,7 +31,7 @@ const switchToPopupTab = (event) => {
   chrome.tabs.query({
       url: "*://connect.trezor.io/*/popup.html"
   }, (tabs) => {
-      if (tabs.length < 0) return;
+      if (tabs.length < 0) {return;}
       chrome.tabs.update(tabs[0].id, { active: true });
   });
 }

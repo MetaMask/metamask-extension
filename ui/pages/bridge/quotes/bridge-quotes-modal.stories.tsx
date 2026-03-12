@@ -1,10 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
-import { BridgeQuotesModal } from './bridge-quotes-modal';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { QuoteResponse, SortOrder } from '@metamask/bridge-controller';
+import configureStore from '../../../store/store';
+import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 const storybook = {
   title: 'Pages/Bridge/BridgeQuotesModal',
@@ -65,11 +65,11 @@ DefaultStory.decorators = [
           },
           metamaskStateOverrides: {
             currencyRates: {
-              ETH: { conversionRate: 2514.5 }, //1
+              ETH: { conversionRate: 2514.5 }, // 1
             },
             marketData: {
               '0x1': {
-                ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   price: 0.00039762010419237126,
                   contractPercentChange1d: 0.004,
                   priceChange1d: 0.00004,
@@ -105,7 +105,7 @@ PositiveArbitrage.decorators = [
             },
             marketData: {
               '0x1': {
-                ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   price: 0.00039762010419237126,
                   contractPercentChange1d: 0.004,
                   priceChange1d: 0.00004,

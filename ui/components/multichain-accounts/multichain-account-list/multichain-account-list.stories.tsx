@@ -1,14 +1,14 @@
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
+import { AccountGroupId } from '@metamask/account-api';
+import React from 'react';
+import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
+import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
 import {
   MultichainAccountList,
   type MultichainAccountListProps,
 } from './multichain-account-list';
-import { AccountGroupId } from '@metamask/account-api';
-import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
-import React from 'react';
-import mockState from '../../../../test/data/mock-state.json';
-import configureStore from '../../../store/store';
 
 const mockSelectedAccountGroup = mockState.metamask.accountTree
   .selectedAccountGroup as AccountGroupId;

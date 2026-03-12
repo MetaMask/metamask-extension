@@ -30,6 +30,7 @@ import type { BenchmarkResults, ThresholdViolation } from './utils/types';
 /**
  * Startup benchmarks handle their own iteration internally (browserLoads x pageLoads).
  * All other benchmarks need external iteration + aggregation via runBenchmarkWithIterations.
+ *
  * @param filePath
  */
 function supportsIterations(filePath: string): boolean {

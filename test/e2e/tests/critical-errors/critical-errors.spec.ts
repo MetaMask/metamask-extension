@@ -69,6 +69,7 @@ describe('Critical errors', function (this: Suite) {
       },
     );
   });
+
   it('does NOT show critical error screen when background is a "little" slow to respond', async function () {
     // we can skip this test in MV2, since we don't need lazy listeners there
     // as they are installed synchronously in `background.js` anyway.

@@ -87,6 +87,7 @@ describe('Dapp viewed Event', function () {
     }
   });
   const validFakeMetricsId = 'fake-metrics-fd20';
+
   it('is not sent when metametrics ID is not valid', async function () {
     async function mockSegment(mockServer: Mockttp) {
       return [await mockedDappViewedEndpointFirstVisit(mockServer)];

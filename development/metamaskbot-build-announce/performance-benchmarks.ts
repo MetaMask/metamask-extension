@@ -94,6 +94,7 @@ export type FetchBenchmarkResult = {
  * a new target only requires updating those constants.
  *
  * Reports any preset/platform/buildType combos that returned no data.
+ *
  * @param hostUrl - Base URL for CI artifacts.
  * @param presets - Preset names to fetch (e.g. INTERACTION_PRESETS values).
  * @returns Entries and a list of missing preset descriptions.

@@ -28,6 +28,7 @@ import { calculatePositionSize } from '../../order-entry.mocks';
  *
  * Compact layout: "Size" label + "Available to trade XX USDC", two side-by-side
  * inputs (USD and token), slider with percentage pill. No preset buttons.
+ *
  * @param options0
  * @param options0.amount
  * @param options0.onAmountChange

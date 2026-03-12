@@ -1,6 +1,6 @@
 import React from 'react';
-import README from './README.mdx';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { AvatarAccount } from '@metamask/design-system-react';
 import {
   TextVariant,
   TextAlign,
@@ -12,9 +12,9 @@ import {
 
 import { Text } from '../text';
 
-import { PopoverHeader } from './popover-header';
-import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
+import { PopoverHeader } from './popover-header';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/PopoverHeader',

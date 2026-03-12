@@ -2,11 +2,11 @@ import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
-import Home from './home.component';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
+import Home from './home.component';
 
 // Create store with mock state
 const store = configureStore({

@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 
@@ -8,6 +7,7 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
+import README from './README.mdx';
 import { TextareaResize } from './textarea.types';
 import { Textarea } from './textarea';
 

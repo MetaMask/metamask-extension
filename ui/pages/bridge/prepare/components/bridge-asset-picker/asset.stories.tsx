@@ -1,12 +1,12 @@
 import React from 'react';
 import { Provider, useSelector } from 'react-redux';
-import { BridgeAsset } from './asset';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { getFromToken } from '../../../../../ducks/bridge/selectors';
 import { MultichainNetworks } from '../../../../../../shared/constants/multichain/networks';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import configureStore from '../../../../../store/store';
 import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
+import { BridgeAsset } from './asset';
 
 const storybook = {
   title: 'Pages/Bridge/AssetPicker',

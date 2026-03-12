@@ -5,11 +5,11 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { AssetPickerModalNetwork } from './asset-picker-modal-network';
-import { Meta, StoryFn } from '@storybook/react';
 import { Button } from '../../../component-library';
+import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 const networks: NetworkConfiguration[] = [
   {

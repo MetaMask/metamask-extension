@@ -1,9 +1,9 @@
 import React from 'react';
-import testData from '../../../../.storybook/test-data';
 import {
   AvatarAccount,
   AvatarAccountSize,
 } from '@metamask/design-system-react';
+import testData from '../../../../.storybook/test-data';
 import { Toast } from '.';
 
 const [chaosAccount] = Object.values(

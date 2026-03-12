@@ -40,7 +40,6 @@ import { useMultichainSelector } from './useMultichainSelector';
  * on whether the user needs to check showNativeTokenAsMainBalance setting, as well as the significant number of decimals
  * to display based on the currency
  *
- *
  * @param {"PRIMARY" | "SECONDARY"} type - what display type is being rendered
  * @param {UseUserPreferencedCurrencyOptions} opts - options to override default values
  * @param {string} chainId - chainId to use

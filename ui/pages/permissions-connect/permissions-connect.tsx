@@ -193,7 +193,6 @@ function getNonEvmRequestedCaipChainIds(
   return getRequestedCaipChainIds(permissions, false);
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function PermissionsConnect() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

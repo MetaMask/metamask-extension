@@ -139,6 +139,7 @@ describe('Wallet State', function () {
       },
     );
   });
+
   it('export default fixture', async function () {
     const networkName = 'Localhost 8545';
     const networkUrl = 'http://localhost:8545';

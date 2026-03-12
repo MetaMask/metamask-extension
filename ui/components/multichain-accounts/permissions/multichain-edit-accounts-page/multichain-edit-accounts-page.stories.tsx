@@ -8,10 +8,10 @@ import {
 } from '@metamask/account-api';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
-import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 
 export default {
   title: 'Components/MultichainAccounts/Permissions/MultichainEditAccountsPage',

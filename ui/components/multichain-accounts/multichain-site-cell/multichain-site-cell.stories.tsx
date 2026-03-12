@@ -2,12 +2,12 @@ import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { AccountGroupType } from '@metamask/account-api';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { MultichainSiteCell } from './multichain-site-cell';
 import type { AccountGroupId } from '@metamask/account-api';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { CaipChainId, Hex } from '@metamask/utils';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
+import { MultichainSiteCell } from './multichain-site-cell';
 
 // Helper function to create mock network configurations
 const createMockNetwork = (

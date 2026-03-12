@@ -42,7 +42,6 @@ const QrCodeView = ({ data }: { data: string }) => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsQRCode() {
   const socialType = useSelector(getSocialLoginType);
   const t = useI18nContext();

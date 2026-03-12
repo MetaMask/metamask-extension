@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import * as fs from 'fs/promises';
@@ -1506,7 +1505,7 @@ export async function mockGetAccountInfoDevnet(mockServer: Mockttp) {
           executable: false,
           lamports: 1124837338893,
           owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+
           rentEpoch: 18446744073709551615,
           space: 82,
         },
@@ -1824,7 +1823,7 @@ export async function mockGetTokenAccountsUSDCOnly(
     .thenCallback(async (req) => {
       const body = (await req.body.getText()) ?? '';
       const isSplToken = body.includes(SOLANA_TOKEN_PROGRAM);
-      const shouldReturn = !signatureHolder || signatureHolder.value !== '';
+      const shouldReturn = signatureHolder?.value !== '';
       return {
         statusCode: 200,
         json: {

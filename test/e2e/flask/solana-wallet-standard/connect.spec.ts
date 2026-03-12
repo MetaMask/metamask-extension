@@ -202,6 +202,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
   });
+
   describe('Switch account', function () {
     // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests

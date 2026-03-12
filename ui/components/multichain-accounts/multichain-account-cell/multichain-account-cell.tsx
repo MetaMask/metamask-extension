@@ -79,6 +79,7 @@ const AccountCellAvatar = ({
 
 /**
  * Renders default address + copy only when needed
+ *
  * @param options0
  * @param options0.accountId
  */

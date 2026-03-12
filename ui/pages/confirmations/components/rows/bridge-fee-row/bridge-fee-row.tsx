@@ -24,7 +24,6 @@ export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BridgeFeeRow({
   variant = ConfirmInfoRowSize.Default,
 }: BridgeFeeRowProps) {

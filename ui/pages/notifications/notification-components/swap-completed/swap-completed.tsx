@@ -216,7 +216,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
               backgroundColor: BackgroundColor.infoMuted,
             }}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             label={t('notificationItemRate') || ''}
             detail={`1 ${notification.payload.data.token_out.symbol} ≈ ${(
               1 / parseFloat(notification.payload.data.rate)

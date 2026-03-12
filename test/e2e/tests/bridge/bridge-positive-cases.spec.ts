@@ -11,7 +11,8 @@ import {
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
-  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+  this.timeout(160000);
+  // This test is very long, so we need an unusually high timeout
   it('Execute multiple bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(

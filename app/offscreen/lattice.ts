@@ -87,7 +87,6 @@ export default function init() {
       );
     });
 
-    // eslint-disable-next-line consistent-return
     return true;
   });
 }

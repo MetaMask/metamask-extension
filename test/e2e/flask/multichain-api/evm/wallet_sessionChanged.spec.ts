@@ -32,6 +32,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
     toEvmCaipAccountId(ACCOUNT_2),
   ];
   const UPDATED_ACCOUNT = ACCOUNT_2;
+
   it('should receive a `wallet_sessionChanged` event with the full new session scopes', async function () {
     await withFixtures(
       {

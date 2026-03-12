@@ -109,10 +109,8 @@ const bridgeSlice = createSlice({
       state.isSrcAssetPickerOpen = false;
       // Set toToken to previous fromToken if new fromToken is the same as the current toToken
       if (
-        state.toToken?.assetId &&
-        newFromToken?.assetId &&
-        newFromToken.assetId.toLowerCase() ===
-          state.toToken.assetId.toLowerCase()
+        newFromToken?.assetId?.toLowerCase() ===
+        state.toToken?.assetId?.toLowerCase()
       ) {
         state.toToken = currentFromToken;
       }

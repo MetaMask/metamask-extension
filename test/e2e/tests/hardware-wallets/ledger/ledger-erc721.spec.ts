@@ -15,6 +15,7 @@ import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
 describe('Ledger Hardware', function (this: Suite) {
   const erc721 = SMART_CONTRACTS.NFTS;
+
   it('deploys an ERC-721 token', async function () {
     await withFixtures(
       {
@@ -50,6 +51,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
+
   it('mints an ERC-721 token', async function () {
     await withFixtures(
       {
@@ -114,6 +116,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
+
   it('approves an ERC-721 token', async function () {
     await withFixtures(
       {
@@ -175,6 +178,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
+
   it('sets approval for all an ERC-721 token', async function () {
     await withFixtures(
       {

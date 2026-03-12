@@ -85,6 +85,7 @@ export const useBridgeNavigation = () => {
 
   /**
    * Navigates to the current route and clears the location state.
+   *
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
@@ -103,6 +104,7 @@ export const useBridgeNavigation = () => {
 
   /**
    * Clears the search params for the given parameters.
+   *
    * @param paramsToRemove - The parameters to clear.
    */
   const resetSearchParams = useCallback(
@@ -129,6 +131,7 @@ export const useBridgeNavigation = () => {
 
   /**
    * Navigates to the bridge page.
+   *
    * @param token - The token to set after loading the bridge page.
    * @param isEntrypoint - Whether the bridge page is being loaded for the first time.
    * @param search - The search params for deep-link input parameters.
@@ -173,6 +176,7 @@ export const useBridgeNavigation = () => {
 
   /**
    * Navigates to the asset page for the given asset.
+   *
    * @param asset - The asset to display on the asset page.
    */
   const navigateToAssetPage = useCallback(

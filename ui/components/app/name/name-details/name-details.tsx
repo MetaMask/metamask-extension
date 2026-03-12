@@ -206,7 +206,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
     update();
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
     updateInterval.current = setInterval(update, UPDATE_DELAY);
     return reset;
   }, [value, type, variation, dispatch]);
@@ -215,7 +215,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function NameDetails({
   onClose,
   type,
@@ -474,7 +474,7 @@ export default function NameDetails({
               startIconName={IconName.Save}
               width={BlockSize.Full}
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
               onClick={handleSaveClick}
               size={ButtonSize.Lg}
             >

@@ -7,8 +7,8 @@ const {
   Condition,
   Key,
   until,
-  ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
-  WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+  ThenableWebDriver,
+  WebElement,
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
@@ -981,7 +981,7 @@ class Driver {
     const endTime = startTime + timeout;
 
     // Loop indefinitely until condition met or timeout
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       const result = await condition();
       if (result === true) {
@@ -1278,7 +1278,7 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       const handles = await this.getAllWindowHandles();
       if (!handles.includes(handle)) {

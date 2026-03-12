@@ -19,7 +19,7 @@ import transformOpenRPCDocument from './api-specs/transform';
 import HomePage from './page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from './page-objects/flows/login.flow';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockServer = require('@open-rpc/mock-server/build/index').default;
 
 async function main() {

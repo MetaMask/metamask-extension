@@ -19,7 +19,6 @@ export type LoginResponseDto = {
   subscription: SubscriptionDto;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SubscriptionDto = {
   id: string;
   referralCode: string;
@@ -265,7 +264,6 @@ export type PointsEventDto = BasePointsEventDto &
       }
   );
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SeasonTierDto = {
   id: string;
   name: string;
@@ -552,14 +550,12 @@ export type RewardClaimData =
   | AlphaFoxInviteRewardData
   | null;
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type PointsBoostRewardData = {
   seasonPointsBonusId: string;
   activeUntil: string; // reward expiration date
   activeFrom: string; // claim date
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AlphaFoxInviteRewardData = {
   telegramHandle: string;
 };
@@ -581,7 +577,6 @@ export type ThemeImage = {
   darkModeUrl: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsAccountState = {
   account: CaipAccountId;
   hasOptedIn?: boolean;
@@ -723,7 +718,6 @@ export type PointsEstimateHistoryEntry = {
   responseBonusBips: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsControllerState = {
   rewardsActiveAccount: RewardsAccountState | null;
   rewardsAccounts: { [account: CaipAccountId]: RewardsAccountState };

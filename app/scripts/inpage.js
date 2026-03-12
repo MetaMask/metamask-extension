@@ -1,6 +1,23 @@
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
+/* eslint-disable import/first */
+import log from 'loglevel';
+import { v4 as uuid } from 'uuid';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
+import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
+import ObjectMultiplex from '@metamask/object-multiplex';
+import { pipeline } from 'readable-stream';
+
+import {
+  getMultichainClient,
+  getDefaultTransport,
+} from '@metamask/multichain-api-client';
+import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
+
+import shouldInjectProvider from '../../shared/lib/provider-injection';
+import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
+
 let __define;
 
 /**
@@ -29,23 +46,6 @@ const restoreContextAfterImports = () => {
 };
 
 cleanContextForImports();
-
-/* eslint-disable import/first */
-import log from 'loglevel';
-import { v4 as uuid } from 'uuid';
-import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
-import ObjectMultiplex from '@metamask/object-multiplex';
-import { pipeline } from 'readable-stream';
-
-import {
-  getMultichainClient,
-  getDefaultTransport,
-} from '@metamask/multichain-api-client';
-import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
-
-import shouldInjectProvider from '../../shared/lib/provider-injection';
-import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';

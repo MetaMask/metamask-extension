@@ -2,7 +2,6 @@
 
 // In order for variables to be considered on the global scope they must be
 // declared using var and not const or let, which is why this rule is disabled
-/* eslint-disable no-var */
 
 import * as Sentry from '@sentry/browser';
 import {

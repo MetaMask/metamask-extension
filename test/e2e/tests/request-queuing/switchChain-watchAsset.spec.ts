@@ -10,6 +10,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.HST;
+
   it('should not clear subsequent watchAsset after switching chain', async function () {
     const port = 8546;
     const chainId = 1338;

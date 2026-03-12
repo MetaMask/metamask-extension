@@ -1,13 +1,13 @@
 import type { FixtureData } from './launcher-types';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const FixtureBuilderClass = require('../../fixtures/fixture-builder');
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('../../fixtures/default-fixture');
-/* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 export type FixtureBuilderOptions = {
   onboarding?: boolean;

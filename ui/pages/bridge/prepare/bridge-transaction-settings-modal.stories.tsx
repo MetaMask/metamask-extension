@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
-import { BridgeTransactionSettingsModal } from './bridge-transaction-settings-modal';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { BridgeTransactionSettingsModal } from './bridge-transaction-settings-modal';
 
 const storybook = {
   title: 'Pages/Bridge/TransactionSettingsModal',
@@ -29,7 +29,7 @@ DefaultStory.decorators = [
             },
             marketData: {
               '0x1': {
-                ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   price: 0.00039762010419237126,
                   contractPercentChange1d: 0.004,
                   priceChange1d: 0.00004,

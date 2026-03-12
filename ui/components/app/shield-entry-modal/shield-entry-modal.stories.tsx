@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react';
 import configureStore from '../../../store/store';
-import ShieldEntryModal from './shield-entry-modal';
 import mockState from '../../../../test/data/mock-state.json';
+import ShieldEntryModal from './shield-entry-modal';
 
 const store = configureStore(mockState);
 

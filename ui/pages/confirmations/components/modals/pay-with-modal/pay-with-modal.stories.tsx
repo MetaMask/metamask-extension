@@ -2,11 +2,11 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { cloneDeep, merge } from 'lodash';
 
+import { ApprovalType } from '@metamask/controller-utils';
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
 import { ConfirmContextProvider } from '../../../context/confirm';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import { ApprovalType } from '@metamask/controller-utils';
 
 import { PayWithModal } from './pay-with-modal';
 

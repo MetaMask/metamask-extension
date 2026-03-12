@@ -40,6 +40,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
+
   it('send ETH using a legacy transaction', async function () {
     await withFixtures(
       {

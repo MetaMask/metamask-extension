@@ -17,6 +17,9 @@ import {
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
 
+// eslint-disable-next-line import/first
+import PerpsOrderEntryPage from './perps-order-entry-page';
+
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
@@ -108,9 +111,6 @@ jest.mock('react-router-dom', () => ({
     return null;
   },
 }));
-
-// eslint-disable-next-line import/first
-import PerpsOrderEntryPage from './perps-order-entry-page';
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];

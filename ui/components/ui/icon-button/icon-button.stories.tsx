@@ -1,9 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import IconButton from './icon-button';
 import { IconColor } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
 import { Icon, IconName } from '../../component-library';
+import IconButton from './icon-button';
 
 const meta: Meta<typeof IconButton> = {
   title: 'Components/UI/IconButton',

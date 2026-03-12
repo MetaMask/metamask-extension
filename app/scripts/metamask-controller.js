@@ -7368,7 +7368,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         startTrace: (options) => {
           // We intentionally strip out `_isStandaloneSpan` since it can be undefined
-          // eslint-disable-next-line no-unused-vars
+
           const { _isStandaloneSpan, ...result } = trace(options);
           return result;
         },

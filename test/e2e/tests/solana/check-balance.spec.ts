@@ -8,6 +8,7 @@ import { buildSolanaTestSpecificMock } from './common-solana';
 
 describe('Check balance', function (this: Suite) {
   this.timeout(300000);
+
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withFixtures(
       {
@@ -24,6 +25,7 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
+
   it('Just created Solana account shows 0 USD when native token is not enabled', async function () {
     await withFixtures(
       {
@@ -47,6 +49,7 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
+
   it('For a non 0 balance account - USD balance', async function () {
     await withFixtures(
       {
@@ -70,6 +73,7 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
+
   it('For a non 0 balance account - SOL balance', async function () {
     await withFixtures(
       {

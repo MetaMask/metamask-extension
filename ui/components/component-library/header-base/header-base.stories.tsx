@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import { Text } from '../text';
 
@@ -9,11 +8,12 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import { HeaderBase } from './header-base';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { IconName } from '../icon';
 import { Box } from '../box';
 import { Button, ButtonSize } from '../button';
+import { HeaderBase } from './header-base';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/HeaderBase',

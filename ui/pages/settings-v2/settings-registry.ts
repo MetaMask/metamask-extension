@@ -73,6 +73,7 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
 
 /**
  * Returns route meta for the given pathname, or null if not a known settings v2 route.
+ *
  * @param pathname
  */
 export function getSettingsV2RouteMeta(
@@ -88,20 +89,20 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     path: ASSETS_ROUTE,
     labelKey: 'assets',
     iconName: IconName.Dollar,
-    component: mmLazy(() => import('./assets-tab/index.ts')),
+    component: mmLazy(() => import('./assets-tab')),
   },
   {
     id: 'preferences-and-display',
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     labelKey: 'preferencesAndDisplay',
     iconName: IconName.Setting,
-    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
+    component: mmLazy(() => import('./preferences-and-display-tab')),
   },
   {
     id: 'privacy',
     path: PRIVACY_ROUTE,
     labelKey: 'privacy',
     iconName: IconName.Lock,
-    component: mmLazy(() => import('./privacy-tab/index.ts')),
+    component: mmLazy(() => import('./privacy-tab')),
   },
 ];

@@ -25,7 +25,6 @@ function getStatusTextColor(status: TransactionStatus): TextColor {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsStatusRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();

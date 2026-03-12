@@ -15,7 +15,6 @@ import { TransactionDetailsBridgeFeeRow } from '../transaction-details-bridge-fe
 import { TransactionDetailsTotalRow } from '../transaction-details-total-row';
 import { TransactionDetailsSummary } from '../transaction-details-summary';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetails() {
   return (
     <Box

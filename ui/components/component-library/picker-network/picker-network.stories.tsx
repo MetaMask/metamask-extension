@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import {
   Display,
@@ -8,13 +7,14 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { Box } from '../box';
-import { PickerNetwork } from './picker-network';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
+import { PickerNetwork } from './picker-network';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/PickerNetwork',

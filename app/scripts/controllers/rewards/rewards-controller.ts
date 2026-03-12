@@ -1028,7 +1028,7 @@ export class RewardsController extends BaseController<
         });
 
         // Check if the account has not opted in (result is false)
-        if (optInStatusResult.ois && optInStatusResult.ois[0] === false) {
+        if (optInStatusResult.ois?.[0] === false) {
           // Account hasn't opted in, don't proceed with login
           subscription = null;
           // Update state to reflect not opted in
@@ -1897,10 +1897,7 @@ export class RewardsController extends BaseController<
         perpsFeeDiscount: null,
         lastPerpsDiscountRateFetched: null,
       };
-      if (
-        state.rewardsActiveAccount &&
-        state.rewardsActiveAccount.account === caipAccount
-      ) {
+      if (state.rewardsActiveAccount?.account === caipAccount) {
         state.rewardsActiveAccount = accountState;
       }
 

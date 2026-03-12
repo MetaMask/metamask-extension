@@ -27,12 +27,12 @@ export function isBitcoinAccount(account: InternalAccount) {
 export function isSolanaAccount(account: InternalAccount) {
   const { DataAccount } = SolAccountType;
 
-  return Boolean(account && account.type === DataAccount);
+  return Boolean(account?.type === DataAccount);
 }
 
 export function isTronAccount(account: InternalAccount) {
   const { Eoa } = TrxAccountType;
-  return Boolean(account && account.type === Eoa);
+  return Boolean(account?.type === Eoa);
 }
 
 export function isNonEvmAccount(account: InternalAccount) {
