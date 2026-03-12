@@ -10,7 +10,7 @@ import type {
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { getUseExternalServices } from '../../../selectors';
-import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../shared/lib/transaction.utils';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';

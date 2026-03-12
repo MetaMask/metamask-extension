@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 
-import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { useFallbackDisplayName } from './hook';
 

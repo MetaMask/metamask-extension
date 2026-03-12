@@ -9,7 +9,7 @@ import {
   wrap,
   CircuitState,
 } from 'cockatiel';
-import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
+import getFetchWithTimeout from '../../../shared/lib/fetch-with-timeout';
 import { DeleteRegulationStatus } from '../../../shared/constants/metametrics';
 
 const inTest = process.env.IN_TEST;

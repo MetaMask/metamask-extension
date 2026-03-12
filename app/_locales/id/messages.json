@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Tambahkan token"
   },
-  "addTokenByContractAddress": {
-    "message": "Tidak dapat menemukan token? Tambahkan token secara manual dengan menempelkan alamatnya. Alamat kontrak token dapat ditemukan di $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Tambahkan URL"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "Biaya jaringan yang dikuotasi di layar sebelumnya mencakup kedua transaksi dan akan dibagi."
   },
-  "bridgeNetCost": {
-    "message": "Biaya bersih"
-  },
   "bridgeNoMMFee": {
     "message": "Tidak ada biaya MM"
   },
@@ -1129,10 +1122,6 @@
     "message": "Menukar $1 dengan $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 mnt",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Bridge ke"
   },
@@ -1206,9 +1195,6 @@
   },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
-  },
-  "buildContactList": {
-    "message": "Buat daftar kontak Anda"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask dirancang dan dibangun di seluruh dunia."
@@ -1801,7 +1787,8 @@
     "message": "Membuka MetaMask hanya pada perangkat ini."
   },
   "createPasswordDetailsSocial": {
-    "message": "Kehilangan kata sandi ini berarti kehilangan akses dompet di semua perangkat, "
+    "message": "Kehilangan kata sandi ini berarti kehilangan akses dompet di semua perangkat, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask tidak dapat meresetnya."
@@ -2131,9 +2118,6 @@
   "delete": {
     "message": "Hapus"
   },
-  "deleteContact": {
-    "message": "Hapus kontak"
-  },
   "deleteMetaMetricsData": {
     "message": "Hapus data MetaMetrics"
   },
@@ -2364,9 +2348,6 @@
   },
   "editANickname": {
     "message": "Edit nama panggilan"
-  },
-  "editAccountName": {
-    "message": "Edit nama akun"
   },
   "editAccounts": {
     "message": "Edit akun"
@@ -3128,9 +3109,6 @@
   },
   "hidden": {
     "message": "Tersembunyi"
-  },
-  "hiddenAccounts": {
-    "message": "Akun tersembunyi"
   },
   "hide": {
     "message": "Sembunyikan"
@@ -3996,10 +3974,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Konversi mUSD"
+    "message": "Konversi $1 ke mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Konversi mUSD"
+    "message": "Dikonversi ke mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Harus memilih minimal 1 token."
@@ -4267,9 +4247,6 @@
   "newAccountNumberName": {
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Kontak baru"
   },
   "newContract": {
     "message": "Kontrak baru"
@@ -5805,12 +5782,6 @@
   "queued": {
     "message": "Antrean"
   },
-  "quotedReceiveAmount": {
-    "message": "Jumlah $1 yang diterima"
-  },
-  "quotedTotalCost": {
-    "message": "Biaya total $1"
-  },
   "rank": {
     "message": "Peringkat"
   },
@@ -6257,9 +6228,6 @@
   },
   "search": {
     "message": "Cari"
-  },
-  "searchAccounts": {
-    "message": "Cari akun"
   },
   "searchAnAcccountOrContact": {
     "message": "Cari akun atau kontak"
@@ -8073,10 +8041,6 @@
     "message": "$1 kuota.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Tidak ada token yang cocok yang tersedia $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "$1 akan ditambahkan ke akun Anda setelah transaksi ini diproses.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8761,9 +8725,6 @@
   "usedByClients": {
     "message": "Digunakan oleh berbagai klien yang berbeda"
   },
-  "userName": {
-    "message": "Nama pengguna"
-  },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"
   },
@@ -8782,9 +8743,6 @@
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Lihat kontak"
   },
   "viewDetails": {
     "message": "Lihat detail"

@@ -12,7 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';

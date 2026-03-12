@@ -3,8 +3,8 @@ import { Messenger } from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
-  | AuthenticationController.AuthenticationControllerGetBearerToken
-  | AuthenticationController.AuthenticationControllerPerformSignOut;
+  | AuthenticationController.AuthenticationControllerGetBearerTokenAction
+  | AuthenticationController.AuthenticationControllerPerformSignOutAction;
 
 type Events = AuthenticationController.AuthenticationControllerStateChangeEvent;
 
@@ -43,7 +43,7 @@ export function getSubscriptionControllerMessenger(
 }
 
 type InitActions =
-  AuthenticationController.AuthenticationControllerGetBearerToken;
+  AuthenticationController.AuthenticationControllerGetBearerTokenAction;
 
 type InitEvents = never;
 
