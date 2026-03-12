@@ -38,9 +38,6 @@ jest.mock('react-redux', () => ({
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-type BridgeExpectedState = {
-  token?: ({ chainId: string } & Record<string, unknown>) | null;
-} & Record<string, unknown>;
 
 const renderUseBridging = (mockStoreState: object, pathname?: string) =>
   renderHookWithProvider(() => useBridging(), mockStoreState, pathname);
