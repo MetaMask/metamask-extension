@@ -340,12 +340,14 @@ describe('useMerklRewards', () => {
     const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
 
-    const { unmount } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { unmount } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     unmount();
@@ -404,7 +406,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitForNextUpdate } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -415,7 +417,7 @@ describe('useMerklRewards', () => {
     );
 
     await act(async () => {
-      await waitForNextUpdate();
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(result.current.hasClaimableReward).toBe(true);
@@ -428,12 +430,14 @@ describe('useMerklRewards', () => {
       isLoading: false,
     });
 
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
