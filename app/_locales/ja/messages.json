@@ -333,10 +333,6 @@
   "addToken": {
     "message": "トークンを追加"
   },
-  "addTokenByContractAddress": {
-    "message": "トークンが見つからない場合、アドレスを貼り付けて手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URLを追加"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "前の画面のクォートのネットワーク手数料には両方のトランザクションが含まれていて、分割されます。"
   },
-  "bridgeNetCost": {
-    "message": "純コスト"
-  },
   "bridgeNoMMFee": {
     "message": "MM手数料なし"
   },
@@ -1128,10 +1121,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1を$2にスワップしています",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "ブリッジ先:"
@@ -1798,7 +1787,8 @@
     "message": "このデバイスでのみMetaMaskのロックが解除されます。"
   },
   "createPasswordDetailsSocial": {
-    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。"
+    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask側でリセットすることはできません。"
@@ -3988,8 +3978,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1をmUSDに変換",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSDに変換済み",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
@@ -5785,12 +5775,6 @@
   },
   "queued": {
     "message": "キュー待ち"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1の受取額"
-  },
-  "quotedTotalCost": {
-    "message": "$1の合計コスト"
   },
   "rank": {
     "message": "ランキング"
@@ -8050,10 +8034,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 の見積もり.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1と一致するトークンがありません",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "このトランザクションの処理が完了すると、$1がアカウントに追加されます。",

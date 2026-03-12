@@ -18,7 +18,7 @@ import {
   getAddressBookEntry,
   getInternalAccountByAddress,
 } from '../../selectors';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import { EditContactForm } from './components/edit-contact-form';
 
 export function EditContactPage() {

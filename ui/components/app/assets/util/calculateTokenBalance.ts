@@ -1,7 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { AddressBalanceMapping } from '../types';
 
 type CalculateTokenBalanceParams = {

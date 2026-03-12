@@ -28,7 +28,7 @@ import {
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getCompleteAddressBook, getInternalAccounts } from '../../selectors';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   buildDuplicateContactMap,
   hasDuplicateContacts,

@@ -6,7 +6,7 @@ import {
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
 import { getTokenBalances } from '../ducks/metamask/metamask';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../shared/lib/conversion.utils';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
 import useMultiPolling from './useMultiPolling';
 

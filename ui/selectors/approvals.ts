@@ -5,7 +5,7 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
