@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -95,8 +95,13 @@ export const MultichainAccountMenu = ({
   const menuConfig = useMemo(() => {
     const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
-      const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      navigate(multichainAccountDetailsPageRoute);
+
+      navigate({
+        pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+        search: createSearchParams({
+          accountGroupId,
+        }).toString(),
+      });
     };
 
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {

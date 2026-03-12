@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useMemo,
   useRef,
+  useContext,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
@@ -35,12 +36,11 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
-import { ContactNetworks } from '../../settings/contact-list-tab/contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   addToAddressBook,
   showQrScanner,
@@ -59,14 +59,21 @@ import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+} from '../../../../shared/lib/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { ContactNetworks } from './contact-networks';
 
 export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const addressBook = useSelector(getAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
@@ -187,6 +194,11 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       setSelectedAddress('');
       setEnteredDomainName('');
     } else {
+      trackEvent({
+        category: MetaMetricsEventCategory.Contacts,
+        event: MetaMetricsEventName.ContactAddQrScannerClicked,
+        properties: { location: 'add_contact_form' },
+      });
       dispatch(showQrScanner());
     }
   };
@@ -209,6 +221,18 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         typeof selectedChainId === 'string' ? selectedChainId : '',
       ),
     );
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactAdded,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
+      },
+      sensitiveProperties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        contact_address: newAddress,
+      },
+    });
     onSuccess();
   };
 
@@ -241,6 +265,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           helpText={nameInputError || undefined}
           size={FormTextFieldSize.Lg}
           labelProps={{ marginBottom: 1 }}
+          autoFocus
           textFieldProps={{
             backgroundColor: BackgroundColor.backgroundMuted,
             borderColor: BorderColor.borderDefault,
@@ -276,7 +301,6 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
               />
             }
             inputProps={{ onPaste: handleAddressPaste }}
-            autoFocus
           />
           {domainResolutions?.length > 0 && (
             <Box marginTop={2}>
@@ -352,6 +376,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         flexDirection={BoxFlexDirection.Row}
         gap={4}
         padding={4}
+        paddingBottom={6}
         className="bg-background-default"
       >
         <Button

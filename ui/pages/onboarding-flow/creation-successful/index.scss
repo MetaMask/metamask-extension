@@ -5,6 +5,17 @@
     align-self: center;
   }
 
+  .title {
+    text-align: center;
+    font-family: var(--font-family-accent);
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 40px; /* 100% */
+    letter-spacing: -0.26px;
+    margin-bottom: 48px;
+  }
+
   &__settings-actions {
     .mm-box.mm-text {
       display: flex;
@@ -42,15 +53,4 @@
     height: 100%;
     width: 100%;
   }
-}
-
-.title {
-  text-align: center;
-  font-family: var(--font-family-accent);
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 40px; /* 100% */
-  letter-spacing: -0.26px;
-  margin-bottom: 48px;
 }

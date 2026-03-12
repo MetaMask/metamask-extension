@@ -12,7 +12,11 @@ import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 import { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { MetaMaskReduxState } from '../../selectors';
-import { selectBridgeHistoryItemByHash } from '../../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+  selectLocalTxForTxHash,
+} from '../../ducks/bridge-status/selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -42,21 +46,45 @@ export function useBridgeTxHistoryData({
 
   const txMeta = transactionGroup?.initialTransaction ?? transactionViewData;
 
-  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+  const localTx = useSelector((state: MetaMaskReduxState) =>
+    selectLocalTxForTxHash(state, txMeta?.hash),
+  );
+  const bridgeHistoryItemByHash = useSelector((state: MetaMaskReduxState) =>
     selectBridgeHistoryItemByHash(state, txMeta?.hash),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForOriginalTxMetaId(state, txMeta?.id),
+  );
+  // Intent bridge history is keyed by order UID, so activity rows need a
+  // fallback lookup by the original tx meta id instead of tx hash alone.
+  const bridgeHistoryItem =
+    bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
+  const isApprovalTransaction =
+    Boolean(bridgeHistoryItem?.approvalTxId) &&
+    (bridgeHistoryItem?.approvalTxId === localTx?.id ||
+      bridgeHistoryItem?.approvalTxId === txMeta?.id);
+  const displayBridgeHistoryItem = isApprovalTransaction
+    ? undefined
+    : bridgeHistoryItem;
 
-  const isBridgeFailed = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
+  const isBridgeFailed = displayBridgeHistoryItem
+    ? displayBridgeHistoryItem?.status.status === StatusTypes.FAILED
     : null;
 
   const shouldShowBridgeTxDetails =
-    bridgeHistoryItem ||
+    displayBridgeHistoryItem ||
     txMeta?.type === TransactionType.bridge ||
     txMeta?.type === TransactionType.swap;
 
   const showBridgeTxDetails = useCallback(() => {
-    navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txMeta?.hash}`, {
+    const txIdentifier = txMeta?.hash ?? txMeta?.id;
+
+    if (!txIdentifier) {
+      return;
+    }
+
+    navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txIdentifier}`, {
       state: {
         transaction: txMeta,
       },
@@ -65,8 +93,8 @@ export function useBridgeTxHistoryData({
 
   return {
     // By complete, this means BOTH source and dest tx are confirmed
-    isBridgeComplete: bridgeHistoryItem
-      ? isBridgeComplete(bridgeHistoryItem)
+    isBridgeComplete: displayBridgeHistoryItem
+      ? isBridgeComplete(displayBridgeHistoryItem)
       : null,
     isBridgeFailed,
     showBridgeTxDetails: shouldShowBridgeTxDetails

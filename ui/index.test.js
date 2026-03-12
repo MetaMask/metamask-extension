@@ -32,7 +32,7 @@ const esMessages = {
   },
 };
 
-jest.mock('../shared/modules/i18n', () => ({
+jest.mock('../shared/lib/i18n', () => ({
   fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
