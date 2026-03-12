@@ -27,6 +27,7 @@ import {
   exportAsFile,
   ExportableContentType,
 } from '../../../helpers/utils/export-utils';
+import { captureException } from '../../../../shared/lib/sentry';
 
 type DownloadStateLogsModalProps = {
   onClose: () => void;
@@ -47,7 +48,8 @@ export default function DownloadStateLogsModal({
         stateString,
         ExportableContentType.JSON,
       );
-    } catch {
+    } catch (error) {
+      captureException(error);
       onError();
     }
     onClose();

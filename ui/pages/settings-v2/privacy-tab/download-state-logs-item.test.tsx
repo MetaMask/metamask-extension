@@ -13,6 +13,11 @@ jest.mock('../../../helpers/utils/export-utils', () => ({
   exportAsFile: jest.fn(),
 }));
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
 const mockExportAsFile = exportUtils.exportAsFile as jest.Mock;
 
 describe('DownloadStateLogsItem', () => {
