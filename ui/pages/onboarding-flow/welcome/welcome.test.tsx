@@ -4,8 +4,8 @@ import thunk from 'redux-thunk';
 import { waitFor, fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
-import * as Environment from '../../../../shared/modules/environment';
-import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
+import * as Environment from '../../../../shared/lib/environment';
+import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventAccountType,

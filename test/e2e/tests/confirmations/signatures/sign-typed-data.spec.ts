@@ -47,8 +47,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await assertInfoValues(driver);
 
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
-        await driver.delay(1000);
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         await assertAccountDetailsMetrics(
           driver,
@@ -107,15 +106,15 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 async function assertInfoValues(driver: Driver) {
   const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  signTypedData.verifySignTypedDataMessage();
-  signTypedData.verifyOrigin();
+  await signTypedData.verifySignTypedDataMessage();
+  await signTypedData.verifyOrigin();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   const testDapp = new TestDapp(driver);
-  testDapp.checkSuccessSignTypedData(publicAddress);
-  testDapp.verifySuccessSignTypedDataResult(
+  await testDapp.checkSuccessSignTypedData(publicAddress);
+  await testDapp.verifySuccessSignTypedDataResult(
     '0x32791e3c41d40dd5bbfb42e66cf80ca354b0869ae503ad61cd19ba68e11d4f0d2e42a5835b0bfd633596b6a7834ef7d36033633a2479dacfdb96bda360d51f451b',
   );
 }

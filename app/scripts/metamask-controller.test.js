@@ -65,13 +65,13 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
-import { getEnabledAdvancedPermissions } from '../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -287,7 +287,7 @@ jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
 }));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
-jest.mock('../../shared/modules/mv3.utils', () => ({
+jest.mock('../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },
@@ -314,8 +314,8 @@ jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
 
-jest.mock('../../shared/modules/environment', () => ({
-  ...jest.requireActual('../../shared/modules/environment'),
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
   getEnabledAdvancedPermissions: jest.fn(() => []),
 }));
 
@@ -730,8 +730,6 @@ describe('MetaMaskController', () => {
 
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
-        const fakeAddress = '0xbad0';
-
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -740,13 +738,6 @@ describe('MetaMaskController', () => {
             KeyringController: {
               keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
               isUnlocked: true,
-            },
-            PreferencesController: {
-              identities: {
-                '0x123': { name: 'Trezor 1', address: '0x123' },
-                [fakeAddress]: { name: 'fake', address: fakeAddress },
-              },
-              selectedAddress: '0x123',
             },
           },
           initLangCode: 'en_US',
@@ -774,19 +765,8 @@ describe('MetaMaskController', () => {
 
         await localMetaMaskController.submitPassword(password);
 
-        const identities = Object.keys(
-          localMetaMaskController.preferencesController.state.identities,
-        );
         const addresses =
           await localMetaMaskController.keyringController.getAccounts();
-
-        identities.forEach((identity) => {
-          expect(addresses).toContain(identity);
-        });
-
-        addresses.forEach((address) => {
-          expect(identities).toContain(address);
-        });
 
         const internalAccounts =
           localMetaMaskController.accountsController.listAccounts();
@@ -1987,11 +1967,6 @@ describe('MetaMaskController', () => {
           await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
 
           expect(
-            Object.keys(
-              metamaskController.preferencesController.state.identities,
-            ),
-          ).not.toContain(hardwareKeyringAccount);
-          expect(
             metamaskController.accountsController
               .listAccounts()
               .some((account) => account.address === hardwareKeyringAccount),
@@ -2057,10 +2032,10 @@ describe('MetaMaskController', () => {
                 ]);
               });
 
-              it('should call preferencesController.setSelectedAddress', async () => {
+              it('should call accountsController.setSelectedAccount', async () => {
                 jest.spyOn(
-                  metamaskController.preferencesController,
-                  'setSelectedAddress',
+                  metamaskController.accountsController,
+                  'setSelectedAccount',
                 );
 
                 await metamaskController.unlockHardwareWalletAccount(
@@ -2069,7 +2044,7 @@ describe('MetaMaskController', () => {
                 );
 
                 expect(
-                  metamaskController.preferencesController.setSelectedAddress,
+                  metamaskController.accountsController.setSelectedAccount,
                 ).toHaveBeenCalledTimes(1);
               });
             });

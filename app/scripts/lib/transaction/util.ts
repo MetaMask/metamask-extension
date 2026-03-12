@@ -38,7 +38,7 @@ import {
   GetAddressSecurityAlertResponse,
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
-import { getTransactionDataRecipient } from '../../../../shared/modules/transaction.utils';
+import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]

@@ -9,7 +9,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../../shared/constants/metametrics';
-import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../../shared/lib/conversion.utils';
 import { TransactionMetaMetricsEvent } from '../../../../shared/constants/transaction';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
@@ -23,8 +23,8 @@ import {
   handleTransactionSubmitted,
 } from './metrics';
 
-jest.mock('../../../../shared/modules/transaction.utils', () => ({
-  ...jest.requireActual('../../../../shared/modules/transaction.utils'),
+jest.mock('../../../../shared/lib/transaction.utils', () => ({
+  ...jest.requireActual('../../../../shared/lib/transaction.utils'),
   determineTransactionAssetType: jest.fn().mockResolvedValue({
     assetType: 'native',
     tokenStandard: null,

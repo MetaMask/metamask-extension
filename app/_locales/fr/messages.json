@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Ajouter le jeton"
   },
-  "addTokenByContractAddress": {
-    "message": "Vous n’arrivez pas à trouver un jeton ? Vous pouvez ajouter manuellement n’importe quel jeton en copiant et collant son adresse. Les adresses des contrats de jetons sont disponibles sur $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Ajouter l'URL"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "Les frais de réseau indiqués sur l’écran précédent comprennent les deux transactions et seront divisés."
   },
-  "bridgeNetCost": {
-    "message": "Coût net"
-  },
   "bridgeNoMMFee": {
     "message": "Pas de frais MM"
   },
@@ -1059,9 +1052,6 @@
   },
   "bridgePriceImpact": {
     "message": "Impact sur les prix"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "L’impact sur le prix reflète la manière dont votre swap affecte le prix du marché. Si vous n’avez pas assez de gaz, certains de vos jetons sont utilisés pour couvrir les frais, ce qui augmente l’impact sur le prix. MetaMask ne définit ni ne contrôle cet impact."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impact sur les prix"
@@ -1131,10 +1121,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Échange de $1 contre $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Établir une passerelle vers"
@@ -1209,9 +1195,6 @@
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
-  },
-  "buildContactList": {
-    "message": "Créez votre liste de contacts"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask est conçu et établi dans le monde entier."
@@ -1804,7 +1787,8 @@
     "message": "Déverrouille MetaMask sur cet appareil uniquement."
   },
   "createPasswordDetailsSocial": {
-    "message": "La perte de ce mot de passe entraîne la perte de l’accès au portefeuille sur tous les appareils. "
+    "message": "La perte de ce mot de passe entraîne la perte de l’accès au portefeuille sur tous les appareils. ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask ne peut pas le réinitialiser."
@@ -2134,9 +2118,6 @@
   "delete": {
     "message": "Supprimer"
   },
-  "deleteContact": {
-    "message": "Supprimer le contact"
-  },
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
   },
@@ -2367,9 +2348,6 @@
   },
   "editANickname": {
     "message": "Modifier le pseudonyme"
-  },
-  "editAccountName": {
-    "message": "Modifier le nom du compte"
   },
   "editAccounts": {
     "message": "Modifier les comptes"
@@ -3131,9 +3109,6 @@
   },
   "hidden": {
     "message": "Masqué"
-  },
-  "hiddenAccounts": {
-    "message": "Comptes cachés"
   },
   "hide": {
     "message": "Masquer"
@@ -3999,10 +3974,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Convertir $1 en mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Converti en mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
@@ -4270,9 +4247,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nouveau contact"
   },
   "newContract": {
     "message": "Nouveau contrat"
@@ -5271,12 +5245,6 @@
   "perpsEntryPrice": {
     "message": "Prix d’ouverture"
   },
-  "perpsExploreCrypto": {
-    "message": "Découvrez les cryptomonnaies"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Découvrez les actions et les matières premières"
-  },
   "perpsFees": {
     "message": "Frais"
   },
@@ -5393,9 +5361,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Médiane des prix externes communiqués par les validateurs, utilisée pour calculer le taux de financement"
-  },
-  "perpsOrderAmount": {
-    "message": "Montant de l’ordre"
   },
   "perpsOrders": {
     "message": "Ordres"
@@ -5543,12 +5508,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirer"
-  },
-  "perpsYourOrders": {
-    "message": "Vos ordres"
-  },
-  "perpsYourPositions": {
-    "message": "Vos positions"
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
@@ -5820,12 +5779,6 @@
   "queued": {
     "message": "En attente"
   },
-  "quotedReceiveAmount": {
-    "message": "$1 reçoit le montant"
-  },
-  "quotedTotalCost": {
-    "message": "Coût total de $1"
-  },
   "rank": {
     "message": "Rang"
   },
@@ -5892,9 +5845,6 @@
   },
   "removeAccount": {
     "message": "Suprimer le compte"
-  },
-  "removeAccountDescription": {
-    "message": "Ce compte sera supprimé de votre portefeuille. Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée d’origine pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu déroulant des comptes. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée de ce compte avant de le supprimer.",
@@ -6275,9 +6225,6 @@
   },
   "search": {
     "message": "Rechercher"
-  },
-  "searchAccounts": {
-    "message": "Rechercher des comptes"
   },
   "searchAnAcccountOrContact": {
     "message": "Rechercher un compte ou un contact"
@@ -8091,10 +8038,6 @@
     "message": "$1 cotations.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Aucun jeton disponible correspondant à $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Vos $1 seront ajoutés à votre compte une fois que cette transaction sera traitée.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8779,9 +8722,6 @@
   "usedByClients": {
     "message": "Utilisé par plusieurs clients différents"
   },
-  "userName": {
-    "message": "Nom d’utilisateur"
-  },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"
   },
@@ -8800,9 +8740,6 @@
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Voir le contact"
   },
   "viewDetails": {
     "message": "Afficher les détails"

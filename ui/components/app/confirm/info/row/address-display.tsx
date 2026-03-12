@@ -16,11 +16,12 @@ import {
   TextButtonSize,
   TextColor,
   TextVariant,
+  FontWeight,
 } from '@metamask/design-system-react';
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
-import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
@@ -150,6 +151,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
           >
@@ -171,6 +173,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {!name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             ellipsis
             data-testid="confirm-info-row-display-name"

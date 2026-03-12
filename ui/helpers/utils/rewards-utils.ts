@@ -7,7 +7,7 @@ import {
   Hex,
 } from '@metamask/utils';
 import log from 'loglevel';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 
 /**
  * Formats an address to CAIP-10 account ID

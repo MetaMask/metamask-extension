@@ -4,8 +4,8 @@ import {
   GasRecommendations,
   EditGasModes,
 } from '../../../shared/constants/gas';
-import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { hexWEIToDecGWEI } from '../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../shared/lib/Numeric';
 import {
   bnGreaterThan,
   isNullish,

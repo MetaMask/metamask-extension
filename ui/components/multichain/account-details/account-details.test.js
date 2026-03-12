@@ -12,7 +12,7 @@ import {
   hideWarning,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';

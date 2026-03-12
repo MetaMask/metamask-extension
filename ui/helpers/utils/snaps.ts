@@ -1,4 +1,4 @@
-import { isProduction } from '../../../shared/modules/environment';
+import { isProduction } from '../../../shared/lib/environment';
 
 /**
  * Decode a snap ID fron a pathname.

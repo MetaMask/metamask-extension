@@ -386,9 +386,6 @@
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Contact nou"
-  },
   "newContract": {
     "message": "Contract nou"
   },
@@ -480,9 +477,6 @@
   },
   "removeAccount": {
     "message": "Eliminați contul"
-  },
-  "removeAccountDescription": {
-    "message": "Acest cont va fi eliminat din portofelul dvs. Înainte de a continua, vă rugăm să vă asigurați că aveți expresia seed inițială sau cheia privată pentru acest cont importat. Puteți importa sau crea conturi din nou din meniul derulant al contului."
   },
   "required": {
     "message": "Obligatoriu"
@@ -643,12 +637,6 @@
   },
   "usedByClients": {
     "message": "Folosit de diverși clienți"
-  },
-  "userName": {
-    "message": "Nume utilizator"
-  },
-  "viewContact": {
-    "message": "Vizualizare contact"
   },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"

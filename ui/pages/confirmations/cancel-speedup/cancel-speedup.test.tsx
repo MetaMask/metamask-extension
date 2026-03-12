@@ -14,7 +14,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import {
   decGWEIToHexWEI,
   hexWEIToDecETH,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import {
   createCancelTransaction,

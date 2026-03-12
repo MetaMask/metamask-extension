@@ -102,3 +102,6 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+
+# llm workflow playwright temp files
+temp-llm-workflow-*
