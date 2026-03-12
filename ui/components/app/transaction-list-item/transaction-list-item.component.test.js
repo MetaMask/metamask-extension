@@ -38,15 +38,7 @@ import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
-import { useHasGasFeeTokenSelected } from '../../../pages/confirmations/hooks/useHasGasFeeTokenSelected';
 import TransactionListItem from '.';
-
-jest.mock(
-  '../../../pages/confirmations/hooks/useHasGasFeeTokenSelected',
-  () => ({
-    useHasGasFeeTokenSelected: jest.fn(),
-  }),
-);
 
 jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
   useShouldShowSpeedUp: jest.fn(),
@@ -172,7 +164,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   return undefined;
 };
 
-const useHasGasFeeTokenSelectedMock = jest.mocked(useHasGasFeeTokenSelected);
 const useShouldShowSpeedUpMock = jest.mocked(useShouldShowSpeedUp);
 
 describe('TransactionListItem', () => {
@@ -188,7 +179,6 @@ describe('TransactionListItem', () => {
       })),
     );
 
-    useHasGasFeeTokenSelectedMock.mockReturnValue(false);
     useShouldShowSpeedUpMock.mockReturnValue(true);
   });
 
@@ -391,7 +381,13 @@ describe('TransactionListItem', () => {
 
   describe('gas fee token selected', () => {
     it('hides Cancel and Speed up when selectedGasFeeToken is set', () => {
-      useHasGasFeeTokenSelectedMock.mockReturnValue(true);
+      const transactionGroupWithGasFeeToken = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          selectedGasFeeToken: '0xabc123',
+        },
+      };
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
@@ -399,17 +395,16 @@ describe('TransactionListItem', () => {
       );
 
       const { queryByTestId } = renderWithProvider(
-        <TransactionListItem transactionGroup={transactionGroup} />,
+        <TransactionListItem
+          transactionGroup={transactionGroupWithGasFeeToken}
+        />,
       );
 
       expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
       expect(queryByTestId('speed-up-button')).not.toBeInTheDocument();
-
-      useHasGasFeeTokenSelectedMock.mockReturnValue(false);
     });
 
     it('shows Cancel and Speed up when selectedGasFeeToken is not set and other conditions allow', () => {
-      useHasGasFeeTokenSelectedMock.mockReturnValue(false);
       useShouldShowSpeedUpMock.mockReturnValue(true);
       useSelector.mockImplementation(
         generateUseSelectorRouter({

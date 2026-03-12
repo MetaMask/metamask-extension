@@ -17,7 +17,6 @@ import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
-import { useHasGasFeeTokenSelected } from '../../../pages/confirmations/hooks/useHasGasFeeTokenSelected';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
@@ -109,14 +108,12 @@ function TransactionListItemInner({
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
     bridgeTxHistoryItem;
 
-  const hasGasFeeTokenSelected = useHasGasFeeTokenSelected(
-    transactionGroup.primaryTransaction,
-  );
-
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
-    primaryTransaction: { error, status },
+    primaryTransaction: { error, status, selectedGasFeeToken },
   } = transactionGroup;
+
+  const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
 
   const badgeChainId =
     type === TransactionType.perpsDeposit && metamaskPay?.chainId
