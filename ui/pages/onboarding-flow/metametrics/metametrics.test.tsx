@@ -306,6 +306,66 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
+  it('calls stopPropagation on the participate checkbox label click', () => {
+    const { getByTestId } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const label = getByTestId(/^metametrics-checkbox-/u);
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    jest.spyOn(event, 'stopPropagation');
+
+    label.dispatchEvent(event);
+
+    expect(event.stopPropagation).toHaveBeenCalled();
+  });
+
+  it('calls stopPropagation on the participate checkbox input click', () => {
+    const { getAllByRole } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const checkbox = getAllByRole('checkbox')[0];
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    jest.spyOn(event, 'stopPropagation');
+
+    checkbox.dispatchEvent(event);
+
+    expect(event.stopPropagation).toHaveBeenCalled();
+  });
+
+  it('calls stopPropagation on the marketing checkbox label click', () => {
+    const { getByTestId } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const label = getByTestId(/^metametrics-data-collection-checkbox-/u);
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    jest.spyOn(event, 'stopPropagation');
+
+    label.dispatchEvent(event);
+
+    expect(event.stopPropagation).toHaveBeenCalled();
+  });
+
+  it('calls stopPropagation on the marketing checkbox input click', () => {
+    const { getAllByRole } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    const marketingCheckbox = getAllByRole('checkbox')[1];
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    jest.spyOn(event, 'stopPropagation');
+
+    marketingCheckbox.dispatchEvent(event);
+
+    expect(event.stopPropagation).toHaveBeenCalled();
+  });
+
   it('clicking the marketing checkbox container toggles the marketing checkbox when participate is checked', async () => {
     const { getByTestId, getAllByRole } = renderWithProvider(
       <OnboardingMetametrics />,
