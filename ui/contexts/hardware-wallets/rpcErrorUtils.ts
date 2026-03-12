@@ -685,8 +685,8 @@ export function toHardwareWalletError(
     return convertDataToHardwareWalletError(
       {
         code: error.code,
-        severity: error.severity as Severity,
-        category: error.category as Category,
+        severity: error.severity as Severity | undefined,
+        category: error.category as Category | undefined,
         userMessage: error.userMessage,
         metadata: error.metadata,
       },
