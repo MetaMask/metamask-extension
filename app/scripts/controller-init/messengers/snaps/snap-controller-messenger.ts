@@ -15,6 +15,7 @@ import {
   OutboundResponse,
   SetClientActive,
   SnapsRegistryStateChangeEvent,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
   GetEndowments,
@@ -82,6 +83,7 @@ type Actions =
   | ResolveVersion
   | CreateInterface
   | GetInterface
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | NetworkControllerGetNetworkClientByIdAction
   | StorageServiceSetItemAction
@@ -156,6 +158,7 @@ export function getSnapControllerMessenger(
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'SnapInterfaceController:setInterfaceDisplayed',
       'StorageService:setItem',
       'StorageService:getItem',
       'StorageService:removeItem',

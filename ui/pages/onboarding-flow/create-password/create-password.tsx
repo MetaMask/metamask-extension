@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
+import { Box } from '@metamask/design-system-react';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
@@ -25,7 +26,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
@@ -39,7 +39,6 @@ import {
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import { CreatePasswordForm } from '../../create-password-form';
-import { BlockSize } from '../../../helpers/constants/design-system';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -334,7 +333,7 @@ export default function CreatePassword({
   };
 
   return (
-    <Box height={BlockSize.Full} width={BlockSize.Full}>
+    <Box className="h-full w-full">
       <CreatePasswordForm
         isSocialLoginFlow={isSocialLoginFlow}
         onSubmit={handleCreatePassword}

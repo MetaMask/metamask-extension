@@ -544,7 +544,7 @@ export default function Routes() {
           'basicFunctionalityRequired_openSnapsPage',
       }),
       createRouteWithLayout({
-        path: `${SNAPS_VIEW_ROUTE}/*`,
+        path: SNAPS_VIEW_ROUTE,
         component: SnapView,
         layout: RootLayout,
         authenticated: true,
@@ -717,7 +717,7 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${REVIEW_PERMISSIONS}/:origin`,
+        path: REVIEW_PERMISSIONS,
         component: MultichainReviewPermissions,
         layout: RootLayout,
         authenticated: true,

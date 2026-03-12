@@ -1,4 +1,8 @@
-import { isEqualCaseInsensitive, prependZero } from './string-utils';
+import {
+  isEqualCaseInsensitive,
+  prependZero,
+  toKebabCase,
+} from './string-utils';
 
 describe('string-utils', () => {
   describe('isEqualCaseInsensitive', () => {
@@ -22,6 +26,36 @@ describe('string-utils', () => {
 
     it('should return number to given max length string when digit is large than maxLength', () => {
       expect(prependZero(123, 2)).toStrictEqual('123');
+    });
+  });
+
+  describe('toKebabCase', () => {
+    it('converts camelCase to kebab-case', () => {
+      expect(toKebabCase('startupStandardHome')).toBe('startup-standard-home');
+    });
+
+    it('converts PascalCase to kebab-case', () => {
+      expect(toKebabCase('SwapPage')).toBe('swap-page');
+    });
+
+    it('converts single lowercase word unchanged', () => {
+      expect(toKebabCase('startup')).toBe('startup');
+    });
+
+    it('handles consecutive uppercase letters', () => {
+      expect(toKebabCase('getHTTPSUrl')).toBe('get-h-t-t-p-s-url');
+    });
+
+    it('handles single uppercase letter', () => {
+      expect(toKebabCase('A')).toBe('a');
+    });
+
+    it('returns empty string for empty input', () => {
+      expect(toKebabCase('')).toBe('');
+    });
+
+    it('handles already-kebab-case input', () => {
+      expect(toKebabCase('already-kebab')).toBe('already-kebab');
     });
   });
 });

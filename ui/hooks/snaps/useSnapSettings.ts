@@ -5,7 +5,7 @@ import {
   handleSnapRequest,
 } from '../../store/actions';
 
-export function useSnapSettings({ snapId }: { snapId?: string }) {
+export function useSnapSettings({ snapId }: { snapId?: string | null }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<{ id: string } | undefined>(undefined);
