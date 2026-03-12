@@ -10,7 +10,7 @@ import { updateNetworkConnectionBanner, updateNetwork } from '../store/actions';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 import mockState from '../../test/data/mock-state.json';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { useNetworkConnectionBanner } from './useNetworkConnectionBanner';
 
 jest.mock('../../shared/constants/network', () => {
@@ -58,9 +58,9 @@ jest.mock('../components/app/toast-master/utils', () => {
   };
 });
 
-jest.mock('../../shared/modules/selectors/networks', () => {
+jest.mock('../../shared/lib/selectors/networks', () => {
   return {
-    ...jest.requireActual('../../shared/modules/selectors/networks'),
+    ...jest.requireActual('../../shared/lib/selectors/networks'),
     getNetworkConfigurationsByChainId: jest.fn(),
   };
 });

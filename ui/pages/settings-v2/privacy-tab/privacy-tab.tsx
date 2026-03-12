@@ -7,6 +7,7 @@ import {
   setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { ThirdPartyApisItem } from './third-party-apis-item';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
 import { MetametricsToggleItem } from './metametrics-item';
 import { DataCollectionToggleItem } from './data-collection-item';
@@ -34,6 +35,7 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
 /** Registry of setting items for the Privacy page. Add new items here */
 const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
+  { id: 'third-party-apis', component: ThirdPartyApisItem },
   {
     id: 'batch-account-balance-requests',
     component: BatchAccountBalanceRequestsToggleItem,

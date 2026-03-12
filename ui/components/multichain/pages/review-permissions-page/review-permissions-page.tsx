@@ -16,7 +16,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import {
   getAllPermittedAccountsForSelectedTab,

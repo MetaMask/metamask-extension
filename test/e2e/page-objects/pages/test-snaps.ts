@@ -47,6 +47,7 @@ export const buttonLocator = {
   connectLifeCycleButton: '#connectlifecycle-hooks',
   connectNameLookUpButton: '#connectname-lookup',
   connectManageStateButton: '#connectmanage-state',
+  connectMultiInstallButton: '#multi-install-connect',
   connectstateButton: '#connectstate',
   connectPreinstalledButton: '#connectpreinstalled-snap',
   connectProtocolButton: '#connectprotocol',

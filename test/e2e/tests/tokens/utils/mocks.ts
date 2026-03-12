@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 

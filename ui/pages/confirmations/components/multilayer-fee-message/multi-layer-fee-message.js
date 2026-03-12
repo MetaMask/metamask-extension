@@ -5,9 +5,9 @@ import TransactionDetailItem from '../transaction-detail-item/transaction-detail
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { SECONDARY } from '../../../../helpers/constants/common';
 import { I18nContext } from '../../../../contexts/i18n';
-import { sumHexes } from '../../../../../shared/modules/conversion.utils';
+import { sumHexes } from '../../../../../shared/lib/conversion.utils';
 import { EtherDenomination } from '../../../../../shared/constants/common';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
 
 export default function MultilayerFeeMessage({
