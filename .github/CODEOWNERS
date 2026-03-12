@@ -233,6 +233,7 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
 /jest.*.config.js                                     @MetaMask/extension-platform
 
 # Development Environment
+/.nvmrc                                               @MetaMask/extension-platform
 /.vscode/                                             @MetaMask/extension-platform
 /.gitattributes                                       @MetaMask/extension-platform
 /.gitignore                                           @MetaMask/extension-platform
@@ -242,7 +243,6 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
 /.yarnrc.yml                                          @MetaMask/extension-platform
 
 # CI
-/.nvmrc                                               @MetaMask/extension-platform @MetaMask/release-team @HowardBraham
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/scripts/                                     @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
