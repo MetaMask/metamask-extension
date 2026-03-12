@@ -37,7 +37,12 @@ import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionListItem from '.';
+
+jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
+  useShouldShowSpeedUp: jest.fn(),
+}));
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
@@ -159,6 +164,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   return undefined;
 };
 
+const useShouldShowSpeedUpMock = jest.mocked(useShouldShowSpeedUp);
+
 describe('TransactionListItem', () => {
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
@@ -171,6 +178,8 @@ describe('TransactionListItem', () => {
         label: null,
       })),
     );
+
+    useShouldShowSpeedUpMock.mockReturnValue(true);
   });
 
   afterAll(() => {
@@ -368,5 +377,47 @@ describe('TransactionListItem', () => {
       '?Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
+  });
+
+  describe('gas fee token selected', () => {
+    it('hides Cancel and Speed up when selectedGasFeeToken is set', () => {
+      const transactionGroupWithGasFeeToken = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          selectedGasFeeToken: '0xabc123',
+        },
+      };
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem
+          transactionGroup={transactionGroupWithGasFeeToken}
+        />,
+      );
+
+      expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).not.toBeInTheDocument();
+    });
+
+    it('shows Cancel and Speed up when selectedGasFeeToken is not set and other conditions allow', () => {
+      useShouldShowSpeedUpMock.mockReturnValue(true);
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={transactionGroup} />,
+      );
+
+      expect(queryByTestId('cancel-button')).toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).toBeInTheDocument();
+    });
   });
 });
