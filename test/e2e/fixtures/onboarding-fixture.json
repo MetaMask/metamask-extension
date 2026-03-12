@@ -2118,7 +2118,7 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "AssetsController": { "assetsBalance": {}     },
+    "AssetsController": { "assetsBalance": {}, "assetsInfo": {} , "assetsPrice": {}, "assetPreferences": {}, "customAssets": {}, "selectedCurrency": "usd" },
     "TokenRatesController": {
       "marketData": {}
     },

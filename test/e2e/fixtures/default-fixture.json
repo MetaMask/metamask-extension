@@ -939,12 +939,74 @@
       "assetsBalance": {
         "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
           "eip155:1/slip44:60": { "amount": "25" },
-          "eip155:1/erc20:0x4FEF9D741011476750A243aC70b9789a63dd47Df": { "amount": "0" },
           "eip155:1337/slip44:60": { "amount": "25" },
           "eip155:42161/slip44:60": { "amount": "25" },
           "eip155:59144/slip44:60": { "amount": "25" }
         }
-      }
+      },
+      "assetsInfo": {
+        "eip155:1/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:1337/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:42161/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/slip44/60.png",
+          "name": "Ether",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:59144/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
+          "name": "Ether",
+          "symbol": "ETH",
+          "type": "native"
+        }
+      },
+      "assetsPrice": {
+        "eip155:1/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:1337/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:42161/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:59144/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        }
+      },
+      "assetPreferences": {},
+      "customAssets": {},
+      "selectedCurrency": "usd"
     },
     "TokenRatesController": {
       "marketData": {
