@@ -1787,7 +1787,8 @@
     "message": "Desbloquea MetaMask solo en este dispositivo."
   },
   "createPasswordDetailsSocial": {
-    "message": "Perder esta contraseña significa perder el acceso a la billetera en todos los dispositivos. "
+    "message": "Perder esta contraseña significa perder el acceso a la billetera en todos los dispositivos. ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask no puede restablecerla."
