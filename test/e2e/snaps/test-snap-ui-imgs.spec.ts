@@ -1,5 +1,6 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -24,6 +25,7 @@ describe('Test Snap Images', function () {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
+        const snapInstall = new SnapInstall(driver);
         await openTestSnapClickButtonAndInstall(driver, 'connectImagesButton');
         await testSnaps.checkInstallationComplete(
           'connectImagesButton',
@@ -32,15 +34,13 @@ describe('Test Snap Images', function () {
 
         await testSnaps.clickButton('showSvgImageButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector('[data-testid="snaps-ui-image"]');
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirmation-submit-button"]',
-        );
+        await snapInstall.waitForSnapsUiImage();
+        await snapInstall.clickApproveButtonAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.clickButton('showPngImageButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector('[data-testid="snaps-ui-image"]');
+        await snapInstall.waitForSnapsUiImage();
       },
     );
   });

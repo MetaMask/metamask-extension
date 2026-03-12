@@ -20,6 +20,8 @@ class SnapListPage {
     text: "You don't have any snaps installed.",
   };
 
+  private readonly noSnapsInstalledContainer = '.mm-box';
+
   private readonly removeSnapButton = '[data-testid="remove-snap-button"]';
 
   private readonly removeSnapConfirmationInput =
@@ -163,10 +165,12 @@ class SnapListPage {
   }
 
   async toggleSnapEnabled(): Promise<void> {
+    console.log('Toggling snap enabled');
     await this.driver.clickElement(this.snapEnabledToggle);
   }
 
   async removeSnapViaPopover(snapName: string): Promise<void> {
+    console.log('Removing snap via popover');
     await this.driver.clickElement({
       text: `Remove ${snapName}`,
       tag: 'p',
@@ -175,8 +179,9 @@ class SnapListPage {
   }
 
   async checkNoSnapsInstalledMessage(): Promise<void> {
+    console.log('Checking no snaps installed message');
     await this.driver.waitForSelector({
-      css: '.mm-box',
+      css: this.noSnapsInstalledContainer,
       text: "You don't have any snaps installed.",
       tag: 'p',
     });

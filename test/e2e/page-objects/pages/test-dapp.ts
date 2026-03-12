@@ -979,6 +979,34 @@ class TestDapp {
     await this.driver.clickElement(this.signTypedDataV4Button);
   }
 
+  async scrollToAndClickPersonalSign(): Promise<void> {
+    const el = await this.driver.findElement(this.personalSignButton);
+    await this.driver.scrollToElement(el);
+    await this.driver.clickElement(this.personalSignButton);
+  }
+
+  async scrollToAndClickSignTypedData(): Promise<void> {
+    const el = await this.driver.findElement(this.signTypedDataButton);
+    await this.driver.scrollToElement(el);
+    await this.driver.clickElement(this.signTypedDataButton);
+  }
+
+  async scrollToAndClickSignTypedDataV3(): Promise<void> {
+    const el = await this.driver.findElement(this.signTypedDataV3Button);
+    await this.driver.scrollToElement(el);
+    await this.driver.clickElement(this.signTypedDataV3Button);
+  }
+
+  async scrollToAndClickSignTypedDataV4(): Promise<void> {
+    const el = await this.driver.findElement(this.signTypedDataV4Button);
+    await this.driver.scrollToElement(el);
+    await this.driver.clickElement(this.signTypedDataV4Button);
+  }
+
+  async waitForSpanWithText(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({ text: expectedText, tag: 'span' });
+  }
+
   async clickSimpleSendButton() {
     console.log('Click simple send button');
     await this.driver.waitForSelector(this.simpleSendButton, {

@@ -56,8 +56,7 @@ describe('Test Snap Get Locale', function () {
         await generalSettings.checkPageIsLoaded();
         await generalSettings.changeLanguage('Dansk');
 
-        await driver.delay(1000);
-        await driver.assertElementNotPresent('.loading-overlay');
+        await generalSettings.assertLoadingOverlayNotPresent();
         await settingsPage.closeSettingsPage();
 
         await homePage.headerNavbar.openSnapListPage();

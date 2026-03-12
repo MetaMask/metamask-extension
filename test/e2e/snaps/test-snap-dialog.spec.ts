@@ -3,6 +3,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { withFixtures } from '../helpers';
 import { mockDialogSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH, DAPP_URL_LOCALHOST, WINDOW_TITLES } from '../constants';
@@ -26,19 +27,13 @@ describe('Test Snap Dialog', function () {
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
-        await driver.openNewPage(DAPP_URL_LOCALHOST);
-        await testSnaps.checkPageIsLoaded();
-
-        await testSnaps.scrollAndClickButton('connectDialogsButton');
-        await driver.delayFirefox(1000);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await snapInstall.checkPageIsLoaded();
-        await snapInstall.clickConnectButton();
-        await snapInstall.clickConfirmButton();
-        await snapInstall.clickOkButton();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectDialogsButton',
+          {
+            url: DAPP_URL_LOCALHOST,
+          },
+        );
         await testSnaps.checkInstallationComplete(
           'connectDialogsButton',
           'Reconnect to Dialogs Snap',
@@ -90,7 +85,7 @@ describe('Test Snap Dialog', function () {
         // Test 3 - prompt dialog (submit with value)
         await testSnaps.clickButton('sendPromptButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.pasteIntoField('.mm-input', '2323');
+        await snapInstall.pasteIntoPromptInput('2323');
         await snapInstall.clickDialogButtonAndWaitForClose({
           text: 'Submit',
           tag: 'button',
@@ -111,7 +106,7 @@ describe('Test Snap Dialog', function () {
         // Test 4 - custom dialog (confirm with value)
         await testSnaps.clickButton('sendCustomButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.pasteIntoField('#custom-input', '2323');
+        await snapInstall.pasteIntoCustomDialogInput('2323');
         await snapInstall.clickDialogButtonAndWaitForClose({
           text: 'Confirm',
           tag: 'span',

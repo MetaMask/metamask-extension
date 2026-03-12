@@ -43,6 +43,28 @@ class SnapInstall {
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
+  private readonly snapsUiImage = '[data-testid="snaps-ui-image"]';
+
+  private readonly promptInput = '.mm-input';
+
+  private readonly customDialogInput = '#custom-input';
+
+  private readonly confirmationDialogLinkText = { text: 'That', tag: 'span' };
+
+  private readonly confirmationDialogBoldUrl = {
+    text: 'snaps.metamask.io',
+    tag: 'b',
+  };
+
+  private readonly visitSiteLink = { text: 'Visit site', tag: 'a' };
+
+  private readonly dialogApproveButton = { text: 'Approve', tag: 'button' };
+
+  private readonly confirmFooterButton =
+    '[data-testid="confirm-footer-button"]';
+
+  private readonly scrollDownButton = '[aria-label="Scroll down"]';
+
   public readonly lifeCycleHookMessageElement = '.snap-ui-renderer__panel';
 
   constructor(driver: Driver) {
@@ -81,6 +103,14 @@ class SnapInstall {
     await this.driver.clickElement(this.approveButton);
   }
 
+  async clickApproveButtonAndWaitForWindowToClose(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(this.approveButton);
+  }
+
+  async waitForSnapsUiImage(): Promise<void> {
+    await this.driver.waitForSelector(this.snapsUiImage);
+  }
+
   async clickCheckboxPermission() {
     console.log('Clicking permission checkbox');
     await this.driver.clickElement(this.permissionConnect);
@@ -113,6 +143,39 @@ class SnapInstall {
     await this.driver.clickElementAndWaitForWindowToClose(button);
   }
 
+  async waitForConfirmationDialogLinkText(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmationDialogLinkText);
+  }
+
+  async waitForVisitSiteLinkContent(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmationDialogBoldUrl);
+    await this.driver.waitForSelector(this.visitSiteLink);
+  }
+
+  async clickConfirmationDialogLinkText(): Promise<void> {
+    await this.driver.clickElement(this.confirmationDialogLinkText);
+  }
+
+  async clickVisitSiteLink(): Promise<void> {
+    await this.driver.clickElement(this.visitSiteLink);
+  }
+
+  async waitForDialogApproveButton(): Promise<void> {
+    await this.driver.waitForSelector(this.dialogApproveButton);
+  }
+
+  async clickDialogApproveButton(): Promise<void> {
+    await this.driver.clickElement(this.dialogApproveButton);
+  }
+
+  async pasteIntoPromptInput(value: string): Promise<void> {
+    await this.driver.pasteIntoField(this.promptInput, value);
+  }
+
+  async pasteIntoCustomDialogInput(value: string): Promise<void> {
+    await this.driver.pasteIntoField(this.customDialogInput, value);
+  }
+
   async waitForDialogPanelText(expectedText: string): Promise<void> {
     const panel = await this.driver.findElement(
       this.lifeCycleHookMessageElement,
@@ -122,6 +185,20 @@ class SnapInstall {
       css: this.lifeCycleHookMessageElement,
       text: expectedText,
     });
+  }
+
+  async waitForSignatureInsightPanelText(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({ text: expectedText, tag: 'p' });
+  }
+
+  async clickScrollDown(): Promise<void> {
+    await this.driver.clickElementSafe(this.scrollDownButton);
+  }
+
+  async clickConfirmFooterAndWaitForClose(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmFooterButton,
+    );
   }
 
   async clickOkButtonAndContinueOnDialog() {

@@ -46,7 +46,6 @@ export const buttonLocator = {
   connectInteractiveButton: '#connectinteractive-ui',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
-  multiInstallConnectButton: '#multi-install-connect',
   connectSignatureInsightsButton: '#connectsignature-insights',
   showSvgImageButton: '#showSVGImage',
   showPngImageButton: '#showPNGImage',

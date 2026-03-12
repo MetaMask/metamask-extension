@@ -42,7 +42,6 @@ describe('Test Snap revoke permission', function () {
         );
 
         await testSnaps.scrollToButton('getAccountsButton');
-        await driver.delayFirefox(1000);
         await testSnaps.clickButton('getAccountsButton');
         await approveAccount(driver);
         await testSnaps.checkMessageResultSpan(
@@ -66,9 +65,7 @@ describe('Test Snap revoke permission', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.scrollToButton('getAccountsButton');
-        await driver.delayFirefox(1000);
         await testSnaps.clickButton('getAccountsButton');
-        await driver.delay(500);
         await approveAccount(driver);
         await testSnaps.checkMessageResultSpan(
           'addressResultSpan',

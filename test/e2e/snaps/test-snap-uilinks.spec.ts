@@ -1,5 +1,6 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -33,6 +34,11 @@ async function mockSnapBinaryAndWebsite(
   return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)];
 }
 
+const EMPTY_PAGE_BODY_SELECTOR = {
+  testId: 'empty-page-body',
+  text: 'Empty page by MetaMask',
+};
+
 describe('Test Snap UI Links', function () {
   it('test link in confirmation snap_dialog type', async function () {
     await withFixtures(
@@ -51,6 +57,7 @@ describe('Test Snap UI Links', function () {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
+        const snapInstall = new SnapInstall(driver);
         await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
         await testSnaps.checkInstallationComplete(
           'connectDialogsButton',
@@ -61,21 +68,17 @@ describe('Test Snap UI Links', function () {
         await driver.delay(500);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.delay(500);
-        await driver.waitForSelector({ text: 'That', tag: 'span' });
-        await driver.clickElement({ text: 'That', tag: 'span' });
-        await driver.waitForSelector({ text: 'snaps.metamask.io', tag: 'b' });
-        await driver.waitForSelector({ text: 'Visit site', tag: 'a' });
-        await driver.clickElement({ text: 'Visit site', tag: 'a' });
+        await snapInstall.waitForConfirmationDialogLinkText();
+        await snapInstall.clickConfirmationDialogLinkText();
+        await snapInstall.waitForVisitSiteLinkContent();
+        await snapInstall.clickVisitSiteLink();
 
-        await driver.switchToWindowWithTitle('E2E Test Page');
-        await driver.waitForSelector({
-          testId: 'empty-page-body',
-          text: 'Empty page by MetaMask',
-        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestE2EPage);
+        await driver.waitForSelector(EMPTY_PAGE_BODY_SELECTOR);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector({ text: 'Approve', tag: 'button' });
-        await driver.clickElement({ text: 'Approve', tag: 'button' });
+        await snapInstall.waitForDialogApproveButton();
+        await snapInstall.clickDialogApproveButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan('dialogResultSpan', 'true');
