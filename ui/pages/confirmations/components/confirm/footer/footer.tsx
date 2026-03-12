@@ -46,6 +46,9 @@ import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubsc
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
+import { SingleActionFooter } from './single-action-footer';
+
+const SINGLE_ACTION_FOOTER_TYPES = [TransactionType.musdConversion];
 
 export type OnCancelHandler = ({
   location,
@@ -301,6 +304,18 @@ const Footer = () => {
 
   if (!currentConfirmation) {
     return null;
+  }
+
+  if (
+    currentConfirmation.type &&
+    SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)
+  ) {
+    return (
+      <SingleActionFooter
+        onSubmit={onSubmit}
+        isGaslessLoading={isGaslessLoading}
+      />
+    );
   }
 
   return (

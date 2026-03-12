@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Token hinzufügen"
   },
-  "addTokenByContractAddress": {
-    "message": "Sie können kein Token finden? Sie können ein beliebiges Token manuell hinzufügen, indem Sie seine Adresse eingeben. Token-Contract-Adressen finden Sie auf $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URL hinzufügen"
   },
@@ -1023,9 +1019,6 @@
   "bridgeGasFeesSplit": {
     "message": "Die auf dem vorherigen Bildschirm angegebenen Netzwerkgebühren umfassen beide Transaktionen und werden aufgeteilt."
   },
-  "bridgeNetCost": {
-    "message": "Nettokosten"
-  },
   "bridgeNoMMFee": {
     "message": "Keine MM-Gebühr"
   },
@@ -1129,10 +1122,6 @@
     "message": "Swapping von $1 für $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 Min.",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Bridge zu"
   },
@@ -1206,9 +1195,6 @@
   },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
-  },
-  "buildContactList": {
-    "message": "Erstellen Sie Ihre Kontaktliste."
   },
   "builtAroundTheWorld": {
     "message": "MetaMask ist weltweit konzipiert und aufgebaut."
@@ -1801,7 +1787,8 @@
     "message": "Schaltet MetaMask nur auf diesem Gerät frei."
   },
   "createPasswordDetailsSocial": {
-    "message": "Der Verlust dieses Passworts bedeutet einen Verlust des Wallet-Zugriffs auf allen Geräten, "
+    "message": "Der Verlust dieses Passworts bedeutet einen Verlust des Wallet-Zugriffs auf allen Geräten, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask kann es nicht zurücksetzen."
@@ -2130,9 +2117,6 @@
   },
   "delete": {
     "message": "Löschen"
-  },
-  "deleteContact": {
-    "message": "Kontakt löschen"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics-Daten löschen"
@@ -3994,8 +3978,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1 in mUSD umrechnen",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "In mUSD umgerechnet",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Sie müssen mindestens 1 Token auswählen."
@@ -4263,9 +4247,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Neuer Kontakt"
   },
   "newContract": {
     "message": "Neuer Contract"
@@ -5800,12 +5781,6 @@
   },
   "queued": {
     "message": "In Warteschlange"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 Betrag empfangen"
-  },
-  "quotedTotalCost": {
-    "message": "$1 Gesamtkosten"
   },
   "rank": {
     "message": "Rang"
@@ -8066,10 +8041,6 @@
     "message": "$1 Angebote.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Keine Tokens verfügbar, die mit $1 übereinstimmen.",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Ihre $1 werden Ihrem Konto gutgeschrieben, sobald diese Transaktion abgeschlossen ist.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8754,9 +8725,6 @@
   "usedByClients": {
     "message": "Verwendet von einer Reihe von Kunden"
   },
-  "userName": {
-    "message": "Nutzername"
-  },
   "userOpContractDeployError": {
     "message": "Contract-Bereitstellung von einem Smart-Konto wird nicht unterstützt"
   },
@@ -8775,9 +8743,6 @@
   "viewAddressOnExplorer": {
     "message": "Auf $1 ansehen",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Kontakt anzeigen"
   },
   "viewDetails": {
     "message": "Details anzeigen"

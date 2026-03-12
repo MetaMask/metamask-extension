@@ -386,9 +386,6 @@
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Contact nou"
-  },
   "newContract": {
     "message": "Contract nou"
   },
@@ -640,12 +637,6 @@
   },
   "usedByClients": {
     "message": "Folosit de diverși clienți"
-  },
-  "userName": {
-    "message": "Nume utilizator"
-  },
-  "viewContact": {
-    "message": "Vizualizare contact"
   },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"
