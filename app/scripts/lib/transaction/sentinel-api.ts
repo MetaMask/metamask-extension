@@ -50,7 +50,7 @@ export function getSentinelApiHeaders(): HeadersInit {
  *
  * @returns Promise resolving to headers (metadata + optional Bearer).
  */
-export async function getSentinelApiHeadersAsync(): Promise<HeadersInit> {
+export async function getSentinelApiHeadersAsync(): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     ...(getSentinelApiHeaders() as Record<string, string>),
   };

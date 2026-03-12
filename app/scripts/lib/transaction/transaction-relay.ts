@@ -55,13 +55,9 @@ export async function submitRelayTransaction(
   log('Request', url, request);
 
   const headers = await getSentinelApiHeadersAsync();
-  const headersRecord =
-    typeof headers === 'object' && !Array.isArray(headers)
-      ? (headers as Record<string, string>)
-      : {};
 
   const response = (await jsonRpcRequest(url, RELAY_RPC_METHOD, [request], {
-    headers: headersRecord,
+    headers,
   })) as RelaySubmitResponse;
 
   log('Response', response);
