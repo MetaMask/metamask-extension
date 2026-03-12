@@ -9317,6 +9317,30 @@
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
   },
+  "qrHardwareCameraPermissionDismissedTitle": {
+    "message": "Camera access needed"
+  },
+  "qrHardwareCameraPermissionDismissedDescription": {
+    "message": "To complete this transaction, MetaMask needs access to your camera to scan the QR code from your device."
+  },
+  "qrHardwareCameraPermissionBlockedTitle": {
+    "message": "Camera access is blocked"
+  },
+  "qrHardwareCameraPermissionBlockedDescription": {
+    "message": "Allow MetaMask to use your camera in your browser settings."
+  },
+  "qrHardwareCameraPermissionOpenSettings": {
+    "message": "Open MetaMask permission settings"
+  },
+  "qrHardwareCameraPermissionAllowCamera": {
+    "message": "and allow camera access."
+  },
+  "qrHardwareCameraPermissionFirefoxInstruction": {
+    "message": "Open Firefox Settings → Privacy & Security → Permissions → Camera → Settings and allow MetaMask."
+  },
+  "qrHardwareCameraPermissionAutoRecover": {
+    "message": "This page will update automatically once access is granted."
+  },
   "youReceived": {
     "message": "You received",
     "description": "Label indicating the amount and asset the user received."

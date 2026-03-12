@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Spinner from '../../ui/spinner';
 
-const EnhancedReader = ({ handleScan }) => {
+const EnhancedReader = ({ handleScan, onError }) => {
   const [canplay, setCanplay] = useState(false);
   const codeReader = useMemo(() => {
     const hint = new Map();
@@ -23,24 +23,29 @@ const EnhancedReader = ({ handleScan }) => {
       setCanplay(true);
     };
     videoElem.addEventListener('canplay', canplayListener);
-    const promise = codeReader.decodeFromVideoDevice(
-      undefined,
-      'video',
-      (result) => {
+
+    let controls;
+    codeReader
+      .decodeFromVideoDevice(undefined, 'video', (result) => {
         if (result) {
           handleScan(result.getText());
         }
-      },
-    );
+      })
+      .then((c) => {
+        controls = c;
+      })
+      .catch((e) => {
+        log.info(e);
+        if (onError) {
+          onError(e);
+        }
+      });
+
     return () => {
       videoElem.removeEventListener('canplay', canplayListener);
-      promise
-        .then((controls) => {
-          if (controls) {
-            controls.stop();
-          }
-        })
-        .catch(log.info);
+      if (controls) {
+        controls.stop();
+      }
     };
   }, []);
 
@@ -61,6 +66,7 @@ const EnhancedReader = ({ handleScan }) => {
 
 EnhancedReader.propTypes = {
   handleScan: PropTypes.func.isRequired,
+  onError: PropTypes.func,
 };
 
 export default EnhancedReader;
