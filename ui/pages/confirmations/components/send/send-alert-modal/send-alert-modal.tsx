@@ -20,6 +20,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../../../components/component-library';
+import { JustifyContent } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SendAlertModalProps } from './send-alert-modal.types';
 
@@ -36,25 +37,32 @@ export const SendAlertModal = ({
     <Modal isOpen={isOpen} onClose={onClose} data-testid="send-alert-modal">
       <ModalOverlay />
       <ModalContent>
+        <ModalHeader
+          onClose={onClose}
+          paddingBottom={0}
+          justifyContent={JustifyContent.flexEnd}
+          closeButtonProps={{
+            'data-testid': 'send-alert-modal-close-button',
+          }}
+        />
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
-          className="pt-4 pb-2"
+          className="pb-2"
         >
           <Icon
             name={IconName.Danger}
             size={IconSize.Xl}
             color={IconColor.WarningDefault}
           />
+          <Text
+            variant={TextVariant.HeadingSm}
+            textAlign={TextAlign.Center}
+            className="mt-2"
+          >
+            {title}
+          </Text>
         </Box>
-        <ModalHeader
-          onClose={onClose}
-          closeButtonProps={{
-            'data-testid': 'send-alert-modal-close-button',
-          }}
-        >
-          {title}
-        </ModalHeader>
         <ModalBody>
           <Text
             variant={TextVariant.BodyMd}

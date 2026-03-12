@@ -12,6 +12,7 @@ import {
   TextColor,
   TextVariant,
   BoxAlignItems,
+  BoxFlexDirection,
   FontWeight,
 } from '@metamask/design-system-react';
 import {
@@ -94,7 +95,12 @@ export const Recipient = ({
 
   return (
     <>
-      <Box alignItems={BoxAlignItems.Center} gap={1} className="pb-1">
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+        className="pb-1"
+      >
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('to')}
         </Text>
