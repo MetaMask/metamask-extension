@@ -88,21 +88,21 @@ export function renderWithUserEvent(jsx) {
  * @returns The rendered result from testing library.
  */
 export async function integrationTestRender(extendedRenderOptions) {
-  const uiMux = new ObjectMultiplex();
-  const backgroundMux = new ObjectMultiplex();
-  uiMux.pipe(backgroundMux).pipe(uiMux);
-  const mockPatchStoreSubstream = uiMux.createStream('patch-store');
-  const mockBackgroundStream = backgroundMux.createStream('patch-store');
-  mockBackgroundStream.on('data', (msg) => {
-    // Only requests get a response (notifications do not)
-    if (msg?.id !== undefined) {
-      mockBackgroundStream.write({ jsonrpc: '2.0', id: msg.id, result: [] });
-    }
-  });
+  // const uiMux = new ObjectMultiplex();
+  // const backgroundMux = new ObjectMultiplex();
+  // uiMux.pipe(backgroundMux).pipe(uiMux);
+  // const mockPatchStoreSubstream = uiMux.createStream('patch-store');
+  // const mockBackgroundStream = backgroundMux.createStream('patch-store');
+  // mockBackgroundStream.on('data', (msg) => {
+  //   // Only requests get a response (notifications do not)
+  //   if (msg?.id !== undefined) {
+  //     mockBackgroundStream.write({ jsonrpc: '2.0', id: msg.id, result: [] });
+  //   }
+  // });
   const {
     preloadedState = {},
     backgroundConnection,
-    patchStoreSubstream = mockPatchStoreSubstream,
+    // patchStoreSubstream = mockPatchStoreSubstream,
     activeTab = {
       id: 113,
       title: 'E2E Test Dapp',
@@ -114,7 +114,7 @@ export async function integrationTestRender(extendedRenderOptions) {
   } = extendedRenderOptions;
 
   connectToBackground(backgroundConnection, noop);
-  connectToBackgroundViaPatchStoreSubstream(patchStoreSubstream);
+  // connectToBackgroundViaPatchStoreSubstream(patchStoreSubstream);
 
   const store = await setupInitialStore(preloadedState, activeTab);
 
