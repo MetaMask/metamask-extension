@@ -50,7 +50,12 @@ export function TransactionDetailsModal({
       default:
         return t('transaction');
     }
-  }, [transactionMeta.type, transactionMeta.txParams?.to, transactionMeta.txParams?.data, t]);
+  }, [
+    transactionMeta.type,
+    transactionMeta.txParams?.to,
+    transactionMeta.txParams?.data,
+    t,
+  ]);
 
   return (
     <Modal

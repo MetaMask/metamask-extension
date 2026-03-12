@@ -132,7 +132,11 @@ export function useTransactionDisplayData(transactionGroup) {
   const { transferInformation, type: rawType } = initialTransaction;
   const { from: senderAddress, to } = initialTransaction.txParams || {};
 
-  const type = resolveTransactionType(rawType, to, initialTransaction.txParams?.data);
+  const type = resolveTransactionType(
+    rawType,
+    to,
+    initialTransaction.txParams?.data,
+  );
 
   const isUnifiedSwapTx =
     [TransactionType.swap, TransactionType.bridge].includes(type) &&
