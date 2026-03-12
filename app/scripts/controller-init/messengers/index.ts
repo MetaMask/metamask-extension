@@ -95,6 +95,10 @@ import {
   getSubscriptionControllerMessenger,
 } from './subscription';
 import { getConnectivityControllerMessenger } from './connectivity';
+import {
+  getConfigRegistryControllerMessenger,
+  getConfigRegistryControllerInitMessenger,
+} from './config-registry-controller-messenger';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -244,6 +248,14 @@ export {
 } from './bridge-controller-messenger';
 export type { BridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+export type {
+  ConfigRegistryControllerMessenger,
+  ConfigRegistryControllerInitMessenger,
+} from './config-registry-controller-messenger';
+export {
+  getConfigRegistryControllerMessenger,
+  getConfigRegistryControllerInitMessenger,
+} from './config-registry-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,
@@ -484,6 +496,10 @@ export const CONTROLLER_MESSENGERS = {
   ClientController: {
     getMessenger: getClientControllerMessenger,
     getInitMessenger: noop,
+  },
+  ConfigRegistryController: {
+    getMessenger: getConfigRegistryControllerMessenger,
+    getInitMessenger: getConfigRegistryControllerInitMessenger,
   },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,

@@ -73,6 +73,12 @@
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "ClientController": "object",
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
+    },
     "CurrencyController": {
       "currencyRates": {
         "ETH": {

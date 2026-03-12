@@ -236,6 +236,12 @@ export type ControllerInitRequest<
    */
   initMessenger: InitMessengerType;
 
+  /**
+   * Base (root) controller messenger. Used by some inits to publish state
+   * so the store (subscribed on the root) receives events and persistence runs.
+   */
+  baseControllerMessenger?: BaseControllerMessenger;
+
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
 
   /**

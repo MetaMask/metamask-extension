@@ -6159,6 +6159,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/config-registry-controller@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/config-registry-controller@npm:0.1.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.19.0"
+    "@metamask/keyring-controller": "npm:^25.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^16.0.3"
+    "@metamask/profile-sync-controller": "npm:^27.1.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.9.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/52f3aea2cc390e27f2676b47bba71e6e1b20be32934d75a06f9a24c979f226faf517c98f24c1562e881d1ff74c552c1ab9c39eb53e514f7358d044c9c232e487
+  languageName: node
+  linkType: hard
+
 "@metamask/connectivity-controller@npm:^0.1.0":
   version: 0.1.0
   resolution: "@metamask/connectivity-controller@npm:0.1.0"
@@ -33891,6 +33909,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:^0.1.1"
+    "@metamask/config-registry-controller": "npm:0.1.0"
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"

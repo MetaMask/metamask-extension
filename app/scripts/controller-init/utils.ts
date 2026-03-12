@@ -138,6 +138,7 @@ export function initControllers({
       controllerMessenger,
       getController,
       initMessenger,
+      baseControllerMessenger,
     };
 
     const result = initFunction({

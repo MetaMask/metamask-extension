@@ -209,7 +209,7 @@ describe('SmartTransactionsController Init', () => {
       trace: jest.fn((_request, fn) => fn?.()),
       trackEvent: jest.fn(),
       ...options,
-    } as TestInitRequest;
+    } as unknown as TestInitRequest;
 
     return { fullRequest, mocks };
   }
