@@ -70,6 +70,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTracker',
+  // Token balances are fetched dynamically after unlock; pre-seeding them in the
+  // fixture prevents the "Fund your wallet" empty-state banner from appearing.
+  'data.TokenBalancesController',
   'data.AccountsController.internalAccounts.accounts',
   'data.AuthenticationController',
   'data.MetaMetricsController',

@@ -1,11 +1,12 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
@@ -26,11 +27,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withSmartTransactionsOptedOut()
+          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         manifestFlags: {
           testing: { disableSmartTransactionsOverride: true },
@@ -97,14 +96,13 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     );
   });
 
-  it.only('fails transaction if error', async function () {
+  it('fails transaction if error', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withNetworkControllerOnMainnet()
           .build(),
         localNodeOptions: {
           hardfork: 'prague',

@@ -1,10 +1,11 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
@@ -29,10 +30,9 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withNetworkControllerOnMainnet()
           .withTokenBalancesController({
             tokenBalances: {
               '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
@@ -117,10 +117,9 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withNetworkControllerOnMainnet()
           .build(),
         localNodeOptions: {
           hardfork: 'london',
