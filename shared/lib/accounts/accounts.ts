@@ -15,7 +15,7 @@ import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snap
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { createSentryError } from '../error';
 import { captureException } from '../sentry';
-import { HardwareDeviceNames } from '../../constants/hardware-wallets';
+import { HardwareKeyringType } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
@@ -80,8 +80,8 @@ export async function getNextAvailableSnapAccountName(
 export function isHardwareAccount(account: InternalAccount): boolean {
   try {
     const keyringType = account?.metadata?.keyring?.type;
-    return Object.values(HardwareDeviceNames).includes(
-      keyringType as HardwareDeviceNames,
+    return Object.values(HardwareKeyringType).includes(
+      keyringType as HardwareKeyringType,
     );
   } catch {
     return false;
