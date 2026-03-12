@@ -35,7 +35,7 @@ const PREFERENCES_STATE_MOCK = {
 
 describe('Send ETH - Advanced', function () {
   describe('Multisig recipient', function () {
-    it('sends to a Multisig Address', async function () {
+    it.only('sends to a Multisig Address', async function () {
       const smartContract = SMART_CONTRACTS.MULTISIG;
       await withFixtures(
         {

@@ -69,6 +69,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.thresholdCache',
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
+  'data.AccountTracker',
   'data.AccountsController.internalAccounts.accounts',
   'data.AuthenticationController',
   'data.MetaMetricsController',

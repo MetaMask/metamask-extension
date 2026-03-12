@@ -2,9 +2,9 @@ import { hexToNumber } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Fixtures, withFixtures } from '../../helpers';
-import { DAPP_URL, NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import {
@@ -44,12 +44,10 @@ async function withFixturesForSimulationDetails(
   {
     title,
     inputChainId = CHAIN_IDS.MAINNET,
-    networkClientId = NETWORK_CLIENT_ID.MAINNET,
     mockRequests,
   }: {
     title?: string;
     inputChainId?: string;
-    networkClientId?: (typeof NETWORK_CLIENT_ID)[keyof typeof NETWORK_CLIENT_ID];
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
   runTestWithFixtures: (
@@ -58,9 +56,7 @@ async function withFixturesForSimulationDetails(
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilderV2()
-        .withSelectedNetwork(networkClientId)
-        .withEnabledNetworks({ eip155: { [inputChainId]: true } })
+      fixtures: new FixtureBuilder({ inputChainId })
         .withPermissionControllerConnectedToTestDapp()
         .build(),
       title,
@@ -264,7 +260,6 @@ describe('Simulation Details', function () {
       {
         title: this.test?.fullTitle(),
         inputChainId: CHAIN_IDS.LOCALHOST, // Localhost chain is not supported.
-        networkClientId: NETWORK_CLIENT_ID.LOCALHOST,
         mockRequests,
       },
       async ({ driver }) => {
