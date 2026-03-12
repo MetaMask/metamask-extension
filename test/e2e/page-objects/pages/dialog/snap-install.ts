@@ -9,9 +9,26 @@ class SnapInstall {
     text: 'Add to MetaMask',
   };
 
+  private readonly approveButton = '[data-testid="confirmation-submit-button"]';
+
   private readonly confirmButton = {
     tag: 'button',
     text: 'Confirm',
+  };
+
+  private readonly confirmFooterButton =
+    '[data-testid="confirm-footer-button"]';
+
+  private readonly confirmationDialogBoldUrl = {
+    text: 'snaps.metamask.io',
+    tag: 'b',
+  };
+
+  private readonly confirmationDialogLinkText = { text: 'That', tag: 'span' };
+
+  private readonly connectButton = {
+    tag: 'button',
+    text: 'Connect',
   };
 
   private readonly connectionRequestHeader = {
@@ -19,10 +36,11 @@ class SnapInstall {
     text: 'Connection request',
   };
 
-  private readonly connectButton = {
-    tag: 'button',
-    text: 'Connect',
-  };
+  private readonly customDialogInput = '#custom-input';
+
+  private readonly dialogApproveButton = { text: 'Approve', tag: 'button' };
+
+  public readonly lifeCycleHookMessageElement = '.snap-ui-renderer__panel';
 
   private readonly nextPageButton =
     '[data-testid="page-container-footer-next"]';
@@ -36,36 +54,18 @@ class SnapInstall {
 
   private readonly permissionConnect = '.permissions-connect';
 
+  private readonly promptInput = '.mm-input';
+
+  private readonly scrollDownButton = '[aria-label="Scroll down"]';
+
   private readonly snapInstallScrollArea =
     '[data-testid="snap-install-scroll"]';
 
   private readonly snapUpdateScrollArea = '[data-testid="snap-update-scroll"]';
 
-  private readonly approveButton = '[data-testid="confirmation-submit-button"]';
-
   private readonly snapsUiImage = '[data-testid="snaps-ui-image"]';
 
-  private readonly promptInput = '.mm-input';
-
-  private readonly customDialogInput = '#custom-input';
-
-  private readonly confirmationDialogLinkText = { text: 'That', tag: 'span' };
-
-  private readonly confirmationDialogBoldUrl = {
-    text: 'snaps.metamask.io',
-    tag: 'b',
-  };
-
   private readonly visitSiteLink = { text: 'Visit site', tag: 'a' };
-
-  private readonly dialogApproveButton = { text: 'Approve', tag: 'button' };
-
-  private readonly confirmFooterButton =
-    '[data-testid="confirm-footer-button"]';
-
-  private readonly scrollDownButton = '[aria-label="Scroll down"]';
-
-  public readonly lifeCycleHookMessageElement = '.snap-ui-renderer__panel';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -107,10 +107,6 @@ class SnapInstall {
     await this.driver.clickElementAndWaitForWindowToClose(this.approveButton);
   }
 
-  async waitForSnapsUiImage(): Promise<void> {
-    await this.driver.waitForSelector(this.snapsUiImage);
-  }
-
   async clickCheckboxPermission() {
     console.log('Clicking permission checkbox');
     await this.driver.clickElement(this.permissionConnect);
@@ -125,15 +121,24 @@ class SnapInstall {
     await this.driver.clickElement(this.confirmButton);
   }
 
+  async clickConfirmFooterAndWaitForClose(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmFooterButton,
+    );
+  }
+
+  async clickConfirmationDialogLinkText(): Promise<void> {
+    await this.driver.clickElement(this.confirmationDialogLinkText);
+  }
+
   async clickConnectButton() {
     console.log('Clicking the connect button');
     await this.driver.waitForSelector(this.connectionRequestHeader);
     await this.driver.clickElement(this.connectButton);
   }
 
-  async clickOkButton() {
-    console.log('Clicking Confirm/Ok button and wait for dialog to close');
-    await this.driver.clickElementAndWaitForWindowToClose(this.okButton);
+  async clickDialogApproveButton(): Promise<void> {
+    await this.driver.clickElement(this.dialogApproveButton);
   }
 
   async clickDialogButtonAndWaitForClose(button: {
@@ -143,62 +148,14 @@ class SnapInstall {
     await this.driver.clickElementAndWaitForWindowToClose(button);
   }
 
-  async waitForConfirmationDialogLinkText(): Promise<void> {
-    await this.driver.waitForSelector(this.confirmationDialogLinkText);
+  async clickFooterConfirmButton() {
+    console.log('Clicking Confirm button');
+    await this.driver.clickElement(this.nextPageButton);
   }
 
-  async waitForVisitSiteLinkContent(): Promise<void> {
-    await this.driver.waitForSelector(this.confirmationDialogBoldUrl);
-    await this.driver.waitForSelector(this.visitSiteLink);
-  }
-
-  async clickConfirmationDialogLinkText(): Promise<void> {
-    await this.driver.clickElement(this.confirmationDialogLinkText);
-  }
-
-  async clickVisitSiteLink(): Promise<void> {
-    await this.driver.clickElement(this.visitSiteLink);
-  }
-
-  async waitForDialogApproveButton(): Promise<void> {
-    await this.driver.waitForSelector(this.dialogApproveButton);
-  }
-
-  async clickDialogApproveButton(): Promise<void> {
-    await this.driver.clickElement(this.dialogApproveButton);
-  }
-
-  async pasteIntoPromptInput(value: string): Promise<void> {
-    await this.driver.pasteIntoField(this.promptInput, value);
-  }
-
-  async pasteIntoCustomDialogInput(value: string): Promise<void> {
-    await this.driver.pasteIntoField(this.customDialogInput, value);
-  }
-
-  async waitForDialogPanelText(expectedText: string): Promise<void> {
-    const panel = await this.driver.findElement(
-      this.lifeCycleHookMessageElement,
-    );
-    await this.driver.scrollToElement(panel);
-    await this.driver.waitForSelector({
-      css: this.lifeCycleHookMessageElement,
-      text: expectedText,
-    });
-  }
-
-  async waitForSignatureInsightPanelText(expectedText: string): Promise<void> {
-    await this.driver.waitForSelector({ text: expectedText, tag: 'p' });
-  }
-
-  async clickScrollDown(): Promise<void> {
-    await this.driver.clickElementSafe(this.scrollDownButton);
-  }
-
-  async clickConfirmFooterAndWaitForClose(): Promise<void> {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmFooterButton,
-    );
+  async clickOkButton() {
+    console.log('Clicking Confirm/Ok button and wait for dialog to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.okButton);
   }
 
   async clickOkButtonAndContinueOnDialog() {
@@ -208,9 +165,20 @@ class SnapInstall {
     await this.driver.clickElement(this.okButton);
   }
 
-  async clickFooterConfirmButton() {
-    console.log('Clicking Confirm button');
-    await this.driver.clickElement(this.nextPageButton);
+  async clickScrollDown(): Promise<void> {
+    await this.driver.clickElementSafe(this.scrollDownButton);
+  }
+
+  async clickVisitSiteLink(): Promise<void> {
+    await this.driver.clickElement(this.visitSiteLink);
+  }
+
+  async pasteIntoCustomDialogInput(value: string): Promise<void> {
+    await this.driver.pasteIntoField(this.customDialogInput, value);
+  }
+
+  async pasteIntoPromptInput(value: string): Promise<void> {
+    await this.driver.pasteIntoField(this.promptInput, value);
   }
 
   async updateScrollAndClickConfirmButton() {
@@ -228,6 +196,37 @@ class SnapInstall {
       { timeout: veryLargeDelayMs, interval: 100 },
     );
     await this.driver.clickElement(this.nextPageButton);
+  }
+
+  async waitForConfirmationDialogLinkText(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmationDialogLinkText);
+  }
+
+  async waitForDialogApproveButton(): Promise<void> {
+    await this.driver.waitForSelector(this.dialogApproveButton);
+  }
+
+  async waitForDialogPanelText(expectedText: string): Promise<void> {
+    await this.driver.findScrollToAndClickElement(
+      this.lifeCycleHookMessageElement,
+    );
+    await this.driver.waitForSelector({
+      css: this.lifeCycleHookMessageElement,
+      text: expectedText,
+    });
+  }
+
+  async waitForSignatureInsightPanelText(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({ text: expectedText, tag: 'p' });
+  }
+
+  async waitForSnapsUiImage(): Promise<void> {
+    await this.driver.waitForSelector(this.snapsUiImage);
+  }
+
+  async waitForVisitSiteLinkContent(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmationDialogBoldUrl);
+    await this.driver.waitForSelector(this.visitSiteLink);
   }
 }
 

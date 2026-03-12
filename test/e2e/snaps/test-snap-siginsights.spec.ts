@@ -44,7 +44,7 @@ describe('Test Snap Signature Insights', function () {
 
         await driver.openNewPage(DAPP_URL);
 
-        await testDapp.scrollToAndClickPersonalSign();
+        await testDapp.clickPersonalSign();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.waitForSignatureInsightPanelText(
           'Example `personal_sign` message',
@@ -55,11 +55,11 @@ describe('Test Snap Signature Insights', function () {
         await snapInstall.clickScrollDown();
         await snapInstall.clickConfirmFooterAndWaitForClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.waitForSpanWithText(
+        await testDapp.verifySpanText(
           '0xa10b6707dd79e2f1f91ba243ab7abe15a46f58b052ad9cec170c5366ef5667c447a87eba2c0a9d4c9fbfa0a23e9db1fb55865d0568c32bd7cc681b8d0860e7af1b',
         );
 
-        await testDapp.scrollToAndClickSignTypedData();
+        await testDapp.clickSignTypedData();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.waitForSignatureInsightPanelText('Hi, Alice!');
         await snapInstall.clickScrollDown();
@@ -67,11 +67,11 @@ describe('Test Snap Signature Insights', function () {
         await snapInstall.waitForSignatureInsightPanelText('1');
         await snapInstall.clickConfirmFooterAndWaitForClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.waitForSpanWithText(
+        await testDapp.verifySpanText(
           '0x32791e3c41d40dd5bbfb42e66cf80ca354b0869ae503ad61cd19ba68e11d4f0d2e42a5835b0bfd633596b6a7834ef7d36033633a2479dacfdb96bda360d51f451b',
         );
 
-        await testDapp.scrollToAndClickSignTypedDataV3();
+        await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickScrollDown();
         await driver.delay(500);
@@ -83,11 +83,11 @@ describe('Test Snap Signature Insights', function () {
         );
         await snapInstall.clickConfirmFooterAndWaitForClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.waitForSpanWithText(
+        await testDapp.verifySpanText(
           '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
         );
 
-        await testDapp.scrollToAndClickSignTypedDataV4();
+        await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickScrollDown();
         await driver.delay(500);
@@ -99,7 +99,7 @@ describe('Test Snap Signature Insights', function () {
         );
         await snapInstall.clickConfirmFooterAndWaitForClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.waitForSpanWithText(
+        await testDapp.verifySpanText(
           '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
         );
       },

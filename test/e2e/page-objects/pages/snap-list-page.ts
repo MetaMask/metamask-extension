@@ -3,6 +3,8 @@ import { Driver } from '../../webdriver/driver';
 class SnapListPage {
   private readonly driver: Driver;
 
+  private readonly backButton = 'button[aria-label="Back"]';
+
   private readonly closeModalButton = 'button[aria-label="Close"]';
 
   private readonly continueRemoveSnapButton = {
@@ -15,12 +17,29 @@ class SnapListPage {
     text: 'Removing this Snap removes these accounts from MetaMask',
   };
 
+  private readonly descriptionWebpack = {
+    text: 'Description from Webpack Plugin Example Snap',
+    tag: 'p',
+  };
+
+  private readonly homePageSnap = {
+    text: 'Home Page Example Snap',
+    tag: 'p',
+  };
+
+  private readonly homePageTitle = {
+    text: 'Welcome to my Snap home page!',
+    tag: 'p',
+  };
+
   private readonly noSnapInstalledMessage = {
     tag: 'p',
     text: "You don't have any snaps installed.",
   };
 
   private readonly noSnapsInstalledContainer = '.mm-box';
+
+  private readonly popoverRemoveSnapButton = '#popoverRemoveSnapButton';
 
   private readonly removeSnapButton = '[data-testid="remove-snap-button"]';
 
@@ -31,6 +50,16 @@ class SnapListPage {
     tag: 'button',
     text: 'Remove Snap',
   };
+
+  private readonly revokePermissionOption = {
+    text: 'Revoke permission',
+    tag: 'p',
+  };
+
+  private readonly snapEnabledToggle = '.toggle-button > div';
+
+  // this selector needs to be combined with snap name to be unique.
+  private readonly snapListItem = '.snap-list-item';
 
   private readonly updateSnapButton = {
     css: '.mm-button-link',
@@ -43,37 +72,71 @@ class SnapListPage {
     tag: 'p',
   };
 
-  private readonly descriptionWebpack = {
-    text: 'Description from Webpack Plugin Example Snap',
-    tag: 'p',
-  };
-
-  // this selector needs to be combined with snap name to be unique.
-  private readonly snapListItem = '.snap-list-item';
-
-  private readonly homePageSnap = {
-    text: 'Home Page Example Snap',
-    tag: 'p',
-  };
-
-  private readonly homePageTitle = {
-    text: 'Welcome to my Snap home page!',
-    tag: 'p',
-  };
-
-  private readonly backButton = 'button[aria-label="Back"]';
-
-  private readonly revokePermissionOption = {
-    text: 'Revoke permission',
-    tag: 'p',
-  };
-
-  private readonly snapEnabledToggle = '.toggle-button > div';
-
-  private readonly popoverRemoveSnapButton = '#popoverRemoveSnapButton';
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkHomePageTitle(): Promise<void> {
+    console.log('Checking title of snap list page');
+    await this.driver.waitForSelector(this.homePageTitle);
+  }
+
+  async checkNoSnapInstalledMessageIsDisplayed(): Promise<void> {
+    console.log('Verifying no snaps is installed for current account');
+    await this.driver.waitForSelector(this.noSnapInstalledMessage);
+  }
+
+  async checkNoSnapsInstalledMessage(): Promise<void> {
+    console.log('Checking no snaps installed message');
+    await this.driver.waitForSelector({
+      css: this.noSnapsInstalledContainer,
+      text: "You don't have any snaps installed.",
+      tag: 'p',
+    });
+  }
+
+  async checkUpdateLinkIsNotDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.updateSnapButton, {
+      // make sure the Snap page has loaded
+      findElementGuard: this.descriptionWebpack,
+    });
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button');
+    await this.driver.clickElement(this.backButton);
+  }
+
+  async clickHomePageSnap(): Promise<void> {
+    console.log('Clicking default snap');
+    await this.driver.waitForSelector(this.homePageSnap);
+    await this.driver.clickElement(this.homePageSnap);
+  }
+
+  async clickPermissionOptionsMenu(permissionTestId: string): Promise<void> {
+    console.log(`Clicking permission options menu: ${permissionTestId}`);
+    await this.driver.clickElement(`[data-testid="${permissionTestId}"]`);
+  }
+
+  async clickRevokePermission(): Promise<void> {
+    console.log('Clicking Revoke permission');
+    await this.driver.clickElement(this.revokePermissionOption);
+  }
+
+  async clickUpdateSnapButton(): Promise<void> {
+    console.log('Clicking update snap button');
+    await this.driver.clickElement(this.updateSnapButton);
+  }
+
+  async clickWebpackPluginSnap(): Promise<void> {
+    console.log('Clicking webpack plugin snap');
+    await this.driver.clickElement(this.webpackPluginSnap);
+  }
+
+  async openSnapByName(snapName: string): Promise<void> {
+    console.log(`Opening snap: ${snapName}`);
+    await this.driver.waitForSelector({ text: snapName, tag: 'p' });
+    await this.driver.clickElement({ text: snapName, tag: 'p' });
   }
 
   /**
@@ -110,65 +173,6 @@ class SnapListPage {
     await this.driver.clickElementAndWaitToDisappear(this.closeModalButton);
   }
 
-  async checkNoSnapInstalledMessageIsDisplayed(): Promise<void> {
-    console.log('Verifying no snaps is installed for current account');
-    await this.driver.waitForSelector(this.noSnapInstalledMessage);
-  }
-
-  async clickHomePageSnap(): Promise<void> {
-    console.log('Clicking default snap');
-    await this.driver.waitForSelector(this.homePageSnap);
-    await this.driver.clickElement(this.homePageSnap);
-  }
-
-  async checkHomePageTitle(): Promise<void> {
-    console.log('Checking title of snap list page');
-    await this.driver.waitForSelector(this.homePageTitle);
-  }
-
-  async clickWebpackPluginSnap(): Promise<void> {
-    console.log('Clicking webpack plugin snap');
-    await this.driver.clickElement(this.webpackPluginSnap);
-  }
-
-  async clickUpdateSnapButton(): Promise<void> {
-    console.log('Clicking update snap button');
-    await this.driver.clickElement(this.updateSnapButton);
-  }
-
-  async checkUpdateLinkIsNotDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.updateSnapButton, {
-      // make sure the Snap page has loaded
-      findElementGuard: this.descriptionWebpack,
-    });
-  }
-
-  async clickBackButton(): Promise<void> {
-    console.log('Clicking back button');
-    await this.driver.clickElement(this.backButton);
-  }
-
-  async openSnapByName(snapName: string): Promise<void> {
-    console.log(`Opening snap: ${snapName}`);
-    await this.driver.waitForSelector({ text: snapName, tag: 'p' });
-    await this.driver.clickElement({ text: snapName, tag: 'p' });
-  }
-
-  async clickPermissionOptionsMenu(permissionTestId: string): Promise<void> {
-    console.log(`Clicking permission options menu: ${permissionTestId}`);
-    await this.driver.clickElement(`[data-testid="${permissionTestId}"]`);
-  }
-
-  async clickRevokePermission(): Promise<void> {
-    console.log('Clicking Revoke permission');
-    await this.driver.clickElement(this.revokePermissionOption);
-  }
-
-  async toggleSnapEnabled(): Promise<void> {
-    console.log('Toggling snap enabled');
-    await this.driver.clickElement(this.snapEnabledToggle);
-  }
-
   async removeSnapViaPopover(snapName: string): Promise<void> {
     console.log('Removing snap via popover');
     await this.driver.clickElement({
@@ -178,13 +182,9 @@ class SnapListPage {
     await this.driver.clickElement(this.popoverRemoveSnapButton);
   }
 
-  async checkNoSnapsInstalledMessage(): Promise<void> {
-    console.log('Checking no snaps installed message');
-    await this.driver.waitForSelector({
-      css: this.noSnapsInstalledContainer,
-      text: "You don't have any snaps installed.",
-      tag: 'p',
-    });
+  async toggleSnapEnabled(): Promise<void> {
+    console.log('Toggling snap enabled');
+    await this.driver.clickElement(this.snapEnabledToggle);
   }
 }
 

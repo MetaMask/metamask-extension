@@ -2,7 +2,9 @@ import { merge, cloneDeep } from 'lodash';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
+import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
@@ -109,6 +111,21 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withKeyringController(data: Partial<KeyringControllerState>): this {
+    merge(this.fixture.data.KeyringController, data);
+    return this;
+  }
+
+  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
+    merge(this.fixture.data.MetaMetricsController, data);
+    return this;
+  }
+
+  withMetaVersion(version: number): this {
+    this.fixture.meta.version = version;
+    return this;
+  }
+
   withNameController(data: Partial<NameControllerState>): this {
     merge(this.fixture.data.NameController, data);
     return this;
@@ -123,11 +140,6 @@ class FixtureBuilderV2 {
     data: Partial<NetworkEnablementControllerState>,
   ): this {
     merge(this.fixture.data.NetworkEnablementController, data);
-    return this;
-  }
-
-  withMetaVersion(version: number): this {
-    this.fixture.meta.version = version;
     return this;
   }
 
@@ -152,16 +164,16 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withSnapsPrivacyWarningAlreadyShown(): this {
-    return this.withAppStateController({
-      snapsInstallPrivacyWarningShown: true,
-    });
-  }
-
   withSelectedNetworkController(
     data: Partial<SelectedNetworkControllerState>,
   ): this {
     merge(this.fixture.data.SelectedNetworkController, data);
+    return this;
+  }
+
+  withSnapController(data: Partial<PersistedSnapControllerState>): this {
+    (this.fixture.data as Record<string, unknown>).SnapController ??= {};
+    merge(this.fixture.data.SnapController, data);
     return this;
   }
 
@@ -201,13 +213,6 @@ class FixtureBuilderV2 {
   ): this {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
-    return this;
-  }
-
-  withKeyringController(
-    data: Partial<FixtureType['data']['KeyringController']>,
-  ): this {
-    merge(this.fixture.data.KeyringController, data);
     return this;
   }
 
@@ -349,11 +354,6 @@ class FixtureBuilderV2 {
     });
   }
 
-  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
-    merge(this.fixture.data.MetaMetricsController, data);
-    return this;
-  }
-
   withNoNames(): this {
     // Direct assignment instead of merge so existing petname entries are cleared if any
     this.fixture.data.NameController.names = {
@@ -439,12 +439,21 @@ class FixtureBuilderV2 {
     return this.withPermissionController({ subjects });
   }
 
-  withSnapController(
-    data: Partial<FixtureType['data']['SnapController']>,
+  withSelectedNetwork(
+    networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
   ): this {
-    (this.fixture.data as Record<string, unknown>).SnapController ??= {};
-    merge(this.fixture.data.SnapController, data);
-    return this;
+    return this.withNetworkController({
+      selectedNetworkClientId: networkClientId,
+    });
+  }
+
+  withSelectedNetworkControllerPerDomain(): this {
+    return this.withSelectedNetworkController({
+      domains: {
+        [DAPP_URL]: LOCALHOST_NETWORK_CLIENT_ID,
+        [DAPP_ONE_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
+      },
+    });
   }
 
   withSnapControllerOnStartLifecycleSnap(): this {
@@ -529,32 +538,7 @@ class FixtureBuilderV2 {
           ],
         },
       },
-    });
-  }
-
-  withSmartTransactionsOptedOut(): this {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: false,
-      },
-    });
-  }
-
-  withSelectedNetwork(
-    networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
-  ): this {
-    return this.withNetworkController({
-      selectedNetworkClientId: networkClientId,
-    });
-  }
-
-  withSelectedNetworkControllerPerDomain(): this {
-    return this.withSelectedNetworkController({
-      domains: {
-        [DAPP_URL]: LOCALHOST_NETWORK_CLIENT_ID,
-        [DAPP_ONE_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
-      },
-    });
+    } as Partial<PersistedSnapControllerState>);
   }
 
   withShowNativeTokenAsMainBalanceDisabled(): this {
@@ -569,6 +553,20 @@ class FixtureBuilderV2 {
     return this.withPreferencesController({
       preferences: {
         showNativeTokenAsMainBalance: true,
+      },
+    });
+  }
+
+  withSnapsPrivacyWarningAlreadyShown(): this {
+    return this.withAppStateController({
+      snapsInstallPrivacyWarningShown: true,
+    });
+  }
+
+  withSmartTransactionsOptedOut(): this {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
       },
     });
   }
