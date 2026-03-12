@@ -11,6 +11,11 @@ class SettingsPage {
   private readonly closeSettingsPageButton =
     '.settings-page__header__title-container__close-button';
 
+  private readonly contactsButton = {
+    text: 'Contacts',
+    css: '.tab-bar__tab__content__title',
+  };
+
   private readonly developerOptionsButton = {
     text: 'Developer options',
     css: '.tab-bar__tab__content__title',
@@ -56,11 +61,6 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly generalTabButton = {
-    text: 'General',
-    css: '.tab-bar__tab__content__title',
-  };
-
   private readonly transactionShieldButton = {
     text: 'Transaction Shield',
     css: '.tab-bar__tab__content__title',
@@ -96,15 +96,14 @@ class SettingsPage {
     });
   }
 
-  async goToGeneralTab(): Promise<void> {
-    console.log('Navigating to General tab');
-    await this.driver.waitForSelector(this.generalTabButton);
-    await this.driver.clickElement(this.generalTabButton);
-  }
-
   async fillSearchSettingsInput(text: string): Promise<void> {
     console.log(`Filling search settings input with ${text}`);
     await this.driver.fill(this.searchSettingsInput, text);
+  }
+
+  async goToContactsSettings(): Promise<void> {
+    console.log('Navigating to Contacts page settings');
+    await this.driver.clickElement(this.contactsButton);
   }
 
   async toggleShowFiatOnTestnets(): Promise<void> {

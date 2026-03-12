@@ -49,14 +49,12 @@ describe('Test Snap Get Locale', function () {
         );
         await homePage.headerNavbar.openSettingsPage();
 
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.goToGeneralTab();
-
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
         await generalSettings.changeLanguage('Dansk');
 
         await generalSettings.assertLoadingOverlayNotPresent();
+        const settingsPage = new SettingsPage(driver);
         await settingsPage.closeSettingsPage();
 
         await homePage.headerNavbar.openSnapListPage();
