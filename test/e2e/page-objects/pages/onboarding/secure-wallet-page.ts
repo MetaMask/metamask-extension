@@ -35,7 +35,7 @@ class SecureWalletPage {
 
   private readonly confirmSrpSuccessMessage = {
     text: 'Perfect',
-    tag: 'h2',
+    tag: 'h3',
   };
 
   private readonly confirmSrpConfirmButton =
