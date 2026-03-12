@@ -19,7 +19,7 @@ import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
-import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';

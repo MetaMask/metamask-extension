@@ -11,7 +11,7 @@ import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
-import { parseApprovalTransactionData } from '../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../shared/lib/transaction.utils';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';

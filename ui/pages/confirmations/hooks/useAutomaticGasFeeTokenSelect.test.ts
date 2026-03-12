@@ -16,7 +16,7 @@ import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 jest.mock('./useHasInsufficientBalance');
-jest.mock('../../../../shared/modules/selectors');
+jest.mock('../../../../shared/lib/selectors');
 jest.mock('./gas/useIsGaslessSupported');
 
 jest.mock('../../../store/actions', () => ({

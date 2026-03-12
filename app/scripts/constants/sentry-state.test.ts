@@ -1,4 +1,4 @@
-import { maskObject } from '../../../shared/modules/object.utils';
+import { maskObject } from '../../../shared/lib/object.utils';
 import { SENTRY_UI_STATE } from './sentry-state';
 
 describe('sentry-state', () => {

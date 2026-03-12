@@ -5,7 +5,7 @@ import {
   EVM_NATIVE_ASSET,
   MOCK_NFT1155,
 } from '../../../../../test/data/send/assets';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
 import { useBalance } from './useBalance';

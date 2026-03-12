@@ -11,7 +11,7 @@ import { useDeepMemo } from '../../../../hooks/useDeepMemo';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
-import { parseApprovalTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../../shared/lib/transaction.utils';
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { BalanceChange } from '../../../simulation-details/types';
 import { isSpendingCapUnlimited } from '../approve/hooks/use-approve-token-simulation';

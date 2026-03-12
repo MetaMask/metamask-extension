@@ -9,7 +9,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
@@ -54,7 +54,7 @@ jest.mock('../../../../store/actions', () => ({
   setPermittedChains: jest.fn(() => ({ type: 'SET_PERMITTED_CHAINS' })),
 }));
 
-jest.mock('../../../../../shared/modules/environment');
+jest.mock('../../../../../shared/lib/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
