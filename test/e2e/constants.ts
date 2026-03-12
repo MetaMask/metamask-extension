@@ -13,6 +13,14 @@ export const LOCAL_NODE_MNEMONIC =
 export const LOCALHOST_NETWORK_CLIENT_ID =
   '3a5eb6f2-cb62-428d-897c-b7ded577d7c2';
 
+/** networkClientId for the second local node (0x53a / Localhost 8546). */
+export const SECOND_NODE_NETWORK_CLIENT_ID =
+  '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
+
+/** networkClientId for the third local node (0x3e8 / Localhost 7777). */
+export const THIRD_NODE_NETWORK_CLIENT_ID =
+  'a3460c52-12ee-4267-9be6-1503095a587e';
+
 /**
  * Network client IDs. Each key maps to the `networkClientId` used inside
  * `NetworkController.networkConfigurationsByChainId`.
@@ -44,6 +52,18 @@ export const LEDGER_FIXTURE_VAULT =
   '{"data":"dwEWCLyS14yChQuzUYsiVhfaSZ7pzwjnhUhmTlz/5Nmxn3aTN/tIicWEMGjQ3+GgJw7E1fkn2OLfA4U9iw5eV5ZVozHLJC+4K3YihNJGcLaxQQj9hb8fnxWhRR2NWgKlThkGiGBF+66qE5rCgmGijYy3WA19OrpgTANYRE9IZifS46MokrWxHlZNY90PQWl+6ROc6XtfbdetpslQkOBCGDTp49FZz0E2M62crLMAU+cSLHuMIkwq7WfbJwy5ybMe085Bo3ghzrwwpysu39vUozGbaQN4EUhNgE7vzxPcasQWwqi/3aLKTm2JATs3sia0jIp5OSdaZkcTX4pcvqgXxGUrxsqK56FtFzAg4TE7qjl2smX3ScW1xJopYHvI8Uv6eEH6kLcnZbV7MJw+Dasu/ROrsynrbywevY3LQ62g07t2ZPz/82VfcEOGcdBmhsVoFGpNYoaESGQIKV2yXLU+0erOzAmYz4bSI+66i+a1woLaQveko/7nm38ILojedM9+Zqfcgh+PjCYyfjRxTc+5BhS+AjHHQgWAD/sqvaMTLQiH7dP4rYHYeZQi9WL9nfvv/orxVJFCEpMAb13BbJefvCKTKxiOg/F+4RPPB46gAAXMrMGtin/P8wxlFcOR0Drfg0COa5hMvSM2hOhV6LUfx3gL5ilAjuFAL3iANh5qJSECg8m46BU6maVQoGQCiaGSfSerEvnbXftXNCK1SfpkSpV7k/hFAVQyv5tN+4yi4CYqLq+43roSNxlaEVSz8MDJr+SNIJQFD8aqT4RiHMQqOPpYrmSvWeZDELs0TQU4XEVKIU/7naocQfdncUfsExXKdJGvIvnISZpNGcr9/DU2V6a3ZmF3pvQ2HPnZgYSsYBXK7mxJSpgTNCwvV1HBSl93SHs59Zn2aWW0qvaS0IpTHklMWC+8YF3FQAikgaEnVnTwGJL/4gg02MMHOKbazr7Cv/z9Vfj8sSU3enuiK4fCRqlFbwKHtQwqry6or6p+NiXFZ40EuMy0NYPkDy/h5Srk0Y1JMRJJp6bcTIu1f90+fVziqQ==","iv":"2gvqZ+DkKASrRK8iCXALPQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}';
 
 export const DEFAULT_FIXTURE_ACCOUNT_SHORTENED = '0x5CfE73b602...474086a7e1';
+
+export const TREZOR_VAULT =
+  '{"data":"H+KGUVIk87gi/8BeaSNHa2F0lyQ0Jbu/n8MlD1hV9s3EhA8978Qr1nfJyGlO9YY5pZo10R0dWGurtIe7wA/TSqhrY9gqn1O9zSW+4IJBx22iKTmcjN1PIlMtqP8h1Ft3vDVUtXC1ZR6wJWkmPVMMKGDay0OhZ0EL9iK6JEusN4F/XyTbvGHpvEbMq+dgxds3U9g/NcWH8oe0q9ZdqKmcxCwjalVsSfBgwVCpj66Tt+wTMEC38eDeXWrJEs0Kmq6dVUa74ivMhdVJYbqwg0rN4AA/SXBRx+37/nPOcJPV+spyzZvSBwFWDn7l1dwgszdiy+NyCBGUK/jJRYQo5np7+a7n62Gc2Jnbs2cZarqtUKKqQ+oVsSFPJAWfFgoe9QBVhaU+MP8+URSipvJvpgpX+ODV8iEFdJ3rLXs377cvyABKVrVHOusJzwLS1H2evLyqej+HaLMD0TkyB40AiVU1sMc/Od3P1xQ+I8GBxrxfK+hodNLxWbyjbIM9k4vSNZMoTSkiaWSeJ/hxgRL5Y8clAJTRRqgTpwERQUwW891i5t5HIQoIOl2PNsOw7V/wRzCqWR1COjgMRrAoKjVcuOBu2NmnM1MNq/hPNNn8LMmrCH3qydS2N/J/OKRoeny+h4+9IL8rxmzSP7Zqk+tTFZmMkMCrHo3bofmTXg2XjOqjbZuN3Rn+qtvDOjjzf1atI8+4yFn6jffgQF2wFrFpUnVxl+4Gc/EdEZPSKNQgWkYt8rhgMumDppJ1QboWnKIyNjeN2kVNfqUcNsgp4Qkw34Wq5Ifw3NPkmJ1iOmfpsGPjz4vx1+pRS49PT6qRpdM7nRjuB9uU17VztoPiU/ASj5lkTI53NgIGvMQ3qMoee2wRvPSflsy892f5cs8ZqFTm+YB3kRgl2pq8BHRFR+iXcsVPl+I=","iv":"yLI4xnkISVYDNAiMX5XsNw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"KlzhFYDtD7xefesp6xGvs41ZaziHohL7RgfRf1yX1WM="}';
+
+/**
+ * Account ID used for hardware wallet fixtures (Ledger and Trezor).
+ */
+export const HARDWARE_WALLET_ACCOUNT_ID =
+  '221ecb67-0d29-4c04-83b2-dff07c263634';
+
+/** Trezor hardware wallet address (lowercase) */
+export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';

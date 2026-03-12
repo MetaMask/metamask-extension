@@ -427,7 +427,7 @@ function getTraceKey(request: TraceRequest | EndTraceRequest) {
   return [name, id].join(':');
 }
 
-function getPerformanceTimestamp(): number {
+export function getPerformanceTimestamp(): number {
   return performance.timeOrigin + performance.now();
 }
 

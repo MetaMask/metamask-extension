@@ -786,7 +786,7 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/profile-sync-controller": true,
+        "@metamask/account-tree-controller>@metamask/profile-sync-controller": true,
         "@metamask/account-tree-controller>@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -983,6 +983,7 @@
       "packages": {
         "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/keyring-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
@@ -1939,6 +1940,7 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
+        "atob": true,
         "console.error": true,
         "console.warn": true,
         "dispatchEvent": true,
@@ -2168,8 +2170,7 @@
     },
     "@metamask/snaps-sdk": {
       "globals": {
-        "URL": true,
-        "fetch": true
+        "URL": true
       },
       "packages": {
         "@metamask/rpc-errors": true,
@@ -2521,18 +2522,18 @@
         "navigator.userAgentData": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
+    "@google/genai>protobufjs>@protobufjs/codegen": {
       "globals": {
         "console.log": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": {
+    "@google/genai>protobufjs>@protobufjs/fetch": {
       "globals": {
         "XMLHttpRequest": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
+        "@google/genai>protobufjs>@protobufjs/aspromise": true,
+        "@google/genai>protobufjs>@protobufjs/inquire": true
       }
     },
     "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
@@ -3141,7 +3142,7 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "buffer": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
+        "@google/genai>protobufjs>long": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "tslib": true
       }
@@ -3231,7 +3232,7 @@
         "@zxing/library>ts-custom-error": true
       }
     },
-    "readable-stream>abort-controller": {
+    "openai>abort-controller": {
       "globals": {
         "AbortController": true
       }
@@ -4416,7 +4417,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "viem": true,
-        "eth-lattice-keyring>gridplus-sdk>zod": true
+        "openai>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -4809,7 +4810,7 @@
         "navigator": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
+    "@google/genai>protobufjs>long": {
       "globals": {
         "WebAssembly.Instance": true,
         "WebAssembly.Module": true,
@@ -5130,16 +5131,16 @@
         "setTimeout": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/base64": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/eventemitter": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/float": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/path": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/pool": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/utf8": true
+        "@google/genai>protobufjs>@protobufjs/aspromise": true,
+        "@google/genai>protobufjs>@protobufjs/base64": true,
+        "@google/genai>protobufjs>@protobufjs/codegen": true,
+        "@google/genai>protobufjs>@protobufjs/eventemitter": true,
+        "@google/genai>protobufjs>@protobufjs/fetch": true,
+        "@google/genai>protobufjs>@protobufjs/float": true,
+        "@google/genai>protobufjs>@protobufjs/inquire": true,
+        "@google/genai>protobufjs>@protobufjs/path": true,
+        "@google/genai>protobufjs>@protobufjs/pool": true,
+        "@google/genai>protobufjs>@protobufjs/utf8": true
       }
     },
     "crypto-browserify>public-encrypt": {
@@ -5525,7 +5526,7 @@
         "queueMicrotask": true
       },
       "packages": {
-        "readable-stream>abort-controller": true,
+        "openai>abort-controller": true,
         "buffer": true,
         "webpack>events": true,
         "process": true,
@@ -6420,7 +6421,7 @@
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "openai>zod": {
       "globals": {
         "File": true,
         "JSONSchema": true,

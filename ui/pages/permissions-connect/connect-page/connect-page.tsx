@@ -29,7 +29,7 @@ import {
   getPermissions,
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,

@@ -38,6 +38,7 @@ import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 
 const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;

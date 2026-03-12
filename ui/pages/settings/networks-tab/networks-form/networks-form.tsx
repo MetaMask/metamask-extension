@@ -21,16 +21,16 @@ import {
 import {
   decimalToHex,
   hexToDecimal,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../../shared/modules/network.utils';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+} from '../../../../../shared/lib/network.utils';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
