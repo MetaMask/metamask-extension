@@ -8,6 +8,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { v4 } from 'uuid';
 import { captureException } from '../../../shared/lib/sentry';
+import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
 import { infuraProjectId } from '../../../shared/constants/network';
 
 export const version = 199;
@@ -147,9 +148,8 @@ function transformState(
     }
 
     const infuraUrl = `https://${config.infuraSubdomain}.infura.io/v3/${infuraProjectId}`;
-    const infuraOrigin = `https://${config.infuraSubdomain}.infura.io`;
-    const hasInfura = networkConfig.rpcEndpoints.some(
-      (ep) => ep.url === infuraOrigin || ep.url.startsWith(`${infuraOrigin}/`),
+    const hasInfura = networkConfig.rpcEndpoints.some((ep) =>
+      getIsMetaMaskInfuraEndpointUrl(ep.url, infuraProjectId as string),
     );
 
     if (!hasInfura) {
