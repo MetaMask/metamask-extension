@@ -92,7 +92,7 @@ jobs:
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
         with:
-          filters: .github/filter-rules.yml
+          filters: .github/rules/filter-rules.yml
           list-files: shell
 
       # This puts the workflow in locales-only mode, with skip-everything=true and needs-locales=true

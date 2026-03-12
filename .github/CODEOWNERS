@@ -245,6 +245,7 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
 /.nvmrc                                               @MetaMask/extension-platform @MetaMask/release-team @HowardBraham
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/scripts/                                     @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+/.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/dependabot.yml                               @MetaMask/extension-platform
 development/fitness-functions/                        @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 development/metamaskbot-build-announce/               @MetaMask/extension-platform @HowardBraham @itsyoboieltr
