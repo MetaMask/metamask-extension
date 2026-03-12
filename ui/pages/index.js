@@ -1,7 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
+import {
+  HashRouter,
+  Outlet,
+  RouterProvider,
+  createHashRouter,
+} from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
@@ -18,7 +23,49 @@ import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
 
-import Routes from './routes';
+import Routes, { routeConfig } from './routes';
+
+function AppProviders() {
+  return (
+    <MetaMetricsProvider>
+      <LegacyMetaMetricsProvider>
+        <I18nProvider>
+          <LegacyI18nProvider>
+            <QueryClientProvider client={queryClient}>
+              <AssetPollingProvider>
+                <MetamaskIdentityProvider>
+                  <MetamaskNotificationsProvider>
+                    <HardwareWalletErrorProvider>
+                      <ShieldSubscriptionProvider>
+                        <RiveWasmProvider>
+                          <Outlet />
+                        </RiveWasmProvider>
+                      </ShieldSubscriptionProvider>
+                    </HardwareWalletErrorProvider>
+                  </MetamaskNotificationsProvider>
+                </MetamaskIdentityProvider>
+              </AssetPollingProvider>
+            </QueryClientProvider>
+          </LegacyI18nProvider>
+        </I18nProvider>
+      </LegacyMetaMetricsProvider>
+    </MetaMetricsProvider>
+  );
+}
+
+const router = createHashRouter([
+  {
+    element: <AppProviders />,
+    // errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        element: <Routes />,
+        // errorElement: <RouteErrorBoundary />,
+        children: routeConfig,
+      },
+    ],
+  },
+]);
 
 class Index extends PureComponent {
   state = {};
@@ -53,31 +100,7 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <HashRouter>
-          <MetaMetricsProvider>
-            <LegacyMetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <QueryClientProvider client={queryClient}>
-                    <AssetPollingProvider>
-                      <MetamaskIdentityProvider>
-                        <MetamaskNotificationsProvider>
-                          <HardwareWalletErrorProvider>
-                            <ShieldSubscriptionProvider>
-                              <RiveWasmProvider>
-                                <Routes />
-                              </RiveWasmProvider>
-                            </ShieldSubscriptionProvider>
-                          </HardwareWalletErrorProvider>
-                        </MetamaskNotificationsProvider>
-                      </MetamaskIdentityProvider>
-                    </AssetPollingProvider>
-                  </QueryClientProvider>
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </LegacyMetaMetricsProvider>
-          </MetaMetricsProvider>
-        </HashRouter>
+        <RouterProvider router={router} />
       </Provider>
     );
   }
