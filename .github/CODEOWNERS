@@ -35,7 +35,9 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
 # A machine-generated file that tracks circular dependencies in the codebase.
 # It is updated using yarn circular-deps:update
-development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham @dbrans
+development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham
+development/circular-deps.ts         @MetaMask/extension-security-team
+/.madgerc                            @MetaMask/extension-security-team
 
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
@@ -166,11 +168,6 @@ ui/components/app/import-token                        @MetaMask/metamask-assets
 ui/components/app/assets                              @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
-# Extension Platform
-.yarnrc.yml                                           @MetaMask/extension-platform
-app/scripts/lib/createMetaRPCHandler.js               @MetaMask/extension-platform
-app/scripts/lib/metaRPCClientFactory.ts               @MetaMask/extension-platform
-
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
 app/scripts/lib/smart-transaction                 @MetaMask/transactions
@@ -190,6 +187,7 @@ test/e2e/mock-e2e.js                                                  @MetaMask/
 test/e2e/tests/settings/state-logs-helpers.ts                         @MetaMask/qa
 test/e2e/tests/settings/state-logs.json                               @MetaMask/qa @MetaMask/extension-privacy-reviewers
 test/e2e/tests/privacy/                                               @MetaMask/qa @MetaMask/extension-privacy-reviewers
+/playwright.config.ts                                                 @MetaMask/qa @MetaMask/extension-platform
 test/e2e/fixtures/onboarding-fixture.json                             @MetaMask/qa @MetaMask/extension-platform
 test/e2e/fixtures/fixture-validation.ts                               @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-export.spec.ts                           @MetaMask/qa @MetaMask/extension-platform
@@ -215,3 +213,53 @@ app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/
 # mUSD
 **/musd/** @MetaMask/metamask-earn
 shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
+
+# Extension Platform owns build, development tooling,
+# CI, background process, and platform infrastructure. Changes to
+# config files, dotfiles, and core platform files require approval,
+# as they affect build and release outcomes and developer experience.
+
+# Lint
+/.editorconfig                                        @MetaMask/extension-platform
+/.eslintrc.js                                         @MetaMask/extension-platform
+/.eslintrc.*.js                                       @MetaMask/extension-platform
+/.prettierignore                                      @MetaMask/extension-platform
+/.prettierrc.yml                                      @MetaMask/extension-platform
+/stylelint.config.js                                  @MetaMask/extension-platform
+
+# Test
+/.mocharc.js                                          @MetaMask/extension-platform
+/jest.config.js                                       @MetaMask/extension-platform
+/jest.*.config.js                                     @MetaMask/extension-platform
+
+# Development Environment
+/.nvmrc                                               @MetaMask/extension-platform
+/.vscode/                                             @MetaMask/extension-platform
+/.gitattributes                                       @MetaMask/extension-platform
+/.gitignore                                           @MetaMask/extension-platform
+/.husky/                                              @MetaMask/extension-platform
+/.yarn/                                               @MetaMask/extension-platform
+/.env.yarn                                            @MetaMask/extension-platform
+/.yarnrc.yml                                          @MetaMask/extension-platform
+
+# CI
+/.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+/.github/scripts/                                     @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+/.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+/.github/dependabot.yml                               @MetaMask/extension-platform
+development/fitness-functions/                        @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+development/metamaskbot-build-announce/               @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+/codecov.yml                                          @MetaMask/extension-platform
+/sonar-project.properties                             @MetaMask/extension-platform
+
+# Build
+development/build/                                    @MetaMask/extension-platform @itsyoboieltr
+development/webpack/                                  @MetaMask/extension-platform @itsyoboieltr
+development/generate-lavamoat-policies.js             @MetaMask/extension-platform @itsyoboieltr
+/babel.config.js                                      @MetaMask/extension-platform
+/tsconfig.json                                        @MetaMask/extension-platform
+/tsconfig.*.json                                      @MetaMask/extension-platform
+
+# Background Process
+app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platform
+app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
