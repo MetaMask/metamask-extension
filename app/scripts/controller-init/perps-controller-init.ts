@@ -1,6 +1,6 @@
 import { PerpsController, UserHistoryItem } from '@metamask/perps-controller';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
-import { ControllerApi, ControllerInitFunction } from './types';
+import { ControllerInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 
 /**
