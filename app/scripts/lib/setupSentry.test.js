@@ -2,18 +2,18 @@ import { rewriteReport, removeUrlsFromBreadCrumb } from './setupSentry';
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
-    it('should remove urls from error messages', () => {
+    it('removes urls from error messages', async () => {
       const testReport = {
         message: 'This report has a test url: http://example.com',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has a test url: **',
       );
     });
 
-    it('should remove urls from error reports that have an exception with an array of values', () => {
+    it('removes urls from error reports that have an exception with an array of values', async () => {
       const testReport = {
         exception: {
           values: [
@@ -27,7 +27,7 @@ describe('Setup Sentry', () => {
         },
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.exception.values).toStrictEqual([
         {
           value: 'This report has a test url: **',
@@ -38,120 +38,266 @@ describe('Setup Sentry', () => {
       ]);
     });
 
-    it('should remove ethereum addresses from error messages', () => {
+    it('removes ethereum addresses from error messages', async () => {
       const testReport = {
         message:
           'There is an ethereum address 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 in this message',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'There is an ethereum address 0x** in this message',
       );
     });
 
-    it('should not remove urls from our allow list', () => {
+    it('does not remove urls from our allow list', async () => {
       const testReport = {
         message: 'This report has an allowed url: https://codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has an allowed url: https://codefi.network/',
       );
     });
 
-    it('should not remove urls at subdomains of the urls in the allow list', () => {
+    it('does not remove urls at subdomains of the urls in the allow list', async () => {
       const testReport = {
         message:
           'This report has an allowed url: https://subdomain.codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has an allowed url: https://subdomain.codefi.network/',
       );
     });
 
-    it('should remove urls very similar to, but different from, those in our allow list', () => {
+    it('removes urls very similar to, but different from, those in our allow list', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://nodefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls with allow list urls in their domain path', () => {
+    it('removes urls with allow list urls in their domain path', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://codefi.network.another.domain.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls have allowed urls in their URL path', () => {
+    it('removes urls that have allowed urls in their URL path', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls with subdomains', () => {
+    it('removes urls with subdomains', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://subdomain.example.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove invalid urls', () => {
+    it('removes invalid urls', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://example.%%%/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls and ethereum addresses from error messages', () => {
+    it('removes urls and ethereum addresses from error messages', async () => {
       const testReport = {
         message:
           'This 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 address used http://example.com on Saturday',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This 0x** address used ** on Saturday',
       );
     });
 
-    it('should not modify an error message with no urls or addresses', () => {
+    it('does not modify an error message with no urls or addresses', async () => {
       const testReport = {
         message: 'This is a simple report',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual('This is a simple report');
+    });
+  });
+
+  describe('MetaMetrics state and report.user', () => {
+    let originalStateHooks;
+
+    beforeEach(() => {
+      originalStateHooks = globalThis.stateHooks;
+    });
+
+    afterEach(() => {
+      globalThis.stateHooks = originalStateHooks;
+    });
+
+    it('sets report.user.id from MetaMetrics state when user has opted in (background state)', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'test-metrics-id-123',
+            },
+          },
+        }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({
+        id: 'test-metrics-id-123',
+      });
+    });
+
+    it('sets report.user.id from MetaMetrics state when user has opted in (UI state)', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            metamask: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'ui-metrics-id',
+            },
+          },
+        }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({ id: 'ui-metrics-id' });
+    });
+
+    it('does not set report.user when user has not opted in', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: false,
+              metaMetricsId: 'some-id',
+            },
+          },
+        }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
+    });
+
+    it('does not set report.user when MetaMetrics state is missing', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({ state: {} }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
+    });
+
+    it('does not set report.user when app state is empty', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
+    });
+
+    it('sets report.user.id from persisted state when app state is empty', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: () =>
+          Promise.resolve({
+            data: {
+              MetaMetricsController: {
+                participateInMetaMetrics: true,
+                metaMetricsId: 'persisted-metrics-id',
+              },
+            },
+          }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({
+        id: 'persisted-metrics-id',
+      });
+    });
+
+    it('sets report.user.id from backup state when persisted state fails', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: () => Promise.reject(new Error('storage failed')),
+        getBackupState: () =>
+          Promise.resolve({
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'backup-metrics-id',
+            },
+          }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({
+        id: 'backup-metrics-id',
+      });
+    });
+
+    it('does not set report.user when both persisted state and backup state fail', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: () => Promise.reject(new Error('storage failed')),
+        getBackupState: () => Promise.reject(new Error('backup failed')),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
     });
   });
 
