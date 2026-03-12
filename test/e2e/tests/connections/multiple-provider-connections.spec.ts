@@ -27,7 +27,7 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import { getPermissionsPageForHost } from '../../page-objects/flows/permission.flow';
+import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
