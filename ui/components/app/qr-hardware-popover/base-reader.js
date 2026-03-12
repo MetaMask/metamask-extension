@@ -251,8 +251,8 @@ const BaseReader = ({
         <div className="qr-scanner__status">
           {t('qrHardwareCameraPermissionBlockedDescription')}
         </div>
-        {settingsUrl && (
-          <div className="qr-scanner__settings-card">
+        <div className="qr-scanner__settings-card">
+          {settingsUrl ? (
             <span>
               <button
                 className="qr-scanner__settings-link"
@@ -263,13 +263,10 @@ const BaseReader = ({
               </button>{' '}
               {t('qrHardwareCameraPermissionAllowCamera')}
             </span>
-            {WebcamUtils.isFirefox() && (
-              <span className="qr-scanner__settings-card-extra">
-                {t('qrHardwareCameraPermissionFirefoxExtraStep')}
-              </span>
-            )}
-          </div>
-        )}
+          ) : (
+            <span>{t('qrHardwareCameraPermissionFirefoxInstruction')}</span>
+          )}
+        </div>
         <div className="qr-scanner__status">
           {t('qrHardwareCameraPermissionAutoRecover')}
         </div>

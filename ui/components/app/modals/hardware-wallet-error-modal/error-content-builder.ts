@@ -84,9 +84,10 @@ export function buildErrorContent(
         linkUrl: settingsUrl,
         suffix: t('qrHardwareCameraPermissionAllowCamera'),
       });
-    }
-    if (WebcamUtils.isFirefox()) {
-      instructions.push(t('qrHardwareCameraPermissionFirefoxExtraStep'));
+    } else {
+      // Firefox blocks extensions from opening about: URLs, so show
+      // text instructions instead of a clickable link.
+      instructions.push(t('qrHardwareCameraPermissionFirefoxInstruction'));
     }
     instructions.push(t('qrHardwareCameraPermissionAutoRecover'));
 

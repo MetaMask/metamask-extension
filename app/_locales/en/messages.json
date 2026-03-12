@@ -9319,8 +9319,8 @@
   "qrHardwareCameraPermissionAllowCamera": {
     "message": "and allow camera access."
   },
-  "qrHardwareCameraPermissionFirefoxExtraStep": {
-    "message": "Then go to Permissions → Camera → Settings and allow MetaMask."
+  "qrHardwareCameraPermissionFirefoxInstruction": {
+    "message": "Open Firefox Settings → Privacy & Security → Permissions → Camera → Settings and allow MetaMask."
   },
   "qrHardwareCameraPermissionAutoRecover": {
     "message": "This page will update automatically once access is granted."

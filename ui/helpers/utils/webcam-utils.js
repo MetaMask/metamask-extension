@@ -1,6 +1,7 @@
 'use strict';
 
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -100,8 +101,10 @@ class WebcamUtils {
   static getCameraSettingsUrl() {
     const currentBrowser = getBrowserName();
 
+    // Firefox blocks extensions from opening about: URLs via
+    // browser.tabs.create(), so there is no linkable settings URL.
     if (currentBrowser === PLATFORM_FIREFOX) {
-      return 'about:preferences#privacy';
+      return null;
     }
 
     const extensionId = WebcamUtils.getExtensionId();
@@ -134,7 +137,14 @@ class WebcamUtils {
     if (!url) {
       return;
     }
-    await browser.tabs.create({ url });
+    try {
+      await browser.tabs.create({ url });
+    } catch (e) {
+      // Firefox may block about: page navigation from extensions.
+      // Fall back to opening a blank tab — the user still has the
+      // text instructions on screen.
+      log.warn('Could not open camera settings URL:', url, e);
+    }
   }
 }
 
