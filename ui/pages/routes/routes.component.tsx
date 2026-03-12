@@ -144,6 +144,8 @@ import { createRouteWithLayout } from '../../layouts/route-with-layout';
 import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { Toaster } from '../../components/ui/toast/toast';
+import { TransactionToastListener } from '../../components/app/transaction-toast-listener';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -895,6 +897,8 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
+      <TransactionToastListener />
+
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
@@ -935,6 +939,8 @@ export default function Routes() {
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
+
+      <Toaster />
       <Modals />
     </div>
   );

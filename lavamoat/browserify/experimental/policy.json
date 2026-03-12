@@ -1,5 +1,35 @@
 {
   "resources": {
+    "react-hot-toast>goober": {
+      "globals": {
+        "__nonce__": true,
+        "_goober": true,
+        "document.createElement": true,
+        "document.head": true
+      }
+    },
+    "react-hot-toast": {
+      "globals": {
+        "CheckmarkIcon": true,
+        "ErrorIcon": true,
+        "LoaderIcon": true,
+        "MutationObserver": true,
+        "ToastBar": true,
+        "ToastIcon": true,
+        "Toaster": true,
+        "clearTimeout": true,
+        "matchMedia": true,
+        "resolveValue": true,
+        "setTimeout": true,
+        "toast": true,
+        "useToaster": true,
+        "useToasterStore": true
+      },
+      "packages": {
+        "react-hot-toast>goober": true,
+        "react": true
+      }
+    },
     "@babel/runtime": {
       "globals": {
         "regeneratorRuntime": "write"

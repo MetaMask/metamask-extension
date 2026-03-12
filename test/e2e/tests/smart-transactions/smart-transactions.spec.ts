@@ -104,6 +104,9 @@ describe('Smart Transactions', function () {
         await transactionConfirmation.selectTokenFee('USDC');
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+
         const activityList = new ActivityListPage(driver);
         await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
@@ -142,9 +145,6 @@ describe('Smart Transactions', function () {
         await swapPage.checkQuoteIsGasIncluded();
         await swapPage.submitSwap();
 
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
-
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
@@ -175,9 +175,6 @@ describe('Smart Transactions', function () {
         await swapPage.waitForQuote();
         await swapPage.checkQuoteIsGasIncluded();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();

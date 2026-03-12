@@ -24,7 +24,10 @@ import {
   hasTransactionPendingApprovals,
   getApprovedAndSignedTransactions,
   smartTransactionsListSelector,
+  getNonEvmToastTransactions,
+  getPendingNonEvmToastTransactions,
   getTransactions,
+  getToastTransactions,
   getUnapprovedTransactions,
   getTransactionsByChainId,
   incomingTxListSelectorAllChains,
@@ -1851,6 +1854,175 @@ describe('Transaction Selectors', () => {
     it('returns an empty array if there are no transactions', () => {
       const results = getTransactions({});
       expect(results).toStrictEqual([]);
+    });
+  });
+
+  describe('getToastTransactions', () => {
+    it('returns only transactions with toast-supported types', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: '0',
+              time: 1,
+              type: TransactionType.simpleSend,
+            },
+            {
+              id: '1',
+              time: 2,
+              type: TransactionType.deployContract,
+            },
+            {
+              id: '2',
+              time: 3,
+              type: TransactionType.swap,
+            },
+            {
+              id: '3',
+              time: 4,
+            },
+          ],
+        },
+      };
+
+      const results = getToastTransactions(state);
+
+      expect(results).toStrictEqual([
+        {
+          id: '0',
+          time: 1,
+          type: TransactionType.simpleSend,
+        },
+        {
+          id: '2',
+          time: 3,
+          type: TransactionType.swap,
+        },
+      ]);
+    });
+
+    it('returns an empty array if there are no transactions', () => {
+      const results = getToastTransactions({});
+      expect(results).toStrictEqual([]);
+    });
+  });
+
+  describe('getNonEvmToastTransactions', () => {
+    it('returns send/swap non-EVM transactions across accounts and chains', () => {
+      const tx1 = {
+        id: 'tx-1',
+        type: 'send',
+        status: 'submitted',
+        chain: 'solana:mainnet',
+      };
+      const tx2 = {
+        id: 'tx-2',
+        type: 'swap',
+        status: 'confirmed',
+        chain: 'solana:mainnet',
+      };
+      const tx3 = {
+        id: 'tx-3',
+        type: 'send',
+        status: 'failed',
+        chain: 'solana:devnet',
+      };
+      const filteredOutType = {
+        id: 'tx-4',
+        type: 'approve',
+        status: 'submitted',
+        chain: 'solana:mainnet',
+      };
+      const includedBtcTx = {
+        id: 'tx-5',
+        type: 'send',
+        status: 'submitted',
+        chain: 'bip122:000000000019d6689c085ae165831e93',
+      };
+
+      const state = {
+        metamask: {
+          nonEvmTransactions: {
+            'account-1': {
+              'solana:mainnet': {
+                transactions: [tx1, tx2, filteredOutType],
+              },
+            },
+            'account-2': {
+              'solana:mainnet': { transactions: [tx3] },
+              'bip122:1': { transactions: [includedBtcTx] },
+            },
+          },
+        },
+      };
+
+      const results = getNonEvmToastTransactions(state);
+
+      expect(results).toStrictEqual([tx1, tx2, tx3, includedBtcTx]);
+    });
+
+    it('returns an empty array if non-EVM transactions do not exist', () => {
+      const results = getNonEvmToastTransactions({});
+      expect(results).toStrictEqual([]);
+    });
+  });
+
+  describe('getPendingNonEvmToastTransactions', () => {
+    it('returns only non-terminal non-EVM toast transactions', () => {
+      const state = {
+        metamask: {
+          nonEvmTransactions: {
+            'account-1': {
+              'solana:mainnet': {
+                transactions: [
+                  {
+                    id: 'tx-1',
+                    type: 'send',
+                    status: 'submitted',
+                    chain: 'solana:mainnet',
+                  },
+                  {
+                    id: 'tx-2',
+                    type: 'send',
+                    status: 'pending',
+                    chain: 'solana:mainnet',
+                  },
+                  {
+                    id: 'tx-3',
+                    type: 'swap',
+                    status: 'confirmed',
+                    chain: 'solana:mainnet',
+                  },
+                  {
+                    id: 'tx-4',
+                    type: 'send',
+                    status: 'failed',
+                    chain: 'solana:mainnet',
+                  },
+                ],
+              },
+              'tron:mainnet': {
+                transactions: [
+                  {
+                    id: 'tx-5',
+                    type: 'send',
+                    status: 'submitted',
+                    chain: 'tron:mainnet',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const results = getPendingNonEvmToastTransactions(state);
+
+      expect(results.map((tx) => tx.id)).toStrictEqual([
+        'tx-1',
+        'tx-2',
+        'tx-5',
+      ]);
     });
   });
 

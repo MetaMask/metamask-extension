@@ -5,13 +5,7 @@ import {
   ButtonVariant,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
-import {
-  BannerBase,
-  Box,
-  BoxProps,
-  IconSize,
-  Text,
-} from '../../component-library';
+import { BannerBase, Box, IconSize, Text } from '../../component-library';
 import {
   BackgroundColor,
   BorderColor,
@@ -31,7 +25,6 @@ export const Toast = ({
   startAdornment,
   text,
   description,
-  descriptionVariant,
   actionText,
   onActionClick,
   onClose,
@@ -42,15 +35,13 @@ export const Toast = ({
   onAutoHideToast,
   dataTestId,
   className,
-  contentProps,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
   text: string;
   description?: string;
-  descriptionVariant?: TextVariant;
   actionText?: string;
   onActionClick?: () => void;
-  onClose: () => void;
+  onClose?: () => void;
   borderRadius?: BorderRadius;
   textVariant?: TextVariant;
   /** Tailwind classes for the message text (e.g. "text-base") */
@@ -59,7 +50,6 @@ export const Toast = ({
   onAutoHideToast?: () => void;
   dataTestId?: string;
   className?: string;
-  contentProps?: BoxProps<'div'>;
 }) => {
   const [shouldDisplay, setShouldDisplay] = useState(true);
   useEffect(
@@ -99,12 +89,7 @@ export const Toast = ({
       }}
       className={`toasts-container__banner-base ${className}`}
     >
-      <Box
-        display={Display.Flex}
-        gap={3}
-        data-testid={dataTestId}
-        {...contentProps}
-      >
+      <Box display={Display.Flex} gap={3} data-testid={dataTestId}>
         {startAdornment && (
           <Box className="flex-shrink-0">{startAdornment}</Box>
         )}
@@ -124,7 +109,7 @@ export const Toast = ({
           {description && (
             <Text
               className="toast-text"
-              variant={descriptionVariant || TextVariant.bodySm}
+              variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
               {description}

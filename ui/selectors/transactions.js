@@ -9,6 +9,7 @@ import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
+  TRANSACTION_TOAST_TYPES,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
@@ -40,6 +41,76 @@ export const getTransactions = createSelector(
     }
     return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
+);
+
+/**
+ * Returns only transactions eligible for transaction toasts.
+ *
+ * @param {object} state - Root state
+ * @returns {object[]} Filtered array of transaction objects
+ */
+export const getToastTransactions = createSelector(
+  getTransactions,
+  (transactions) => {
+    if (!transactions.length) {
+      return EMPTY_ARRAY;
+    }
+
+    return transactions.filter(
+      (transaction) =>
+        Boolean(transaction.type) &&
+        TRANSACTION_TOAST_TYPES.has(transaction.type),
+    );
+  },
+);
+
+/**
+ * Returns flattened non-EVM send/swap transactions from the state map.
+ *
+ * @param {object} state - Root state
+ * @returns {object[]} Flattened non-EVM send/swap transaction list
+ */
+export const getNonEvmToastTransactions = createSelector(
+  (state) => state.metamask?.nonEvmTransactions,
+  (nonEvmTransactionsMap) => {
+    if (!nonEvmTransactionsMap) {
+      return EMPTY_ARRAY;
+    }
+
+    return Object.values(nonEvmTransactionsMap)
+      .flatMap((byChainMap) =>
+        Object.values(byChainMap ?? {}).flatMap(
+          (entry) => entry?.transactions ?? EMPTY_ARRAY,
+        ),
+      )
+      .filter((transaction) => {
+        const type = transaction?.type;
+        const isSupportedType = type === 'send' || type === 'swap';
+
+        return isSupportedType;
+      });
+  },
+);
+
+/**
+ * Returns pending non-EVM transactions for toast loading states.
+ *
+ * @param {object} state - Root state
+ * @returns {object[]} Pending non-EVM transaction list
+ */
+export const getPendingNonEvmToastTransactions = createSelector(
+  getNonEvmToastTransactions,
+  (transactions) =>
+    transactions.filter((transaction) => {
+      const normalizedStatus = String(transaction?.status ?? '').toLowerCase();
+      const isTerminal =
+        normalizedStatus === 'confirmed' ||
+        normalizedStatus === 'failed' ||
+        normalizedStatus === 'cancelled' ||
+        normalizedStatus === 'canceled';
+
+      return !isTerminal;
+    }),
 );
 
 /**

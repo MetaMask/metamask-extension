@@ -21,3 +21,10 @@
 .toast-text {
   word-break: break-word;
 }
+
+/* react-hot-toast override */
+.toast-container {
+  [role=status] {
+    justify-content: flex-start;
+  }
+}
