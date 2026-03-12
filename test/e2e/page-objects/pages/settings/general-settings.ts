@@ -21,6 +21,8 @@ class GeneralSettings {
     text: 'Jazzicons',
   };
 
+  private readonly loadingOverlay = '.loading-overlay';
+
   private readonly loadingOverlaySpinner = '.loading-overlay__spinner';
 
   private readonly selectLanguageField = '[data-testid="locale-select"]';
@@ -104,6 +106,10 @@ class GeneralSettings {
 
     const activeSelector = this.identicons[identicon];
     await this.driver.waitForSelector(activeSelector);
+  }
+
+  async assertLoadingOverlayNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.loadingOverlay);
   }
 
   async checkNoLoadingOverlaySpinner(): Promise<void> {

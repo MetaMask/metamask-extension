@@ -190,6 +190,14 @@ class HeaderNavbar {
     });
   }
 
+  async clickNotificationCount(count: number): Promise<void> {
+    await this.openGlobalMenu({ withNotificationCounter: true });
+    await this.driver.clickElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
+  }
+
   async checkIfNetworkPickerClickable(clickable: boolean): Promise<void> {
     console.log('Check whether the network picker is clickable or not');
     assert.equal(

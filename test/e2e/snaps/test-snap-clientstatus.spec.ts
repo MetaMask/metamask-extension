@@ -5,7 +5,7 @@ import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
   loginWithoutBalanceValidation,
   lockAndWaitForLoginPage,
@@ -21,7 +21,9 @@ describe('Test Snap Client Status', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockClientStatusSnap,
         title: this.test?.fullTitle(),
       },

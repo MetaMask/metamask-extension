@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
@@ -58,11 +58,12 @@ describe('Test Snap installed', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegmentAndSnaps,
