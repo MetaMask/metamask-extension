@@ -18,7 +18,18 @@ jest.mock('..', () => ({
   useOnMerklClaimConfirmed: jest.fn(),
 }));
 
+jest.mock('../../../../hooks/musd/useMusdGeoBlocking', () => ({
+  useMusdGeoBlocking: jest.fn(() => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+  })),
+}));
+
 const { useSelector } = jest.requireMock('react-redux');
+const { useMusdGeoBlocking } = jest.requireMock(
+  '../../../../hooks/musd/useMusdGeoBlocking',
+);
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 
@@ -94,10 +105,19 @@ describe('useMerklRewards', () => {
       typeof merklClient.getClaimedAmountFromContract
     >;
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     setupSelectorMock();
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: false,
+      userCountry: 'US',
+      isLoading: false,
+    });
   });
 
   it('returns false for ineligible token', () => {
@@ -288,7 +308,6 @@ describe('useMerklRewards', () => {
 
     expect(consoleSpy).toHaveBeenCalled();
     expect(result.current.hasClaimableReward).toBe(false);
-    consoleSpy.mockRestore();
   });
 
   it('aborts fetch on unmount', () => {
@@ -306,7 +325,6 @@ describe('useMerklRewards', () => {
     unmount();
 
     expect(abortSpy).toHaveBeenCalled();
-    abortSpy.mockRestore();
   });
 
   it('returns false for sub-cent unclaimed amounts', async () => {
@@ -371,6 +389,29 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(true);
+  });
+
+  it('returns false and skips API call when user is geoblocked', async () => {
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: true,
+      userCountry: 'GB',
+      isLoading: false,
+    });
+
+    const { result } = renderHook(() =>
+      useMerklRewards({
+        tokenAddress: MUSD_TOKEN_ADDRESS,
+        chainId: '0x1' as `0x${string}`,
+        showMerklBadge: true,
+      }),
+    );
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.hasClaimableReward).toBe(false);
+    expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
   it('falls back to API claimed value when getClaimedAmountFromContract returns null', async () => {

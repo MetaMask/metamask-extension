@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
 import { ELIGIBLE_TOKENS } from '../constants';
 import {
   fetchMerklRewardsForAsset,
@@ -64,6 +65,7 @@ export const useMerklRewards = ({
   showMerklBadge,
 }: UseMerklRewardsOptions): UseMerklRewardsReturn => {
   const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
+  const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
 
   const [hasClaimableReward, setHasClaimableReward] = useState(false);
 
@@ -74,8 +76,9 @@ export const useMerklRewards = ({
     () =>
       showMerklBadge &&
       merklRewardsEnabled &&
+      !isGeoBlocked &&
       isEligibleForMerklRewards(chainId, tokenAddress),
-    [showMerklBadge, merklRewardsEnabled, chainId, tokenAddress],
+    [showMerklBadge, merklRewardsEnabled, isGeoBlocked, chainId, tokenAddress],
   );
 
   const fetchClaimableRewards = useCallback(
