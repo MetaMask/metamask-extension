@@ -302,13 +302,9 @@ function TransactionListItemInner({
   ]);
   const showCancelButton =
     !hasCancelled &&
-
     isPending &&
-
     !isUnapproved &&
-
     !isSubmitting &&
-
     !isBridgeTx &&
     !isIntentBridgeActivity &&
     !hasGasFeeTokenSelected;
