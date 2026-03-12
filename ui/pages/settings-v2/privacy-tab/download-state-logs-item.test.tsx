@@ -37,7 +37,7 @@ describe('DownloadStateLogsItem', () => {
     expect(
       screen.getByTestId('download-state-logs-button'),
     ).toBeInTheDocument();
-    expect(screen.getByText(messages.stateLogs.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.downloadStateLogs.message)).toBeInTheDocument();
   });
 
   it('opens modal when button is clicked', async () => {

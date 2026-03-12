@@ -314,6 +314,20 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
         We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
       </p>
     </div>
+    <div
+      class="bg-muted my-2 h-px w-full"
+    />
+    <button
+      class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left"
+      data-testid="download-state-logs-button"
+      role="button"
+    >
+      <span
+        class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Download state logs
+      </span>
+    </button>
   </div>
 </div>
 `;
