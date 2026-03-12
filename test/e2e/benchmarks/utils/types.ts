@@ -9,6 +9,15 @@ export type TimerResult = {
   duration: number;
 };
 
+export type LongTaskStepResult = {
+  id: string;
+  duration: number;
+  longTaskCount: number;
+  longTaskTotalDuration: number;
+  longTaskMaxDuration: number;
+  tbt: number;
+};
+
 export type PageLoadBenchmarkOptions = {
   browserLoads?: number;
   pageLoads?: number;
@@ -32,6 +41,10 @@ export type Metrics = {
   'Load Scripts': number;
   'Setup Store': number;
   numNetworkReqs: number;
+  longTaskCount?: number;
+  longTaskTotalDuration?: number;
+  longTaskMaxDuration?: number;
+  tbt?: number;
 };
 
 /** User action result with testTitle, persona and numeric timing metrics. */

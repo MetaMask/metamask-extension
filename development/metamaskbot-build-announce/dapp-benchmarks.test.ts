@@ -175,6 +175,23 @@ describe('getEmojiForMetric', () => {
     });
   });
 
+  describe('tbt thresholds (good: 300, warning: 900)', () => {
+    it('returns 🟢 at or below 300', () => {
+      expect(getEmojiForMetric('tbt', 300)).toBe('🟢');
+      expect(getEmojiForMetric('tbt', 100)).toBe('🟢');
+    });
+
+    it('returns 🟡 between 300 and 900', () => {
+      expect(getEmojiForMetric('tbt', 500)).toBe('🟡');
+      expect(getEmojiForMetric('tbt', 900)).toBe('🟡');
+    });
+
+    it('returns 🔴 above 900', () => {
+      expect(getEmojiForMetric('tbt', 901)).toBe('🔴');
+      expect(getEmojiForMetric('tbt', 1500)).toBe('🔴');
+    });
+  });
+
   it('returns ⚪ for unknown metrics', () => {
     expect(getEmojiForMetric('unknownMetric', 500)).toBe('⚪');
     expect(getEmojiForMetric('firstPaint', 500)).toBe('⚪');

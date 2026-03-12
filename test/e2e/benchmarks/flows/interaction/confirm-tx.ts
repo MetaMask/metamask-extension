@@ -8,8 +8,9 @@ import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
+import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
@@ -18,6 +19,7 @@ export const persona = BENCHMARK_PERSONA.STANDARD;
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadingTimes: number = 0;
+    const steps: LongTaskStepResult[] = [];
 
     await withFixtures(
       {
@@ -34,6 +36,7 @@ export async function run(): Promise<BenchmarkRunResult> {
           amount: '1',
         });
 
+        await driver.resetLongTaskMetrics();
         const timestampBeforeAction = new Date();
 
         await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
@@ -52,9 +55,22 @@ export async function run(): Promise<BenchmarkRunResult> {
         const timestampAfterAction = new Date();
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
+
+        const longTaskData = await driver.collectLongTaskMetrics();
+        steps.push({
+          id: 'confirm_tx',
+          duration: loadingTimes,
+          longTaskCount: longTaskData?.count ?? 0,
+          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
+          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
+          tbt: longTaskData?.tbt ?? 0,
+        });
       },
     );
 
-    return [{ id: 'confirm_tx', duration: loadingTimes }];
+    return [
+      ...steps.map((s) => ({ id: s.id, duration: s.duration })),
+      ...buildLongTaskTimerResults(steps),
+    ];
   }, BENCHMARK_TYPE.USER_ACTION);
 }

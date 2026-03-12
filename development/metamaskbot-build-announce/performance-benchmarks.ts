@@ -144,8 +144,17 @@ function formatCellValue(stats: StatisticalResult, metric: string): string {
   return typeof value === 'number' ? Math.round(value).toString() : '-';
 }
 
+const LONG_TASK_METRICS = new Set([
+  'longTaskCount',
+  'longTaskTotalDuration',
+  'longTaskMaxDuration',
+  'tbt',
+]);
+
 /**
  * Builds table rows from benchmark entries.
+ * Skips long task metrics that are zero (e.g. Firefox, which lacks
+ * PerformanceObserver `longtask` support).
  *
  * @param entries - Array of benchmark entries with names.
  * @returns Array of HTML table row strings.
@@ -154,12 +163,16 @@ export function buildTableRows(entries: BenchmarkEntry[]): string[] {
   const tableRows: string[] = [];
 
   for (const { benchmarkName, mean, min, max, stdDev, p75, p95 } of entries) {
-    const metrics = Object.keys(mean);
-    for (let i = 0; i < metrics.length; i++) {
-      const metric = metrics[i];
+    const allMetrics = Object.keys(mean);
+    const visibleMetrics = allMetrics.filter(
+      (m) => !(LONG_TASK_METRICS.has(m) && mean[m] === 0),
+    );
+
+    for (let i = 0; i < visibleMetrics.length; i++) {
+      const metric = visibleMetrics[i];
       let row = '';
       if (i === 0) {
-        row += `<td rowspan="${metrics.length}">${startCase(benchmarkName)}</td>`;
+        row += `<td rowspan="${visibleMetrics.length}">${startCase(benchmarkName)}</td>`;
       }
       row += `<td>${metric}</td>`;
       row += `<td align="right">${Math.round(mean[metric])}</td>`;
