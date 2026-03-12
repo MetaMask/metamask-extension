@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 195,
+      "currentMigrationVersion": 198,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -52,8 +52,6 @@
       "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
-      "enforcedSimulationsSlippage": 10,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isRampCardClosed": false,
@@ -61,6 +59,8 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": [],
+      "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "nftsDetectionNoticeDismissed": false,
@@ -169,8 +169,8 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": true
+      "grantedPermissions": [],
+      "lastSyncedTimestamp": -1
     },
     "KeyringController": {},
     "LoggingController": {
@@ -1885,6 +1885,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 0,
       "hotlistLastFetched": 0,
       "phishingLists": [],
@@ -1902,13 +1903,11 @@
       "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": {},
       "ipfsGateway": "dweb.link",
       "isIpfsGatewayEnabled": true,
       "isMultiAccountBalancesEnabled": true,
       "knownMethodData": {},
       "ledgerTransportType": "webhid",
-      "lostIdentities": {},
       "manageInstitutionalWallets": false,
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
@@ -1940,11 +1939,11 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "asterdex": {},
         "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
-      "selectedAddress": "",
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
@@ -1968,6 +1967,8 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
+      "localOverrides": {},
+      "rawRemoteFeatureFlags": {},
       "remoteFeatureFlags": {}
     },
     "RewardsController": {
@@ -2152,6 +2153,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 195
+    "version": 198
   }
 }

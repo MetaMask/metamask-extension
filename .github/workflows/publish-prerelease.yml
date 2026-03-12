@@ -5,6 +5,12 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
+      E2E_OPENAI_API_KEY:
+        required: false
+      E2E_CLAUDE_API_KEY:
+        required: false
+      E2E_GEMINI_API_KEY:
+        required: false
     inputs:
       lavamoat-policy-changed:
         description: 'Whether the Lavamoat policy files have changed'
@@ -16,8 +22,90 @@ on:
         type: boolean
 
 jobs:
+  generate-test-plan:
+    name: Generate AI test plan
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'release/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release-ci
+    permissions:
+      id-token: write
+    outputs:
+      test_plan_generated: ${{ steps.generate-test-plan.outputs.test_plan_generated }}
+      test_plan_version: ${{ steps.generate-test-plan.outputs.test_plan_version }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
+      E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+      E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout and setup
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: true
+          skip-allow-scripts: true
+
+      - name: Find the associated PR
+        if: ${{ !env.PR_NUMBER }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${process.env.BRANCH}`,
+              base: 'stable',
+            });
+            if (prs.data.length > 0) {
+              core.exportVariable("PR_NUMBER", prs.data[0].number);
+            }
+
+      - name: Generate test plan
+        if: ${{ env.PR_NUMBER }}
+        id: generate-test-plan
+        run: |
+          VERSION="${BRANCH#release/}"
+          echo "Generating test plan for version: $VERSION"
+          echo "PR Number: $PR_NUMBER"
+
+          OUTPUT_FILE="test-plan-${VERSION}.json"
+          if yarn tsx test/release-testing-ai-analyzer/generate-release-testing-plan.ts "$PR_NUMBER" --output "$OUTPUT_FILE"; then
+            echo "test_plan_generated=true" >> "${GITHUB_OUTPUT}"
+            echo "test_plan_version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          else
+            echo "Warning: Test plan generation failed. Continuing without test plan."
+            echo "test_plan_generated=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Upload test plan artifact
+        if: ${{ steps.generate-test-plan.outputs.test_plan_generated == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}
+          path: test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}.json
+          retention-days: 90
+
+      - name: Prepare test plan for S3
+        if: ${{ steps.generate-test-plan.outputs.test_plan_generated == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        run: |
+          mkdir -p build-test-plan/builds
+          cp "test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}.json" build-test-plan/builds/
+
+      - name: Upload test plan to S3
+        if: ${{ steps.generate-test-plan.outputs.test_plan_generated == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-test-plan/builds
+          path: build-test-plan/builds
+
   publish-prerelease:
     name: Publish prerelease
+    needs: generate-test-plan
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
@@ -37,14 +125,14 @@ jobs:
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       LAVAMOAT_POLICY_CHANGED: ${{ inputs.lavamoat-policy-changed }}
       POST_NEW_BUILDS: ${{ inputs.post-new-builds }}
+      TEST_PLAN_VERSION: ${{ needs.generate-test-plan.outputs.test_plan_version }}
     steps:
       - name: Checkout and setup high risk environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
-          use-yarn-hydrate: true
 
       - name: Find the associated PR
         if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
@@ -78,7 +166,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v7
         with:
-          name: page-load-benchmark-results
+          name: dapp-page-load-benchmark-results
           path: test-artifacts/benchmarks
 
       - name: Publish prerelease

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BridgeInputGroup should render destination networks 2`] = `
+exports[`BridgeInputGroup should render destination networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -356,60 +356,56 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render destination networks 3`] = `
+exports[`BridgeInputGroup should render popular tokens 2`] = `
 [
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
       },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
       },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
       },
-      "method": "POST",
-      "signal": AbortSignal {},
+    ],
+    "chainIds": Set {
+      "eip155:1",
     },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
+  },
 ]
 `;
 
-exports[`BridgeInputGroup should render source networks 2`] = `
+exports[`BridgeInputGroup should render source networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -642,59 +638,6 @@ exports[`BridgeInputGroup should render source networks 2`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render source networks 3`] = `
-[
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-]
-`;
-
 exports[`BridgeInputGroup should search for tokens 1`] = `
 <div
   class="mm-modal"
@@ -801,7 +744,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
@@ -842,7 +785,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -852,6 +795,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -876,9 +820,24 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
@@ -919,7 +878,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -929,6 +888,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDT
                     </p>
@@ -953,6 +913,21 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
@@ -990,7 +965,57 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should search for tokens 6`] = `
+exports[`BridgeInputGroup should search for tokens 4`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
+`;
+
+exports[`BridgeInputGroup should search for tokens 5`] = `
 <div
   class="mm-modal"
   data-testid="bridge-asset-picker-modal"
@@ -1096,7 +1121,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
@@ -1137,7 +1162,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1147,6 +1172,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -1171,9 +1197,24 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
@@ -1214,7 +1255,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1224,6 +1265,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDT
                     </p>
@@ -1248,9 +1290,24 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="2"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
@@ -1291,7 +1348,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1301,6 +1358,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -1325,6 +1383,21 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -1337,4 +1410,54 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
     tabindex="0"
   />
 </div>
+`;
+
+exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
 `;

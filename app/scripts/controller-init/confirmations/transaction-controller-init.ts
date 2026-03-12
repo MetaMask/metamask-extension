@@ -17,11 +17,9 @@ import {
   TransactionPayPublishHook,
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
-import { NetworkClientId } from '@metamask/network-controller';
-import { toHex } from '@metamask/controller-utils';
 import { trace } from '../../../../shared/lib/trace';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
+import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -328,22 +326,6 @@ function addTransactionControllerListeners(
   );
 
   initMessenger.subscribe(
-    'TransactionController:transactionNewSwap',
-    ({ transactionMeta }) =>
-      // TODO: This can be called internally by the TransactionController
-      // since Swaps Controller registers this action handler
-      initMessenger.call('SwapsController:setTradeTxId', transactionMeta.id),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionNewSwapApproval',
-    ({ transactionMeta }) =>
-      // TODO: This can be called internally by the TransactionController
-      // since Swaps Controller registers this action handler
-      initMessenger.call('SwapsController:setApproveTxId', transactionMeta.id),
-  );
-
-  initMessenger.subscribe(
     'TransactionController:transactionRejected',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -360,19 +342,6 @@ function addTransactionControllerListeners(
 
 function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
-}
-
-async function getNextNonce(
-  transactionController: TransactionController,
-  address: string,
-  networkClientId: NetworkClientId,
-): Promise<Hex> {
-  const nonceLock = await transactionController.getNonceLock(
-    address,
-    networkClientId,
-  );
-  nonceLock.releaseLock();
-  return toHex(nonceLock.nextNonce);
 }
 
 export async function publishHook({
@@ -415,8 +384,6 @@ export async function publishHook({
         transactionController,
       ),
       messenger: initMessenger,
-      getNextNonce: (address, networkClientId) =>
-        getNextNonce(transactionController, address, networkClientId),
     }).getHook();
 
     const result = await hook(transactionMeta, signedTx);

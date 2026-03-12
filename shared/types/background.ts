@@ -71,8 +71,8 @@ import type { DecryptMessageControllerState } from '../../app/scripts/controller
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
-import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { IsEquivalent } from './type-level-utils';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
@@ -134,6 +134,8 @@ export type ControllerStatePropertiesEnumerated = {
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
+  musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
+  musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
@@ -143,13 +145,10 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
+  pendingRedirectRoute: AppStateControllerState['pendingRedirectRoute'];
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
-  enableEnforcedSimulations: AppStateControllerState['enableEnforcedSimulations'];
-  enableEnforcedSimulationsForTransactions: AppStateControllerState['enableEnforcedSimulationsForTransactions'];
-  enforcedSimulationsSlippage: AppStateControllerState['enforcedSimulationsSlippage'];
-  enforcedSimulationsSlippageForTransactions: AppStateControllerState['enforcedSimulationsSlippageForTransactions'];
   networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
@@ -243,14 +242,11 @@ export type ControllerStatePropertiesEnumerated = {
   storageMetadata: PPOMState['storageMetadata'];
   versionInfo: PPOMState['versionInfo'];
   featureFlags: PreferencesControllerState['featureFlags'];
-  identities: PreferencesControllerState['identities'];
   ipfsGateway: PreferencesControllerState['ipfsGateway'];
   isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
   isMultiAccountBalancesEnabled: PreferencesControllerState['isMultiAccountBalancesEnabled'];
-  lostIdentities: PreferencesControllerState['lostIdentities'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
-  selectedAddress: PreferencesControllerState['selectedAddress'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
@@ -262,9 +258,7 @@ export type ControllerStatePropertiesEnumerated = {
   useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
   use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
   useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
-  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];
   advancedGasFee: PreferencesControllerState['advancedGasFee'];
   knownMethodData: PreferencesControllerState['knownMethodData'];
@@ -305,7 +299,6 @@ export type ControllerStatePropertiesEnumerated = {
   databaseUnavailable: SnapsRegistryState['databaseUnavailable'];
   signature: SnapsRegistryState['signature'];
   subjectMetadata: SubjectMetadataControllerState['subjectMetadata'];
-  swapsState: SwapsControllerState['swapsState'];
   tokenBalances: TokenBalancesControllerState['tokenBalances'];
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
@@ -388,7 +381,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   SnapInsightsControllerState &
   SnapsRegistryState &
   SubjectMetadataControllerState &
-  SwapsControllerState &
   TokenBalancesControllerState &
   TokensControllerState &
   TokenListState &
@@ -398,10 +390,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
   ConnectivityControllerState;
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export type IsEquivalent<A, B> = [A, B] extends [B, A] ? true : false;
 
 /**
  * This type contains all controller state top-level properties, and

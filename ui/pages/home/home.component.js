@@ -4,9 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
-  ///: END:ONLY_INCLUDE_IF
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
@@ -19,10 +17,9 @@ import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
-import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/lib/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import { ScrollContainer } from '../../contexts/scroll-container';
-
 import {
   FontWeight,
   Display,
@@ -55,17 +52,13 @@ import {
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  SUPPORT_LINK,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/lib/ui-utils';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
-import { isBeta, isFlask } from '../../helpers/utils/build-types';
+import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
 import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
@@ -152,6 +145,7 @@ export default class Home extends PureComponent {
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
     redirectAfterDefaultPage: PropTypes.object,
+    setRedirectAfterDefaultPage: PropTypes.func,
     clearRedirectAfterDefaultPage: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
@@ -166,6 +160,9 @@ export default class Home extends PureComponent {
     rewardsOnboardingEnabled: PropTypes.bool,
     rewardsOnboardingModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
+    envType: PropTypes.string,
+    pendingRedirectRoute: PropTypes.object,
+    clearPendingRedirectRoute: PropTypes.func,
   };
 
   state = {
@@ -200,10 +197,32 @@ export default class Home extends PureComponent {
     }
   }
 
+  /**
+   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect).
+   * Must only be called once per arrival of a new pendingRedirectRoute, because
+   * clearPendingRedirectRoute is an async thunk — the prop stays non-null across
+   * several render cycles, so calling this unconditionally in componentDidUpdate
+   * would create a re-render loop.
+   */
+  checkPendingRedirectRoute() {
+    if (this.props.pendingRedirectRoute) {
+      const { path, search, environmentType } = this.props.pendingRedirectRoute;
+      const shouldRedirect =
+        !environmentType || environmentType === this.props.envType;
+
+      if (shouldRedirect) {
+        this.props.setRedirectAfterDefaultPage({
+          path: search ? `${path}${search}` : path,
+        });
+      }
+      this.props.clearPendingRedirectRoute();
+    }
+  }
+
   componentDidMount() {
     this.props.fetchBuyableChains();
 
-    // Check for redirect after default page
+    this.checkPendingRedirectRoute();
     this.checkRedirectAfterDefaultPage();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
@@ -223,7 +242,7 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
       newNetworkAddedConfigurationId,
@@ -238,7 +257,7 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
+    } = prevProps;
     const { notificationClosing } = this.state;
 
     if (
@@ -264,7 +283,12 @@ export default class Home extends PureComponent {
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
-    // Check for redirect after default page on updates
+    // Only process pendingRedirectRoute when the prop first transitions from null to non-null
+    if (this.props.pendingRedirectRoute && !prevProps.pendingRedirectRoute) {
+      this.checkPendingRedirectRoute();
+    }
+
+    // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.
     this.checkRedirectAfterDefaultPage();
   }
 
@@ -289,22 +313,22 @@ export default class Home extends PureComponent {
     });
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   onSupportLinkClick = () => {
-    this.context.trackEvent(
-      {
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_LINK,
+    if (isMain()) {
+      this.context.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Home,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
+            url: SUPPORT_LINK,
+          },
         },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
-    );
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
+      );
+    }
   };
-  ///: END:ONLY_INCLUDE_IF
 
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
@@ -882,9 +906,7 @@ export default class Home extends PureComponent {
             : null}
           <div className="home__main-view">
             <AccountOverview
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
-              ///: END:ONLY_INCLUDE_IF
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
             />

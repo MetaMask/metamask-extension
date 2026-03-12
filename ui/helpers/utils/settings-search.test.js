@@ -70,6 +70,10 @@ const t = (key) => {
       return "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility.";
     case 'Contacts':
       return 'Contacts';
+    case 'contacts':
+      return 'Contacts';
+    case 'notifications':
+      return 'Notifications';
     case 'securityAndPrivacy':
       return 'Security & privacy';
     case 'revealSeedWords':
@@ -151,7 +155,7 @@ describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 6;
-      const NUM_OF_HIDDEN_SETTINGS = 1;
+      const NUM_OF_HIDDEN_SETTINGS = 3;
 
       expect(getSettingsRoutes()).toHaveLength(
         SETTINGS_CONSTANTS.length -
@@ -163,7 +167,7 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingRoutesInTab', () => {
     it('returns "General" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(7);
+      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(6);
     });
 
     it('returns "Advanced" section count', () => {
@@ -174,10 +178,6 @@ describe('Settings Search Utils', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
       ).toStrictEqual(3);
-    });
-
-    it('returns "Contact" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
 
     it('returns "Security & privacy" section count', () => {
@@ -192,7 +192,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        3,
+        2,
       );
     });
 

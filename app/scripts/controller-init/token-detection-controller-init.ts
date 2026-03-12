@@ -11,8 +11,9 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
   TokenDetectionControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
   const controller = new TokenDetectionController({
-    // @ts-expect-error: TODO: Investigate type mismatch.
+    // @ts-expect-error - TokenBalancesControllerMessenger type is incorrect - to investigate
     messenger: controllerMessenger,
+    disabled: false,
     getBalancesInSingleCall: (...args) =>
       initMessenger.call(
         'AssetsContractController:getBalancesInSingleCall',
@@ -20,8 +21,6 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
       ),
     trackMetaMetricsEvent: (...args) =>
       initMessenger.call('MetaMetricsController:trackEvent', ...args),
-    useAccountsAPI: true,
-    platform: 'extension',
     useTokenDetection: () =>
       initMessenger.call('PreferencesController:getState').useTokenDetection,
     useExternalServices: () =>

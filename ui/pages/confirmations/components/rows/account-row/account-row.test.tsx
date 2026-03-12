@@ -9,6 +9,7 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AccountRow } from './account-row';
 
 const MOCK_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -87,10 +88,12 @@ describe('AccountRow', () => {
     let result: ReturnType<typeof renderWithConfirmContextProvider>;
     await act(async () => {
       result = renderWithConfirmContextProvider(
-        <AccountRow label="Claiming to" />,
+        <AccountRow label={messages.musdClaimClaimingTo.message} />,
         mockStore,
       );
-      expect(result.getByText('Claiming to')).toBeDefined();
+      expect(
+        result.getByText(messages.musdClaimClaimingTo.message),
+      ).toBeDefined();
       expect(result.container.querySelector('.confirm-info-row')).toBeDefined();
     });
   });
@@ -117,6 +120,60 @@ describe('AccountRow', () => {
         mockStore,
       );
       expect(result.getByText('Sending from')).toBeDefined();
+    });
+  });
+
+  it('renders chevron icon when showChevron is true', async () => {
+    const transaction = buildTransaction();
+    const state = getMockConfirmState({
+      metamask: {
+        pendingApprovals: {
+          [transaction.id]: {
+            id: transaction.id,
+            type: ApprovalType.Transaction,
+          },
+        },
+        transactions: [transaction],
+      },
+    });
+    const mockStore = configureMockStore()(state);
+
+    let result: ReturnType<typeof renderWithConfirmContextProvider>;
+    await act(async () => {
+      result = renderWithConfirmContextProvider(
+        <AccountRow label="Claiming to" showChevron />,
+        mockStore,
+      );
+      expect(
+        result.container.querySelector('.mm-icon--name-arrow-right'),
+      ).toBeDefined();
+    });
+  });
+
+  it('does not render chevron icon by default', async () => {
+    const transaction = buildTransaction();
+    const state = getMockConfirmState({
+      metamask: {
+        pendingApprovals: {
+          [transaction.id]: {
+            id: transaction.id,
+            type: ApprovalType.Transaction,
+          },
+        },
+        transactions: [transaction],
+      },
+    });
+    const mockStore = configureMockStore()(state);
+
+    let result: ReturnType<typeof renderWithConfirmContextProvider>;
+    await act(async () => {
+      result = renderWithConfirmContextProvider(
+        <AccountRow label="Claiming to" />,
+        mockStore,
+      );
+      expect(
+        result.container.querySelector('.mm-icon--name-arrow-right'),
+      ).toBeNull();
     });
   });
 });

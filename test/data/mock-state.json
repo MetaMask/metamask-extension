@@ -60,10 +60,6 @@
   },
   "metamask": {
     "allTokens": {},
-    "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": {},
-    "enforcedSimulationsSlippage": 10,
-    "enforcedSimulationsSlippageForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -852,28 +848,6 @@
         }
       }
     ],
-    "identities": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-        "name": "Test Account"
-      },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
-        "name": "Test Account 2"
-      },
-      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "name": "Test Ledger 1"
-      },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-        "name": "Test Account 3",
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
-      },
-      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-        "name": "Custody test",
-        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
-      }
-    },
     "selectedNetworkClientId": "goerli",
     "networksMetadata": {
       "goerli": {
@@ -962,7 +936,6 @@
         }
       }
     },
-    "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "tokens": [
       {
         "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
@@ -1666,10 +1639,9 @@
     "accountsAssets": {},
     "assetsMetadata": {},
     "allIgnoredAssets": {},
-    "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"erc20-token-revocation\":{},\"other\":{}}",
-    "isGatorPermissionsEnabled": false,
+    "grantedPermissions": [],
     "isFetchingGatorPermissions": false,
-    "isUpdatingGatorPermissions": false,
+    "lastSyncedTimestamp": -1,
     "networkConnectionBanner": {
       "status": "unknown"
     },

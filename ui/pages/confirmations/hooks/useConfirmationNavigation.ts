@@ -22,10 +22,12 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
 
 export enum ConfirmationLoader {
   Default = 'default',
   CustomAmount = 'customAmount',
+  Send = 'send',
 }
 
 const CONNECT_APPROVAL_TYPES = [
@@ -37,6 +39,7 @@ const CONNECT_APPROVAL_TYPES = [
 
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
+  returnTo?: string;
 };
 
 export function useConfirmationNavigation() {
@@ -96,13 +99,19 @@ export function useConfirmationNavigation() {
 
   const navigateToTransaction = useCallback(
     (transactionId: string, options: ConfirmationNavigationOptions = {}) => {
-      const loader = options.loader ?? ConfirmationLoader.Default;
+      const params = new URLSearchParams();
+
+      if (options.loader && options.loader !== ConfirmationLoader.Default) {
+        params.set('loader', options.loader);
+      }
+
+      if (options.returnTo) {
+        params.set('returnTo', options.returnTo);
+      }
 
       navigate({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-        search: options.loader
-          ? new URLSearchParams({ loader }).toString()
-          : '',
+        search: params.toString(),
       });
     },
     [navigate],
@@ -198,7 +207,10 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     (searchParams.get('loader') as ConfirmationLoader) ??
     ConfirmationLoader.Default;
 
+  const returnTo = sanitizeRedirectUrl(searchParams.get('returnTo'));
+
   return {
     loader,
+    returnTo,
   };
 }

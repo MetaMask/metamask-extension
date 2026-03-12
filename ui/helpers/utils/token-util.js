@@ -4,12 +4,12 @@ import {
   getTokenStandardAndDetails,
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { Numeric } from '../../../shared/lib/Numeric';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -208,7 +208,7 @@ export function getTokenIdParam(tokenData = {}) {
  * Get the token balance converted to fiat and optionally formatted for display
  *
  * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
- * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
+ * @param {number|undefined} conversionRate - The exchange rate between the current fiat currency and the native currency
  * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
  * @param {string} [tokenAmount] - The current token balance
  * @param {string} [tokenSymbol] - The token symbol
@@ -229,6 +229,7 @@ export function getTokenFiatAmount(
   // is currently unknown, the fiat amount cannot be calculated so it is not
   // shown to the user
   if (
+    conversionRate === undefined ||
     conversionRate <= 0 ||
     !contractExchangeRate ||
     tokenAmount === undefined ||

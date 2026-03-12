@@ -11,7 +11,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -63,6 +63,20 @@ export const getInternalAccountByAddress = createSelector(
 export function getSelectedInternalAccount(state: AccountsState) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
+}
+
+/**
+ * Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+ * - This might happen during the onboarding
+ *
+ * @param state - The accounts state
+ * @returns The selected internal account or undefined
+ */
+export function getMaybeSelectedInternalAccount(state: AccountsState) {
+  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
 }
 
 export const isSelectedInternalAccountEth = createSelector(

@@ -8,6 +8,7 @@ import configureStore from '../../../../../../../store/store';
 
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
@@ -15,7 +16,7 @@ import { Severity } from '../../../../../../../helpers/constants/design-system';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
-jest.mock('../../../../../../../../shared/modules/selectors');
+jest.mock('../../../../../../../../shared/lib/selectors');
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
@@ -181,6 +182,8 @@ describe('SelectedGasFeeToken', () => {
       result.getByText(GAS_FEE_TOKEN_MOCK.symbol).click();
     });
 
-    expect(result.getByText('Select a token')).toBeInTheDocument();
+    expect(
+      result.getByText(messages.confirmGasFeeTokenModalTitle.message),
+    ).toBeInTheDocument();
   });
 });

@@ -1,9 +1,7 @@
 import React from 'react';
 import { waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import enLocale from '../../../../app/_locales/en/messages.json';
+import { enLocale } from '../../../../test/lib/i18n-helpers';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 import SrpInput from '.';
 
@@ -1880,7 +1878,7 @@ describe('srp-input', () => {
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);
-      await userEvent.click(getByText('Dismiss'));
+      await userEvent.click(getByText(enLocale.dismiss.message));
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),

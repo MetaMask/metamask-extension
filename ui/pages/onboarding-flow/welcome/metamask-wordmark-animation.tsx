@@ -8,7 +8,7 @@ import {
   StateMachineInput,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {

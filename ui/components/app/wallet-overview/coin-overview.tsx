@@ -1,7 +1,7 @@
 import React, { useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
@@ -255,7 +255,7 @@ export const CoinOverview = ({
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
       navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(selectedAccountGroup)}&${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
       );
     }
   }, [selectedAccountGroup, navigate, trackEvent, chainId]);

@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
@@ -38,7 +38,7 @@ import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);

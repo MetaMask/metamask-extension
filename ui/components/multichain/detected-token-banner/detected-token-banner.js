@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import classNames from 'clsx';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   getDetectedTokensInCurrentNetwork,
   getAllDetectedTokensForSelectedAddress,

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "activityLog": {
-    "message": "veiklos žurnalas"
-  },
   "addAcquiredTokens": {
     "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
   },
@@ -302,9 +299,6 @@
     "message": "Importuota",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Jūsų pradinė operacija patvirtinta tinkle. Norėdami grįžti, spustelėkite „Gerai“."
-  },
   "insufficientBalance": {
     "message": "Nepakankamas likutis."
   },
@@ -401,9 +395,6 @@
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Naujas kontaktas"
-  },
   "newContract": {
     "message": "Nauja sutartis"
   },
@@ -487,12 +478,6 @@
   "rejectAll": {
     "message": "Atmesti viską"
   },
-  "rejectTxsDescription": {
-    "message": "Vienu metu atmesite $1 operac."
-  },
-  "rejectTxsN": {
-    "message": "Atmesti $1 operac."
-  },
   "rejected": {
     "message": "Atmesta"
   },
@@ -501,9 +486,6 @@
   },
   "removeAccount": {
     "message": "Pašalinti paskyrą"
-  },
-  "removeAccountDescription": {
-    "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
   },
   "required": {
     "message": "Reikalaujama"
@@ -590,9 +572,6 @@
   "speedUpCancellation": {
     "message": "Pagreitinti šį atšaukimą"
   },
-  "speedUpTransaction": {
-    "message": "Paspartinti šią operaciją"
-  },
   "stateLogError": {
     "message": "Klaida gaunant būsenos žurnalus."
   },
@@ -638,38 +617,11 @@
   "transaction": {
     "message": "operacija"
   },
-  "transactionCancelAttempted": {
-    "message": "Operaciją mėginta atšaukti $2 su $1 dujų mokesčiu"
-  },
-  "transactionCancelSuccess": {
-    "message": "Operacija sėkmingai atšaukta $2"
-  },
-  "transactionConfirmed": {
-    "message": "Operacijos patvirtinimas $2."
-  },
-  "transactionCreated": {
-    "message": "Operacija sukurta $2 su $1 verte."
-  },
-  "transactionDropped": {
-    "message": "Operacija numesta prie$2."
-  },
   "transactionError": {
     "message": "Operacijos klaida. Sutarties kodo numetimo išimtis."
   },
   "transactionErrorNoContract": {
     "message": "Mėginama iškviesti funkciją nekontaktiniu adresu."
-  },
-  "transactionErrored": {
-    "message": "Įvyko operacijos klaida"
-  },
-  "transactionResubmitted": {
-    "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
-  },
-  "transactionSubmitted": {
-    "message": "Operacija pateikta $2 su $1 dujų mokesčiu."
-  },
-  "transactionUpdated": {
-    "message": "Operacija atnaujinta$2."
   },
   "transfer": {
     "message": "Pervesti"
@@ -701,12 +653,6 @@
   "usedByClients": {
     "message": "Naudojama daugelio skirtingų klientų"
   },
-  "userName": {
-    "message": "Vartotojo vardas"
-  },
-  "viewContact": {
-    "message": "Peržiūrėti kontaktą"
-  },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"
   },
@@ -715,8 +661,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsų asmeninė atkūrimo frazė"
   }
 }

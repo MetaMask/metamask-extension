@@ -6,7 +6,7 @@ import {
   selectERC20TokensByChain,
   getUseExternalServices,
 } from '../../selectors/selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../shared/lib/selectors/networks';
 import { getTokenStandardAndDetailsByChain } from '../../store/actions';
 import {
   resolveNativeTokenInfo,

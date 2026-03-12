@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import type { Hex } from '@metamask/utils';
 import { getMarketData, getCurrencyRates } from '../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useDeepMemo } from '../useDeepMemo';
 
@@ -30,7 +30,7 @@ export function useTokenFiatRates(
         const isUsd = currency.toLowerCase() === 'usd';
 
         const chainTokens = marketData?.[chainId] ?? {};
-        const token = chainTokens[toChecksumHexAddress(address)];
+        const token = chainTokens[toChecksumHexAddress(address) as Hex];
         const networkConfiguration = networkConfigurations[chainId];
 
         const conversionRates =

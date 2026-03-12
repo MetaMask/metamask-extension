@@ -41,6 +41,7 @@ import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
   getShowDefaultAddress,
+  getIsDefaultAddressEnabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -59,6 +60,7 @@ import {
   ACCOUNT_LIST_PAGE_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../helpers/constants/routes';
+import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
   getShowSupportDataConsentModal,
@@ -97,6 +99,7 @@ export const AppHeaderUnlockedContent = ({
   );
   const accountListStats = useSelector(getAccountListStats);
   const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const { defaultAddress } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(
       state,
@@ -197,7 +200,7 @@ export const AppHeaderUnlockedContent = ({
                 name: TraceName.ShowAccountList,
                 op: TraceOperation.AccountUi,
               });
-              navigate(ACCOUNT_LIST_PAGE_ROUTE);
+              transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
                 category: MetaMetricsEventCategory.Navigation,
@@ -236,8 +239,11 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
+              showDefaultAddressSection={isDefaultAddressEnabled}
             >
-              {showDefaultAddress && defaultAddress ? (
+              {isDefaultAddressEnabled &&
+              showDefaultAddress &&
+              defaultAddress ? (
                 <MultichainAccountNetworkGroupWithDefaultAddress
                   groupId={selectedMultichainAccountId}
                 />
@@ -270,6 +276,7 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     defaultAddress,
     disableAccountPicker,
+    isDefaultAddressEnabled,
     selectedMultichainAccountId,
     showDefaultAddress,
     navigate,

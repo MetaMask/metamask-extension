@@ -1,3 +1,5 @@
+// TODO: remove dead code in this file and related files now that code fences are gone
+
 import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getRemoteFeatureFlags } from '../remote-feature-flags';
@@ -13,9 +15,7 @@ export const getIsBitcoinSupportEnabled = createSelector(
   ({ bitcoinAccounts }) => {
     // When bitcoin is not enabled, always return false
     let enabled = false;
-    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     enabled = isMultichainFeatureEnabled(bitcoinAccounts);
-    ///: END:ONLY_INCLUDE_IF
     return enabled;
   },
 );
@@ -41,9 +41,7 @@ export const getIsTronSupportEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ tronAccounts }) => {
     let enabled = false;
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     enabled = isMultichainFeatureEnabled(tronAccounts);
-    ///: END:ONLY_INCLUDE_IF
     return enabled;
   },
 );

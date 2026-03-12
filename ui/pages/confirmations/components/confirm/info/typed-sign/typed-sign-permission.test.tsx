@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import TypedSignPermissionInfo from './typed-sign-permission';
 
 jest.mock(
@@ -45,7 +46,7 @@ describe('TypedSignPermissionInfo', () => {
 
       const permissionSection = getByTestId('confirmation_permission-section');
       expect(permissionSection).toBeInTheDocument();
-      expect(getByText('Recipient')).toBeInTheDocument();
+      expect(getByText(messages.recipient.message)).toBeInTheDocument();
     });
   });
 
@@ -151,7 +152,9 @@ describe('TypedSignPermissionInfo', () => {
         'native-token-periodic-details-section',
       );
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 
@@ -276,7 +279,8 @@ describe('TypedSignPermissionInfo', () => {
       );
       const detailsSection = getByTestId('native-token-stream-details-section');
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 
@@ -352,7 +356,8 @@ describe('TypedSignPermissionInfo', () => {
         'erc20-token-periodic-details-section',
       );
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 
@@ -475,7 +480,8 @@ describe('TypedSignPermissionInfo', () => {
       );
       const detailsSection = getByTestId('erc20-token-stream-details-section');
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 });

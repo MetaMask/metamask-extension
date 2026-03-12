@@ -1,5 +1,4 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 
@@ -17,9 +16,9 @@ export const DefaultStory = () => {
     <SelectHardware
       onCancel={() => null}
       browserSupported
-      connectToHardwareWallet={(selectedDevice) =>
-        action(`Continue connect to ${selectedDevice}`)()
-      }
+      connectToHardwareWallet={() => {
+        /* no-op */
+      }}
       ledgerTransportType={LedgerTransportTypes.live}
       context={{
         trackEvent: mockTrackEvent,

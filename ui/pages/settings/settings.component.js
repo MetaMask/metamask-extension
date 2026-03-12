@@ -6,7 +6,7 @@ import {
   matchPath,
   Navigate,
 } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import TabBar from '../../components/app/tab-bar';
 
 import {
@@ -16,10 +16,6 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  CONTACT_LIST_ROUTE,
-  CONTACT_ADD_ROUTE,
-  CONTACT_EDIT_ROUTE,
-  CONTACT_VIEW_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
@@ -65,11 +61,11 @@ import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-p
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { toRelativeRoutePath } from '../routes/utils';
+import { NotificationsSettingsContent } from '../notifications-settings/notifications-settings';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
-import ContactListTab from './contact-list-tab';
 import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
@@ -433,11 +429,6 @@ class SettingsPage extends PureComponent {
         key: BACKUPANDSYNC_ROUTE,
       },
       {
-        content: t('contacts'),
-        icon: <Icon name={IconName.Book} />,
-        key: CONTACT_LIST_ROUTE,
-      },
-      {
         content: t('securityAndPrivacy'),
         icon: <Icon name={IconName.Lock} />,
         key: SECURITY_ROUTE,
@@ -483,12 +474,6 @@ class SettingsPage extends PureComponent {
         tabs={tabs}
         isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
-            return true;
-          }
-          if (
-            key === CONTACT_LIST_ROUTE &&
-            currentPath.includes(CONTACT_LIST_ROUTE)
-          ) {
             return true;
           }
           return matchPath(key, currentPath);
@@ -591,20 +576,11 @@ class SettingsPage extends PureComponent {
           />
         )}
         <Route
-          path={toRelativeRoutePath(CONTACT_LIST_ROUTE, SETTINGS_ROUTE)}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={toRelativeRoutePath(CONTACT_ADD_ROUTE, SETTINGS_ROUTE)}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={`${toRelativeRoutePath(CONTACT_EDIT_ROUTE, SETTINGS_ROUTE)}/:id`}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={`${toRelativeRoutePath(CONTACT_VIEW_ROUTE, SETTINGS_ROUTE)}/:id`}
-          element={<ContactListTab />}
+          path={toRelativeRoutePath(
+            NOTIFICATIONS_SETTINGS_ROUTE,
+            SETTINGS_ROUTE,
+          )}
+          element={<NotificationsSettingsContent />}
         />
         <Route
           path={toRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_ROUTE)}

@@ -9,6 +9,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -216,9 +218,10 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      search: 'accountGroupId=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
+    });
   });
 
   it('calls handleAccountRenameAction when clicking the rename option', async () => {
@@ -538,7 +541,7 @@ describe('MultichainAccountMenu', () => {
       expect(popover).toBeInTheDocument();
 
       const addressesItem = popover
-        ? within(popover as HTMLElement).getByText('Addresses')
+        ? within(popover as HTMLElement).getByText(messages.addresses.message)
         : null;
       expect(addressesItem).toBeInTheDocument();
 

@@ -1,21 +1,21 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import {
-  addTransactionAndRouteToConfirmationPage,
+  addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../../store/actions';
 import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_CLAIM_CHAIN_ID,
   MERKL_DISTRIBUTOR_ADDRESS,
-  ELIGIBLE_TOKENS,
 } from '../constants';
 import { fetchMerklRewardsForAsset } from '../merkl-client';
-import type { MetaMaskReduxDispatch } from '../../../../store/store';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 
 type UseMerklClaimOptions = {
   tokenAddress: string;
@@ -39,7 +39,8 @@ export const useMerklClaim = ({
   const [isClaiming, setIsClaiming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -108,13 +109,17 @@ export const useMerklClaim = ({
         chainId: claimChainId,
       };
 
-      // Create the transaction and navigate to confirmation page.
-      await dispatch(
-        addTransactionAndRouteToConfirmationPage(txParams, {
-          networkClientId,
-          type: TransactionType.musdClaim,
-        }),
-      );
+      const transactionMeta = await addTransaction(txParams, {
+        networkClientId,
+        type: TransactionType.musdClaim,
+      });
+
+      navigate({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionMeta.id}`,
+        search: new URLSearchParams({
+          returnTo: location.pathname + location.search,
+        }).toString(),
+      });
     } catch (e) {
       const err = e as Error;
 
@@ -126,37 +131,19 @@ export const useMerklClaim = ({
       setError(err.message);
       setIsClaiming(false);
     }
-  }, [selectedAddress, tokenAddress, chainId, claimChainId, dispatch]);
+  }, [
+    selectedAddress,
+    tokenAddress,
+    chainId,
+    claimChainId,
+    navigate,
+    location.pathname,
+    location.search,
+  ]);
 
   return {
     claimRewards,
     isClaiming,
     error,
   };
-};
-
-/**
- * Check if a token is eligible for Merkl rewards.
- * Compares addresses case-insensitively since Ethereum addresses are case-insensitive.
- * Returns false for native tokens (undefined/null address).
- *
- * @param chainId - The chain ID of the token
- * @param address - The token's contract address
- * @returns Whether the token is eligible for Merkl rewards
- */
-export const isEligibleForMerklRewards = (
-  chainId: string,
-  address: string | undefined | null,
-): boolean => {
-  if (!address) {
-    return false;
-  }
-  const eligibleAddresses = ELIGIBLE_TOKENS[chainId];
-  if (!eligibleAddresses) {
-    return false;
-  }
-  const addressLower = address.toLowerCase();
-  return eligibleAddresses.some(
-    (eligibleAddress) => eligibleAddress.toLowerCase() === addressLower,
-  );
 };

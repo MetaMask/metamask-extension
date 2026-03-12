@@ -1196,6 +1196,55 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setWatchEthereumAccountEnabled', () => {
+    it('calls background setWatchEthereumAccountEnabled with value', async () => {
+      const store = mockStore();
+      background.setWatchEthereumAccountEnabled = sinon.stub().resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setWatchEthereumAccountEnabled(true));
+      expect(background.setWatchEthereumAccountEnabled.callCount).toStrictEqual(
+        1,
+      );
+      expect(
+        background.setWatchEthereumAccountEnabled.getCall(0).args,
+      ).toStrictEqual([true]);
+
+      await store.dispatch(actions.setWatchEthereumAccountEnabled(false));
+      expect(background.setWatchEthereumAccountEnabled.callCount).toStrictEqual(
+        2,
+      );
+      expect(
+        background.setWatchEthereumAccountEnabled.getCall(1).args,
+      ).toStrictEqual([false]);
+    });
+  });
+
+  describe('#setAddSnapAccountEnabled', () => {
+    if (typeof actions.setAddSnapAccountEnabled !== 'function') {
+      it.todo('setAddSnapAccountEnabled not available in this build');
+      return;
+    }
+
+    it('calls background setAddSnapAccountEnabled with value', async () => {
+      const store = mockStore();
+      background.setAddSnapAccountEnabled = sinon.stub().resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setAddSnapAccountEnabled(true));
+      expect(background.setAddSnapAccountEnabled.callCount).toStrictEqual(1);
+      expect(background.setAddSnapAccountEnabled.getCall(0).args).toStrictEqual(
+        [true],
+      );
+
+      await store.dispatch(actions.setAddSnapAccountEnabled(false));
+      expect(background.setAddSnapAccountEnabled.callCount).toStrictEqual(2);
+      expect(background.setAddSnapAccountEnabled.getCall(1).args).toStrictEqual(
+        [false],
+      );
+    });
+  });
+
   describe('#updateTransaction', () => {
     const txParams = {
       from: '0x1',
@@ -2606,6 +2655,60 @@ describe('Actions', () => {
 
       await store.dispatch(actions.setParticipateInMetaMetrics(true));
       expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('#setMusdConversionEducationSeen', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setMusdConversionEducationSeen in background with value', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(true));
+      expect(setMusdConversionEducationSeenStub.callCount).toStrictEqual(1);
+      expect(setMusdConversionEducationSeenStub.calledWith(true)).toBe(true);
+    });
+
+    it('calls setMusdConversionEducationSeen in background with false', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(false));
+      expect(setMusdConversionEducationSeenStub.calledWith(false)).toBe(true);
+    });
+  });
+
+  describe('#addMusdConversionDismissedCtaKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls addMusdConversionDismissedCtaKey in background with key', async () => {
+      const store = mockStore();
+      const addMusdConversionDismissedCtaKeyStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        addMusdConversionDismissedCtaKey: addMusdConversionDismissedCtaKeyStub,
+      });
+
+      await store.dispatch(
+        actions.addMusdConversionDismissedCtaKey('0x1-0xabc123'),
+      );
+      expect(addMusdConversionDismissedCtaKeyStub.callCount).toStrictEqual(1);
+      expect(
+        addMusdConversionDismissedCtaKeyStub.calledWith('0x1-0xabc123'),
+      ).toBe(true);
     });
   });
 
@@ -4599,6 +4702,55 @@ describe('Actions', () => {
 
       await store.dispatch(actions.removeDeferredDeepLink());
       expect(background.removeDeferredDeepLink.callCount).toStrictEqual(1);
+    });
+  });
+
+  describe('#setPendingRedirectRoute', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background setPendingRedirectRoute with a route', async () => {
+      const store = mockStore();
+      background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection(background);
+
+      const route = { path: '/shield-plan' };
+      await store.dispatch(actions.setPendingRedirectRoute(route));
+      expect(background.setPendingRedirectRoute.callCount).toStrictEqual(1);
+      expect(background.setPendingRedirectRoute.getCall(0).args).toStrictEqual([
+        route,
+      ]);
+    });
+
+    it('calls background setPendingRedirectRoute with null', async () => {
+      const store = mockStore();
+      background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setPendingRedirectRoute(null));
+      expect(background.setPendingRedirectRoute.callCount).toStrictEqual(1);
+      expect(background.setPendingRedirectRoute.getCall(0).args).toStrictEqual([
+        null,
+      ]);
+    });
+
+    it('dispatches displayWarning on error', async () => {
+      const store = mockStore();
+      background.setPendingRedirectRoute = sinon
+        .stub()
+        .rejects(new Error('error'));
+      background.getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection(background);
+
+      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
+
+      await expect(
+        store.dispatch(actions.setPendingRedirectRoute({ path: '/test' })),
+      ).rejects.toThrow('error');
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 });

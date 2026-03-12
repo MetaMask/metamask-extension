@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -17,21 +16,21 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { logErrorWithMessage } from '../../../shared/modules/error';
+import { logErrorWithMessage } from '../../../shared/lib/error';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/lib/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -242,13 +241,18 @@ export function isOriginContractAddress(to, sendTokenAddress) {
   return to.toLowerCase() === sendTokenAddress.toLowerCase();
 }
 
-// Takes wei Hex, returns wei BN, even if input is null
+// Takes wei hex, returns wei bigint, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new BN(0, 16);
+    return 0n;
   }
+
   const stripped = stripHexPrefix(balance);
-  return new BN(stripped, 16);
+  if (!stripped) {
+    return 0n;
+  }
+
+  return BigInt(`0x${stripped}`);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]

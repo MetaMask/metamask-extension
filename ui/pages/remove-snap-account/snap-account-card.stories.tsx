@@ -23,9 +23,7 @@ export default {
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const DefaultStory = () => (
-  <SnapAccountCard address={TEST_ADDRESS} />
-);
+export const DefaultStory = () => <SnapAccountCard address={TEST_ADDRESS} />;
 DefaultStory.storyName = 'Default';
 
 export const RemoveStory = () => (

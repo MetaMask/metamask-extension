@@ -11,17 +11,13 @@ import {
   HYPERLIQUID_APPROVAL_TYPE,
   ASTERDEX_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../../shared/constants/app';
 import smartTransactionStatusPage from './smart-transaction-status-page';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
-///: END:ONLY_INCLUDE_IF
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
 import error from './error';
@@ -42,14 +38,12 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
   [ApprovalType.SnapDialogDefault]: snapDefault,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
     createSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
     removeSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
-  ///: END:ONLY_INCLUDE_IF
   [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
   [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
   [GMX_APPROVAL_TYPE]: defiReferralConsent,

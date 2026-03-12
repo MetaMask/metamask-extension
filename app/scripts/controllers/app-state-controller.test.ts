@@ -32,7 +32,7 @@ jest.mock('webextension-polyfill');
 jest.mock('../../../shared/lib/deep-links/utils');
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
-jest.mock('../../../shared/modules/mv3.utils', () => ({
+jest.mock('../../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },
@@ -48,8 +48,6 @@ const extensionMock = {
     },
   },
 } as unknown as jest.Mocked<Browser>;
-
-const TRANSACTION_ID_MOCK = '123-456';
 
 describe('AppStateController', () => {
   describe('setOutdatedBrowserWarningLastShown', () => {
@@ -555,6 +553,48 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setPendingRedirectRoute', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+
+    it('sets a route with only path', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+        });
+      });
+    });
+
+    it('sets a route with path, search, and environmentType', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+      });
+    });
+
+    it('clears the route when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).not.toBeNull();
+
+        controller.setPendingRedirectRoute(null);
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+  });
+
   describe('pendingExtensionVersion', () => {
     it('defaults to null', async () => {
       await withController(({ controller }) => {
@@ -698,72 +738,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setEnableEnforcedSimulations', () => {
-    it('updates the enableEnforcedSimulations state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnableEnforcedSimulations(false);
-        expect(controller.state.enableEnforcedSimulations).toBe(false);
-
-        controller.setEnableEnforcedSimulations(true);
-        expect(controller.state.enableEnforcedSimulations).toBe(true);
-      });
-    });
-  });
-
-  describe('setEnableEnforcedSimulationsForTransaction', () => {
-    it('updates the enableEnforcedSimulationsForTransactions state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnableEnforcedSimulationsForTransaction(
-          TRANSACTION_ID_MOCK,
-          true,
-        );
-
-        expect(
-          controller.state.enableEnforcedSimulationsForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: true,
-        });
-
-        controller.setEnableEnforcedSimulationsForTransaction(
-          TRANSACTION_ID_MOCK,
-          false,
-        );
-
-        expect(
-          controller.state.enableEnforcedSimulationsForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: false,
-        });
-      });
-    });
-  });
-
-  describe('setEnforcedSimulationsSlippage', () => {
-    it('updates the enforcedSimulationsSlippage state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnforcedSimulationsSlippage(23);
-        expect(controller.state.enforcedSimulationsSlippage).toBe(23);
-      });
-    });
-  });
-
-  describe('setEnforcedSimulationsSlippageForTransaction', () => {
-    it('updates the enforcedSimulationsSlippageForTransactions state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnforcedSimulationsSlippageForTransaction(
-          TRANSACTION_ID_MOCK,
-          25,
-        );
-
-        expect(
-          controller.state.enforcedSimulationsSlippageForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: 25,
-        });
-      });
-    });
-  });
-
   describe('setCanTrackWalletFundsObtained', () => {
     it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
       await withController(({ controller }) => {
@@ -817,10 +791,6 @@ describe('AppStateController', () => {
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
@@ -835,6 +805,8 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
@@ -843,6 +815,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -912,10 +885,6 @@ describe('AppStateController', () => {
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
@@ -930,6 +899,8 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
@@ -938,6 +909,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -1003,8 +975,6 @@ describe('AppStateController', () => {
               "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
@@ -1018,6 +988,8 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
@@ -1087,10 +1059,6 @@ describe('AppStateController', () => {
               "currentPopupId": 0,
               "dappSwapComparisonData": {},
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
@@ -1104,6 +1072,8 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "networkConnectionBanner": {
                 "status": "unknown",
               },
@@ -1114,6 +1084,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
