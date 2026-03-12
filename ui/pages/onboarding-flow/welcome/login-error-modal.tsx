@@ -31,7 +31,6 @@ import {
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getSocialLoginType } from '../../../selectors';
-import { openWindow } from '../../../helpers/utils/window';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
 type LoginErrorModalProps = {
@@ -75,7 +74,6 @@ export default function LoginErrorModal({
         key="loginErrorGenericDescription"
         size={TextButtonSize.BodyMd}
         onClick={() => {
-          openWindow(SUPPORT_LINK as string);
           trackEvent(
             {
               category: MetaMetricsEventCategory.Onboarding,
@@ -92,9 +90,12 @@ export default function LoginErrorModal({
             },
           );
         }}
+        asChild
         className="hover:bg-transparent active:bg-transparent w-fit"
       >
-        {t('loginErrorGenericSupport')}
+        <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
+          {t('loginErrorGenericSupport')}
+        </a>
       </TextButton>,
     ]);
   };

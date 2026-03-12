@@ -132,7 +132,7 @@ export default function LoginOptions({
         className="options-modal__or"
       >
         <Text
-          className="w-max px-2 mx-auto relative z-1"
+          className="w-max px-2 mx-auto relative z-[1]"
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
