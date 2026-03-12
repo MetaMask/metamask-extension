@@ -1739,6 +1739,9 @@ class Driver {
       'Event fragment with id transaction-added-',
       // Sidepanel
       'GL Context was lost',
+      // Null/empty URLs that Chrome blocks before reaching the proxy
+      'net::ERR_BLOCKED_BY_CLIENT',
+      'null is blocked',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

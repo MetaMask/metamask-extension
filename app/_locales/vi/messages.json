@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
-  "buildContactList": {
-    "message": "Xây dựng danh sách liên hệ của bạn"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask được thiết kế và xây dựng trên khắp thế giới."
   },
@@ -2131,9 +2128,6 @@
   "delete": {
     "message": "Xóa"
   },
-  "deleteContact": {
-    "message": "Xóa người liên hệ"
-  },
   "deleteMetaMetricsData": {
     "message": "Xóa dữ liệu MetaMetrics"
   },
@@ -2364,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Chỉnh sửa biệt danh"
-  },
-  "editAccountName": {
-    "message": "Chỉnh sửa tên tài khoản"
   },
   "editAccounts": {
     "message": "Chỉnh sửa tài khoản"
@@ -3128,9 +3119,6 @@
   },
   "hidden": {
     "message": "Đã ẩn"
-  },
-  "hiddenAccounts": {
-    "message": "Tài khoản ẩn"
   },
   "hide": {
     "message": "Ẩn"
@@ -4269,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Liên hệ mới"
   },
   "newContract": {
     "message": "Hợp đồng mới"
@@ -6259,9 +6244,6 @@
   },
   "search": {
     "message": "Tìm kiếm"
-  },
-  "searchAccounts": {
-    "message": "Tìm kiếm tài khoản"
   },
   "searchAnAcccountOrContact": {
     "message": "Tìm kiếm tài khoản hoặc liên hệ"
@@ -8763,9 +8745,6 @@
   "usedByClients": {
     "message": "Được nhiều ví khác nhau sử dụng"
   },
-  "userName": {
-    "message": "Tên người dùng"
-  },
   "userOpContractDeployError": {
     "message": "Không hỗ trợ triển khai hợp đồng từ tài khoản thông minh"
   },
@@ -8784,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Xem địa chỉ liên hệ"
   },
   "viewDetails": {
     "message": "Xem chi tiết"

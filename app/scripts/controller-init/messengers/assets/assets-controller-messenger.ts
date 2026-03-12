@@ -27,7 +27,7 @@ import type {
   GetRunnableSnaps,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
@@ -262,7 +262,7 @@ type PreferencesControllerGetStateAction = {
  * Actions needed during AssetsController initialization.
  */
 type AllowedInitializationActions =
-  | AuthenticationControllerGetBearerToken
+  | AuthenticationControllerGetBearerTokenAction
   | HandleSnapRequest
   | MetaMetricsControllerTrackEventAction
   | PreferencesControllerGetStateAction;

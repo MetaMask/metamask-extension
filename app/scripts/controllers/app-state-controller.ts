@@ -11,12 +11,7 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import {
-  DeferredPromise,
-  Hex,
-  Json,
-  createDeferredPromise,
-} from '@metamask/utils';
+import { DeferredPromise, Hex, createDeferredPromise } from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
@@ -60,6 +55,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import type { NftDropdownState } from '../../../shared/types/nfts';
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
@@ -120,7 +116,7 @@ export type AppStateControllerState = {
   newPrivacyPolicyToastShownDate: number | null;
   pna25Acknowledged: boolean;
   nftsDetectionNoticeDismissed: boolean;
-  nftsDropdownState: Json;
+  nftsDropdownState: NftDropdownState;
   notificationGasPollTokens: string[];
   onboardingDate: number | null;
   outdatedBrowserWarningLastShown: number | null;
@@ -1465,9 +1461,8 @@ export class AppStateController extends BaseController<
    *
    * @param nftsDropdownState
    */
-  updateNftDropDownState(nftsDropdownState: Json): void {
+  updateNftDropDownState(nftsDropdownState: NftDropdownState): void {
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
       state.nftsDropdownState = nftsDropdownState;
     });
   }

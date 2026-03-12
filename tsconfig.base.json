@@ -8,13 +8,18 @@
     // makes typechecking faster (also see `tsBuildInfoFile` setting)
     "incremental": true,
     "jsx": "react",
-    // todo: make two more tsconfigs, one for node (development and test) and
-    // one for browser (app, ui, shared?) and ensure the code is split up into
-    // the right directories that make sense for their environment.
-    // I think this would eliminate a lot of eslint overrides complexity
-    // In the meantime, we need DOM libs and should target the ES version in
-    // "@tsconfig/node22/tsconfig.json" (`libs` here overwrites extends's `libs`)
-    "lib": ["DOM", "es2023"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "es2023",
+      "ESNext.Array",
+      "ESNext.Collection"
+      // Not supported by eslint 8:
+      // "ESNext.Iterator",
+      // "ESNext.Promise"
+    ],
+    // es2024 isn't supported by eslint 8
+    "target": "es2023",
     // we only use tsc for type checking (yarn lint:tsc)
     "noEmit": true,
     // matches webpack's `symlinks: false`
@@ -31,6 +36,6 @@
     }
   },
   "exclude": ["storybook-build"],
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "@tsconfig/node24/tsconfig.json",
   "include": []
 }

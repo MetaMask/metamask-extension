@@ -111,7 +111,6 @@ jest.mock('react-router-dom', () => ({
 
 // eslint-disable-next-line import/first
 import PerpsOrderEntryPage from './perps-order-entry-page';
-// eslint-disable-next-line import/first
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];

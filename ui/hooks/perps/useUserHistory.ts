@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import type { CaipAccountId } from '@metamask/utils';
 import type { UserHistoryItem } from '@metamask/perps-controller';
+import type { CaipAccountId } from '@metamask/utils';
 import { usePerpsController } from '../../providers/perps';
 
 /**

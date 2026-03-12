@@ -1,4 +1,7 @@
 {
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Used for tailwind intellisense
   "editor.quickSuggestions": {
@@ -14,6 +17,7 @@
     "--ignore-revs-file .git-blame-ignore-revs"
   ],
   "javascript.preferences.importModuleSpecifier": "relative",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "json.schemas": [
     {
       "fileMatch": ["app/manifest/*/*.json"],

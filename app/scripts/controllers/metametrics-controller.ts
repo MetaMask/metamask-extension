@@ -698,8 +698,20 @@ export default class MetaMetricsController extends BaseController<
         }
       : {};
 
-    this.update((state) => {
-      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
+    const mergedFragment = merge(
+      {},
+      additionalFragmentProps,
+      fragment,
+    ) as MetaMetricsEventFragment;
+
+    this.update(() => {
+      return {
+        ...this.state,
+        fragments: {
+          ...this.state.fragments,
+          [id]: mergedFragment,
+        },
+      };
     });
 
     if (fragment.initialEvent) {
@@ -768,14 +780,20 @@ export default class MetaMetricsController extends BaseController<
     const createIfNotFound = !fragment && id.includes('transaction-submitted-');
 
     if (createIfNotFound) {
-      this.update((state) => {
-        state.fragments[id] = {
-          canDeleteIfAbandoned: true,
-          category: MetaMetricsEventCategory.Transactions,
-          successEvent: TransactionMetaMetricsEvent.finalized,
-          id,
-          ...payload,
-          lastUpdated: Date.now(),
+      this.update(() => {
+        return {
+          ...this.state,
+          fragments: {
+            ...this.state.fragments,
+            [id]: {
+              canDeleteIfAbandoned: true,
+              category: MetaMetricsEventCategory.Transactions,
+              successEvent: TransactionMetaMetricsEvent.finalized,
+              id,
+              ...payload,
+              lastUpdated: Date.now(),
+            },
+          },
         };
       });
       return;
@@ -783,11 +801,17 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
-    this.update((state) => {
-      state.fragments[id] = merge(state.fragments[id], {
-        ...payload,
-        lastUpdated: Date.now(),
-      });
+    this.update(() => {
+      return {
+        ...this.state,
+        fragments: {
+          ...this.state.fragments,
+          [id]: merge({}, this.state.fragments[id], {
+            ...payload,
+            lastUpdated: Date.now(),
+          }),
+        },
+      };
     });
   }
 
@@ -1169,8 +1193,14 @@ export default class MetaMetricsController extends BaseController<
 
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
-    this.update((state) => {
-      state.eventsBeforeMetricsOptIn.push(event);
+    this.update(() => {
+      return {
+        ...this.state,
+        eventsBeforeMetricsOptIn: [
+          ...this.state.eventsBeforeMetricsOptIn,
+          event,
+        ],
+      };
     });
   }
 
@@ -1195,8 +1225,14 @@ export default class MetaMetricsController extends BaseController<
 
   // It adds a trace into a queue, which is only tracked if a user opts into metrics.
   addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
-    this.update((state) => {
-      state.tracesBeforeMetricsOptIn.push(traceData);
+    this.update(() => {
+      return {
+        ...this.state,
+        tracesBeforeMetricsOptIn: [
+          ...this.state.tracesBeforeMetricsOptIn,
+          traceData,
+        ],
+      };
     });
   }
 

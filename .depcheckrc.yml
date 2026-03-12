@@ -31,7 +31,7 @@ ignores:
   - '@metamask/snap-account-abstraction-keyring-site'
   - '@metamask/test-snaps'
   - '@metamask/design-tokens' # Only imported in index.css
-  - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
+  - '@tsconfig/node24' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
   - 'chromedriver'
   - 'depcheck' # ooo meta

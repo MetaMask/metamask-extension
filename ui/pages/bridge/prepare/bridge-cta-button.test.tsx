@@ -385,6 +385,7 @@ describe('BridgeCTAButton', () => {
         isInsufficientBalance: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
+        isStockMarketClosed: false,
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         ...validationErrors,
@@ -455,7 +456,6 @@ describe('BridgeCTAButton', () => {
     `);
   });
 
-  // @ts-expect-error: each is a valid test function in jest
   it.each([
     { priceImpact: '0.253', expectedOpenModalCalls: 1 }, // error
     { priceImpact: '0', expectedOpenModalCalls: 0 }, // neither

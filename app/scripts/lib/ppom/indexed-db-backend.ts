@@ -7,7 +7,7 @@ type StorageKey = {
 
 const validateChecksum = async (
   key: StorageKey,
-  data: ArrayBuffer,
+  data: ArrayBuffer | Uint8Array<ArrayBufferLike>,
   checksum: string,
 ) => {
   const hash = await crypto.subtle.digest('SHA-256', data);
@@ -114,7 +114,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
 
   async write(
     key: StorageKey,
-    data: ArrayBuffer,
+    data: ArrayBuffer | Uint8Array<ArrayBufferLike>,
     checksum: string,
   ): Promise<void> {
     await validateChecksum(key, data, checksum);

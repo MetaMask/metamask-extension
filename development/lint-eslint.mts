@@ -32,7 +32,7 @@ const PROJECT_FILE_REGEX = /\.(c|m)?(j|t)sx?$/u;
 
 type EslintRunResult = {
   eslintExitCode: number;
-  lintResults: unknown[];
+  lintResults: eslint.ESLint.LintResult[];
   stderr: string;
 };
 
@@ -175,11 +175,11 @@ function runEslint(args: string[]): Promise<EslintRunResult> {
 
     child.on('close', (code) => {
       const trimmedStdout = stdout.trim();
-      let lintResults: unknown[] = [];
+      let lintResults: eslint.ESLint.LintResult[] = [];
 
       if (trimmedStdout) {
         try {
-          lintResults = JSON.parse(trimmedStdout) as unknown[];
+          lintResults = JSON.parse(trimmedStdout) as eslint.ESLint.LintResult[];
         } catch (error) {
           reject(
             new Error(
@@ -349,7 +349,7 @@ async function main() {
     3;
   const fileChunks = chunkByApproxCommandLength(filesToLint, baseCommandLength);
 
-  const combinedResults: unknown[] = [];
+  const combinedResults: eslint.ESLint.LintResult[] = [];
   let worstEslintExitCode = 0;
   const chunkResults = await runChunkPool(
     fileChunks,
@@ -375,7 +375,7 @@ async function main() {
   const loadedFormatter = await new ESLint().loadFormatter('stylish');
   const output = loadedFormatter.format(filteredResults);
   if (output) {
-    process.stdout.write(output);
+    process.stdout.write(output.toString());
   }
 
   process.exit(worstEslintExitCode);

@@ -32,6 +32,9 @@ jest.mock('react-redux', () => ({
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+type BridgeExpectedState = {
+  token?: ({ chainId: string } & Record<string, unknown>) | null;
+} & Record<string, unknown>;
 
 const renderUseBridging = (mockStoreState: object, pathname?: string) =>
   renderHookWithProvider(() => useBridging(), mockStoreState, pathname);
@@ -56,21 +59,21 @@ describe('useBridging', () => {
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         'Home',
         false,
-        { srcToken: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
+        { token: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
         BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         MetaMetricsSwapsEventSource.TokenView,
         false,
-        { srcToken: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
+        { token: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
         BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         false,
-        { srcToken: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM) },
+        { token: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM) },
       ],
       [
         BRIDGE_PREPARE_PATH,
@@ -103,7 +106,7 @@ describe('useBridging', () => {
         MetaMetricsSwapsEventSource.TokenView,
         true,
         {
-          srcToken: {
+          token: {
             iconUrl: 'https://icon.url',
             string: '123',
             symbol: 'TEST',
@@ -122,7 +125,14 @@ describe('useBridging', () => {
     ])(
       'should open %s with the currently selected token: %p',
       async (...args) => {
-        const [expectedUrl, token, location, isSwap, expectedState = {}] = args;
+        const [expectedUrl, token, location, isSwap, expectedState = {}] =
+          args as [
+            string,
+            Record<string, unknown>,
+            string,
+            boolean,
+            BridgeExpectedState?,
+          ];
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging(
           createBridgeMockStore({
@@ -166,10 +176,22 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, isSwap);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
-        expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
-          state: expectedState,
-        });
+        expect(mockDispatch.mock.calls).toHaveLength(3);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          { pathname: expectedUrl, search: '' },
+          {
+            replace: false,
+            state: {
+              ...expectedState,
+              token: expectedState.token
+                ? {
+                    ...expectedState.token,
+                    chainId: formatChainIdToCaip(expectedState.token.chainId),
+                  }
+                : null,
+            },
+          },
+        );
         expect(openTabSpy).not.toHaveBeenCalled();
       },
     );
@@ -177,22 +199,31 @@ describe('useBridging', () => {
     it.each([
       [
         '/',
-        `${BRIDGE_PREPARE_PATH}?from=eip155:1/slip44:60`,
+        {
+          pathname: BRIDGE_PREPARE_PATH,
+          search: `from=${encodeURIComponent('eip155:1/slip44:60')}`,
+        },
         undefined,
         'Home',
       ],
       [
         '/asset/0xa/',
-        BRIDGE_PREPARE_PATH,
+        {
+          pathname: BRIDGE_PREPARE_PATH,
+          search: '',
+        },
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
+          token: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         },
       ],
       [
         '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-        BRIDGE_PREPARE_PATH,
+        {
+          pathname: BRIDGE_PREPARE_PATH,
+          search: '',
+        },
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -207,7 +238,7 @@ describe('useBridging', () => {
         },
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: {
+          token: {
             symbol: 'TEST',
             address: toChecksumAddress(
               '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
@@ -225,7 +256,10 @@ describe('useBridging', () => {
       ],
       [
         '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-        `${BRIDGE_PREPARE_PATH}?from=eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d`,
+        {
+          pathname: BRIDGE_PREPARE_PATH,
+          search: `from=${encodeURIComponent('eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d')}`,
+        },
         {
           iconUrl: 'https://icon.url',
           address: toChecksumAddress(
@@ -242,27 +276,36 @@ describe('useBridging', () => {
       // Should use bip44 default asset for BTC
       [
         `/`,
-        BRIDGE_PREPARE_PATH,
+        {
+          pathname: BRIDGE_PREPARE_PATH,
+          search: '',
+        },
         getNativeAssetForChainId(MultichainNetworks.BITCOIN),
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: getNativeAssetForChainId(MultichainNetworks.BITCOIN),
+          token: getNativeAssetForChainId(MultichainNetworks.BITCOIN),
         },
       ],
       // Should use bip44 default asset for SOLANA
       [
         '/',
-        BRIDGE_PREPARE_PATH,
+        {
+          pathname: BRIDGE_PREPARE_PATH,
+          search: '',
+        },
         getNativeAssetForChainId(MultichainNetworks.SOLANA),
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: getNativeAssetForChainId(MultichainNetworks.SOLANA),
+          token: getNativeAssetForChainId(MultichainNetworks.SOLANA),
         },
       ],
       // test account has no TRON account
       [
         '/',
-        `${BRIDGE_PREPARE_PATH}?from=eip155:1/slip44:60`,
+        {
+          pathname: BRIDGE_PREPARE_PATH,
+          search: `from=${encodeURIComponent('eip155:1/slip44:60')}`,
+        },
         getNativeAssetForChainId(MultichainNetworks.TRON),
         MetaMetricsSwapsEventSource.TokenView,
       ],
@@ -270,7 +313,13 @@ describe('useBridging', () => {
       'should open swap with correct token pair when pathname is %s',
       async (...args) => {
         const [pathname, expectedUrl, token, location, expectedState = {}] =
-          args;
+          args as [
+            string,
+            { pathname: string; search: string },
+            Record<string, unknown> | undefined,
+            string,
+            BridgeExpectedState?,
+          ];
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')
@@ -321,9 +370,18 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, true);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
+        expect(mockDispatch.mock.calls).toHaveLength(3);
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
-          state: expectedState,
+          replace: false,
+          state: {
+            ...expectedState,
+            token: expectedState.token
+              ? {
+                  ...expectedState.token,
+                  chainId: formatChainIdToCaip(expectedState.token.chainId),
+                }
+              : null,
+          },
         });
         expect(openTabSpy).not.toHaveBeenCalled();
       },

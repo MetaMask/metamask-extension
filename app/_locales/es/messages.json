@@ -1207,9 +1207,6 @@
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
   },
-  "buildContactList": {
-    "message": "Cree su lista de contactos"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
   },
@@ -2131,9 +2128,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteContact": {
-    "message": "Eliminar contacto"
-  },
   "deleteMetaMetricsData": {
     "message": "Eliminar datos de MetaMetrics"
   },
@@ -2364,9 +2358,6 @@
   },
   "editANickname": {
     "message": "Editar apodo"
-  },
-  "editAccountName": {
-    "message": "Editar el nombre de la cuenta"
   },
   "editAccounts": {
     "message": "Editar cuentas"
@@ -3128,9 +3119,6 @@
   },
   "hidden": {
     "message": "Oculto"
-  },
-  "hiddenAccounts": {
-    "message": "Cuentas ocultas"
   },
   "hide": {
     "message": "Ocultar"
@@ -4269,9 +4257,6 @@
   "newAccountNumberName": {
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Contacto nuevo"
   },
   "newContract": {
     "message": "Contrato nuevo"
@@ -6259,9 +6244,6 @@
   },
   "search": {
     "message": "Buscar"
-  },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
   },
   "searchAnAcccountOrContact": {
     "message": "Buscar una cuenta o contacto"
@@ -8763,9 +8745,6 @@
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
   },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
   "userOpContractDeployError": {
     "message": "No se admite la implementación de contratos desde una cuenta inteligente"
   },
@@ -8784,9 +8763,6 @@
   "viewAddressOnExplorer": {
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Ver contacto"
   },
   "viewDetails": {
     "message": "Ver detalles"
