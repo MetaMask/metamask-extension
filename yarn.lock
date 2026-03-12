@@ -5712,16 +5712,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/app-metadata-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/app-metadata-controller@npm:2.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-  checksum: 10/4d5dd9ad75dcb066176339ba806cc382a2e38f1dfecacde8a6dc474f26f352aa6c46cee5363ea0ad39a77d18991432caf82fffb37e02c8300aded6ff3786e609
-  languageName: node
-  linkType: hard
-
 "@metamask/approval-controller@npm:^8.0.0":
   version: 8.0.0
   resolution: "@metamask/approval-controller@npm:8.0.0"
@@ -5735,9 +5725,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1":
-  version: 2.3.0-preview-61aec42b1
-  resolution: "@metamask-previews/assets-controller@npm:2.3.0-preview-61aec42b1"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@2.3.0-preview-1f5463f7b":
+  version: 2.3.0-preview-1f5463f7b
+  resolution: "@metamask-previews/assets-controller@npm:2.3.0-preview-1f5463f7b"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5766,7 +5756,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/d6c0227ef35bc683d570a96430da6200fe4941801ef3dce040e90d4708c502d1d3e4bbbd9dcaba126add8e7547ad42ca8da87714d0b54ea4925807f613b05e9f
+  checksum: 10/b2fd00b3b9051121f11b08ce6b675afea401b165eeecd486264356fdaa0de25ce53b5fdc1075a25925e4845dcee6cc7472bbc504994831eb56bdec15cf9b44ba
   languageName: node
   linkType: hard
 
@@ -8426,14 +8416,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:@metamask-previews/transaction-pay-controller@16.4.1-preview-61aec42b1":
-  version: 16.4.1-preview-61aec42b1
-  resolution: "@metamask-previews/transaction-pay-controller@npm:16.4.1-preview-61aec42b1"
+"@metamask/transaction-pay-controller@npm:@metamask-previews/transaction-pay-controller@16.5.0-preview-1f5463f7b":
+  version: 16.5.0-preview-1f5463f7b
+  resolution: "@metamask-previews/transaction-pay-controller@npm:16.5.0-preview-1f5463f7b"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/app-metadata-controller": "npm:^2.0.0"
     "@metamask/assets-controller": "npm:^2.3.0"
     "@metamask/assets-controllers": "npm:^100.2.1"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -8451,7 +8440,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/2e388c9fbb029f45ad253c7626237eefb25958c983c371d57c1640e7392d6841e804f47443cc9f557c173bd32db23cfd45dd542ed11ca29a02e6c00d2fbfe752
+  checksum: 10/dd9d5c2c5804ee933880fe603e42c7f4f3ebbf4ef58486ed947d87e000727679999bccb667fbc484774f26354442abd942201b9ceb2c6521e37d977d32c03559
   languageName: node
   linkType: hard
 
@@ -33768,7 +33757,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^8.0.0"
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-1f5463f7b"
     "@metamask/assets-controllers": "npm:^100.2.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -33889,7 +33878,7 @@ __metadata:
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.0"
     "@metamask/transaction-controller": "npm:^62.20.0"
-    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.4.1-preview-61aec42b1"
+    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.5.0-preview-1f5463f7b"
     "@metamask/tron-wallet-snap": "npm:1.22.1"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.10.0"

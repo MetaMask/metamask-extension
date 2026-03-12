@@ -261,8 +261,8 @@
     "@metamask/snaps-controllers": "^18.0.1",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
     "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1",
-    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.4.1-preview-61aec42b1"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-1f5463f7b",
+    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.5.0-preview-1f5463f7b"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -296,7 +296,7 @@
     "@metamask/address-book-controller": "^7.0.1",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-61aec42b1",
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@2.3.0-preview-1f5463f7b",
     "@metamask/assets-controllers": "^100.2.0",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
@@ -394,7 +394,7 @@
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.0.0",
     "@metamask/transaction-controller": "^62.20.0",
-    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.4.1-preview-61aec42b1",
+    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.5.0-preview-1f5463f7b",
     "@metamask/tron-wallet-snap": "1.22.1",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.10.0",
