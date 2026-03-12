@@ -9,6 +9,7 @@ import React, {
 import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import { TRANSACTION_TOAST_TYPES } from '../../../../helpers/constants/transactions';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
@@ -41,7 +42,13 @@ export const ConfirmContextProvider: React.FC<{
    */
   useEffect(() => {
     if (previousConfirmation && !currentConfirmation) {
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
+      const txType = previousConfirmation?.type;
+      const shouldGoHome = TRANSACTION_TOAST_TYPES.has(txType);
+      const url = shouldGoHome
+        ? DEFAULT_ROUTE
+        : `${DEFAULT_ROUTE}?tab=activity`;
+
+      navigate(url, { replace: true });
     }
   }, [previousConfirmation, currentConfirmation, navigate]);
 
