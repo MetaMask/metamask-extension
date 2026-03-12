@@ -16,12 +16,10 @@ export function useNavigateOnQrScanComplete(): void {
   const prevQrScanRequestRef = useRef(activeQrCodeScanRequest);
 
   useEffect(() => {
-    // Track previous value to detect when QR scan completes (active → null)
-    const wasQrScanActive =
-      prevQrScanRequestRef.current !== null &&
-      prevQrScanRequestRef.current !== false;
-    const isQrScanCleared =
-      activeQrCodeScanRequest === null || activeQrCodeScanRequest === false;
+    // Track previous value to detect when QR scan completes (active → cleared)
+    // Use Boolean(...) so undefined / null / false are all treated as \"not active\"
+    const wasQrScanActive = Boolean(prevQrScanRequestRef.current);
+    const isQrScanCleared = !activeQrCodeScanRequest;
 
     // Navigate when QR scan completes (was active, now cleared)
     if (wasQrScanActive && isQrScanCleared) {
