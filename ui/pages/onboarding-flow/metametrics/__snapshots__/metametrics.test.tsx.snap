@@ -29,12 +29,13 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     </p>
     <div
       class="flex flex-col gap-2 p-3 bg-muted onboarding-metametrics__checkbox rounded-lg"
+      data-checked="true"
+      data-testid="metametrics-checkbox"
       role="button"
       tabindex="0"
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-checkbox-checked"
         for="metametrics-opt-in"
       >
         <div
@@ -80,12 +81,13 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     </div>
     <div
       class="flex flex-col gap-2 p-3 bg-muted onboarding-metametrics__checkbox rounded-lg"
+      data-checked="false"
+      data-testid="metametrics-data-collection-checkbox"
       role="button"
       tabindex="0"
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-data-collection-checkbox-unchecked"
         for="metametrics-datacollection-opt-in"
       >
         <div
@@ -176,12 +178,13 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     </p>
     <div
       class="flex flex-col gap-2 p-3 bg-muted onboarding-metametrics__checkbox rounded-lg"
+      data-checked="true"
+      data-testid="metametrics-checkbox"
       role="button"
       tabindex="0"
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-checkbox-checked"
         for="metametrics-opt-in"
       >
         <div
@@ -227,12 +230,13 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     </div>
     <div
       class="flex flex-col gap-2 p-3 bg-muted onboarding-metametrics__checkbox rounded-lg"
+      data-checked="false"
+      data-testid="metametrics-data-collection-checkbox"
       role="button"
       tabindex="0"
     >
       <label
         class="inline-flex items-center"
-        data-testid="metametrics-data-collection-checkbox-unchecked"
         for="metametrics-datacollection-opt-in"
       >
         <div

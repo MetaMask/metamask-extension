@@ -131,8 +131,8 @@ describe('Onboarding Metametrics Component', () => {
     expect(checkboxLabel).toBeInTheDocument();
 
     const checkbox = getAllByRole('checkbox')[0];
-    const participateContainer = getByTestId(/^metametrics-checkbox-/u).closest(
-      '[role="button"]',
+    const participateContainer = getByTestId(
+      'metametrics-checkbox',
     ) as HTMLElement;
 
     expect(checkbox).toBeChecked();
@@ -175,8 +175,8 @@ describe('Onboarding Metametrics Component', () => {
     expect(title).toBeInTheDocument();
     expect(description).toBeInTheDocument();
 
-    const participateContainer = getByTestId(/^metametrics-checkbox-/u).closest(
-      '[role="button"]',
+    const participateContainer = getByTestId(
+      'metametrics-checkbox',
     ) as HTMLElement;
 
     // Opt out of MetaMetrics; this should clear marketing consent
@@ -213,12 +213,12 @@ describe('Onboarding Metametrics Component', () => {
 
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
-    const participateContainer = getByTestId(/^metametrics-checkbox-/u).closest(
-      '[role="button"]',
+    const participateContainer = getByTestId(
+      'metametrics-checkbox',
     ) as HTMLElement;
     const marketingContainer = getByTestId(
-      /^metametrics-data-collection-checkbox-/u,
-    ).closest('[role="button"]') as HTMLElement;
+      'metametrics-data-collection-checkbox',
+    ) as HTMLElement;
 
     expect(marketingCheckbox).not.toBeChecked();
 
@@ -246,8 +246,8 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const participateCheckboxContainer = getByTestId(
-      /^metametrics-checkbox-/u,
-    ).closest('[role="button"]') as HTMLElement;
+      'metametrics-checkbox',
+    ) as HTMLElement;
     const checkbox = getAllByRole('checkbox')[0];
 
     expect(checkbox).toBeChecked();
@@ -270,8 +270,8 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const participateCheckboxContainer = getByTestId(
-      /^metametrics-checkbox-/u,
-    ).closest('[role="button"]') as HTMLElement;
+      'metametrics-checkbox',
+    ) as HTMLElement;
     const checkbox = getAllByRole('checkbox')[0];
 
     expect(checkbox).toBeChecked();
@@ -294,8 +294,8 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const participateCheckboxContainer = getByTestId(
-      /^metametrics-checkbox-/u,
-    ).closest('[role="button"]') as HTMLElement;
+      'metametrics-checkbox',
+    ) as HTMLElement;
     const checkbox = getAllByRole('checkbox')[0];
 
     expect(checkbox).toBeChecked();
@@ -312,7 +312,8 @@ describe('Onboarding Metametrics Component', () => {
       store,
     );
 
-    const label = getByTestId(/^metametrics-checkbox-/u);
+    const container = getByTestId('metametrics-checkbox');
+    const label = container.querySelector('label') as HTMLElement;
     const event = new MouseEvent('click', { bubbles: true, cancelable: true });
     jest.spyOn(event, 'stopPropagation');
 
@@ -342,7 +343,8 @@ describe('Onboarding Metametrics Component', () => {
       store,
     );
 
-    const label = getByTestId(/^metametrics-data-collection-checkbox-/u);
+    const container = getByTestId('metametrics-data-collection-checkbox');
+    const label = container.querySelector('label') as HTMLElement;
     const event = new MouseEvent('click', { bubbles: true, cancelable: true });
     jest.spyOn(event, 'stopPropagation');
 
@@ -373,8 +375,8 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const marketingCheckboxContainer = getByTestId(
-      /^metametrics-data-collection-checkbox-/u,
-    ).closest('[role="button"]') as HTMLElement;
+      'metametrics-data-collection-checkbox',
+    ) as HTMLElement;
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
     expect(marketingCheckbox).not.toBeChecked();
@@ -397,8 +399,8 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const marketingCheckboxContainer = getByTestId(
-      /^metametrics-data-collection-checkbox-/u,
-    ).closest('[role="button"]') as HTMLElement;
+      'metametrics-data-collection-checkbox',
+    ) as HTMLElement;
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
     expect(marketingCheckbox).not.toBeChecked();
@@ -416,8 +418,8 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     const marketingCheckboxContainer = getByTestId(
-      /^metametrics-data-collection-checkbox-/u,
-    ).closest('[role="button"]') as HTMLElement;
+      'metametrics-data-collection-checkbox',
+    ) as HTMLElement;
     const marketingCheckbox = getAllByRole('checkbox')[1];
 
     expect(marketingCheckbox).not.toBeChecked();

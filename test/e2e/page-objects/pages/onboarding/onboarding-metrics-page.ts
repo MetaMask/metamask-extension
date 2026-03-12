@@ -6,19 +6,19 @@ class OnboardingMetricsPage {
   private readonly continueButton = '[data-testid="metametrics-i-agree"]';
 
   private readonly dataCollectionForMarketingCheckbox =
-    '[data-testid^="metametrics-data-collection-checkbox"]';
+    '[data-testid="metametrics-data-collection-checkbox"]';
 
   private readonly dataParticipateInMetaMetricsCheckbox =
-    '[data-testid^="metametrics-checkbox"]';
+    '[data-testid="metametrics-checkbox"]';
 
   private readonly participateChecked =
-    '[data-testid="metametrics-checkbox-checked"]';
+    '[data-testid="metametrics-checkbox"][data-checked="true"]';
 
   private readonly participateUnchecked =
-    '[data-testid="metametrics-checkbox-unchecked"]';
+    '[data-testid="metametrics-checkbox"][data-checked="false"]';
 
   private readonly marketingChecked =
-    '[data-testid="metametrics-data-collection-checkbox-checked"]';
+    '[data-testid="metametrics-data-collection-checkbox"][data-checked="true"]';
 
   private readonly metametricsMessage = {
     text: 'Help improve MetaMask',

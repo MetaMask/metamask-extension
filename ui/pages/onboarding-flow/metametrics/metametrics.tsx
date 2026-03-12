@@ -80,6 +80,8 @@ function MetametricsCheckboxOption({
       padding={3}
       backgroundColor={BoxBackgroundColor.BackgroundMuted}
       className={`${containerClassName} rounded-lg`}
+      data-testid={testId}
+      data-checked={isSelected}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
       onClick={isInteractive ? () => checkboxRef.current?.toggle() : undefined}
@@ -92,7 +94,6 @@ function MetametricsCheckboxOption({
     >
       <Checkbox
         id={id}
-        data-testid={testId}
         isSelected={isSelected}
         isDisabled={isDisabled}
         onChange={onChange}
@@ -264,7 +265,7 @@ export default function OnboardingMetametrics() {
 
       <MetametricsCheckboxOption
         id="metametrics-opt-in"
-        testId={`metametrics-checkbox-${isParticipateInMetaMetricsChecked ? 'checked' : 'unchecked'}`}
+        testId="metametrics-checkbox"
         isSelected={isParticipateInMetaMetricsChecked}
         onChange={handleParticipateInMetaMetricsChange}
         checkboxRef={participateCheckboxRef}
@@ -283,7 +284,7 @@ export default function OnboardingMetametrics() {
 
       <MetametricsCheckboxOption
         id="metametrics-datacollection-opt-in"
-        testId={`metametrics-data-collection-checkbox-${isParticipateInMetaMetricsChecked && isDataCollectionForMarketingChecked ? 'checked' : 'unchecked'}`}
+        testId="metametrics-data-collection-checkbox"
         isSelected={
           isParticipateInMetaMetricsChecked &&
           isDataCollectionForMarketingChecked
