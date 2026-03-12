@@ -175,19 +175,19 @@ export const ShieldPaymentModal = ({
               )}
               <Box className="flex items-center justify-between w-full">
                 <Box className="flex items-center gap-4">
-                  {hasStableTokenWithBalance ? (
+                  {hasStableTokenWithBalance && selectedToken ? (
                     <BadgeWrapper
                       badge={
                         <AvatarNetwork
                           size={AvatarNetworkSize.Xs}
                           name={
                             NETWORK_TO_NAME_MAP[
-                              selectedToken?.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                              selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
                             ]
                           }
                           src={
                             CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                              selectedToken?.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                              selectedToken.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                             ]
                           }
                           className="border border-muted rounded-md"
@@ -195,8 +195,8 @@ export const ShieldPaymentModal = ({
                       }
                     >
                       <AvatarToken
-                        name={selectedToken?.symbol}
-                        src={selectedToken?.image}
+                        name={selectedToken.symbol}
+                        src={selectedToken.image}
                         className="mt-1 border border-muted"
                       />
                     </BadgeWrapper>
