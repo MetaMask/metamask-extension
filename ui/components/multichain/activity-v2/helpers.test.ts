@@ -369,7 +369,10 @@ describe('resolveTransactionType', () => {
     const result = resolveTransactionType(
       makeApiTx({
         time: Date.now(),
-        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+        },
       }),
     );
     expect(result).toBe(TransactionType.musdClaim);
@@ -380,7 +383,10 @@ describe('resolveTransactionType', () => {
       makeApiTx({
         time: Date.now(),
         transactionCategory: 'APPROVE',
-        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+        },
       }),
     );
     expect(result).toBe(TransactionType.tokenMethodApprove);
@@ -391,7 +397,10 @@ describe('resolveTransactionType', () => {
       makeApiTx({
         time: Date.now(),
         transactionCategory: 'SWAP',
-        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+        },
       }),
     );
     expect(result).toBe(TransactionType.swap);
