@@ -111,9 +111,6 @@ export const SnapControllerInit: ControllerInitFunction<
     // TODO: Look into the type mismatch.
     state: persistedState.SnapController,
 
-    // @ts-expect-error: `controllerMessenger` is not compatible with the
-    // expected type.
-    // TODO: Look into the type mismatch.
     messenger: controllerMessenger,
     featureFlags: {
       allowLocalSnaps,

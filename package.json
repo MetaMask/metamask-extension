@@ -261,7 +261,19 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
-    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267"
+    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
+    "@metamask/address-book-controller": "npm:@metamask-previews/address-book-controller@7.0.1-preview-cd2daacf2",
+    "@metamask/approval-controller": "npm:@metamask-previews/approval-controller@8.0.0-preview-cd2daacf2",
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@100.2.1-preview-cd2daacf2",
+    "@metamask/ens-controller": "npm:@metamask-previews/ens-controller@19.0.3-preview-cd2daacf2",
+    "@metamask/gas-fee-controller": "npm:@metamask-previews/gas-fee-controller@26.0.3-preview-cd2daacf2",
+    "@metamask/logging-controller": "npm:@metamask-previews/logging-controller@7.0.1-preview-cd2daacf2",
+    "@metamask/name-controller": "npm:@metamask-previews/name-controller@9.0.0-preview-cd2daacf2",
+    "@metamask/permission-controller": "npm:@metamask-previews/permission-controller@12.2.0-preview-cd2daacf2",
+    "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@39.0.5-preview-cd2daacf2",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@62.21.0-preview-cd2daacf2",
+    "@metamask/transaction-pay-controller": "npm:@metamask-previews/transaction-pay-controller@16.4.1-preview-cd2daacf2",
+    "@metamask/user-operation-controller": "npm:@metamask-previews/user-operation-controller@41.0.3-preview-cd2daacf2"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",

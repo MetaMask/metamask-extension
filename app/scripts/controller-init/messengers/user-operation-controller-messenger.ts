@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import {
   KeyringControllerPatchUserOperationAction,
@@ -7,13 +7,13 @@ import {
   KeyringControllerSignUserOperationAction,
 } from '@metamask/keyring-controller';
 import type {
-  TransactionControllerEmulateNewTransaction,
-  TransactionControllerEmulateTransactionUpdate,
+  TransactionControllerEmulateNewTransactionAction,
+  TransactionControllerEmulateTransactionUpdateAction,
 } from '@metamask/transaction-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
-  | AddApprovalRequest
+  | ApprovalControllerAddRequestAction
   | KeyringControllerPatchUserOperationAction
   | KeyringControllerPrepareUserOperationAction
   | KeyringControllerSignUserOperationAction
@@ -60,8 +60,8 @@ export function getUserOperationControllerMessenger(
 }
 
 type InitMessengerActions =
-  | TransactionControllerEmulateNewTransaction
-  | TransactionControllerEmulateTransactionUpdate;
+  | TransactionControllerEmulateNewTransactionAction
+  | TransactionControllerEmulateTransactionUpdateAction;
 
 type InitMessengerEvents = never;
 
