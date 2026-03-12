@@ -15,6 +15,7 @@ jest.mock('../../../../hooks/useModalProps', () => ({
 
 const mockEnsureDeviceReady = jest.fn();
 const mockClearError = jest.fn();
+const mockSetConnectionReady = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => {
   const actual = jest.requireActual('../../../../contexts/hardware-wallets');
@@ -25,6 +26,7 @@ jest.mock('../../../../contexts/hardware-wallets', () => {
     useHardwareWalletActions: () => ({
       ensureDeviceReady: mockEnsureDeviceReady,
       clearError: mockClearError,
+      setConnectionReady: mockSetConnectionReady,
     }),
   };
 });
@@ -323,6 +325,7 @@ describe('HardwareWalletErrorModal', () => {
         expect(mockEnsureDeviceReady).toHaveBeenCalled();
       });
       expect(onRetry).toHaveBeenCalledTimes(1);
+      expect(mockSetConnectionReady).toHaveBeenCalledTimes(1);
     });
 
     it('handles Confirm button click for non-retryable errors', async () => {
@@ -368,6 +371,7 @@ describe('HardwareWalletErrorModal', () => {
       rerender(<HardwareWalletErrorModal error={error} />);
 
       expect(getByText('[hardwareWalletTypeConnected]')).toBeInTheDocument();
+      expect(mockSetConnectionReady).toHaveBeenCalledTimes(1);
     });
 
     it('clears error when success modal is closed', async () => {
@@ -394,6 +398,7 @@ describe('HardwareWalletErrorModal', () => {
 
       expect(mockHideModal).toHaveBeenCalledTimes(1);
       expect(mockClearError).toHaveBeenCalledTimes(1);
+      expect(mockSetConnectionReady).toHaveBeenCalledTimes(2);
     });
 
     it('auto dismisses the success state after 3 seconds', async () => {
@@ -420,6 +425,7 @@ describe('HardwareWalletErrorModal', () => {
 
       expect(mockHideModal).toHaveBeenCalledTimes(1);
       expect(mockClearError).toHaveBeenCalledTimes(1);
+      expect(mockSetConnectionReady).toHaveBeenCalledTimes(2);
       jest.useRealTimers();
     });
   });

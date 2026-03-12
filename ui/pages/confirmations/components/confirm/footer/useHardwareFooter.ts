@@ -104,9 +104,7 @@ export const useHardwareFooter = ({
       return true;
     }
 
-    return [ConnectionStatus.Ready, ConnectionStatus.Connected].includes(
-      connectionState.status,
-    );
+    return [ConnectionStatus.Ready].includes(connectionState.status);
   }, [
     connectionState.status,
     hasPreflightSucceeded,

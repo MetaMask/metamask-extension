@@ -66,7 +66,8 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
-    const { ensureDeviceReady, clearError } = useHardwareWalletActions();
+    const { ensureDeviceReady, clearError, setConnectionReady } =
+      useHardwareWalletActions();
 
     const handleRetry = async () => {
       onRetry?.();
@@ -74,6 +75,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       try {
         const result = await ensureDeviceReady();
         if (result) {
+          setConnectionReady();
           setRecovered(true);
         }
       } finally {
@@ -89,8 +91,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     const handleRecoveredClose = useCallback(() => {
       clearError();
+      setConnectionReady();
       hideModal();
-    }, [clearError, hideModal]);
+    }, [clearError, hideModal, setConnectionReady]);
 
     useEffect(() => {
       if (!recovered) {

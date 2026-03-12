@@ -655,26 +655,6 @@ describe('ConfirmFooter', () => {
       expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
     });
 
-    it('renders confirm button when hardware wallet is connected but not yet ready', () => {
-      mockUseHardwareWalletConfig.mockReturnValue({
-        isHardwareWalletAccount: true,
-        walletType: HardwareWalletType.Ledger,
-      });
-      mockUseHardwareWalletState.mockReturnValue({
-        connectionState: { status: ConnectionStatus.Connected },
-      });
-      mockUseHardwareWalletError.mockReturnValue({
-        showErrorModal: showHardwareWalletErrorModalMock,
-        dismissErrorModal: dismissHardwareWalletErrorModalMock,
-        setErrorModalSuppressed: setErrorModalSuppressedMock,
-        isDeviceConnected: true,
-      });
-
-      const { getByTestId, queryByTestId } = render();
-      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
-      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
-    });
-
     it('renders reconnect button when hardware wallet is not ready', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
