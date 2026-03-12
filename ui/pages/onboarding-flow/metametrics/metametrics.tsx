@@ -2,20 +2,19 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
-
 import {
-  Display,
-  FlexDirection,
+  Box,
+  Checkbox,
+  Text,
+  Button,
+  ButtonSize,
   TextVariant,
   FontWeight,
-  TextAlign,
   TextColor,
-  BlockSize,
-  AlignItems,
-  JustifyContent,
-  BorderRadius,
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
+  BoxFlexDirection,
+  BoxBackgroundColor,
+  TextAlign,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setParticipateInMetaMetrics,
@@ -42,17 +41,80 @@ import {
 } from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Box,
-  Checkbox,
-  Text,
-  Button,
-  ButtonSize,
-} from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 
+type MetametricsCheckboxOptionProps = Readonly<{
+  id: string;
+  testId: string;
+  isSelected: boolean;
+  isDisabled?: boolean;
+  onChange: () => void;
+  checkboxRef: React.RefObject<{ toggle: () => void }>;
+  label: React.ReactNode;
+  description: React.ReactNode;
+  containerClassName: string;
+  isInteractive?: boolean;
+}>;
+
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
+
+const stopClickPropagation = (e: React.MouseEvent) => {
+  e.stopPropagation();
+};
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function MetametricsCheckboxOption({
+  id,
+  testId,
+  isSelected,
+  isDisabled,
+  onChange,
+  checkboxRef,
+  label,
+  description,
+  containerClassName,
+  isInteractive = true,
+}: Readonly<MetametricsCheckboxOptionProps>) {
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={2}
+      padding={3}
+      backgroundColor={BoxBackgroundColor.BackgroundMuted}
+      className={`${containerClassName} rounded-lg`}
+      data-testid={testId}
+      data-checked={String(isSelected)}
+      role={isInteractive ? 'button' : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={isInteractive ? () => checkboxRef.current?.toggle() : undefined}
+      onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+        if ((e.key === ' ' || e.key === 'Enter') && isInteractive) {
+          e.preventDefault();
+          checkboxRef.current?.toggle();
+        }
+      }}
+    >
+      <Checkbox
+        id={id}
+        isSelected={isSelected}
+        isDisabled={isDisabled}
+        onChange={onChange}
+        ref={checkboxRef}
+        onClick={stopClickPropagation}
+        inputProps={{ onClick: stopClickPropagation }}
+        label={label}
+      />
+      <Text
+        variant={TextVariant.BodySm}
+        color={TextColor.TextAlternative}
+        className="text-left"
+      >
+        {description}
+      </Text>
+    </Box>
+  );
+}
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -79,8 +141,8 @@ export default function OnboardingMetametrics() {
     setIsDataCollectionForMarketingChecked,
   ] = useState(false);
 
-  const participateCheckboxRef = useRef<HTMLInputElement>(null);
-  const marketingCheckboxRef = useRef<HTMLInputElement>(null);
+  const participateCheckboxRef = useRef<{ toggle: () => void } | null>(null);
+  const marketingCheckboxRef = useRef<{ toggle: () => void } | null>(null);
 
   useEffect(() => {
     if (participateInMetaMetricsSet) {
@@ -161,168 +223,99 @@ export default function OnboardingMetametrics() {
   };
 
   const handleParticipateInMetaMetricsChange = () => {
-    setIsParticipateInMetaMetricsChecked((prev) => !prev);
-    isParticipateInMetaMetricsChecked &&
-      setIsDataCollectionForMarketingChecked(false);
+    setIsParticipateInMetaMetricsChecked((prev) => {
+      const next = !prev;
+      if (!next) {
+        setIsDataCollectionForMarketingChecked(false);
+      }
+      return next;
+    });
   };
 
   return (
     <Box
       className="onboarding-metametrics"
       data-testid="onboarding-metametrics"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       gap={4}
     >
       <Text
-        variant={TextVariant.headingLg}
+        variant={TextVariant.HeadingLg}
         textAlign={TextAlign.Left}
         fontWeight={FontWeight.Bold}
       >
         {t('onboardingMetametricsTitle')}
       </Text>
 
-      <Box
-        width={BlockSize.Full}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        className="onboarding-metametrics__user-control"
-      >
+      <Box className="onboarding-metametrics__user-control w-full">
         <img
           src="images/user-control.png"
           alt="User control"
           height={175}
           width={200}
+          className="mx-auto"
         />
       </Box>
 
       <Text
-        variant={TextVariant.bodySmMedium}
-        color={TextColor.textAlternative}
+        variant={TextVariant.BodySm}
+        color={TextColor.TextAlternative}
+        fontWeight={FontWeight.Medium}
         textAlign={TextAlign.Left}
       >
         {t('onboardingMetametricsDescription')}
       </Text>
 
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={2}
-        padding={3}
-        borderRadius={BorderRadius.LG}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        className="onboarding-metametrics__checkbox"
-        role="button"
-        tabIndex={0}
-        onClick={() => {
-          participateCheckboxRef.current?.click();
-        }}
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          if (e.key === ' ' || e.key === 'Enter') {
-            e.preventDefault();
-            participateCheckboxRef.current?.click();
-          }
-        }}
-      >
-        <Checkbox
-          id="metametrics-opt-in"
-          data-testid="metametrics-checkbox"
-          isChecked={isParticipateInMetaMetricsChecked}
-          onChange={handleParticipateInMetaMetricsChange}
-          inputRef={participateCheckboxRef}
-          onClick={(e: React.MouseEvent<HTMLInputElement>) =>
-            e.stopPropagation()
-          }
-          inputProps={{
-            onClick: (e: React.MouseEvent<HTMLInputElement>) =>
-              e.stopPropagation(),
-          }}
-          label={
-            <Text variant={TextVariant.bodyMdMedium}>
-              {t('onboardingMetametricCheckboxTitleOne')}
-            </Text>
-          }
-          alignItems={AlignItems.center}
-        />
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Left}
-        >
-          {isPna25Enabled
-            ? t('onboardingMetametricCheckboxDescriptionOneUpdated')
-            : t('onboardingMetametricCheckboxDescriptionOne')}
-        </Text>
-      </Box>
-
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={2}
-        padding={3}
-        borderRadius={BorderRadius.LG}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        className={`${isParticipateInMetaMetricsChecked ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'}`}
-        role={isParticipateInMetaMetricsChecked ? 'button' : undefined}
-        tabIndex={isParticipateInMetaMetricsChecked ? 0 : undefined}
-        onClick={
-          isParticipateInMetaMetricsChecked
-            ? () => {
-                marketingCheckboxRef.current?.click();
-              }
-            : undefined
+      <MetametricsCheckboxOption
+        id="metametrics-opt-in"
+        testId="metametrics-checkbox"
+        isSelected={isParticipateInMetaMetricsChecked}
+        onChange={handleParticipateInMetaMetricsChange}
+        checkboxRef={participateCheckboxRef}
+        containerClassName="onboarding-metametrics__checkbox"
+        label={
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {t('onboardingMetametricCheckboxTitleOne')}
+          </Text>
         }
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          if (
-            (e.key === ' ' || e.key === 'Enter') &&
-            isParticipateInMetaMetricsChecked
-          ) {
-            e.preventDefault();
-            marketingCheckboxRef.current?.click();
-          }
-        }}
-      >
-        <Checkbox
-          id="metametrics-datacollection-opt-in"
-          data-testid="metametrics-data-collection-checkbox"
-          isChecked={
-            isParticipateInMetaMetricsChecked &&
-            isDataCollectionForMarketingChecked
-          }
-          isDisabled={!isParticipateInMetaMetricsChecked}
-          onChange={() => {
-            setIsDataCollectionForMarketingChecked((prev) => !prev);
-          }}
-          inputRef={marketingCheckboxRef}
-          onClick={(e: React.MouseEvent<HTMLInputElement>) =>
-            e.stopPropagation()
-          }
-          inputProps={{
-            onClick: (e: React.MouseEvent<HTMLInputElement>) =>
-              e.stopPropagation(),
-          }}
-          label={
-            <Text variant={TextVariant.bodyMdMedium}>
-              {t('onboardingMetametricCheckboxTitleTwo')}
-            </Text>
-          }
-          alignItems={AlignItems.center}
-        />
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Left}
-        >
-          {t('onboardingMetametricCheckboxDescriptionTwo')}
-        </Text>
-      </Box>
+        description={
+          isPna25Enabled
+            ? t('onboardingMetametricCheckboxDescriptionOneUpdated')
+            : t('onboardingMetametricCheckboxDescriptionOne')
+        }
+      />
 
-      <Box width={BlockSize.Full}>
+      <MetametricsCheckboxOption
+        id="metametrics-datacollection-opt-in"
+        testId="metametrics-data-collection-checkbox"
+        isSelected={
+          isParticipateInMetaMetricsChecked &&
+          isDataCollectionForMarketingChecked
+        }
+        isDisabled={!isParticipateInMetaMetricsChecked}
+        onChange={() => {
+          setIsDataCollectionForMarketingChecked((prev) => !prev);
+        }}
+        checkboxRef={marketingCheckboxRef}
+        containerClassName={
+          isParticipateInMetaMetricsChecked
+            ? 'onboarding-metametrics__checkbox'
+            : 'onboarding-metametrics__checkbox-disabled'
+        }
+        isInteractive={isParticipateInMetaMetricsChecked}
+        label={
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {t('onboardingMetametricCheckboxTitleTwo')}
+          </Text>
+        }
+        description={t('onboardingMetametricCheckboxDescriptionTwo')}
+      />
+
+      <Box className="w-full">
         <Button
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
-          width={BlockSize.Full}
+          className="w-full"
           onClick={handleContinue}
         >
           {t('onboardingMetametricsContinue')}

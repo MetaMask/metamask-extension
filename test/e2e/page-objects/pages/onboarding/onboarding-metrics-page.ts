@@ -11,14 +11,14 @@ class OnboardingMetricsPage {
   private readonly dataParticipateInMetaMetricsCheckbox =
     '[data-testid="metametrics-checkbox"]';
 
-  private readonly dataCollectionForMarketingCheckedState =
-    '.mm-checkbox__input--checked#metametrics-datacollection-opt-in';
+  private readonly participateChecked =
+    '[data-testid="metametrics-checkbox"][data-checked="true"]';
 
-  private readonly dataParticipateInMetaMetricsCheckedState =
-    '.mm-checkbox__input--checked#metametrics-opt-in';
+  private readonly participateUnchecked =
+    '[data-testid="metametrics-checkbox"][data-checked="false"]';
 
-  private readonly dataParticipateInMetaMetricsUncheckedState =
-    '.mm-checkbox__input#metametrics-opt-in';
+  private readonly marketingChecked =
+    '[data-testid="metametrics-data-collection-checkbox"][data-checked="true"]';
 
   private readonly metametricsMessage = {
     text: 'Help improve MetaMask',
@@ -58,21 +58,15 @@ class OnboardingMetricsPage {
   }
 
   async validateDataCollectionForMarketingIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataCollectionForMarketingCheckedState,
-    );
+    await this.driver.waitForSelector(this.marketingChecked);
   }
 
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataParticipateInMetaMetricsCheckedState,
-    );
+    await this.driver.waitForSelector(this.participateChecked);
   }
 
   async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataParticipateInMetaMetricsUncheckedState,
-    );
+    await this.driver.waitForSelector(this.participateUnchecked);
   }
 
   async skipMetricAndContinue(): Promise<void> {
