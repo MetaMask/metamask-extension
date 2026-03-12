@@ -7,12 +7,14 @@ import jest from '@metamask/eslint-config-jest';
 import mocha from '@metamask/eslint-config-mocha';
 import nodejs from '@metamask/eslint-config-nodejs';
 import typescript from '@metamask/eslint-config-typescript';
-import designTokensPlugin from '@metamask/eslint-plugin-design-tokens';
+import * as designTokensPlugin from '@metamask/eslint-plugin-design-tokens';
+import * as typescriptResolver from 'eslint-import-resolver-typescript';
 import reactPlugin from 'eslint-plugin-react';
 import reactCompilerPlugin from 'eslint-plugin-react-compiler';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import storybookPlugin from 'eslint-plugin-storybook';
 import tailwindcssPlugin from 'eslint-plugin-tailwindcss';
+import typescriptEslint from 'typescript-eslint';
 
 const require = createRequire(import.meta.url);
 const { version: reactVersion } = require('react/package.json');
@@ -23,6 +25,20 @@ const ignorePatterns = readFileSync('.prettierignore', 'utf8')
   .split('\n');
 
 /**
+ * Import resolver settings for JavaScript files. These need the TypeScript
+ * resolver to be able to resolve .ts imports from .js files (and vice-versa).
+ */
+const jsImportResolverSettings = {
+  'import-x/resolver': {
+    name: 'typescript',
+    resolver: typescriptResolver,
+    options: {
+      alwaysTryTypes: true,
+    },
+  },
+};
+
+/**
  * Shared custom rules that apply globally (from the old .eslintrc.base.js).
  * These override the defaults from @metamask/eslint-config.
  */
@@ -30,6 +46,13 @@ const baseCustomRules = {
   'default-param-last': 'off',
   'prefer-object-spread': 'error',
   'require-atomic-updates': 'off',
+
+  // Override the @metamask/eslint-config defaults to only restrict 'event'
+  'no-restricted-globals': ['error', 'event'],
+  // These rules are too noisy for the existing codebase; re-enable later
+  // with error suppression comments.
+  'id-denylist': 'off',
+  'id-length': 'off',
 
   // This is the same as our default config, but for the noted exceptions
   'spaced-comment': [
@@ -293,6 +316,7 @@ export default createConfig([
     extends: [base, nodejs],
     settings: {
       jsdoc: { mode: 'typescript' },
+      ...jsImportResolverSettings,
     },
     rules: {
       ...baseCustomRules,
@@ -324,6 +348,7 @@ export default createConfig([
     },
     settings: {
       jsdoc: { mode: 'typescript' },
+      ...jsImportResolverSettings,
     },
     rules: {
       ...baseCustomRules,
@@ -337,6 +362,7 @@ export default createConfig([
   {
     files: ['**/*.ts', '**/*.tsx'],
     extends: [base, typescript],
+    ignores: ['**/*.stories.ts', '**/*.stories.tsx'],
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -456,6 +482,34 @@ export default createConfig([
         },
       ],
       'consistent-return': 'off',
+
+      // These rules are from the updated @metamask/eslint-config packages.
+      // They are disabled here to avoid introducing thousands of new lint
+      // errors in a single PR. Re-enable with inline suppression comments
+      // in follow-up work.
+      '@typescript-eslint/await-thenable': 'off',
+      '@typescript-eslint/consistent-type-imports': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/no-base-to-string': 'off',
+      '@typescript-eslint/no-duplicate-type-constituents': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
+      '@typescript-eslint/no-throw-literal': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/no-unnecessary-type-arguments': 'off',
+      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
+      '@typescript-eslint/prefer-enum-initializers': 'off',
+      '@typescript-eslint/prefer-includes': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/prefer-readonly': 'off',
+      '@typescript-eslint/prefer-reduce-type-parameter': 'off',
+      '@typescript-eslint/prefer-string-starts-ends-with': 'off',
+      '@typescript-eslint/promise-function-async': 'off',
+      '@typescript-eslint/restrict-plus-operands': 'off',
+      '@typescript-eslint/unbound-method': 'off',
+      'import-x/consistent-type-specifier-style': 'off',
       'no-restricted-syntax': [
         'error',
         {
@@ -694,12 +748,46 @@ export default createConfig([
   },
 
   /**
-   * Storybook
+   * Storybook (JS files)
    */
   {
-    files: ['**/*.stories.js', '**/*.stories.ts', '**/*.stories.tsx'],
+    files: ['**/*.stories.js'],
     extends: [storybookPlugin.configs['flat/recommended']],
     rules: {
+      // Anonymous object exports are conventional for Storybook files
+      'import-x/no-anonymous-default-export': [
+        'error',
+        {
+          allowObject: true,
+        },
+      ],
+      // Static hex values are only discouraged in application code
+      '@metamask/design-tokens/color-no-hex': 'off',
+    },
+  },
+
+  /**
+   * Storybook (TypeScript files)
+   *
+   * These are excluded from tsconfig.json, so they need a lighter TypeScript
+   * config without project service / type-aware rules.
+   */
+  {
+    files: ['**/*.stories.ts', '**/*.stories.tsx'],
+    extends: [base, storybookPlugin.configs['flat/recommended']],
+    languageOptions: {
+      parser: typescriptEslint.parser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        ecmaFeatures: { jsx: true },
+      },
+      sourceType: 'module',
+    },
+    settings: {
+      ...jsImportResolverSettings,
+    },
+    rules: {
+      ...baseCustomRules,
       // Anonymous object exports are conventional for Storybook files
       'import-x/no-anonymous-default-export': [
         'error',

@@ -633,6 +633,7 @@
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import-x": "^4.3.0",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-jsdoc": "^50.2.4",
     "eslint-plugin-mocha": "^10.1.0",
@@ -653,6 +654,7 @@
     "fs-extra": "^8.1.0",
     "ganache": "patch:ganache@npm%3A7.9.2#~/.yarn/patches/ganache-npm-7.9.2-a70dc8da34.patch",
     "gh-pages": "^5.0.0",
+    "globals": "^15.9.0",
     "globby": "^11.0.4",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^8.0.0",
@@ -742,6 +744,7 @@
     "tsx": "^4.20.6",
     "tweetnacl": "^1.0.3",
     "typescript": "~5.6.0",
+    "typescript-eslint": "^8.39.0",
     "unzipper": "^0.12.3",
     "viem": "^2.21.8",
     "vinyl": "^2.2.1",
@@ -757,10 +760,7 @@
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2",
-    "yargs-parser": "^21.1.1",
-    "typescript-eslint": "^8.39.0",
-    "eslint-plugin-import-x": "^4.3.0",
-    "globals": "^15.9.0"
+    "yargs-parser": "^21.1.1"
   },
   "engines": {
     "node": ">=24.13.0",
@@ -798,7 +798,8 @@
       "ws>bufferutil": false,
       "ws>utf-8-validate": false,
       "@google/genai>protobufjs": false,
-      "eth-lattice-keyring>gridplus-sdk>secp256k1": false
+      "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
+      "eslint-plugin-import-x>unrs-resolver": false
     }
   },
   "packageManager": "yarn@4.12.0",
