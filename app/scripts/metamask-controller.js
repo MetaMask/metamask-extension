@@ -6565,7 +6565,9 @@ export default class MetamaskController extends EventEmitter {
 
     const perpsStream = new PerpsStreamBridge({
       controller: this.controllersByName.PerpsController,
-      controllerApi: this.controllerApi,
+      perpsInit: this.controllerApi.perpsInit,
+      perpsDisconnect: this.controllerApi.perpsDisconnect,
+      perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
       isConnectionAlive: () => !outStream.mmFinished,
       emit: (channel, data, extra) => {
         if (!perpsStream.isActive || !isStreamWritable(outStream)) {
