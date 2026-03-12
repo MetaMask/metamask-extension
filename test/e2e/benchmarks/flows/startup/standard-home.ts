@@ -10,15 +10,18 @@ import type {
   BenchmarkResults,
   Metrics,
   PageLoadBenchmarkOptions,
+  WebVitalsMetrics,
 } from '../../utils/types';
 import { BENCHMARK_PERSONA } from '../../utils/constants';
 import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 async function measurePageStandard(
   pageName: string,
   pageLoads: number,
 ): Promise<MeasurePageResult> {
   const metrics: Metrics[] = [];
+  const webVitalsRuns: WebVitalsMetrics[] = [];
   const title = 'measurePageStandard';
   const persona = BENCHMARK_PERSONA.STANDARD;
   await withFixtures(
@@ -38,10 +41,12 @@ async function measurePageStandard(
         const metricsThisLoad = await driver.collectMetrics();
         metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
         metrics.push(metricsThisLoad);
+
+        webVitalsRuns.push(await collectWebVitals(driver));
       }
     },
   );
-  return { metrics, title, persona };
+  return { metrics, title, persona, webVitalsRuns };
 }
 
 export async function run(

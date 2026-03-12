@@ -11,6 +11,7 @@ import { Driver } from '../../../webdriver/driver';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -18,6 +19,7 @@ export const persona = BENCHMARK_PERSONA.STANDARD;
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadingTimes: number = 0;
+    let webVitals;
 
     await withFixtures(
       {
@@ -52,9 +54,14 @@ export async function run(): Promise<BenchmarkRunResult> {
         const timestampAfterAction = new Date();
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
+
+        webVitals = await collectWebVitals(driver);
       },
     );
 
-    return [{ id: 'confirm_tx', duration: loadingTimes }];
+    return {
+      timers: [{ id: 'confirm_tx', duration: loadingTimes }],
+      webVitals,
+    };
   }, BENCHMARK_TYPE.USER_ACTION);
 }

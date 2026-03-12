@@ -37,15 +37,83 @@ export type {
   StatisticalResult,
   Persona,
   BenchmarkType,
-  BenchmarkResults,
+  BenchmarkResults as SharedBenchmarkResults,
 } from '../../../../shared/constants/benchmarks';
 
-/** User action result with testTitle, persona and numeric timing metrics. */
+export type WebVitalsRating = 'good' | 'needs-improvement' | 'poor';
+
+/**
+ * Core Web Vitals metrics from the web-vitals library.
+ * INP requires actual user interactions to measure meaningful data.
+ */
+export type WebVitalsMetrics = {
+  /** Interaction to Next Paint in milliseconds */
+  inp: number | null;
+  /** First Contentful Paint in milliseconds (always available on extension pages) */
+  fcp: number | null;
+  /** Largest Contentful Paint in milliseconds (null on chrome-extension:// pages) */
+  lcp: number | null;
+  /** Cumulative Layout Shift (unitless score) */
+  cls: number | null;
+  /** Rating for INP metric */
+  inpRating: WebVitalsRating | null;
+  /** Rating for FCP metric */
+  fcpRating: WebVitalsRating | null;
+  /** Rating for LCP metric */
+  lcpRating: WebVitalsRating | null;
+  /** Rating for CLS metric */
+  clsRating: WebVitalsRating | null;
+};
+
+/** Distribution of rating buckets across benchmark runs */
+export type RatingDistribution = {
+  good: number;
+  'needs-improvement': number;
+  poor: number;
+  null: number;
+};
+
+/** Per-metric aggregated web vitals with full statistical analysis */
+export type WebVitalsAggregated = {
+  /** Aggregated INP statistics (null if no runs reported INP) */
+  inp: TimerStatistics | null;
+  /** Aggregated FCP statistics (null if no runs reported FCP) */
+  fcp: TimerStatistics | null;
+  /** Aggregated LCP statistics (null on chrome-extension:// pages) */
+  lcp: TimerStatistics | null;
+  /** Aggregated CLS statistics (null if no runs reported CLS) */
+  cls: TimerStatistics | null;
+  /** Rating distribution across all runs */
+  ratings: {
+    inp: RatingDistribution;
+    fcp: RatingDistribution;
+    lcp: RatingDistribution;
+    cls: RatingDistribution;
+  };
+};
+
+export type WebVitalsRun = WebVitalsMetrics & { iteration: number };
+
+/** Full web vitals summary: per-run snapshots for Sentry spans + aggregated stats */
+export type WebVitalsSummary = {
+  /** Individual per-iteration snapshots — preserved for granular Sentry spans */
+  runs: WebVitalsRun[];
+  /** Aggregated statistics using outlier detection and percentile analysis */
+  aggregated: WebVitalsAggregated;
+};
+
+/** BenchmarkResults extended with web vitals */
+export type BenchmarkResults = SharedBenchmarkResults & {
+  webVitals?: WebVitalsSummary;
+};
+
+/** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
 export type UserActionResult = {
   testTitle: string;
   persona: Persona;
+  webVitals?: WebVitalsMetrics;
   benchmarkType?: BenchmarkType;
-  [key: string]: string | number | undefined;
+  [key: string]: string | number | WebVitalsMetrics | undefined;
 };
 
 export type BenchmarkArguments = {
@@ -63,6 +131,8 @@ export type NetworkReport = {
 
 export type BenchmarkRunResult = {
   timers: TimerResult[];
+  /** Per-run web vitals snapshot captured at end of measurement */
+  webVitals?: WebVitalsMetrics;
   success: boolean;
   error?: string;
   benchmarkType?: BenchmarkType;
@@ -133,6 +203,8 @@ export type BenchmarkSummary = {
   thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
+  /** Web vitals per-run data and aggregated statistics */
+  webVitals?: WebVitalsSummary;
 };
 
 export type PerformanceBenchmarkResults = {
@@ -141,3 +213,9 @@ export type PerformanceBenchmarkResults = {
 };
 
 export type BenchmarkFunction = () => Promise<BenchmarkRunResult>;
+
+/** Return type for user-action measurement functions inside flows */
+export type UserActionMeasurement = {
+  timers: TimerResult[];
+  webVitals?: WebVitalsMetrics;
+};

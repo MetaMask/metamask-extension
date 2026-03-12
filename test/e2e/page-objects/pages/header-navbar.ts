@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { largeDelayMs } from '../../helpers';
+import { regularDelayMs } from '../../helpers';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -123,7 +123,7 @@ class HeaderNavbar {
       await this.driver.assertElementNotPresent(
         this.notificationCounterMenuIcon,
         {
-          waitAtLeastGuard: largeDelayMs,
+          waitAtLeastGuard: regularDelayMs,
         },
       );
       await this.driver.clickElement(this.globalMenuButton);

@@ -23,7 +23,8 @@ import {
   BENCHMARK_TYPE,
   WITH_STATE_POWER_USER,
 } from '../../utils';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, WebVitalsMetrics } from '../../utils/types';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 const SECOND_SRP = process.env.TEST_SRP_2;
 
@@ -31,6 +32,7 @@ export const testTitle = 'benchmark-import-srp-home-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     // Validate required environment variable
     if (!SECOND_SRP) {
@@ -97,17 +99,21 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
         performanceTracker.addTimer(timerHomeAfterImport);
+
+        webVitals = await collectWebVitals(driver);
       },
     );
 
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,

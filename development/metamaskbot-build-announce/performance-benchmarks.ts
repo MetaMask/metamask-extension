@@ -6,7 +6,8 @@ import {
 import type {
   BenchmarkResults,
   StatisticalResult,
-} from '../../shared/constants/benchmarks';
+  WebVitalsSummary,
+} from '../../test/e2e/benchmarks/utils/types';
 import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
@@ -22,6 +23,7 @@ export type BenchmarkEntry = {
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+  webVitals?: WebVitalsSummary;
 };
 
 /**
@@ -79,6 +81,7 @@ export function extractEntries(
       stdDev: raw.stdDev,
       p75: raw.p75,
       p95: raw.p95,
+      ...(raw.webVitals ? { webVitals: raw.webVitals } : {}),
     }));
 }
 
@@ -144,22 +147,74 @@ function formatCellValue(stats: StatisticalResult, metric: string): string {
   return typeof value === 'number' ? Math.round(value).toString() : '-';
 }
 
-/**
- * Builds table rows from benchmark entries.
- *
- * @param entries - Array of benchmark entries with names.
- * @returns Array of HTML table row strings.
- */
+const CWV_METRICS: {
+  key: 'inp' | 'fcp' | 'lcp' | 'cls';
+  label: string;
+  unit: string;
+}[] = [
+  { key: 'inp', label: 'INP', unit: 'ms' },
+  { key: 'fcp', label: 'FCP', unit: 'ms' },
+  { key: 'lcp', label: 'LCP', unit: 'ms' },
+  { key: 'cls', label: 'CLS', unit: '' },
+];
+
+function formatCwvValue(value: number | undefined, unit: string): string {
+  if (value === undefined) {
+    return '-';
+  }
+  if (unit === 'ms') {
+    return value >= 1000
+      ? `${(value / 1000).toFixed(1)}s`
+      : `${Math.round(value)}ms`;
+  }
+  return value.toFixed(3);
+}
+
 export function buildTableRows(entries: BenchmarkEntry[]): string[] {
   const tableRows: string[] = [];
 
-  for (const { benchmarkName, mean, min, max, stdDev, p75, p95 } of entries) {
-    const metrics = Object.keys(mean);
-    for (let i = 0; i < metrics.length; i++) {
-      const metric = metrics[i];
+  for (const entry of entries) {
+    const { benchmarkName, mean, min, max, stdDev, p75, p95, webVitals } =
+      entry;
+    const timerMetrics = Object.keys(mean);
+    const agg = webVitals?.aggregated;
+
+    const cwvRows: {
+      label: string;
+      unit: string;
+      stats: Record<string, number>;
+    }[] = [];
+    if (agg) {
+      for (const { key, label, unit } of CWV_METRICS) {
+        const s = agg[key];
+        if (s && typeof s === 'object' && 'mean' in s) {
+          cwvRows.push({
+            label: `${label}${unit ? ` (${unit})` : ''}`,
+            unit,
+            stats: {
+              mean: s.mean,
+              min: s.min,
+              max: s.max,
+              stdDev: s.stdDev,
+              p75: s.p75,
+              p95: s.p95,
+            },
+          });
+        }
+      }
+    }
+
+    const totalRows = timerMetrics.length + cwvRows.length;
+    if (totalRows === 0) {
+      continue;
+    }
+    let nameCellEmitted = false;
+    for (let i = 0; i < timerMetrics.length; i++) {
+      const metric = timerMetrics[i];
       let row = '';
       if (i === 0) {
-        row += `<td rowspan="${metrics.length}">${startCase(benchmarkName)}</td>`;
+        row += `<td rowspan="${totalRows}">${startCase(benchmarkName)}</td>`;
+        nameCellEmitted = true;
       }
       row += `<td>${metric}</td>`;
       row += `<td align="right">${Math.round(mean[metric])}</td>`;
@@ -168,6 +223,23 @@ export function buildTableRows(entries: BenchmarkEntry[]): string[] {
       row += `<td align="right">${formatCellValue(stdDev, metric)}</td>`;
       row += `<td align="right">${formatCellValue(p75, metric)}</td>`;
       row += `<td align="right">${formatCellValue(p95, metric)}</td>`;
+      tableRows.push(`<tr>${row}</tr>`);
+    }
+
+    for (let j = 0; j < cwvRows.length; j++) {
+      const { label, unit, stats } = cwvRows[j];
+      let row = '';
+      if (!nameCellEmitted && j === 0) {
+        row += `<td rowspan="${totalRows}">${startCase(benchmarkName)}</td>`;
+        nameCellEmitted = true;
+      }
+      row += `<td><em>${label}</em></td>`;
+      row += `<td align="right">${formatCwvValue(stats.mean, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.min, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.max, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.stdDev, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.p75, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.p95, unit)}</td>`;
       tableRows.push(`<tr>${row}</tr>`);
     }
   }
