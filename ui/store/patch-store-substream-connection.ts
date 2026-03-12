@@ -217,9 +217,10 @@ export function setupPatchStoreSubstreamConnection(
  * is used to force the UI to rerender.
  */
 export async function getStatePatches(): Promise<Patch[]> {
-  return await sendMessage({
+  const patches = await sendMessage({
     id: getNextId(),
     jsonrpc: '2.0' as const,
     method: GET_STATE_PATCHES,
   });
+  return patches ?? [];
 }
