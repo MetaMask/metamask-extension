@@ -49,6 +49,23 @@ class WebcamUtils {
     error.type = 'NO_WEBCAM_FOUND';
     throw error;
   }
+
+  /**
+   * Queries the Permissions API for the current camera permission state.
+   * Returns the PermissionStatus object (with .state and .onchange) so the
+   * caller can both read the state and subscribe to changes.
+   *
+   * Returns null on browsers that don't support querying camera permission
+   * (e.g. older Safari), in which case callers should fall back to inferring
+   * state from getUserMedia errors.
+   */
+  static async getPermissionState() {
+    try {
+      return await navigator.permissions.query({ name: 'camera' });
+    } catch {
+      return null;
+    }
+  }
 }
 
 export default WebcamUtils;

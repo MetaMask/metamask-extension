@@ -9301,6 +9301,33 @@
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
   },
+  "qrHardwareCameraPermissionDismissedTitle": {
+    "message": "Camera access needed"
+  },
+  "qrHardwareCameraPermissionDismissedDescription": {
+    "message": "To complete this transaction, MetaMask needs access to your camera to scan the QR code from your device."
+  },
+  "qrHardwareCameraPermissionBlockedTitle": {
+    "message": "Camera access is blocked"
+  },
+  "qrHardwareCameraPermissionBlockedDescription": {
+    "message": "To complete this transaction, allow MetaMask to use your camera in your browser settings."
+  },
+  "qrHardwareCameraPermissionInstructionsChrome": {
+    "message": "Click the camera icon in the address bar and select \"Always allow\"."
+  },
+  "qrHardwareCameraPermissionInstructionsBrave": {
+    "message": "Click the camera icon in the address bar and select \"Always allow\", or go to brave://settings/content/camera and allow this site."
+  },
+  "qrHardwareCameraPermissionInstructionsFirefox": {
+    "message": "Click the camera icon in the address bar and select \"Allowed\", or go to Settings → Privacy & Security → Permissions → Camera → Settings and remove the block."
+  },
+  "qrHardwareCameraPermissionInstructionsEdge": {
+    "message": "Click the camera icon in the address bar and select \"Always allow\"."
+  },
+  "qrHardwareCameraPermissionAutoRecover": {
+    "message": "This will update automatically once access is granted."
+  },
   "youReceived": {
     "message": "You received",
     "description": "Label indicating the amount and asset the user received."
