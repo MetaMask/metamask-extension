@@ -91,11 +91,7 @@ export class PerpsStreamBridge {
     return {
       perpsInit: async (...args: unknown[]) => {
         const result = await this.#controllerApi.perpsInit(...args);
-        if (
-          this.#controller &&
-          !this.#activated &&
-          this.#isConnectionAlive()
-        ) {
+        if (this.#controller && !this.#activated && this.#isConnectionAlive()) {
           this.activate();
         }
         return result;
@@ -118,11 +114,7 @@ export class PerpsStreamBridge {
         }
         return 'ok';
       },
-      perpsActivatePriceStream: async ({
-        symbols,
-      }: {
-        symbols: string[];
-      }) => {
+      perpsActivatePriceStream: async ({ symbols }: { symbols: string[] }) => {
         await this.#initAndActivate();
         if (this.#controller && this.#isConnectionAlive()) {
           this.activatePriceStream(symbols);
@@ -132,11 +124,7 @@ export class PerpsStreamBridge {
       perpsDeactivatePriceStream: () => {
         this.deactivatePriceStream();
       },
-      perpsActivateOrderBookStream: async ({
-        symbol,
-      }: {
-        symbol: string;
-      }) => {
+      perpsActivateOrderBookStream: async ({ symbol }: { symbol: string }) => {
         await this.#initAndActivate();
         if (this.#controller && this.#isConnectionAlive()) {
           this.activateOrderBookStream(symbol);
