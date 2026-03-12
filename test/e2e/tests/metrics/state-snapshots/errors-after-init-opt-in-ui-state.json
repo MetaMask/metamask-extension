@@ -83,6 +83,7 @@
   "localeMessages": "object",
   "metamask": {
     "accountGroupsMetadata": "object",
+    "accountIdByAddress": "object",
     "accountState": null,
     "accountTree": "object",
     "accountWalletsMetadata": "object",
