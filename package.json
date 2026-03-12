@@ -508,6 +508,7 @@
     "@lydell/node-pty": "^1.1.0",
     "@metamask/api-specs": "^0.13.0",
     "@metamask/auto-changelog": "^5.3.1",
+    "@metamask/browser-playground": "0.3.0",
     "@metamask/build-utils": "^3.0.0",
     "@metamask/client-mcp-core": "^0.1.1",
     "@metamask/eslint-config": "^12.0.0",

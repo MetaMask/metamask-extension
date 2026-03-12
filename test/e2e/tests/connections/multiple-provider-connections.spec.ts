@@ -19,7 +19,6 @@ import {
   OPTIMISM_DISPLAY_NAME,
   SEI_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -28,6 +27,7 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
@@ -38,7 +38,6 @@ import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 
 const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
@@ -57,25 +56,6 @@ const SOLANA_PERMISSIONS = {
   },
 };
 
-/**
- * Helper to open a permissions page for a specific app hostname
- *
- * @param driver - The driver to use.
- * @param hostname - The hostname to get the permissions page for.
- * @returns The permissions page for the given host.
- */
-async function getPermissionsPageForHost(
-  driver: Driver,
-  hostname: string,
-): Promise<SitePermissionPage> {
-  await openPermissionsPageFlow(driver);
-  const permissionListPage = new PermissionListPage(driver);
-  await permissionListPage.checkPageIsLoaded();
-  await permissionListPage.openPermissionPageForSite(hostname);
-  const sitePermissionPage = new SitePermissionPage(driver);
-  await sitePermissionPage.checkPageIsLoaded(hostname);
-  return sitePermissionPage;
-}
 /**
  * Checks if an account is displayed
  *
