@@ -151,15 +151,15 @@ function resolvePendingGetStatePatchesRequest(
 /**
  * Acts on the notification `sendUpdate` by patching the `metamask` slice.
  *
- * @param patches - The patches to apply to the Redux store.
+ * @param notification - The notification data.
  * @param reduxStorePromise - The promise that resolves to the Redux store.
  */
 async function handleSendUpdate(
-  message: JsonRpcNotification & { params: [Patch[]] },
+  notification: JsonRpcNotification & { params: [Patch[]] },
   reduxStorePromise: PromiseWithResolvers<Store>,
 ): Promise<void> {
   const store = await reduxStorePromise.promise;
-  store.dispatch(updateMetamaskState(message.params[0]));
+  store.dispatch(updateMetamaskState(notification.params[0]));
 }
 
 /**

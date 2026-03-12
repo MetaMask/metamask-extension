@@ -10,7 +10,7 @@ import {
   getStatePatches,
   PatchesStruct,
   setupPatchStoreSubstreamConnection,
-} from './patch-substream-connection';
+} from './patch-store-substream-connection';
 import configureStore, { Store } from './store';
 
 jest.mock('./actions', () => ({
@@ -31,7 +31,7 @@ const mockGetNextId = jest.mocked(randomId.default);
  * Returns:
  * - `uiStream`: the stream to pass to `setupPatchStoreSubstreamConnection`
  * - `backgroundStream`: the stream tests write to, simulating messages from
- *   the background process
+ * the background process
  */
 function createPatchStreamPair() {
   const uiMux = new ObjectMultiplex();
