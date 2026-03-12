@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import {
   HashRouter,
-  Outlet,
   RouterProvider,
   createHashRouter,
   useRouteError,
@@ -30,25 +29,19 @@ function AppProviders() {
   return (
     <MetaMetricsProvider>
       <LegacyMetaMetricsProvider>
-        <I18nProvider>
-          <LegacyI18nProvider>
-            <QueryClientProvider client={queryClient}>
-              <AssetPollingProvider>
-                <MetamaskIdentityProvider>
-                  <MetamaskNotificationsProvider>
-                    <HardwareWalletErrorProvider>
-                      <ShieldSubscriptionProvider>
-                        <RiveWasmProvider>
-                          <Outlet />
-                        </RiveWasmProvider>
-                      </ShieldSubscriptionProvider>
-                    </HardwareWalletErrorProvider>
-                  </MetamaskNotificationsProvider>
-                </MetamaskIdentityProvider>
-              </AssetPollingProvider>
-            </QueryClientProvider>
-          </LegacyI18nProvider>
-        </I18nProvider>
+        <AssetPollingProvider>
+          <MetamaskIdentityProvider>
+            <MetamaskNotificationsProvider>
+              <HardwareWalletErrorProvider>
+                <ShieldSubscriptionProvider>
+                  <RiveWasmProvider>
+                    <Routes />
+                  </RiveWasmProvider>
+                </ShieldSubscriptionProvider>
+              </HardwareWalletErrorProvider>
+            </MetamaskNotificationsProvider>
+          </MetamaskIdentityProvider>
+        </AssetPollingProvider>
       </LegacyMetaMetricsProvider>
     </MetaMetricsProvider>
   );
@@ -56,20 +49,18 @@ function AppProviders() {
 
 function RouteErrorBoundary() {
   const error = useRouteError();
-  return <ErrorPage error={error} />;
+  return (
+    <MetaMetricsProvider>
+      <ErrorPage error={error} />
+    </MetaMetricsProvider>
+  );
 }
 
 const router = createHashRouter([
   {
     element: <AppProviders />,
     errorElement: <RouteErrorBoundary />,
-    children: [
-      {
-        element: <Routes />,
-        errorElement: <RouteErrorBoundary />,
-        children: routeConfig,
-      },
-    ],
+    children: routeConfig,
   },
 ]);
 
@@ -106,7 +97,13 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <I18nProvider>
+            <LegacyI18nProvider>
+              <RouterProvider router={router} />
+            </LegacyI18nProvider>
+          </I18nProvider>
+        </QueryClientProvider>
       </Provider>
     );
   }
