@@ -228,6 +228,7 @@
     "methodData": "object",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": "object",
+    "merklClaimModalShown": "boolean",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "nameSources": "object",

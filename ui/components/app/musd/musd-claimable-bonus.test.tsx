@@ -1,5 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import type { Hex } from '@metamask/utils';
 import { MusdClaimableBonus } from './musd-claimable-bonus';
 import { useMerklRewards } from './hooks/useMerklRewards';
@@ -9,6 +12,9 @@ import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
 jest.mock('./hooks/useMerklRewards');
 jest.mock('./hooks/useMerklClaim');
 jest.mock('./hooks/useOnMerklClaimConfirmed');
+
+const middleware = [thunk];
+const mockStore = configureMockStore(middleware);
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: string[]) => {
     if (key === 'musdClaimableBonus') {
@@ -50,6 +56,18 @@ const mockUseOnMerklClaimConfirmed =
 const TOKEN_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 const CHAIN_ID = '0x1' as Hex;
 
+const renderWithProvider = (
+  component: React.ReactElement,
+  { merklClaimModalShown = true } = {},
+) => {
+  const store = mockStore({
+    metamask: {
+      merklClaimModalShown,
+    },
+  });
+  return render(<Provider store={store}>{component}</Provider>);
+};
+
 describe('MusdClaimableBonus', () => {
   const mockClaimRewards = jest.fn();
   const mockRefetch = jest.fn();
@@ -72,7 +90,7 @@ describe('MusdClaimableBonus', () => {
       refetch: mockRefetch,
     });
 
-    const { container } = render(
+    const { container } = renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
@@ -87,7 +105,7 @@ describe('MusdClaimableBonus', () => {
       refetch: mockRefetch,
     });
 
-    const { container } = render(
+    const { container } = renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
@@ -102,7 +120,7 @@ describe('MusdClaimableBonus', () => {
       refetch: mockRefetch,
     });
 
-    render(
+    renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
@@ -126,7 +144,7 @@ describe('MusdClaimableBonus', () => {
       refetch: mockRefetch,
     });
 
-    render(
+    renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
@@ -147,7 +165,7 @@ describe('MusdClaimableBonus', () => {
       error: null,
     });
 
-    render(
+    renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
@@ -169,7 +187,7 @@ describe('MusdClaimableBonus', () => {
       error: 'Something went wrong',
     });
 
-    render(
+    renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
@@ -189,7 +207,7 @@ describe('MusdClaimableBonus', () => {
       refetch: mockRefetch,
     });
 
-    render(
+    renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
@@ -205,7 +223,7 @@ describe('MusdClaimableBonus', () => {
       refetch: mockRefetch,
     });
 
-    render(
+    renderWithProvider(
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 

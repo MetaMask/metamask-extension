@@ -163,6 +163,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           host: '127.0.0.1:8080',
           href: 'http://127.0.0.1:8080',
         },
+        merklClaimModalShown: false,
         musdConversionEducationSeen: false,
         musdConversionDismissedCtaKeys: [],
       },
