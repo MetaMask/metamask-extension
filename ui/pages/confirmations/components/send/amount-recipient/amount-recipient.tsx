@@ -120,7 +120,7 @@ export const AmountRecipient = () => {
         disabled={isDisabled}
         onClick={onClick}
         size={ButtonSize.Lg}
-        className={`mb-4 ${hasBlockingError ? 'bg-error-default' : ''}`}
+        className={`mb-4 min-h-12 ${hasBlockingError ? 'bg-error-default' : ''}`}
       >
         {amountError ?? hexDataError ?? nonEVMSubmitError ?? t('continue')}
       </Button>
