@@ -6,11 +6,9 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import Settings from '.';
 
-let mockRouterLocation = { pathname: '/settings', search: '' };
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: () => mockRouterLocation,
+  useLocation: () => ({ pathname: '/settings' }),
   useNavigate: () => jest.fn(),
   useParams: () => ({}),
 }));
@@ -23,7 +21,7 @@ jest.mock(
       <Component
         {...props}
         navigate={jest.fn()}
-        location={mockRouterLocation}
+        location={{ pathname: '/settings' }}
         params={{}}
       />
     );
@@ -44,10 +42,6 @@ describe('SettingsPage', () => {
   };
 
   const mockStore = configureMockStore()(mockState);
-
-  beforeEach(() => {
-    mockRouterLocation = { pathname: '/settings', search: '' };
-  });
 
   it('should render correctly', () => {
     const { queryByText } = renderWithProvider(
