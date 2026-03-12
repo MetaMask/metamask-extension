@@ -11,6 +11,7 @@ import { ThirdPartyApisItem } from './third-party-apis-item';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
 import { MetametricsToggleItem } from './metametrics-item';
 import { DataCollectionToggleItem } from './data-collection-item';
+import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
@@ -47,6 +48,7 @@ const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
     hasDividerBefore: true,
   },
   { id: 'data-collection', component: DataCollectionToggleItem },
+  { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
 ];
 
 const PrivacyTab = () => <SettingsTab items={PRIVACY_SETTING_ITEMS} />;
