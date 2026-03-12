@@ -289,9 +289,8 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.clickElement(this.confirmConnectionButton);
 
-    // set a bigger timeout to wait for element as a temporary fix to reduce flakiness
     await this.driver.waitForSelector(this.addtoMetamaskMessage, {
-      timeout: 15000,
+      timeout: 20000,
     });
     await this.driver.clickElementSafe(this.snapInstallScrollButton, 200);
     await this.driver.waitForSelector(this.confirmAddtoMetamask);

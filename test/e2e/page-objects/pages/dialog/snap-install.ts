@@ -90,7 +90,9 @@ class SnapInstall {
     console.log(
       'Clicking on the scroll button and then clicking the confirm button',
     );
-    await this.driver.waitForSelector(this.addToMetaMaskHeader);
+    await this.driver.waitForSelector(this.addToMetaMaskHeader, {
+      timeout: 20000,
+    });
     await this.driver.clickElementSafe(this.snapInstallScrollArea);
     await this.driver.clickElement(this.confirmButton);
   }
