@@ -22,6 +22,7 @@ import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import * as smartTransactionsModule from '../../lib/smart-transaction/smart-transactions';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
+import * as selectorsModule from '../../../../shared/lib/selectors';
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 import { TransactionControllerInit } from './transaction-controller-init';
 
@@ -30,6 +31,7 @@ jest.mock('@metamask/transaction-pay-controller');
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
 jest.mock('../../lib/transaction/hooks/delegation-7702-publish');
+jest.mock('../../../../shared/lib/selectors');
 
 /**
  * Build a mock NetworkController.
@@ -322,6 +324,77 @@ describe('Transaction Controller Init', () => {
             origin: 'https://external-dapp.com',
           }),
         ),
+      ).toBe(true);
+    });
+  });
+
+  describe('isEIP7702GasFeeTokensEnabled', () => {
+    const getIsSmartTransactionMock = jest.mocked(
+      selectorsModule.getIsSmartTransaction,
+    );
+
+    const isSendBundleSupportedMock = jest.mocked(
+      sentinelApiModule.isSendBundleSupported,
+    );
+
+    const mockTransactionMeta = {
+      id: '1',
+      status: TransactionStatus.unapproved,
+      chainId: CHAIN_ID_MOCK,
+      networkClientId: 'test-network',
+      time: Date.now(),
+      txParams: {
+        from: '0x0000000000000000000000000000000000000000',
+      },
+    } as TransactionMeta;
+
+    it('returns true when smart transactions disabled and send bundle not supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isSendBundleSupportedMock.mockResolvedValue(false);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
+    });
+
+    it('returns false when smart transactions enabled and send bundle supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(false);
+    });
+
+    it('returns true when smart transactions disabled and send bundle supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
+    });
+
+    it('returns true when smart transactions enabled and send bundle not supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(false);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
+    });
+
+    it('returns true when isExternalSign is true', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(
+        await optionFn?.({
+          ...mockTransactionMeta,
+          isExternalSign: true,
+        }),
       ).toBe(true);
     });
   });

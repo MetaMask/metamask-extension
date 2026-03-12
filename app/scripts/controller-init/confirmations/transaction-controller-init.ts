@@ -127,7 +127,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     },
     isAutomaticGasFeeUpdateEnabled,
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
-      const { chainId } = transactionMeta;
+      const { chainId, isExternalSign } = transactionMeta;
       const uiState = getUIState(getFlatState());
 
       // @ts-expect-error Smart transaction selector types does not match controller state
@@ -137,8 +137,13 @@ export const TransactionControllerInit: ControllerInitFunction<
 
       // EIP7702 gas fee tokens are enabled when:
       // - Smart transactions are NOT enabled, OR
-      // - Send bundle is NOT supported
-      return !isSmartTransactionEnabled || !isSendBundleSupportedChain;
+      // - Send bundle is NOT supported, OR
+      // - Gas fee token was provided when creating transaction
+      return (
+        !isSmartTransactionEnabled ||
+        !isSendBundleSupportedChain ||
+        Boolean(isExternalSign)
+      );
     },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
