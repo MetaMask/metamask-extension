@@ -1,10 +1,6 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import {
-  LedgerTransportTypes,
-  WebHIDConnectedStatuses,
-} from '../../../../../../shared/constants/hardware-wallets';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
@@ -20,19 +16,28 @@ import {
   unapprovedPersonalSignMsg,
 } from '../../../../../../test/data/confirmations/personal_sign';
 import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
-import mockState from '../../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../../shared/constants/app';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
+import {
+  ConnectionStatus,
+  HardwareWalletType,
+} from '../../../../../contexts/hardware-wallets';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useAddEthereumChain } from '../../../hooks/useAddEthereumChain';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
@@ -44,6 +49,21 @@ jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useIsTransactionPayLoading: jest.fn(() => false),
   useTransactionPayRequiredTokens: jest.fn(() => []),
 }));
+
+const mockOnTransactionConfirm = jest.fn();
+const ensureDeviceReadyMock = jest.fn();
+const showHardwareWalletErrorModalMock = jest.fn();
+const dismissHardwareWalletErrorModalMock = jest.fn();
+const setErrorModalSuppressedMock = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletError = jest.fn();
+const mockIsHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn();
+const mockGetEnvironmentType = jest.fn();
+const mockNavigateNext = jest.fn();
+const mockNavigateToId = jest.fn();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
@@ -62,10 +82,17 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
+jest.mock('../../../../../../app/scripts/lib/util', () => ({
+  getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
+}));
+jest.mock('../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(() => Promise.resolve()),
+}));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
-    navigateNext: jest.fn(),
-    navigateToId: jest.fn(),
+    navigateNext: mockNavigateNext,
+    navigateToId: mockNavigateToId,
   })),
   useConfirmationNavigationOptions: jest.fn(() => ({
     loader: 'default',
@@ -86,6 +113,46 @@ jest.mock(
 jest.mock('../../../hooks/useOriginThrottling');
 
 jest.mock('../../../../../hooks/subscription/useSubscription');
+jest.mock(
+  '../../../../../contexts/hardware-wallets/HardwareWalletContext',
+  () => ({
+    ...jest.requireActual(
+      '../../../../../contexts/hardware-wallets/HardwareWalletContext',
+    ),
+    useHardwareWalletState: () => mockUseHardwareWalletState(),
+    useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+    useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  }),
+);
+jest.mock(
+  '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => mockUseHardwareWalletError(),
+  }),
+);
+jest.mock('../../../../../contexts/hardware-wallets/rpcErrorUtils', () => ({
+  ...jest.requireActual(
+    '../../../../../contexts/hardware-wallets/rpcErrorUtils',
+  ),
+  isHardwareWalletError: (...args: unknown[]) =>
+    mockIsHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
+jest.mock('../../../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../../../contexts/hardware-wallets'),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletError: () => mockUseHardwareWalletError(),
+  isHardwareWalletError: (...args: unknown[]) =>
+    mockIsHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
 jest.mock('../../../hooks/useAddEthereumChain', () => ({
   useAddEthereumChain: jest.fn(() => ({
     onSubmit: jest.fn().mockResolvedValue(undefined),
@@ -96,7 +163,7 @@ jest.mock('../../../hooks/useAddEthereumChain', () => ({
 }));
 jest.mock('../../../hooks/transactions/useTransactionConfirm', () => ({
   useTransactionConfirm: jest.fn(() => ({
-    onTransactionConfirm: jest.fn().mockResolvedValue(undefined),
+    onTransactionConfirm: mockOnTransactionConfirm,
   })),
 }));
 jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
@@ -137,6 +204,7 @@ describe('ConfirmFooter', () => {
     useInsufficientBalanceAlerts,
   );
   const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
+  const useAddEthereumChainMock = jest.mocked(useAddEthereumChain);
   const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
   const useUserSubscriptionsMock = jest.mocked(useUserSubscriptions);
 
@@ -144,6 +212,41 @@ describe('ConfirmFooter', () => {
     jest.clearAllMocks();
     mockDispatch.mockClear();
     mockStore = null;
+
+    mockOnTransactionConfirm.mockReset();
+    ensureDeviceReadyMock.mockReset();
+    showHardwareWalletErrorModalMock.mockReset();
+    dismissHardwareWalletErrorModalMock.mockReset();
+    setErrorModalSuppressedMock.mockReset();
+    mockNavigateNext.mockReset();
+    mockNavigateToId.mockReset();
+    mockUseHardwareWalletState.mockReset();
+    mockUseHardwareWalletConfig.mockReset();
+    mockUseHardwareWalletActions.mockReset();
+    mockUseHardwareWalletError.mockReset();
+    mockIsHardwareWalletError.mockReset();
+    mockIsUserRejectedHardwareWalletError.mockReset();
+
+    mockOnTransactionConfirm.mockResolvedValue(undefined);
+    ensureDeviceReadyMock.mockResolvedValue(true);
+
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Connected },
+    });
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: false,
+      walletType: null,
+    });
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: ensureDeviceReadyMock,
+    });
+    mockUseHardwareWalletError.mockReturnValue({
+      showErrorModal: showHardwareWalletErrorModalMock,
+      dismissErrorModal: dismissHardwareWalletErrorModalMock,
+      setErrorModalSuppressed: setErrorModalSuppressedMock,
+    });
+    mockIsHardwareWalletError.mockReturnValue(false);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
 
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
@@ -171,6 +274,7 @@ describe('ConfirmFooter', () => {
       subscriptions: [],
       error: undefined,
     });
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
   });
 
   it('should match snapshot with signature confirmation', () => {
@@ -334,6 +438,7 @@ describe('ConfirmFooter', () => {
 
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
+    expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalled();
   });
 
   it('invoke required actions when submit button is clicked', async () => {
@@ -364,6 +469,31 @@ describe('ConfirmFooter', () => {
 
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
+    expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
+  });
+
+  it('navigates to next confirmation after signature success in sidepanel', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const { getAllByRole } = render();
+    const submitButton = getAllByRole('button')[1];
+    const resolveSpy = jest
+      .spyOn(Actions, 'resolvePendingApproval')
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => Promise.resolve() as any);
+
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(resolveSpy).toHaveBeenCalled();
+    });
+
+    expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(
+      `${DEFAULT_ROUTE}?tab=activity`,
+      { replace: true },
+    );
   });
 
   it('displays a danger "Confirm" button there are danger alerts', async () => {
@@ -400,6 +530,121 @@ describe('ConfirmFooter', () => {
     expect(submitButton).toHaveClass('mm-button-primary--type-danger');
   });
 
+  it('suppresses hardware wallet error modal while danger alerts are unconfirmed and hardware wallet is ready', async () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Ready },
+    });
+
+    await render(
+      getMockPersonalSignConfirmStateForRequest(
+        { ...unapprovedPersonalSignMsg, id: '123' },
+        {
+          confirmAlerts: {
+            alerts: {
+              '123': [
+                {
+                  key: 'Contract',
+                  severity: Severity.Danger,
+                  message: 'Alert Info',
+                },
+              ],
+            },
+            confirmed: { '123': { Contract: false } },
+          },
+          metamask: {},
+        },
+      ),
+    );
+
+    expect(setErrorModalSuppressedMock).toHaveBeenCalledWith(true);
+  });
+
+  it('suppresses hardware wallet error modal while danger alerts are unconfirmed and hardware wallet is not ready', async () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
+
+    await render(
+      getMockPersonalSignConfirmStateForRequest(
+        { ...unapprovedPersonalSignMsg, id: '123' },
+        {
+          confirmAlerts: {
+            alerts: {
+              '123': [
+                {
+                  key: 'Contract',
+                  severity: Severity.Danger,
+                  message: 'Alert Info',
+                },
+              ],
+            },
+            confirmed: { '123': { Contract: false } },
+          },
+          metamask: {},
+        },
+      ),
+    );
+
+    expect(setErrorModalSuppressedMock).toHaveBeenCalledWith(true);
+  });
+
+  it('does not suppress hardware wallet error modal when there are no unconfirmed danger alerts', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Ready },
+    });
+
+    render(getMockPersonalSignConfirmState());
+
+    expect(setErrorModalSuppressedMock).toHaveBeenCalledWith(false);
+  });
+
+  it('resets hardware wallet error modal suppression on unmount', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Ready },
+    });
+
+    const { unmount } = render(
+      getMockPersonalSignConfirmStateForRequest(
+        { ...unapprovedPersonalSignMsg, id: '123' },
+        {
+          confirmAlerts: {
+            alerts: {
+              '123': [
+                {
+                  key: 'Contract',
+                  severity: Severity.Danger,
+                  message: 'Alert Info',
+                },
+              ],
+            },
+            confirmed: { '123': { Contract: false } },
+          },
+          metamask: {},
+        },
+      ),
+    );
+
+    expect(setErrorModalSuppressedMock).toHaveBeenCalledWith(true);
+    unmount();
+    expect(setErrorModalSuppressedMock).toHaveBeenLastCalledWith(false);
+  });
+
   it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: true,
@@ -414,29 +659,270 @@ describe('ConfirmFooter', () => {
     expect(rejectSpy).not.toHaveBeenCalled();
   });
 
-  it('disables submit button if required LedgerHidConnection is not yet established', () => {
-    const { getAllByRole } = render(
-      getMockPersonalSignConfirmStateForRequest(
+  describe('hardware wallet handling', () => {
+    it('renders confirm button when hardware wallet is ready', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Ready },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: true,
+      });
+
+      const { getByTestId, queryByTestId } = render();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
+    it('renders reconnect button when hardware wallet is not ready', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const { getByTestId, queryByTestId, getByText } = render();
+      expect(getByText('Connect Ledger')).toBeInTheDocument();
+      expect(
+        getByTestId('reconnect-hardware-wallet-button'),
+      ).toBeInTheDocument();
+      expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
+    });
+
+    it('does not confirm when hardware wallet preflight fails', async () => {
+      ensureDeviceReadyMock.mockResolvedValue(false);
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Ready },
+      });
+
+      const preflightState = getMockContractInteractionConfirmState();
+      const preflightConfirmation = preflightState.metamask.transactions[0];
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: preflightConfirmation,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+      const { getByTestId } = render(preflightState);
+      fireEvent.click(getByTestId('confirm-footer-button'));
+
+      await waitFor(() => {
+        expect(ensureDeviceReadyMock).toHaveBeenCalledWith({
+          requireBlindSigning: true,
+        });
+      });
+      expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
+    });
+
+    it('shows confirm review-alert button when hardware wallet is not ready and danger alerts are unconfirmed', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const stateWithDangerAlert = getMockPersonalSignConfirmStateForRequest(
+        { ...unapprovedPersonalSignMsg, id: '123' } as SignatureRequestType,
         {
+          confirmAlerts: {
+            alerts: {
+              '123': [
+                {
+                  key: 'Contract',
+                  severity: Severity.Danger,
+                  message: 'Alert Info',
+                },
+              ],
+            },
+            confirmed: { '123': { Contract: false } },
+          },
+          metamask: {},
+        },
+      );
+
+      const { getByTestId, queryByTestId } = render(stateWithDangerAlert);
+
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    });
+
+    it('bypasses hardware wallet preflight for add chain confirmations', async () => {
+      const addEthereumChainSubmitMock = jest.fn().mockResolvedValue(undefined);
+      useAddEthereumChainMock.mockReturnValue({
+        onSubmit: addEthereumChainSubmitMock,
+      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: addEthereumChainApproval,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+
+      const { getByTestId, queryByTestId } = render();
+
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+      fireEvent.click(getByTestId('confirm-footer-button'));
+
+      await waitFor(() => {
+        expect(addEthereumChainSubmitMock).toHaveBeenCalledTimes(1);
+      });
+      expect(ensureDeviceReadyMock).not.toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+
+    it('navigates to next confirmation on hardware wallet rejection', async () => {
+      const hardwareError = new Error('User rejected');
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Ready },
+      });
+      mockIsHardwareWalletError.mockReturnValue(true);
+      mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+
+      const resolveSpy = jest
+        .spyOn(Actions, 'resolvePendingApproval')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => () => Promise.reject(hardwareError) as any);
+      const { getByTestId } = render(
+        getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
           msgParams: {
             from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
           },
-        } as SignatureRequestType,
-        {
-          metamask: {
-            ...mockState.metamask,
-            ledgerTransportType: LedgerTransportTypes.webhid,
+        } as SignatureRequestType),
+      );
+
+      fireEvent.click(getByTestId('confirm-footer-button'));
+
+      await waitFor(() => {
+        expect(resolveSpy).toHaveBeenCalled();
+      });
+
+      expect(resolveSpy).toHaveBeenCalledWith(expect.any(String), undefined, {
+        fromAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        waitForResult: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
+      expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
+      expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('navigates to next confirmation on hardware wallet rejection in sidepanel', async () => {
+      const hardwareError = new Error('User rejected');
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Ready },
+      });
+      mockIsHardwareWalletError.mockReturnValue(true);
+      mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+
+      const resolveSpy = jest
+        .spyOn(Actions, 'resolvePendingApproval')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => () => Promise.reject(hardwareError) as any);
+      const { getByTestId } = render(
+        getMockPersonalSignConfirmStateForRequest({
+          ...unapprovedPersonalSignMsg,
+          msgParams: {
+            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
           },
-          appState: {
-            ...mockState.appState,
-            ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.notConnected,
+        } as SignatureRequestType),
+      );
+
+      fireEvent.click(getByTestId('confirm-footer-button'));
+
+      await waitFor(() => {
+        expect(resolveSpy).toHaveBeenCalled();
+      });
+
+      expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        { replace: true },
+      );
+      expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
+      expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows error modal on retryable error', async () => {
+      const hardwareError = new Error('Hardware wallet error');
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Ready },
+      });
+      mockIsHardwareWalletError.mockReturnValue(true);
+
+      const resolveSpy = jest
+        .spyOn(Actions, 'resolvePendingApproval')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => () => Promise.reject(hardwareError) as any);
+
+      const { getByTestId } = render(
+        getMockPersonalSignConfirmStateForRequest({
+          ...unapprovedPersonalSignMsg,
+          msgParams: {
+            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
           },
-        },
-      ),
-    );
-    const submitButton = getAllByRole('button')[1];
-    expect(submitButton).toBeDisabled();
+        } as SignatureRequestType),
+      );
+
+      fireEvent.click(getByTestId('confirm-footer-button'));
+
+      await waitFor(() => {
+        expect(resolveSpy).toHaveBeenCalled();
+      });
+
+      expect(showHardwareWalletErrorModalMock).toHaveBeenCalledWith(
+        hardwareError,
+      );
+      expect(mockNavigateNext).not.toHaveBeenCalled();
+    });
   });
 
   describe('ConfirmButton', () => {
@@ -481,7 +967,7 @@ describe('ConfirmFooter', () => {
       [KEY_ALERT_KEY_MOCK]: false,
     });
 
-    it('renders the "review alerts" button when there are unconfirmed alerts', () => {
+    it('renders the "review alerts" button when there are multiple unconfirmed alerts', () => {
       const stateWithMultipleDangerAlerts = createStateWithAlerts(
         [
           alertsMock[0],
@@ -518,15 +1004,20 @@ describe('ConfirmFooter', () => {
       expect(getByText(messages.reviewAlert.message)).toBeInTheDocument();
     });
 
-    it('renders the "confirm" button when there are confirmed danger alerts', () => {
+    it('renders the standard "confirm" button when danger alerts are already confirmed', () => {
       const stateWithConfirmedDangerAlertMock = createStateWithAlerts(
         alertsMock,
         {
           [KEY_ALERT_KEY_MOCK]: true,
         },
       );
-      const { getByText } = render(stateWithConfirmedDangerAlertMock);
+      const { getByTestId, getByText } = render(
+        stateWithConfirmedDangerAlertMock,
+      );
       expect(getByText(messages.confirm.message)).toBeInTheDocument();
+      expect(getByTestId('confirm-footer-button')).not.toHaveClass(
+        'mm-button-primary--type-danger',
+      );
     });
 
     it('renders the "confirm" button disabled when there are blocking dangerous banner alerts', () => {
@@ -559,54 +1050,78 @@ describe('ConfirmFooter', () => {
     });
 
     describe('navigates to the next confirmation', () => {
-      // @ts-expect-error This is missing from the Mocha type definitions
-      it.each(['Confirm', 'Cancel'])(
-        'on %s button click',
-        async (buttonText: string) => {
-          const navigateNextMock = jest.fn();
-          useConfirmationNavigationMock.mockReturnValue({
-            navigateNext: navigateNextMock,
-            navigateToId: jest.fn(),
-          } as unknown as ReturnType<typeof useConfirmationNavigation>);
+      it('on Cancel button click', async () => {
+        const navigateNextMock = jest.fn();
+        useConfirmationNavigationMock.mockReturnValue({
+          navigateNext: navigateNextMock,
+          navigateToId: jest.fn(),
+          count: 2,
+        } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-          const mockStateWithContractInteractionConfirmation =
-            getMockContractInteractionConfirmState();
+        const mockStateWithContractInteractionConfirmation =
+          getMockContractInteractionConfirmState();
 
-          // Get the actual transaction from the transactions array
-          const contractInteractionConfirmation =
-            mockStateWithContractInteractionConfirmation.metamask
-              .transactions[0];
+        const contractInteractionConfirmation =
+          mockStateWithContractInteractionConfirmation.metamask.transactions[0];
 
-          mockStateWithContractInteractionConfirmation.metamask.pendingApprovals =
-            {
-              ...mockStateWithContractInteractionConfirmation.metamask
-                .pendingApprovals,
-              [addEthereumChainApproval.id]: addEthereumChainApproval,
-            };
-          mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
+        mockStateWithContractInteractionConfirmation.metamask.pendingApprovals =
+          {
+            ...mockStateWithContractInteractionConfirmation.metamask
+              .pendingApprovals,
+            [addEthereumChainApproval.id]: addEthereumChainApproval,
+          };
+        mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
 
-          jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-            currentConfirmation: contractInteractionConfirmation,
-            isScrollToBottomCompleted: true,
-            setIsScrollToBottomCompleted: () => undefined,
-          } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
-          const { getByText } = render(
-            mockStateWithContractInteractionConfirmation,
-          );
+        jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+          currentConfirmation: contractInteractionConfirmation,
+          isScrollToBottomCompleted: true,
+          setIsScrollToBottomCompleted: () => undefined,
+        } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+        const { getByText } = render(
+          mockStateWithContractInteractionConfirmation,
+        );
 
-          const button = getByText(buttonText);
-          fireEvent.click(button);
+        fireEvent.click(getByText(messages.cancel.message));
 
-          // Wait for async operations to complete
-          await waitFor(() => {
-            expect(navigateNextMock).toHaveBeenCalledTimes(1);
-          });
+        await waitFor(() => {
+          expect(navigateNextMock).toHaveBeenCalledTimes(1);
+        });
 
-          expect(navigateNextMock).toHaveBeenCalledWith(
-            contractInteractionConfirmation.id,
-          );
-        },
-      );
+        expect(navigateNextMock).toHaveBeenCalledWith(
+          contractInteractionConfirmation.id,
+        );
+      });
+
+      it('on Confirm button click uses transaction confirm', async () => {
+        const mockStateWithContractInteractionConfirmation =
+          getMockContractInteractionConfirmState();
+
+        const contractInteractionConfirmation =
+          mockStateWithContractInteractionConfirmation.metamask.transactions[0];
+
+        mockStateWithContractInteractionConfirmation.metamask.pendingApprovals =
+          {
+            ...mockStateWithContractInteractionConfirmation.metamask
+              .pendingApprovals,
+            [addEthereumChainApproval.id]: addEthereumChainApproval,
+          };
+        mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
+
+        jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+          currentConfirmation: contractInteractionConfirmation,
+          isScrollToBottomCompleted: true,
+          setIsScrollToBottomCompleted: () => undefined,
+        } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+        const { getByText } = render(
+          mockStateWithContractInteractionConfirmation,
+        );
+
+        fireEvent.click(getByText(messages.confirm.message));
+
+        await waitFor(() => {
+          expect(mockOnTransactionConfirm).toHaveBeenCalledTimes(1);
+        });
+      });
     });
   });
 
