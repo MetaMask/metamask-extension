@@ -261,7 +261,8 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
-    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267"
+    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@62.20.0-preview-15dd7d63f"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",

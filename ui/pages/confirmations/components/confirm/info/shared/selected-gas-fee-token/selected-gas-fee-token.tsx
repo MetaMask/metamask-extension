@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
@@ -31,7 +31,8 @@ export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
-  const { chainId, gasFeeTokens } = currentConfirmation;
+  const { chainId, gasFeeTokens, excludeNativeTokenForFee } =
+    currentConfirmation;
 
   const { isSupported: isGaslessSupported, isSmartTransaction } =
     useIsGaslessSupported();
@@ -50,17 +51,31 @@ export function SelectedGasFeeToken() {
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
 
+  const nonNativeGasFeeTokensLength = useMemo(() => {
+    return (
+      gasFeeTokens?.filter(
+        (token) =>
+          token.tokenAddress && token.tokenAddress !== NATIVE_TOKEN_ADDRESS,
+      ) ?? []
+    ).length;
+  }, [gasFeeTokens]);
+  // If we decide the exclude the native token, check that gasFeeTokens has at least two items.
+  // Otherwise the native token is always an extra item.
+  const hasMoreThanOneGasFeeTokenToChooseFrom = excludeNativeTokenForFee
+    ? hasGasFeeTokens && nonNativeGasFeeTokensLength > 1
+    : hasGasFeeTokens;
+
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
     chainId
   ];
 
   const handleClick = useCallback(() => {
-    if (!hasGasFeeTokens) {
+    if (!hasMoreThanOneGasFeeTokenToChooseFrom) {
       return;
     }
 
     setIsModalOpen(true);
-  }, [hasGasFeeTokens]);
+  }, [hasMoreThanOneGasFeeTokenToChooseFrom]);
 
   const nativeTicker = networkConfiguration?.nativeCurrency;
   const gasFeeToken = useSelectedGasFeeToken();
@@ -75,7 +90,7 @@ export function SelectedGasFeeToken() {
         data-testid="selected-gas-fee-token"
         onClick={handleClick}
         backgroundColor={
-          hasGasFeeTokens
+          hasMoreThanOneGasFeeTokenToChooseFrom
             ? BackgroundColor.backgroundMuted
             : BackgroundColor.transparent
         }
@@ -86,9 +101,9 @@ export function SelectedGasFeeToken() {
         marginLeft={1}
         gap={1}
         style={{
-          cursor: hasGasFeeTokens ? 'pointer' : 'default',
+          cursor: hasMoreThanOneGasFeeTokenToChooseFrom ? 'pointer' : 'default',
           paddingInlineEnd: '6px',
-          padding: hasGasFeeTokens ? '4px 8px' : '0px',
+          padding: hasMoreThanOneGasFeeTokenToChooseFrom ? '4px 8px' : '0px',
         }}
       >
         <GasFeeTokenIcon
@@ -96,7 +111,7 @@ export function SelectedGasFeeToken() {
           size={GasFeeTokenIconSize.Sm}
         />
         <Text>{symbol}</Text>
-        {hasGasFeeTokens && (
+        {hasMoreThanOneGasFeeTokenToChooseFrom && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
             name={IconName.ArrowDown}

@@ -50,13 +50,19 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
 function getState({
   gasFeeTokens,
   noSelectedGasFeeToken,
-}: { gasFeeTokens?: GasFeeToken[]; noSelectedGasFeeToken?: boolean } = {}) {
+  excludeNativeTokenForFee,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  noSelectedGasFeeToken?: boolean;
+  excludeNativeTokenForFee?: boolean;
+} = {}) {
   return getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK],
       selectedGasFeeToken: noSelectedGasFeeToken
         ? undefined
         : GAS_FEE_TOKEN_MOCK.tokenAddress,
+      excludeNativeTokenForFee,
     }),
     {
       metamask: {
@@ -141,6 +147,15 @@ describe('GasFeeTokenModal', () => {
     );
 
     expect(result.getByText('0.000066 ETH')).toBeInTheDocument();
+  });
+
+  it('never renders native list item if `excludeNativeTokenForFee` is set to `true`', () => {
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(getState({ excludeNativeTokenForFee: true })),
+    );
+
+    expect(result.queryByText('0.000066 ETH')).not.toBeInTheDocument();
   });
 
   it('selects token matching selectedGasFeeToken', () => {
