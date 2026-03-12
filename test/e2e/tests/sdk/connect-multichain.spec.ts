@@ -12,6 +12,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { getPermissionsPageForHost } from '../../page-objects/flows/permission.flow';
 import { Driver } from '../../webdriver/driver';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
@@ -37,6 +38,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
+
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
