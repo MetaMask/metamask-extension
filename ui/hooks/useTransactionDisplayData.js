@@ -27,14 +27,17 @@ import {
 } from '../helpers/constants/transactions';
 import { getNfts } from '../ducks/metamask/metamask';
 import { captureSingleException } from '../store/actions';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
-import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemForTxMetaId,
+} from '../ducks/bridge-status/selectors';
 
 import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
 import { useI18nContext } from './useI18nContext';
@@ -109,9 +112,14 @@ export function useTransactionDisplayData(transactionGroup) {
 
   // Bridge data
   const srcTxMetaId = transactionGroup.initialTransaction.id;
-  const bridgeHistoryItem = useSelector((state) =>
+  const bridgeHistoryItemByTxMetaId = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector((state) =>
+    selectBridgeHistoryForOriginalTxMetaId(state, srcTxMetaId),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemByTxMetaId ?? bridgeHistoryItemByOriginalTxMetaId;
   const { destNetwork } = useBridgeChainInfo({
     transaction: transactionGroup.initialTransaction,
   });
@@ -391,14 +399,26 @@ export function useTransactionDisplayData(transactionGroup) {
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else if (PAY_TRANSACTION_TYPES.includes(type)) {
-    title =
-      type === TransactionType.perpsDeposit
-        ? t('perpsDepositActivityTitle')
-        : t('musdConversionActivityTitle');
+    const { metamaskPay } = initialTransaction;
+    const sourceTokenAddress = metamaskPay?.tokenAddress?.toLowerCase();
+    const sourceChainId = metamaskPay?.chainId;
+    const sourceToken =
+      sourceTokenAddress &&
+      sourceChainId &&
+      tokenListAllChains?.[sourceChainId]?.data?.[sourceTokenAddress];
+
+    if (type === TransactionType.perpsDeposit) {
+      title = t('perpsDepositActivityTitle');
+    } else if (type === TransactionType.musdClaim) {
+      title = t('musdClaimActivityTitle');
+    } else {
+      title = t('musdConversionActivityTitle', [
+        sourceToken?.symbol ?? 'Token',
+      ]);
+    }
 
     prefix = '';
     const targetTokenAddress = to?.toLowerCase();
-    const { metamaskPay } = initialTransaction;
 
     const targetToken =
       targetTokenAddress &&

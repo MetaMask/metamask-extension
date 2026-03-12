@@ -5,7 +5,7 @@ import { removeNetwork, setEnabledNetworks } from '../../../../store/actions';
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
-} from '../../../../../shared/modules/selectors/networks';
+} from '../../../../../shared/lib/selectors/networks';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {

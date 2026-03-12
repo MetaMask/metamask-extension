@@ -7,7 +7,7 @@ import {
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
-} from '../../../../shared/modules/feature-flags';
+} from '../../../../shared/lib/feature-flags';
 
 export const DeFiPositionsControllerInit: ControllerInitFunction<
   DeFiPositionsController,

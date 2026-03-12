@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import {
   getGaslessBridgeWith7702EnabledForChain,
   SmartTransactionsState,
-} from '../../../../shared/modules/selectors';
+} from '../../../../shared/lib/selectors';
 import { isRelaySupported } from '../../../store/actions';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';

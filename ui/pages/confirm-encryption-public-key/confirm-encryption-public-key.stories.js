@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../store/store';
 import testData from '../../../.storybook/test-data';
-import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
+import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
 const store = configureStore(testData);

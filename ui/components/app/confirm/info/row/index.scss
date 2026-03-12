@@ -15,3 +15,23 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.address-display-no-name {
+  display: inline-flex;
+
+  button,
+  button * {
+    color: var(--color-text-default) !important;
+  }
+
+  &:hover {
+    button,
+    button * {
+      color: var(--color-primary-default) !important;
+    }
+
+    button {
+      text-decoration-color: var(--color-primary-default) !important;
+    }
+  }
+}

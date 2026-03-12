@@ -11,7 +11,7 @@ import {
 import { trace } from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
-import { loadAuthenticationConfig } from '../../../../shared/modules/authentication';
+import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
 
 /**
  * Initialize the UserStorage controller.

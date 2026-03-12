@@ -9,12 +9,12 @@ import {
   getMultichainConversionRate,
 } from '../selectors/multichain';
 
-import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
+import { getValueFromWeiHex } from '../../shared/lib/conversion.utils';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   TEST_NETWORK_TICKER_MAP,
 } from '../../shared/constants/network';
-import { Numeric } from '../../shared/modules/Numeric';
+import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
