@@ -32,7 +32,10 @@ import {
   addToAddressBook,
   removeFromAddressBook,
 } from '../../../store/actions';
-import { getCompleteAddressBook, getInternalAccounts } from '../../../selectors';
+import {
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../../selectors';
 import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
@@ -75,7 +78,13 @@ export function EditContactForm({
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nameValue = e.target.value;
-    setNameError(validateName(nameValue) ? '' : t('nameAlreadyInUse'));
+    if (!nameValue.trim()) {
+      setNameError(t('fieldRequired', [t('nickname')]));
+    } else if (validateName(nameValue)) {
+      setNameError('');
+    } else {
+      setNameError(t('nameAlreadyInUse'));
+    }
     setContactName(nameValue);
   };
 

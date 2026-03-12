@@ -156,10 +156,9 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
-    if (
-      name.trim() &&
-      isDuplicateContact(addressBook, internalAccounts, name)
-    ) {
+    if (!name.trim()) {
+      setNameInputError(t('fieldRequired', [t('nickname')]));
+    } else if (isDuplicateContact(addressBook, internalAccounts, name)) {
       setNameInputError(t('nameAlreadyInUse'));
     } else {
       setNameInputError('');
