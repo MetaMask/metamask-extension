@@ -971,8 +971,16 @@ export const getIsStxEnabled = createSelector(
 );
 
 export const getIsGasIncluded = createSelector(
-  [getIsStxEnabled, getIsGasIncludedSwapSupported],
-  (isStxEnabled, isGasIncludedSwapSupported) => {
+  [
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    getIsStxEnabled,
+    getIsGasIncludedSwapSupported,
+  ],
+  // Enable gas-included swaps for solana
+  (fromChainId, isStxEnabled, isGasIncludedSwapSupported) => {
+    if (isSolanaChainId(fromChainId)) {
+      return true;
+    }
     return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
