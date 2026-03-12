@@ -20,7 +20,7 @@ export default {
           'A page for reviewing and managing multichain account permissions for a connected site',
       },
     },
-    path: '/review-permissions/:origin',
+    path: '/review-permissions',
   },
 } as Meta<typeof MultichainReviewPermissions>;
 
@@ -97,7 +97,7 @@ DefaultStory.args = {
 };
 DefaultStory.parameters = {
   initialEntries: [
-    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+    `/review-permissions?origin=${encodeURIComponent('https://test.dapp')}`,
   ],
 };
 
@@ -113,7 +113,7 @@ WithOneConnectedAccount.parameters = {
     },
   },
   initialEntries: [
-    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+    `/review-permissions?origin=${encodeURIComponent('https://test.dapp')}`,
   ],
 };
 
@@ -129,6 +129,6 @@ NoConnectedAccounts.parameters = {
     },
   },
   initialEntries: [
-    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+    `/review-permissions?origin=${encodeURIComponent('https://test.dapp')}`,
   ],
 };
