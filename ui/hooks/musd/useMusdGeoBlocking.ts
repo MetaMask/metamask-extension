@@ -43,6 +43,22 @@ export const geoLocationCache = {
   timestamp: null as number | null,
 };
 
+/**
+ * Read the cached geolocation if it exists and hasn't expired.
+ * Used both for synchronous useState initialization (avoids a loading
+ * flash on remount) and inside fetchGeolocation.
+ */
+export function getCachedLocation(): string | null {
+  if (
+    geoLocationCache.location &&
+    geoLocationCache.timestamp &&
+    Date.now() - geoLocationCache.timestamp < CACHE_DURATION_MS
+  ) {
+    return geoLocationCache.location;
+  }
+  return null;
+}
+
 // ============================================================================
 // Hook Implementation
 // ============================================================================
@@ -56,8 +72,12 @@ export const geoLocationCache = {
 export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   const blockedRegions = useSelector(selectMusdBlockedRegions);
 
-  const [userCountry, setUserCountry] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [userCountry, setUserCountry] = useState<string | null>(
+    getCachedLocation,
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(
+    () => getCachedLocation() === null,
+  );
   const [error, setError] = useState<string | null>(null);
 
   /**
@@ -68,13 +88,9 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
    */
   const fetchGeolocation = useCallback(
     async (signal?: AbortSignal): Promise<void> => {
-      // Check cache first
-      if (
-        geoLocationCache.location &&
-        geoLocationCache.timestamp &&
-        Date.now() - geoLocationCache.timestamp < CACHE_DURATION_MS
-      ) {
-        setUserCountry(geoLocationCache.location);
+      const cached = getCachedLocation();
+      if (cached !== null) {
+        setUserCountry(cached);
         setIsLoading(false);
         return;
       }
