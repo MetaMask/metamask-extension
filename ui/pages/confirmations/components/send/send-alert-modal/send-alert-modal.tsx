@@ -5,22 +5,21 @@ import {
   Icon,
   IconName,
   IconSize,
+  IconColor,
+  Text,
+  TextVariant,
+  TextAlign,
+  BoxFlexDirection,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  IconColor,
-  TextAlign,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SendAlertModalProps } from './send-alert-modal.types';
 
@@ -38,16 +37,14 @@ export const SendAlertModal = ({
       <ModalOverlay />
       <ModalContent>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          paddingTop={4}
-          paddingBottom={2}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          className="pt-4 pb-2"
         >
           <Icon
             name={IconName.Danger}
             size={IconSize.Xl}
-            color={IconColor.warningDefault}
+            color={IconColor.WarningDefault}
           />
         </Box>
         <ModalHeader
@@ -60,7 +57,7 @@ export const SendAlertModal = ({
         </ModalHeader>
         <ModalBody>
           <Text
-            variant={TextVariant.bodyMd}
+            variant={TextVariant.BodyMd}
             textAlign={TextAlign.Center}
             data-testid="send-alert-modal-message"
           >

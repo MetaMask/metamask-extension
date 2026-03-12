@@ -2,28 +2,28 @@ import React, { useCallback, useRef, useState, useEffect } from 'react';
 
 import {
   Box,
+  Text,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+  ButtonIcon,
+  ButtonIconSize,
+  TextColor,
+  TextVariant,
+  BoxAlignItems,
+  FontWeight,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalContentSize,
-  Text,
-  Icon,
-  IconName,
-  IconSize,
-  ButtonIcon,
-  ButtonIconSize,
   HelpText,
   HelpTextSeverity,
 } from '../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  IconColor,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
@@ -94,18 +94,15 @@ export const Recipient = ({
 
   return (
     <>
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        gap={1}
-        paddingBottom={1}
-      >
-        <Text variant={TextVariant.bodyMdMedium}>{t('to')}</Text>
+      <Box alignItems={BoxAlignItems.Center} gap={1} className="pb-1">
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {t('to')}
+        </Text>
         {to === toAddressValidated && recipientErrorAllowAcknowledge && (
           <Icon
             name={IconName.Danger}
             size={IconSize.Sm}
-            color={IconColor.warningDefault}
+            color={IconColor.WarningDefault}
             onClick={onAlertIconClick}
             style={{ cursor: 'pointer' }}
             data-testid="recipient-alert-icon"
@@ -131,9 +128,9 @@ export const Recipient = ({
       )}
       {to === toAddressValidated && recipientResolvedLookup && (
         <Text
-          color={TextColor.textAlternative}
-          marginTop={1}
-          variant={TextVariant.bodyXs}
+          color={TextColor.TextAlternative}
+          className="mt-1"
+          variant={TextVariant.BodyXs}
         >
           {t('resolutionProtocol', [resolutionProtocol ?? ''])}
         </Text>

@@ -1,17 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
-import LoadingScreen from '../../../../../components/ui/loading-screen';
 import {
   Box,
   Button,
   ButtonSize,
-} from '../../../../../components/component-library';
-import {
-  BackgroundColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import LoadingScreen from '../../../../../components/ui/loading-screen';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Asset } from '../../../types/send';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
@@ -105,12 +101,10 @@ export const AmountRecipient = () => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      paddingLeft={4}
-      paddingRight={4}
-      style={{ flex: 1, height: '100%' }}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      padding={4}
+      className="flex-1 h-full"
     >
       <Box>
         <SendHero asset={asset as Asset} />
@@ -125,12 +119,7 @@ export const AmountRecipient = () => {
         disabled={isDisabled}
         onClick={onClick}
         size={ButtonSize.Lg}
-        backgroundColor={
-          hasBlockingError
-            ? BackgroundColor.errorDefault
-            : BackgroundColor.iconDefault
-        }
-        marginBottom={4}
+        className={`mb-4 ${hasBlockingError ? 'bg-error-default' : ''}`}
       >
         {amountError ?? hexDataError ?? nonEVMSubmitError ?? t('continue')}
       </Button>
