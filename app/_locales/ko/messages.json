@@ -8357,14 +8357,8 @@
   "tokensInCollection": {
     "message": "컬렉션에 보유 중인 토큰"
   },
-  "tooltipSatusConnected": {
-    "message": "연결됨"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "연결됨"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "연결되지 않음"
   },
   "total": {
     "message": "총액"

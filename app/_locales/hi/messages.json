@@ -8351,14 +8351,8 @@
   "tokensInCollection": {
     "message": "संग्रह में टोकन"
   },
-  "tooltipSatusConnected": {
-    "message": "जुड़े हुए"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "कनेक्ट किया गया"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "जुड़े नहीं हैं"
   },
   "total": {
     "message": "कुल"

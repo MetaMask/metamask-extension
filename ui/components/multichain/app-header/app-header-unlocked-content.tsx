@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
-import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -34,32 +33,20 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
-import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
-  getOriginOfCurrentTab,
   getShowDefaultAddress,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import {
-  ACCOUNT_LIST_PAGE_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
@@ -90,7 +77,6 @@ export const AppHeaderUnlockedContent = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const origin = useSelector(getOriginOfCurrentTab);
   // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
   const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';
   const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
@@ -149,11 +135,6 @@ export const AppHeaderUnlockedContent = ({
     }
   }, [copied, dispatch]);
 
-  const showConnectedStatus =
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
-    origin !== browser.runtime.id;
-
   const handleMainMenuToggle = useCallback(() => {
     const isMenuOpen = !accountOptionsMenuOpen;
     if (isMenuOpen) {
@@ -175,10 +156,6 @@ export const AppHeaderUnlockedContent = ({
       return prev;
     });
   }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
-
-  const handleConnectionsRoute = () => {
-    navigate(`${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(origin)}`);
-  };
 
   const multichainAccountAppContent = useMemo(() => {
     return (
@@ -302,13 +279,6 @@ export const AppHeaderUnlockedContent = ({
         style={{ marginLeft: 'auto' }}
       >
         <BoxDeprecated display={Display.Flex} gap={2}>
-          {showConnectedStatus && (
-            <BoxDeprecated data-testid="connection-menu" margin="auto">
-              <ConnectedStatusIndicator
-                onClick={() => handleConnectionsRoute()}
-              />
-            </BoxDeprecated>
-          )}{' '}
           <BoxDeprecated
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}

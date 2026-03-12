@@ -8763,14 +8763,8 @@
   "tokensInCollection": {
     "message": "Tokens in collection"
   },
-  "tooltipSatusConnected": {
-    "message": "connected"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Connected"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "not connected"
   },
   "total": {
     "message": "Total"

@@ -85,6 +85,7 @@ import {
   setRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
 import { AppHeader } from '../../components/multichain/app-header';
+import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -244,7 +245,6 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
 
   return (
     <>
-      {/* Note: Consider a sticky header instead of overflow */}
       <AppHeader />
 
       <div className="flex flex-col flex-1 min-h-0">
@@ -252,6 +252,7 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
           {...props}
           evaluateCohortEligibility={evaluateCohortEligibility}
         />
+        <DappConnectionControlBar />
       </div>
     </>
   );

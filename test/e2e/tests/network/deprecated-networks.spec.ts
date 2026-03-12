@@ -4,6 +4,7 @@ import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
@@ -16,6 +17,7 @@ describe('Deprecated networks', function (this: Suite) {
       async ({ driver }) => {
         // Navigate to extension home screen
         await loginWithBalanceValidation(driver);
+        const headerNavbar = new HeaderNavbar(driver);
         // Open the first dapp which starts on chain '0x539
         await driver.openNewPage(DAPP_URL);
         await driver.clickElement({
@@ -40,11 +42,7 @@ describe('Deprecated networks', function (this: Suite) {
           .window()
           .setRect({ width: 400, height: 600 });
 
-        await driver.clickElement('.multichain-connected-site-menu ');
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'button',
-        });
+        await headerNavbar.openDappNetworkMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();

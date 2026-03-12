@@ -8357,14 +8357,8 @@
   "tokensInCollection": {
     "message": "Токены в коллекции"
   },
-  "tooltipSatusConnected": {
-    "message": "подключен"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Подключено"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "не подключено"
   },
   "total": {
     "message": "Итого"

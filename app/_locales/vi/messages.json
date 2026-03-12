@@ -8357,14 +8357,8 @@
   "tokensInCollection": {
     "message": "Token trong bộ sưu tập"
   },
-  "tooltipSatusConnected": {
-    "message": "đã kết nối"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Đã kết nối"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "chưa kết nối"
   },
   "total": {
     "message": "Tổng cộng"
