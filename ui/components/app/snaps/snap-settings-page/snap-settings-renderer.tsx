@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -17,13 +17,7 @@ import { Copyable } from '../copyable';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
 
-type SnapSettingsRendererProps = {
-  snapId: string;
-};
-
-export const SnapSettingsRenderer: FunctionComponent<
-  SnapSettingsRendererProps
-> = () => {
+export const SnapSettingsRenderer = () => {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
   const t = useI18nContext();
