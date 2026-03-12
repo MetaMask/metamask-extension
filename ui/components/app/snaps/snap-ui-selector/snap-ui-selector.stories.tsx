@@ -62,7 +62,11 @@ AdvancedStory.storyName = 'Advanced';
 AdvancedStory.args = {
   options: ['foo', 'bar'],
   optionComponents: [
-    <Box key="account1" display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+    <Box
+      key="account1"
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+    >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Text>Account 1</Text>
         <Text>
@@ -74,7 +78,11 @@ AdvancedStory.args = {
         <Text>1 ETH</Text>
       </Box>
     </Box>,
-    <Box key="account2" display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+    <Box
+      key="account2"
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+    >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Text>Account 2</Text>
         <Text>

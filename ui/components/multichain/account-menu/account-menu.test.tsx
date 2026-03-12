@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';

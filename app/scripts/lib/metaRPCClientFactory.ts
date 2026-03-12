@@ -12,7 +12,7 @@ import {
 import { JsonRpcError } from '@metamask/rpc-errors';
 import getNextId from '../../../shared/lib/random-id';
 // It *is* used: in TypeDoc comment, you silly goose.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 import type MetamaskController from '../metamask-controller';
 
 const JSON_RPC_VERSION = '2.0' as const;
