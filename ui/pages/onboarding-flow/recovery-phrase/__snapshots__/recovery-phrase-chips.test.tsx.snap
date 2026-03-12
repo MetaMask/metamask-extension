@@ -15,7 +15,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
         data-testid="recovery-phrase-chips"
       >
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-0"
         >
           <p
@@ -31,7 +31,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-1"
         >
           <p
@@ -47,7 +47,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-2"
         >
           <p
@@ -63,7 +63,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-3"
         >
           <p
@@ -79,7 +79,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-4"
         >
           <p
@@ -95,7 +95,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-5"
         >
           <p
@@ -111,7 +111,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-6"
         >
           <p
@@ -127,7 +127,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-7"
         >
           <p
@@ -143,7 +143,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-8"
         >
           <p
@@ -159,7 +159,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-9"
         >
           <p
@@ -175,7 +175,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-10"
         >
           <p
@@ -191,7 +191,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-11"
         >
           <p

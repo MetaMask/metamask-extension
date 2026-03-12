@@ -325,7 +325,7 @@ export default function RecoveryPhraseChips({
                 data-testid={`recovery-phrase-quiz-unanswered-${actualIdxInSrp}`}
                 key={quizWord.index}
                 variant={ButtonVariant.Secondary}
-                className="rounded-lg w-full bg-muted border-primary-default border"
+                className="rounded-lg w-full bg-muted border-primary-default border text-primary-default"
                 onClick={() => {
                   addQuizWord(quizWord.word, actualIdxInSrp);
                 }}

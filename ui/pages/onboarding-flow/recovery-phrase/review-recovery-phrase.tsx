@@ -255,7 +255,7 @@ export default function RecoveryPhrase({
           }}
         />
       </Box>
-      <Box className="w-full" flexDirection={BoxFlexDirection.Column} gap={2}>
+      <Box className="w-full" flexDirection={BoxFlexDirection.Column} gap={4}>
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
