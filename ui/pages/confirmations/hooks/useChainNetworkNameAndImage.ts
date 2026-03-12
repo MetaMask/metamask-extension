@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 
 /**
  * Returns a map of chain IDs to their network name and image.

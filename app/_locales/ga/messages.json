@@ -309,10 +309,6 @@
   "addToken": {
     "message": "Cuir comhartha leis"
   },
-  "addTokenByContractAddress": {
-    "message": "Nach féidir leat comhartha a aimsiú? Is féidir leat aon chomhartha a chur leis de láimh trína sheoladh a ghreamú. Is féidir seoltaí conartha comhartha a fháil ar $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Cuir URL leis"
   },
@@ -925,9 +921,6 @@
   "bridgeGasFeesSplit": {
     "message": "Áirítear an dá idirbheart in aon táille líonra a luadh ar an scáileán roimhe seo agus roinnfear í."
   },
-  "bridgeNetCost": {
-    "message": "Costas glan"
-  },
   "bridgeNoMMFee": {
     "message": "Gan aon táille MM"
   },
@@ -988,10 +981,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Ag malartú $1 ar $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 nóiméad",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Droichead go"
@@ -1063,9 +1052,6 @@
   },
   "browserNotSupported": {
     "message": "Ní thacaítear le do bhrabhsálaí..."
-  },
-  "buildContactList": {
-    "message": "Tóg do liosta teagmhála"
   },
   "builtAroundTheWorld": {
     "message": "Tá MetaMask deartha agus tógtha ar fud an domhain."
@@ -1841,9 +1827,6 @@
   },
   "delete": {
     "message": "Scrios"
-  },
-  "deleteContact": {
-    "message": "Scrios an teagmhálaí"
   },
   "deleteMetaMetricsData": {
     "message": "Scrios sonraí MetaMetrics"
@@ -3686,9 +3669,6 @@
     "message": "Cuntas $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Teagmháil nua"
-  },
   "newContract": {
     "message": "Conradh nua"
   },
@@ -4753,12 +4733,6 @@
   },
   "queued": {
     "message": "Sa scuaine"
-  },
-  "quotedReceiveAmount": {
-    "message": "Méid faighte $1"
-  },
-  "quotedTotalCost": {
-    "message": "Costas iomlán $1"
   },
   "rank": {
     "message": "Céim"
@@ -6360,10 +6334,6 @@
     "message": "Sleachta $1.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Níl aon chomharthaí ar fáil a mheaitseálann $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Cuirfear do $1 le do chuntas a luaithe a bheidh an t-idirbheart seo próiseáilte.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -6980,9 +6950,6 @@
   "usedByClients": {
     "message": "Úsáidte ag réimse cliant éagsúil"
   },
-  "userName": {
-    "message": "Ainm úsáideora"
-  },
   "userOpContractDeployError": {
     "message": "Ní thacaítear le himscaradh conartha ó chuntas conartha cliste"
   },
@@ -7001,9 +6968,6 @@
   "viewAddressOnExplorer": {
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Féach ar an teagmháil"
   },
   "viewDetails": {
     "message": "Féach sonraí"
