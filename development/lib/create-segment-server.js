@@ -1,4 +1,5 @@
 const http = require('http');
+const { setCorsHeaders } = require('./segment-utils');
 
 /**
  * This is the default error handler to be used by this mock segment server.
@@ -24,17 +25,39 @@ function defaultOnError(error) {
 
 /**
  * Creates a HTTP server that acts as a fake version of the Segment API.
- * The bevahiour is rudimentary at the moment - it returns HTTP 200 in response
- * to every request. The only function this serves is to spy on requests sent to
- * this server, and to parse the request payloads as Segment batch events.
+ * Returns HTTP 200 to every request, parses batch payloads, and forwards
+ * the extracted events to `onRequest`.
  *
- * @param {MockSegmentRequestHandler} onRequest - A callback for each request the server receives.
- * @param {(error: Error) => void} [onError] - A callback for server error events
+ * @param {MockSegmentRequestHandler} onRequest - Called for each request
+ *   that is not handled by `options.onBeforeRequest`.
+ * @param {(error: Error) => void} [onError] - Server error callback.
+ * @param {object} [options]
+ * @param {(request: IncomingMessage, response: ServerResponse, url: URL) => boolean} [options.onBeforeRequest]
+ *   - Optional hook invoked before body parsing. Return `true` to indicate the
+ *   request was handled (the default batch logic will be skipped).
  */
-function createSegmentServer(onRequest, onError = defaultOnError) {
-  const server = http.createServer(async (request, response) => {
-    const chunks = [];
+function createSegmentServer(
+  onRequest,
+  onError = defaultOnError,
+  options = {},
+) {
+  const { onBeforeRequest } = options;
 
+  const server = http.createServer(async (request, response) => {
+    if (request.method === 'OPTIONS') {
+      setCorsHeaders(response);
+      response.statusCode = 200;
+      response.end();
+      return;
+    }
+
+    const url = new URL(request.url, `http://${request.headers.host}`);
+
+    if (onBeforeRequest && onBeforeRequest(request, response, url)) {
+      return;
+    }
+
+    const chunks = [];
     request.on('data', (chunk) => {
       chunks.push(chunk);
     });
@@ -45,21 +68,15 @@ function createSegmentServer(onRequest, onError = defaultOnError) {
       });
     });
 
-    // respond to preflight request
-    if (request.method === 'OPTIONS') {
-      response.setHeader('Access-Control-Allow-Origin', '*');
-      response.setHeader('Access-Control-Allow-Methods', '*');
-      response.setHeader('Access-Control-Allow-Headers', '*');
-      response.statusCode = 200;
-      response.end();
-      return;
-    }
-
     let metricEvents = [];
     if (chunks.length) {
-      const body = Buffer.concat(chunks).toString();
-      const segmentPayload = JSON.parse(body);
-      metricEvents = segmentPayload.batch;
+      try {
+        const body = Buffer.concat(chunks).toString();
+        const segmentPayload = JSON.parse(body);
+        metricEvents = segmentPayload.batch || [];
+      } catch (_) {
+        // Malformed or non-JSON payload — treat as zero events
+      }
     }
 
     onRequest(request, response, metricEvents);
