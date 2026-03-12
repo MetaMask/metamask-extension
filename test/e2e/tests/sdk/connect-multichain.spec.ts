@@ -10,11 +10,9 @@ import {
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { getPermissionsPageForHost } from '../../page-objects/flows/permission.flow';
 import { Driver } from '../../webdriver/driver';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import Homepage from '../../page-objects/pages/home/homepage';
-import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 
 // CAIP-2 EVM chain IDs used across tests
@@ -23,26 +21,6 @@ const EVM_CHAINS = {
   POLYGON: 'eip155:137',
   LINEA: 'eip155:59144',
 } as const;
-
-/**
- * Navigate to the permissions page for a specific host origin and return a
- * SitePermissionPage PO ready for assertions.
- *
- * Matches the helper used in multiple-provider-connections.spec.ts.
- */
-async function getPermissionsPageForHost(
-  driver: Driver,
-  hostname: string,
-): Promise<SitePermissionPage> {
-  const homepage = new Homepage(driver);
-  await homepage.headerNavbar.openPermissionsPage();
-  const permissionListPage = new PermissionListPage(driver);
-  await permissionListPage.checkPageIsLoaded();
-  await permissionListPage.openPermissionPageForSite(hostname);
-  const sitePermissionPage = new SitePermissionPage(driver);
-  await sitePermissionPage.checkPageIsLoaded(hostname);
-  return sitePermissionPage;
-}
 
 const MM_CONNECT_TEST_DAPP_OPTIONS = {
   customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],

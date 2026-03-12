@@ -19,8 +19,6 @@ import {
   OPTIMISM_DISPLAY_NAME,
   SEI_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import Homepage from '../../page-objects/pages/home/homepage';
-import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -29,6 +27,7 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { getPermissionsPageForHost } from '../../page-objects/flows/permission.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
@@ -57,26 +56,6 @@ const SOLANA_PERMISSIONS = {
   },
 };
 
-/**
- * Helper to open a permissions page for a specific app hostname
- *
- * @param driver - The driver to use.
- * @param hostname - The hostname to get the permissions page for.
- * @returns The permissions page for the given host.
- */
-async function getPermissionsPageForHost(
-  driver: Driver,
-  hostname: string,
-): Promise<SitePermissionPage> {
-  const homepage = new Homepage(driver);
-  await homepage.headerNavbar.openPermissionsPage();
-  const permissionListPage = new PermissionListPage(driver);
-  await permissionListPage.checkPageIsLoaded();
-  await permissionListPage.openPermissionPageForSite(hostname);
-  const sitePermissionPage = new SitePermissionPage(driver);
-  await sitePermissionPage.checkPageIsLoaded(hostname);
-  return sitePermissionPage;
-}
 /**
  * Checks if an account is displayed
  *
