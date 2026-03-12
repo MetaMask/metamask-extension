@@ -1,6 +1,9 @@
 'use no memo';
 
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -12,14 +15,25 @@ import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions'
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
 
+const TRANSFER_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.simpleSend,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+];
+
 export function useTokenContractAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const recipient = useTransferRecipient();
   const chainId = currentConfirmation?.chainId;
+  const transactionType = currentConfirmation?.type;
+
+  const isTransfer =
+    transactionType !== undefined &&
+    TRANSFER_TRANSACTION_TYPES.includes(transactionType);
 
   const { value: isTokenContract } = useAsyncResult(async () => {
-    if (!recipient || !chainId) {
+    if (!isTransfer || !recipient || !chainId) {
       return false;
     }
 
@@ -31,7 +45,7 @@ export function useTokenContractAlert(): Alert[] {
     );
 
     return Boolean(tokenDetails?.standard);
-  }, [recipient, chainId]);
+  }, [isTransfer, recipient, chainId]);
 
   return useMemo(() => {
     if (!isTokenContract) {

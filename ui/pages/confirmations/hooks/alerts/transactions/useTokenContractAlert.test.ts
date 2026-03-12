@@ -87,6 +87,28 @@ describe('useTokenContractAlert', () => {
     });
   });
 
+  describe('when transaction is an approval', () => {
+    it('returns no alerts even if recipient is a token contract', async () => {
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: 'ERC20',
+      } as TokenStandAndDetails);
+
+      const { result } = runHook({
+        currentConfirmation: {
+          txParams: {
+            from: ACCOUNT_ADDRESS,
+            to: TOKEN_CONTRACT_ADDRESS,
+          },
+          type: TransactionType.tokenMethodApprove,
+        },
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(result.current).toEqual([]);
+    });
+  });
+
   describe('when recipient is not a token contract', () => {
     it('returns no alerts', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue(
