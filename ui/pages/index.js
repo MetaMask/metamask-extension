@@ -6,6 +6,7 @@ import {
   Outlet,
   RouterProvider,
   createHashRouter,
+  useRouteError,
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
@@ -53,14 +54,19 @@ function AppProviders() {
   );
 }
 
+function RouteErrorBoundary() {
+  const error = useRouteError();
+  return <ErrorPage error={error} />;
+}
+
 const router = createHashRouter([
   {
     element: <AppProviders />,
-    // errorElement: <RouteErrorBoundary />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         element: <Routes />,
-        // errorElement: <RouteErrorBoundary />,
+        errorElement: <RouteErrorBoundary />,
         children: routeConfig,
       },
     ],
