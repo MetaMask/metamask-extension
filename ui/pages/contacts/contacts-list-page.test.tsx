@@ -12,7 +12,6 @@ import { ContactsListPage } from './contacts-list-page';
 
 const MOCK_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 const MOCK_CHAIN_ID = '0x5';
-const MOCK_NAME = 'Address Book Account 1';
 
 const mockNavigate = jest.fn();
 const mockLocation = jest.fn();
