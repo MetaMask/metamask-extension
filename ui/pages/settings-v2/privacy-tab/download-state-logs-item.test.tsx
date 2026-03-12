@@ -15,21 +15,20 @@ jest.mock('../../../helpers/utils/export-utils', () => ({
 
 const mockExportAsFile = exportUtils.exportAsFile as jest.Mock;
 
-type LogStateCallback = (err: Error | null, result?: string) => void;
-
 describe('DownloadStateLogsItem', () => {
   const mockStore = configureMockStore([thunk])(mockState);
-  let mockLogStateString: jest.Mock<void, [LogStateCallback]>;
+  let mockLogStateString: jest.Mock<Promise<string>>;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockLogStateString = jest.fn();
-    globalThis.logStateString = mockLogStateString as unknown as typeof globalThis.logStateString;
+    window.logStateString =
+      mockLogStateString as unknown as typeof window.logStateString;
   });
 
   afterEach(() => {
     // @ts-expect-error - resetting mock
-    delete globalThis.logStateString;
+    delete window.logStateString;
   });
 
   it('renders the button with correct text', () => {
@@ -56,9 +55,7 @@ describe('DownloadStateLogsItem', () => {
   });
 
   it('calls logStateString and exportAsFile on download', async () => {
-    mockLogStateString.mockImplementation((callback) => {
-      callback(null, '{"state": "data"}');
-    });
+    mockLogStateString.mockResolvedValue('{"state": "data"}');
     mockExportAsFile.mockResolvedValue(undefined);
 
     renderWithProvider(<DownloadStateLogsItem />, mockStore);
@@ -83,10 +80,8 @@ describe('DownloadStateLogsItem', () => {
     });
   });
 
-  it('shows error toast when logStateString returns error', async () => {
-    mockLogStateString.mockImplementation((callback) => {
-      callback(new Error('Failed to get state'));
-    });
+  it('shows error toast when logStateString rejects', async () => {
+    mockLogStateString.mockRejectedValue(new Error('Failed to get state'));
 
     renderWithProvider(<DownloadStateLogsItem />, mockStore);
 
@@ -111,9 +106,7 @@ describe('DownloadStateLogsItem', () => {
   });
 
   it('shows error toast when exportAsFile throws', async () => {
-    mockLogStateString.mockImplementation((callback) => {
-      callback(null, '{"state": "data"}');
-    });
+    mockLogStateString.mockResolvedValue('{"state": "data"}');
     mockExportAsFile.mockRejectedValue(new Error('Export failed'));
 
     renderWithProvider(<DownloadStateLogsItem />, mockStore);

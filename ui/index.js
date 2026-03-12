@@ -406,20 +406,17 @@ function setupStateHooks(store) {
   };
 }
 
-window.logStateString = async function (cb) {
+/**
+ * Returns the extension state as a formatted JSON string for debugging.
+ * Includes app state, logs, and platform info.
+ *
+ * @returns {Promise<string>} The state as a JSON string
+ */
+window.logStateString = async function () {
   const state = await window.stateHooks.getCleanAppState();
-  const logs = window.stateHooks.getLogs();
-  browser.runtime
-    .getPlatformInfo()
-    .then((platform) => {
-      state.platform = platform;
-      state.logs = logs;
-      const stateString = JSON.stringify(state, null, 2);
-      cb(null, stateString);
-    })
-    .catch((err) => {
-      cb(err);
-    });
+  state.logs = window.stateHooks.getLogs();
+  state.platform = await browser.runtime.getPlatformInfo();
+  return JSON.stringify(state, null, 2);
 };
 
 window.logState = function (toClipboard) {

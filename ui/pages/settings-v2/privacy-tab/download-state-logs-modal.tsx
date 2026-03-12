@@ -39,22 +39,17 @@ export default function DownloadStateLogsModal({
 }: Readonly<DownloadStateLogsModalProps>) {
   const t = useI18nContext();
 
-  const handleDownload = () => {
-    globalThis.logStateString(async (err, result) => {
-      if (err) {
-        onError();
-      } else {
-        try {
-          await exportAsFile(
-            `${t('stateLogFileName')}.json`,
-            result,
-            ExportableContentType.JSON,
-          );
-        } catch {
-          onError();
-        }
-      }
-    });
+  const handleDownload = async () => {
+    try {
+      const stateString = await window.logStateString();
+      await exportAsFile(
+        `${t('stateLogFileName')}.json`,
+        stateString,
+        ExportableContentType.JSON,
+      );
+    } catch {
+      onError();
+    }
     onClose();
   };
 
