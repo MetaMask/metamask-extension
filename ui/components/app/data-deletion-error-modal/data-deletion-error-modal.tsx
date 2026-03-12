@@ -28,14 +28,24 @@ import {
 } from '../../component-library';
 import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
 
+type DataDeletionErrorModalProps = {
+  onClose?: () => void;
+};
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function DataDeletionErrorModal() {
+export default function DataDeletionErrorModal({
+  onClose,
+}: DataDeletionErrorModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
   function closeModal() {
-    dispatch(hideDataDeletionErrorModal());
+    if (onClose) {
+      onClose();
+    } else {
+      dispatch(hideDataDeletionErrorModal());
+    }
   }
 
   return (
