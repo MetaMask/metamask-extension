@@ -1,6 +1,7 @@
 import {
   getArtifactLinks,
   getBuildLinks,
+  getWebpackBuildLinks,
   formatBuildLinks,
   artifactExists,
   discoverBundleArtifacts,
@@ -55,6 +56,29 @@ describe('getBuildLinks', () => {
     expect(keys).toContain('builds (flask)');
     expect(keys).toContain('builds (test)');
     expect(keys).toContain('builds (test-flask)');
+  });
+});
+
+describe('getWebpackBuildLinks', () => {
+  it('returns chrome and firefox URLs for each webpack build variant', () => {
+    const builds = getWebpackBuildLinks(HOST, '12.0.0');
+
+    expect(builds['webpack builds'].chrome).toContain('build-dist-webpack');
+    expect(builds['webpack builds'].chrome).toContain('metamask-chrome-12.0.0.zip');
+    expect(builds['webpack builds'].firefox).toContain('build-dist-mv2-webpack');
+    expect(builds['webpack builds (flask)'].chrome).toContain('flask');
+  });
+
+  it('includes all five webpack build variants', () => {
+    const builds = getWebpackBuildLinks(HOST, '1.0.0');
+    const keys = Object.keys(builds);
+
+    expect(keys).toHaveLength(5);
+    expect(keys).toContain('webpack builds');
+    expect(keys).toContain('webpack builds (beta)');
+    expect(keys).toContain('webpack builds (flask)');
+    expect(keys).toContain('webpack builds (test)');
+    expect(keys).toContain('webpack builds (test-flask)');
   });
 });
 
@@ -168,6 +192,7 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain('metamask-chrome-12.0.0.zip');
+    expect(result).toContain('build-dist-webpack');
   });
 
   it('omits build links when postNewBuilds is false', async () => {

@@ -263,6 +263,75 @@ jobs:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
+  build-dist-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-webpack
+      build-command: yarn build:dist:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-dist-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-webpack
+      build-command: yarn build:dist:webpack:mv2
+      enable-mv3: false
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-beta-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-beta-webpack
+      build-command: yarn build:beta:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-beta-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-beta-mv2-webpack
+      build-command: yarn build:beta:webpack:mv2
+      enable-mv3: false
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-flask-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-webpack
+      build-command: yarn build:flask:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-flask-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-mv2-webpack
+      build-command: yarn build:flask:webpack:mv2
+      enable-mv3: false
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
   build-test-webpack:
     needs:
       - get-requirements
@@ -282,6 +351,29 @@ jobs:
     with:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
+      enable-mv3: false
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-webpack
+      build-command: yarn build:test:flask:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-mv2-webpack
+      build-command: yarn build:test:flask:webpack:mv2
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -461,9 +553,11 @@ jobs:
       - get-requirements
       - prep-e2e
       - build-test-browserify
-      - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
+      - build-test-webpack
+      - build-dist-webpack
+      - build-test-flask-webpack
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
@@ -478,8 +572,10 @@ jobs:
       - prep-e2e
       - build-dist-mv2-browserify
       - build-test-mv2-browserify
-      - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
+      - build-dist-mv2-webpack
+      - build-test-mv2-webpack
+      - build-test-flask-mv2-webpack
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
@@ -659,6 +755,16 @@ jobs:
       - build-test-mv2-browserify
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
+      - build-dist-webpack
+      - build-dist-mv2-webpack
+      - build-beta-webpack
+      - build-beta-mv2-webpack
+      - build-flask-webpack
+      - build-flask-mv2-webpack
+      - build-test-webpack
+      - build-test-mv2-webpack
+      - build-test-flask-webpack
+      - build-test-flask-mv2-webpack
       - run-benchmarks
       - dapp-page-load-benchmark
       - bundle-size
@@ -749,8 +855,16 @@ jobs:
       - build-test-mv2-browserify
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
+      - build-dist-webpack
+      - build-dist-mv2-webpack
+      - build-beta-webpack
+      - build-beta-mv2-webpack
+      - build-flask-webpack
+      - build-flask-mv2-webpack
       - build-test-webpack
       - build-test-mv2-webpack
+      - build-test-flask-webpack
+      - build-test-flask-mv2-webpack
       - run-benchmarks
       - run-tests
       - bundle-size
