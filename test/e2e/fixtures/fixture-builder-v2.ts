@@ -456,6 +456,9 @@ class FixtureBuilderV2 {
     });
   }
 
+  // NOTE: This method should only be used with EVM networks. Non-EVM networks (Bitcoin, Tron...) rely on Snaps that may not be ready at startup;
+  // Selecting one of them via fixtures may cause the extension to switch back to default network.
+  // For non-EVM networks, switch manually in the test after the Snap is ready.
   withSelectedNetwork(
     networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
   ): this {
