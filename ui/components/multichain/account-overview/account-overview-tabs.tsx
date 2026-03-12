@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
@@ -33,7 +33,6 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsControllerProvider } from '../../../providers/perps';
 import { PerpsTabView } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
-import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/hooks';
 import { transitionForward } from '../../ui/transition';
@@ -83,11 +82,6 @@ export const AccountOverviewTabs = ({
       ),
     [allEnabledNetworks],
   );
-
-  // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  useTokenBalances({
-    chainIds: selectedChainIds as Hex[],
-  });
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {

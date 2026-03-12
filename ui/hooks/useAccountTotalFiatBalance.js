@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { useMemo } from 'react';
@@ -14,17 +15,19 @@ import {
 import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
+  hexToDecimal,
   sumDecimals,
 } from '../../shared/lib/conversion.utils';
 import {
   getConversionRate,
   getNativeCurrency,
   getCurrentCurrency,
+  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
-import { useTokenTracker } from './useTokenBalances';
+import { stringifyBalance } from './useTokenBalances';
 
 export const useAccountTotalFiatBalance = (
   account,
@@ -70,12 +73,39 @@ export const useAccountTotalFiatBalance = (
   const nativeCurrency = useSelector(getNativeCurrency);
 
   const loading = false;
-  const { tokensWithBalances } = useTokenTracker({
-    chainId: currentChainId,
+  const tokenBalances = useSelector(getTokenBalances);
+
+  const tokensWithBalances = useMemo(() => {
+    const addr = account?.address;
+    if (!addr || !currentChainId) {
+      return [];
+    }
+    return tokens.reduce((acc, token) => {
+      const hexBalance =
+        tokenBalances?.[addr]?.[currentChainId]?.[token.address] ?? '0x0';
+      if (hexBalance !== '0x0' || !shouldHideZeroBalanceTokens) {
+        const decimalBalance = hexToDecimal(hexBalance);
+        acc.push({
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          balance: decimalBalance,
+          balanceError: null,
+          string: stringifyBalance(
+            new BN(decimalBalance),
+            new BN(token.decimals),
+          ),
+        });
+      }
+      return acc;
+    }, []);
+  }, [
+    tokenBalances,
     tokens,
-    address: account?.address,
-    hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
-  });
+    account?.address,
+    currentChainId,
+    shouldHideZeroBalanceTokens,
+  ]);
 
   const mergedRates = useMemo(
     () => ({

@@ -6,6 +6,7 @@ import useTokenListPolling from '../hooks/useTokenListPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import useMultichainAssetsRatesPolling from '../hooks/useMultichainAssetsRatesPolling';
+import { useTokenBalances } from '../hooks/useTokenBalances';
 
 // This provider is a step towards making controller polling fully UI based.
 // Eventually, individual UI components will call the use*Polling hooks to
@@ -14,6 +15,7 @@ export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   useCurrencyRatePolling();
   useTokenRatesPolling();
   useTokenDetectionPolling();
+  useTokenBalances();
   useTokenListPolling();
   useDeFiPolling();
   useMultichainAssetsRatesPolling();
