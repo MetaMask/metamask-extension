@@ -80,23 +80,15 @@ export function resolveThresholdConfig(
     return THRESHOLD_REGISTRY[benchmarkName];
   }
 
-  const prefixes = [
-    /^benchmark-chrome-browserify-/u,
-    /^benchmark-firefox-browserify-/u,
-    /^benchmark-chrome-webpack-/u,
-  ];
-  for (const prefix of prefixes) {
-    const stripped = benchmarkName.replace(prefix, '');
-    if (stripped !== benchmarkName) {
-      // Try stripped name directly
-      if (THRESHOLD_REGISTRY[stripped]) {
-        return THRESHOLD_REGISTRY[stripped];
-      }
-      // Try stripped name converted to kebab-case
-      const strippedKebab = toKebabCase(stripped);
-      if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
-        return THRESHOLD_REGISTRY[strippedKebab];
-      }
+  const prefixPattern = /^benchmark-[a-z]+-[a-z]+-/u;
+  const stripped = benchmarkName.replace(prefixPattern, '');
+  if (stripped !== benchmarkName) {
+    if (THRESHOLD_REGISTRY[stripped]) {
+      return THRESHOLD_REGISTRY[stripped];
+    }
+    const strippedKebab = toKebabCase(stripped);
+    if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
+      return THRESHOLD_REGISTRY[strippedKebab];
     }
   }
 
