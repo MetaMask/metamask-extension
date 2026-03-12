@@ -468,7 +468,7 @@ describe('MetaMaskController', function () {
     it('should not propagate ApprovalRequestNotFoundError', async function () {
       const error = new ApprovalRequestNotFoundError('123');
       metamaskController.approvalController = {
-        accept: () => {
+        acceptRequest: () => {
           throw error;
         },
       };
@@ -480,7 +480,7 @@ describe('MetaMaskController', function () {
     it('should propagate Error other than ApprovalRequestNotFoundError', async function () {
       const error = new Error();
       metamaskController.approvalController = {
-        accept: () => {
+        acceptRequest: () => {
           throw error;
         },
       };
@@ -539,7 +539,7 @@ describe('MetaMaskController', function () {
       const approvalValue = { txMeta: { id: '0x3' } };
       const error = new Error('Ledger transport disconnected');
       metamaskController.approvalController = {
-        accept: () => {
+        acceptRequest: () => {
           throw error;
         },
       };
@@ -613,7 +613,7 @@ describe('MetaMaskController', function () {
     it('should not propagate ApprovalRequestNotFoundError', function () {
       const error = new ApprovalRequestNotFoundError('123');
       metamaskController.approvalController = {
-        reject: () => {
+        rejectRequest: () => {
           throw error;
         },
       };
@@ -629,7 +629,7 @@ describe('MetaMaskController', function () {
     it('should propagate Error other than ApprovalRequestNotFoundError', function () {
       const error = new Error();
       metamaskController.approvalController = {
-        reject: () => {
+        rejectRequest: () => {
           throw error;
         },
       };
