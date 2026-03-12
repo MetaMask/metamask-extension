@@ -10,11 +10,8 @@ import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
-import type {
-  BenchmarkResults,
-  Metrics,
-  PageLoadBenchmarkOptions,
-} from '../../utils/types';
+import type { BenchmarkResults } from '../../../../../shared/constants/benchmarks';
+import type { Metrics, PageLoadBenchmarkOptions } from '../../utils/types';
 import {
   BENCHMARK_PERSONA,
   WITH_STATE_POWER_USER,
