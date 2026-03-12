@@ -419,15 +419,16 @@ window.logStateString = async function () {
   return JSON.stringify(state, null, 2);
 };
 
-window.logState = function (toClipboard) {
-  return window.logStateString((err, result) => {
-    if (err) {
-      console.error(err.message);
-    } else if (toClipboard) {
+window.logState = async function (toClipboard) {
+  try {
+    const result = await window.logStateString();
+    if (toClipboard) {
       copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);
     }
-  });
+  } catch (err) {
+    console.error(err.message);
+  }
 };
