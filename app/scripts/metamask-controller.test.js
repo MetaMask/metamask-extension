@@ -72,6 +72,7 @@ import {
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
+import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -485,6 +486,34 @@ describe('MetaMaskController', () => {
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
       );
+    });
+  });
+
+  describe('createEnsureOnboardingCompleteCallback (integration)', () => {
+    it('controller uses shared createEnsureOnboardingCompleteCallback when building initRequest', () => {
+      const createEnsureOnboardingCompleteCallbackSpy = jest.spyOn(
+        metamaskControllerUtils,
+        'createEnsureOnboardingCompleteCallback',
+      );
+      const controllerMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
+
+      const _controller = new MetaMaskController({
+        initLangCode: 'en_US',
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        platform: { _showNotification: jest.fn() },
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger,
+      });
+      expect(_controller).toBeDefined();
+
+      expect(createEnsureOnboardingCompleteCallbackSpy).toHaveBeenCalledWith(
+        controllerMessenger,
+      );
+      createEnsureOnboardingCompleteCallbackSpy.mockRestore();
     });
   });
 

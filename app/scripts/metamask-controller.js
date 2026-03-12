@@ -178,7 +178,10 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import {
+  createEnsureOnboardingCompleteCallback,
+  getTokenValueParam,
+} from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
 import { getIsSmartTransaction } from '../../shared/lib/selectors';
@@ -9079,10 +9082,15 @@ export default class MetamaskController extends EventEmitter {
     return isDisabled;
   }
 
+  #createEnsureOnboardingCompleteCallback() {
+    return createEnsureOnboardingCompleteCallback(this.controllerMessenger);
+  }
+
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
+      ensureOnboardingComplete: this.#createEnsureOnboardingCompleteCallback(),
       extension: this.extension,
       platform: this.platform,
       getCronjobControllerStorageManager: () =>
