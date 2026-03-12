@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import-x/first
 import {
   migrate,
   version,

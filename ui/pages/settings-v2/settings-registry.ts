@@ -1,5 +1,5 @@
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
 import {
   ACCOUNT_IDENTICON_ROUTE,

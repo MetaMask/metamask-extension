@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getSwapAndSendMetricsProps } from '../../../../../ui/helpers/utils/metrics';
 import type { MetricsProperties, TransactionMetricsBuilder } from './types';
 

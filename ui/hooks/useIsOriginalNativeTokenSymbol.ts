@@ -6,7 +6,7 @@ import { getMultichainCurrentNetwork } from '../selectors/multichain';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 

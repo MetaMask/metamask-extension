@@ -59,7 +59,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -93,7 +93,7 @@ import OnboardingDownloadApp from './download-app/download-app';
 // This is not just for performance, it is necessary so non-Flask builds don't try
 // to import Flask-only code and fail.
 const ExperimentalArea = mmLazy(
-  // eslint-disable-next-line import/extensions, import/no-useless-path-segments -- these are needed for mmLazy
+  // eslint-disable-next-line import-x/extensions, import-x/no-useless-path-segments -- these are needed for mmLazy
   () => import('../../components/app/flask/experimental-area'),
 ) as React.LazyExoticComponent<React.ComponentType<{ redirectTo: string }>>;
 

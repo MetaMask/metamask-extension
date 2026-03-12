@@ -9,6 +9,7 @@ import nodejs from '@metamask/eslint-config-nodejs';
 import typescript from '@metamask/eslint-config-typescript';
 import * as designTokensPlugin from '@metamask/eslint-plugin-design-tokens';
 import * as typescriptResolver from 'eslint-import-resolver-typescript';
+import globals from 'globals';
 import reactPlugin from 'eslint-plugin-react';
 import reactCompilerPlugin from 'eslint-plugin-react-compiler';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
@@ -344,6 +345,10 @@ export default createConfig([
     extends: [base, nodejs],
     languageOptions: {
       sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.webextensions,
+      },
     },
     settings: {
       jsdoc: { mode: 'typescript' },
@@ -361,7 +366,12 @@ export default createConfig([
   {
     files: ['**/*.ts', '**/*.tsx'],
     extends: [base, typescript],
-    ignores: ['**/*.stories.ts', '**/*.stories.tsx'],
+    ignores: [
+      '**/*.stories.ts',
+      '**/*.stories.tsx',
+      '.devcontainer/**/*.ts',
+      '.github/scripts/**/*.ts',
+    ],
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -538,6 +548,7 @@ export default createConfig([
   {
     files: [
       'test/lib/render-helpers.js',
+      'test/lib/render-helpers-navigate.js',
       'test/jest/rendering.js',
       'ui/**/*.js',
     ],
@@ -632,6 +643,20 @@ export default createConfig([
   },
 
   /**
+   * E2E test helpers use `window` in `driver.executeScript()` callbacks
+   * that run in the browser context.
+   */
+  {
+    files: ['test/e2e/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.webextensions,
+      },
+    },
+  },
+
+  /**
    * == Jest Tests ==
    */
   {
@@ -662,11 +687,15 @@ export default createConfig([
       'test/unit-global/*.test.js',
       'ui/**/*.test.js',
       'ui/__mocks__/*.js',
+      'test/mocks/**/*.js',
       'shared/lib/error-utils.test.js',
     ],
     extends: [jest],
     languageOptions: {
       sourceType: 'module',
+      globals: {
+        ...globals.browser,
+      },
     },
     rules: {
       'import-x/unambiguous': 'off',
@@ -753,6 +782,35 @@ export default createConfig([
   },
 
   /**
+   * Browser-facing development scripts
+   */
+  {
+    files: ['development/chromereload.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.webextensions,
+      },
+    },
+  },
+
+  /**
+   * Storybook configuration files use JSX.
+   */
+  {
+    files: ['.storybook/**/*.js'],
+    plugins: {
+      react: reactPlugin,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    settings: reactSettings,
+  },
+
+  /**
    * Storybook (JS files)
    */
   {
@@ -793,6 +851,9 @@ export default createConfig([
     },
     rules: {
       ...baseCustomRules,
+      // TypeScript handles variable scoping, so no-undef is unnecessary and
+      // produces false positives for type-only globals like JSX.
+      'no-undef': 'off',
       // Anonymous object exports are conventional for Storybook files
       'import-x/no-anonymous-default-export': [
         'error',
@@ -802,6 +863,32 @@ export default createConfig([
       ],
       // Static hex values are only discouraged in application code
       '@metamask/design-tokens/color-no-hex': 'off',
+    },
+  },
+
+  /**
+   * TypeScript files outside tsconfig (CI scripts, devcontainer).
+   *
+   * These are not included in the main tsconfig.json, so they need a
+   * lighter TypeScript config without project service / type-aware rules.
+   */
+  {
+    files: ['.devcontainer/**/*.ts', '.github/scripts/**/*.ts'],
+    extends: [base, nodejs],
+    languageOptions: {
+      parser: typescriptEslint.parser,
+      parserOptions: {
+        ecmaVersion: 2022,
+      },
+      sourceType: 'module',
+    },
+    settings: {
+      ...jsImportResolverSettings,
+    },
+    rules: {
+      ...baseCustomRules,
+      ...nodeCustomRules,
+      'no-undef': 'off',
     },
   },
 

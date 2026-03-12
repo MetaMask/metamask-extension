@@ -17,7 +17,7 @@ import {
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
 
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import-x/first
 import PerpsOrderEntryPage from './perps-order-entry-page';
 
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
