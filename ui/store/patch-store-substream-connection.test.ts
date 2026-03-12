@@ -20,7 +20,7 @@ jest.mock('./actions', () => ({
   })),
 }));
 
-jest.mock('../../shared/modules/random-id');
+jest.mock('../../shared/lib/random-id');
 
 const mockGetNextId = jest.mocked(randomId.default);
 

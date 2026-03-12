@@ -71,15 +71,14 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
-import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
-import { ReferralStatus } from './controllers/preferences-controller';
-import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
   GET_STATE_PATCHES,
   SEND_UPDATE,
   START_SENDING_PATCHES,
 } from '../../shared/constants/patches';
-import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
+import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
+import { ReferralStatus } from './controllers/preferences-controller';
+import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
   getOriginsWithSessionProperty,
   getPermittedAccountsForScopesByOrigin,

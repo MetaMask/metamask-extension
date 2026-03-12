@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
+import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import {
   createAsyncMiddleware,
