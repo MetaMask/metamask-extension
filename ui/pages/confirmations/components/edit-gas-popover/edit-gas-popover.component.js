@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useGasFeeInputs } from '../../hooks/useGasFeeInputs';
-import { txParamsAreDappSuggested } from '../../../../../shared/modules/transaction.utils';
+import { txParamsAreDappSuggested } from '../../../../../shared/lib/transaction.utils';
 import {
   EditGasModes,
   GAS_LIMITS,
@@ -36,7 +36,7 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
   hexToDecimal,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 
 export default function EditGasPopover({
   popoverTitle = '',

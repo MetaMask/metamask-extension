@@ -1,5 +1,5 @@
 import { memoize, escape as lodashEscape } from 'lodash';
-import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../modules/i18n';
+import { fetchLocale, loadRelativeTimeFormatLocaleData } from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
 

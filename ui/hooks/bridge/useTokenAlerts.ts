@@ -12,7 +12,7 @@ import {
 import {
   convertChainIdToBlockAidChainName,
   fetchTokenAlert,
-} from '../../../shared/modules/bridge-utils/security-alerts-api.util';
+} from '../../../shared/lib/bridge-utils/security-alerts-api.util';
 import type { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
 import { useAsyncResult } from '../useAsync';
 

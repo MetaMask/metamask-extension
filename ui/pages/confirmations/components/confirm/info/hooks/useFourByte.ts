@@ -6,7 +6,7 @@ import {
   getUse4ByteResolution,
 } from '../../../../../../selectors';
 import { getContractMethodData } from '../../../../../../store/actions';
-import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { hasTransactionData } from '../../../../../../../shared/lib/transaction.utils';
 
 export const useFourByte = ({ to, data }: { to?: Hex; data?: Hex }) => {
   const dispatch = useDispatch();

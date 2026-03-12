@@ -12,12 +12,13 @@ import {
   CONTACTS_ROUTE,
   CONTACTS_VIEW_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getAddressBookEntry,
   getInternalAccountByAddress,
 } from '../../selectors';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import { EditContactForm } from './components/edit-contact-form';
 
 export function EditContactPage() {
@@ -33,7 +34,7 @@ export function EditContactPage() {
   );
 
   const handleBack = () => {
-    navigate(CONTACTS_ROUTE);
+    navigate(PREVIOUS_ROUTE);
   };
 
   const handleClose = () => {
@@ -84,7 +85,11 @@ export function EditContactPage() {
           initialMemo={memo}
           contactChainId={contactChainId}
           onCancel={() => navigate(`${CONTACTS_VIEW_ROUTE}/${address}`)}
-          onSuccess={() => navigate(CONTACTS_ROUTE)}
+          onSuccess={() =>
+            navigate(CONTACTS_ROUTE, {
+              state: { showContactUpdatedToast: true },
+            })
+          }
         />
       </Content>
     </Page>

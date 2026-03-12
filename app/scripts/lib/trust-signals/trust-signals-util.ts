@@ -1,6 +1,6 @@
 import { NetworkController } from '@metamask/network-controller';
 import { JsonRpcRequest } from '@metamask/utils';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import {
