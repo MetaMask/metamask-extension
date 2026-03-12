@@ -265,6 +265,7 @@
     "@metamask/address-book-controller": "npm:@metamask-previews/address-book-controller@7.0.1-preview-cd2daacf2",
     "@metamask/approval-controller": "npm:@metamask-previews/approval-controller@8.0.0-preview-cd2daacf2",
     "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@100.2.1-preview-cd2daacf2",
+    "@metamask/bridge-status-controller": "npm:@metamask-previews/bridge-status-controller@68.1.0-preview-cd2daacf2",
     "@metamask/ens-controller": "npm:@metamask-previews/ens-controller@19.0.3-preview-cd2daacf2",
     "@metamask/gas-fee-controller": "npm:@metamask-previews/gas-fee-controller@26.0.3-preview-cd2daacf2",
     "@metamask/logging-controller": "npm:@metamask-previews/logging-controller@7.0.1-preview-cd2daacf2",
