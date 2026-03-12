@@ -7,10 +7,14 @@ import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
-    if (key === 'networkNameEthereum') {
-      return 'Ethereum';
-    }
-    return key;
+    const translations: Record<string, string> = {
+      networkNameEthereum: 'Ethereum',
+      networkNameBitcoinLegacy: 'Legacy',
+      networkNameBitcoinNestedSegwit: 'Nested SegWit',
+      networkNameBitcoinSegwit: 'Native SegWit',
+      networkNameBitcoinTaproot: 'Taproot',
+    };
+    return translations[key] || key;
   },
 }));
 
@@ -25,6 +29,15 @@ const TEST_STRINGS = {
   EMPTY_STRING: '',
   ETHEREUM_GROUP_NAME: 'Ethereum',
   SOLANA_NETWORK_NAME: 'Solana Mainnet',
+  BTC_LEGACY_ADDRESS: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+  BTC_NESTED_SEGWIT_ADDRESS: '3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5',
+  BTC_NATIVE_SEGWIT_ADDRESS: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+  BTC_TAPROOT_ADDRESS:
+    'bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr',
+  BTC_LEGACY_TAG: 'Legacy',
+  BTC_NESTED_SEGWIT_TAG: 'Nested SegWit',
+  BTC_NATIVE_SEGWIT_TAG: 'Native SegWit',
+  BTC_TAPROOT_TAG: 'Taproot',
 } as const;
 
 const TEST_CHAIN_IDS = {
@@ -40,6 +53,7 @@ const TEST_CHAIN_IDS = {
   POLYGON_CAIP: 'eip155:137',
   ARBITRUM_CAIP: 'eip155:42161',
   SOLANA_CAIP: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  BITCOIN_CAIP: 'bip122:000000000019d6689c085ae165831e93',
 } as const;
 
 const TEST_IDS = {
@@ -442,6 +456,117 @@ describe('MultichainAggregatedAddressListRow', () => {
       expect(
         screen.getByText(TEST_STRINGS.ETHEREUM_GROUP_NAME),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('Bitcoin Address Tag', () => {
+    it('displays Legacy tag for P2PKH Bitcoin addresses', () => {
+      const props = createTestProps({
+        address: TEST_STRINGS.BTC_LEGACY_ADDRESS,
+        chainIds: [TEST_CHAIN_IDS.BITCOIN_CAIP],
+      });
+
+      render(
+        <Provider store={store}>
+          <MultichainAggregatedAddressListRow {...props} />
+        </Provider>,
+      );
+
+      expect(screen.getByText(TEST_STRINGS.BTC_LEGACY_TAG)).toBeInTheDocument();
+    });
+
+    it('displays Nested SegWit tag for P2SH Bitcoin addresses', () => {
+      const props = createTestProps({
+        address: TEST_STRINGS.BTC_NESTED_SEGWIT_ADDRESS,
+        chainIds: [TEST_CHAIN_IDS.BITCOIN_CAIP],
+      });
+
+      render(
+        <Provider store={store}>
+          <MultichainAggregatedAddressListRow {...props} />
+        </Provider>,
+      );
+
+      expect(
+        screen.getByText(TEST_STRINGS.BTC_NESTED_SEGWIT_TAG),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Native SegWit tag for P2WPKH Bitcoin addresses', () => {
+      const props = createTestProps({
+        address: TEST_STRINGS.BTC_NATIVE_SEGWIT_ADDRESS,
+        chainIds: [TEST_CHAIN_IDS.BITCOIN_CAIP],
+      });
+
+      render(
+        <Provider store={store}>
+          <MultichainAggregatedAddressListRow {...props} />
+        </Provider>,
+      );
+
+      expect(
+        screen.getByText(TEST_STRINGS.BTC_NATIVE_SEGWIT_TAG),
+      ).toBeInTheDocument();
+    });
+
+    it('displays Taproot tag for P2TR Bitcoin addresses', () => {
+      const props = createTestProps({
+        address: TEST_STRINGS.BTC_TAPROOT_ADDRESS,
+        chainIds: [TEST_CHAIN_IDS.BITCOIN_CAIP],
+      });
+
+      render(
+        <Provider store={store}>
+          <MultichainAggregatedAddressListRow {...props} />
+        </Provider>,
+      );
+
+      expect(
+        screen.getByText(TEST_STRINGS.BTC_TAPROOT_TAG),
+      ).toBeInTheDocument();
+    });
+
+    it('does not display tag for non-Bitcoin addresses', () => {
+      const props = createTestProps({
+        address: TEST_STRINGS.FULL_ADDRESS,
+        chainIds: [TEST_CHAIN_IDS.ETHEREUM_CAIP],
+      });
+
+      render(
+        <Provider store={store}>
+          <MultichainAggregatedAddressListRow {...props} />
+        </Provider>,
+      );
+
+      expect(
+        screen.queryByText(TEST_STRINGS.BTC_LEGACY_TAG),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(TEST_STRINGS.BTC_NESTED_SEGWIT_TAG),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(TEST_STRINGS.BTC_NATIVE_SEGWIT_TAG),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(TEST_STRINGS.BTC_TAPROOT_TAG),
+      ).not.toBeInTheDocument();
+    });
+
+    it('displays Bitcoin tag alongside Ethereum group name when address is Bitcoin', () => {
+      const props = createTestProps({
+        address: TEST_STRINGS.BTC_LEGACY_ADDRESS,
+        chainIds: [TEST_CHAIN_IDS.BITCOIN_CAIP],
+      });
+
+      render(
+        <Provider store={store}>
+          <MultichainAggregatedAddressListRow {...props} />
+        </Provider>,
+      );
+
+      const row = screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
+      expect(row).toBeInTheDocument();
+      expect(screen.getByText(TEST_STRINGS.BTC_LEGACY_TAG)).toBeInTheDocument();
     });
   });
 });
