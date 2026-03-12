@@ -12,7 +12,7 @@ import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useConfirmContext } from '../../context/confirm';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
-import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 
 const HEX_ZERO = '0x0';
 const MM_ORIGIN = 'metamask';

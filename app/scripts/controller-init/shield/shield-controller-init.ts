@@ -10,7 +10,7 @@ import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { ControllerInitFunction } from '../types';
 import { ShieldControllerInitMessenger } from '../messengers/shield/shield-controller-messenger';
 import { normalizeSignatureRequest as ppomNormalizeSignatureRequest } from '../../lib/ppom/ppom-util';
-import { loadShieldConfig } from '../../../../shared/modules/shield';
+import { loadShieldConfig } from '../../../../shared/lib/shield';
 import { captureException as captureExceptionWithSentry } from '../../../../shared/lib/sentry';
 
 /**

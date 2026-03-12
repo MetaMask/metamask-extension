@@ -7,7 +7,7 @@ import {
   GasRecommendations,
 } from '../../../../../shared/constants/gas';
 
-import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../../shared/lib/conversion.utils';
 import EditGasPopover from '.';
 
 const store = configureStore(testData);

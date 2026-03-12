@@ -18,8 +18,8 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 import { trace } from '../../../../shared/lib/trace';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
+import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,

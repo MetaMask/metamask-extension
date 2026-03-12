@@ -5,7 +5,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
 import { useConfirmContext } from '../../context/confirm';
-import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
 import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';

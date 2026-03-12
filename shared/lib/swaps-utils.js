@@ -14,12 +14,12 @@ import {
   TOKEN_API_BASE_URL,
 } from '../constants/swaps';
 import { SECOND } from '../constants/time';
-import { isValidHexAddress } from '../modules/hexstring-utils';
-import { isEqualCaseInsensitive } from '../modules/string-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
-import { decimalToHex } from '../modules/conversion.utils';
+import { isValidHexAddress } from './hexstring-utils';
+import { isEqualCaseInsensitive } from './string-utils';
+import { decimalToHex } from './conversion.utils';
 import fetchWithCache from './fetch-with-cache';
 
 const FALLBACK_GAS_MULTIPLIER = 1.5;

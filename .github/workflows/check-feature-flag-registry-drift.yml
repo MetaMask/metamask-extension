@@ -1,9 +1,9 @@
-name: Check feature flag registry drift
+name: Check Feature Flag Registry Drift PROD
 
 on:
   schedule:
     # Run daily at 01:00 UTC
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * 2'
   workflow_dispatch:
 
 permissions:
@@ -44,19 +44,19 @@ jobs:
 
       - name: Notify Slack on drift
         if: ${{ always() && steps.check.outputs.HAS_DRIFT == 'true' }}
-        uses: slackapi/slack-github-action@v2.0.0
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
           webhook-type: incoming-webhook
           payload: |
             {
-              "text": "Feature flag registry drift detected in metamask-extension. Check the workflow run for details.",
+              "text": "*[MetaMask Extension] Feature Flags Drift Detected in E2E tests vs Prod* :warning:\n\nCheck the workflow run for details: download the drift report JSON artifact and review the report.\n\nYou can run command `yarn feature-flags:sync:update` locally to update the registry.\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Feature Flag Registry Drift Detected* :warning:\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
+                    "text": "*[MetaMask Extension] Feature Flags Drift Detected in E2E tests vs Prod* :warning:\n\nCheck the workflow run for details: download the drift report JSON artifact and review the report.\n\nYou can run command `yarn feature-flags:sync:update` locally to update the registry.\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
                   }
                 }
               ]

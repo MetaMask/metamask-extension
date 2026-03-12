@@ -23,12 +23,15 @@ jest.mock('../../../store/actions.ts', () => {
 
 jest.mock('react-router-dom', () => {
   const original = jest.requireActual('react-router-dom');
+  const snapId = 'npm:@metamask/test-snap-bip44';
   return {
     ...original,
+    useSearchParams: jest.fn(() => [
+      new URLSearchParams(`snapId=${encodeURIComponent(snapId)}`),
+    ]),
     useLocation: jest.fn(() => ({
-      pathname: `/snaps/view/${encodeURIComponent(
-        'npm:@metamask/test-snap-bip44',
-      )}`,
+      pathname: `/snaps/view`,
+      search: `?snapId=${encodeURIComponent(snapId)}`,
     })),
   };
 });

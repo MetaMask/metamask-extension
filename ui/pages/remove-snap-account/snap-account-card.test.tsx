@@ -6,7 +6,7 @@ import {
   toMultichainAccountWalletId,
 } from '@metamask/account-api';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import mockState from '../../../test/data/mock-state.json';
 import { shortenAddress } from '../../helpers/utils/util';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
