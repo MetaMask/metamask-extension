@@ -4,7 +4,7 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { SmartTransactionsControllerMessenger } from '@metamask/smart-transactions-controller';
-import type { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -48,7 +48,7 @@ export function getSmartTransactionsControllerMessenger(
 
 export type AllowedInitializationActions =
   | MetaMetricsControllerTrackEventAction
-  | AuthenticationControllerGetBearerToken;
+  | AuthenticationControllerGetBearerTokenAction;
 
 export type SmartTransactionsControllerInitMessenger = ReturnType<
   typeof getSmartTransactionsControllerInitMessenger
