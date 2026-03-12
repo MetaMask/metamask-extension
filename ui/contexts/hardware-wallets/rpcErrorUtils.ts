@@ -216,7 +216,7 @@ function isPlainObjectWithErrorCode(
  * @returns True if the error has HardwareWalletError-like top-level shape
  */
 function isSerializedTopLevelHardwareWalletError(error: unknown): error is {
-  name?: string;
+  name: 'HardwareWalletError';
   message?: string;
   stack?: string;
   code: string | number;
@@ -230,9 +230,7 @@ function isSerializedTopLevelHardwareWalletError(error: unknown): error is {
   }
 
   const errorAsAny = error as { name?: unknown };
-  return (
-    errorAsAny?.name === undefined || errorAsAny?.name === 'HardwareWalletError'
-  );
+  return errorAsAny?.name === 'HardwareWalletError';
 }
 
 /**
@@ -347,7 +345,11 @@ function convertDataToHardwareWalletError(
 }
 
 /**
- * Map a numeric error code from serialized error to an ErrorCode enum value
+ * Map a numeric hardware-wallet error code to an ErrorCode enum value.
+ *
+ * Raw numeric collisions such as EIP-1193 `4001` are intentionally resolved in
+ * favor of the hardware-wallet enum here. Provider-specific fallback handling
+ * belongs in shape-aware callers such as `isUserRejectedHardwareWalletError()`.
  *
  * @param numericCode - The numeric error code
  * @returns The corresponding ErrorCode enum value
@@ -572,7 +574,8 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
 
   // If the error was recognised as a HW error with a different code
   // (e.g. ConnectionClosed = 4001), don't fall through to the EIP-1193
-  if (errorCode !== null) {
+  // fallback.
+  if (errorCode !== null && isHardwareWalletError(error)) {
     return false;
   }
 

@@ -93,19 +93,11 @@ export const useHardwareFooter = ({
   }, [currentConfirmationId, inE2e]);
 
   const isHardwareWalletReady = useMemo(() => {
-    if (inE2e) {
+    if (inE2e || !isHardwareWalletAccount || hasPreflightSucceeded) {
       return true;
     }
 
-    if (!isHardwareWalletAccount) {
-      return true;
-    }
-
-    if (hasPreflightSucceeded) {
-      return true;
-    }
-
-    return [ConnectionStatus.Ready].includes(connectionState.status);
+    return ConnectionStatus.Ready === connectionState.status;
   }, [
     connectionState.status,
     hasPreflightSucceeded,
@@ -121,11 +113,7 @@ export const useHardwareFooter = ({
     const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
     setHasPreflightSucceeded(isDeviceReady);
 
-    if (!isDeviceReady) {
-      return false;
-    }
-
-    return true;
+    return isDeviceReady;
   }, [
     inE2e,
     isHardwareWalletAccount,

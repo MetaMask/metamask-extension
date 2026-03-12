@@ -155,15 +155,15 @@ describe('rpcErrorUtils', () => {
       expect(getHardwareWalletErrorCode(undefined)).toBe(null);
     });
 
-    it('maps EIP-1193 userRejectedRequest code to UserRejected', () => {
+    it('prefers raw hardware-wallet code 4001 over the EIP-1193 collision', () => {
       const error = {
         code: 4001,
-        message: 'User rejected the request.',
+        message: 'Connection closed',
       };
 
       const result = getHardwareWalletErrorCode(error);
 
-      expect(result).toBe(ErrorCode.UserRejected);
+      expect(result).toBe(ErrorCode.ConnectionClosed);
     });
 
     it('extracts code from serialized RPC error with hardware wallet cause', () => {
@@ -337,6 +337,41 @@ describe('rpcErrorUtils', () => {
       expect(result.userMessage).toBe(
         'Transaction was rejected. Please approve on your device to continue.',
       );
+      expect(result.metadata).toEqual({
+        walletType: HardwareWalletType.Ledger,
+      });
+    });
+
+    it('does not treat generic provider errors as top-level serialized hardware wallet errors', () => {
+      const providerError = {
+        code: 4001,
+        message: 'User rejected',
+      };
+
+      const result = toHardwareWalletError(
+        providerError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('User rejected');
+      expect(result.metadata).toEqual({
+        walletType: HardwareWalletType.Ledger,
+      });
+    });
+
+    it('does not treat generic RPC errors as top-level serialized hardware wallet errors', () => {
+      const rpcError = {
+        code: -32603,
+        message: 'Internal error',
+      };
+
+      const result = toHardwareWalletError(rpcError, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('Internal error');
       expect(result.metadata).toEqual({
         walletType: HardwareWalletType.Ledger,
       });
@@ -670,6 +705,16 @@ describe('rpcErrorUtils', () => {
       };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns false for hardware wallet errors whose numeric code collides with EIP-1193 4001', () => {
+      const error = {
+        name: 'HardwareWalletError',
+        code: ErrorCode.ConnectionClosed,
+        message: 'Connection closed',
+      };
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(false);
     });
   });
 });
