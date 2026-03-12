@@ -1919,8 +1919,7 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Losing this password means losing wallet access on all devices, $1",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
+    "message": "Losing this password means losing wallet access on all devices, "
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
@@ -3188,6 +3187,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Enable blind signing"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "The Ethereum app is open on your Ledger"
   },
@@ -3227,6 +3229,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Open Ethereum app"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 connected",
