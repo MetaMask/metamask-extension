@@ -13,6 +13,7 @@ import {
   TextColor,
   BoxFlexDirection,
   BoxBackgroundColor,
+  TextAlign,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -43,6 +44,19 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 
+type MetametricsCheckboxOptionProps = Readonly<{
+  id: string;
+  testId: string;
+  isSelected: boolean;
+  isDisabled?: boolean;
+  onChange: () => void;
+  checkboxRef: React.RefObject<{ toggle: () => void }>;
+  label: React.ReactNode;
+  description: React.ReactNode;
+  containerClassName: string;
+  isInteractive?: boolean;
+}>;
+
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const stopClickPropagation = (e: React.MouseEvent) => {
@@ -61,18 +75,7 @@ function MetametricsCheckboxOption({
   description,
   containerClassName,
   isInteractive = true,
-}: {
-  id: string;
-  testId: string;
-  isSelected: boolean;
-  isDisabled?: boolean;
-  onChange: () => void;
-  checkboxRef: React.RefObject<{ toggle: () => void }>;
-  label: React.ReactNode;
-  description: React.ReactNode;
-  containerClassName: string;
-  isInteractive?: boolean;
-}) {
+}: Readonly<MetametricsCheckboxOptionProps>) {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -81,7 +84,7 @@ function MetametricsCheckboxOption({
       backgroundColor={BoxBackgroundColor.BackgroundMuted}
       className={`${containerClassName} rounded-lg`}
       data-testid={testId}
-      data-checked={isSelected}
+      data-checked={String(isSelected)}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
       onClick={isInteractive ? () => checkboxRef.current?.toggle() : undefined}
@@ -238,7 +241,7 @@ export default function OnboardingMetametrics() {
     >
       <Text
         variant={TextVariant.HeadingLg}
-        className="text-left"
+        textAlign={TextAlign.Left}
         fontWeight={FontWeight.Bold}
       >
         {t('onboardingMetametricsTitle')}
@@ -258,7 +261,7 @@ export default function OnboardingMetametrics() {
         variant={TextVariant.BodySm}
         color={TextColor.TextAlternative}
         fontWeight={FontWeight.Medium}
-        className="text-left"
+        textAlign={TextAlign.Left}
       >
         {t('onboardingMetametricsDescription')}
       </Text>
