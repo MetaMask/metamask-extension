@@ -53,7 +53,11 @@ export const SubscriptionDetails = ({
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Start}
         >
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Bold} color={TextColor.TextDefault}>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Bold}
+            color={TextColor.TextDefault}
+          >
             {t('transactionShield')}
           </Text>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
