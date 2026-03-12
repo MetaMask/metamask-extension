@@ -36,6 +36,11 @@ jobs:
           name: coverage-unit-${{matrix.shard}}
           path: coverage/unit/coverage-unit-${{matrix.shard}}.json
 
+      - uses: actions/upload-artifact@v6
+        with:
+          name: unit-test-results-${{matrix.shard}}
+          path: test/test-results/junit.xml
+
   test-webpack:
     name: Webpack tests
     runs-on: ubuntu-latest
