@@ -26,7 +26,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import { setPna25Acknowledged } from '../../../../store/actions';
+import {
+  setPna25Acknowledged,
+  skipPna25TimeDelay,
+} from '../../../../store/actions';
 import { PNA25_BLOG_POST_LINK, Pna25NoticeAction } from './constants';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -51,6 +54,14 @@ export default function Pna25Modal() {
       // Only acknowledge and close on user actions, not on initial view
       if (action !== Pna25NoticeAction.Viewed) {
         dispatch(setPna25Acknowledged(true));
+      }
+
+      if (
+        [Pna25NoticeAction.Close, Pna25NoticeAction.AcceptAndClose].includes(
+          action,
+        )
+      ) {
+        dispatch(skipPna25TimeDelay());
       }
 
       if (action === Pna25NoticeAction.OpenSettings) {
