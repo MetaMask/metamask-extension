@@ -24,6 +24,7 @@ export const LANGUAGE_ROUTE = '/settings-v2/preferences-and-display/language';
 export const ACCOUNT_IDENTICON_ROUTE =
   '/settings-v2/preferences-and-display/account-identicon';
 export const PRIVACY_ROUTE = '/settings-v2/privacy';
+export const THIRD_PARTY_APIS_ROUTE = '/settings-v2/privacy/third-party-apis';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
@@ -316,12 +317,12 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACTS_VIEW_ROUTE}/:address`,
+    path: `${CONTACTS_VIEW_ROUTE}/:chainId/:address`,
     label: 'Contact Details Page',
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACTS_EDIT_ROUTE}/:address`,
+    path: `${CONTACTS_EDIT_ROUTE}/:chainId/:address`,
     label: 'Edit Contact Page',
     trackInAnalytics: true,
   },
