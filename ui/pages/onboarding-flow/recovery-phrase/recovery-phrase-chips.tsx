@@ -25,10 +25,7 @@ import {
   TextFieldType,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  TextVariant as DesignSystemTextVariant,
-} from '../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 
 type RecoveryPhraseChipsProps = {
   secretRecoveryPhrase: string[];
@@ -232,9 +229,6 @@ export default function RecoveryPhraseChips({
                 testId={`recovery-phrase-chip-${index}`}
                 key={index}
                 value={wordToDisplay}
-                inputProps={{
-                  textVariant: DesignSystemTextVariant.bodyMd,
-                }}
                 startAccessory={
                   <Text
                     variant={TextVariant.BodyMd}
