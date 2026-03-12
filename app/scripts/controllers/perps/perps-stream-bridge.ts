@@ -17,7 +17,7 @@ type ActivateStreamingParams = {
 };
 
 type PerpsStreamBridgeOptions = {
-  controller: PerpsController | undefined;
+  controller: PerpsController;
   perpsInit: (...args: unknown[]) => Promise<unknown>;
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
@@ -44,7 +44,7 @@ type PerpsStreamBridgeOptions = {
 export class PerpsStreamBridge {
   #viewActive = false;
 
-  readonly #controller: PerpsController | undefined;
+  readonly #controller: PerpsController;
 
   readonly #perpsInit: PerpsStreamBridgeOptions['perpsInit'];
   readonly #perpsDisconnect: PerpsStreamBridgeOptions['perpsDisconnect'];
@@ -76,7 +76,7 @@ export class PerpsStreamBridge {
    */
   async #initAndActivate(): Promise<void> {
     await this.#perpsInit();
-    if (this.#controller && !this.#activated && this.#isConnectionAlive()) {
+    if (!this.#activated && this.#isConnectionAlive()) {
       this.activate();
     }
   }
@@ -93,7 +93,7 @@ export class PerpsStreamBridge {
     return {
       perpsInit: async (...args: unknown[]) => {
         const result = await this.#perpsInit(...args);
-        if (this.#controller && !this.#activated && this.#isConnectionAlive()) {
+        if (!this.#activated && this.#isConnectionAlive()) {
           this.activate();
         }
         return result;
@@ -111,14 +111,14 @@ export class PerpsStreamBridge {
       },
       perpsActivateStreaming: async (params: ActivateStreamingParams) => {
         await this.#initAndActivate();
-        if (this.#controller && this.#isConnectionAlive()) {
+        if (this.#isConnectionAlive()) {
           this.activateStreaming(params);
         }
         return 'ok';
       },
       perpsActivatePriceStream: async ({ symbols }: { symbols: string[] }) => {
         await this.#initAndActivate();
-        if (this.#controller && this.#isConnectionAlive()) {
+        if (this.#isConnectionAlive()) {
           this.activatePriceStream(symbols);
         }
         return 'ok';
@@ -128,7 +128,7 @@ export class PerpsStreamBridge {
       },
       perpsActivateOrderBookStream: async ({ symbol }: { symbol: string }) => {
         await this.#initAndActivate();
-        if (this.#controller && this.#isConnectionAlive()) {
+        if (this.#isConnectionAlive()) {
           this.activateOrderBookStream(symbol);
         }
         return 'ok';
@@ -146,7 +146,7 @@ export class PerpsStreamBridge {
         duration?: TimeDuration;
       }) => {
         await this.#initAndActivate();
-        if (this.#controller && this.#isConnectionAlive()) {
+        if (this.#isConnectionAlive()) {
           this.activateCandleStream({ symbol, interval, duration });
         }
         return 'ok';
@@ -164,11 +164,6 @@ export class PerpsStreamBridge {
    * is handled cleanly.
    */
   activate(): void {
-    const controller = this.#controller;
-    if (!controller) {
-      return;
-    }
-
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);
     }
@@ -178,22 +173,22 @@ export class PerpsStreamBridge {
 
     try {
       this.#staticUnsubs.push(
-        controller.subscribeToPositions({
+        this.#controller.subscribeToPositions({
           callback: (data: unknown) => this.#emit('positions', data),
         }),
       );
       this.#staticUnsubs.push(
-        controller.subscribeToOrders({
+        this.#controller.subscribeToOrders({
           callback: (data: unknown) => this.#emit('orders', data),
         }),
       );
       this.#staticUnsubs.push(
-        controller.subscribeToAccount({
+        this.#controller.subscribeToAccount({
           callback: (data: unknown) => this.#emit('account', data),
         }),
       );
       this.#staticUnsubs.push(
-        controller.subscribeToOrderFills({
+        this.#controller.subscribeToOrderFills({
           callback: (data: unknown) => this.#emit('fills', data),
         }),
       );
@@ -212,18 +207,13 @@ export class PerpsStreamBridge {
   }
 
   activateStreaming(params: ActivateStreamingParams): void {
-    const controller = this.#controller;
-    if (!controller) {
-      return;
-    }
-
     const { priceSymbols, orderBookSymbol, candle } = params;
 
     this.#tearDownAllDynamic();
 
     if (priceSymbols?.length) {
       this.#addDynamicSubscription('prices', () =>
-        controller.subscribeToPrices({
+        this.#controller.subscribeToPrices({
           symbols: priceSymbols,
           callback: (data: unknown) => this.#emit('prices', data),
         }),
@@ -232,7 +222,7 @@ export class PerpsStreamBridge {
 
     if (orderBookSymbol) {
       this.#addDynamicSubscription('orderBook', () =>
-        controller.subscribeToOrderBook({
+        this.#controller.subscribeToOrderBook({
           symbol: orderBookSymbol,
           callback: (data: unknown) => this.#emit('orderBook', data),
         }),
@@ -241,7 +231,7 @@ export class PerpsStreamBridge {
 
     if (candle?.symbol && candle?.interval) {
       this.#addDynamicSubscription('candles', () =>
-        controller.subscribeToCandles({
+        this.#controller.subscribeToCandles({
           ...candle,
           callback: (data: unknown) =>
             this.#emit('candles', data, {
@@ -254,15 +244,10 @@ export class PerpsStreamBridge {
   }
 
   activatePriceStream(symbols: string[]): void {
-    const controller = this.#controller;
-    if (!controller) {
-      return;
-    }
-
     this.#tearDownChannel('prices');
     if (symbols.length) {
       this.#addDynamicSubscription('prices', () =>
-        controller.subscribeToPrices({
+        this.#controller.subscribeToPrices({
           symbols,
           callback: (data: unknown) => this.#emit('prices', data),
         }),
@@ -275,15 +260,10 @@ export class PerpsStreamBridge {
   }
 
   activateOrderBookStream(symbol: string): void {
-    const controller = this.#controller;
-    if (!controller) {
-      return;
-    }
-
     this.#tearDownChannel('orderBook');
     if (symbol) {
       this.#addDynamicSubscription('orderBook', () =>
-        controller.subscribeToOrderBook({
+        this.#controller.subscribeToOrderBook({
           symbol,
           callback: (data: unknown) => this.#emit('orderBook', data),
         }),
@@ -300,15 +280,10 @@ export class PerpsStreamBridge {
     interval: CandlePeriod;
     duration?: TimeDuration;
   }): void {
-    const controller = this.#controller;
-    if (!controller) {
-      return;
-    }
-
     this.#tearDownChannel('candles');
     if (params.symbol && params.interval) {
       this.#addDynamicSubscription('candles', () =>
-        controller.subscribeToCandles({
+        this.#controller.subscribeToCandles({
           ...params,
           callback: (data: unknown) =>
             this.#emit('candles', data, {
