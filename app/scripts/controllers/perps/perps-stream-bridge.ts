@@ -18,11 +18,9 @@ type ActivateStreamingParams = {
 
 type PerpsStreamBridgeOptions = {
   controller: PerpsController | undefined;
-  controllerApi: {
-    perpsInit: (...args: unknown[]) => Promise<unknown>;
-    perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
-    perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
-  };
+  perpsInit: (...args: unknown[]) => Promise<unknown>;
+  perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
+  perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
   emit: EmitFn;
 };
@@ -48,7 +46,9 @@ export class PerpsStreamBridge {
 
   readonly #controller: PerpsController | undefined;
 
-  readonly #controllerApi: PerpsStreamBridgeOptions['controllerApi'];
+  readonly #perpsInit: PerpsStreamBridgeOptions['perpsInit'];
+  readonly #perpsDisconnect: PerpsStreamBridgeOptions['perpsDisconnect'];
+  readonly #perpsToggleTestnet: PerpsStreamBridgeOptions['perpsToggleTestnet'];
 
   readonly #isConnectionAlive: () => boolean;
 
@@ -62,7 +62,9 @@ export class PerpsStreamBridge {
 
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
-    this.#controllerApi = options.controllerApi;
+    this.#perpsInit = options.perpsInit;
+    this.#perpsDisconnect = options.perpsDisconnect;
+    this.#perpsToggleTestnet = options.perpsToggleTestnet;
     this.#isConnectionAlive = options.isConnectionAlive;
     this.#emit = options.emit;
   }
@@ -73,7 +75,7 @@ export class PerpsStreamBridge {
    * if the connection has closed.
    */
   async #initAndActivate(): Promise<void> {
-    await this.#controllerApi.perpsInit();
+    await this.#perpsInit();
     if (this.#controller && !this.#activated && this.#isConnectionAlive()) {
       this.activate();
     }
@@ -90,7 +92,7 @@ export class PerpsStreamBridge {
   bridgeApi(): Record<string, (...args: never[]) => unknown> {
     return {
       perpsInit: async (...args: unknown[]) => {
-        const result = await this.#controllerApi.perpsInit(...args);
+        const result = await this.#perpsInit(...args);
         if (this.#controller && !this.#activated && this.#isConnectionAlive()) {
           this.activate();
         }
@@ -98,11 +100,11 @@ export class PerpsStreamBridge {
       },
       perpsDisconnect: async (...args: unknown[]) => {
         this.destroy();
-        return this.#controllerApi.perpsDisconnect(...args);
+        return this.#perpsDisconnect(...args);
       },
       perpsToggleTestnet: async (...args: unknown[]) => {
         this.destroy();
-        return this.#controllerApi.perpsToggleTestnet(...args);
+        return this.#perpsToggleTestnet(...args);
       },
       perpsViewActive: (active: boolean) => {
         this.setViewActive(active);
