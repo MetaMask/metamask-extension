@@ -27,7 +27,6 @@ import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
 import { hasTransactionType } from '../../../utils/transaction-pay';
-import { resolveTransactionType } from '../../../../../components/app/transaction-list-item/helpers';
 
 type TranslateFunction = (key: string, args?: string[]) => string;
 
@@ -100,11 +99,7 @@ function TransactionSummaryLine({
   payTokenChainId: Hex | undefined;
   isLast: boolean;
 }) {
-  const type = resolveTransactionType(
-    transactionMeta.type,
-    transactionMeta.txParams?.to,
-    transactionMeta.txParams?.data,
-  );
+  const { type } = transactionMeta;
 
   if (hasTransactionType(transactionMeta, [TransactionType.relayDeposit])) {
     return (
