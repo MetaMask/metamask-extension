@@ -7748,6 +7748,15 @@ export function addMusdConversionDismissedCtaKey(key: string) {
   };
 }
 
+/**
+ * Mark the Merkl claim modal as shown for the current install.
+ */
+export function setMerklClaimModalShown() {
+  return async () => {
+    await submitRequestToBackground('setMerklClaimModalShown', [true]);
+  };
+}
+
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {

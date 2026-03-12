@@ -11,3 +11,5 @@ export { MusdConversionToast } from './musd-conversion-toast';
 export { MusdBuyGetCta } from './musd-buy-get-cta';
 export { MusdAssetCta } from './musd-asset-cta';
 export { MusdConvertLink } from './musd-convert-link';
+export { MusdClaimableBonus } from './musd-claimable-bonus';
+export { MerklClaimModal } from './merkl-claim-modal';

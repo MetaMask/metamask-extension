@@ -45,8 +45,20 @@ type UseMerklRewardsOptions = {
   showMerklBadge: boolean;
 };
 
+type MerklRewardQueryResult = {
+  hasClaimable: boolean;
+  unclaimedFiat: number | null;
+};
+
+const EMPTY_RESULT: MerklRewardQueryResult = {
+  hasClaimable: false,
+  unclaimedFiat: null,
+};
+
 type UseMerklRewardsReturn = {
+  isEligible: boolean;
   hasClaimableReward: boolean;
+  rewardAmountFiat: number | null;
   refetch: () => void;
 };
 
@@ -81,11 +93,11 @@ export const useMerklRewards = ({
     [showMerklBadge, merklRewardsEnabled, chainId, tokenAddress],
   );
 
-  const { data: hasClaimableReward = false, refetch: refetchQuery } = useQuery({
+  const { data: rewardData = EMPTY_RESULT, refetch: refetchQuery } = useQuery({
     queryKey: ['merklRewards', selectedAddress, chainId, tokenAddress],
-    queryFn: async ({ signal }): Promise<boolean> => {
+    queryFn: async ({ signal }): Promise<MerklRewardQueryResult> => {
       if (!tokenAddress || !selectedAddress) {
-        return false;
+        return EMPTY_RESULT;
       }
 
       const matchingReward = await fetchMerklRewardsForAsset(
@@ -96,7 +108,7 @@ export const useMerklRewards = ({
       );
 
       if (!matchingReward) {
-        return false;
+        return EMPTY_RESULT;
       }
 
       // Get claimed amount from on-chain read for instant update after claims.
@@ -117,7 +129,16 @@ export const useMerklRewards = ({
         BigInt(matchingReward.amount) - BigInt(claimedAmount);
       const oneCentInBaseUnits =
         10n ** BigInt(matchingReward.token.decimals - 2);
-      return unclaimedBaseUnits >= oneCentInBaseUnits;
+      const hasClaimable = unclaimedBaseUnits >= oneCentInBaseUnits;
+
+      let unclaimedFiat: number | null = null;
+      if (hasClaimable && matchingReward.token.price !== null) {
+        const divisor = 10 ** matchingReward.token.decimals;
+        unclaimedFiat =
+          (Number(unclaimedBaseUnits) / divisor) * matchingReward.token.price;
+      }
+
+      return { hasClaimable, unclaimedFiat };
     },
     enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
     staleTime: MERKL_REWARDS_STALE_TIME,
@@ -125,11 +146,15 @@ export const useMerklRewards = ({
   });
 
   const refetch = useCallback(() => {
-    refetchQuery();
-  }, [refetchQuery]);
+    if (isEligible) {
+      refetchQuery();
+    }
+  }, [refetchQuery, isEligible]);
 
   return {
-    hasClaimableReward,
+    isEligible,
+    hasClaimableReward: rewardData.hasClaimable,
+    rewardAmountFiat: rewardData.unclaimedFiat,
     refetch,
   };
 };

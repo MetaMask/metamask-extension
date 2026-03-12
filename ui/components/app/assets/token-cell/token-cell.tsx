@@ -66,7 +66,11 @@ export default function TokenCell({
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
   // Check whether there are rewards available for the user
-  const { hasClaimableReward, refetch: refetchMerklRewards } = useMerklRewards({
+  const {
+    hasClaimableReward,
+    isEligible,
+    refetch: refetchMerklRewards,
+  } = useMerklRewards({
     tokenAddress: token.address,
     chainId: token.chainId as Hex,
     showMerklBadge,
@@ -124,7 +128,7 @@ export default function TokenCell({
         />
       );
     }
-    if (hasClaimableReward) {
+    if (isEligible && hasClaimableReward) {
       return (
         <ClaimBonusBadge
           tokenAddress={token.address as string}

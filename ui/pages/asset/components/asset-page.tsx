@@ -82,7 +82,8 @@ import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { useMusdCtaVisibility } from '../../../hooks/musd';
-import { MusdAssetCta } from '../../../components/app/musd';
+import { MusdAssetCta, MusdClaimableBonus } from '../../../components/app/musd';
+import { isMusdToken } from '../../../components/app/musd/constants';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -353,16 +354,22 @@ const AssetPage = ({
         )}
         <Text
           variant={TextVariant.HeadingSm}
-          className="asset-page__balance-heading"
+          className="asset-page__balance-heading mb-4 mt-4"
         >
-          {t('yourBalance')}
+          {t('balance')}
         </Text>
         {[AssetType.token, AssetType.native].includes(type) && (
           <TokenCell
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount as TokenWithFiatAmount}
             safeChains={safeChains}
-            showMerklBadge
+          />
+        )}
+        {/* mUSD Claimable Bonus - shows for mUSD holders with Merkl rewards */}
+        {type === AssetType.token && isEvm && isMusdToken(asset.address) && (
+          <MusdClaimableBonus
+            tokenAddress={contractAddress}
+            chainId={chainId as Hex}
           />
         )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
@@ -374,7 +381,7 @@ const AssetPage = ({
             chainId,
             symbol,
           }) && (
-            <Box marginTop={2} paddingLeft={4} paddingRight={4}>
+            <Box marginTop={4} paddingLeft={4} paddingRight={4}>
               <MusdAssetCta
                 token={{
                   address: (asset as { address: Hex }).address,

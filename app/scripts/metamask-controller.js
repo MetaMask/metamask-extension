@@ -3012,6 +3012,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.addMusdConversionDismissedCtaKey.bind(
           appStateController,
         ),
+      setMerklClaimModalShown:
+        appStateController.setMerklClaimModalShown.bind(appStateController),
       updateNetworkConnectionBanner:
         appStateController.updateNetworkConnectionBanner.bind(
           appStateController,

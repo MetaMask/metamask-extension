@@ -118,7 +118,7 @@ describe('useMerklRewards', () => {
     });
   });
 
-  it('returns false for ineligible token', () => {
+  it('returns isEligible false and hasClaimableReward false for ineligible token', () => {
     const { result } = renderHook(
       () =>
         useMerklRewards({
@@ -129,7 +129,39 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
+    expect(result.current.isEligible).toBe(false);
     expect(result.current.hasClaimableReward).toBe(false);
+    expect(result.current.rewardAmountFiat).toBeNull();
+    expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
+  });
+
+  it('returns isEligible true for eligible token with showMerklBadge', () => {
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current.isEligible).toBe(true);
+  });
+
+  it('refetch is a no-op when isEligible is false', () => {
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: '0xunknown',
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: false,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current.isEligible).toBe(false);
+    result.current.refetch();
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
@@ -166,6 +198,7 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(true);
+    expect(result.current.rewardAmountFiat).toBe(10.5);
   });
 
   it('uses on-chain claimed amount when available', async () => {
@@ -202,6 +235,7 @@ describe('useMerklRewards', () => {
 
     // 10.5 - 5.5 = 5.0 MUSD claimable
     expect(result.current.hasClaimableReward).toBe(true);
+    expect(result.current.rewardAmountFiat).toBe(5.0);
     expect(mockGetClaimedAmountFromContract).toHaveBeenCalledWith(
       MOCK_ADDRESS,
       MUSD_TOKEN_ADDRESS,
@@ -241,6 +275,7 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
+    expect(result.current.rewardAmountFiat).toBeNull();
   });
 
   it('returns false when API returns no matching reward', async () => {
@@ -263,6 +298,7 @@ describe('useMerklRewards', () => {
 
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
     expect(result.current.hasClaimableReward).toBe(false);
+    expect(result.current.rewardAmountFiat).toBeNull();
   });
 
   it('returns false when all rewards are claimed (API)', async () => {
@@ -388,6 +424,7 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(true);
+    expect(result.current.rewardAmountFiat).toBe(0.01);
   });
 
   it('falls back to API claimed value when getClaimedAmountFromContract returns null', async () => {
@@ -424,6 +461,42 @@ describe('useMerklRewards', () => {
 
     // Falls back to API value (claimed=0), so full amount is claimable
     expect(result.current.hasClaimableReward).toBe(true);
+    expect(result.current.rewardAmountFiat).toBe(10.5);
+  });
+
+  it('returns null rewardAmountFiat when token price is null', async () => {
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: null,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10500000',
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const { result, waitForNextUpdate } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    await act(async () => {
+      await waitForNextUpdate();
+    });
+
+    expect(result.current.hasClaimableReward).toBe(true);
+    expect(result.current.rewardAmountFiat).toBeNull();
   });
 
   it('returns cached data on remount without refetching', async () => {

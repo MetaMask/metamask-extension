@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   Text,
@@ -10,9 +11,13 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { setMerklClaimModalShown } from '../../../store/actions';
+import { selectMerklClaimModalShown } from '../../../selectors/musd/persisted-state';
 import { useMerklClaim } from './hooks/useMerklClaim';
 import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
+import { MerklClaimModal } from './merkl-claim-modal';
 
 export const ClaimBonusBadge = ({
   label,
@@ -26,6 +31,9 @@ export const ClaimBonusBadge = ({
   refetchRewards: () => void;
 }) => {
   const t = useI18nContext();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const merklClaimModalShown = useSelector(selectMerklClaimModalShown);
+  const [showModal, setShowModal] = useState(false);
 
   // Refetch rewards when a pending claim is confirmed
   useOnMerklClaimConfirmed(refetchRewards);
@@ -34,14 +42,29 @@ export const ClaimBonusBadge = ({
     tokenAddress,
     chainId,
   });
-  // Trigger the claim transaction directly, routing to the confirmation page.
+
+  // Show modal first if not shown before, otherwise trigger claim directly
   const handleBadgeClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
+      if (!merklClaimModalShown) {
+        setShowModal(true);
+        return;
+      }
       claimRewards();
     },
-    [claimRewards],
+    [merklClaimModalShown, claimRewards],
   );
+
+  const handleModalClose = useCallback(() => {
+    setShowModal(false);
+  }, []);
+
+  const handleModalContinue = useCallback(async () => {
+    setShowModal(false);
+    await dispatch(setMerklClaimModalShown());
+    await claimRewards();
+  }, [dispatch, claimRewards]);
 
   if (isClaiming) {
     return (
@@ -69,26 +92,33 @@ export const ClaimBonusBadge = ({
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleBadgeClick}
-      style={{
-        cursor: 'pointer',
-        background: 'none',
-        border: 'none',
-        padding: 0,
-        margin: 0,
-        font: 'inherit',
-      }}
-    >
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.PrimaryDefault}
-        data-testid="claim-bonus-badge"
+    <>
+      <button
+        type="button"
+        onClick={handleBadgeClick}
+        style={{
+          cursor: 'pointer',
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          margin: 0,
+          font: 'inherit',
+        }}
       >
-        {label}
-      </Text>
-    </button>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.PrimaryDefault}
+          data-testid="claim-bonus-badge"
+        >
+          {label}
+        </Text>
+      </button>
+      <MerklClaimModal
+        isOpen={showModal}
+        onClose={handleModalClose}
+        onContinue={handleModalContinue}
+      />
+    </>
   );
 };

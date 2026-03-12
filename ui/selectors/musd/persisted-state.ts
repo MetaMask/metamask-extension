@@ -24,3 +24,12 @@ export const selectMusdConversionEducationSeen = (
 export const selectMusdConversionDismissedCtaKeys = (
   state: MetaMaskReduxState,
 ): string[] => state.metamask.musdConversionDismissedCtaKeys ?? [];
+
+/**
+ * Select whether the Merkl claim modal has been shown
+ *
+ * @param state
+ */
+export const selectMerklClaimModalShown = (
+  state: MetaMaskReduxState,
+): boolean => state.metamask.merklClaimModalShown ?? false;
