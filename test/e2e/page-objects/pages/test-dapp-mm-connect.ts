@@ -4,15 +4,18 @@ import { Driver } from '../../webdriver/driver';
 /**
  * Replicates @metamask/playground-ui createTestId / escapeTestId.
  * Rules: lowercase, colon → dash, underscore → dash, spaces → dash,
- *        strip any non-[a-z0-9-] characters, join parts with dash.
+ * strip any non-[a-z0-9-] characters, join parts with dash.
+ *
+ * @param value - The string to escape.
+ * @returns The escaped string.
  */
 function escapeTestId(value: string): string {
   return value
     .toLowerCase()
-    .replace(/:/g, '-')
-    .replace(/\s+/g, '-')
-    .replace(/_/g, '-')
-    .replace(/[^a-z0-9-]/g, '');
+    .replace(/:/gu, '-')
+    .replace(/\s+/gu, '-')
+    .replace(/_/gu, '-')
+    .replace(/[^a-z0-9-]/gu, '');
 }
 
 function createTestId(...parts: string[]): string {
@@ -47,14 +50,14 @@ const ALL_FEATURED_CHAIN_IDS = [
  * default test-dapps are running alongside it).
  *
  * Selector notes (from @metamask/playground-ui TEST_IDS + App.tsx):
- *   - Network checkboxes live inside DynamicInputs, not FeaturedNetworks.
- *     Their testId is: createTestId('dynamic-inputs', 'checkbox', chainId)
- *   - app-section-connected is always in the DOM; use app-section-scopes to
- *     confirm a multichain session is active.
- *   - Ethereum (eip155:1) is pre-checked when the page first loads.
- *   - The method selector in each ScopeCard is a native HTML <select>.
- *   - Solana is included in the multichain session via selectNetworks() and
- *     appears as a ScopeCard (not a separate wallet-standard flow).
+ * - Network checkboxes live inside DynamicInputs, not FeaturedNetworks.
+ * Their testId is: createTestId('dynamic-inputs', 'checkbox', chainId)
+ * - app-section-connected is always in the DOM; use app-section-scopes to
+ * confirm a multichain session is active.
+ * - Ethereum (eip155:1) is pre-checked when the page first loads.
+ * - The method selector in each ScopeCard is a native HTML <select>.
+ * - Solana is included in the multichain session via selectNetworks() and
+ * appears as a ScopeCard (not a separate wallet-standard flow).
  */
 export class TestDappMmConnect {
   private readonly driver: Driver;
@@ -108,7 +111,7 @@ export class TestDappMmConnect {
    * state. This prevents accidentally toggling Ethereum off.
    *
    * @param desiredChainIds - CAIP-2 chain IDs that should be checked.
-   *   e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
+   * e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
    */
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
     for (const chainId of ALL_FEATURED_CHAIN_IDS) {
@@ -145,8 +148,10 @@ export class TestDappMmConnect {
 
   /**
    * Assert multichain session state.
-   *   'connected'    → app-section-scopes is in the DOM (session has scopes)
-   *   'disconnected' → app-section-scopes is NOT present; connect button is visible
+   * 'connected' → app-section-scopes is in the DOM (session has scopes)
+   * 'disconnected' → app-section-scopes is NOT present; connect button is visible
+   *
+   * @param expected - Expected connection status ('connected' or 'disconnected').
    */
   async checkConnectionStatus(
     expected: 'connected' | 'disconnected',

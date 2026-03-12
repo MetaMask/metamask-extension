@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
-import { openPermissionsPageFlow } from './permissions.flow';
 import PermissionListPage from '../pages/permission/permission-list-page';
 import SitePermissionPage from '../pages/permission/site-permission-page';
+import { openPermissionsPageFlow } from './permissions.flow';
 
 /**
  * Navigate to the permissions page for a specific host origin and return a
@@ -11,7 +11,7 @@ import SitePermissionPage from '../pages/permission/site-permission-page';
  *
  * @param driver - The webdriver instance.
  * @param hostname - The hostname whose permissions page should be opened,
- *   e.g. '127.0.0.1:8080'.
+ * e.g. '127.0.0.1:8080'.
  * @returns A SitePermissionPage already verified to be loaded.
  */
 export async function getPermissionsPageForHost(
