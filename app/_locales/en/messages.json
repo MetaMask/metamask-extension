@@ -4156,9 +4156,6 @@
   "musdBuyMusd": {
     "message": "Buy mUSD"
   },
-  "musdClaimActivityTitle": {
-    "message": "Claim mUSD bonus"
-  },
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"

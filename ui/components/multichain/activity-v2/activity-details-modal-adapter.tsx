@@ -123,7 +123,7 @@ const TransactionDetailsWrapper = ({
   if (PAY_TRANSACTION_TYPES.includes(effectiveType)) {
     return (
       <LegacyTransactionDetailsModal
-        transactionMeta={transaction}
+        transactionMeta={syntheticGroup.initialTransaction}
         onClose={onClose}
       />
     );
