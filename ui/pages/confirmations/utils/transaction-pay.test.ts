@@ -264,7 +264,6 @@ describe('transaction-pay utils', () => {
       expect(result[0].address).toBe(TOKEN_ADDRESS_2_MOCK);
     });
 
-
     it('marks token as enabled when native token has balance', () => {
       const tokens = [
         createMockAsset({ address: TOKEN_ADDRESS_MOCK }),
