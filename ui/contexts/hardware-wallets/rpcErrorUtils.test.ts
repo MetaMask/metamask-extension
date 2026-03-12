@@ -342,6 +342,41 @@ describe('rpcErrorUtils', () => {
       });
     });
 
+    it('does not treat generic provider errors as top-level serialized hardware wallet errors', () => {
+      const providerError = {
+        code: 4001,
+        message: 'User rejected',
+      };
+
+      const result = toHardwareWalletError(
+        providerError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('User rejected');
+      expect(result.metadata).toEqual({
+        walletType: HardwareWalletType.Ledger,
+      });
+    });
+
+    it('does not treat generic RPC errors as top-level serialized hardware wallet errors', () => {
+      const rpcError = {
+        code: -32603,
+        message: 'Internal error',
+      };
+
+      const result = toHardwareWalletError(rpcError, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('Internal error');
+      expect(result.metadata).toEqual({
+        walletType: HardwareWalletType.Ledger,
+      });
+    });
+
     it('reconstructs UserRejected from KeyringControllerError serialized cause', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),

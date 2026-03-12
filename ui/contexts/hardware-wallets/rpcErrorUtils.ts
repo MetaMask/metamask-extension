@@ -216,7 +216,7 @@ function isPlainObjectWithErrorCode(
  * @returns True if the error has HardwareWalletError-like top-level shape
  */
 function isSerializedTopLevelHardwareWalletError(error: unknown): error is {
-  name?: string;
+  name: 'HardwareWalletError';
   message?: string;
   stack?: string;
   code: string | number;
@@ -230,9 +230,7 @@ function isSerializedTopLevelHardwareWalletError(error: unknown): error is {
   }
 
   const errorAsAny = error as { name?: unknown };
-  return (
-    errorAsAny?.name === undefined || errorAsAny?.name === 'HardwareWalletError'
-  );
+  return errorAsAny?.name === 'HardwareWalletError';
 }
 
 /**
