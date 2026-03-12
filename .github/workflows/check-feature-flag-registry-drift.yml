@@ -3,7 +3,7 @@ name: Check Feature Flag Registry Drift PROD
 on:
   schedule:
     # Run daily at 01:00 UTC
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * 2'
   workflow_dispatch:
 
 permissions:
