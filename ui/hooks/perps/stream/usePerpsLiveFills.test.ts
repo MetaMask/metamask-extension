@@ -39,9 +39,7 @@ describe('usePerpsLiveFills', () => {
       isInitialLoading: true,
     });
 
-    const { result } = renderHook(() =>
-      usePerpsLiveFills({ throttleMs: 100 }),
-    );
+    const { result } = renderHook(() => usePerpsLiveFills({ throttleMs: 100 }));
 
     expect(mockUsePerpsChannel).toHaveBeenCalledWith(expect.any(Function), []);
     expect(result.current).toEqual({
