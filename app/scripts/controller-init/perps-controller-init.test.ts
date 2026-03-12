@@ -1,6 +1,5 @@
 import {
   PerpsController,
-  getDefaultPerpsControllerState,
   type PerpsControllerState,
 } from '@metamask/perps-controller';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
@@ -154,7 +153,7 @@ describe('PerpsControllerInit', () => {
 
       expect(PerpsControllerMock).toHaveBeenCalledWith({
         messenger: request.controllerMessenger,
-        state: expect.objectContaining(getDefaultPerpsControllerState()),
+        state: undefined,
         infrastructure: expect.any(Object),
         clientConfig: {
           fallbackHip3Enabled: true,
@@ -164,7 +163,7 @@ describe('PerpsControllerInit', () => {
       });
     });
 
-    it('merges persisted state with default state', () => {
+    it('passes persisted state directly to the controller', () => {
       const request = getInitRequestMock();
       const persistedState: Partial<PerpsControllerState> = {
         isTestnet: true,
@@ -175,9 +174,7 @@ describe('PerpsControllerInit', () => {
       PerpsControllerInit(request);
 
       const constructorCall = PerpsControllerMock.mock.calls[0][0];
-      expect(constructorCall.state).toEqual(
-        expect.objectContaining(persistedState),
-      );
+      expect(constructorCall.state).toBe(persistedState);
     });
 
     it('calls createPerpsInfrastructure', () => {
