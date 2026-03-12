@@ -86,7 +86,7 @@ describe('TransactionDetailsModal', () => {
     const { getByRole } = render(TransactionType.musdConversion);
     expect(
       getByRole('heading', {
-        name: messages.musdConversionActivityTitle.message,
+        name: messages.musdConversionTitle.message,
       }),
     ).toBeInTheDocument();
   });

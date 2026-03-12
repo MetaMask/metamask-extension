@@ -7,7 +7,7 @@ import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
 export function isSpendingCapUnlimited(

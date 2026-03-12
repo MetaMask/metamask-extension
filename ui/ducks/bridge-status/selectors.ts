@@ -4,8 +4,8 @@ import type {
   BridgeStatusControllerState,
 } from '@metamask/bridge-status-controller';
 import { type TransactionControllerState } from '@metamask/transaction-controller';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { Numeric } from '../../../shared/lib/Numeric';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   getInternalAccountsFromGroupById,
