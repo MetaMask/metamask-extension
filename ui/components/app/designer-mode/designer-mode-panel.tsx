@@ -1,0 +1,2238 @@
+/**
+ * Designer Mode Panel — Figma-like inspector with editable values
+ *
+ * Provides a right-side floating panel that displays element information
+ * organized into collapsible sections. All style values are editable inline,
+ * and changes are applied directly to the DOM element for rapid prototyping.
+ */
+
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useDesignerMode } from './designer-mode-context';
+import {
+  extractDesignTokensFromClasses,
+  formatAgentPrompt,
+  getDirectTextContent,
+} from './designer-mode.utils';
+import type { ComputedStyleInfo } from './designer-mode.types';
+
+// ═══════════════════════════════════════════════════════════════════
+// Theme constants (Figma-inspired dark palette)
+// ═══════════════════════════════════════════════════════════════════
+
+const C = {
+  bg: '#2c2c2c',
+  surface: '#383838',
+  surfaceHover: '#404040',
+  input: '#1e1e1e',
+  inputHover: '#2a2a2a',
+  inputFocus: '#0d99ff',
+  text: '#ffffff',
+  textSecondary: '#adadad',
+  textTertiary: '#777777',
+  accent: '#0d99ff',
+  accentDim: 'rgba(13, 153, 255, 0.15)',
+  success: '#30d158',
+  divider: '#404040',
+  chevron: '#888888',
+} as const;
+
+const FONT =
+  'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+const MONO =
+  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace';
+
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: EditableValue
+// Click-to-edit inline value with Enter/Escape/Blur handling
+// ═══════════════════════════════════════════════════════════════════
+
+type EditableValueProps = {
+  value: string;
+  onApply: (newValue: string) => void;
+  isColor?: boolean;
+  mono?: boolean;
+  placeholder?: string;
+  multiline?: boolean;
+};
+
+function EditableValue({
+  value,
+  onApply,
+  isColor = false,
+  mono = false,
+  placeholder,
+  multiline = false,
+}: EditableValueProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(value);
+  const originalValueRef = useRef(value);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const colorRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+      originalValueRef.current = value;
+    }
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setEditValue(value);
+    }
+  }, [value, isEditing]);
+
+  // Detect if value looks numeric (e.g. "14px", "500", "1.5em", "0px")
+  const isNumeric = /^-?\d*\.?\d+(px|em|rem|%|vh|vw|pt)?$/u.test(
+    value.trim(),
+  );
+
+  // Apply live on every keystroke (Figma-like)
+  const handleChange = useCallback(
+    (newVal: string) => {
+      setEditValue(newVal);
+      onApply(newVal);
+    },
+    [onApply],
+  );
+
+  const incrementValue = useCallback(
+    (delta: number, fromValue?: string) => {
+      const v = fromValue ?? editValue;
+      const match = v.match(/^(-?\d*\.?\d+)(.*)/u);
+      if (match) {
+        const num = parseFloat(match[1]) + delta;
+        const unit = match[2] || '';
+        const newVal = `${num}${unit}`;
+        setEditValue(newVal);
+        onApply(newVal);
+      }
+    },
+    [editValue, onApply],
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && !multiline) {
+        setIsEditing(false);
+      } else if (e.key === 'Escape') {
+        onApply(originalValueRef.current);
+        setEditValue(originalValueRef.current);
+        setIsEditing(false);
+      } else if (isNumeric && e.key === 'ArrowUp') {
+        e.preventDefault();
+        incrementValue(e.shiftKey ? 10 : 1);
+      } else if (isNumeric && e.key === 'ArrowDown') {
+        e.preventDefault();
+        incrementValue(e.shiftKey ? -10 : -1);
+      }
+      e.stopPropagation();
+    },
+    [multiline, onApply, isNumeric, incrementValue],
+  );
+
+  const handleColorChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onApply(e.target.value);
+    },
+    [onApply],
+  );
+
+  const inputStyles: React.CSSProperties = {
+    width: '100%',
+    backgroundColor: C.input,
+    color: C.text,
+    border: `1px solid ${C.inputFocus}`,
+    borderRadius: 4,
+    padding: multiline ? '6px 8px' : '2px 6px',
+    fontSize: 11,
+    fontFamily: mono ? MONO : FONT,
+    outline: 'none',
+    boxSizing: 'border-box',
+    resize: multiline ? 'vertical' : 'none',
+    minHeight: multiline ? 48 : undefined,
+  };
+
+  const displayStyles: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+    padding: '2px 6px',
+    borderRadius: 4,
+    cursor: 'pointer',
+    fontSize: 11,
+    fontFamily: mono ? MONO : FONT,
+    color: C.text,
+    backgroundColor: 'transparent',
+    border: '1px solid transparent',
+    transition: 'background-color 0.1s, border-color 0.1s',
+    minHeight: 22,
+    wordBreak: 'break-word',
+    width: '100%',
+    boxSizing: 'border-box',
+  };
+
+  if (isEditing) {
+    if (multiline) {
+      return (
+        <textarea
+          ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+          value={editValue}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={() => setIsEditing(false)}
+          onKeyDown={handleKeyDown}
+          style={inputStyles}
+        />
+      );
+    }
+    return (
+      <input
+        ref={inputRef as React.RefObject<HTMLInputElement>}
+        value={editValue}
+        onChange={(e) => handleChange(e.target.value)}
+        onBlur={() => setIsEditing(false)}
+        onKeyDown={handleKeyDown}
+        style={inputStyles}
+      />
+    );
+  }
+
+  return (
+    <div
+      onClick={() => setIsEditing(true)}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.backgroundColor = C.inputHover;
+        (e.currentTarget as HTMLElement).style.borderColor = C.divider;
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+        (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
+      }}
+      style={displayStyles}
+      title={isNumeric ? 'Click to edit · ↑↓ to increment' : 'Click to edit'}
+    >
+      {isColor && (
+        <>
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              colorRef.current?.click();
+            }}
+            style={{
+              display: 'inline-block',
+              width: 14,
+              height: 14,
+              borderRadius: 3,
+              backgroundColor: value,
+              border: '1px solid rgba(255,255,255,0.2)',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          />
+          <input
+            ref={colorRef}
+            type="color"
+            value={toHexColor(value)}
+            onChange={handleColorChange}
+            style={{
+              position: 'absolute',
+              opacity: 0,
+              width: 0,
+              height: 0,
+              pointerEvents: 'none',
+            }}
+          />
+        </>
+      )}
+      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        {value || placeholder || '—'}
+      </span>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: CollapsibleSection
+// ═══════════════════════════════════════════════════════════════════
+
+type CollapsibleSectionProps = {
+  title: string;
+  icon?: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+};
+
+function CollapsibleSection({
+  title,
+  icon,
+  defaultOpen = true,
+  children,
+}: CollapsibleSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div style={{ borderBottom: `1px solid ${C.divider}` }}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          width: '100%',
+          padding: '8px 12px',
+          backgroundColor: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          color: C.textSecondary,
+          fontSize: 11,
+          fontWeight: 600,
+          fontFamily: FONT,
+          letterSpacing: 0.3,
+          textTransform: 'uppercase',
+        }}
+      >
+        <span
+          style={{
+            fontSize: 8,
+            transition: 'transform 0.15s',
+            transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+            color: C.chevron,
+          }}
+        >
+          ▶
+        </span>
+        {icon && <span style={{ fontSize: 12 }}>{icon}</span>}
+        {title}
+      </button>
+      {isOpen && (
+        <div style={{ padding: '0 12px 10px 12px' }}>{children}</div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: PropertyRow
+// Label–value pair arranged horizontally
+// ═══════════════════════════════════════════════════════════════════
+
+type PropertyRowProps = {
+  label: string;
+  value: string;
+  onApply?: (newValue: string) => void;
+  isColor?: boolean;
+  mono?: boolean;
+};
+
+function PropertyRow({
+  label,
+  value,
+  onApply,
+  isColor = false,
+  mono = true,
+}: PropertyRowProps) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        gap: 8,
+        minHeight: 26,
+      }}
+    >
+      <span
+        style={{
+          fontSize: 11,
+          color: C.textTertiary,
+          flexShrink: 0,
+          width: 90,
+          paddingTop: 3,
+          fontFamily: FONT,
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {onApply ? (
+          <EditableValue
+            value={value}
+            onApply={onApply}
+            isColor={isColor}
+            mono={mono}
+          />
+        ) : (
+          <span
+            style={{
+              fontSize: 11,
+              color: C.text,
+              fontFamily: mono ? MONO : FONT,
+              wordBreak: 'break-word',
+              padding: '2px 6px',
+              display: 'block',
+            }}
+          >
+            {value || '—'}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: SpacingEditor
+// Visual cross-layout for margin/padding (Figma-like)
+// ═══════════════════════════════════════════════════════════════════
+
+// ── Shared style for mini spacing inputs ─────────────────────────
+
+const miniInputStyle: React.CSSProperties = {
+  width: 40,
+  textAlign: 'center' as const,
+  fontSize: 10,
+  fontFamily: MONO,
+  color: C.text,
+  backgroundColor: 'transparent',
+  border: '1px solid transparent',
+  borderRadius: 3,
+  padding: '2px 2px',
+  cursor: 'pointer',
+  transition: 'border-color 0.1s, background-color 0.1s',
+  outline: 'none',
+};
+
+// ── MiniInput: standalone component to preserve focus across re-renders
+
+type MiniInputProps = {
+  val: string;
+  side: string;
+  label: string;
+  onApply: (side: string, value: string) => void;
+};
+
+function MiniInput({ val, side, label, onApply }: MiniInputProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editVal, setEditVal] = useState(val);
+  const originalVal = useRef(val);
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && ref.current) {
+      ref.current.focus();
+      ref.current.select();
+      originalVal.current = val;
+    }
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setEditVal(val);
+    }
+  }, [val, isEditing]);
+
+  const incrementMini = useCallback(
+    (delta: number, fromValue?: string) => {
+      const v = fromValue ?? editVal;
+      const match = v.match(/^(-?\d*\.?\d+)(.*)/u);
+      if (match) {
+        const num = parseFloat(match[1]) + delta;
+        const unit = match[2] || '';
+        const newVal = `${num}${unit}`;
+        setEditVal(newVal);
+        onApply(side, newVal);
+      }
+    },
+    [editVal, onApply, side],
+  );
+
+  if (isEditing) {
+    return (
+      <input
+        ref={ref}
+        value={editVal}
+        onChange={(e) => {
+          setEditVal(e.target.value);
+          onApply(side, e.target.value);
+        }}
+        onBlur={() => setIsEditing(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            setIsEditing(false);
+          } else if (e.key === 'Escape') {
+            onApply(side, originalVal.current);
+            setEditVal(originalVal.current);
+            setIsEditing(false);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            incrementMini(e.shiftKey ? 10 : 1);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            incrementMini(e.shiftKey ? -10 : -1);
+          }
+          e.stopPropagation();
+        }}
+        style={{
+          ...miniInputStyle,
+          borderColor: C.divider,
+          backgroundColor: C.input,
+        }}
+      />
+    );
+  }
+
+  return (
+    <span
+      onClick={() => setIsEditing(true)}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.backgroundColor = C.inputHover;
+        (e.currentTarget as HTMLElement).style.borderColor = C.divider;
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+        (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
+      }}
+      style={miniInputStyle}
+      title={`Click to edit ${label}-${side} · ↑↓ to increment`}
+    >
+      {shortenValue(val)}
+    </span>
+  );
+}
+
+// ── SpacingEditor ────────────────────────────────────────────────
+
+type SpacingEditorProps = {
+  label: string;
+  top: string;
+  right: string;
+  bottom: string;
+  left: string;
+  onApply: (side: string, value: string) => void;
+  color: string;
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: EditablePillList
+// Editable list of pills with add/remove (for tokens and classes)
+// ═══════════════════════════════════════════════════════════════════
+
+type EditablePillListProps = {
+  items: string[];
+  color: string;
+  bgColor: string;
+  borderColor?: string;
+  onAdd: (item: string) => void;
+  onRemove: (item: string) => void;
+  placeholder?: string;
+};
+
+function EditablePillList({
+  items,
+  color,
+  bgColor,
+  borderColor,
+  onAdd,
+  onRemove,
+  placeholder = 'Add...',
+}: EditablePillListProps) {
+  const [inputValue, setInputValue] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isAdding && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isAdding]);
+
+  const handleAdd = () => {
+    if (inputValue.trim()) {
+      onAdd(inputValue.trim());
+      setInputValue('');
+    }
+    setIsAdding(false);
+  };
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 4,
+        alignItems: 'center',
+      }}
+    >
+      {items.map((item, index) => (
+        <span
+          key={`${item}-${index}`}
+          style={{
+            fontSize: 10,
+            color,
+            backgroundColor: bgColor,
+            padding: '2px 6px',
+            borderRadius: 3,
+            fontFamily: MONO,
+            border: borderColor ? `1px solid ${borderColor}` : 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+          }}
+        >
+          {item}
+          <span
+            onClick={() => onRemove(item)}
+            style={{
+              cursor: 'pointer',
+              opacity: 0.5,
+              fontSize: 8,
+              lineHeight: 1,
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.opacity = '1';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.opacity = '0.5';
+            }}
+            title={`Remove ${item}`}
+          >
+            ✕
+          </span>
+        </span>
+      ))}
+
+      {/* Add button / input */}
+      {isAdding ? (
+        <input
+          ref={inputRef}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleAdd();
+            } else if (e.key === 'Escape') {
+              setInputValue('');
+              setIsAdding(false);
+            }
+            e.stopPropagation();
+          }}
+          onBlur={handleAdd}
+          placeholder={placeholder}
+          style={{
+            width: 120,
+            fontSize: 10,
+            fontFamily: MONO,
+            color: C.text,
+            backgroundColor: C.input,
+            border: `1px solid ${C.inputFocus}`,
+            borderRadius: 3,
+            padding: '2px 6px',
+            outline: 'none',
+          }}
+        />
+      ) : (
+        <span
+          onClick={() => setIsAdding(true)}
+          style={{
+            fontSize: 10,
+            color: C.textTertiary,
+            backgroundColor: 'transparent',
+            border: `1px dashed ${C.divider}`,
+            borderRadius: 3,
+            padding: '2px 8px',
+            cursor: 'pointer',
+            fontFamily: MONO,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.borderColor = C.accent;
+            (e.currentTarget as HTMLElement).style.color = C.accent;
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.borderColor = C.divider;
+            (e.currentTarget as HTMLElement).style.color = C.textTertiary;
+          }}
+        >
+          + Add
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: SpacingEditor
+// ═══════════════════════════════════════════════════════════════════
+
+function SpacingEditor({
+  label,
+  top,
+  right,
+  bottom,
+  left,
+  onApply,
+  color,
+}: SpacingEditorProps) {
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <div
+        style={{
+          fontSize: 10,
+          color,
+          fontWeight: 600,
+          fontFamily: FONT,
+          marginBottom: 4,
+          textTransform: 'uppercase',
+          letterSpacing: 0.3,
+        }}
+      >
+        {label}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2,
+          padding: '4px 8px',
+          backgroundColor: C.input,
+          borderRadius: 6,
+          border: `1px solid ${C.divider}`,
+        }}
+      >
+        <MiniInput val={top} side="top" label={label} onApply={onApply} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            width: '100%',
+            justifyContent: 'center',
+          }}
+        >
+          <MiniInput val={left} side="left" label={label} onApply={onApply} />
+          <div
+            style={{
+              width: 36,
+              height: 18,
+              borderRadius: 3,
+              backgroundColor: color,
+              opacity: 0.15,
+              flexShrink: 0,
+            }}
+          />
+          <MiniInput
+            val={right}
+            side="right"
+            label={label}
+            onApply={onApply}
+          />
+        </div>
+        <MiniInput
+          val={bottom}
+          side="bottom"
+          label={label}
+          onApply={onApply}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════════════════
+
+function shortenValue(val: string): string {
+  return val.replace('px', '').trim() || '0';
+}
+
+function toHexColor(cssColor: string): string {
+  if (cssColor.startsWith('#')) {
+    return cssColor;
+  }
+  // Try to parse rgb/rgba to hex
+  const rgbMatch = cssColor.match(
+    /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/u,
+  );
+  if (rgbMatch) {
+    const r = parseInt(rgbMatch[1], 10);
+    const g = parseInt(rgbMatch[2], 10);
+    const b = parseInt(rgbMatch[3], 10);
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+  }
+  return '#000000';
+}
+
+function findStyleValue(
+  styles: ComputedStyleInfo[],
+  property: string,
+): string {
+  return styles.find((s) => s.property === property)?.value ?? '';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Main Panel Component
+// ═══════════════════════════════════════════════════════════════════
+
+export function DesignerModePanel() {
+  const {
+    isActive,
+    hoveredElement,
+    selectedElement,
+    isLocked,
+    editLog,
+    clearEditLog,
+    toggleDesignerMode,
+    clearSelection,
+    copyToClipboard,
+    applyStyleChange,
+    applyTextChange,
+  } = useDesignerMode();
+
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  // ── Agent chat state ────────────────────────────────────────
+  const [agentMessages, setAgentMessages] = useState<
+    Array<{ text: string; type: 'sent' | 'status' | 'agent' }>
+  >([]);
+  const [agentInput, setAgentInput] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [waitingForAgent, setWaitingForAgent] = useState(false);
+  const [serverConnected, setServerConnected] = useState<boolean | null>(null);
+  const agentChatRef = useRef<HTMLDivElement>(null);
+
+  // Check server health on mount and periodically
+  useEffect(() => {
+    if (!isActive) {
+      return;
+    }
+
+    const checkHealth = async () => {
+      try {
+        const res = await fetch('http://localhost:3334/api/health', {
+          signal: AbortSignal.timeout(2000),
+        });
+        setServerConnected(res.ok);
+      } catch {
+        setServerConnected(false);
+      }
+    };
+
+    checkHealth();
+    const interval = setInterval(checkHealth, 10000);
+    return () => clearInterval(interval);
+  }, [isActive]);
+
+  // Poll for agent responses when we've sent messages
+  useEffect(() => {
+    if (!isActive || agentMessages.length === 0) {
+      return;
+    }
+
+    const pollResponses = async () => {
+      try {
+        const res = await fetch('http://localhost:3334/api/responses', {
+          signal: AbortSignal.timeout(3000),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.responses && data.responses.length > 0) {
+            setWaitingForAgent(false);
+            setAgentMessages((prev) => [
+              ...prev,
+              ...data.responses.map((r: string) => ({
+                text: r,
+                type: 'agent' as const,
+              })),
+              {
+                text: 'Refresh the extension to see the changes.',
+                type: 'status' as const,
+              },
+            ]);
+          }
+        }
+      } catch {
+        // Silently ignore poll failures
+      }
+    };
+
+    const interval = setInterval(pollResponses, 2000);
+    return () => clearInterval(interval);
+  }, [isActive, agentMessages.length]);
+
+  // Auto-scroll agent chat
+  useEffect(() => {
+    if (agentChatRef.current) {
+      agentChatRef.current.scrollTop = agentChatRef.current.scrollHeight;
+    }
+  }, [agentMessages]);
+
+  const handleSendToAgent = useCallback(async () => {
+    const currentElement = isLocked ? selectedElement : hoveredElement;
+    if (!agentInput.trim() || !currentElement) {
+      return;
+    }
+
+    const message = agentInput.trim();
+    setAgentInput('');
+    setIsSending(true);
+    setAgentMessages((prev) => [...prev, { text: message, type: 'sent' }]);
+
+    try {
+      const prompt = formatAgentPrompt(
+        currentElement,
+        message,
+        editLog,
+      );
+      const res = await fetch('http://localhost:3334/api/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: prompt,
+      });
+
+      if (res.ok) {
+        setWaitingForAgent(true);
+        clearEditLog();
+      } else {
+        setAgentMessages((prev) => [
+          ...prev,
+          { text: `Failed to send (${res.status})`, type: 'status' },
+        ]);
+      }
+    } catch {
+      setAgentMessages((prev) => [
+        ...prev,
+        {
+          text: 'Server not reachable. Run: yarn designer-server',
+          type: 'status',
+        },
+      ]);
+    }
+    setIsSending(false);
+  }, [agentInput, isLocked, selectedElement, hoveredElement, editLog, clearEditLog]);
+
+  // ── Drag-to-move state ──────────────────────────────────────
+  const [position, setPosition] = useState({ x: 8, y: 8 }); // offset from bottom-right
+  const dragRef = useRef<{
+    isDragging: boolean;
+    startX: number;
+    startY: number;
+    startPosX: number;
+    startPosY: number;
+  } | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const handleDragStart = useCallback(
+    (e: React.MouseEvent) => {
+      // Only drag from the header area, not from buttons
+      if ((e.target as HTMLElement).closest('button')) {
+        return;
+      }
+      e.preventDefault();
+      dragRef.current = {
+        isDragging: true,
+        startX: e.clientX,
+        startY: e.clientY,
+        startPosX: position.x,
+        startPosY: position.y,
+      };
+    },
+    [position],
+  );
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragRef.current?.isDragging) {
+        return;
+      }
+      const dx = e.clientX - dragRef.current.startX;
+      const dy = e.clientY - dragRef.current.startY;
+      setPosition({
+        x: Math.max(0, dragRef.current.startPosX - dx),
+        y: Math.max(0, dragRef.current.startPosY - dy),
+      });
+    };
+
+    const handleMouseUp = () => {
+      if (dragRef.current) {
+        dragRef.current.isDragging = false;
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  if (!isActive) {
+    return null;
+  }
+
+  const elementInfo = isLocked ? selectedElement : hoveredElement;
+  const designTokens = elementInfo
+    ? extractDesignTokensFromClasses(elementInfo.component.classNames)
+    : [];
+
+  const textContent = elementInfo
+    ? getDirectTextContent(elementInfo.element)
+    : '';
+
+  const hasPendingEdits = editLog.length > 0;
+
+  const handleApplyEdits = async () => {
+    if (!elementInfo || !hasPendingEdits) {
+      return;
+    }
+    setIsSending(true);
+
+    const message = `Apply these changes:\n${editLog.join('\n')}`;
+    setAgentMessages((prev) => [...prev, { text: message, type: 'sent' }]);
+
+    try {
+      const prompt = formatAgentPrompt(
+        elementInfo,
+        message,
+        editLog,
+      );
+      const res = await fetch('http://localhost:3334/api/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: prompt,
+      });
+      if (res.ok) {
+        setWaitingForAgent(true);
+        clearEditLog();
+      } else {
+        setAgentMessages((prev) => [
+          ...prev,
+          { text: `Failed to send (${res.status})`, type: 'status' },
+        ]);
+      }
+    } catch {
+      setAgentMessages((prev) => [
+        ...prev,
+        {
+          text: 'Server not reachable. Run: yarn designer-server',
+          type: 'status',
+        },
+      ]);
+    }
+    setIsSending(false);
+  };
+
+  const handleCopy = async () => {
+    await copyToClipboard();
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
+  };
+
+  const handleStyleApply = (property: string, newValue: string) => {
+    applyStyleChange(property, newValue);
+  };
+
+  // ── Panel styles ───────────────────────────────────────────────
+
+  const panelStyle: React.CSSProperties = {
+    position: 'fixed',
+    bottom: position.y,
+    right: position.x,
+    width: 340,
+    maxHeight: isMinimized
+      ? 'none'
+      : isLocked
+        ? 'min(680px, calc(100vh - 80px))'
+        : 'min(280px, calc(100vh - 80px))',
+    backgroundColor: C.bg,
+    color: C.text,
+    borderRadius: 8,
+    boxShadow:
+      '0 0 0 1px rgba(255,255,255,0.06), 0 12px 40px rgba(0,0,0,0.55)',
+    fontFamily: FONT,
+    fontSize: 12,
+    zIndex: 1000000,
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    userSelect: 'none',
+    transition: dragRef.current?.isDragging
+      ? 'none'
+      : 'max-height 0.2s ease',
+  };
+
+  // ── Render ─────────────────────────────────────────────────────
+
+  return (
+    <div
+      ref={panelRef}
+      className="designer-mode-panel"
+      data-designer-mode="panel"
+      style={panelStyle}
+    >
+      {/* ── Header (draggable) ───────────────────────────────── */}
+      <div
+        onMouseDown={handleDragStart}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 12px',
+          backgroundColor: C.surface,
+          borderBottom: isMinimized ? 'none' : `1px solid ${C.divider}`,
+          flexShrink: 0,
+          cursor: 'grab',
+        }}
+      >
+        <span
+          style={{
+            fontWeight: 600,
+            fontSize: 12,
+            color: C.accent,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
+        >
+          <span
+            style={{
+              color: C.textTertiary,
+              fontSize: 10,
+              letterSpacing: 1,
+            }}
+          >
+            ⠿
+          </span>
+          Designer Mode
+        </span>
+        <div style={{ display: 'flex', gap: 2 }}>
+          <button
+            type="button"
+            onClick={handleCopy}
+            disabled={!elementInfo}
+            title="Copy element info for AI"
+            style={{
+              padding: '4px 8px',
+              backgroundColor: copySuccess ? C.success : C.accentDim,
+              color: copySuccess ? '#fff' : C.accent,
+              border: 'none',
+              borderRadius: 4,
+              cursor: elementInfo ? 'pointer' : 'not-allowed',
+              fontSize: 10,
+              fontWeight: 600,
+              fontFamily: FONT,
+              opacity: elementInfo ? 1 : 0.4,
+              transition: 'background-color 0.15s',
+            }}
+          >
+            {copySuccess ? '✓ Copied' : 'Copy for AI'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsMinimized(!isMinimized)}
+            title={isMinimized ? 'Expand panel' : 'Minimize panel'}
+            style={{
+              width: 24,
+              height: 24,
+              backgroundColor: 'transparent',
+              color: C.textTertiary,
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              fontSize: 12,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: MONO,
+            }}
+          >
+            {isMinimized ? '▢' : '▁'}
+          </button>
+          <button
+            type="button"
+            onClick={toggleDesignerMode}
+            title="Close Designer Mode"
+            style={{
+              width: 24,
+              height: 24,
+              backgroundColor: 'transparent',
+              color: C.textTertiary,
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              fontSize: 14,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: FONT,
+            }}
+          >
+            ×
+          </button>
+        </div>
+      </div>
+
+      {/* ── Collapsible body (hidden when minimized) ─────────── */}
+      {!isMinimized && (
+        <>
+      {/* ── Lock status bar ──────────────────────────────────── */}
+      {isLocked && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '4px 12px',
+            backgroundColor: C.accentDim,
+            fontSize: 10,
+            color: C.accent,
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ fontWeight: 500 }}>
+            Selection locked
+          </span>
+          <button
+            type="button"
+            onClick={clearSelection}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: C.accent,
+              cursor: 'pointer',
+              fontSize: 10,
+              fontWeight: 600,
+              fontFamily: FONT,
+              textDecoration: 'underline',
+            }}
+          >
+            Unlock
+          </button>
+        </div>
+      )}
+
+      {/* ── Scrollable content ───────────────────────────────── */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+        }}
+      >
+        {!elementInfo ? (
+          /* ── Empty state ─────────────────────────────────── */
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '40px 24px',
+              color: C.textTertiary,
+              textAlign: 'center',
+            }}
+          >
+            <div style={{ fontSize: 32, marginBottom: 12, opacity: 0.4 }}>
+              ◎
+            </div>
+            <div style={{ fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
+              Hover over any element
+            </div>
+            <div style={{ fontSize: 11 }}>
+              Click to lock selection and edit values
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* ── Element header ───────────────────────────── */}
+            <div
+              style={{
+                padding: '10px 12px',
+                borderBottom: `1px solid ${C.divider}`,
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  marginBottom: 4,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: C.text,
+                  }}
+                >
+                  {elementInfo.component.componentName || 'Unknown'}
+                </span>
+                {elementInfo.component.testId && (
+                  <span
+                    style={{
+                      fontSize: 10,
+                      color: C.accent,
+                      backgroundColor: C.accentDim,
+                      padding: '1px 6px',
+                      borderRadius: 3,
+                      fontFamily: MONO,
+                    }}
+                  >
+                    {elementInfo.component.testId}
+                  </span>
+                )}
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  color: C.textTertiary,
+                  lineHeight: 1.4,
+                  maxHeight: 32,
+                  overflow: 'hidden',
+                }}
+              >
+                {elementInfo.componentPath.slice(-3).join(' › ') || '—'}
+              </div>
+            </div>
+
+            {/* ── Text Content ─────────────────────────────── */}
+            {textContent && (
+              <div
+                style={{
+                  padding: '8px 12px',
+                  borderBottom: `1px solid ${C.divider}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: C.textTertiary,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.3,
+                    marginBottom: 4,
+                  }}
+                >
+                  Text Content
+                </div>
+                <EditableValue
+                  value={textContent}
+                  onApply={applyTextChange}
+                  mono={false}
+                />
+              </div>
+            )}
+
+            {/* ── Layout section ───────────────────────────── */}
+            <CollapsibleSection title="Layout" icon="⊞">
+              <PropertyRow
+                label="Display"
+                value={findStyleValue(
+                  elementInfo.styles.layout,
+                  'display',
+                )}
+                onApply={(v) => handleStyleApply('display', v)}
+              />
+              <PropertyRow
+                label="Position"
+                value={findStyleValue(
+                  elementInfo.styles.layout,
+                  'position',
+                )}
+                onApply={(v) => handleStyleApply('position', v)}
+              />
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: 4,
+                }}
+              >
+                <PropertyRow
+                  label="W"
+                  value={findStyleValue(
+                    elementInfo.styles.layout,
+                    'width',
+                  )}
+                  onApply={(v) => handleStyleApply('width', v)}
+                />
+                <PropertyRow
+                  label="H"
+                  value={findStyleValue(
+                    elementInfo.styles.layout,
+                    'height',
+                  )}
+                  onApply={(v) => handleStyleApply('height', v)}
+                />
+              </div>
+              {findStyleValue(
+                elementInfo.styles.layout,
+                'flex-direction',
+              ) && (
+                <>
+                  <PropertyRow
+                    label="Direction"
+                    value={findStyleValue(
+                      elementInfo.styles.layout,
+                      'flex-direction',
+                    )}
+                    onApply={(v) =>
+                      handleStyleApply('flex-direction', v)
+                    }
+                  />
+                  <PropertyRow
+                    label="Align"
+                    value={findStyleValue(
+                      elementInfo.styles.layout,
+                      'align-items',
+                    )}
+                    onApply={(v) =>
+                      handleStyleApply('align-items', v)
+                    }
+                  />
+                  <PropertyRow
+                    label="Justify"
+                    value={findStyleValue(
+                      elementInfo.styles.layout,
+                      'justify-content',
+                    )}
+                    onApply={(v) =>
+                      handleStyleApply('justify-content', v)
+                    }
+                  />
+                  <PropertyRow
+                    label="Gap"
+                    value={findStyleValue(
+                      elementInfo.styles.layout,
+                      'gap',
+                    )}
+                    onApply={(v) => handleStyleApply('gap', v)}
+                  />
+                </>
+              )}
+              <PropertyRow
+                label="Overflow"
+                value={findStyleValue(
+                  elementInfo.styles.layout,
+                  'overflow',
+                )}
+                onApply={(v) => handleStyleApply('overflow', v)}
+              />
+            </CollapsibleSection>
+
+            {/* ── Spacing section ──────────────────────────── */}
+            <CollapsibleSection title="Spacing" icon="⬜">
+              <SpacingEditor
+                label="Margin"
+                top={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'margin-top',
+                )}
+                right={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'margin-right',
+                )}
+                bottom={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'margin-bottom',
+                )}
+                left={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'margin-left',
+                )}
+                onApply={(side, v) =>
+                  handleStyleApply(`margin-${side}`, v)
+                }
+                color={C.accent}
+              />
+              <SpacingEditor
+                label="Padding"
+                top={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'padding-top',
+                )}
+                right={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'padding-right',
+                )}
+                bottom={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'padding-bottom',
+                )}
+                left={findStyleValue(
+                  elementInfo.styles.spacing,
+                  'padding-left',
+                )}
+                onApply={(side, v) =>
+                  handleStyleApply(`padding-${side}`, v)
+                }
+                color={C.success}
+              />
+            </CollapsibleSection>
+
+            {/* ── Typography section ───────────────────────── */}
+            <CollapsibleSection title="Typography" icon="T">
+              <PropertyRow
+                label="Font"
+                value={findStyleValue(
+                  elementInfo.styles.typography,
+                  'font-family',
+                )}
+                onApply={(v) => handleStyleApply('font-family', v)}
+              />
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: 4,
+                }}
+              >
+                <PropertyRow
+                  label="Size"
+                  value={findStyleValue(
+                    elementInfo.styles.typography,
+                    'font-size',
+                  )}
+                  onApply={(v) => handleStyleApply('font-size', v)}
+                />
+                <PropertyRow
+                  label="Weight"
+                  value={findStyleValue(
+                    elementInfo.styles.typography,
+                    'font-weight',
+                  )}
+                  onApply={(v) => handleStyleApply('font-weight', v)}
+                />
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: 4,
+                }}
+              >
+                <PropertyRow
+                  label="Line H."
+                  value={findStyleValue(
+                    elementInfo.styles.typography,
+                    'line-height',
+                  )}
+                  onApply={(v) => handleStyleApply('line-height', v)}
+                />
+                <PropertyRow
+                  label="Align"
+                  value={findStyleValue(
+                    elementInfo.styles.typography,
+                    'text-align',
+                  )}
+                  onApply={(v) => handleStyleApply('text-align', v)}
+                />
+              </div>
+              <PropertyRow
+                label="Color"
+                value={findStyleValue(
+                  elementInfo.styles.typography,
+                  'color',
+                )}
+                onApply={(v) => handleStyleApply('color', v)}
+                isColor
+              />
+            </CollapsibleSection>
+
+            {/* ── Fill & Stroke section ────────────────────── */}
+            <CollapsibleSection title="Fill & Stroke" icon="◉" defaultOpen={false}>
+              <PropertyRow
+                label="Background"
+                value={findStyleValue(
+                  elementInfo.styles.colors,
+                  'background-color',
+                )}
+                onApply={(v) =>
+                  handleStyleApply('background-color', v)
+                }
+                isColor
+              />
+              <PropertyRow
+                label="Opacity"
+                value={findStyleValue(
+                  elementInfo.styles.colors,
+                  'opacity',
+                )}
+                onApply={(v) => handleStyleApply('opacity', v)}
+              />
+              <PropertyRow
+                label="Border"
+                value={findStyleValue(
+                  elementInfo.styles.borders,
+                  'border',
+                )}
+                onApply={(v) => handleStyleApply('border', v)}
+              />
+              <PropertyRow
+                label="Radius"
+                value={findStyleValue(
+                  elementInfo.styles.borders,
+                  'border-radius',
+                )}
+                onApply={(v) =>
+                  handleStyleApply('border-radius', v)
+                }
+              />
+              {findStyleValue(
+                elementInfo.styles.borders,
+                'box-shadow',
+              ) && (
+                <PropertyRow
+                  label="Shadow"
+                  value={findStyleValue(
+                    elementInfo.styles.borders,
+                    'box-shadow',
+                  )}
+                  onApply={(v) => handleStyleApply('box-shadow', v)}
+                />
+              )}
+            </CollapsibleSection>
+
+            {/* ── Component Info section ───────────────────── */}
+            <CollapsibleSection
+              title="Component"
+              icon="⚛"
+              defaultOpen={false}
+            >
+              <PropertyRow
+                label="Name"
+                value={
+                  elementInfo.component.componentName || 'Unknown'
+                }
+                mono={false}
+              />
+              <PropertyRow
+                label="Test ID"
+                value={elementInfo.component.testId || '—'}
+                mono={false}
+              />
+              <div style={{ marginTop: 4 }}>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: C.textTertiary,
+                    marginBottom: 4,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  Path
+                </div>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: C.textSecondary,
+                    fontFamily: MONO,
+                    backgroundColor: C.input,
+                    padding: '6px 8px',
+                    borderRadius: 4,
+                    lineHeight: 1.5,
+                    maxHeight: 60,
+                    overflowY: 'auto',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {elementInfo.componentPath.join(' › ') || '—'}
+                </div>
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: C.textTertiary,
+                    marginBottom: 4,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  Props
+                </div>
+                <pre
+                  style={{
+                    fontSize: 10,
+                    color: C.textSecondary,
+                    fontFamily: MONO,
+                    backgroundColor: C.input,
+                    padding: '6px 8px',
+                    borderRadius: 4,
+                    lineHeight: 1.5,
+                    maxHeight: 120,
+                    overflowY: 'auto',
+                    margin: 0,
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {JSON.stringify(
+                    elementInfo.component.props,
+                    null,
+                    2,
+                  ) || '{}'}
+                </pre>
+              </div>
+            </CollapsibleSection>
+
+            {/* ── Design Tokens section ────────────────────── */}
+            {designTokens.length > 0 && (
+              <CollapsibleSection
+                title="Design Tokens"
+                icon="◆"
+                defaultOpen={false}
+              >
+                <EditablePillList
+                  items={designTokens.map((t) => t.token)}
+                  color={C.accent}
+                  bgColor={C.accentDim}
+                  onAdd={(token) => {
+                    const cls = `mm-box--${token}`;
+                    elementInfo.element.classList.add(cls);
+                    applyStyleChange(
+                      `__token-add`,
+                      `added token class: ${cls}`,
+                    );
+                  }}
+                  onRemove={(token) => {
+                    // Try to find and remove matching class
+                    const cls = elementInfo.element.className
+                      .split(' ')
+                      .find((c) => c.includes(token.split(': ')[1] || token));
+                    if (cls) {
+                      elementInfo.element.classList.remove(cls);
+                      applyStyleChange(
+                        `__token-remove`,
+                        `removed token class: ${cls}`,
+                      );
+                    }
+                  }}
+                  placeholder="e.g. padding-4"
+                />
+              </CollapsibleSection>
+            )}
+
+            {/* ── Classes section ──────────────────────────── */}
+            {elementInfo.component.classNames.length > 0 && (
+              <CollapsibleSection
+                title="Classes"
+                icon="{ }"
+                defaultOpen={false}
+              >
+                <EditablePillList
+                  items={elementInfo.component.classNames}
+                  color={C.textSecondary}
+                  bgColor={C.input}
+                  borderColor={C.divider}
+                  onAdd={(cls) => {
+                    elementInfo.element.classList.add(cls);
+                    applyStyleChange(
+                      `__class-add`,
+                      `added class: ${cls}`,
+                    );
+                  }}
+                  onRemove={(cls) => {
+                    elementInfo.element.classList.remove(cls);
+                    applyStyleChange(
+                      `__class-remove`,
+                      `removed class: ${cls}`,
+                    );
+                  }}
+                  placeholder="e.g. mm-box--padding-4"
+                />
+              </CollapsibleSection>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* ── Chat with Agent (fixed bottom) ────────────────────── */}
+      {elementInfo && (
+        <div
+          style={{
+            flexShrink: 0,
+            border: `1px solid #555`,
+            borderBottom: 'none',
+            borderRadius: '12px 12px 0 0',
+            backgroundColor: '#1a1a1a',
+            boxShadow: '0 -6px 20px rgba(0, 0, 0, 0.4)',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Top bar: status + component pill */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px 6px',
+              gap: 8,
+            }}
+          >
+            {/* Connection status */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                fontSize: 10,
+                color:
+                  serverConnected === true
+                    ? C.success
+                    : serverConnected === false
+                      ? '#ff453a'
+                      : C.textTertiary,
+                fontFamily: FONT,
+                fontWeight: 500,
+                flexShrink: 0,
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  backgroundColor:
+                    serverConnected === true
+                      ? C.success
+                      : serverConnected === false
+                        ? '#ff453a'
+                        : C.textTertiary,
+                  boxShadow:
+                    serverConnected === true
+                      ? `0 0 6px ${C.success}`
+                      : 'none',
+                }}
+              />
+              {serverConnected === true
+                ? 'Connected'
+                : serverConnected === false
+                  ? 'Offline'
+                  : 'Connecting...'}
+            </div>
+
+            {/* Component pill */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                backgroundColor: C.input,
+                border: `1px solid ${C.divider}`,
+                borderRadius: 20,
+                padding: '2px 10px 2px 6px',
+                maxWidth: '65%',
+                overflow: 'hidden',
+              }}
+            >
+              <span
+                style={{
+                  width: 14,
+                  height: 14,
+                  borderRadius: '50%',
+                  backgroundColor: C.accentDim,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 8,
+                  color: C.accent,
+                  flexShrink: 0,
+                }}
+              >
+                ◆
+              </span>
+              <span
+                style={{
+                  fontSize: 10,
+                  color: C.textSecondary,
+                  fontFamily: MONO,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                title={
+                  elementInfo.component.componentName || 'Unknown'
+                }
+              >
+                {elementInfo.component.componentName || 'Unknown'}
+              </span>
+              {elementInfo.component.testId && (
+                <span
+                  style={{
+                    fontSize: 8,
+                    color: C.textTertiary,
+                    fontFamily: MONO,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  #{elementInfo.component.testId}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Pending edits banner */}
+          {hasPendingEdits && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                margin: '6px 12px 0',
+                padding: '6px 10px',
+                backgroundColor: 'rgba(255, 179, 0, 0.08)',
+                border: '1px solid rgba(255, 179, 0, 0.25)',
+                borderRadius: 8,
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#ffb300',
+                    fontFamily: FONT,
+                  }}
+                >
+                  {editLog.length} unsent edit
+                  {editLog.length > 1 ? 's' : ''}
+                </span>
+                <span
+                  style={{
+                    fontSize: 9,
+                    color: C.textTertiary,
+                    fontFamily: MONO,
+                  }}
+                >
+                  {editLog
+                    .slice(0, 2)
+                    .map((e) => e.split(':')[0])
+                    .join(', ')}
+                  {editLog.length > 2
+                    ? `, +${editLog.length - 2} more`
+                    : ''}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleApplyEdits}
+                disabled={isSending}
+                style={{
+                  padding: '5px 12px',
+                  backgroundColor: '#ffb300',
+                  color: '#1a1a1a',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: isSending ? 'not-allowed' : 'pointer',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  fontFamily: FONT,
+                  flexShrink: 0,
+                  opacity: isSending ? 0.5 : 1,
+                }}
+              >
+                Apply
+              </button>
+            </div>
+          )}
+
+          {/* Message thread */}
+          <div
+            ref={agentChatRef}
+            style={{
+              maxHeight: 160,
+              overflowY: 'auto',
+              padding:
+                agentMessages.length > 0 || waitingForAgent
+                  ? '10px 12px 6px'
+                  : '0',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+            }}
+          >
+            {agentMessages.length === 0 && !waitingForAgent && null}
+
+            {agentMessages.map((msg, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems:
+                    msg.type === 'sent' ? 'flex-end' : 'flex-start',
+                }}
+              >
+                {/* Sender label */}
+                {msg.type !== 'status' && (
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color:
+                        msg.type === 'sent' ? C.textTertiary : C.success,
+                      marginBottom: 2,
+                      fontFamily: FONT,
+                      textTransform: 'uppercase',
+                      letterSpacing: 0.3,
+                    }}
+                  >
+                    {msg.type === 'sent' ? 'You' : 'Agent'}
+                  </span>
+                )}
+                {/* Bubble */}
+                <div
+                  style={{
+                    fontSize: 11,
+                    lineHeight: 1.4,
+                    color:
+                      msg.type === 'status' ? C.textTertiary : C.text,
+                    fontStyle:
+                      msg.type === 'status' ? 'italic' : 'normal',
+                    fontFamily: FONT,
+                    padding:
+                      msg.type === 'status' ? '2px 0' : '6px 10px',
+                    backgroundColor:
+                      msg.type === 'sent'
+                        ? C.accent
+                        : msg.type === 'agent'
+                          ? C.surface
+                          : 'transparent',
+                    borderRadius:
+                      msg.type === 'sent'
+                        ? '10px 10px 2px 10px'
+                        : msg.type === 'agent'
+                          ? '10px 10px 10px 2px'
+                          : '0',
+                    maxWidth: '90%',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {msg.type === 'status' && '→ '}
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+
+            {waitingForAgent && <AgentWorkingIndicator />}
+          </div>
+
+          {/* Composer — input with embedded send button (Cursor-style) */}
+          <div style={{ padding: '6px 10px 10px' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                backgroundColor: '#2a2a2a',
+                border: `1px solid ${C.divider}`,
+                borderRadius: 10,
+                padding: '4px 4px 4px 10px',
+                transition: 'border-color 0.15s',
+              }}
+              onFocus={(e) => {
+                (
+                  e.currentTarget as HTMLElement
+                ).style.borderColor = C.accent;
+              }}
+              onBlur={(e) => {
+                (
+                  e.currentTarget as HTMLElement
+                ).style.borderColor = C.divider;
+              }}
+            >
+              <textarea
+                value={agentInput}
+                onChange={(e) => setAgentInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendToAgent();
+                  }
+                  e.stopPropagation();
+                }}
+                placeholder="Ask the agent to make changes..."
+                disabled={isSending}
+                rows={3}
+                style={{
+                  flex: 1,
+                  backgroundColor: 'transparent',
+                  color: C.text,
+                  border: 'none',
+                  padding: '4px 0',
+                  fontSize: 12,
+                  fontFamily: FONT,
+                  outline: 'none',
+                  resize: 'none',
+                  lineHeight: 1.4,
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleSendToAgent}
+                disabled={isSending || !agentInput.trim()}
+                title="Send (Enter)"
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor:
+                    isSending || !agentInput.trim()
+                      ? 'transparent'
+                      : C.accent,
+                  color:
+                    isSending || !agentInput.trim()
+                      ? C.textTertiary
+                      : '#fff',
+                  border: 'none',
+                  borderRadius: 8,
+                  cursor:
+                    isSending || !agentInput.trim()
+                      ? 'default'
+                      : 'pointer',
+                  fontSize: 14,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  transition: 'background-color 0.15s, color 0.15s',
+                }}
+              >
+                ↑
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// Animated indicator while waiting for the agent to respond
+function AgentWorkingIndicator() {
+  const [dotCount, setDotCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDotCount((prev) => (prev + 1) % 4);
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
+
+  const dots = '.'.repeat(dotCount);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+        padding: '10px 12px',
+        backgroundColor: 'rgba(13, 153, 255, 0.06)',
+        borderRadius: 8,
+        border: `1px solid rgba(13, 153, 255, 0.15)`,
+      }}
+    >
+      {/* Status row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Pulsing orb */}
+        <div
+          style={{
+            position: 'relative',
+            width: 14,
+            height: 14,
+            flexShrink: 0,
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '50%',
+              backgroundColor: C.accent,
+              opacity: 0.25,
+              animation: 'designerPulse 1.5s ease-in-out infinite',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: 3,
+              left: 3,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: C.accent,
+              animation: 'designerGlow 1.5s ease-in-out infinite',
+            }}
+          />
+        </div>
+        <span
+          style={{
+            fontSize: 11,
+            color: C.accent,
+            fontWeight: 600,
+            fontFamily: FONT,
+          }}
+        >
+          Agent is working{dots}
+        </span>
+      </div>
+
+      {/* Call to action */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '6px 10px',
+          backgroundColor: 'rgba(255, 255, 255, 0.07)',
+          borderRadius: 6,
+        }}
+      >
+        <span style={{ fontSize: 13 }}>👉</span>
+        <span
+          style={{
+            fontSize: 11,
+            color: C.text,
+            fontWeight: 500,
+            fontFamily: FONT,
+            lineHeight: 1.4,
+          }}
+        >
+          Check your agent for progress and approvals
+        </span>
+      </div>
+
+      {/* Inline keyframes */}
+      <style>{`
+        @keyframes designerPulse {
+          0%, 100% { transform: scale(1); opacity: 0.2; }
+          50% { transform: scale(1.6); opacity: 0.05; }
+        }
+        @keyframes designerGlow {
+          0%, 100% { opacity: 1; box-shadow: 0 0 4px ${C.accent}; }
+          50% { opacity: 0.6; box-shadow: 0 0 10px ${C.accent}; }
+        }
+      `}</style>
+    </div>
+  );
+}

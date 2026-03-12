@@ -14,6 +14,7 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
+import { DesignerMode } from '../components/app/designer-mode';
 import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
@@ -65,7 +66,14 @@ class Index extends PureComponent {
                           <HardwareWalletErrorProvider>
                             <ShieldSubscriptionProvider>
                               <RiveWasmProvider>
-                                <Routes />
+                                {process.env
+                                  .ENABLE_SETTINGS_PAGE_DEV_OPTIONS ? (
+                                  <DesignerMode>
+                                    <Routes />
+                                  </DesignerMode>
+                                ) : (
+                                  <Routes />
+                                )}
                               </RiveWasmProvider>
                             </ShieldSubscriptionProvider>
                           </HardwareWalletErrorProvider>

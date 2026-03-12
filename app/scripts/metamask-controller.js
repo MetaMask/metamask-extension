@@ -2577,6 +2577,10 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
+      setDesignerModeEnabled:
+        preferencesController.setDesignerModeEnabled.bind(
+          preferencesController,
+        ),
       setServiceWorkerKeepAlivePreference:
         preferencesController.setServiceWorkerKeepAlivePreference.bind(
           preferencesController,
