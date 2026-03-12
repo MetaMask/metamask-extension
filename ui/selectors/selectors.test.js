@@ -16,12 +16,12 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/modules/selectors/networks';
+import * as networkSelectors from '../../shared/lib/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
-} from '../../shared/modules/feature-flags';
+} from '../../shared/lib/feature-flags';
 
 import {
   SOLANA_WALLET_NAME,
@@ -29,8 +29,8 @@ import {
 } from '../../shared/lib/accounts';
 import * as selectors from './selectors';
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../shared/modules/selectors/networks'),
+jest.mock('../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/lib/selectors/networks'),
 }));
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -38,8 +38,8 @@ jest.mock('../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
-jest.mock('../../shared/modules/network.utils', () => {
-  const actual = jest.requireActual('../../shared/modules/network.utils');
+jest.mock('../../shared/lib/network.utils', () => {
+  const actual = jest.requireActual('../../shared/lib/network.utils');
   return {
     ...actual,
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
@@ -4213,5 +4213,222 @@ describe('getIsDefiPositionsEnabled', () => {
     expect(selectors.getIsDefiPositionsEnabled(state)).toBe(
       DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
     );
+  });
+});
+
+describe('getShowUpdateModal', () => {
+  const now = 1000000000000;
+  const twentyFiveHoursMs = 25 * 60 * 60 * 1000;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(now);
+    global.platform = {
+      getVersion: jest.fn().mockReturnValue('9.0.0'),
+    };
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    delete global.platform;
+  });
+
+  it('returns false when there is no pending extension version', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when pending version is not greater than current version', () => {
+    global.platform.getVersion.mockReturnValue('11.0.0');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '11.0.0',
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when current version is not below minimum (no modal even with newer update)', () => {
+    global.platform.getVersion.mockReturnValue('11.0.0');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when not enough time passed since last dismissal', () => {
+    const oneHourAgo = now - 60 * 60 * 1000;
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: oneHourAgo,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when not enough time passed since last update', () => {
+    const oneHourAgo = now - 60 * 60 * 1000;
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: oneHourAgo,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns true when newer update exists, current version is below minimum, and cooldowns have passed', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns true when cooldowns are exceeded (dismissed and updated more than 24h ago)', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: now - twentyFiveHoursMs,
+        lastUpdatedAt: now - twentyFiveHoursMs,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns false when platform getVersion is missing (no current version)', () => {
+    global.platform.getVersion.mockReturnValue(undefined);
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('treats four-segment pending as newer than four-segment current (e.g. beta builds)', () => {
+    global.platform.getVersion.mockReturnValue('10.2.3.111');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '10.2.3.112',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '10.2.3.113',
+        },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns false when four-segment pending is not greater than four-segment current', () => {
+    global.platform.getVersion.mockReturnValue('10.2.3.112');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '10.2.3.111',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '10.2.3.113',
+        },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+});
+
+describe('getPendingRedirectRoute', () => {
+  it('returns the route when set', () => {
+    const route = { path: '/shield-plan' };
+    const state = {
+      metamask: {
+        pendingRedirectRoute: route,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toStrictEqual(route);
+  });
+
+  it('returns null when not set', () => {
+    const state = {
+      metamask: {
+        pendingRedirectRoute: null,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+
+  it('returns null when metamask is undefined', () => {
+    const state = {};
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+});
+
+describe('getDeferredDeepLink', () => {
+  it('returns the deferredDeepLink value when it exists', () => {
+    const mockDeepLink = {
+      createdAt: 1765465337256,
+      referringLink: 'https://link.metamask.io/deep-link',
+    };
+    const state = {
+      metamask: {
+        deferredDeepLink: mockDeepLink,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toStrictEqual(mockDeepLink);
+  });
+
+  it('returns null when deferredDeepLink is undefined', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toBeNull();
   });
 });

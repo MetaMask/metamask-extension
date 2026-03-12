@@ -5,14 +5,14 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   parseApprovalTransactionData,
   parseTypedDataMessage,
-} from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/transaction.utils';
 import { ResultType } from '../../../../shared/lib/trust-signals';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
-jest.mock('../../../../shared/modules/transaction.utils');
+jest.mock('../../../../shared/lib/transaction.utils');
 process.env.SECURITY_ALERTS_API_ENABLED = 'true';
 
 // Test constants
@@ -677,10 +677,8 @@ describe('createTrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('handles all eth_signTypedData variants', async () => {
+    it('handles eth_signTypedData_v3 and v4 variants', async () => {
       const variants = [
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
       ];
@@ -711,6 +709,30 @@ describe('createTrustSignalsMiddleware', () => {
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
         );
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      }
+    });
+
+    it('does not scan addresses for eth_signTypedData v1 variants (different param format)', async () => {
+      const variants = [
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+      ];
+
+      for (const method of variants) {
+        const { middleware, phishingController } = createMiddleware();
+
+        const req = createMockRequest(
+          method,
+          createTypedDataParams(TEST_ADDRESSES.TO),
+        );
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       }
@@ -1235,6 +1257,44 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(phishingController.scanUrl).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('EIP-7715 advanced permissions', () => {
+    const eip7715Methods = [
+      MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS,
+      MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS,
+      MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS,
+    ] as const;
+
+    eip7715Methods.forEach((method) => {
+      describe(method, () => {
+        it('scans URL when origin is present', async () => {
+          const { middleware, phishingController } = createMiddleware();
+          const origin = 'https://example.com';
+          const req = createMockRequest(method, [], origin);
+          const res = createMockResponse();
+          const next = jest.fn();
+
+          await middleware(req, res, next);
+
+          expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+          expect(next).toHaveBeenCalled();
+        });
+
+        it('does not scan URL when origin is not present', async () => {
+          const { middleware, phishingController } = createMiddleware();
+          const req = createMockRequest(method);
+          req.origin = undefined;
+          const res = createMockResponse();
+          const next = jest.fn();
+
+          await middleware(req, res, next);
+
+          expect(phishingController.scanUrl).not.toHaveBeenCalled();
+          expect(next).toHaveBeenCalled();
+        });
+      });
     });
   });
 

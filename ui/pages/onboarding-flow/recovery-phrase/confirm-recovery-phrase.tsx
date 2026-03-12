@@ -46,7 +46,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TraceName } from '../../../../shared/lib/trace';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
@@ -86,8 +86,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const navigate = useNavigate();
   const { search } = useLocation();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedEndTrace } = trackEvent;
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 

@@ -7,6 +7,10 @@ import {
   addEth,
 } from '../helpers/utils/confirm-tx.util';
 import {
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
+} from '../../shared/lib/selectors/assets-migration';
+import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
@@ -18,13 +22,13 @@ import {
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
-} from '../../shared/modules/gas.utils';
+} from '../../shared/lib/gas.utils';
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
   sumHexes,
-} from '../../shared/modules/conversion.utils';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/conversion.utils';
+import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
@@ -84,43 +88,14 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     ...unapprovedTypedMessages,
   }),
 );
-
-export const unconfirmedMessagesHashSelector = createSelector(
-  unapprovedPersonalMsgsSelector,
-  unapprovedDecryptMsgsSelector,
-  unapprovedEncryptionPublicKeyMsgsSelector,
-  unapprovedTypedMessagesSelector,
-  (
-    unapprovedPersonalMsgs = {},
-    unapprovedDecryptMsgs = {},
-    unapprovedEncryptionPublicKeyMsgs = {},
-    unapprovedTypedMessages = {},
-  ) => {
-    return {
-      ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
-      ...unapprovedEncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
-    };
-  },
-);
 export const getUse4ByteResolution = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
-  state.metamask.currentCurrency;
+  getCurrencyRateControllerCurrentCurrency(state);
 export const conversionRateSelector = (state) =>
-  state.metamask.currencyRates[getProviderConfig(state).ticker]?.conversionRate;
+  getCurrencyRateControllerCurrencyRates(state)[getProviderConfig(state).ticker]
+    ?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
-
-const txParamsSelector = createSelector(
-  txDataSelector,
-  (txData) => (txData && txData.txParams) || {},
-);
-
-export const tokenAddressSelector = createSelector(
-  txParamsSelector,
-  (txParams) => txParams && txParams.to,
-);
 
 export const transactionFeeSelector = function (state, txData) {
   const currentCurrency = currentCurrencySelector(state);
@@ -268,11 +243,6 @@ export function selectTransactionAvailableBalance(
 
   return accounts[sender]?.balance;
 }
-
-export function selectIsMaxValueEnabled(state, transactionId) {
-  return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
-}
-
 const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
 
 export function selectMaxValueModeForTransaction(state, transactionId) {

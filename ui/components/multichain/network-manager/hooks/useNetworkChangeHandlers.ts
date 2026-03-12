@@ -8,7 +8,7 @@ import {
 import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
-} from '../../../../../shared/modules/network.utils';
+} from '../../../../../shared/lib/network.utils';
 import {
   detectNfts,
   setActiveNetwork,
@@ -58,7 +58,7 @@ export enum ACTION_MODE {
 
 export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,

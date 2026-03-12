@@ -110,8 +110,8 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
           });
         }
 
-        // some cases of Corruption detection will have a `backup` already
-        // present in the `error` object, this sets that case up.
+        // some cases of Corruption detection will expose `getBackup` on the
+        // error object, this sets that case up.
         // We always include a cause to test that causeMessage is properly
         // extracted and passed to the UI across all scenarios.
         const cause = new Error(CAUSE_ERROR_MESSAGE);

@@ -147,12 +147,12 @@ ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations
 app/scripts/lib/ppom                                                                @MetaMask/confirmations
 app/scripts/lib/signature                                                           @MetaMask/confirmations
-app/scripts/lib/transaction/decode                                                  @MetaMask/confirmations
-app/scripts/lib/transaction/metrics.*                                               @MetaMask/confirmations
-app/scripts/lib/transaction/util.*                                                  @MetaMask/confirmations
+app/scripts/lib/transaction                                                         @MetaMask/confirmations
 ui/pages/confirmations                                                              @MetaMask/confirmations
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
-ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations
+ui/pages/confirmations/components/confirm/footer/shield-footer-coverage-indicator   @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/footer/shield-footer-agreement*           @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/components/confirm/info/shield-subscription-approve          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.test.ts                  @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.ts                       @MetaMask/confirmations @MetaMask/web3auth
@@ -168,6 +168,8 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Extension Platform
 .yarnrc.yml                                           @MetaMask/extension-platform
+app/scripts/lib/createMetaRPCHandler.js               @MetaMask/extension-platform
+app/scripts/lib/metaRPCClientFactory.ts               @MetaMask/extension-platform
 
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
@@ -203,11 +205,13 @@ test/e2e/flask/multichain-api                                         @MetaMask/
 app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/wallet-integrations
 app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/wallet-integrations
 app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
-app/scripts/lib/createMetaRPCHandler.js                               @MetaMask/wallet-integrations
 app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
 app/scripts/lib/createDefiReferralMiddleware.ts                @MetaMask/wallet-integrations
-app/scripts/lib/metaRPCClientFactory.ts                               @MetaMask/wallet-integrations
 app/scripts/lib/middleware/                                           @MetaMask/wallet-integrations
 app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations
 app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/wallet-integrations
 app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/wallet-integrations
+
+# mUSD
+**/musd/** @MetaMask/metamask-earn
+shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn

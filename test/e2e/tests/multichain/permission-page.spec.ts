@@ -1,7 +1,7 @@
 import { DAPP_HOST_ADDRESS } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import GatorPermissionsPage from '../../page-objects/pages/permission/gator-permissions-page';
@@ -13,15 +13,14 @@ describe('Permissions Page', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
 
@@ -37,15 +36,14 @@ describe('Permissions Page', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         const gatorPermissionsPage = new GatorPermissionsPage(driver);
         const homePage = new HomePage(driver);

@@ -16,12 +16,11 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
-  MultichainProviderConfig,
   SOLANA_BLOCK_EXPLORER_URL,
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { shortenAddress as utilShortenAddress } from '../../../helpers/utils/util';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -131,12 +130,35 @@ const mockSwapTransaction = {
 const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
-  userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+};
+
+const mockStateWithBitcoin = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    isEvmSelected: false,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      bitcoinAccounts: true,
+    },
+    internalAccounts: {
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+      },
+    },
+  },
 };
 
 describe('MultichainTransactionDetailsModal', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   const useI18nContextMock = useI18nContext as jest.Mock;
 
   beforeEach(() => {
@@ -151,13 +173,11 @@ describe('MultichainTransactionDetailsModal', () => {
     props: {
       transaction: Transaction;
       onClose: jest.Mock;
-      userAddress: string;
-      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
-    const store = configureStore(mockState.metamask);
+    const store = configureStore(mockStateWithBitcoin);
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
       store,
@@ -167,8 +187,8 @@ describe('MultichainTransactionDetailsModal', () => {
   it('renders the modal with transaction details', () => {
     renderComponent();
 
-    expect(screen.getByText('Send')).toBeInTheDocument();
-    expect(screen.getByText('Confirmed')).toBeInTheDocument();
+    expect(screen.getByText(messages.send.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.confirmed.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '1.2 BTC',
     );
@@ -176,7 +196,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
   it('displays the correct transaction status with appropriate color', () => {
     renderComponent();
-    const statusElement = screen.getByText('Confirmed');
+    const statusElement = screen.getByText(messages.confirmed.message);
     expect(statusElement).toHaveClass('mm-box--color-success-default');
   });
 
@@ -314,22 +334,19 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   it('renders Solana swap transaction details correctly', () => {
-    const userAddress = MOCK_ACCOUNT_SOLANA_MAINNET.address;
     const swapProps = {
       transaction: mockSwapTransaction,
       onClose: jest.fn(),
-      userAddress,
-      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
     };
 
     renderComponent(swapProps);
 
-    expect(screen.getByText('Swap')).toBeInTheDocument();
+    expect(screen.getByText(messages.swap.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '-2.5 SOL',
     );
 
-    const addressStart = userAddress.substring(0, 6);
+    const addressStart = MOCK_ACCOUNT_SOLANA_MAINNET.address.substring(0, 6);
     const addressElements = screen.getAllByText((_content, element) => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -350,35 +367,29 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   it('displays the correct from address for Bitcoin send transaction', () => {
-    const btcTransaction = {
+    const btcTransaction: Transaction = {
       ...mockTransaction,
       account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-    };
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          ...mockState.metamask.internalAccounts,
-          accounts: {
-            ...mockState.metamask.internalAccounts.accounts,
-            [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+      from: [
+        {
+          address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+          asset: {
+            fungible: true,
+            type: 'native' as CaipAssetType,
+            amount: '1.0',
+            unit: 'BTC',
           },
         },
-      },
+      ],
     };
-
-    const store = configureStore(modifiedMockState.metamask);
+    const store = configureStore(mockStateWithBitcoin);
     const props = {
       transaction: btcTransaction,
       onClose: jest.fn(),
-      userAddress: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
     };
 
     renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
       store,
@@ -387,10 +398,9 @@ describe('MultichainTransactionDetailsModal', () => {
     const fromLabel = screen.getByText('from');
     expect(fromLabel).toBeInTheDocument();
 
-    const shortenedFromAddress = utilShortenAddress(
-      MOCK_ACCOUNT_BIP122_P2WPKH.address,
+    const fromAddressElement = screen.getByText(
+      MOCK_ACCOUNT_BIP122_P2WPKH.metadata.name,
     );
-    const fromAddressElement = screen.getByText(shortenedFromAddress);
     expect(fromAddressElement).toBeInTheDocument();
 
     const expectedHref = getAddressUrl(

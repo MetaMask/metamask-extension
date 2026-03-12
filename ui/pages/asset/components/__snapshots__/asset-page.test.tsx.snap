@@ -3,30 +3,37 @@
 exports[`AssetPage should render a native asset 1`] = `
 <div>
   <div
-    class="mm-box asset__content"
+    class="asset__content"
   >
     <div
-      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="flex flex-row justify-between pr-4 pb-3 pl-2 pt-4 sticky top-0 z-10 bg-background-default"
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex flex-row"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
+          color="text-icon-default"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
+          <svg
+            class="inline-block w-5 h-5 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            />
+          </svg>
         </button>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-4"
+      class="pl-4"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         data-testid="asset-name"
       >
         TEST
@@ -105,7 +112,7 @@ exports[`AssetPage should render a native asset 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+      class="mt-4 pr-4 pl-4"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-between mm-box--width-full"
@@ -189,10 +196,10 @@ exports[`AssetPage should render a native asset 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
+      class="flex flex-col pt-3"
     >
       <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+        class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__balance-heading"
       >
         Your balance
       </h4>
@@ -239,37 +246,39 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row min-w-0"
+                class="flex flex-row gap-2 min-w-0"
               >
-                <div
-                  class="flex flex-row gap-2 min-w-0"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
                 <button
-                  class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
+                  class="cursor-pointer border-none p-0 m-0 bg-transparent"
                   data-testid="staking-entrypoint-0x1"
                   tabindex="0"
+                  type="button"
                 >
-                  <span
-                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  <div
+                    class="flex flex-row items-center pr-2 pl-2 bg-muted rounded"
                   >
-                    •
-                  </span>
-                  <span
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--color-primary-default"
-                  >
-                    Earn
-                  </span>
-                  <span
-                    class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
-                    style="mask-image: url('./images/icons/stake.svg');"
-                  />
+                    <p
+                      class="text-primary-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+                    >
+                      Earn
+                    </p>
+                    <svg
+                      class="inline-block w-3 h-3 text-primary-default ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M11 21v-7.975q-1.6 0-3.075-.612c-1.475-.613-1.85-.988-2.6-1.738S4 9.058 3.6 8.075 3 6.067 3 5V3h2q1.575 0 3.05.612c1.475.612 1.85.988 2.6 1.738q.775.775 1.287 1.7c.512.925.605 1.275.788 1.975q.125-.176.275-.338c.15-.162.208-.22.325-.337q1.125-1.125 2.6-1.738C17.4 6 17.933 6 19 6h2v2q0 1.6-.613 3.075c-.613 1.475-.987 1.85-1.737 2.6S17.037 15 16.062 15.4 14.067 16 13 16v5zm0-10q0-1.2-.462-2.287c-.463-1.087-.746-1.371-1.313-1.938S8.013 5.771 7.288 5.463 5.8 5 5 5q0 1.2.45 2.3c.45 1.1.733 1.383 1.3 1.95s1.217 1 1.95 1.3 1.5.45 2.3.45m2 3a5.92 5.92 0 0 0 4.225-1.75 6 6 0 0 0 1.313-1.95Q19 9.2 19 8q-1.2 0-2.3.463c-1.1.463-1.383.745-1.95 1.312A5.92 5.92 0 0 0 13 14"
+                      />
+                    </svg>
+                  </div>
                 </button>
               </div>
               <p
@@ -289,7 +298,9 @@ exports[`AssetPage should render a native asset 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
-                />
+                >
+                  -
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
@@ -302,64 +313,64 @@ exports[`AssetPage should render a native asset 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="flex flex-col gap-4 mt-6"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
+          class="flex flex-col pr-4 pl-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__details-heading"
           >
             Token details
           </h4>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+            class="flex flex-col gap-2"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="flex flex-row justify-between"
             >
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Network
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
+                <div
+                  class="flex flex-row gap-2 items-center"
                   data-testid="asset-network"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                   >
                     <img
-                      alt="static-logo"
-                      class="mm-avatar-network__network-image"
+                      alt="Ethereum"
+                      class="size-full object-contain"
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Ethereum
+                  </p>
+                </div>
               </p>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="flex flex-row justify-between"
             >
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Spending caps
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -371,47 +382,19 @@ exports[`AssetPage should render a native asset 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-          style="height: 1px; border-bottom-width: 0;"
+          class="border-muted asset-page__divider"
         />
         <div
-          class="mm-box mm-box--margin-bottom-4"
+          class="mb-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
+            class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__activity-heading"
           >
             Your activity
           </h4>
           <div
-            class="mm-box transaction-list"
-          >
-            <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
-              data-testid="activity-tab-empty-state"
-            >
-              <img
-                alt="Activity"
-                height="72"
-                src="./images/empty-state-activity-light.png"
-                width="72"
-              />
-              <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-              >
-                Nothing to see yet. Swap your first token today.
-              </p>
-              <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-                role="button"
-              >
-                <span
-                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  Swap tokens
-                </span>
-              </button>
-            </div>
-          </div>
+            data-testid="mock-activity-list"
+          />
         </div>
       </div>
     </div>
@@ -422,30 +405,37 @@ exports[`AssetPage should render a native asset 1`] = `
 exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content"
+    class="asset__content"
   >
     <div
-      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="flex flex-row justify-between pr-4 pb-3 pl-2 pt-4 sticky top-0 z-10 bg-background-default"
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex flex-row"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
+          color="text-icon-default"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
+          <svg
+            class="inline-block w-5 h-5 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            />
+          </svg>
         </button>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-4"
+      class="pl-4"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         data-testid="asset-name"
       >
         TEST
@@ -457,26 +447,16 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       <div
         class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
       >
-        <div
-          class="mm-box mm-skeleton mm-box--margin-bottom-1 mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 25%;"
+        <h1
+          class="mm-box mm-text mm-text--display-md mm-box--margin-bottom-1 mm-box--color-text-default"
         >
-          <h1
-            class="mm-box mm-text mm-text--display-md mm-box--color-text-default"
-          >
-             
-          </h1>
-        </div>
-        <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 33%;"
+           
+        </h1>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-          >
-             
-          </p>
-        </div>
+           
+        </p>
       </div>
       <div
         class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
@@ -484,11 +464,23 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       >
         <div
           class="mm-box asset-chart__empty-or-loading-state-container"
-          data-testid="asset-chart-loading"
+          data-testid="asset-chart-empty-state"
         >
           <div
-            class="mm-box mm-skeleton asset-chart__skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          />
+            class="flex flex-col gap-3 items-center justify-center bg-default max-w-56 asset-chart__empty-state-content mx-auto"
+          >
+            <img
+              alt="We could not fetch any historical data"
+              height="72"
+              src="/images/empty-state-asset-details-light.png"
+              width="72"
+            />
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+            >
+              We could not fetch any historical data
+            </p>
+          </div>
         </div>
         <div
           class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
@@ -527,7 +519,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+      class="mt-4 pr-4 pl-4"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-evenly"
@@ -592,10 +584,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
+      class="flex flex-col pt-3"
     >
       <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+        class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__balance-heading"
       >
         Your balance
       </h4>
@@ -642,18 +634,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row min-w-0"
+                class="flex flex-row gap-2 min-w-0"
               >
-                <div
-                  class="flex flex-row gap-2 min-w-0"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -672,7 +660,9 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
-                />
+                >
+                  -
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
@@ -685,64 +675,64 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="flex flex-col gap-4 mt-6"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
+          class="flex flex-col pr-4 pl-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__details-heading"
           >
             Token details
           </h4>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+            class="flex flex-col gap-2"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="flex flex-row justify-between"
             >
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Network
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
+                <div
+                  class="flex flex-row gap-2 items-center"
                   data-testid="asset-network"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                   >
                     <img
-                      alt="static-logo"
-                      class="mm-avatar-network__network-image"
+                      alt="Ethereum"
+                      class="size-full object-contain"
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Ethereum
+                  </p>
+                </div>
               </p>
             </div>
             <div
-              class="mm-box"
+              class=""
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                class="flex flex-row justify-between"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                  class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   Contract address
                 </p>
                 <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   <div>
                     <div
@@ -776,21 +766,21 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+                class="flex flex-col gap-2"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                  class="flex flex-row justify-between"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     Token decimal
                   </p>
                   <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                     >
                       18
                     </p>
@@ -799,18 +789,18 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="flex flex-row justify-between"
             >
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Spending caps
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -822,47 +812,19 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-          style="height: 1px; border-bottom-width: 0;"
+          class="border-muted asset-page__divider"
         />
         <div
-          class="mm-box mm-box--margin-bottom-4"
+          class="mb-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
+            class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__activity-heading"
           >
             Your activity
           </h4>
           <div
-            class="mm-box transaction-list"
-          >
-            <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
-              data-testid="activity-tab-empty-state"
-            >
-              <img
-                alt="Activity"
-                height="72"
-                src="./images/empty-state-activity-light.png"
-                width="72"
-              />
-              <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-              >
-                Nothing to see yet. Swap your first token today.
-              </p>
-              <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-                role="button"
-              >
-                <span
-                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  Swap tokens
-                </span>
-              </button>
-            </div>
-          </div>
+            data-testid="mock-activity-list"
+          />
         </div>
       </div>
     </div>
@@ -873,30 +835,37 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 exports[`AssetPage should render an ERC20 token with prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content"
+    class="asset__content"
   >
     <div
-      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="flex flex-row justify-between pr-4 pb-3 pl-2 pt-4 sticky top-0 z-10 bg-background-default"
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex flex-row"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
+          color="text-icon-default"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
+          <svg
+            class="inline-block w-5 h-5 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            />
+          </svg>
         </button>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-4"
+      class="pl-4"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         data-testid="asset-name"
       >
         TEST
@@ -975,7 +944,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+      class="mt-4 pr-4 pl-4"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-evenly"
@@ -1040,10 +1009,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
+      class="flex flex-col pt-3"
     >
       <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+        class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__balance-heading"
       >
         Your balance
       </h4>
@@ -1090,18 +1059,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row min-w-0"
+                class="flex flex-row gap-2 min-w-0"
               >
-                <div
-                  class="flex flex-row gap-2 min-w-0"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -1120,7 +1085,9 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
-                />
+                >
+                  -
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
@@ -1133,64 +1100,64 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="flex flex-col gap-4 mt-6"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
+          class="flex flex-col pr-4 pl-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__details-heading"
           >
             Token details
           </h4>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+            class="flex flex-col gap-2"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="flex flex-row justify-between"
             >
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Network
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
+                <div
+                  class="flex flex-row gap-2 items-center"
                   data-testid="asset-network"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                   >
                     <img
-                      alt="static-logo"
-                      class="mm-avatar-network__network-image"
+                      alt="Ethereum"
+                      class="size-full object-contain"
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Ethereum
+                  </p>
+                </div>
               </p>
             </div>
             <div
-              class="mm-box"
+              class=""
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                class="flex flex-row justify-between"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                  class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   Contract address
                 </p>
                 <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   <div>
                     <div
@@ -1224,21 +1191,21 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+                class="flex flex-col gap-2"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                  class="flex flex-row justify-between"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     Token decimal
                   </p>
                   <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                     >
                       18
                     </p>
@@ -1247,18 +1214,18 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="flex flex-row justify-between"
             >
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Spending caps
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -1302,47 +1269,19 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-          style="height: 1px; border-bottom-width: 0;"
+          class="border-muted asset-page__divider"
         />
         <div
-          class="mm-box mm-box--margin-bottom-4"
+          class="mb-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
+            class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default asset-page__activity-heading"
           >
             Your activity
           </h4>
           <div
-            class="mm-box transaction-list"
-          >
-            <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
-              data-testid="activity-tab-empty-state"
-            >
-              <img
-                alt="Activity"
-                height="72"
-                src="./images/empty-state-activity-light.png"
-                width="72"
-              />
-              <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-              >
-                Nothing to see yet. Swap your first token today.
-              </p>
-              <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-                role="button"
-              >
-                <span
-                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  Swap tokens
-                </span>
-              </button>
-            </div>
-          </div>
+            data-testid="mock-activity-list"
+          />
         </div>
       </div>
     </div>

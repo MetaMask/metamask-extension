@@ -1,8 +1,10 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { ERC20 } from '@metamask/controller-utils';
+import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import {
   BannerAlert,
   Button,
@@ -15,7 +17,6 @@ import {
   TextAlign,
   Severity,
 } from '../../helpers/constants/design-system';
-import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
@@ -23,7 +24,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
@@ -33,10 +34,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
@@ -101,7 +99,7 @@ const ConfirmAddSuggestedToken = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
   const tokens = useSelector(getTokens);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const approvalId = suggestedTokens[0]?.id;
 
   const knownTokenBannerAlert = useMemo(() => {
@@ -151,7 +149,7 @@ const ConfirmAddSuggestedToken = () => {
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
             source: MetaMetricsTokenEventSource.Dapp,
-            token_standard: TokenStandard.ERC20,
+            token_standard: ERC20,
             asset_type: AssetType.token,
           },
         });
@@ -209,12 +207,11 @@ const ConfirmAddSuggestedToken = () => {
                 className="confirm-add-suggested-token__token-list-item"
                 key={asset.address}
               >
-                <div className="confirm-add-suggested-token__token confirm-add-suggested-token__data">
-                  <Identicon
-                    className="confirm-add-suggested-token__token-icon"
-                    diameter={48}
-                    address={asset.address}
-                    image={asset.image}
+                <div className="confirm-add-suggested-token__token confirm-add-suggested-token__data gap-2">
+                  <AvatarToken
+                    size={AvatarTokenSize.Xl}
+                    src={asset.image}
+                    name={getTokenName(asset.name, asset.symbol)}
                   />
                   <div className="confirm-add-suggested-token__name">
                     {getTokenName(asset.name, asset.symbol)}

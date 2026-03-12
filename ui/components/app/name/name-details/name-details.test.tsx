@@ -18,6 +18,7 @@ import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
 import { setName, updateProposedNames } from '../../../../store/actions';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -118,7 +119,7 @@ async function saveNameUsingDropdown(
 ) {
   const { getByPlaceholderText, getByText } = component;
   const nameInput = getByPlaceholderText(placeholder);
-  const saveButton = getByText('Save');
+  const saveButton = getByText(messages.save.message);
 
   await act(async () => {
     fireEvent.click(nameInput);
@@ -142,7 +143,7 @@ async function saveNameUsingTextField(
 ) {
   const { getByPlaceholderText, getByText } = component;
   const nameInput = getByPlaceholderText(placeholder);
-  const saveButton = getByText('Save');
+  const saveButton = getByText(messages.save.message);
 
   await act(async () => {
     fireEvent.click(nameInput);
@@ -363,7 +364,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Choose a nickname...');
+    const nameInput = getByPlaceholderText(messages.nameSetPlaceholder.message);
 
     await act(async () => {
       fireEvent.click(nameInput);
@@ -524,7 +525,7 @@ describe('NameDetails', () => {
     });
   });
 
-  it('updates proposed names on regular interval', () => {
+  it('updates proposed names on regular interval', async () => {
     renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -536,12 +537,48 @@ describe('NameDetails', () => {
     );
 
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1999);
+    await act(async () => {
+      jest.advanceTimersByTime(1999);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1);
+    await act(async () => {
+      jest.advanceTimersByTime(1);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
-    jest.advanceTimersByTime(2000);
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not reset polling interval during rerenders', () => {
+    const nameDetails = (
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
+        onClose={() => undefined}
+      />
+    );
+
+    const component = renderWithProvider(nameDetails, store);
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    // Simulate frequent rerenders (e.g. redux updates) before the polling delay elapses.
+    act(() => {
+      for (let index = 0; index < 50; index++) {
+        component.rerender(nameDetails);
+      }
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
   });
 
   describe('metrics', () => {
@@ -568,9 +605,16 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
       await act(async () => {
         renderWithProvider(
-          <MetaMetricsContext.Provider value={trackEventMock}>
+          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
             <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
@@ -652,9 +696,15 @@ describe('NameDetails', () => {
       });
 
       const trackEventMock = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
@@ -756,9 +806,15 @@ describe('NameDetails', () => {
       });
 
       const trackEventMock = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
@@ -867,9 +923,15 @@ describe('NameDetails', () => {
       });
 
       const trackEventMock = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
@@ -919,7 +981,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Malicious address')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameModalTitleMalicious.message),
+      ).toBeInTheDocument();
     });
 
     it('renders warning state correctly', () => {
@@ -940,7 +1004,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Address needs review')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameModalTitleWarning.message),
+      ).toBeInTheDocument();
     });
 
     it('renders verified state correctly', () => {
@@ -961,7 +1027,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Verified address')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameModalTitleVerified.message),
+      ).toBeInTheDocument();
     });
 
     it('shows footer warning for malicious state', () => {
@@ -982,7 +1050,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameFooterTrustWarning.message),
+      ).toBeInTheDocument();
     });
 
     it('shows footer warning for warning state', () => {
@@ -1003,7 +1073,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameFooterTrustWarning.message),
+      ).toBeInTheDocument();
     });
   });
 });

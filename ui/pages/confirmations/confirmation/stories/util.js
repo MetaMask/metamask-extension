@@ -8,6 +8,10 @@ import {
   mockMultichainNetworkState,
   mockNetworkState,
 } from '../../../../../test/stub/networks';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokenBalancesControllerTokenBalances,
+} from '../../../../../shared/lib/selectors/assets-migration';
 
 const STORE_MOCK = {
   ...testData,
@@ -63,8 +67,9 @@ const STORE_MOCK = {
       },
     },
     tokenList: {},
+    tokenBalances: getTokenBalancesControllerTokenBalances(testData),
     internalAccounts: testData.metamask.internalAccounts,
-    accountsByChainId: testData.metamask.accountsByChainId,
+    accountsByChainId: getAccountTrackerControllerAccountsByChainId(testData),
     accountTree: testData.metamask.accountTree,
     snaps: {
       'npm:@test/test-snap': {

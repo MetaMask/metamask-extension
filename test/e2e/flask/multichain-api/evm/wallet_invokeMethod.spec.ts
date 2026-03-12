@@ -6,8 +6,9 @@ import {
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
 } from '../../../constants';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -24,7 +25,10 @@ import {
 
 describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
-  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
+  const CAIP_ACCOUNT_IDS = [
+    toEvmCaipAccountId(ACCOUNT_1),
+    toEvmCaipAccountId(ACCOUNT_2),
+  ];
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
     DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
@@ -39,7 +43,7 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -89,7 +93,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -142,7 +146,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -247,7 +251,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -392,8 +396,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -440,8 +444,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -482,7 +486,6 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
             await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
@@ -514,8 +517,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -556,7 +559,6 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
             await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(

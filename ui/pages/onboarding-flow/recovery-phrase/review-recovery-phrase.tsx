@@ -42,7 +42,7 @@ import { getHDEntropyIndex, getFirstTimeFlowType } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import { TraceName } from '../../../../shared/lib/trace';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
@@ -63,8 +63,7 @@ export default function RecoveryPhrase({
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
-  const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedEndTrace } = trackEvent;
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);

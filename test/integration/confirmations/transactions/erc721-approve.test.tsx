@@ -1,8 +1,7 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, ERC721 } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -13,7 +12,6 @@ import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -100,6 +98,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
+  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -110,12 +109,6 @@ const setupSubmitRequestToBackgroundMocks = (
       ...advancedDetailsMockedRequests,
       ...mockRequests,
     }),
-  );
-
-  mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 
@@ -133,7 +126,7 @@ describe('ERC721 Approve Confirmation', () => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
       getTokenStandardAndDetails: {
-        standard: TokenStandard.ERC721,
+        standard: ERC721,
       },
     });
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
@@ -163,14 +156,10 @@ describe('ERC721 Approve Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(
-        tEn('confirmTitleApproveTransactionNFT') as string,
-      ),
+      await screen.findByText(tEn('confirmTitleApproveTransactionNFT')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(
-        tEn('confirmTitleDescApproveTransaction') as string,
-      ),
+      await screen.findByText(tEn('confirmTitleDescApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -191,10 +180,10 @@ describe('ERC721 Approve Confirmation', () => {
     expect(simulationSection).toBeInTheDocument();
 
     expect(simulationSection).toHaveTextContent(
-      tEn('simulationDetailsApproveDesc') as string,
+      tEn('simulationDetailsApproveDesc'),
     );
     expect(simulationSection).toHaveTextContent(
-      tEn('simulationApproveHeading') as string,
+      tEn('simulationApproveHeading'),
     );
     const spendingCapValue = await screen.findByTestId(
       'simulation-token-value',
@@ -227,7 +216,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
-    expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
+    expect(approveDetailsSpender).toHaveTextContent(tEn('spender'));
     expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
@@ -235,7 +224,7 @@ describe('ERC721 Approve Confirmation', () => {
     expect(approveDetailsSpender).toContainElement(spenderTooltip);
     await testUser.hover(spenderTooltip);
     const spenderTooltipContent = await screen.findByText(
-      tEn('spenderTooltipDesc') as string,
+      tEn('spenderTooltipDesc'),
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
@@ -243,9 +232,7 @@ describe('ERC721 Approve Confirmation', () => {
       'transaction-details-origin-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRequestFrom);
-    expect(approveDetailsRequestFrom).toHaveTextContent(
-      tEn('requestFrom') as string,
-    );
+    expect(approveDetailsRequestFrom).toHaveTextContent(tEn('requestFrom'));
     expect(approveDetailsRequestFrom).toHaveTextContent(
       'http://localhost:8086/',
     );
@@ -258,7 +245,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
-      tEn('requestFromTransactionDescription') as string,
+      tEn('requestFromTransactionDescription'),
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });
@@ -287,9 +274,7 @@ describe('ERC721 Approve Confirmation', () => {
       'transaction-details-recipient-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
-    expect(approveDetailsRecipient).toHaveTextContent(
-      tEn('interactingWith') as string,
-    );
+    expect(approveDetailsRecipient).toHaveTextContent(tEn('interactingWith'));
     expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
@@ -300,7 +285,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     await testUser.hover(approveDetailsRecipientTooltip);
     const recipientTooltipContent = await screen.findByText(
-      tEn('interactingWithTransactionDescription') as string,
+      tEn('interactingWithTransactionDescription'),
     );
     expect(recipientTooltipContent).toBeInTheDocument();
 
@@ -308,7 +293,7 @@ describe('ERC721 Approve Confirmation', () => {
       'transaction-details-method-data-row',
     );
     expect(approveDetails).toContainElement(approveMethodData);
-    expect(approveMethodData).toHaveTextContent(tEn('methodData') as string);
+    expect(approveMethodData).toHaveTextContent(tEn('methodData'));
     expect(approveMethodData).toHaveTextContent('Approve');
     const approveMethodDataTooltip = await screen.findByTestId(
       'transaction-details-method-data-row-tooltip',
@@ -316,7 +301,7 @@ describe('ERC721 Approve Confirmation', () => {
     expect(approveMethodData).toContainElement(approveMethodDataTooltip);
     await testUser.hover(approveMethodDataTooltip);
     const approveMethodDataTooltipContent = await screen.findByText(
-      tEn('methodDataTransactionDesc') as string,
+      tEn('methodDataTransactionDesc'),
     );
     expect(approveMethodDataTooltipContent).toBeInTheDocument();
 
@@ -335,7 +320,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     expect(dataSection).toContainElement(dataSectionFunction);
     expect(dataSectionFunction).toHaveTextContent(
-      tEn('transactionDataFunction') as string,
+      tEn('transactionDataFunction'),
     );
     expect(dataSectionFunction).toHaveTextContent('Approve');
 

@@ -29,7 +29,7 @@ import {
   getPermissions,
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -129,7 +129,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   targetSubjectMetadata,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [activeTab, setActiveTab] = useState('accounts');
 
   const existingPermissions = useSelector((state) =>

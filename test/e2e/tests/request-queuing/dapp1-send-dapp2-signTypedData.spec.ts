@@ -1,5 +1,5 @@
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -15,9 +15,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         localNodeOptions: [
           {
@@ -93,6 +92,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await testDappOne.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -102,7 +104,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await transactionConfirmation.clickFooterConfirmButton();

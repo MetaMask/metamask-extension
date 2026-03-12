@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Box, Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
@@ -73,7 +73,7 @@ type SortControlProps = {
 
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 

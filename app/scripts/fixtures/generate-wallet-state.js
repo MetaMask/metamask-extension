@@ -2,7 +2,7 @@ import { Messenger } from '@metamask/messenger';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { WALLET_PASSWORD } from '../../../test/e2e/constants';
 import {
@@ -53,7 +53,7 @@ export async function generateWalletState(withState, fromTest) {
     .withNotificationServicesController(
       generateNotificationControllerState(accounts[0]),
     )
-    .withPreferencesController(generatePreferencesControllerState(accounts))
+    .withPreferencesController(generatePreferencesControllerState())
     .withTokensController(generateTokensControllerState(accounts[0]))
     .withTransactionController(generateTransactionControllerState(accounts[0]))
     .withEnabledNetworks(ALL_POPULAR_NETWORKS)
@@ -255,37 +255,15 @@ function generateNetworkControllerState() {
 /**
  * Generates the state for the PreferencesController.
  *
- * @param {Array<string>} accounts - The account addresses.
  * @returns {object} The generated PreferencesController state.
  */
-function generatePreferencesControllerState(accounts) {
+function generatePreferencesControllerState() {
   console.log('Generating PreferencesController state');
   let preferencesControllerState = {};
 
   if (FIXTURES_CONFIG.withPreferences) {
     preferencesControllerState = FIXTURES_PREFERENCES;
   }
-
-  // Add account identities
-  preferencesControllerState.identities = Object.assign(
-    ...accounts.map((address, index) => ({
-      [address]: {
-        address,
-        lastSelected: 1725363500048,
-        name: `Account ${index + 1}`,
-      },
-    })),
-  );
-
-  preferencesControllerState.lostIdentities = Object.assign(
-    ...accounts.map((address, index) => ({
-      [address]: {
-        address,
-        lastSelected: 1725363500048,
-        name: `Account ${index + 1}`,
-      },
-    })),
-  );
 
   return preferencesControllerState;
 }

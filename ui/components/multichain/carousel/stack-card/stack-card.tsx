@@ -12,9 +12,8 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { SHIELD_CAROUSEL_ID } from '../../../../../shared/modules/shield/constants';
-import { SETTINGS_ROUTE } from '../../../../helpers/constants/routes';
-import { SHIELD_QUERY_PARAMS } from '../../../../../shared/lib/deep-links/routes/shield';
+import { SHIELD_CAROUSEL_ID } from '../../../../../shared/lib/shield/constants';
+import { getShieldInAppNavigationFromExternalLink } from '../../../../../shared/lib/shield';
 import type { StackCardProps } from './stack-card.types';
 
 export const StackCard: React.FC<StackCardProps> = ({
@@ -55,11 +54,8 @@ export const StackCard: React.FC<StackCardProps> = ({
         // in app navigation for shield carousel
         // TODO: clean this once we have better control of how deeplink are opened
         try {
-          const url = new URL(slide.href);
-          const params = url.searchParams.toString();
-          navigate(
-            `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true${params ? `&${params}` : ''}`,
-          );
+          const path = getShieldInAppNavigationFromExternalLink(slide.href);
+          navigate(path);
         } catch (error) {
           console.error('[StackCard] error parsing slide.href', error);
         }

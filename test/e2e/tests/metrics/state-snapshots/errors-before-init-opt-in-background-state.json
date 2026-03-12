@@ -13,6 +13,13 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
+    "AppMetadataController": {
+      "currentAppVersion": "string",
+      "currentMigrationVersion": "number",
+      "firstTimeInfo": "object",
+      "previousAppVersion": "",
+      "previousMigrationVersion": 0
+    },
     "AppStateController": {
       "appActiveTab": "object",
       "browserEnvironment": {},
@@ -21,10 +28,13 @@
       "fullScreenGasPollTokens": "object",
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isRampCardClosed": false,
+      "musdConversionDismissedCtaKeys": "object",
+      "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDropdownState": {},
       "notificationGasPollTokens": "object",
+      "pendingRedirectRoute": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
@@ -113,19 +123,19 @@
       "dismissSeedBackUpReminder": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": "object",
       "ipfsGateway": "string",
       "isMultiAccountBalancesEnabled": "boolean",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
-      "lostIdentities": "object",
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "defaultAddressScope": "string",
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": "boolean",
@@ -136,7 +146,6 @@
         "tokenSortConfig": "object"
       },
       "referrals": "object",
-      "selectedAddress": "string",
       "theme": "light",
       "useBlockie": false,
       "useCurrencyRateCheck": true,
@@ -157,6 +166,7 @@
         "smartTransactions": "object"
       }
     },
+    "StaticAssetsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
       "allDetectedTokens": {},
@@ -164,7 +174,6 @@
       "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
-    "config": "object",
-    "firstTimeInfo": "object"
+    "config": "object"
   }
 }

@@ -68,7 +68,7 @@ const FeatureToggle = ({
   isBackupAndSyncEnabled: boolean;
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
   const isFeatureEnabled = useSelector(section.featureReduxSelector);
@@ -132,8 +132,6 @@ const FeatureToggle = ({
             value={isFeatureEnabled}
             disabled={!isBackupAndSyncEnabled}
             onToggle={handleToggleFeature}
-            offLabel={t('off')}
-            onLabel={t('on')}
             dataTestId={section.toggleButtonTestId}
           />
         </div>

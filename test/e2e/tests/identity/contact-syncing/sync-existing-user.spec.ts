@@ -3,7 +3,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { expect } from '@playwright/test';
 
 import { getCleanAppState, withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import {
   IDENTITY_TEAM_SEED_PHRASE,
@@ -13,7 +13,6 @@ import { UserStorageMockttpController } from '../../../helpers/identity/user-sto
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
 import { completeOnboardFlowIdentity } from '../flows';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 
 import { skipOnFirefox } from '../helpers';
@@ -121,7 +120,7 @@ describe('Contact Syncing - Existing User', function () {
       // PHASE 1: First device - Complete contact lifecycle
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -163,11 +162,6 @@ describe('Contact Syncing - Existing User', function () {
           expect(contactNames).toContain('Bob Johnson');
           expect(contactNames).toContain('Charlie Brown');
 
-          // Set up UI navigation
-          const header = new HeaderNavbar(driver);
-          await header.checkPageIsLoaded();
-
-          // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
             return (
@@ -175,14 +169,13 @@ describe('Contact Syncing - Existing User', function () {
             );
           }, 30000);
 
-          const settingsPage = new SettingsPage(driver);
+          const header = new HeaderNavbar(driver);
+          await header.checkPageIsLoaded();
           const contactsSettings = new ContactsSettings(driver);
 
           // STEP 2: Add new contact
           console.log('STEP 2: Adding new contact...');
-          await header.openSettingsPage();
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToContactsSettings();
+          await header.openContactsPage();
           await contactsSettings.checkPageIsLoaded();
           await contactsSettings.addContact(
             newContact.name,
@@ -235,10 +228,6 @@ describe('Contact Syncing - Existing User', function () {
           // STEP 3: Modify existing contact (Alice)
           console.log('STEP 3: Modifying existing contact...');
 
-          // Navigate back to contacts list first
-          await settingsPage.goToContactsSettings();
-          await contactsSettings.checkPageIsLoaded();
-
           await contactsSettings.editContact({
             existingContactName: 'Alice Smith',
             newContactName: modifiedContactName,
@@ -256,8 +245,6 @@ describe('Contact Syncing - Existing User', function () {
 
           // STEP 4: Delete existing contact (Bob)
           console.log('STEP 4: Deleting existing contact...');
-          await settingsPage.goToContactsSettings();
-          await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.deleteContact('Bob Johnson');
 
@@ -277,7 +264,7 @@ describe('Contact Syncing - Existing User', function () {
       // PHASE 2: Second device - Verify all changes are synced
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(

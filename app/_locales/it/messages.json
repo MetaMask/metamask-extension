@@ -76,9 +76,6 @@
   "activity": {
     "message": "Attività"
   },
-  "activityLog": {
-    "message": "log attività"
-  },
   "add": {
     "message": "Aggiungi"
   },
@@ -115,10 +112,6 @@
   "addToken": {
     "message": "Aggiungi Token"
   },
-  "addTokenByContractAddress": {
-    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "address": {
     "message": "Indirizzo"
   },
@@ -142,10 +135,6 @@
   },
   "alerts": {
     "message": "Avvisi"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Consenti a $1 di ritirare e spendere fino a questo importo:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Importo"
@@ -247,9 +236,6 @@
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },
-  "buildContactList": {
-    "message": "Costruisci la tua lista contatti"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask è progettato e costruito in tutto il mondo."
   },
@@ -312,9 +298,6 @@
   },
   "connect": {
     "message": "Connetti"
-  },
-  "connectAccountOrCreate": {
-    "message": "Connetti un account o creane uno nuovo"
   },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
@@ -448,9 +431,6 @@
   "customGasSettingToolTipMessage": {
     "message": "Usa $1 per personalizzare il prezzo del gas. Questo può creare confusione se non hai familiarità. Interagisci a tuo rischio.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customSpendLimit": {
-    "message": "Limite Spesa Personalizzato"
   },
   "customToken": {
     "message": "Token Personalizzato"
@@ -602,9 +582,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "La tariffa base massima è bassa per le condizioni di rete attuali"
   },
-  "editPermission": {
-    "message": "Modifica Permessi"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 vorrebbe la tua chiave di cifratura pubblica. Consentendo, questo sito sarà in grado di comporre messaggi criptati per te.",
     "description": "$1 is the web3 site name"
@@ -615,9 +592,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Inserisici Limite Spesa"
   },
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
@@ -730,9 +704,6 @@
     "message": "Importato",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "La transazione iniziale è stata confermata dalla rete. Clicca OK per tornare indietro."
-  },
   "insufficientBalance": {
     "message": "Bilancio insufficiente."
   },
@@ -795,9 +766,6 @@
   },
   "knownTokenWarning": {
     "message": "Questa azione modificherà i token che sono già nel tuo portafoglio, che possono essere utilizzati per truffarti. Approva solo se sei sicuro di voler cambiare ciò che rappresentano questi token."
-  },
-  "lastConnected": {
-    "message": "Ultima Connessione"
   },
   "learnMore": {
     "message": "Scopri di più"
@@ -872,9 +840,6 @@
   "newAccount": {
     "message": "Nuovo Account"
   },
-  "newContact": {
-    "message": "Nuovo contatto"
-  },
   "newContract": {
     "message": "Nuovo Contratto"
   },
@@ -893,9 +858,6 @@
   },
   "noAccountsFound": {
     "message": "Nessun account trovato per la ricerca effettuata"
-  },
-  "noConversionRateAvailable": {
-    "message": "Tasso di conversione non disponibile"
   },
   "noWebcamFound": {
     "message": "La fotocamera del tuo computer non è stata trovata. Riprova."
@@ -971,9 +933,6 @@
   "privateNetwork": {
     "message": "Rete Privata"
   },
-  "proposedApprovalLimit": {
-    "message": "Limite di Approvazione Proposto"
-  },
   "provide": {
     "message": "Fornisci"
   },
@@ -992,12 +951,6 @@
   "rejectAll": {
     "message": "Respingi Tutto"
   },
-  "rejectTxsDescription": {
-    "message": "Stai per respingere in serie $1 transazioni."
-  },
-  "rejectTxsN": {
-    "message": "Respingi $1 transazioni"
-  },
   "rejected": {
     "message": "Respinta"
   },
@@ -1006,9 +959,6 @@
   },
   "removeAccount": {
     "message": "Rimuovi account"
-  },
-  "removeAccountDescription": {
-    "message": "Questo account sarà rimosso dal tuo portafoglio. Per favore assicurati che hai la frase seed originale o la chiave privata per questo account importato prima di continuare. Puoi nuovamente importare o creare un account dal menù a tendina. "
   },
   "required": {
     "message": "Richiesto"
@@ -1047,17 +997,11 @@
   "search": {
     "message": "Cerca"
   },
-  "searchAccounts": {
-    "message": "Cerca Account"
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
-  },
-  "selectAccounts": {
-    "message": "Seleziona account"
   },
   "selectAll": {
     "message": "Seleziona tutti"
@@ -1073,9 +1017,6 @@
   },
   "selectType": {
     "message": "Seleziona Tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selezionare tutto consentirà al sito di avere accesso a tutti i tuoi account. Assicurati di fidarti del sito."
   },
   "send": {
     "message": "Invia"
@@ -1115,25 +1056,6 @@
   },
   "speedUpCancellation": {
     "message": "Accelera questo annullamento"
-  },
-  "speedUpTransaction": {
-    "message": "Accelera questa transazione"
-  },
-  "spendLimitInsufficient": {
-    "message": "Limite di spesa insufficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "Limite di spesa non valido; deve essere un numero positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Limite di spesa permesso"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limite di spesa richiesta da $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Limite di spesa troppo grande"
   },
   "stateLogError": {
     "message": "Errore nel recupero dei log di stato."
@@ -1175,10 +1097,6 @@
     "message": "Approva $1 per gli scambi",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapApproveNeedMoreTokens": {
-    "message": "Devi avere $1 $2 in più per completare lo scambio",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
   "swapCustom": {
     "message": "personalizza"
   },
@@ -1217,21 +1135,9 @@
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapNewQuoteIn": {
-    "message": "Nuove quotazioni in $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "I tuoi $1 saranno aggiunti al tuo account quando la transazione sarà processata.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapPriceDifference": {
-    "message": "Stai per scambiare $1 $2 (~$3) per $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Differenza di prezzo di circa ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
   "swapProcessing": {
     "message": "In elaborazione"
@@ -1280,15 +1186,6 @@
   },
   "swapSource": {
     "message": "Sorgente di liquidità"
-  },
-  "swapSwapFrom": {
-    "message": "Scambia da"
-  },
-  "swapSwapSwitch": {
-    "message": "Inverti token"
-  },
-  "swapSwapTo": {
-    "message": "Scambia a"
   },
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",
@@ -1343,38 +1240,11 @@
   "transaction": {
     "message": "transazione"
   },
-  "transactionCancelAttempted": {
-    "message": "Provato l'annullamento della transazione con costo in gas di $1 alle $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transazione cancellata alle $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transazione confermata alle $2."
-  },
-  "transactionCreated": {
-    "message": "Transazione di valore $1 creata alle $2."
-  },
-  "transactionDropped": {
-    "message": "Transazione abbandonata alle $2."
-  },
   "transactionError": {
     "message": "Errore Transazione. Eccceziona generata nel codice del contratto."
   },
   "transactionErrorNoContract": {
     "message": "Stai provando a chiamare una funzione ad un indirizzo che non è un contratto."
-  },
-  "transactionErrored": {
-    "message": "La transazione ha riscontrato un errore."
-  },
-  "transactionResubmitted": {
-    "message": "Transazione reinviata con costo in gas aumentato a $1 alle $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transazione inviata alle $2."
-  },
-  "transactionUpdated": {
-    "message": "Transazione aggiornata alle $2."
   },
   "transfer": {
     "message": "Trasferisci"
@@ -1419,12 +1289,6 @@
   "usedByClients": {
     "message": "Usato da una varietà di clients diversi"
   },
-  "userName": {
-    "message": "Nome utente"
-  },
-  "viewContact": {
-    "message": "Visualizza contatto"
-  },
   "visitWebSite": {
     "message": "Visita il nostro sito web"
   },
@@ -1443,8 +1307,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "La tua frase seed privata"
   }
 }

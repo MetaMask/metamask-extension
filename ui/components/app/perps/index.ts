@@ -1,24 +1,15 @@
-/**
- * Perps UI components
- *
- * This directory contains reusable UI components for the Perps trading feature.
- *
- * @see {@link https://github.com/MetaMask/metamask-extension} for more info
- */
-
+export { PerpsBalanceDropdown } from './perps-balance-dropdown';
+export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
+export { PerpsRecentActivity } from './perps-recent-activity';
+export type { PerpsRecentActivityProps } from './perps-recent-activity';
 export { PerpsTabView } from './perps-tab-view';
-export { PerpsTabControlBar } from './perps-tab-control-bar';
-export type { PerpsTabControlBarProps } from './perps-tab-control-bar';
-export { PositionCard } from './position-card';
-export type { PositionCardProps } from './position-card';
-export { OrderCard } from './order-card';
-export type { OrderCardProps } from './order-card';
-export { PerpsTokenLogo } from './perps-token-logo';
-export type { PerpsTokenLogoProps } from './perps-token-logo';
-export { StartTradeCta } from './start-trade-cta';
-export type { StartTradeCtaProps } from './start-trade-cta';
-export { PerpsEmptyState } from './perps-empty-state';
-export type { PerpsEmptyStateProps } from './perps-empty-state';
+export { PerpsTutorialModal } from './perps-tutorial-modal';
+export { PerpsWatchlist } from './perps-watchlist';
+export { PerpsPositionsOrders } from './perps-positions-orders';
+export type { PerpsPositionsOrdersProps } from './perps-positions-orders';
+export { PerpsExploreMarkets } from './perps-explore-markets';
+export type { PerpsExploreMarketsProps } from './perps-explore-markets';
+export { PerpsSupportLearn } from './perps-support-learn';
 export {
   getDisplayName,
   getPositionDirection,
@@ -27,18 +18,59 @@ export {
   getStatusColor,
   getDisplaySymbol,
   getAssetIconUrl,
+  groupTransactionsByDate,
+  filterTransactionsByType,
+  getTransactionStatusColor,
+  getTransactionAmountColor,
   filterMarketsByQuery,
+  isHip3Market,
+  isCryptoMarket,
 } from './utils';
+
+// Edit Margin
 export {
-  HYPERLIQUID_ASSET_ICONS_BASE_URL,
-  PERPS_CONSTANTS,
-  MARKET_SORTING_CONFIG,
-} from './constants';
+  EditMarginExpandable,
+  EditMarginModal,
+  EditMarginModalContent,
+} from './edit-margin';
 export type {
-  PerpsMarketData,
-  MarketType,
-  Position,
-  Order,
-  OrderType,
-  AccountState,
-} from './types';
+  EditMarginExpandableProps,
+  EditMarginModalProps,
+  EditMarginModalContentProps,
+} from './edit-margin';
+
+// Close Position
+export { ClosePositionModal } from './close-position';
+export type { ClosePositionModalProps } from './close-position';
+
+// Reverse Position
+export { ReversePositionModal } from './reverse-position';
+export type { ReversePositionModalProps } from './reverse-position';
+
+// Update TP/SL
+export { UpdateTPSLModal, UpdateTPSLModalContent } from './update-tpsl';
+export type {
+  UpdateTPSLModalProps,
+  UpdateTPSLModalContentProps,
+} from './update-tpsl';
+
+// Order Entry components
+export { OrderEntry } from './order-entry';
+export type {
+  OrderEntryProps,
+  OrderFormState,
+  OrderDirection,
+  OrderCalculations,
+} from './order-entry';
+
+// Skeleton components
+export {
+  PerpsCardSkeleton,
+  PerpsControlBarSkeleton,
+  PerpsSectionSkeleton,
+  PerpsBalanceActionsSkeleton,
+  PerpsHomeCardSkeleton,
+  PerpsActivityPageSkeleton,
+  PerpsDetailPageSkeleton,
+} from './perps-skeletons';
+export type { PerpsSectionSkeletonProps } from './perps-skeletons';

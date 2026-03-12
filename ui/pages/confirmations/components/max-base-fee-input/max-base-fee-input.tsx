@@ -17,7 +17,7 @@ import { useConfirmContext } from '../../context/confirm';
 import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 import { FormTextField } from '../../../../components/component-library';
 import { limitToMaximumDecimalPlaces } from '../../utils/number';
 import { validateMaxBaseFee } from '../../utils/gasValidations';

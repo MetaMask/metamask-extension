@@ -15,7 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/lib/string-utils';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
@@ -50,7 +50,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   hideAllToasts = () => undefined,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);

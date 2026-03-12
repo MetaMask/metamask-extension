@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
@@ -28,7 +28,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { openWindow } from '../../../helpers/utils/window';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {
   AlignItems,
   Display,
@@ -54,9 +54,6 @@ import { capitalizeStr } from './utils';
 const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
-
-const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
-  'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -316,7 +313,7 @@ export default class SelectHardware extends Component {
                 {this.context.t('ledgerFirefoxNotSupportedDescription1')}
                 <a
                   className="hw-connect__href-link"
-                  href={LEDGER_FIREFOX_NOT_SUPPORTED_URL}
+                  href={ZENDESK_URLS.HARDWARE_CONNECTION_TREZOR_LEDGER}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -825,7 +822,7 @@ export default class SelectHardware extends Component {
         message: (
           <>
             <p className="hw-connect__QR-subtitle">
-              {this.context.t('onekey')}
+              {this.context.t('oneKey')}
             </p>
             <Button
               className="hw-connect__external-btn-first"
@@ -889,6 +886,41 @@ export default class SelectHardware extends Component {
               data-testid="ngrave-brand-learn-more-btn"
             >
               {this.context.t('learnMoreUpperCase')}
+            </Button>
+          </>
+        ),
+      },
+      {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('keycardShell')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.KShell,
+                );
+                openWindow(HardwareAffiliateLinks.KShell);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.KShell,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.KShell);
+              }}
+            >
+              {this.context.t('tutorial')}
             </Button>
           </>
         ),

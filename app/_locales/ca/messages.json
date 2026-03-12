@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Has de seleccionar un compte!"
   },
-  "activityLog": {
-    "message": "registre d'activitat"
-  },
   "addAcquiredTokens": {
     "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
   },
@@ -293,9 +290,6 @@
     "message": "Importats",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "La teva transacció inicial ha sigut confirmada per la xarxa. Fes clic a OK per tornar enrere."
-  },
   "insufficientBalance": {
     "message": "Balanç insuficient."
   },
@@ -389,9 +383,6 @@
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Nou Contacte"
-  },
   "newContract": {
     "message": "Nou Contracte"
   },
@@ -400,9 +391,6 @@
   },
   "next": {
     "message": "Següent"
-  },
-  "noConversionRateAvailable": {
-    "message": "No hi ha cap tarifa de conversió disponible"
   },
   "noWebcamFound": {
     "message": "No s'ha trovat la webcam del teu ordinador. Si us plau prova de nou."
@@ -475,12 +463,6 @@
   "rejectAll": {
     "message": "Rebutja-ho tot"
   },
-  "rejectTxsDescription": {
-    "message": "Estàs a punt de refusar una tanda de $1 transaccions "
-  },
-  "rejectTxsN": {
-    "message": "Rebutja les transaccions de $1"
-  },
   "rejected": {
     "message": "Rebutjat"
   },
@@ -489,9 +471,6 @@
   },
   "removeAccount": {
     "message": "Suprimir el compte"
-  },
-  "removeAccountDescription": {
-    "message": "Aquest compte serà retirat del teu moneder. Si us plau, assegura't que tens la frase de recuperació original o la clau privada per a aquest compte importat abans de continuar. Pots importar o crear comptes novament des del desplegable de comptes."
   },
   "required": {
     "message": "Obligatori"
@@ -578,9 +557,6 @@
   "speedUpCancellation": {
     "message": "Accelera aquesta cancel·lació"
   },
-  "speedUpTransaction": {
-    "message": "Accelerar aquesta transacció"
-  },
   "stateLogError": {
     "message": "Error al recuperar els registres d'estat."
   },
@@ -620,38 +596,11 @@
   "transaction": {
     "message": "transacció"
   },
-  "transactionCancelAttempted": {
-    "message": "Intent de cancel·lació de transacció amb tarifa del gas d'$1 a $2 "
-  },
-  "transactionCancelSuccess": {
-    "message": "Transacció cancel·lada amb èxit per $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transacció confirmada per $2."
-  },
-  "transactionCreated": {
-    "message": "Transacció creada amb un valor de $1 a $2."
-  },
-  "transactionDropped": {
-    "message": "La transacció ha caigut a $2."
-  },
   "transactionError": {
     "message": "Error de Transacció. Excepció llançada en el codi de contracte."
   },
   "transactionErrorNoContract": {
     "message": "Provant d'invocar una funció o una adreça no contractada"
-  },
-  "transactionErrored": {
-    "message": "La transacció ha tingut un error."
-  },
-  "transactionResubmitted": {
-    "message": "Transacció reenviada amb tarifa del gas incrementada d'$1 a $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transacció enviada amb un preu del gas de $1 a $2."
-  },
-  "transactionUpdated": {
-    "message": "Transacció actualitzada a $2."
   },
   "transfer": {
     "message": "Transferència"
@@ -683,12 +632,6 @@
   "usedByClients": {
     "message": "Utilitzat per tot tipus de clients"
   },
-  "userName": {
-    "message": "Nom d'usuari"
-  },
-  "viewContact": {
-    "message": "Veure Contacte"
-  },
   "visitWebSite": {
     "message": "Visita el nostre lloc web"
   },
@@ -697,8 +640,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "La teva frase privada de seeds"
   }
 }

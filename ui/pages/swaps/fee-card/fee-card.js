@@ -33,7 +33,7 @@ export default function FeeCard({
   const t = useContext(I18nContext);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const tokenApprovalTextComponent = (
     <span key="fee-card-approve-symbol" className="fee-card__bold">

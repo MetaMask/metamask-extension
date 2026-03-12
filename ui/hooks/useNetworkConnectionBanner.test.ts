@@ -10,7 +10,7 @@ import { updateNetworkConnectionBanner, updateNetwork } from '../store/actions';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 import mockState from '../../test/data/mock-state.json';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { useNetworkConnectionBanner } from './useNetworkConnectionBanner';
 
 jest.mock('../../shared/constants/network', () => {
@@ -58,10 +58,17 @@ jest.mock('../components/app/toast-master/utils', () => {
   };
 });
 
-jest.mock('../../shared/modules/selectors/networks', () => {
+jest.mock('../../shared/lib/selectors/networks', () => {
   return {
-    ...jest.requireActual('../../shared/modules/selectors/networks'),
+    ...jest.requireActual('../../shared/lib/selectors/networks'),
     getNetworkConfigurationsByChainId: jest.fn(),
+  };
+});
+
+jest.mock('../store/background-connection', () => {
+  return {
+    ...jest.requireActual('../store/background-connection'),
+    submitRequestToBackground: jest.fn().mockResolvedValue(true),
   };
 });
 
@@ -186,7 +193,7 @@ describe('useNetworkConnectionBanner', () => {
           });
         });
 
-        it('creates a MetaMetrics event to capture that the status changed', () => {
+        it('creates a MetaMetrics event to capture that the status changed', async () => {
           mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
             networkName: 'Ethereum Mainnet',
             networkClientId: 'mainnet',
@@ -204,8 +211,10 @@ describe('useNetworkConnectionBanner', () => {
             undefined,
             () => mockTrackEvent,
           );
-          act(() => {
+          await act(async () => {
             jest.advanceTimersByTime(5000);
+            // Flush microtask queue to allow async trackNetworkBannerEvent to complete
+            await Promise.resolve();
           });
 
           expect(mockTrackEvent).toHaveBeenCalledWith({
@@ -293,7 +302,7 @@ describe('useNetworkConnectionBanner', () => {
         });
       });
 
-      it('creates a MetaMetrics event to capture that the status changed', () => {
+      it('creates a MetaMetrics event to capture that the status changed', async () => {
         mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
@@ -318,8 +327,10 @@ describe('useNetworkConnectionBanner', () => {
           undefined,
           () => mockTrackEvent,
         );
-        act(() => {
+        await act(async () => {
           jest.advanceTimersByTime(25000);
+          // Flush microtask queue to allow async trackNetworkBannerEvent to complete
+          await Promise.resolve();
         });
 
         expect(mockTrackEvent).toHaveBeenCalledWith({

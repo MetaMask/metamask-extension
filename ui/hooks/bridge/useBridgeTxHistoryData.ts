@@ -1,14 +1,22 @@
 import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 import { type Hex } from '@metamask/utils';
 import {
   type TransactionMeta,
   TransactionStatus,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { useNavigate } from 'react-router-dom';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
-import { selectBridgeHistoryItemForTxMetaId } from '../../ducks/bridge-status/selectors';
+import { TransactionViewModel } from '../../../shared/lib/multichain/types';
+import { MetaMaskReduxState } from '../../selectors';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+  selectLocalTxForTxHash,
+} from '../../ducks/bridge-status/selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -26,42 +34,71 @@ export type TransactionGroup = {
 };
 
 export type UseBridgeTxHistoryDataProps = {
-  transactionGroup: TransactionGroup;
-  isEarliestNonce: boolean;
+  transactionGroup?: TransactionGroup;
+  transaction?: TransactionViewModel & { type: TransactionType };
 };
 
 export function useBridgeTxHistoryData({
   transactionGroup,
-  isEarliestNonce,
+  transaction: transactionViewData,
 }: UseBridgeTxHistoryDataProps) {
   const navigate = useNavigate();
-  const txMeta = transactionGroup.initialTransaction;
-  const srcTxMetaId = txMeta.id;
-  const bridgeHistoryItem = useSelector((state) =>
-    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
-  );
 
-  const isBridgeFailed = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
+  const txMeta = transactionGroup?.initialTransaction ?? transactionViewData;
+
+  const localTx = useSelector((state: MetaMaskReduxState) =>
+    selectLocalTxForTxHash(state, txMeta?.hash),
+  );
+  const bridgeHistoryItemByHash = useSelector((state: MetaMaskReduxState) =>
+    selectBridgeHistoryItemByHash(state, txMeta?.hash),
+  );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForOriginalTxMetaId(state, txMeta?.id),
+  );
+  // Intent bridge history is keyed by order UID, so activity rows need a
+  // fallback lookup by the original tx meta id instead of tx hash alone.
+  const bridgeHistoryItem =
+    bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
+  const isApprovalTransaction =
+    Boolean(bridgeHistoryItem?.approvalTxId) &&
+    (bridgeHistoryItem?.approvalTxId === localTx?.id ||
+      bridgeHistoryItem?.approvalTxId === txMeta?.id);
+  const displayBridgeHistoryItem = isApprovalTransaction
+    ? undefined
+    : bridgeHistoryItem;
+
+  const isBridgeFailed = displayBridgeHistoryItem
+    ? displayBridgeHistoryItem?.status.status === StatusTypes.FAILED
     : null;
 
-  const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.includes(
-    txMeta.status,
-  )
-    ? undefined
-    : () => {
-        navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`, {
-          state: { transactionGroup, isEarliestNonce },
-        });
-      };
+  const shouldShowBridgeTxDetails =
+    displayBridgeHistoryItem ||
+    txMeta?.type === TransactionType.bridge ||
+    txMeta?.type === TransactionType.swap;
+
+  const showBridgeTxDetails = useCallback(() => {
+    const txIdentifier = txMeta?.hash ?? txMeta?.id;
+
+    if (!txIdentifier) {
+      return;
+    }
+
+    navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txIdentifier}`, {
+      state: {
+        transaction: txMeta,
+      },
+    });
+  }, [navigate, txMeta]);
 
   return {
-    bridgeTxHistoryItem: bridgeHistoryItem,
     // By complete, this means BOTH source and dest tx are confirmed
-    isBridgeComplete: bridgeHistoryItem
-      ? isBridgeComplete(bridgeHistoryItem)
+    isBridgeComplete: displayBridgeHistoryItem
+      ? isBridgeComplete(displayBridgeHistoryItem)
       : null,
     isBridgeFailed,
-    showBridgeTxDetails,
+    showBridgeTxDetails: shouldShowBridgeTxDetails
+      ? showBridgeTxDetails
+      : undefined,
   };
 }

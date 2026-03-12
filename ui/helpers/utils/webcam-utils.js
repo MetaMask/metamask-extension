@@ -2,17 +2,20 @@
 
 import {
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_BRAVE,
   PLATFORM_FIREFOX,
 } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 
 class WebcamUtils {
   static async checkStatus() {
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const environmentType = getEnvironmentType();
+    const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP;
+    const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
     const isFirefoxOrBrave =
       getBrowserName() === (PLATFORM_FIREFOX || PLATFORM_BRAVE);
 
@@ -27,7 +30,14 @@ class WebcamUtils {
 
     if (hasWebcam) {
       let environmentReady = true;
-      if ((isFirefoxOrBrave && isPopup) || (isPopup && !hasWebcamPermissions)) {
+      // Popup and sidepanel modes have limited camera permission capabilities.
+      // When permissions aren't granted, redirect to fullscreen mode where
+      // the browser can properly prompt for camera access.
+      const isRestrictedEnvironment = isPopup || isSidepanel;
+      if (
+        (isFirefoxOrBrave && isRestrictedEnvironment) ||
+        (isRestrictedEnvironment && !hasWebcamPermissions)
+      ) {
         environmentReady = false;
       }
       return {

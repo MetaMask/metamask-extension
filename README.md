@@ -186,18 +186,76 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
 
-#### Running e2e tests against specific feature flag
+#### Running E2E tests with feature flags
 
-While developing new features, we often use feature flags. As we prepare to make these features generally available (GA), we remove the feature flags. Existing feature flags are listed in the `.metamaskrc.dist` file. To execute e2e tests with a particular feature flag enabled, it's necessary to first generate a test build with that feature flag activated. There are two ways to achieve this:
+Feature flags used in tests fall into two categories: remote flags (runtime values fetched from client-config) and build-time flags (compile-time values set during the build). Use the workflow that matches the flag type.
 
-- To enable a feature flag in your local configuration, you should first ensure you have a `.metamaskrc` file copied from `.metamaskrc.dist`. Then, within your local `.metamaskrc` file, you can set the desired feature flag to true. Following this, a test build with the feature flag enabled can be created by executing `yarn build:test`.
+##### Remote feature flags (runtime)
 
-- Alternatively, for enabling a feature flag directly during the test build creation, you can pass the parameter as true via the command line. For instance, activating the MULTICHAIN feature flag can be done by running `MULTICHAIN=1 yarn build:test` or `MULTICHAIN=1 yarn start:test` . This method allows for quick adjustments to feature flags without altering the `.metamaskrc` file.
+Remote flags are provided at runtime and should usually follow production defaults from the [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts). You do not need a custom build just to change a remote flag value for a test.
 
-Once you've created a test build with the desired feature flag enabled, proceed to run your tests as usual. Your tests will now run against the version of the extension with the specific feature flag activated. For example:
-`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome`
+Use one of these test-time overrides:
 
-This approach ensures that your e2e tests accurately reflect the user experience for the upcoming GA features.
+- **`manifestFlags` in `withFixtures`** — best for simple, test-wide flag overrides that don't depend on other fixture state.
+- **`FixtureBuilder.withRemoteFeatureFlags()`** — best when you need the flag change to interact with other fixture state. Note: this method is only available on the legacy `FixtureBuilder`; use this builder when you need it, even for new tests.
+
+For code examples and detailed guidelines, see [Feature flags in E2E tests](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e-testing.md#feature-flags-in-e2e-tests) in contributor-docs.
+
+##### Build-time feature flags (compile-time)
+
+Build-time flags are set before running tests and require creating a test build with the flag enabled. Set the flag either in your local `.metamaskrc` file or as an environment variable prefix (e.g. `MULTICHAIN=1 yarn build:test`), then follow the steps in [Preparing a Test Build](#preparing-a-test-build) to create and run the build.
+
+#### Feature Flag Registry
+
+The [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts) is the central source of truth for all remote feature flags used in MetaMask Extension E2E tests. A [CI check](./.github/workflows/check-feature-flag-registry.yml) runs on every PR to verify that every remote flag reference in changed files exists in the registry. For background on how remote feature flags work in MetaMask, see the [Remote Feature Flags](https://github.com/MetaMask/contributor-docs/blob/main/docs/remote-feature-flags.md) contributor doc.
+
+##### Registry entry format
+
+Each entry in `test/e2e/feature-flags/feature-flag-registry.ts` has the following shape:
+
+```typescript
+myNewFlag: {
+  name: 'myNewFlag',
+  type: FeatureFlagType.Remote,
+  inProd: true,
+  productionDefault: false,
+  status: FeatureFlagStatus.Active,
+},
+```
+
+| Field               | Description                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| `name`              | Must match the object key exactly                                                       |
+| `type`              | `FeatureFlagType.Remote` (fetched at runtime) or `FeatureFlagType.Build` (compile-time) |
+| `inProd`            | Whether the flag currently exists in the production client-config API                   |
+| `productionDefault` | Any valid JSON value (`Json` type — boolean, number, string, null, object, or array)    |
+| `status`            | `FeatureFlagStatus.Active` or `FeatureFlagStatus.Deprecated`                            |
+
+##### Add a flag to the registry
+
+For the full process of creating a remote feature flag (LaunchDarkly setup, code integration), see the [Remote Feature Flags](https://github.com/MetaMask/contributor-docs/blob/main/docs/remote-feature-flags.md) contributor doc. Once the flag exists, register it for E2E tests:
+
+1. Look up the flag's current production value from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod). If the flag is not yet in production, set `inProd: false` and `productionDefault` to the intended default.
+2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
+3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.ts`](./.github/scripts/known-feature-flag-constants.ts) so the CI check can resolve it.
+
+##### Override flags in E2E tests
+
+To test behavior with a flag value different from the production default, see the override examples in [Remote feature flags (runtime)](#remote-feature-flags-runtime) above.
+
+The registry module also exports helper functions for use in tests and tooling (e.g. `getProductionRemoteFlagApiResponse()`, `getProductionRemoteFlagDefaults()`). See the JSDoc in [feature-flag-registry.ts](./test/e2e/feature-flags/feature-flag-registry.ts) for details.
+
+##### Remove a flag
+
+When a remote feature flag is fully rolled out or no longer needed:
+
+1. Remove all references to the flag from application code (`app/`, `ui/`, `shared/`).
+2. Either remove the entry from the registry, or change its `status` to `FeatureFlagStatus.Deprecated` if you want to track it temporarily.
+3. The CI check will post a warning on PRs that remove the last codebase reference to a registered flag, reminding you to clean up the registry.
+
+#### Running E2E performance benchmarks
+
+E2E performance benchmarks measure flow timings (onboarding, send, swap, asset details, etc.) and can be run locally or in CI. Use `yarn test:e2e:benchmark` with `--preset <name>` or a file path. See [test/e2e/benchmarks/flows/README.md](test/e2e/benchmarks/flows/README.md) for presets and options.
 
 #### Running specific builds types e2e test
 

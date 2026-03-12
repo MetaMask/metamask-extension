@@ -1,7 +1,5 @@
 import { IconName } from '@metamask/snaps-sdk/jsx';
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
 import { InvisibleCharacter } from '../../components/component-library';
 import {
   GOERLI_DISPLAY_NAME,
@@ -14,9 +12,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import { t } from '../../../shared/lib/translate';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { MULTICHAIN_ACCOUNT_TYPE_TO_NAME } from '../../../shared/constants/multichain/accounts';
-///: END:ONLY_INCLUDE_IF
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -83,14 +79,7 @@ const toSrpLabel = (index) =>
   // Index starts at 1, for SRPs.
   `SRP #${index + 1}`;
 
-export function getAccountLabels(
-  type,
-  account,
-  keyrings,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  snapName,
-  ///: END:ONLY_INCLUDE_IF
-) {
+export function getAccountLabels(type, account, keyrings, snapName) {
   if (!account) {
     return [];
   }
@@ -150,7 +139,6 @@ export function getAccountLabels(
         icon: null,
       });
       break;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap: {
       const { entropySource } = account.options;
       if (entropySource && hdKeyrings.length > 1) {
@@ -182,13 +170,11 @@ export function getAccountLabels(
       });
       break;
     }
-    ///: END:ONLY_INCLUDE_IF
     default: {
       break;
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const { namespace } = parseCaipChainId(account.type);
   if (namespace === KnownCaipNamespace.Bip122) {
     labels.push({
@@ -196,7 +182,6 @@ export function getAccountLabels(
       icon: null,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   return labels;
 }

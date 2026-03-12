@@ -36,22 +36,23 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { maskObject } from '../../shared/modules/object.utils';
+import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { createCaipStream } from '../../shared/modules/caip-stream';
-import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import { createCaipStream } from '../../shared/lib/caip-stream';
+import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
 import {
   CorruptionHandler,
   hasVault,
@@ -79,6 +80,7 @@ import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
   getPlatform,
+  initInstallType,
   isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
@@ -187,7 +189,7 @@ function parsePortInfo(port) {
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
-let sidePanelIsOpen = false;
+let openSidePanelCount = 0;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -616,6 +618,8 @@ const handleOnConnect = async (port) => {
               message: error.message ?? 'Unknown error',
               name: error.name ?? 'UnknownError',
               stack: error.stack,
+              // Preserve sentryTags for searchable/filterable fields in Sentry UI
+              ...(error.sentryTags && { sentryTags: error.sentryTags }),
             }
           : {
               message: String(error),
@@ -690,7 +694,6 @@ function saveTimestamp() {
  * @property {number} unapprovedTypedMessagesCount - The number of messages in unapprovedTypedMessages.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
- * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
  * @property {number} currencyRates - An object mapping of nativeCurrency to conversion rate and date
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
@@ -709,6 +712,10 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize(backup) {
+  // Initialize install type early so it's cached for MetaMetrics user traits
+  // This is fire-and-forget - we don't await it to avoid blocking initialization
+  initInstallType();
+
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
   // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
@@ -743,7 +750,7 @@ async function initialize(backup) {
   if (process.env.IN_TEST && window.navigator?.webdriver) {
     const { getSocketBackgroundToMocha } =
       // Use `require` to make it easier to exclude this test code from the Browserify build.
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
       require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
@@ -771,15 +778,15 @@ async function initialize(backup) {
     ? {
         keyrings: {
           // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           trezorBridge: require('../../test/stub/keyring-bridge')
             .FakeTrezorBridge,
           // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           ledgerBridge: require('../../test/stub/keyring-bridge')
             .FakeLedgerBridge,
           // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
         },
       }
@@ -950,7 +957,7 @@ export async function loadStateFromPersistence(backup) {
     const withState = JSON.parse(process.env.WITH_STATE);
 
     // Use `require` to make it easier to exclude this test code from the Browserify build.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
     const { generateWalletState } = require('./fixtures/generate-wallet-state');
     const fixtureBuilder = await generateWalletState(withState, false);
 
@@ -1007,7 +1014,7 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         require('../../test/e2e/fixtures/fixture-builder')
           .FIXTURE_STATE_METADATA_VERSION
       : null,
@@ -1035,25 +1042,78 @@ export async function loadStateFromPersistence(backup) {
   const { state: versionedData, changedKeys } = await migrator.migrateData(
     preMigrationVersionedData,
   );
+
+  /**
+   * Creates an Error with sentryTags for migration failures.
+   * Tags help identify if user should have had a backup (v12.20.0+, migration 157+),
+   * and include installation info for diagnostics.
+   * These are captured via the critical error page's "Send error report" checkbox
+   * flow (see ui/helpers/utils/display-critical-error.ts).
+   *
+   * @param {string} message - The error message
+   * @returns {Promise<Error>} Error object with sentryTags property
+   */
+  const createMigrationError = async (message) => {
+    const preMigrationVersion = preMigrationVersionedData?.meta?.version;
+    const backupShouldExist =
+      typeof preMigrationVersion === 'number' && preMigrationVersion >= 157;
+
+    // Try to get firstTimeInfo for Sentry tags (installation version and date)
+    // Check in-memory sources first (fast, synchronous checks)
+    // Check both new location (AppMetadataController) and old location (top-level)
+    // for compatibility with pre-migration-190 state
+    let firstTimeInfo =
+      backup?.AppMetadataController?.firstTimeInfo ??
+      versionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      versionedData?.data?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.firstTimeInfo;
+
+    // Fallback to IndexedDB backup if in-memory sources don't have it
+    // (handles corruption scenarios where storage.local is damaged)
+    if (!firstTimeInfo) {
+      try {
+        const indexedDbBackup = await persistenceManager.getBackup();
+        firstTimeInfo = indexedDbBackup?.AppMetadataController?.firstTimeInfo;
+      } catch {
+        // Ignore backup fetch errors - we still want to report the migration error
+      }
+    }
+
+    const error = new Error(message);
+
+    // Add sentryTags for searchable/filterable fields in Sentry UI
+    // These are extracted by sendErrorToSentry in display-critical-error.ts
+    error.sentryTags = {
+      'corruption.preMigrationVersion': String(
+        preMigrationVersion ?? 'unknown',
+      ),
+      'corruption.backupShouldExist': String(backupShouldExist),
+      'corruption.installVersion': String(firstTimeInfo?.version ?? 'unknown'),
+      'corruption.installDate': String(firstTimeInfo?.date ?? 'unknown'),
+    };
+
+    return error;
+  };
+
   if (!versionedData) {
-    throw new Error('MetaMask - migrator returned undefined');
+    throw await createMigrationError('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
-    throw new Error(
+    throw await createMigrationError(
       `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
     );
   } else if (typeof versionedData.meta.version !== 'number') {
-    throw new Error(
-      `MetaMask - migrator metadata version has invalid type '${typeof versionedData
-        .meta.version}'`,
+    throw await createMigrationError(
+      `MetaMask - migrator metadata version has invalid type '${typeof versionedData.meta.version}'`,
     );
   } else if (
     !['data', 'split', undefined].includes(versionedData.meta.storageKind)
   ) {
-    throw new Error(
+    throw await createMigrationError(
       `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
     );
   } else if (!isObject(versionedData.data)) {
-    throw new Error(
+    throw await createMigrationError(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
     );
   }
@@ -1138,10 +1198,12 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const preferencesState = controller.controllerMessenger.call(
-    'PreferencesController:getState',
+  const accountsState = controller.controllerMessenger.call(
+    'AccountsController:getState',
   );
-  const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
+  const numberOfTotalAccounts = Object.keys(
+    accountsState.internalAccounts.accounts,
+  ).length;
 
   controller.metaMetricsController.trackEvent(
     {
@@ -1241,7 +1303,10 @@ function trackAppOpened(environment) {
   // Check if any UI instances are currently open
   const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
   const isAlreadyOpen =
-    isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
+    isFullscreenOpen ||
+    notificationIsOpen ||
+    openPopupCount > 0 ||
+    openSidePanelCount > 0;
 
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
@@ -1366,8 +1431,8 @@ export function setupController(
   });
 
   // Wire up the callback to notify the UI when set operations fail
-  persistenceManager.setOnSetFailed(() => {
-    controller.appStateController.setShowStorageErrorToast(true);
+  persistenceManager.setOnSetFailed((errorType) => {
+    controller.appStateController.setStorageWriteErrorType(errorType);
   });
 
   /**
@@ -1503,7 +1568,7 @@ export function setupController(
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen ||
-      sidePanelIsOpen ||
+      openSidePanelCount > 0 ||
       false
     );
   };
@@ -1514,11 +1579,13 @@ export function setupController(
       controller.onClientClosed();
       // otherwise we want to only remove the polling tokens for the environment type that has closed
     } else {
-      // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
-      // its corresponding polling tokens unless all tabs are closed.
+      // In fullscreen and sidepanel environments, users can have multiple instances
+      // open at once, so we only disconnect tokens when the last instance closes.
       if (
-        environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
-        Boolean(Object.keys(openMetamaskTabsIDs).length)
+        (environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
+          Boolean(Object.keys(openMetamaskTabsIDs).length)) ||
+        (environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
+          openSidePanelCount > 0)
       ) {
         return;
       }
@@ -1582,12 +1649,12 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
-        sidePanelIsOpen = true;
+        openSidePanelCount += 1;
         // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
         // This handles the case where user connected to dapp while sidepanel was closed
         refreshAppActiveTab();
         finished(portStream, () => {
-          sidePanelIsOpen = false;
+          openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
@@ -1869,7 +1936,7 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    !sidePanelIsOpen &&
+    openSidePanelCount === 0 &&
     true
   ) {
     uiIsTriggering = true;
@@ -1887,23 +1954,33 @@ async function triggerUi() {
 }
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = () => {
+const addAppInstalledEvent = async () => {
   if (controller) {
     controller.metaMetricsController.updateTraits({
       [MetaMetricsUserTrait.InstallDateExt]: new Date()
         .toISOString()
         .split('T')[0], // yyyy-mm-dd
     });
+
+    const deferredDeepLink = await getDeferredDeepLinkFromCookie();
+    const eventProperties = {};
+
+    if (deferredDeepLink) {
+      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+      eventProperties.install_source = 'deeplink';
+      eventProperties.deeplink_path = deferredDeepLink.referringLink;
+    }
+
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
       category: MetaMetricsEventCategory.App,
       event: MetaMetricsEventName.AppInstalled,
-      properties: {},
+      properties: eventProperties,
     });
     return;
   }
-  setTimeout(() => {
+  setTimeout(async () => {
     // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    addAppInstalledEvent();
+    await addAppInstalledEvent();
   }, 500);
 };
 
@@ -1914,7 +1991,7 @@ const addAppInstalledEvent = () => {
  */
 async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
-    onInstall();
+    await onInstall();
   } else if (details.reason === 'update') {
     const { previousVersion } = details;
     if (!previousVersion || previousVersion === platform.getVersion()) {
@@ -1928,21 +2005,25 @@ async function handleOnInstalled([details]) {
 /**
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
  */
-function onInstall() {
+async function onInstall() {
   log.debug('First install detected');
-  addAppInstalledEvent();
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
+  await addAppInstalledEvent();
 }
 
 /**
  * Trigger actions that should happen only when an update is available
+ *
+ * @param {object} details - Event details from runtime.onUpdateAvailable (e.g. details.version)
  */
-async function onUpdateAvailable() {
+async function onUpdateAvailable(details) {
   await isInitialized;
-  log.debug('An update is available');
-  controller.appStateController.setIsUpdateAvailable(true);
+  log.info('An update is available', details?.version);
+  controller.appStateController.setPendingExtensionVersion(
+    details?.version ?? null,
+  );
 }
 
 browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);

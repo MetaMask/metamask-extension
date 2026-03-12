@@ -109,6 +109,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/notifications&auth/notifications-activation.test.tsx": {
+      "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 9,
       "warn: ⚠️ React Router Future Flag": 2
@@ -119,6 +120,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/notifications&auth/notifications-toggle.test.tsx": {
+      "React: Missing key props in lists": 1,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 11,
@@ -136,7 +138,5 @@
       "warn: Infura project ID not found,": 1,
       "warn: ⚠️ React Router Future Flag": 2
     }
-  },
-  "generated": "2025-12-15T13:30:25.527Z",
-  "nodeVersion": "v24.11.1"
+  }
 }

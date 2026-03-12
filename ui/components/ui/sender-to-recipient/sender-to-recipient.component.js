@@ -1,9 +1,9 @@
 import { NameType } from '@metamask/name-controller';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AvatarAccountSize, TextVariant } from '@metamask/design-system-react';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Name from '../../app/name/name';
@@ -33,7 +33,8 @@ function SenderAddress({
     <div className="sender-to-recipient__party sender-to-recipient__party--sender gap-1">
       <PreferredAvatar
         address={toChecksumHexAddress(senderAddress)}
-        size={AvatarAccountSize.Sm}
+        size={AvatarAccountSize.Xs}
+        className="rounded-md"
       />
       <div className="sender-to-recipient__name text-s-body-xs">
         {addressOnly ? (
@@ -65,21 +66,20 @@ export function RecipientWithAddress({
   className = '',
 }) {
   return (
-    <>
-      <div
-        className={classnames(
-          'sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address',
-          className,
-        )}
-      >
-        <Name
-          value={checksummedRecipientAddress}
-          type={NameType.ETHEREUM_ADDRESS}
-          variation={chainId}
-          variant={TextVariant.BodyXs}
-        />
-      </div>
-    </>
+    <div
+      className={classnames(
+        'sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address',
+        className,
+      )}
+    >
+      <Name
+        value={checksummedRecipientAddress}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={chainId}
+        variant={TextVariant.BodyXs}
+        disableNameClick
+      />
+    </div>
   );
 }
 

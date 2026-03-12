@@ -19,6 +19,7 @@ import {
   updateNetwork,
 } from '../../../../store/actions';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { NetworksForm } from './networks-form';
 
 jest.mock('../../../../../ui/store/actions', () => ({
@@ -28,6 +29,18 @@ jest.mock('../../../../../ui/store/actions', () => ({
   setTokenNetworkFilter: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
+}));
+
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockImplementation((method, args) => {
+    if (method === 'isPublicEndpointUrl') {
+      const url = args[0];
+      // Return true for Infura URLs, false for everything else
+      return Promise.resolve(url?.includes('infura.io') ?? false);
+    }
+    return Promise.resolve();
+  }),
 }));
 
 const renderComponent = (props) => {
@@ -160,12 +173,12 @@ describe('NetworkForm Component', () => {
         ticker: 'ETH',
       },
     });
-    expect(queryByText('Network name')).toBeInTheDocument();
-    expect(queryByText('Default RPC URL')).toBeInTheDocument();
-    expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL')).toBeInTheDocument();
-    expect(queryByText('Save')).toBeInTheDocument();
+    expect(queryByText(messages.networkName.message)).toBeInTheDocument();
+    expect(queryByText(messages.defaultRpcUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.chainId.message)).toBeInTheDocument();
+    expect(queryByText(messages.currencySymbol.message)).toBeInTheDocument();
+    expect(queryByText(messages.blockExplorerUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.save.message)).toBeInTheDocument();
 
     expect(
       await screen.findByText(
@@ -177,12 +190,12 @@ describe('NetworkForm Component', () => {
   it('should render network form correctly', () => {
     const { queryByText, getByDisplayValue } =
       renderComponent(propNetworkDisplay);
-    expect(queryByText('Network name')).toBeInTheDocument();
-    expect(queryByText('Default RPC URL')).toBeInTheDocument();
-    expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL')).toBeInTheDocument();
-    expect(queryByText('Save')).toBeInTheDocument();
+    expect(queryByText(messages.networkName.message)).toBeInTheDocument();
+    expect(queryByText(messages.defaultRpcUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.chainId.message)).toBeInTheDocument();
+    expect(queryByText(messages.currencySymbol.message)).toBeInTheDocument();
+    expect(queryByText(messages.blockExplorerUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.save.message)).toBeInTheDocument();
 
     expect(
       getByDisplayValue(propNetworkDisplay.networkFormState.chainId),
@@ -234,7 +247,7 @@ describe('NetworkForm Component', () => {
       'The RPC URL you have entered returned a different chain ID (56).';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
 
-    expect(screen.getByText('Save')).toBeDisabled();
+    expect(screen.getByText(messages.save.message)).toBeDisabled();
   });
 
   it('should chainID be a valid number', async () => {
@@ -267,9 +280,7 @@ describe('NetworkForm Component', () => {
     });
 
     expect(
-      await screen.findByText(
-        "Invalid number. Enter a decimal or '0x'-prefixed hexadecimal number.",
-      ),
+      await screen.findByText(messages.invalidNumber.message),
     ).toBeInTheDocument();
   });
 
@@ -303,7 +314,7 @@ describe('NetworkForm Component', () => {
     });
 
     expect(
-      await screen.findByText('Invalid number. Remove any leading zeros.'),
+      await screen.findByText(messages.invalidNumberLeadingZeros.message),
     ).toBeInTheDocument();
   });
 
@@ -355,7 +366,7 @@ describe('NetworkForm Component', () => {
 
     expect(
       await screen.findByText(
-        "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue.",
+        messages.chainListReturnedDifferentTickerSymbol.message,
       ),
     ).toBeInTheDocument();
   });
@@ -410,7 +421,7 @@ describe('NetworkForm Component', () => {
 
   it('should call addNetwork when saving a new network', async () => {
     const { getByText } = renderComponent(propNetworkDisplay);
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(addNetwork).toHaveBeenCalledTimes(1);
@@ -435,7 +446,7 @@ describe('NetworkForm Component', () => {
       ...propNetworkDisplay,
       existingNetwork: {},
     });
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalledTimes(1);
@@ -463,6 +474,12 @@ describe('NetworkForm Component', () => {
 
   it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -479,7 +496,7 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NetworksForm
           {...propNetworkDisplay}
           networkFormState={{
@@ -511,7 +528,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -530,6 +547,12 @@ describe('NetworkForm Component', () => {
 
   it('should not track RPC update event when trackRpcUpdateFromBanner is not set', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -546,7 +569,7 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NetworksForm
           {...propNetworkDisplay}
           existingNetwork={{
@@ -566,7 +589,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -582,6 +605,12 @@ describe('NetworkForm Component', () => {
 
   it('should track custom RPC URL when endpoint is not public', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -598,7 +627,7 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NetworksForm
           {...propNetworkDisplay}
           networkFormState={{
@@ -630,7 +659,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -649,6 +678,12 @@ describe('NetworkForm Component', () => {
 
   it('should handle corrupted state with missing rpcEndpoints gracefully', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -665,7 +700,7 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NetworksForm
           {...propNetworkDisplay}
           networkFormState={{
@@ -692,7 +727,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {

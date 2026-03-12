@@ -27,7 +27,7 @@ import {
   createTextItems,
   getAmount,
   formatIsoDateString,
-  getNetworkDetailsByChainId,
+  getNativeCurrencyLogoByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
 import {
@@ -165,7 +165,7 @@ export const components: NotificationComponent<StakeNotification> = {
       },
       Asset: ({ notification }) => {
         const direction = DIRECTION_MAP[notification.type];
-        const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
         );
         return (
@@ -197,7 +197,7 @@ export const components: NotificationComponent<StakeNotification> = {
         );
       },
       AssetReceived: ({ notification }) => {
-        const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
         );
         return (

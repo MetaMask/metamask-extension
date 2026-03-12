@@ -9,6 +9,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import GasDetailsItem from './gas-details-item';
 
 jest.mock('../../../../store/actions', () => ({
@@ -77,8 +78,12 @@ describe('GasDetailsItem', () => {
   it('should render label', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
-      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+      expect(
+        screen.queryAllByText(messages.medium.message)[0],
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.editGasSubTextFeeLabel.message),
+      ).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
@@ -92,48 +97,14 @@ describe('GasDetailsItem', () => {
     });
   });
 
-  it('should show warning icon if dapp estimates are high', async () => {
-    await render({
-      contextProps: {
-        gasFeeEstimates: {
-          high: {
-            suggestedMaxPriorityFeePerGas: '1',
-          },
-        },
-        gasFeeEstimatesByChainId: {
-          ...mockState.metamask.gasFeeEstimatesByChainId,
-          '0x5': {
-            gasFeeEstimates: {
-              high: {
-                suggestedMaxPriorityFeePerGas: '1',
-              },
-            },
-          },
-        },
-        transaction: {
-          txParams: {
-            gas: '0x52081',
-            maxFeePerGas: '0x38D7EA4C68000',
-          },
-          userFeeLevel: 'medium',
-          dappSuggestedGasFees: {
-            maxPriorityFeePerGas: '0x38D7EA4C68000',
-            maxFeePerGas: '0x38D7EA4C68000',
-          },
-        },
-      },
-    });
-    await waitFor(() => {
-      expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
-    });
-  });
-
   it('should not show warning icon if estimates are not high', async () => {
     await render({
       contextProps: { transaction: { txParams: {}, userFeeLevel: 'low' } },
     });
     await waitFor(() => {
-      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.editGasSubTextFeeLabel.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -153,8 +124,12 @@ describe('GasDetailsItem', () => {
   it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
-      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+      expect(
+        screen.queryAllByText(messages.medium.message)[0],
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.editGasSubTextFeeLabel.message),
+      ).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });

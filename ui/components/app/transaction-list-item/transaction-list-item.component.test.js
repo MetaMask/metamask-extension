@@ -9,6 +9,7 @@ import {
   useTrustSignals,
 } from '../../../hooks/useTrustSignals';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -186,8 +187,14 @@ describe('TransactionListItem', () => {
 
       const store = mockStore(mockState);
       const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
       const { queryByTestId } = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <TransactionListItem transactionGroup={transactionGroup} />
         </MetaMetricsContext.Provider>,
         store,
@@ -247,11 +254,15 @@ describe('TransactionListItem', () => {
       const { getByText, queryByText } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByText('Cancel transaction')).not.toBeInTheDocument();
+      expect(
+        queryByText(messages.cancelPopoverTitle.message),
+      ).not.toBeInTheDocument();
 
-      const cancelButton = getByText('Cancel');
+      const cancelButton = getByText(messages.cancel.message);
       fireEvent.click(cancelButton);
-      expect(getByText('Cancel transaction')).toBeInTheDocument();
+      expect(
+        getByText(messages.cancelPopoverTitle.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -325,7 +336,7 @@ describe('TransactionListItem', () => {
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
       '?Swap USDC to UNISigningCancel',
     );
-    expect(getByText('Signing')).toBeInTheDocument();
+    expect(getByText(messages.signing.message)).toBeInTheDocument();
   });
 
   it('should render confirmed legacy swap tx summary', () => {
@@ -356,6 +367,6 @@ describe('TransactionListItem', () => {
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
       '?Swap USDC to UNIFailed-2 USDC',
     );
-    expect(getByText('Failed')).toBeInTheDocument();
+    expect(getByText(messages.failed.message)).toBeInTheDocument();
   });
 });

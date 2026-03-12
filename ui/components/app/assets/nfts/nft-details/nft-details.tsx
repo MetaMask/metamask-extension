@@ -5,6 +5,7 @@ import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { ERC721, ERC1155 } from '@metamask/controller-utils';
 import {
   BlockSize,
   BorderColor,
@@ -25,7 +26,7 @@ import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
+} from '../../../../../../shared/lib/selectors/networks';
 import {
   getCurrentNetwork,
   getIpfsGateway,
@@ -47,7 +48,6 @@ import NftOptions from '../nft-options/nft-options';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
-import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import {
   ButtonIcon,
   IconName,
@@ -72,7 +72,7 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../../../../../ducks/metamask/metamask';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 // TODO: Remove restricted import
 import {
   addUrlProtocolPrefix,
@@ -122,7 +122,7 @@ export function NftDetailsComponent({
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentNetwork = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
 
@@ -138,14 +138,18 @@ export function NftDetailsComponent({
     string
   >;
 
-  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
+  // useCopyToClipboard analysis: Copies the public address of the NFT
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard({
+    clearDelayMs: null,
+  });
 
   const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
 
   const nftImageAlt = getNftImageAlt(nft);
   const image = getNftImage(_image);
   const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
-  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+  const isIpfsURL =
+    typeof nftSrcUrl === 'string' && nftSrcUrl.startsWith('ipfs:');
 
   const isImageHosted =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -270,8 +274,7 @@ export function NftDetailsComponent({
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled =
-    standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
+  const sendDisabled = standard !== ERC721 && standard !== ERC1155;
 
   const setCorrectChain = async () => {
     // If we aren't presently on the chain of the nft, change to it

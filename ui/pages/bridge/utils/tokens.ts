@@ -11,6 +11,8 @@ import {
   intersection,
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
+import { getClientHeaders } from '@metamask/bridge-controller';
+import { getCacheKey, updateCache, retrieveCachedResponse } from './cache';
 
 const MinimalAssetSchema = type({
   /**
@@ -62,10 +64,32 @@ export const validateMinimalAssetObject = (
   return is(data, MinimalAssetSchema);
 };
 
+const toMinimalAsset = (token: BridgeAssetV2): MinimalAsset => {
+  const { assetId, symbol, name, decimals } = token;
+  return { assetId, symbol, name, decimals };
+};
+
+const postWithCache = async (
+  url: Parameters<typeof handleFetch>[0],
+  requestParams: Parameters<typeof handleFetch>[1],
+  ...cacheParams: Parameters<typeof retrieveCachedResponse>
+) => {
+  const cachedResponse = await retrieveCachedResponse(...cacheParams);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  // If this fetch returns a non-200 response, the cache will not be updated
+  const response = await handleFetch(url, requestParams);
+
+  await updateCache(response, ...cacheParams);
+  return response;
+};
+
 /**
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
  *
  * @param params - The parameters for the fetchPopularTokens function
+ * @param params.jwt - The JWT token for authentication
  * @param params.chainIds - The chain IDs to fetch tokens for
  * @param params.assetsWithBalances - The user's balances sorted by amount. This is used to add balance information to the returned tokens. These assets are returned first in the list in the same order as the input.
  * @param params.clientId - The client ID for metrics
@@ -74,7 +98,8 @@ export const validateMinimalAssetObject = (
  * @param params.signal - The abort signal
  * @returns A list of sorted tokens
  */
-export async function fetchPopularTokens({
+export const fetchPopularTokens = async ({
+  jwt,
   signal,
   chainIds,
   clientId,
@@ -82,38 +107,53 @@ export async function fetchPopularTokens({
   clientVersion,
   assetsWithBalances,
 }: {
+  jwt?: string;
   signal: AbortSignal;
   chainIds: CaipChainId[];
   clientId: string;
   bridgeApiBaseUrl: string;
   clientVersion?: string;
-  assetsWithBalances?: MinimalAsset[];
-}): Promise<BridgeAssetV2[]> {
+  assetsWithBalances?: BridgeAssetV2[];
+}): Promise<BridgeAssetV2[]> => {
   const url = `${bridgeApiBaseUrl}/getTokens/popular`;
-
-  const tokens = await handleFetch(url, {
-    signal,
-    method: 'POST',
-    body: JSON.stringify({
-      chainIds,
-      includeAssets: assetsWithBalances,
-    }),
-    headers: {
-      'X-Client-Id': clientId,
-      ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
-      'Content-Type': 'application/json',
-    },
+  // Only the minimum asset fields are passed to the bridge-api to avoid creating a new cache entry if
+  // token sorting has not changed
+  const includeAssets =
+    assetsWithBalances && assetsWithBalances.length > 0
+      ? assetsWithBalances.map(toMinimalAsset)
+      : undefined;
+  const cacheKey = getCacheKey(url, {
+    chainIds,
+    includeAssets,
   });
+
+  const tokens = await postWithCache(
+    url,
+    {
+      signal,
+      method: 'POST',
+      body: JSON.stringify({
+        chainIds,
+        includeAssets,
+      }),
+      headers: {
+        ...getClientHeaders({ clientId, clientVersion, jwt }),
+        'Content-Type': 'application/json',
+      },
+    },
+    cacheKey,
+  );
 
   return tokens
     .map((token: unknown) => (validateSwapsAssetV2Object(token) ? token : null))
     .filter(Boolean);
-}
+};
 
 /**
  * Fetches a list of matching tokens sorted by balance, popularity and other criteria from the bridge-api
  *
  * @param params - The parameters for the fetchTokensBySearchQuery function
+ * @param params.jwt - The JWT token for authentication
  * @param params.chainIds - The chain IDs to fetch tokens for
  * @param params.query - The search query
  * @param params.clientId - The client ID for metrics
@@ -124,7 +164,8 @@ export async function fetchPopularTokens({
  * @param params.signal - The abort signal
  * @returns A list of sorted tokens
  */
-export async function fetchTokensBySearchQuery({
+export const fetchTokensBySearchQuery = async ({
+  jwt,
   signal,
   chainIds,
   query,
@@ -134,35 +175,53 @@ export async function fetchTokensBySearchQuery({
   assetsWithBalances,
   after,
 }: {
+  jwt?: string;
   signal: AbortSignal;
   chainIds: CaipChainId[];
   query: string;
   clientId: string;
   bridgeApiBaseUrl: string;
   clientVersion?: string;
-  assetsWithBalances?: MinimalAsset[];
+  assetsWithBalances?: BridgeAssetV2[];
   after?: string;
 }): Promise<{
   hasNextPage: boolean;
   endCursor?: string;
   tokens: BridgeAssetV2[];
-}> {
+}> => {
   const url = `${bridgeApiBaseUrl}/getTokens/search`;
-  const { data: tokens, pageInfo } = await handleFetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      chainIds,
-      includeAssets: assetsWithBalances,
-      after,
-      query,
-    }),
-    signal,
-    headers: {
-      'X-Client-Id': clientId,
-      ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
-      'Content-Type': 'application/json',
-    },
+  // Only the minimum asset fields are passed to the bridge-api to avoid creating a new cache entry if
+  // token sorting has not changed
+  const includeAssets =
+    assetsWithBalances && assetsWithBalances.length > 0
+      ? assetsWithBalances.map(toMinimalAsset)
+      : undefined;
+
+  const cacheKey = getCacheKey(url, {
+    chainIds,
+    includeAssets,
+    searchQuery: query,
   });
+
+  const { data: tokens, pageInfo } = await postWithCache(
+    url,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        chainIds,
+        includeAssets,
+        after,
+        query,
+      }),
+      signal,
+      headers: {
+        ...getClientHeaders({ clientId, clientVersion, jwt }),
+        'Content-Type': 'application/json',
+      },
+    },
+    cacheKey,
+    after,
+  );
   const { hasNextPage, endCursor } = pageInfo;
 
   return {
@@ -174,4 +233,4 @@ export async function fetchTokensBySearchQuery({
       )
       .filter(Boolean),
   };
-}
+};

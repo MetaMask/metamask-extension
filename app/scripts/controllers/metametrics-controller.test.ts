@@ -20,7 +20,12 @@ import {
 } from '@metamask/messenger';
 import { merge } from 'lodash';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import {
+  DEVICE_TYPE,
+  ENVIRONMENT_TYPE_BACKGROUND,
+  OS,
+  PLATFORM_CHROME,
+} from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -1416,6 +1421,12 @@ describe('MetaMetricsController', function () {
   });
 
   describe('_buildUserTraitsObject', function () {
+    beforeEach(() => {
+      jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
+      jest.spyOn(Utils, 'getDeviceType').mockReturnValue(DEVICE_TYPE.DESKTOP);
+      jest.spyOn(Utils, 'getOs').mockReturnValue(OS.MACOS);
+    });
+
     it('should return full user traits object on first call', async function () {
       const MOCK_ALL_TOKENS: TokensControllerState['allTokens'] = {
         [toHex(1)]: {
@@ -1604,12 +1615,14 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.ProfileId]: undefined,
-          ///: BEGIN:ONLY_INCLUDE_IF(petnames)
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
-          ///: END:ONLY_INCLUDE_IF
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
           [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
           [MetaMetricsUserTrait.NetworkFilterPreference]: [],
+          [MetaMetricsUserTrait.Platform]: 'Chrome',
+          [MetaMetricsUserTrait.InstallType]: 'unknown',
+          [MetaMetricsUserTrait.DeviceType]: DEVICE_TYPE.DESKTOP,
+          [MetaMetricsUserTrait.Os]: OS.MACOS,
         });
       });
     });

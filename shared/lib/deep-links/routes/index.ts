@@ -1,16 +1,20 @@
-import buy from './buy';
-import card from './card';
-import home from './home';
-import notifications from './notifications';
-import onboarding from './onboarding';
-import swap from './swap';
-import nonevm from './nonevm';
-import perps from './perps';
-import predict from './predict';
-import rewards from './rewards';
-
+import { asset } from './asset';
+import { buy } from './buy';
+import { card } from './card';
+import { home } from './home';
+import { nfts } from './nfts';
+import { notifications } from './notifications';
+import { onboarding } from './onboarding';
+import { nonevm } from './nonevm';
+import { musd } from './musd';
+import { perps } from './perps';
+import { predict } from './predict';
+import { rewards } from './rewards';
 import type { Route } from './route';
-import shield from './shield';
+import { sell } from './sell';
+import { shield } from './shield';
+import { swap } from './swap';
+import { trending } from './trending';
 
 export type { Route } from './route';
 
@@ -36,18 +40,23 @@ export function addRoute(route: Route) {
 }
 
 if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-  addRoute(require('./test-route').default);
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+  addRoute(require('./test-route').test);
 }
 
 addRoute(buy);
+addRoute(sell);
 addRoute(card);
 addRoute(home);
+addRoute(nfts);
 addRoute(notifications);
 addRoute(onboarding);
 addRoute(swap);
 addRoute(nonevm);
+addRoute(musd);
 addRoute(perps);
 addRoute(predict);
 addRoute(rewards);
 addRoute(shield);
+addRoute(asset);
+addRoute(trending);

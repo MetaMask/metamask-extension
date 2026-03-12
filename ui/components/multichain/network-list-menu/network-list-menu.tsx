@@ -105,7 +105,7 @@ import {
   getRpcDataByChainId,
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
-} from '../../../../shared/modules/network.utils';
+} from '../../../../shared/lib/network.utils';
 import {
   getCompletedOnboarding,
   getIsUnlocked,
@@ -155,7 +155,7 @@ type NetworkListMenuProps = {
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);

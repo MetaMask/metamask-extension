@@ -1,23 +1,21 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { NameType } from '@metamask/name-controller';
+import {
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-} from '../../../../../../helpers/constants/design-system';
-import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row';
+import { FlexDirection } from '../../../../../../helpers/constants/design-system';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoRowAddressDisplay } from '../../../../../../components/app/confirm/info/row/address-display';
+import { PreferredAvatar } from '../../../../../../components/app/preferred-avatar';
+import { toChecksumHexAddress } from '../../../../../../../shared/lib/hexstring-utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useDisplayName } from '../../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransferRecipient } from '../hooks/useTransferRecipient';
 
@@ -28,57 +26,118 @@ export const TransactionFlowSection = () => {
     useConfirmContext<TransactionMeta>();
 
   const recipientAddress = useTransferRecipient();
+
   const { chainId } = transactionMeta;
+  const fromAddress = transactionMeta.txParams.from;
+  const toAddress = recipientAddress ?? '';
+
+  const {
+    name: fromName,
+    isAccount: fromIsAccount,
+    image: fromImage,
+    displayState: fromDisplayState,
+    subtitle: fromWalletName,
+  } = useDisplayName({
+    value: toChecksumHexAddress(fromAddress),
+    type: NameType.ETHEREUM_ADDRESS,
+    preferContractSymbol: true,
+    variation: chainId,
+  });
+
+  const {
+    name: toName,
+    isAccount: toIsAccount,
+    image: toImage,
+    displayState: toDisplayState,
+    subtitle: toWalletName,
+  } = useDisplayName({
+    value: toChecksumHexAddress(toAddress),
+    type: NameType.ETHEREUM_ADDRESS,
+    preferContractSymbol: true,
+    variation: chainId,
+  });
+
+  const fromLabel = fromWalletName
+    ? `${t('from')} ${fromWalletName}`
+    : t('from');
+
+  const toLabel = toWalletName ? `${t('to')} ${toWalletName}` : t('to');
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        paddingBottom={1}
-      >
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.SigningInWith}
-          label={t('from')}
-          ownerId={transactionMeta.id}
-          style={{
-            flex: 1,
-            flexDirection: FlexDirection.Column,
-          }}
+      <Box flexDirection={BoxFlexDirection.Column} paddingRight={2}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
         >
-          <Box marginTop={2} data-testid="sender-address">
-            <ConfirmInfoRowAddress
-              address={transactionMeta.txParams.from}
-              chainId={chainId}
-            />
+          <Box style={{ flex: 1, minWidth: 0 }}>
+            <ConfirmInfoAlertRow
+              alertKey={RowAlertKey.SigningInWith}
+              label={fromLabel}
+              ownerId={transactionMeta.id}
+              style={{ flexDirection: FlexDirection.Column, width: '100%' }}
+            >
+              <Box data-testid="sender-address" className="w-full">
+                <ConfirmInfoRowAddressDisplay
+                  address={fromAddress}
+                  chainId={chainId}
+                  name={fromName}
+                  isAccount={fromIsAccount}
+                  image={fromImage}
+                  displayState={fromDisplayState}
+                  showAvatar={false}
+                />
+              </Box>
+            </ConfirmInfoAlertRow>
           </Box>
-        </ConfirmInfoAlertRow>
+          <PreferredAvatar
+            address={toChecksumHexAddress(fromAddress)}
+            size={AvatarAccountSize.Md}
+            style={{ flexShrink: 0 }}
+          />
+        </Box>
 
-        <Icon
-          name={IconName.ArrowRight}
-          size={IconSize.Md}
-          color={IconColor.iconAlternative}
+        <Box
+          style={{
+            borderTop: '1px solid var(--color-border-muted)',
+          }}
+          marginLeft={2}
+          marginTop={1}
+          marginBottom={1}
         />
 
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.InteractingWith}
-          label={t('to')}
-          ownerId={transactionMeta.id}
-          style={{
-            flex: 1,
-            flexDirection: FlexDirection.Column,
-            overflow: 'hidden',
-          }}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
         >
-          <Box marginTop={2} data-testid="recipient-address" className="w-full">
-            <ConfirmInfoRowAddress
-              address={recipientAddress ?? ''}
-              chainId={chainId}
-            />
+          <Box style={{ flex: 1, minWidth: 0 }}>
+            <ConfirmInfoAlertRow
+              alertKey={RowAlertKey.InteractingWith}
+              label={toLabel}
+              ownerId={transactionMeta.id}
+              style={{ flexDirection: FlexDirection.Column, width: '100%' }}
+            >
+              <Box data-testid="recipient-address" className="w-full">
+                <ConfirmInfoRowAddressDisplay
+                  address={toAddress}
+                  chainId={chainId}
+                  name={toName}
+                  isAccount={toIsAccount}
+                  image={toImage}
+                  displayState={toDisplayState}
+                  showAvatar={false}
+                />
+              </Box>
+            </ConfirmInfoAlertRow>
           </Box>
-        </ConfirmInfoAlertRow>
+          <PreferredAvatar
+            address={toChecksumHexAddress(toAddress)}
+            size={AvatarAccountSize.Md}
+            style={{ flexShrink: 0 }}
+          />
+        </Box>
       </Box>
     </ConfirmInfoSection>
   );

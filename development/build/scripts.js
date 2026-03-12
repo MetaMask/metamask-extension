@@ -29,7 +29,7 @@ const terser = require('terser');
 const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
 const { getConfig, getActiveFeatures } = require('./config');
@@ -133,8 +133,6 @@ module.exports = createScriptTasks;
  * @param {string} options.version - The current version of the extension.
  * @param options.shouldIncludeSnow - Whether the build should use
  * Snow at runtime or not.
- * @param options.shouldIncludeOcapKernel - Whether the build includes the
- * Ocap Kernel.
  * @returns {object} A set of tasks, one for each build target.
  */
 function createScriptTasks({
@@ -147,7 +145,6 @@ function createScriptTasks({
   livereload,
   policyOnly,
   shouldLintFenceFiles,
-  shouldIncludeOcapKernel = false,
   version,
 }) {
   // high level tasks
@@ -220,7 +217,6 @@ function createScriptTasks({
         ignoredFiles,
         policyOnly,
         shouldLintFenceFiles,
-        shouldIncludeOcapKernel,
         version,
       }),
     );
@@ -277,19 +273,6 @@ function createScriptTasks({
       }),
     );
 
-    // task for building devtools and kernel-panel
-    if (shouldIncludeOcapKernel) {
-      const devtoolsSubtask = createTask(
-        `${taskPrefix}:devtools`,
-        createDevtoolsBundle({ buildTarget }),
-      );
-      const kernelPanelSubtask = createTask(
-        `${taskPrefix}:kernel-panel`,
-        createKernelPanelBundle({ buildTarget }),
-      );
-      allSubtasks.push(devtoolsSubtask, kernelPanelSubtask);
-    }
-
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -333,54 +316,6 @@ function createScriptTasks({
       buildType,
       destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
-      ignoredFiles,
-      label,
-      policyOnly,
-      shouldLintFenceFiles,
-      version,
-      applyLavaMoat,
-    });
-  }
-
-  /**
-   * Create a bundle for the "devtools" module.
-   *
-   * @param {object} options - The build options.
-   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
-   * @returns {Function} A function that creates the bundle.
-   */
-  function createDevtoolsBundle({ buildTarget }) {
-    const label = 'devtools';
-    return createNormalBundle({
-      browserPlatforms,
-      buildTarget,
-      buildType,
-      destFilepath: `devtools/${label}.js`,
-      entryFilepath: `./app/devtools/${label}.ts`,
-      ignoredFiles,
-      label,
-      policyOnly,
-      shouldLintFenceFiles,
-      version,
-      applyLavaMoat,
-    });
-  }
-
-  /**
-   * Create a bundle for the "kernel-panel" module.
-   *
-   * @param {object} options - The build options.
-   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
-   * @returns {Function} A function that creates the bundle.
-   */
-  function createKernelPanelBundle({ buildTarget }) {
-    const label = 'kernel-panel';
-    return createNormalBundle({
-      browserPlatforms,
-      buildTarget,
-      buildType,
-      destFilepath: `devtools/ocap-kernel/${label}.js`,
-      entryFilepath: `./app/devtools/ocap-kernel/${label}.ts`,
       ignoredFiles,
       label,
       policyOnly,
@@ -577,8 +512,6 @@ async function createManifestV3AppInitializationBundle({
  * @param {string} options.version - The current version of the extension.
  * @param options.shouldIncludeSnow - Whether the build should use
  * Snow at runtime or not.
- * @param options.shouldIncludeOcapKernel - Whether the build includes the
- * Ocap Kernel.
  * @returns {Function} A function that creates the set of bundles.
  */
 function createFactoredBuild({
@@ -591,7 +524,6 @@ function createFactoredBuild({
   ignoredFiles,
   policyOnly,
   shouldLintFenceFiles,
-  shouldIncludeOcapKernel = false,
   version,
 }) {
   return async function () {
@@ -732,7 +664,6 @@ function createFactoredBuild({
           applyLavaMoat,
           commonSet,
           groupSet,
-          shouldIncludeOcapKernel,
           shouldIncludeSnow,
         });
         switch (groupLabel) {
@@ -1014,10 +945,13 @@ function setupBundlerDefaults(
             './**/node_modules/@firebase',
             './**/node_modules/marked',
             './**/node_modules/@solana',
-            './**/node_modules/axios',
-            // Ocap Kernel
-            './**/node_modules/@endo',
-            './**/node_modules/@agoric',
+            // Lattice hardware wallet deps (gridplus-sdk@4 pulls in modern syntax, e.g. `??=` in viem)
+            './**/node_modules/eth-lattice-keyring',
+            './**/node_modules/gridplus-sdk',
+            './**/node_modules/viem',
+            './**/node_modules/ox',
+            './**/node_modules/uuid',
+            './**/node_modules/isows',
             // Snaps
             './**/node_modules/@metamask/snaps-controllers',
             './**/node_modules/@metamask/snaps-execution-environments',
@@ -1027,6 +961,23 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // Perps controller ESM dependencies
+            './**/node_modules/valibot',
+            './**/node_modules/@nktkas',
+            './**/node_modules/@noble/hashes',
+            './**/node_modules/@noble/curves',
+            './**/node_modules/@scure',
+            './**/node_modules/micro-eth-signer',
+            './**/node_modules/micro-packed',
+            // MYX SDK and its ESM-only transitive dependencies
+            './**/node_modules/@myx-trade',
+            './**/node_modules/lodash-es',
+            './**/node_modules/wretch',
+            // Ledger WebHID transport
+            './**/node_modules/@ledgerhq/hw-transport-webhid',
+            './**/node_modules/@ledgerhq/hw-transport',
+            './**/node_modules/@ledgerhq/hw-app-eth',
+            './**/node_modules/@ledgerhq/devices',
           ],
           global: true,
         },
@@ -1237,7 +1188,6 @@ function getScriptTags({
   applyLavaMoat,
   commonSet,
   groupSet,
-  shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
   if (applyLavaMoat === undefined) {
@@ -1253,17 +1203,11 @@ function getScriptTags({
   const securityScripts = applyLavaMoat
     ? [
         './scripts/runtime-lavamoat.js',
-        ...(shouldIncludeOcapKernel
-          ? ['./scripts/eventual-send-install.js']
-          : []),
         './scripts/lockdown-more.js',
         './scripts/policy-load.js',
       ]
     : [
         './scripts/lockdown-install.js',
-        ...(shouldIncludeOcapKernel
-          ? ['./scripts/eventual-send-install.js']
-          : []),
         './scripts/lockdown-run.js',
         './scripts/lockdown-more.js',
         './scripts/runtime-cjs.js',

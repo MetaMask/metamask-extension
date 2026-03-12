@@ -1,7 +1,15 @@
 #!/bin/bash
 
+COMMIT_HASH=$1
+
+if [[ -z "$COMMIT_HASH" ]]
+then
+  echo "Missing commit hash argument"
+  exit 1
+fi
+
 # If the string `[builds-from-run: <run-id>]` is contained in the last commit message
-if [[ "$(git log -1 --pretty=%B)" =~ \[builds-from-run:[[:space:]]*([0-9]+)\] ]]; then
+if [[ "$(git log -1 --pretty=%B "$COMMIT_HASH")" =~ \[builds-from-run:[[:space:]]*([0-9]+)\] ]]; then
   # Extract the <run-id> value from the commit message
   builds_from_run="${BASH_REMATCH[1]}"
   echo "Found builds-from-run directive in commit message: $builds_from_run"

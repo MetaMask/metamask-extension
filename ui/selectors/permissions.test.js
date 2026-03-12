@@ -427,8 +427,8 @@ describe('selectors', () => {
       expect(getOrderedConnectedAccountsForActiveTab(mockState)).toStrictEqual([
         {
           address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-          balance: '0x0',
           id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+          name: 'Account 1',
           metadata: {
             name: 'Account 1',
             lastActive: 1586359844192,
@@ -443,8 +443,8 @@ describe('selectors', () => {
         },
         {
           address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-          balance: '0x0',
           id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          name: 'Really Long Name That Should Be Truncated',
           metadata: {
             name: 'Really Long Name That Should Be Truncated',
             lastActive: 1586359844192,
@@ -458,8 +458,8 @@ describe('selectors', () => {
         },
         {
           address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-          balance: '0x0',
           id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+          name: 'Account 3',
           metadata: {
             name: 'Account 3',
             lastActive: 1586359844192,
@@ -474,8 +474,8 @@ describe('selectors', () => {
         },
         {
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          balance: '0x0',
           id: 'f9305241-c50f-4725-ad0f-cbd3f24ac7ab',
+          name: 'Account 4',
           metadata: {
             name: 'Account 4',
             lastActive: 1586359844192,
@@ -489,8 +489,8 @@ describe('selectors', () => {
         },
         {
           address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-          balance: '0x0',
           id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+          name: 'Account 2',
           metadata: {
             name: 'Account 2',
             lastActive: 1586359844192,

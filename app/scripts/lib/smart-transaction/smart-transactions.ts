@@ -30,17 +30,17 @@ import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
 import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
   getIsSmartTransaction,
   isHardwareWallet,
   getSmartTransactionsFeatureFlagsForChain,
-} from '../../../../shared/modules/selectors';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/selectors';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
 import { getTransactionById } from '../transaction/util';
-import { getClientForTransactionMetadata } from './utils';
+import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 
 const namespace = 'SmartTransactions';
 
@@ -481,6 +481,7 @@ class SmartTransactionHook {
             signedTx.metadata = {
               txType: transactionMeta.type,
               client: getClientForTransactionMetadata(),
+              origin: sanitizeOrigin(transactionMeta.origin),
             };
           }
           return signedTx;
@@ -493,6 +494,7 @@ class SmartTransactionHook {
           metadata: {
             txType: this.#transactionMeta.type,
             client: getClientForTransactionMetadata(),
+            origin: sanitizeOrigin(this.#transactionMeta.origin),
           },
         },
       ];
@@ -507,6 +509,7 @@ class SmartTransactionHook {
         metadata: {
           txType: this.#transactionMeta.type,
           client: getClientForTransactionMetadata(),
+          origin: sanitizeOrigin(this.#transactionMeta.origin),
         },
       }));
     }

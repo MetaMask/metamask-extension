@@ -7,7 +7,6 @@ import type {
 import {
   StorageServiceGetAllKeysAction,
   StorageServiceGetItemAction,
-  StorageServiceRemoveItemAction,
   StorageServiceSetItemAction,
 } from '@metamask/storage-service';
 import {
@@ -20,8 +19,7 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | StorageServiceGetAllKeysAction
   | StorageServiceSetItemAction
-  | StorageServiceGetItemAction
-  | StorageServiceRemoveItemAction;
+  | StorageServiceGetItemAction;
 
 type AllowedEvents = NetworkControllerStateChangeEvent;
 
@@ -55,7 +53,6 @@ export function getTokenListControllerMessenger(
       'StorageService:getAllKeys',
       'StorageService:setItem',
       'StorageService:getItem',
-      'StorageService:removeItem',
     ],
     events: ['NetworkController:stateChange'],
   });

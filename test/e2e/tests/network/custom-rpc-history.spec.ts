@@ -1,13 +1,14 @@
 import { Suite } from 'mocha';
-import { mockNetworkStateOld } from '../../../stub/networks';
+import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { LOCALHOST_NETWORK_CLIENT_ID } from '../../constants';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Custom RPC history', function (this: Suite) {
   it(`creates first custom RPC entry`, async function () {
@@ -17,7 +18,7 @@ describe('Custom RPC history', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: [
           {
             type: 'anvil',
@@ -38,7 +39,8 @@ describe('Custom RPC history', function (this: Suite) {
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Local Testnet';
 
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -71,7 +73,7 @@ describe('Custom RPC history', function (this: Suite) {
   it('warns user when they enter url for an already configured network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -80,7 +82,8 @@ describe('Custom RPC history', function (this: Suite) {
         // Duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -107,7 +110,7 @@ describe('Custom RPC history', function (this: Suite) {
   it('warns user when they enter chainId for an already configured network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -116,7 +119,8 @@ describe('Custom RPC history', function (this: Suite) {
         // Duplicate network
         const duplicateChainId = '1';
 
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -141,35 +145,48 @@ describe('Custom RPC history', function (this: Suite) {
   });
 
   it('finds all recent RPCs in history', async function () {
-    const networkState = mockNetworkStateOld(
-      {
-        rpcUrl: 'http://127.0.0.1:8545/1',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/1',
-      },
-      {
-        rpcUrl: 'http://127.0.0.1:8545/2',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/2',
-      },
-    );
-    // Use type assertion to make selectedNetworkClientId optional
-    (
-      networkState as { selectedNetworkClientId?: string }
-    ).selectedNetworkClientId = undefined;
-
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController(networkState)
+        fixtures: new FixtureBuilderV2()
+          .withNetworkController({
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: [],
+                chainId: '0x539',
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
+                    type: RpcEndpointType.Custom,
+                    url: 'http://localhost:8545',
+                  },
+                  {
+                    networkClientId: 'rpc-id-1',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/1',
+                  },
+                  {
+                    networkClientId: 'rpc-id-2',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/2',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              'rpc-id-1': { EIPS: {}, status: NetworkStatus.Available },
+              'rpc-id-2': { EIPS: {}, status: NetworkStatus.Available },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
 
@@ -186,35 +203,57 @@ describe('Custom RPC history', function (this: Suite) {
   });
 
   it('deletes a custom RPC', async function () {
-    const networkState = mockNetworkStateOld(
-      {
-        rpcUrl: 'http://127.0.0.1:8545/1',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/1',
-      },
-      {
-        rpcUrl: 'http://127.0.0.1:8545/2',
-        chainId: '0x540',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/2',
-      },
-    );
-    // Use type assertion to make selectedNetworkClientId optional
-    (
-      networkState as { selectedNetworkClientId?: string }
-    ).selectedNetworkClientId = undefined;
-
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController(networkState)
+        fixtures: new FixtureBuilderV2()
+          .withNetworkController({
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: [],
+                chainId: '0x539',
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
+                    type: RpcEndpointType.Custom,
+                    url: 'http://localhost:8545',
+                  },
+                  {
+                    networkClientId: 'rpc-id-1',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/1',
+                  },
+                ],
+              },
+              '0x540': {
+                blockExplorerUrls: [],
+                chainId: '0x540',
+                defaultRpcEndpointIndex: 0,
+                name: 'http://127.0.0.1:8545/2',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'rpc-id-2',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/2',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              'rpc-id-1': { EIPS: {}, status: NetworkStatus.Available },
+              'rpc-id-2': { EIPS: {}, status: NetworkStatus.Available },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkNetworkOptionIsDisplayed(
@@ -230,7 +269,7 @@ describe('Custom RPC history', function (this: Suite) {
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',

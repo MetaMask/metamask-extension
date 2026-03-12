@@ -1,5 +1,4 @@
 import Bowser from 'bowser';
-import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -218,7 +217,7 @@ describe('util', () => {
   });
 
   describe('#numericBalance', () => {
-    it('should return a BN 0 if given nothing', () => {
+    it('should return 0 if given nothing', () => {
       const result = util.numericBalance();
       expect(result.toString(10)).toStrictEqual('0');
     });
@@ -241,13 +240,13 @@ describe('util', () => {
     });
 
     it('should return 1.0000 ETH', () => {
-      const input = new BN(ethInWei, 10).toJSON();
+      const input = BigInt(ethInWei).toString(16);
       const result = util.formatBalance(input, 4);
       expect(result).toStrictEqual('1.0000 ETH');
     });
 
     it('should return 0.500 ETH', function () {
-      const input = new BN(ethInWei, 10).div(new BN('2', 10)).toJSON();
+      const input = (BigInt(ethInWei) / 2n).toString(16);
       const result = util.formatBalance(input, 3);
       expect(result).toStrictEqual('0.500 ETH');
     });
@@ -490,6 +489,9 @@ describe('util', () => {
     });
     it('should return value in hours for milliseconds passed very high above 5400000', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
+    });
+    it('should return sub-second value when milliseconds < 1000', () => {
+      expect(util.toHumanReadableTime(t, 200)).toStrictEqual('0.2 sec');
     });
   });
   describe('sanitizeMessage', () => {

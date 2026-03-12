@@ -3,7 +3,7 @@ import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
@@ -64,6 +64,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           });
         },
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: [
+          // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
+          'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
+        ],
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await loginWithBalanceValidation(

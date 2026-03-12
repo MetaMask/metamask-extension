@@ -3,9 +3,11 @@ const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
+    '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
@@ -53,6 +55,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.test.(js|ts|tsx)',
     '<rootDir>/shared/**/*.test.(js|ts|tsx)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/**/*.test.(js|ts|tsx)',
@@ -60,6 +63,8 @@ module.exports = {
     '<rootDir>/test/e2e/helpers.test.js',
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,

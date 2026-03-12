@@ -16,6 +16,7 @@ import {
 import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/backup-and-sync';
 import { useEnableNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 import {
   Box,
@@ -42,7 +43,7 @@ export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
   const navigate = useNavigate();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const isNotificationEnabled = useSelector(
@@ -108,7 +109,7 @@ export default function TurnOnMetamaskNotifications() {
   const privacyLink = (
     <Text
       as="a"
-      href="https://support.metamask.io/privacy-and-security/profile-privacy"
+      href={ZENDESK_URLS.PROFILE_PRIVACY}
       target="_blank"
       rel="noopener noreferrer"
       key="privacy-link"

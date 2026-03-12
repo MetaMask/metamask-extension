@@ -78,7 +78,7 @@ const MultichainBridgeTransactionDetailsModal = ({
   onClose,
 }: MultichainBridgeTransactionDetailsModalProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const { quote, status } = bridgeHistoryItem;
 
@@ -174,7 +174,6 @@ const MultichainBridgeTransactionDetailsModal = ({
   };
 
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
     nonEvmTransaction: transaction,
   });
 

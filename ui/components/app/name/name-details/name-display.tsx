@@ -1,8 +1,11 @@
 import React, { memo } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-import classnames from 'classnames';
-import Identicon from '../../../ui/identicon';
+import {
+  AvatarAccountSize,
+  AvatarToken,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
+import classnames from 'clsx';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
@@ -22,6 +25,10 @@ export type NameDisplayProps = {
    * The fallback value to display if the name is not found or cannot be resolved.
    */
   fallbackName?: string;
+  /**
+   * Whether to disable the onClick handler.
+   */
+  disableNameClick?: boolean;
 };
 
 const NameDisplay = memo(
@@ -33,6 +40,7 @@ const NameDisplay = memo(
     handleClick,
     showFullName = false,
     fallbackName,
+    disableNameClick,
     ...props
   }: NameDisplayProps) => {
     const { name, image, icon, displayState, isAccount } = useDisplayName({
@@ -56,7 +64,9 @@ const NameDisplay = memo(
       }
 
       if (image) {
-        return <Identicon address={value} diameter={16} image={image} />;
+        return (
+          <AvatarToken src={image} name={value} size={AvatarTokenSize.Xs} />
+        );
       }
 
       return (
@@ -91,7 +101,8 @@ const NameDisplay = memo(
           name: true,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          name__clickable: Boolean(handleClick) && !isAccount,
+          name__clickable:
+            Boolean(handleClick) && !isAccount && !disableNameClick,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           name__saved: displayState === TrustSignalDisplayState.Petname,

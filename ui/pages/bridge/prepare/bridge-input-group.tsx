@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -37,7 +37,6 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
@@ -61,7 +60,11 @@ export const BridgeInputGroup = ({
   disabledChainId,
   containerProps = {},
   isDestination,
+  isAssetPickerOpen,
+  setIsAssetPickerOpen,
 }: {
+  isAssetPickerOpen: boolean;
+  setIsAssetPickerOpen: (isOpen: boolean) => void;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
@@ -85,13 +88,17 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
 
   const { isLoading } = useSelector(getBridgeQuotes);
-  const { isInsufficientBalance, isEstimatedReturnLow } =
-    useSelector(getValidationErrors);
+  const { isInsufficientBalance, isEstimatedReturnLow } = useSelector(
+    getValidationErrors,
+    shallowEqual,
+  );
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = token?.chainId;
-  const [, handleCopy] = useCopyToClipboard(MINUTE);
+
+  // useCopyToClipboard analysis: Copies a public address
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { assetReference } = token ? parseCaipAssetType(token.assetId) : {};
@@ -152,7 +159,6 @@ export const BridgeInputGroup = ({
       }
     }
   };
-  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
 
   return (
     <Column gap={1} {...containerProps}>

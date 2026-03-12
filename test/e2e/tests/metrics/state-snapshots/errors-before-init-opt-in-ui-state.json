@@ -23,6 +23,7 @@
     "AppMetadataController": {
       "currentAppVersion": "string",
       "currentMigrationVersion": "number",
+      "firstTimeInfo": "object",
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -31,19 +32,20 @@
       "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
-      "enforcedSimulationsSlippage": "number",
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isRampCardClosed": false,
       "isWalletResetInProgress": "boolean",
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": "object",
+      "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
@@ -70,6 +72,7 @@
     "BridgeController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
+    "ClientController": "object",
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
@@ -189,6 +192,7 @@
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
     "PhishingController": {
+      "addressScanCache": "object",
       "tokenScanCache": "object",
       "urlScanCache": "object"
     },
@@ -200,30 +204,29 @@
       "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": "object",
       "ipfsGateway": "string",
       "isIpfsGatewayEnabled": "boolean",
       "isMultiAccountBalancesEnabled": "boolean",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
-      "lostIdentities": "object",
       "manageInstitutionalWallets": "boolean",
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
+        "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": "boolean",
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": "boolean",
-        "smartAccountOptIn": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -233,7 +236,6 @@
       },
       "referrals": "object",
       "securityAlertsEnabled": "boolean",
-      "selectedAddress": "string",
       "snapRegistryList": "object",
       "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "light",
@@ -254,15 +256,19 @@
     "ProfileMetricsController": "object",
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
+      "localOverrides": "object",
+      "rawRemoteFeatureFlags": "object",
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" }
-      }
+        "feature3": { "name": "groupA", "value": "valueA" }
+      },
+      "thresholdCache": "object"
     },
     "RewardsController": {
       "rewardsAccounts": "object",
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": "object",
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
       "rewardsSubscriptionTokens": "object",
@@ -286,13 +292,11 @@
       "lastUpdated": "number",
       "signature": "string"
     },
+    "StaticAssetsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
-    "SwapsController": {},
     "TokenBalancesController": { "tokenBalances": "object" },
-    "TokenListController": {
-      "preventPollingOnNetworkRestart": false
-    },
+    "TokenListController": {},
     "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},
@@ -313,8 +317,7 @@
       "isBackupAndSyncEnabled": true,
       "isContactSyncingEnabled": true
     },
-    "config": "object",
-    "firstTimeInfo": "object"
+    "config": "object"
   },
-  "meta": { "version": 190 }
+  "meta": { "version": 198 }
 }

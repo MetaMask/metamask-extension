@@ -18,13 +18,14 @@ import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllNetworkConfigurationsByCaipChainId,
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   getInternalAccounts,
   getSelectedInternalAccount,
@@ -37,6 +38,7 @@ import {
 } from '../../../selectors';
 import {
   addImportedTokens,
+  importCustomAssetsBatch,
   multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
@@ -85,7 +87,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+} from '../../../../shared/lib/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
@@ -116,6 +118,11 @@ import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state/feature-flags';
+import {
+  getAssetsControllerAssetPreferences,
+  isAssetIdHiddenInPreferencesMap,
+} from '../../../selectors/assets-unify-state/asset-preferences';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -145,6 +152,10 @@ export const ImportTokensModal = ({ onClose }) => {
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+  const assetsUnifyStateFeatureEnabled = useSelector(
+    getIsAssetsUnifyStateEnabled,
+  );
+  const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
 
   const [selectedNetwork, setSelectedNetwork] = useState(chainId);
 
@@ -288,7 +299,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const infoGetter = useRef(tokenInfoGetter());
 
   // CONFIRMATION MODE
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
 
   // Get accounts for non-EVM chains using the account tree selector
@@ -299,6 +310,10 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const handleAddTokens = useCallback(async () => {
     try {
+      const assetsIds = Object.keys(pendingTokens).map((tokenAddress) => {
+        return toAssetId(tokenAddress, selectedNetwork);
+      });
+
       const addedTokenValues = Object.values(pendingTokens);
 
       if (addedTokenValues.length === 0) {
@@ -359,6 +374,14 @@ export const ImportTokensModal = ({ onClose }) => {
         await dispatch(addImportedTokens(addedTokenValues, clientId));
       }
 
+      if (assetsUnifyStateFeatureEnabled) {
+        const assets = assetsIds.map((assetId) => ({
+          assetId,
+          isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
+        }));
+        await dispatch(importCustomAssetsBatch(selectedAccount.id, assets));
+      }
+
       addedTokenValues.forEach((pendingToken) => {
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
@@ -371,7 +394,7 @@ export const ImportTokensModal = ({ onClose }) => {
             source_connection_method: pendingToken.isCustom
               ? MetaMetricsTokenEventSource.Custom
               : MetaMetricsTokenEventSource.List,
-            token_standard: isNonEvm ? TokenStandard.none : TokenStandard.ERC20,
+            token_standard: isNonEvm ? TokenStandard.none : ERC20,
             asset_type: AssetType.token,
           },
         });
@@ -399,6 +422,10 @@ export const ImportTokensModal = ({ onClose }) => {
     trackEvent,
     networkConfigurations,
     getAccountForChain,
+    assetsUnifyStateFeatureEnabled,
+    assetPreferences,
+    selectedAccount?.id,
+    selectedNetwork,
   ]);
 
   useEffect(() => {
@@ -692,8 +719,7 @@ export const ImportTokensModal = ({ onClose }) => {
         setShowSymbolAndDecimals(false);
         break;
 
-      case standard === TokenStandard.ERC1155 ||
-        standard === TokenStandard.ERC721:
+      case standard === ERC1155 || standard === ERC721:
         setNftAddressError(
           t('nftAddressError', [
             <ButtonLink

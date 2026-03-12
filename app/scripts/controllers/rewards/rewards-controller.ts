@@ -10,13 +10,14 @@ import {
 } from '@metamask/utils';
 import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { detectSIWE } from '@metamask/controller-utils';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
-import { isHardwareAccount } from '../../../../shared/lib/accounts';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
+import { toEvmCaipAccountId } from '../../../../shared/lib/multichain/scope-utils';
 import {
   EstimatedPointsDto,
   EstimatePointsDto,
@@ -34,9 +35,11 @@ import {
   type SeasonTierDto,
   type SeasonStatusDto,
   type SubscriptionDto,
+  type PointsEstimateHistoryEntry,
   SeasonStateDto,
   SeasonMetadataDto,
   DiscoverSeasonsDto,
+  ChallengeDto,
 } from './rewards-controller.types';
 import {
   AccountAlreadyRegisteredError,
@@ -48,6 +51,7 @@ import { signSolanaRewardsMessage } from './utils/solana-snap';
 import { signBitcoinRewardsMessage } from './utils/bitcoin-snap';
 import { signTronRewardsMessage } from './utils/tron-snap';
 import { sortAccounts } from './utils/sortAccounts';
+import { isHardwareAccount } from './utils/isHardwareAccount';
 
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
 
@@ -57,10 +61,13 @@ const controllerName = 'RewardsController';
 const SEASON_STATUS_CACHE_THRESHOLD_MS = 1000 * 60 * 1; // 1 minute
 
 // Season metadata cache threshold
-const SEASON_METADATA_CACHE_THRESHOLD_MS = 1000 * 60 * 10; // 10 minutes
+const SEASON_METADATA_CACHE_THRESHOLD_MS = 1000 * 60 * 1; // 1 minute
 
 // Opt-in status stale threshold for not opted-in accounts to force a fresh check (less strict than in mobile for now)
 const NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS = 1000 * 60 * 60; // 1 hour
+
+// Maximum number of points estimate history entries to keep for Customer Support diagnostics
+const MAX_POINTS_ESTIMATE_HISTORY_ENTRIES = 50;
 
 /**
  * State metadata for the RewardsController
@@ -99,7 +106,7 @@ const metadata = {
   rewardsSubscriptionTokens: {
     includeInStateLogs: false,
     persist: true,
-    includeInDebugSnapshot: true,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   rewardsEnabled: {
@@ -107,6 +114,12 @@ const metadata = {
     persist: false,
     includeInDebugSnapshot: false,
     usedInUi: true,
+  },
+  rewardsPointsEstimateHistory: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
   },
 };
 
@@ -120,6 +133,7 @@ export const getRewardsControllerDefaultState = (): RewardsControllerState => ({
   rewardsSeasons: {},
   rewardsSeasonStatuses: {},
   rewardsSubscriptionTokens: {},
+  rewardsPointsEstimateHistory: [],
 });
 
 export const defaultRewardsControllerState = getRewardsControllerDefaultState();
@@ -229,6 +243,140 @@ export class RewardsController extends BaseController<
   #isBitcoinDisabled: () => boolean;
 
   #isTronDisabled: () => boolean;
+
+  #reauthPromises: Map<string, Promise<void>> = new Map();
+
+  /**
+   * Perform silent re-authentication for a given subscription ID.
+   * Clears the stale token, tries the active account first, then falls back
+   * to iterating all linked software accounts.
+   *
+   * @param subscriptionId - The subscription ID to re-authenticate for
+   */
+  async #performReauthForSubscription(subscriptionId: string): Promise<void> {
+    this.#removeSubscriptionToken(subscriptionId);
+
+    // Fetch all accounts once; used by both the active-account fast-path and
+    // the linked-accounts fallback below.
+    const allAccounts = await this.messenger.call(
+      'AccountsController:listMultichainAccounts',
+    );
+
+    // Fast path: if the rewards active account owns this subscription, try it
+    // first.  We look it up by its stored CAIP account ID rather than by
+    // getSelectedMultichainAccount so that a wallet-UI account switch cannot
+    // cause us to authenticate the wrong account.
+    if (this.state.rewardsActiveAccount?.subscriptionId === subscriptionId) {
+      const rewardsActiveAccountCaipId =
+        this.state.rewardsActiveAccount.account;
+      const activeAccount = allAccounts.find((acc: InternalAccount) => {
+        const accCaipId = this.convertInternalAccountToCaipAccountId(acc);
+        return accCaipId === rewardsActiveAccountCaipId;
+      }) as InternalAccount | undefined;
+
+      if (activeAccount && !isHardwareAccount(activeAccount)) {
+        log.debug(
+          'RewardsController: Attempting reauth with active account after 403',
+        );
+        const result = await this.performSilentAuth(
+          activeAccount,
+          false,
+          false,
+        );
+        if (!result) {
+          throw new Error(
+            `Reauth failed for subscription ID: ${subscriptionId}`,
+          );
+        }
+        return;
+      }
+      // Fall through: the rewards active account is a hardware wallet or was
+      // not found in the accounts list — try all linked accounts below.
+    }
+
+    // Active account can't sign (e.g. hardware wallet) or doesn't match —
+    // find any software account linked to this subscription.
+    const allLinkedAccounts = Object.values(this.state.rewardsAccounts).filter(
+      (acc) => acc.subscriptionId === subscriptionId,
+    );
+
+    if (allLinkedAccounts.length > 0) {
+      for (const linkedAccount of allLinkedAccounts) {
+        const intAccount = allAccounts.find((acc: InternalAccount) => {
+          const accCaipId = this.convertInternalAccountToCaipAccountId(acc);
+          return accCaipId === linkedAccount.account && !isHardwareAccount(acc);
+        });
+        if (intAccount) {
+          log.debug(
+            'RewardsController: Attempting reauth with linked account after 403',
+          );
+          const result = await this.performSilentAuth(
+            intAccount as InternalAccount,
+            false,
+            false,
+          );
+          if (!result) {
+            throw new Error(
+              `Reauth failed for subscription ID: ${subscriptionId}`,
+            );
+          }
+          return;
+        }
+      }
+    }
+
+    throw new Error(
+      `No signable account found for subscription ID: ${subscriptionId}`,
+    );
+  }
+
+  /**
+   * Wrap a data service call with automatic re-authentication on 403 errors.
+   * Coalesces concurrent reauth attempts and retries the original call once on success.
+   *
+   * @param fn - The function to execute
+   * @param subscriptionId - The subscription ID used to look up the account for reauth
+   */
+  async #withAuthRetry<TResult>(
+    fn: () => Promise<TResult>,
+    subscriptionId: string,
+  ): Promise<TResult> {
+    try {
+      return await fn();
+    } catch (error) {
+      if (!(error instanceof AuthorizationFailedError)) {
+        throw error;
+      }
+
+      if (this.#reauthPromises.has(subscriptionId)) {
+        log.debug(
+          'RewardsController: 403 detected, reauth already in progress for subscription',
+          subscriptionId,
+        );
+      } else {
+        log.debug(
+          'RewardsController: 403 detected, initiating reauth for subscription',
+          subscriptionId,
+        );
+        const promise = this.#performReauthForSubscription(
+          subscriptionId,
+        ).finally(() => {
+          this.#reauthPromises.delete(subscriptionId);
+        });
+        this.#reauthPromises.set(subscriptionId, promise);
+      }
+
+      try {
+        await this.#reauthPromises.get(subscriptionId);
+      } catch (reauthError) {
+        this.invalidateSubscriptionCache(subscriptionId);
+        this.invalidateSubscriptionAndAccounts(subscriptionId);
+        throw reauthError;
+      }
+
+      return await fn();
+    }
+  }
 
   /**
    * Calculate tier status and next tier information
@@ -452,10 +600,11 @@ export class RewardsController extends BaseController<
   #getAccountState(account: CaipAccountId): RewardsAccountState | null {
     let accState = null;
     if (account?.startsWith('eip155')) {
+      const address = account.split(':')[2];
       accState =
         this.state.rewardsAccounts[
-          `eip155:0:${account.split(':')[2]?.toLowerCase()}`
-        ] || this.state.rewardsAccounts[`eip155:0:${account.split(':')[2]}`];
+          toEvmCaipAccountId(address?.toLowerCase())
+        ] || this.state.rewardsAccounts[toEvmCaipAccountId(address)];
     }
     if (!accState) {
       accState = this.state.rewardsAccounts[account];
@@ -490,8 +639,23 @@ export class RewardsController extends BaseController<
   async #signRewardsMessage(
     account: InternalAccount,
     timestamp: number,
-  ): Promise<string> {
-    const message = `rewards,${account.address},${timestamp}`;
+  ): Promise<{ signature: string; challenge?: ChallengeDto }> {
+    const isEvm = isEvmAddress(account.address);
+
+    if (isHardwareAccount(account) && isEvm) {
+      const challenge = await this.messenger.call(
+        'RewardsDataService:generateChallenge',
+        {
+          address: account.address,
+        },
+      );
+      const result = await this.signSiweEvmMessage(account, challenge);
+      return { signature: result, challenge };
+    } else if (isHardwareAccount(account) && !isEvm) {
+      throw new Error('Unsupported account type for signing rewards message');
+    }
+
+    const hotWalletMessage = `rewards,${account.address},${timestamp}`;
 
     if (isSolanaAddress(account.address)) {
       const result = await signSolanaRewardsMessage(
@@ -500,11 +664,13 @@ export class RewardsController extends BaseController<
           'SnapController:handleRequest',
         ) as unknown as HandleSnapRequest['handler'],
         account.id,
-        Buffer.from(message, 'utf8').toString('base64'),
+        Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );
-      return `0x${Buffer.from(base58.decode(result.signature)).toString(
-        'hex',
-      )}`;
+      return {
+        signature: `0x${Buffer.from(base58.decode(result.signature)).toString(
+          'hex',
+        )}`,
+      };
     } else if (
       isBtcMainnetAddress(account.address) ||
       isBtcTestnetAddress(account.address)
@@ -518,12 +684,14 @@ export class RewardsController extends BaseController<
           'SnapController:handleRequest',
         ) as unknown as HandleSnapRequest['handler'],
         account.id,
-        Buffer.from(message, 'utf8').toString('base64'),
+        Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );
       // Bitcoin signatures are typically hex-encoded, return as-is or convert if needed
-      return result.signature.startsWith('0x')
-        ? result.signature
-        : `0x${result.signature}`;
+      return {
+        signature: result.signature.startsWith('0x')
+          ? result.signature
+          : `0x${result.signature}`,
+      };
     } else if (isTronAddress(account.address)) {
       if (this.#isTronDisabled()) {
         throw new Error('Unsupported account type for signing rewards message');
@@ -534,15 +702,17 @@ export class RewardsController extends BaseController<
           'SnapController:handleRequest',
         ) as unknown as HandleSnapRequest['handler'],
         account.id,
-        Buffer.from(message, 'utf8').toString('base64'),
+        Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );
       // Tron signatures are typically hex-encoded, return as-is or convert if needed
-      return result.signature.startsWith('0x')
-        ? result.signature
-        : `0x${result.signature}`;
-    } else if (isEvmAddress(account.address)) {
-      const result = await this.#signEvmMessage(account, message);
-      return result;
+      return {
+        signature: result.signature.startsWith('0x')
+          ? result.signature
+          : `0x${result.signature}`,
+      };
+    } else if (isEvm) {
+      const result = await this.#signEvmMessage(account, hotWalletMessage);
+      return { signature: result };
     }
 
     throw new Error('Unsupported account type for signing rewards message');
@@ -567,6 +737,30 @@ export class RewardsController extends BaseController<
   }
 
   /**
+   * Sign a SIWE (Sign-In with Ethereum) message for rewards authentication
+   *
+   * @param account - The account to sign with
+   * @param challenge - The challenge DTO containing the message string to sign
+   * @returns The signature of the SIWE message
+   */
+  async signSiweEvmMessage(
+    account: InternalAccount,
+    challenge: ChallengeDto,
+  ): Promise<string> {
+    const messageHex = `0x${Buffer.from(challenge.message, 'utf8').toString('hex')}`;
+    const siwe = detectSIWE({ data: messageHex });
+    const signature = await this.messenger.call(
+      'KeyringController:signPersonalMessage',
+      {
+        data: messageHex,
+        from: account.address,
+        siwe,
+      },
+    );
+    return signature;
+  }
+
+  /**
    * Handle authentication triggers (account changes, keyring unlock)
    */
   async handleAuthenticationTrigger(_reason?: string): Promise<void> {
@@ -580,7 +774,7 @@ export class RewardsController extends BaseController<
     try {
       const accounts = this.messenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      );
+      ) as InternalAccount[];
 
       if (!accounts || accounts.length === 0) {
         await this.performSilentAuth(null, true, true);
@@ -600,6 +794,9 @@ export class RewardsController extends BaseController<
         let successAccount: InternalAccount | null = null;
         for (const account of sortedAccounts) {
           try {
+            if (isHardwareAccount(account)) {
+              continue;
+            }
             const subscriptionId = await this.performSilentAuth(
               account,
               false,
@@ -672,20 +869,13 @@ export class RewardsController extends BaseController<
   }
 
   /**
-   * Check if an internal account supports opt-in for rewards
+   * Check if an internal account supports opt-in for rewards.
    *
    * @param account - The internal account to check
-   * @returns boolean - True if the account supports opt-in, false otherwise
+   * @returns boolean - True if the account supports silent opt-in, false otherwise
    */
   isOptInSupported(account: InternalAccount): boolean {
     try {
-      // Try to check if it's a hardware wallet
-      const isHardware = isHardwareAccount(account);
-      // If it's a hardware wallet, opt-in is not supported
-      if (isHardware) {
-        return false;
-      }
-
       // Check if it's an EVM address (not non-EVM)
       if (isEvmAddress(account.address)) {
         return true;
@@ -744,6 +934,12 @@ export class RewardsController extends BaseController<
     });
   }
 
+  #removeSubscriptionToken(subscriptionId: string): void {
+    this.update((state: RewardsControllerState) => {
+      delete state.rewardsSubscriptionTokens[subscriptionId];
+    });
+  }
+
   #getSubscriptionToken(subscriptionId: string): string | undefined {
     return this.state.rewardsSubscriptionTokens[subscriptionId];
   }
@@ -755,6 +951,10 @@ export class RewardsController extends BaseController<
     internalAccount?: InternalAccount | null,
     shouldBecomeActiveAccount = true,
     respectSkipSilentAuth = true,
+    hardwareWalletSignResult?: {
+      signature: string;
+      challenge?: ChallengeDto;
+    } | null,
   ): Promise<string | null> {
     if (!internalAccount) {
       if (shouldBecomeActiveAccount) {
@@ -768,11 +968,26 @@ export class RewardsController extends BaseController<
     const account: CaipAccountId | null =
       this.convertInternalAccountToCaipAccountId(internalAccount);
 
-    const shouldSkip = account
-      ? this.shouldSkipSilentAuth(account, internalAccount)
-      : false;
+    let shouldSkip: boolean;
+    let effectiveRespectSkipSilentAuth = respectSkipSilentAuth;
 
-    if (shouldSkip && respectSkipSilentAuth) {
+    const hardwareAcc = isHardwareAccount(internalAccount);
+
+    // Assume we can't silent auth for hardware accounts
+    if (
+      hardwareAcc &&
+      (!hardwareWalletSignResult?.challenge ||
+        !hardwareWalletSignResult?.signature)
+    ) {
+      effectiveRespectSkipSilentAuth = true;
+      shouldSkip = true;
+    } else {
+      shouldSkip = account
+        ? this.shouldSkipSilentAuth(account, internalAccount)
+        : false;
+    }
+
+    if (shouldSkip && effectiveRespectSkipSilentAuth) {
       // This means that we'll have a record for this account
       let accountState = this.#getAccountState(account as CaipAccountId);
       if (accountState) {
@@ -845,66 +1060,88 @@ export class RewardsController extends BaseController<
     try {
       // Generate timestamp and sign the message
       let timestamp = Math.floor(Date.now() / 1000);
-      let signature;
+      let signature: string = hardwareAcc
+        ? hardwareWalletSignResult?.signature || ''
+        : '';
+      const challenge = hardwareAcc
+        ? hardwareWalletSignResult?.challenge
+        : undefined;
       let retryAttempt = 0;
       const MAX_RETRY_ATTEMPTS = 1;
 
-      try {
-        signature = await this.#signRewardsMessage(internalAccount, timestamp);
-      } catch (signError) {
-        log.error(
-          'RewardsController: Failed to generate signature:',
-          signError,
-        );
+      if (!hardwareAcc) {
+        try {
+          const signResult = await this.#signRewardsMessage(
+            internalAccount,
+            timestamp,
+          );
+          signature = signResult.signature;
+        } catch (signError) {
+          log.error(
+            'RewardsController: Failed to generate signature:',
+            signError,
+          );
 
-        // Check if the error is due to locked keyring
-        if (
-          signError &&
-          typeof signError === 'object' &&
-          'message' in signError
-        ) {
-          const errorMessage = (signError as Error).message;
-          if (errorMessage.includes('controller is locked')) {
-            return null; // Exit silently when keyring is locked
+          // Check if the error is due to locked keyring
+          if (
+            signError &&
+            typeof signError === 'object' &&
+            'message' in signError
+          ) {
+            const errorMessage = (signError as Error).message;
+            if (errorMessage.includes('controller is locked')) {
+              return null; // Exit silently when keyring is locked
+            }
           }
-        }
 
-        throw signError;
+          throw signError;
+        }
       }
 
       // Function to execute the login call with retry logic
       const executeLogin = async (
-        ts: number,
         sig: string,
+        challengeDto?: ChallengeDto,
       ): Promise<LoginResponseDto> => {
         try {
+          // Use SIWE login if we have a challenge (hardware wallet)
+          if (challengeDto) {
+            return await this.messenger.call('RewardsDataService:siweLogin', {
+              challengeId: challengeDto.id,
+              signature: sig as `0x${string}`,
+            });
+          }
+          // Use regular login for non-hardware wallets
           return await this.messenger.call('RewardsDataService:login', {
             account: internalAccount.address,
-            timestamp: ts,
+            timestamp,
             signature: sig,
           });
         } catch (error) {
           // Check if it's an InvalidTimestampError and we haven't exceeded retry attempts
+          // Only retry for regular login (not SIWE login)
           if (
             error instanceof InvalidTimestampError &&
-            retryAttempt < MAX_RETRY_ATTEMPTS
+            retryAttempt < MAX_RETRY_ATTEMPTS &&
+            !hardwareAcc
           ) {
             retryAttempt += 1;
             // Use the timestamp from the error for retry
             timestamp = error.timestamp;
-            signature = await this.#signRewardsMessage(
+            const signResult = await this.#signRewardsMessage(
               internalAccount,
               timestamp,
             );
-            return await executeLogin(timestamp, signature);
+            signature = signResult.signature;
+            return await executeLogin(signature, challenge);
           }
           throw error;
         }
       };
 
       const loginResponse: LoginResponseDto = await executeLogin(
-        timestamp,
         signature,
+        challenge,
       );
 
       // Update state with successful authentication
@@ -968,7 +1205,11 @@ export class RewardsController extends BaseController<
     if (!rewardsEnabled) {
       return false;
     }
-    return this.#getAccountState(account)?.hasOptedIn ?? false;
+    return (
+      (this.#getAccountState(account)?.hasOptedIn &&
+        this.#getAccountState(account)?.subscriptionId !== null) ??
+      false
+    );
   }
 
   checkOptInStatusAgainstCache(
@@ -1000,13 +1241,14 @@ export class RewardsController extends BaseController<
           const accountState = this.#getAccountState(caipAccount);
           if (accountState?.hasOptedIn !== undefined) {
             // Check if account is not opted in and needs a recheck
-            const shouldRecheckFreshIfNotOptedIn =
+            const shouldRecheckFresh =
               !accountState.lastFreshOptInStatusCheck ||
               Date.now() - accountState.lastFreshOptInStatusCheck >
                 NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS;
             if (
-              accountState.hasOptedIn === false &&
-              shouldRecheckFreshIfNotOptedIn
+              (accountState.hasOptedIn === false ||
+                (accountState.hasOptedIn && !accountState.subscriptionId)) &&
+              shouldRecheckFresh
             ) {
               // Force a fresh check for this not-opted-in account
               addressesNeedingFresh.push(address);
@@ -1092,24 +1334,31 @@ export class RewardsController extends BaseController<
             address.toLowerCase(),
           );
 
+          const canUseSubscriptionId =
+            subscriptionId &&
+            (this.#getSubscriptionToken(subscriptionId) ||
+              (internalAccount && !isHardwareAccount(internalAccount)));
+
           if (internalAccount) {
             const caipAccount =
               this.convertInternalAccountToCaipAccountId(internalAccount);
             if (caipAccount) {
               const lastFreshOptInStatusCheck = Date.now();
               this.update((state: RewardsControllerState) => {
-                // Update or create account state with fresh opt-in status and subscription ID
+                // Update or create account state with fresh opt-in status
                 if (state.rewardsAccounts[caipAccount]) {
                   state.rewardsAccounts[caipAccount].hasOptedIn = hasOptedIn;
                   state.rewardsAccounts[caipAccount].subscriptionId =
-                    subscriptionId;
+                    canUseSubscriptionId ? subscriptionId : null;
                   state.rewardsAccounts[caipAccount].lastFreshOptInStatusCheck =
                     lastFreshOptInStatusCheck;
                 } else {
                   state.rewardsAccounts[caipAccount] = {
                     account: caipAccount,
                     hasOptedIn,
-                    subscriptionId,
+                    subscriptionId: canUseSubscriptionId
+                      ? subscriptionId
+                      : null,
                     perpsFeeDiscount: null,
                     lastPerpsDiscountRateFetched: null,
                     lastFreshOptInStatusCheck,
@@ -1118,7 +1367,8 @@ export class RewardsController extends BaseController<
 
                 if (state.rewardsActiveAccount?.account === caipAccount) {
                   state.rewardsActiveAccount.hasOptedIn = hasOptedIn;
-                  state.rewardsActiveAccount.subscriptionId = subscriptionId;
+                  state.rewardsActiveAccount.subscriptionId =
+                    canUseSubscriptionId ? subscriptionId : null;
                   state.rewardsActiveAccount.lastFreshOptInStatusCheck =
                     lastFreshOptInStatusCheck;
                 }
@@ -1174,6 +1424,19 @@ export class RewardsController extends BaseController<
         request,
       );
 
+      // Track successful estimate in history for Customer Support diagnostics
+      // Wrapped in its own try-catch so history tracking failures don't affect the main functionality
+      try {
+        this.addPointsEstimateToHistory(request, estimatedPoints);
+      } catch (historyError) {
+        log.error(
+          'RewardsController: Failed to add points estimate to history:',
+          historyError instanceof Error
+            ? historyError.message
+            : String(historyError),
+        );
+      }
+
       return estimatedPoints;
     } catch (error) {
       log.error(
@@ -1182,6 +1445,74 @@ export class RewardsController extends BaseController<
       );
       throw error;
     }
+  }
+
+  /**
+   * Add a successful points estimate to the history for Customer Support diagnostics.
+   * Maintains a bounded history of the last N estimates.
+   *
+   * @param request - The estimate request containing activity details
+   * @param response - The estimated points response
+   */
+  addPointsEstimateToHistory(
+    request: EstimatePointsDto,
+    response: EstimatedPointsDto,
+  ): void {
+    const { activityContext } = request;
+
+    const entry: PointsEstimateHistoryEntry = {
+      timestamp: Date.now(),
+      requestActivityType: request.activityType,
+      requestAccount: request.account,
+      // Swap context fields (if applicable) - flattened for easier diagnostics
+      ...(activityContext.swapContext && {
+        requestSwapSrcAssetId: activityContext.swapContext.srcAsset.id,
+        requestSwapSrcAssetAmount: activityContext.swapContext.srcAsset.amount,
+        requestSwapSrcAssetUsdPrice:
+          activityContext.swapContext.srcAsset.usdPrice,
+        requestSwapDestAssetId: activityContext.swapContext.destAsset.id,
+        requestSwapDestAssetAmount:
+          activityContext.swapContext.destAsset.amount,
+        requestSwapDestAssetUsdPrice:
+          activityContext.swapContext.destAsset.usdPrice,
+        requestSwapFeeAssetId: activityContext.swapContext.feeAsset.id,
+        requestSwapFeeAssetAmount: activityContext.swapContext.feeAsset.amount,
+        requestSwapFeeAssetUsdPrice:
+          activityContext.swapContext.feeAsset.usdPrice,
+      }),
+      // Perps context fields (if applicable)
+      ...(activityContext.perpsContext &&
+        !Array.isArray(activityContext.perpsContext) && {
+          requestPerpsType: activityContext.perpsContext.type,
+          requestPerpsUsdFeeValue: activityContext.perpsContext.usdFeeValue,
+          requestPerpsCoin: activityContext.perpsContext.coin,
+        }),
+      // Shield context fields (if applicable)
+      ...(activityContext.shieldContext && {
+        requestShieldRecurringInterval:
+          activityContext.shieldContext.recurringInterval,
+      }),
+      // Response fields
+      responsePointsEstimate: response.pointsEstimate,
+      responseBonusBips: response.bonusBips,
+    };
+
+    this.update((state: RewardsControllerState) => {
+      // Add new entry at the beginning (most recent first)
+      state.rewardsPointsEstimateHistory.unshift(entry);
+
+      // Keep only the last N entries
+      if (
+        state.rewardsPointsEstimateHistory.length >
+        MAX_POINTS_ESTIMATE_HISTORY_ENTRIES
+      ) {
+        state.rewardsPointsEstimateHistory =
+          state.rewardsPointsEstimateHistory.slice(
+            0,
+            MAX_POINTS_ESTIMATE_HISTORY_ENTRIES,
+          );
+      }
+    });
   }
 
   /**
@@ -1200,7 +1531,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<SeasonDtoState> - The season metadata
    */
   async getSeasonMetadata(
-    type: 'current' | 'next' = 'current',
+    type: 'current' | 'next' | 'previous' = 'current',
   ): Promise<SeasonDtoState> {
     const result = await wrapWithCache<SeasonDtoState>({
       key: type,
@@ -1228,6 +1559,8 @@ export class RewardsController extends BaseController<
           seasonInfo = discoverSeasons.current;
         } else if (type === 'next') {
           seasonInfo = discoverSeasons.next;
+        } else if (type === 'previous') {
+          seasonInfo = discoverSeasons.previous;
         }
 
         // If found with valid start date, fetch metadata and populate cache
@@ -1308,103 +1641,32 @@ export class RewardsController extends BaseController<
       },
       fetchFresh: async () => {
         try {
-          const subscriptionToken = this.#getSubscriptionToken(subscriptionId);
-          if (!subscriptionToken) {
-            throw new AuthorizationFailedError(
-              `No subscription token found for subscription ID: ${subscriptionId}`,
+          const seasonState = await this.#withAuthRetry(() => {
+            const subscriptionToken =
+              this.#getSubscriptionToken(subscriptionId);
+            if (!subscriptionToken) {
+              throw new AuthorizationFailedError(
+                `No subscription token found for subscription ID: ${subscriptionId}`,
+              );
+            }
+            return this.messenger.call(
+              'RewardsDataService:getSeasonStatus',
+              seasonId,
+              subscriptionToken,
             );
-          }
-          // Now fetch season status (balance, currentTierId, etc.)
-          const seasonState = await this.messenger.call(
-            'RewardsDataService:getSeasonStatus',
-            seasonId,
-            subscriptionToken,
-          );
-          // Combine all data into SeasonStatusDto
+          }, subscriptionId);
           const seasonStatus = this.convertToSeasonStatusDto(
             season,
             seasonState,
           );
           return this.#convertSeasonStatusToSubscriptionState(seasonStatus);
         } catch (error) {
-          if (error instanceof AuthorizationFailedError) {
-            // Attempt to reauth with a valid account.
-            try {
-              if (
-                this.state.rewardsActiveAccount?.subscriptionId ===
-                subscriptionId
-              ) {
-                const account = await this.messenger.call(
-                  'AccountsController:getSelectedMultichainAccount',
-                );
-                await this.performSilentAuth(account, false, false); // try and auth.
-              } else if (
-                this.state.rewardsAccounts &&
-                Object.values(this.state.rewardsAccounts).length > 0
-              ) {
-                const accountForSub = Object.values(
-                  this.state.rewardsAccounts,
-                ).find((acc) => acc.subscriptionId === subscriptionId);
-                if (accountForSub) {
-                  const accounts = await this.messenger.call(
-                    'AccountsController:listMultichainAccounts',
-                  );
-                  const { convertInternalAccountToCaipAccountId } = this;
-                  const intAccountForSub = accounts.find(
-                    (acc: InternalAccount) => {
-                      const accCaipId =
-                        convertInternalAccountToCaipAccountId(acc);
-                      return accCaipId === accountForSub.account;
-                    },
-                  );
-                  if (intAccountForSub) {
-                    await this.performSilentAuth(
-                      intAccountForSub as InternalAccount,
-                      false,
-                      false,
-                    );
-                  }
-                }
-              }
-              // Fetch season status again
-              const subscriptionToken =
-                this.#getSubscriptionToken(subscriptionId);
-              if (!subscriptionToken) {
-                throw new Error(
-                  `No subscription token found for subscription ID: ${subscriptionId}`,
-                );
-              }
-              // Now fetch season status (balance, currentTierId, etc.)
-              const seasonState = await this.messenger.call(
-                'RewardsDataService:getSeasonStatus',
-                season.id,
-                subscriptionToken,
-              );
-              // Combine all data into SeasonStatusDto
-              const seasonStatus = this.convertToSeasonStatusDto(
-                season,
-                seasonState,
-              );
-              return this.#convertSeasonStatusToSubscriptionState(seasonStatus);
-            } catch {
-              log.error(
-                'RewardsController: Failed to reauth with a valid account after 403 error',
-                error instanceof Error ? error.message : String(error),
-              );
-              this.invalidateSubscriptionCache(subscriptionId);
-              this.invalidateAccountsAndSubscriptions();
-              throw error;
-            }
-          } else if (error instanceof SeasonNotFoundError) {
+          if (error instanceof SeasonNotFoundError) {
             this.update((state: RewardsControllerState) => {
               state.rewardsSeasons = {};
             });
             throw error;
           }
-          log.error(
-            'RewardsController: Failed to get season status:',
-            error instanceof Error ? error.message : String(error),
-          );
           throw error;
         }
       },
@@ -1419,21 +1681,43 @@ export class RewardsController extends BaseController<
     return result;
   }
 
-  invalidateAccountsAndSubscriptions() {
+  invalidateSubscriptionAndAccounts(subscriptionId: string): void {
     this.update((state: RewardsControllerState) => {
-      if (state.rewardsActiveAccount) {
+      delete state.rewardsSubscriptions[subscriptionId];
+
+      Object.entries(state.rewardsAccounts).forEach(
+        ([caipAccount, accountState]) => {
+          if (accountState.subscriptionId === subscriptionId) {
+            state.rewardsAccounts[caipAccount as CaipAccountId] = {
+              ...accountState,
+              hasOptedIn: false,
+              subscriptionId: null,
+              perpsFeeDiscount: null,
+              lastPerpsDiscountRateFetched: null,
+              lastFreshOptInStatusCheck: null,
+            };
+          }
+        },
+      );
+
+      if (state.rewardsActiveAccount?.subscriptionId === subscriptionId) {
         state.rewardsActiveAccount = {
           ...state.rewardsActiveAccount,
           hasOptedIn: false,
           subscriptionId: null,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
           lastFreshOptInStatusCheck: null,
-          account: state.rewardsActiveAccount.account, // Ensure account is always present (never undefined)
         };
       }
-      state.rewardsAccounts = {};
-      state.rewardsSubscriptions = {};
-      state.rewardsSubscriptionTokens = {};
+
+      delete state.rewardsSubscriptionTokens[subscriptionId];
     });
+
+    log.debug(
+      'RewardsController: Invalidated subscription and accounts',
+      subscriptionId,
+    );
   }
 
   /**
@@ -1468,8 +1752,12 @@ export class RewardsController extends BaseController<
     for (const accountToTry of sortedAccounts) {
       try {
         optinResult = await this.#optIn(accountToTry, referralCode);
-      } catch {
-        // Allow one failure to pass through
+      } catch (error) {
+        // Hardware wallet errors must propagate — the user explicitly interacted with their device
+        if (isHardwareAccount(accountToTry)) {
+          throw error;
+        }
+        // Allow one failure to pass through for non-hardware accounts
       }
 
       if (optinResult) {
@@ -1512,14 +1800,25 @@ export class RewardsController extends BaseController<
     }
     // Generate timestamp and sign the message for mobile optin
     let timestamp = Math.floor(Date.now() / 1000);
-    let signature = await this.#signRewardsMessage(account, timestamp);
+    let { signature, challenge } = await this.#signRewardsMessage(
+      account,
+      timestamp,
+    );
     let retryAttempt = 0;
     const MAX_RETRY_ATTEMPTS = 1;
     const executeMobileOptin = async (
       ts: number,
       sig: string,
+      chal?: ChallengeDto,
     ): Promise<LoginResponseDto> => {
       try {
+        if (chal) {
+          return await this.messenger.call('RewardsDataService:siweLogin', {
+            challengeId: chal.id,
+            signature: sig as `0x${string}`,
+            referralCode,
+          });
+        }
         return await this.messenger.call('RewardsDataService:mobileOptin', {
           account: account.address,
           timestamp: ts,
@@ -1535,8 +1834,11 @@ export class RewardsController extends BaseController<
           retryAttempt += 1;
           // Use the timestamp from the error for retry
           timestamp = error.timestamp;
-          signature = await this.#signRewardsMessage(account, timestamp);
-          return await executeMobileOptin(timestamp, signature);
+          const { signature: newSignature, challenge: newChallenge } =
+            await this.#signRewardsMessage(account, timestamp);
+          signature = newSignature;
+          challenge = newChallenge;
+          return await executeMobileOptin(timestamp, signature, newChallenge);
         }
         // Check if it's an AccountAlreadyRegisteredError
         if (error instanceof AccountAlreadyRegisteredError) {
@@ -1545,6 +1847,7 @@ export class RewardsController extends BaseController<
             account,
             false,
             false,
+            challenge ? { signature, challenge } : null,
           );
 
           // If silent auth returned a subscription ID, recover with login response
@@ -1568,7 +1871,11 @@ export class RewardsController extends BaseController<
       }
     };
 
-    const optinResponse = await executeMobileOptin(timestamp, signature);
+    const optinResponse = await executeMobileOptin(
+      timestamp,
+      signature,
+      challenge,
+    );
     // Store the subscription token for authenticated requests
     if (optinResponse.subscription?.id && optinResponse.sessionId) {
       this.#storeSubscriptionToken(
@@ -1690,11 +1997,58 @@ export class RewardsController extends BaseController<
   }
 
   /**
+   * Get subscription ID from primary wallet account group accounts
+   * Validates that hardware wallet accounts are authenticated if opted in
+   *
+   * @param primaryWalletGroupAccounts - Optional list of internal accounts from the primary account group of the active wallet
+   * @returns Promise<string | null> - The subscription ID or null if none found
+   * @throws Error if a hardware wallet account is opted in but not authenticated
+   */
+  async getPrimaryWalletSubscriptionId(
+    primaryWalletGroupAccounts?: InternalAccount[],
+  ): Promise<string | null> {
+    if (
+      !primaryWalletGroupAccounts ||
+      primaryWalletGroupAccounts.length === 0
+    ) {
+      return null;
+    }
+
+    await this.getOptInStatus({
+      addresses: primaryWalletGroupAccounts.map((account) => account.address),
+    });
+
+    for (const account of primaryWalletGroupAccounts) {
+      const caipAccount = this.convertInternalAccountToCaipAccountId(account);
+      if (caipAccount) {
+        const accountState = this.#getAccountState(caipAccount);
+        if (
+          accountState?.hasOptedIn &&
+          accountState.subscriptionId === null &&
+          isHardwareAccount(account)
+        ) {
+          throw new Error(
+            'Primary wallet account group has opted in but is not authenticated yet',
+          );
+        } else if (accountState?.subscriptionId) {
+          // Prefer the subscription ID of the primary/first account group of the active wallet if it exists
+          return accountState.subscriptionId;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Get candidate subscription ID with fallback logic
    *
+   * @param primaryWalletGroupAccounts - Optional list of internal accounts from the primary account group of the active wallet
    * @returns Promise<string | null> - The subscription ID or null if none found
    */
-  async getCandidateSubscriptionId(): Promise<string | null> {
+  async getCandidateSubscriptionId(
+    primaryWalletGroupAccounts?: InternalAccount[],
+  ): Promise<string | null> {
     if (!this.isRewardsFeatureEnabled()) {
       return null;
     }
@@ -1702,6 +2056,14 @@ export class RewardsController extends BaseController<
     // First, check if there's an active account with a subscription
     if (this.state.rewardsActiveAccount?.subscriptionId) {
       return this.state.rewardsActiveAccount.subscriptionId;
+    }
+
+    // Check if any of the provided accounts are opted in but have no subscription ID
+    const primaryWalletSubscriptionId =
+      await this.getPrimaryWalletSubscriptionId(primaryWalletGroupAccounts);
+
+    if (primaryWalletSubscriptionId) {
+      return primaryWalletSubscriptionId;
     }
 
     // Fallback to the first subscription ID from the subscriptions map
@@ -1730,13 +2092,15 @@ export class RewardsController extends BaseController<
     }
 
     // If no subscriptions found, call optinstatus for all internal accounts
+    let optInStatusResponse: OptInStatusDto | undefined;
+    let supportedAccounts: InternalAccount[] = [];
     try {
       const allAccounts = this.messenger.call(
         'AccountsController:listMultichainAccounts',
       );
 
       // Extract addresses from internal accounts using isOptInSupported
-      const supportedAccounts: InternalAccount[] =
+      supportedAccounts =
         allAccounts?.filter((account: InternalAccount) =>
           this.isOptInSupported(account),
         ) || [];
@@ -1749,7 +2113,7 @@ export class RewardsController extends BaseController<
       );
 
       // Call opt-in status check
-      const optInStatusResponse = await this.getOptInStatus({ addresses });
+      optInStatusResponse = await this.getOptInStatus({ addresses });
       if (!optInStatusResponse?.ois?.filter((ois: boolean) => ois).length) {
         return null;
       }
@@ -1786,6 +2150,9 @@ export class RewardsController extends BaseController<
           return subscriptionId;
         }
         try {
+          if (isHardwareAccount(account)) {
+            continue;
+          }
           silentAuthAttempts += 1;
           subscriptionId = await this.performSilentAuth(
             account,
@@ -1811,20 +2178,37 @@ export class RewardsController extends BaseController<
       );
     }
 
-    throw new Error(
-      'No candidate subscription ID found after all silent auth attempts. There is an opted in account but we cannot use it to fetch the season status.',
-    );
+    // Only throw if there are opted-in accounts but none are hot wallets
+    if (optInStatusResponse?.ois) {
+      const hasOptedInHotWallet = supportedAccounts.some(
+        (account, i) =>
+          optInStatusResponse.ois[i] && account && !isHardwareAccount(account),
+      );
+
+      if (hasOptedInHotWallet) {
+        throw new Error(
+          'No candidate subscription ID found after all silent auth attempts. There is an opted in account but we cannot use it to fetch the season status.',
+        );
+      }
+    }
+
+    // Subscription id was found but only hardware wallets were opted in,
+    //  we can't silently auth so users will have to opt in again.
+    return null;
   }
 
   /**
    * Link an account to a subscription via mobile join
    *
    * @param account - The account to link to the subscription
+   * @param invalidateRelatedData - Whether to invalidate related cache data
+   * @param primaryWalletGroupAccounts - Optional list of internal accounts from the primary account group of the active wallet
    * @returns Promise<boolean> - The updated subscription information
    */
   async linkAccountToSubscriptionCandidate(
     account: InternalAccount,
     invalidateRelatedData: boolean = true,
+    primaryWalletGroupAccounts?: InternalAccount[],
   ): Promise<boolean> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
@@ -1848,7 +2232,9 @@ export class RewardsController extends BaseController<
     }
 
     // Get candidate subscription ID using the new method
-    const candidateSubscriptionId = await this.getCandidateSubscriptionId();
+    const candidateSubscriptionId = await this.getCandidateSubscriptionId(
+      primaryWalletGroupAccounts,
+    );
     if (!candidateSubscriptionId) {
       throw new Error('No valid subscription found to link account to');
     }
@@ -1860,7 +2246,10 @@ export class RewardsController extends BaseController<
     try {
       // Generate timestamp and sign the message for mobile join
       let timestamp = Math.floor(Date.now() / 1000);
-      let signature = await this.#signRewardsMessage(account, timestamp);
+      let { signature, challenge } = await this.#signRewardsMessage(
+        account,
+        timestamp,
+      );
       let retryAttempt = 0;
       const MAX_RETRY_ATTEMPTS = 1;
 
@@ -1868,6 +2257,7 @@ export class RewardsController extends BaseController<
       const executeMobileJoin = async (
         ts: number,
         sig: string,
+        chal?: ChallengeDto,
       ): Promise<SubscriptionDto> => {
         try {
           const subscriptionToken = this.#getSubscriptionToken(
@@ -1878,7 +2268,17 @@ export class RewardsController extends BaseController<
               `No subscription token found for subscription ID: ${candidateSubscriptionId}`,
             );
           }
-          return await this.messenger.call(
+          if (chal) {
+            return (await this.messenger.call(
+              'RewardsDataService:siweJoin',
+              {
+                challengeId: chal.id,
+                signature: sig as `0x${string}`,
+              },
+              subscriptionToken,
+            )) as SubscriptionDto;
+          }
+          return (await this.messenger.call(
             'RewardsDataService:mobileJoin',
             {
               account: account.address,
@@ -1886,7 +2286,7 @@ export class RewardsController extends BaseController<
               signature: sig as `0x${string}`,
             },
             subscriptionToken,
-          );
+          )) as SubscriptionDto;
         } catch (error) {
           // Check if it's an InvalidTimestampError and we haven't exceeded retry attempts
           if (
@@ -1896,8 +2296,11 @@ export class RewardsController extends BaseController<
             retryAttempt += 1;
             // Use the timestamp from the error for retry
             timestamp = error.timestamp;
-            signature = await this.#signRewardsMessage(account, timestamp);
-            return await executeMobileJoin(timestamp, signature);
+            const { signature: newSignature, challenge: newChallenge } =
+              await this.#signRewardsMessage(account, timestamp);
+            signature = newSignature;
+            challenge = newChallenge;
+            return await executeMobileJoin(timestamp, signature, challenge);
           }
           if (error instanceof AccountAlreadyRegisteredError) {
             // Try to perform silent auth for this account
@@ -1905,6 +2308,7 @@ export class RewardsController extends BaseController<
               account,
               false,
               false,
+              challenge ? { signature, challenge } : null,
             );
 
             // If silent auth returned a subscription ID, return the subscription from cache
@@ -1923,6 +2327,7 @@ export class RewardsController extends BaseController<
       const updatedSubscription: SubscriptionDto = await executeMobileJoin(
         timestamp,
         signature,
+        challenge,
       );
 
       // Update store with accounts and subscriptions (but not activeAccount)
@@ -1968,9 +2373,11 @@ export class RewardsController extends BaseController<
    * Link multiple accounts to a subscription candidate
    *
    * @param accounts - Array of accounts to link to the subscription
+   * @param primaryWalletGroupAccounts - Optional list of internal accounts from the primary account group of the active wallet
    */
   async linkAccountsToSubscriptionCandidate(
     accounts: InternalAccount[],
+    primaryWalletGroupAccounts?: InternalAccount[],
   ): Promise<{ account: InternalAccount; success: boolean }[]> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
@@ -1998,6 +2405,7 @@ export class RewardsController extends BaseController<
         const success = await this.linkAccountToSubscriptionCandidate(
           accountToLink,
           false, // we will invalidate at the end of the loop
+          primaryWalletGroupAccounts,
         );
 
         if (success) {

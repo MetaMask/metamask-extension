@@ -4,7 +4,7 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
@@ -80,8 +80,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await transactionConfirmation.closeGasFeeToastMessage();
 
         await transactionConfirmation.checkGasFeeSymbol('USDC');
-        await transactionConfirmation.checkGasFeeFiat('$1.23');
-        await transactionConfirmation.checkGasFee('1.23');
         await transactionConfirmation.checkGasFeeTokenFee('$0.43');
         await transactionConfirmation.clickFooterConfirmButton();
 
@@ -269,6 +267,7 @@ async function mockTransactionRelayStatus(
 ) {
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/smart-transactions/${UUID}`)
+    .always()
     .thenCallback(() => {
       return {
         ok: true,

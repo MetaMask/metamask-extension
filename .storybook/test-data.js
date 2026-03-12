@@ -363,6 +363,26 @@ const state = {
             },
           },
         },
+        'snap:npm:@metamask/test-snap-bip44': {
+          id: 'snap:npm:@metamask/test-snap-bip44',
+          type: 'snap',
+          groups: {
+            'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0': {
+              id: 'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+              type: 'single-account',
+              accounts: ['64f9d02e-47e6-4dfd-8232-f3518606cad3'],
+              metadata: {
+                name: 'Snap Account 1',
+              },
+            },
+          },
+          metadata: {
+            name: 'BIP-44',
+            snap: {
+              id: 'npm:@metamask/test-snap-bip44',
+            },
+          }
+        },
       },
     },
     internalAccounts: {
@@ -437,22 +457,27 @@ const state = {
           type: EthAccountType.Eoa,
           scopes: [EthScope.Eoa],
         },
+        '64f9d02e-47e6-4dfd-8232-f3518606cad3': {
+          address: '0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+          id: '64f9d02e-47e6-4dfd-8232-f3518606cad3',
+          metadata: {
+            name: 'Snap Account 1',
+            keyring: {
+              type: 'Snap Keyring',
+            },
+            snap: {
+              enabled: true,
+              id: 'npm:@metamask/test-snap-bip44',
+              name: 'BIP-44',
+            },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-    },
-    identities: {
-      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        name: 'This is a Really Long Account Name',
-        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-      },
-      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-        name: 'Account 2',
-        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      },
-      '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-        name: 'Account 3',
-        address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
-      },
     },
     transactionBatches: {},
     addressBook: {
@@ -1236,6 +1261,14 @@ const state = {
           name: '',
         },
       },
+      {
+        type: KeyringType.snap,
+        accounts: ['0xde939393DDe455081fFb3Dfd027E189919F04BD0'],
+        metadata: {
+          id: '',
+          name: '',
+        },
+      },
     ],
     ...mockNetworkState(
       {
@@ -1306,11 +1339,9 @@ const state = {
     usePhishDetect: true,
     useTokenDetection: true,
     useCurrencyRateCheck: true,
-    lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',
     migratedPrivacyMode: false,
-    selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     selectedNetworkClientId: 'test-networkConfigurationId-1',
     metaMetricsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',

@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -48,7 +48,7 @@ export const MultichainAccountMenu = ({
   const dispatch = useDispatch();
   const popoverRef = useRef<HTMLDivElement>(null);
   const accountTree = useSelector(getAccountTree);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Get the account group metadata to check pinned/hidden state
   const accountGroupMetadata = useMemo(() => {
@@ -95,8 +95,13 @@ export const MultichainAccountMenu = ({
   const menuConfig = useMemo(() => {
     const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
-      const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      navigate(multichainAccountDetailsPageRoute);
+
+      navigate({
+        pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+        search: createSearchParams({
+          accountGroupId,
+        }).toString(),
+      });
     };
 
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
@@ -114,7 +119,7 @@ export const MultichainAccountMenu = ({
         name: TraceName.ShowAccountAddressList,
         op: TraceOperation.AccountUi,
       });
-      const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`;
       navigate(multichainAccountAddressesPageRoute);
     };
 

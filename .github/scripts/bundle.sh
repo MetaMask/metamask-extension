@@ -34,6 +34,7 @@ export QUICKNODE_OPTIMISM_URL=""
 export QUICKNODE_POLYGON_URL=""
 export QUICKNODE_SEI_URL=""
 export QUICKNODE_MONAD_URL=""
+export QUICKNODE_HYPEREVM_URL=""
 export SEGMENT_BETA_WRITE_KEY=""
 export SEGMENT_EXPERIMENTAL_WRITE_KEY=""
 export SEGMENT_FLASK_WRITE_KEY=""
@@ -63,5 +64,5 @@ corepack enable
 # 5. Install dependencies
 yarn
 
-# 6. Run the production build command
-yarn build prod
+# 6. Run the production build command with 4GB of heap space
+NODE_OPTIONS='--max-old-space-size=4096' yarn build prod

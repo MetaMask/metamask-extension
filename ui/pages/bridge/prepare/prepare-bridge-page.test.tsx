@@ -11,6 +11,11 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletProvider,
+} from '../../../contexts/hardware-wallets';
 import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
@@ -20,6 +25,17 @@ jest.mock('../hooks/useGasIncluded7702', () => ({
 
 jest.mock('../hooks/useIsSendBundleSupported', () => ({
   useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+}));
+
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
+
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
 setBackgroundConnection({
@@ -40,6 +56,20 @@ describe('PrepareBridgePage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: false,
+      walletType: null,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
+      isWebHidAvailable: false,
+      isWebUsbAvailable: false,
+    });
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
   });
 
   it('should render the component, with initial state', async () => {
@@ -76,7 +106,9 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -129,6 +161,7 @@ describe('PrepareBridgePage', () => {
         fromToken: {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          symbol: 'USDC',
           chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: toAssetId(
             '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -159,14 +192,16 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
     expect(container).toMatchSnapshot();
 
-    expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /mUSD/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /UNI/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
@@ -223,7 +258,9 @@ describe('PrepareBridgePage', () => {
 
     expect(() =>
       renderWithProvider(
-        <PrepareBridgePage onOpenSettings={jest.fn()} />,
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
         configureStore(mockStore),
       ),
     ).toThrow();
@@ -246,7 +283,9 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 

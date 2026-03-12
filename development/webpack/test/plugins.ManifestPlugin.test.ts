@@ -1,6 +1,6 @@
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { type Compilation } from 'webpack';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
@@ -50,6 +50,7 @@ describe('ManifestPlugin', () => {
       manifestVersion: [2, 3] as const,
       webAccessibleResources: [undefined, ['filename.map.js']],
     };
+
     generateCases(matrix).forEach(runTest);
 
     type TestCase = Combination<typeof matrix>;
@@ -87,24 +88,24 @@ describe('ManifestPlugin', () => {
           files.map(({ source }) => source),
           files.map(() => null),
         );
-        compilation.options.context = context;
+        compiler.context = context;
         const manifestPlugin = new ManifestPlugin({
           browsers,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: manifestVersion,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           web_accessible_resources: webAccessibleResources,
           ...getZipOptions(zip),
+          buildType: 'main',
         });
         manifestPlugin.apply(compiler);
         await promise;
 
-        assert.deepStrictEqual(Object.keys(compilation.assets), expectedAssets);
+        assert.deepStrictEqual(
+          new Set(Object.keys(compilation.assets)),
+          new Set(expectedAssets),
+        );
         validateManifest(compilation as unknown as Compilation);
       });
     }
@@ -218,18 +219,59 @@ describe('ManifestPlugin', () => {
         });
       };
     }
+
+    it('emits source maps to the sourcemaps directory when devtool is hidden-source-map', async () => {
+      const files = [
+        {
+          name: 'filename.js',
+          source: Buffer.from('console.log(1 + 2);', 'utf8'),
+        },
+        {
+          name: 'filename.js.map',
+          source: Buffer.from('{}', 'utf8'),
+        },
+      ];
+      const { compiler, compilation, promise } = mockWebpack(
+        files.map(({ name }) => name),
+        files.map(({ source }) => source),
+        files.map(() => null),
+        'hidden-source-map',
+      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      assert.deepStrictEqual(
+        new Set(Object.keys(compilation.assets)),
+        new Set([
+          'chrome/manifest.json',
+          'chrome/filename.js',
+          'firefox/manifest.json',
+          'firefox/filename.js',
+          'sourcemaps/filename.js.map',
+        ]),
+      );
+    });
   });
 
   describe('should transform the manifest object', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
       test: [true, false],
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: [2, 3] as const,
     };
     const manifestMatrix = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         undefined,
         [],
@@ -285,20 +327,15 @@ describe('ManifestPlugin', () => {
   describe('manifest flags in development mode', () => {
     const emptyTestManifest = {} as chrome.runtime.Manifest;
     const notEmptyTestManifest = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       _flags: { remoteFeatureFlags: { testFlag: false, testFlag2: 'value1' } },
     } as unknown as chrome.runtime.Manifest;
     const mockFlags = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       _flags: { remoteFeatureFlags: { testFlag: true } },
       key: MANIFEST_DEV_KEY,
     };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
     const { mock } = require('node:test');
-    const { resolve } = require('node:path');
 
     afterEach(() => mock.restoreAll());
 
@@ -310,7 +347,6 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -334,7 +370,6 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -345,8 +380,6 @@ describe('ManifestPlugin', () => {
       assert.deepStrictEqual(
         transformed,
         {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           _flags: {
             remoteFeatureFlags: {
               testFlag2: 'value1',
@@ -367,7 +400,6 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -385,7 +417,6 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -406,6 +437,1027 @@ describe('ManifestPlugin', () => {
         transformed._flags,
         undefined,
         'should not have flags when file read fails with non-ENOENT error',
+      );
+    });
+  });
+
+  describe('build type overrides', () => {
+    const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
+
+    it('should apply build type base manifest overrides', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Beta build type description',
+        'should use beta build type description',
+      );
+      assert.strictEqual(
+        json.beta_property,
+        'from_beta_base',
+        'should include beta base property',
+      );
+      assert.strictEqual(
+        json.base_property,
+        'overridden_by_beta',
+        'should override base property with beta value',
+      );
+    });
+
+    it('should apply build type browser manifest overrides on top of all previous layers', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.browser_specific_settings?.chrome?.id,
+        'beta-chrome-extension-id',
+        'should use beta chrome extension id',
+      );
+      assert.strictEqual(
+        json.beta_chrome_property,
+        'from_beta_chrome',
+        'should include beta chrome property',
+      );
+      assert.strictEqual(
+        json.chrome_property,
+        'overridden_by_beta_chrome',
+        'should override chrome property with beta chrome value',
+      );
+    });
+
+    it('should gracefully skip non-existent build type manifests', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'nonexistent',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      // Should use base manifest values
+      assert.strictEqual(
+        json.description,
+        'Base v3 manifest description',
+        'should use base manifest description when build type does not exist',
+      );
+      assert.strictEqual(
+        json.base_property,
+        'from_base',
+        'should use base property value',
+      );
+      assert.strictEqual(
+        json.beta_property,
+        undefined,
+        'should not have beta properties',
+      );
+    });
+
+    it('should use build type base when build type browser manifest does not exist', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'flask',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Flask build type description',
+        'should use flask build type description',
+      );
+      assert.strictEqual(
+        json.flask_property,
+        'from_flask_base',
+        'should include flask base property',
+      );
+      assert.strictEqual(
+        json.flask_firefox_property,
+        undefined,
+        'should not have flask firefox property for chrome',
+      );
+      assert.strictEqual(
+        json.browser_specific_settings?.chrome?.id,
+        'chrome-extension-id-v3',
+        'should use base chrome extension id since flask chrome manifest does not exist',
+      );
+    });
+
+    it('should prioritize build type base description over base description', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: 'test suffix',
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Beta build type description – test suffix',
+        'should use beta description with suffix appended',
+      );
+    });
+
+    it('should apply different build type overrides for different browsers', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'flask',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const chromeManifest = compilation.assets['chrome/manifest.json'];
+      const chromeJson = JSON.parse(
+        chromeManifest.source().toString(),
+      ) as Manifest;
+
+      const firefoxManifest = compilation.assets['firefox/manifest.json'];
+      const firefoxJson = JSON.parse(
+        firefoxManifest.source().toString(),
+      ) as Manifest;
+
+      // Chrome should not have flask firefox overrides
+      assert.strictEqual(
+        chromeJson.flask_firefox_property,
+        undefined,
+        'chrome should not have flask firefox property',
+      );
+
+      // Firefox should have flask firefox overrides
+      assert.strictEqual(
+        firefoxJson.flask_firefox_property,
+        'from_flask_firefox',
+        'firefox should have flask firefox property',
+      );
+      assert.strictEqual(
+        firefoxJson.browser_specific_settings?.gecko?.id,
+        'flask-firefox-extension-id@metamask.io',
+        'firefox should have flask firefox extension id',
+      );
+    });
+
+    it('should work with manifest v2 and build type overrides', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 2,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(json.manifest_version, 2, 'should use manifest v2');
+      assert.strictEqual(
+        json.description,
+        'Beta build type description',
+        'should use beta build type description in v2',
+      );
+      assert.strictEqual(
+        json.beta_property,
+        'from_beta_base',
+        'should include beta base property in v2',
+      );
+    });
+
+    it('should append additional description suffix to build type description', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: 'Additional Info',
+        buildType: 'flask',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Flask build type description – Additional Info',
+        'should append additional description to flask description',
+      );
+    });
+  });
+
+  describe('entrypoints', () => {
+    const entrypointsContext = join(
+      __dirname,
+      'fixtures/ManifestPlugin/entrypoints',
+    );
+
+    function mockEntrypoint(...files: string[]) {
+      return { getFiles: () => files };
+    }
+
+    describe('collectEntrypoints', () => {
+      it('should collect all MV2 entries from the manifest', async () => {
+        const { compiler, entries, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 2,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        // content_scripts
+        assert.ok(
+          entries['scripts/contentscript.js'],
+          'should have contentscript entry',
+        );
+        assert.ok(entries['scripts/inpage.js'], 'should have inpage entry');
+        assert.ok(
+          entries['vendor/trezor/content-script.js'],
+          'should have trezor content-script entry',
+        );
+
+        // background scripts
+        assert.ok(entries['background.js'], 'should have background.js entry');
+
+        // web_accessible_resources (.js only, not .png)
+        assert.ok(entries['testing.js'], 'should have testing.js entry');
+        assert.strictEqual(
+          entries['images/icon.png'],
+          undefined,
+          'should not have .png entry',
+        );
+
+        // HTML pages
+        assert.ok(entries.popup, 'should have popup HTML entry');
+        assert.ok(entries.notification, 'should have notification HTML entry');
+        assert.ok(entries.home, 'should have home HTML entry');
+        assert.ok(entries.background, 'should include background.html for MV2');
+
+        // MV2 should NOT include offscreen.html
+        assert.strictEqual(
+          entries.offscreen,
+          undefined,
+          'should skip offscreen.html for MV2',
+        );
+
+        // Non-HTML files should be excluded
+        assert.strictEqual(
+          entries.readme,
+          undefined,
+          'should skip non-html files',
+        );
+
+        // Verify script entry structure
+        const cs = entries['scripts/contentscript.js'];
+        assert.strictEqual(cs.chunkLoading, false);
+        assert.strictEqual(cs.filename, 'scripts/contentscript.js');
+        assert.deepStrictEqual(cs.import, [
+          resolve(entrypointsContext, 'scripts/contentscript.js'),
+        ]);
+
+        // Verify HTML entry structure
+        assert.deepStrictEqual(entries.popup.import, [
+          join(entrypointsContext, 'html', 'pages', 'popup.html'),
+        ]);
+      });
+
+      it('should collect all MV3 entries from the manifest', async () => {
+        const { compiler, entries, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        // content_scripts
+        assert.ok(
+          entries['scripts/contentscript.js'],
+          'should have contentscript entry',
+        );
+        assert.ok(
+          entries['vendor/trezor/content-script.js'],
+          'should have trezor content-script entry',
+        );
+
+        // service_worker with chunkLoading: 'import-scripts'
+        const sw = entries['service-worker.js'];
+        assert.ok(sw, 'should have service worker entry');
+        assert.strictEqual(sw.chunkLoading, 'import-scripts');
+        assert.deepStrictEqual(sw.import, [
+          resolve(entrypointsContext, 'service-worker.js'),
+        ]);
+
+        // web_accessible_resources (.js only)
+        assert.ok(entries['testing.js'], 'should have testing.js entry');
+        assert.strictEqual(
+          entries['images/icon.png'],
+          undefined,
+          'should not have .png entry',
+        );
+
+        // HTML pages
+        assert.ok(entries.popup, 'should have popup HTML entry');
+        assert.ok(entries.notification, 'should have notification HTML entry');
+        assert.ok(entries.home, 'should have home HTML entry');
+        assert.ok(entries.offscreen, 'should include offscreen.html for MV3');
+
+        // MV3 should NOT include background.html
+        assert.strictEqual(
+          entries.background,
+          undefined,
+          'should skip background.html for MV3',
+        );
+
+        // Non-HTML files should be excluded
+        assert.strictEqual(
+          entries.readme,
+          undefined,
+          'should skip non-html files',
+        );
+      });
+
+      it('should not add duplicate script entries across multiple browsers', async () => {
+        const { compiler, entries, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome', 'firefox'],
+          manifest_version: 2,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        // Even with 2 browsers, each script should appear only once
+        const scriptKeys = Object.keys(entries).filter((k) =>
+          k.endsWith('.js'),
+        );
+        const uniqueScriptKeys = [...new Set(scriptKeys)];
+        assert.strictEqual(
+          scriptKeys.length,
+          uniqueScriptKeys.length,
+          'should not have duplicate script entries',
+        );
+      });
+    });
+
+    describe('canBeChunked', () => {
+      it('should return false for scripts collected from the manifest', async () => {
+        const { compiler, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 2,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'scripts/contentscript.js' }),
+          false,
+          'content script should not be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'background.js' }),
+          false,
+          'background script should not be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'testing.js' }),
+          false,
+          'web accessible resource script should not be chunked',
+        );
+      });
+
+      it('should return true for scripts not in the manifest', async () => {
+        const { compiler, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 2,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'anything.js' }),
+          true,
+          'non-manifest script should be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'vendor/other.js' }),
+          true,
+          'unknown vendor script should be chunked',
+        );
+      });
+
+      it('should return false for default self-contained scripts', () => {
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 2,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'snow.prod' }),
+          false,
+          'snow.prod should not be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'use-snow' }),
+          false,
+          'use-snow should not be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'bootstrap' }),
+          false,
+          'bootstrap should not be chunked',
+        );
+      });
+
+      it('should return true when name is null or undefined', () => {
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 2,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        assert.strictEqual(
+          plugin.canBeChunked({ name: null }),
+          true,
+          'null name should be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: undefined }),
+          true,
+          'undefined name should be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({}),
+          true,
+          'missing name should be chunked',
+        );
+      });
+    });
+
+    describe('resolveEntrypoints', () => {
+      it('should resolve MV3 entrypoint paths from compilation', async () => {
+        const { compiler, compilation, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        // Set up entrypoints before apply
+        compilation.entrypoints.set(
+          'scripts/contentscript.js',
+          mockEntrypoint('scripts/contentscript.bundle.js'),
+        );
+        compilation.entrypoints.set(
+          'vendor/trezor/content-script.js',
+          mockEntrypoint('vendor/trezor/content-script.bundle.js'),
+        );
+        compilation.entrypoints.set(
+          'service-worker.js',
+          mockEntrypoint('service-worker.bundle.js'),
+        );
+        compilation.entrypoints.set(
+          'testing.js',
+          mockEntrypoint('testing.bundle.js'),
+        );
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        const manifest = compilation.assets['chrome/manifest.json'];
+        const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+        // content_scripts should be resolved
+        assert.deepStrictEqual(json.content_scripts?.[0].js, [
+          'scripts/contentscript.bundle.js',
+        ]);
+        assert.deepStrictEqual(json.content_scripts?.[1].js, [
+          'vendor/trezor/content-script.bundle.js',
+        ]);
+
+        // service_worker should be resolved
+        assert.strictEqual(
+          (json as chrome.runtime.ManifestV3).background?.service_worker,
+          'service-worker.bundle.js',
+        );
+
+        // web_accessible_resources .js should be resolved
+        const war = (json as chrome.runtime.ManifestV3)
+          .web_accessible_resources;
+        assert.deepStrictEqual(war?.[0].resources, [
+          'images/icon.png',
+          'testing.bundle.js',
+        ]);
+      });
+
+      it('should resolve MV2 entrypoint paths from compilation', async () => {
+        const { compiler, compilation, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        // Set up entrypoints before apply
+        compilation.entrypoints.set(
+          'scripts/contentscript.js',
+          mockEntrypoint('scripts/contentscript.bundle.js'),
+        );
+        compilation.entrypoints.set(
+          'scripts/inpage.js',
+          mockEntrypoint('scripts/inpage.bundle.js'),
+        );
+        compilation.entrypoints.set(
+          'vendor/trezor/content-script.js',
+          mockEntrypoint('vendor/trezor/content-script.bundle.js'),
+        );
+        compilation.entrypoints.set(
+          'background.js',
+          mockEntrypoint('background.bundle.js'),
+        );
+        compilation.entrypoints.set(
+          'testing.js',
+          mockEntrypoint('testing.bundle.js'),
+        );
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 2,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        const manifest = compilation.assets['chrome/manifest.json'];
+        const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+        // content_scripts should be resolved
+        assert.deepStrictEqual(json.content_scripts?.[0].js, [
+          'scripts/contentscript.bundle.js',
+          'scripts/inpage.bundle.js',
+        ]);
+        assert.deepStrictEqual(json.content_scripts?.[1].js, [
+          'vendor/trezor/content-script.bundle.js',
+        ]);
+
+        // background scripts should be resolved
+        assert.deepStrictEqual(
+          (json as chrome.runtime.ManifestV2).background?.scripts,
+          ['background.bundle.js'],
+        );
+
+        // web_accessible_resources .js should be resolved, non-.js untouched
+        assert.deepStrictEqual(
+          (json as chrome.runtime.ManifestV2).web_accessible_resources,
+          ['images/icon.png', 'testing.bundle.js'],
+        );
+      });
+
+      it('should fall back to original paths when entrypoints are not found', async () => {
+        const { compiler, compilation, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        // Do NOT set any entrypoints - all should fall back to original paths
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        const manifest = compilation.assets['chrome/manifest.json'];
+        const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+        // content_scripts should keep original paths
+        assert.deepStrictEqual(json.content_scripts?.[0].js, [
+          'scripts/contentscript.js',
+        ]);
+        assert.deepStrictEqual(json.content_scripts?.[1].js, [
+          'vendor/trezor/content-script.js',
+        ]);
+
+        // service_worker should keep original path
+        assert.strictEqual(
+          (json as chrome.runtime.ManifestV3).background?.service_worker,
+          'service-worker.js',
+        );
+
+        // web_accessible_resources should keep original paths
+        const war = (json as chrome.runtime.ManifestV3)
+          .web_accessible_resources;
+        assert.deepStrictEqual(war?.[0].resources, [
+          'images/icon.png',
+          'testing.js',
+        ]);
+      });
+
+      it('should not modify non-.js web accessible resources in MV3', async () => {
+        const { compiler, compilation, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        // Only set entrypoints for .js files
+        compilation.entrypoints.set(
+          'testing.js',
+          mockEntrypoint('testing.bundle.js'),
+        );
+
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        const manifest = compilation.assets['chrome/manifest.json'];
+        const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+        const war = (json as chrome.runtime.ManifestV3)
+          .web_accessible_resources;
+        // images/icon.png should remain unchanged, testing.js should be resolved
+        assert.deepStrictEqual(war?.[0].resources, [
+          'images/icon.png',
+          'testing.bundle.js',
+        ]);
+      });
+    });
+  });
+
+  describe('watch mode re-read', () => {
+    const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+
+    it('should not re-read manifests when modifiedFiles does not include a watched file', async () => {
+      const { compiler, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const manifestBefore = plugin.manifests.get('chrome');
+      assert.ok(
+        manifestBefore,
+        'should have chrome manifest after first build',
+      );
+
+      // Simulate a watch rebuild where no watched files were modified
+      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
+        '/some/unrelated/file.ts',
+      ]);
+
+      // Trigger a second compilation so resolveEntrypoints runs again
+      const { compilation: compilation2, promise: promise2 } = mockWebpack(
+        [],
+        [],
+        [],
+      );
+      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      // eslint-disable-next-line dot-notation
+      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      await promise2;
+
+      // Manifest reference should be the same since prepareManifests was NOT called
+      assert.strictEqual(
+        plugin.manifests.get('chrome'),
+        manifestBefore,
+        'manifest reference should not change when no watched file was modified',
+      );
+    });
+
+    it('should re-read manifests when modifiedFiles includes a watched manifest file', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      // Get the watched files from fileDependencies
+      const deps = [...compilation.fileDependencies];
+      const baseManifestDep = deps.find((d) =>
+        d.endsWith('manifest/v3/_base.json'),
+      );
+      assert.ok(baseManifestDep, 'should have base manifest in dependencies');
+
+      // Capture the manifests before re-read
+      const manifestBefore = plugin.manifests.get('chrome');
+      assert.ok(manifestBefore, 'should have chrome manifest before re-read');
+
+      // Simulate a watch rebuild where the base manifest was modified.
+      // resolveEntrypoints checks compiler.modifiedFiles.
+      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
+        baseManifestDep,
+      ]);
+
+      // Run apply again to trigger a new compilation with modifiedFiles set
+      const { compilation: compilation2, promise: promise2 } = mockWebpack(
+        [],
+        [],
+        [],
+      );
+      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      // hookIntoPipelines registers processAssets which calls resolveEntrypoints
+      // eslint-disable-next-line dot-notation
+      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      await promise2;
+
+      // Should still produce valid output (manifests were re-read from disk)
+      const manifest2 = compilation2.assets['chrome/manifest.json'];
+      assert.ok(manifest2, 'should produce manifest after re-read');
+      const json2 = JSON.parse(manifest2.source().toString()) as Manifest;
+      assert.strictEqual(json2.description, 'MV3 test manifest');
+
+      // Manifest object should have been recreated (structuredClone in prepareManifests)
+      const manifestAfter = plugin.manifests.get('chrome');
+      assert.notStrictEqual(
+        manifestBefore,
+        manifestAfter,
+        'manifest reference should change after re-read',
+      );
+    });
+  });
+
+  describe('file dependencies (watch mode)', () => {
+    it('should add manifest files to compilation.fileDependencies', async () => {
+      const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const deps = [...compilation.fileDependencies];
+      // Should include base manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        'should watch the base manifest file',
+      );
+      // Should include browser-specific manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('manifest/v3/chrome.json')),
+        'should watch the browser-specific manifest file',
+      );
+      // Should include build type base manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('beta/manifest/_base.json')),
+        'should watch the build type base manifest file',
+      );
+      // Should include build type browser manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('beta/manifest/chrome.json')),
+        'should watch the build type browser-specific manifest file',
+      );
+    });
+
+    it('should add config files to fileDependencies when they exist', async () => {
+      // The entrypoints fixture has a .metamaskrc in its parent (fixtures/ManifestPlugin/)
+      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const deps = [...compilation.fileDependencies];
+      // .metamaskrc exists in the parent of compiler.context
+      assert.ok(
+        deps.some((d) => d.endsWith('.metamaskrc')),
+        'should watch .metamaskrc when it exists',
+      );
+      // .metamaskprodrc does not exist, should not be watched
+      assert.ok(
+        !deps.some((d) => d.endsWith('.metamaskprodrc')),
+        'should not watch .metamaskprodrc when it does not exist',
+      );
+      // .manifest-overrides.json does not exist, should not be watched
+      assert.ok(
+        !deps.some((d) => d.endsWith('.manifest-overrides.json')),
+        'should not watch .manifest-overrides.json when it does not exist',
+      );
+    });
+
+    it('should not add non-existent manifest files to fileDependencies', async () => {
+      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'nonexistent',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const deps = [...compilation.fileDependencies];
+      // Should include base manifest (exists)
+      assert.ok(
+        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        'should watch the base manifest file',
+      );
+      // Should NOT include non-existent build type files
+      assert.ok(
+        !deps.some((d) => d.includes('nonexistent')),
+        'should not watch non-existent build type manifest files',
       );
     });
   });

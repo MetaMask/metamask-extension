@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -47,10 +48,7 @@ const mockAccount = createAccount();
 const createStateOverrides = (
   metamaskOverrides: Record<string, unknown> = {},
 ) => ({
-  metamask: {
-    ...mockState.metamask,
-    ...metamaskOverrides,
-  },
+  metamask: metamaskOverrides,
 });
 
 const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
@@ -91,7 +89,9 @@ const createValidSwapState = (): ReturnType<typeof createStateOverrides> =>
   });
 
 const expectSwapButtonState = (enabled: boolean): HTMLElement => {
-  const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
+  const swapButton = screen.getByRole('button', {
+    name: messages.swapTokens.message,
+  });
   if (enabled) {
     expect(swapButton).not.toBeDisabled();
   } else {
@@ -135,15 +135,32 @@ describe('TransactionActivityEmptyState', () => {
 
   const renderComponent = (
     props: Partial<TransactionActivityEmptyStateProps> = {},
-    stateOverrides = {},
+    stateOverrides: Record<string, unknown> = {},
+    account = mockAccount,
   ) => {
-    const store = configureMockStore(middleware)({
+    const state = {
       ...mockState,
       ...stateOverrides,
-    });
+      metamask: {
+        ...mockState.metamask,
+        ...(('metamask' in stateOverrides
+          ? stateOverrides.metamask
+          : {}) as Record<string, unknown>),
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          selectedAccount: account.id,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            [account.id]: account,
+          },
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(state);
 
     return renderWithProvider(
-      <TransactionActivityEmptyState account={mockAccount} {...props} />,
+      <TransactionActivityEmptyState {...props} />,
       store,
     );
   };
@@ -156,7 +173,7 @@ describe('TransactionActivityEmptyState', () => {
   it('renders description text', () => {
     renderComponent();
     expect(
-      screen.getByText('Nothing to see yet. Swap your first token today.'),
+      screen.getByText(messages.activityEmptyDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -201,47 +218,36 @@ describe('TransactionActivityEmptyState', () => {
     (describe as unknown as jest.Describe).each<
       [
         string,
-        Partial<TransactionActivityEmptyStateProps>,
+        InternalAccount,
         ReturnType<typeof createStateOverrides> | Record<string, never>,
       ]
     >([
-      [
-        'not a swaps chain',
-        { account: accountWithSigning },
-        createTestnetState(),
-      ],
+      ['not a swaps chain', accountWithSigning, createTestnetState()],
       [
         'external services are disabled',
-        { account: accountWithSigning },
+        accountWithSigning,
         createStateWithoutExternalServices(),
       ],
-      [
-        'account cannot sign transactions',
-        { account: accountWithoutSigning },
-        {},
-      ],
+      ['account cannot sign transactions', accountWithoutSigning, {}],
     ])(
       'disables swap button when %s',
       (
         _condition: string,
-        props: Partial<TransactionActivityEmptyStateProps>,
+        account: InternalAccount,
         stateOverrides:
           | ReturnType<typeof createStateOverrides>
           | Record<string, never>,
       ) => {
         it(`should disable swap button`, () => {
-          renderComponent(props, stateOverrides);
+          renderComponent({}, stateOverrides, account);
           expectSwapButtonState(false);
         });
       },
     );
 
     it('enables swap button when all conditions are met', () => {
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
       const stateOverrides = createValidSwapState();
-      renderComponent(props, stateOverrides);
+      renderComponent({}, stateOverrides, accountWithSigning);
       expectSwapButtonState(true);
     });
 
@@ -252,20 +258,14 @@ describe('TransactionActivityEmptyState', () => {
           chainId: MultichainNetworks.SOLANA,
           isEvmNetwork: false,
         });
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
       const stateOverrides = createTestnetState();
-      renderComponent(props, stateOverrides);
+      renderComponent({}, stateOverrides, accountWithSigning);
       expectSwapButtonState(true); // Should be enabled due to Solana logic
     });
 
     it('calls openBridgeExperience when swap button is clicked', () => {
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
       const stateOverrides = createValidSwapState();
-      renderComponent(props, stateOverrides);
+      renderComponent({}, stateOverrides, accountWithSigning);
       const swapButton = expectSwapButtonState(true);
 
       fireEvent.click(swapButton);

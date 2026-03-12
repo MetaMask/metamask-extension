@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { ERC20 } from '@metamask/controller-utils';
 import * as bridgeControllerModule from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
@@ -11,6 +12,7 @@ import {
   setConfirmationExchangeRates,
 } from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as assetUtilsModule from '../../../../shared/lib/asset-utils';
 import { ImportTokensModal } from '.';
@@ -102,29 +104,33 @@ describe('ImportTokensModal', () => {
   describe('Search', () => {
     it('renders expected elements', () => {
       const { getByText, getByPlaceholderText } = render();
-      expect(getByText('Next')).toBeDisabled();
-      expect(getByPlaceholderText('Search tokens')).toBeInTheDocument();
+      expect(getByText(messages.next.message)).toBeDisabled();
+      expect(
+        getByPlaceholderText(messages.searchTokens.message),
+      ).toBeInTheDocument();
     });
 
     it('shows the token detection notice when setting is off', () => {
       const { getByText } = render({ useTokenDetection: false });
-      expect(getByText('Enable it from Settings.')).toBeInTheDocument();
+      expect(
+        getByText(messages.enableFromSettings.message.trim()),
+      ).toBeInTheDocument();
     });
   });
 
   describe('Custom Token', () => {
     it('add custom token button is disabled when no fields are populated', () => {
       const { getByText } = render();
-      const customTokenButton = getByText('Custom token');
+      const customTokenButton = getByText(messages.customToken.message);
       fireEvent.click(customTokenButton);
-      const submit = getByText('Next');
+      const submit = getByText(messages.next.message);
 
       expect(submit).toBeDisabled();
     });
 
     it('edits token address', () => {
       const { getByText, getByTestId } = render();
-      const customTokenButton = getByText('Custom token');
+      const customTokenButton = getByText(messages.customToken.message);
       fireEvent.click(customTokenButton);
 
       const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
@@ -141,7 +147,7 @@ describe('ImportTokensModal', () => {
 
     it('edits token symbol', async () => {
       const { getByText, getByTestId } = render();
-      const customTokenButton = getByText('Custom token');
+      const customTokenButton = getByText(messages.customToken.message);
       fireEvent.click(customTokenButton);
 
       // Enter token address first
@@ -174,7 +180,7 @@ describe('ImportTokensModal', () => {
 
     it('edits token decimal precision', async () => {
       const { getByText, getByTestId } = render();
-      const customTokenButton = getByText('Custom token');
+      const customTokenButton = getByText(messages.customToken.message);
       fireEvent.click(customTokenButton);
 
       // Enter token address first
@@ -206,10 +212,10 @@ describe('ImportTokensModal', () => {
 
     it('adds custom tokens successfully', async () => {
       const { getByText, getByTestId } = render({ tokens: [], tokenList: {} });
-      const customTokenButton = getByText('Custom token');
+      const customTokenButton = getByText(messages.customToken.message);
       fireEvent.click(customTokenButton);
 
-      expect(getByText('Next')).toBeDisabled();
+      expect(getByText(messages.next.message)).toBeDisabled();
 
       const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
       await fireEvent.change(
@@ -218,7 +224,7 @@ describe('ImportTokensModal', () => {
           target: { value: tokenAddress },
         },
       );
-      expect(getByText('Next')).not.toBeDisabled();
+      expect(getByText(messages.next.message)).not.toBeDisabled();
 
       // wait for the symbol input to be in the document
       await waitFor(() =>
@@ -243,10 +249,10 @@ describe('ImportTokensModal', () => {
         target: { value: tokenPrecision },
       });
 
-      expect(getByText('Next')).not.toBeDisabled();
+      expect(getByText(messages.next.message)).not.toBeDisabled();
 
       act(() => {
-        fireEvent.click(getByText('Next'));
+        fireEvent.click(getByText(messages.next.message));
       });
 
       await waitFor(() => {
@@ -255,7 +261,7 @@ describe('ImportTokensModal', () => {
             address: tokenAddress,
             chainId: CHAIN_IDS.GOERLI,
             decimals: Number(tokenPrecision),
-            standard: TokenStandard.ERC20,
+            standard: ERC20,
             symbol: tokenSymbol,
             name: '',
           },
@@ -265,7 +271,7 @@ describe('ImportTokensModal', () => {
 
         expect(setConfirmationExchangeRates).toHaveBeenCalled();
 
-        expect(getByText('Import')).toBeInTheDocument();
+        expect(getByText(messages.import.message)).toBeInTheDocument();
       });
     });
 
@@ -285,10 +291,10 @@ describe('ImportTokensModal', () => {
       );
 
       const { getByText, getByTestId } = render();
-      const customTokenButton = getByText('Custom token');
+      const customTokenButton = getByText(messages.customToken.message);
       fireEvent.click(customTokenButton);
 
-      const submit = getByText('Next');
+      const submit = getByText(messages.next.message);
       expect(submit).toBeDisabled();
 
       const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
@@ -302,7 +308,10 @@ describe('ImportTokensModal', () => {
       expect(submit).toBeDisabled();
 
       // The last part of this error message won't be found by getByText because it is wrapped as a link.
-      const errorMessage = getByText('This token is an NFT. Add on the');
+      // nftAddressError message is "This token is an NFT. Add on the $1"
+      const errorMessage = getByText(
+        messages.nftAddressError.message.replace(' $1', ''),
+      );
       expect(errorMessage).toBeInTheDocument();
     });
   });
@@ -318,11 +327,13 @@ describe('ImportTokensModal', () => {
 
       expect(getByTestId('import-tokens-loading')).toBeInTheDocument();
       expect(getByTestId('import-tokens-loading').textContent).toContain(
-        'Loading',
+        messages.loading.message.replace('...', ''),
       );
 
       // Should not show search or tabs while loading
-      expect(queryByPlaceholderText('Search tokens')).not.toBeInTheDocument();
+      expect(
+        queryByPlaceholderText(messages.searchTokens.message),
+      ).not.toBeInTheDocument();
     });
 
     it('should show "unavailable" message when no tokens and not EVM chain', () => {
@@ -340,12 +351,12 @@ describe('ImportTokensModal', () => {
 
       expect(getByTestId('import-tokens-no-support')).toBeInTheDocument();
       expect(getByTestId('import-tokens-no-support').textContent).toContain(
-        'Unavailable',
+        messages.simulationDetailsUnavailable.message,
       );
 
       // Should not show tabs when not supported
-      expect(queryByText('Search')).not.toBeInTheDocument();
-      expect(queryByText('Custom token')).not.toBeInTheDocument();
+      expect(queryByText(messages.search.message)).not.toBeInTheDocument();
+      expect(queryByText(messages.customToken.message)).not.toBeInTheDocument();
     });
 
     it('should show Search tab when tokens are available on EVM chain', () => {
@@ -367,8 +378,8 @@ describe('ImportTokensModal', () => {
       const { getByText, queryByTestId } = render();
 
       // Should show tabs
-      expect(getByText('Search')).toBeInTheDocument();
-      expect(getByText('Custom token')).toBeInTheDocument();
+      expect(getByText(messages.search.message)).toBeInTheDocument();
+      expect(getByText(messages.customToken.message)).toBeInTheDocument();
 
       // Should not show loading or no-support
       expect(queryByTestId('import-tokens-loading')).not.toBeInTheDocument();
@@ -388,10 +399,10 @@ describe('ImportTokensModal', () => {
       const { getByText, queryByText } = render();
 
       // Custom token tab should still be available on EVM chains
-      expect(getByText('Custom token')).toBeInTheDocument();
+      expect(getByText(messages.customToken.message)).toBeInTheDocument();
 
       // Search tab should not show when no tokens
-      expect(queryByText('Search')).not.toBeInTheDocument();
+      expect(queryByText(messages.search.message)).not.toBeInTheDocument();
     });
 
     it('should disable Next button when loading', () => {

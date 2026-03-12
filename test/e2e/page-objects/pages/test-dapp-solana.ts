@@ -9,9 +9,36 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export class TestDappSolana {
   private readonly driver: Driver;
 
+  private readonly accountLocator = (text: string) => ({
+    testId: dataTestIds.testPage.header.account,
+    text,
+  });
+
+  private readonly connectionStatusLocator = (
+    text: 'Connected' | 'Disconnected',
+  ) => ({
+    testId: dataTestIds.testPage.header.connectionStatus,
+    text,
+  });
+
+  private readonly connectButtonLocator = {
+    testId: dataTestIds.testPage.header.connect,
+    tag: 'button',
+  };
+
+  private readonly disconnectButtonLocator = {
+    testId: dataTestIds.testPage.header.disconnect,
+    tag: 'button',
+  };
+
   private readonly solanaChainDisplay = {
     text: 'solana:devnet',
     css: 'div',
+  };
+
+  private readonly updateEndpointButtonLocator = {
+    testId: dataTestIds.testPage.header.updateEndpoint,
+    tag: 'button',
   };
 
   private readonly walletModalSelector = '.wallet-adapter-modal-list';
@@ -54,15 +81,13 @@ export class TestDappSolana {
    * Focus on the Solana test dapp window.
    */
   async switchTo() {
+    console.log('Switching to Solana Test Dapp window');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
     await this.checkPageIsLoaded();
   }
 
   async clickUpdateEndpointButton() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.updateEndpoint,
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.updateEndpointButtonLocator);
   }
 
   /**
@@ -104,26 +129,20 @@ export class TestDappSolana {
           dataTestIds.testPage.header.endpoint,
           endpoint,
         ),
-      getConnectionStatus: async () => {
-        const element = await this.driver.findElement(
-          this.getElementSelectorTestId(
-            dataTestIds.testPage.header.connectionStatus,
-          ),
+      verifyConnectionStatus: async (
+        expectedStatus: 'Connected' | 'Disconnected',
+      ) => {
+        await this.driver.waitForSelector(
+          this.connectionStatusLocator(expectedStatus),
         );
-        return element.getText();
       },
       connect: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.header.connect,
-          tag: 'button',
-        }),
+        await this.driver.clickElement(this.connectButtonLocator),
       disconnect: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.header.disconnect,
-          tag: 'button',
-        }),
-      getAccount: async () =>
-        await this.getSolscanShortContent(dataTestIds.testPage.header.account),
+        await this.driver.clickElement(this.disconnectButtonLocator),
+      verifyAccount: async (expectedAccount: string) => {
+        await this.driver.waitForSelector(this.accountLocator(expectedAccount));
+      },
     };
   }
 
@@ -172,20 +191,33 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.sendSol.id);
 
     return {
-      setAddress: (address: string) =>
-        this.setInputValue(dataTestIds.testPage.sendSol.address, address),
-      signTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendSol.signTransaction),
-      sendTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendSol.sendTransaction),
-      getSignedTransaction: async () =>
-        await this.getSignedMessages(
+      setAddress: (address: string) => {
+        console.log('Setting address');
+        return this.setInputValue(
+          dataTestIds.testPage.sendSol.address,
+          address,
+        );
+      },
+      signTransaction: async () => {
+        console.log('Clicking sign transaction button');
+        await this.clickElement(dataTestIds.testPage.sendSol.signTransaction);
+      },
+      sendTransaction: async () => {
+        console.log('Clicking send transaction button');
+        await this.clickElement(dataTestIds.testPage.sendSol.sendTransaction);
+      },
+      getSignedTransaction: async () => {
+        console.log('Getting signed transaction');
+        return await this.getSignedMessages(
           dataTestIds.testPage.sendSol.signedTransaction,
-        ),
-      getTransactionHash: async () =>
-        await this.getSolscanShortContent(
+        );
+      },
+      getTransactionHash: async () => {
+        console.log('Getting transaction hash');
+        return await this.getSolscanShortContent(
           dataTestIds.testPage.sendSol.transactionHash,
-        ),
+        );
+      },
     };
   }
 

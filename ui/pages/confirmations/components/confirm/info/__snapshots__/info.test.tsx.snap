@@ -389,13 +389,17 @@ exports[`Info renders info section for approve request 1`] = `
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
-              class="mm-box"
+              class=""
               data-testid="native-icon"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
               >
-                E
+                <span
+                  class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                >
+                  E
+                </span>
               </div>
             </div>
             <p
@@ -459,8 +463,7 @@ exports[`Info renders info section for approve request 1`] = `
             <span
               data-testid="gas-timing-time"
             >
-              ~
-              0 sec
+              ~0 sec
             </span>
           </p>
         </div>
@@ -745,13 +748,17 @@ exports[`Info renders info section for contract interaction request 1`] = `
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
-              class="mm-box"
+              class=""
               data-testid="native-icon"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
               >
-                E
+                <span
+                  class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                >
+                  E
+                </span>
               </div>
             </div>
             <p
@@ -815,8 +822,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             <span
               data-testid="gas-timing-time"
             >
-              ~
-              0 sec
+              ~0 sec
             </span>
           </p>
         </div>
@@ -1359,13 +1365,17 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
-              class="mm-box"
+              class=""
               data-testid="native-icon"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
               >
-                E
+                <span
+                  class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                >
+                  E
+                </span>
               </div>
             </div>
             <p
@@ -1429,8 +1439,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             <span
               data-testid="gas-timing-time"
             >
-              ~
-              0 sec
+              ~0 sec
             </span>
           </p>
         </div>

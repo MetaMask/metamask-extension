@@ -6,6 +6,7 @@ import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionB
 import { setEditedNetwork } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworkConnectionBanner } from './network-connection-banner';
 
 jest.mock('../../../store/actions', () => ({
@@ -58,9 +59,11 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Still connecting to Ethereum Mainnet...'),
+        getByText(
+          messages.stillConnectingTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
-      expect(getByText('Update RPC')).toBeInTheDocument();
+      expect(getByText(messages.updateRpc.message)).toBeInTheDocument();
     });
 
     it('renders the banner with a "Still connecting" message, excluding a "Update RPC" link if the network is an Infura endpoint', () => {
@@ -81,9 +84,11 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Still connecting to Ethereum Mainnet...'),
+        getByText(
+          messages.stillConnectingTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
-      expect(queryByText('Update RPC')).not.toBeInTheDocument();
+      expect(queryByText(messages.updateRpc.message)).not.toBeInTheDocument();
     });
 
     describe('when the "Update RPC" link is clicked', () => {
@@ -103,7 +108,7 @@ describe('NetworkConnectionBanner', () => {
           <NetworkConnectionBanner />,
           store,
         );
-        fireEvent.click(getByText('Update RPC'));
+        fireEvent.click(getByText(messages.updateRpc.message));
 
         expect(mockSetEditedNetwork).toHaveBeenCalledWith({
           chainId: '0x1',
@@ -129,7 +134,7 @@ describe('NetworkConnectionBanner', () => {
           <NetworkConnectionBanner />,
           store,
         );
-        fireEvent.click(getByText('Update RPC'));
+        fireEvent.click(getByText(messages.updateRpc.message));
 
         expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
           bannerType: 'degraded',
@@ -160,7 +165,9 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Unable to connect to Ethereum Mainnet.'),
+        getByText(
+          messages.unableToConnectTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
       expect(
         getByText('Check network connectivity', { exact: false }),
@@ -188,7 +195,9 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Unable to connect to Ethereum Mainnet.'),
+        getByText(
+          messages.unableToConnectTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
       expect(
         getByText('Check network connectivity', { exact: false }),
@@ -309,8 +318,10 @@ describe('NetworkConnectionBanner', () => {
         store,
       );
 
-      expect(getByText('Switch to MetaMask default RPC')).toBeInTheDocument();
-      expect(queryByText('Update RPC')).not.toBeInTheDocument();
+      expect(
+        getByText(messages.switchToMetaMaskDefaultRpc.message),
+      ).toBeInTheDocument();
+      expect(queryByText(messages.updateRpc.message)).not.toBeInTheDocument();
     });
 
     it('renders "switch to MetaMask default RPC" button instead of "update RPC" for unavailable status', () => {
@@ -359,13 +370,13 @@ describe('NetworkConnectionBanner', () => {
         <NetworkConnectionBanner />,
         store,
       );
-      fireEvent.click(getByText('Switch to MetaMask default RPC'));
+      fireEvent.click(getByText(messages.switchToMetaMaskDefaultRpc.message));
 
       expect(switchToInfuraMock).toHaveBeenCalled();
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
         bannerType: 'degraded',
         eventName:
-          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
         networkClientId: 'custom-arbitrum',
       });
     });
@@ -397,7 +408,7 @@ describe('NetworkConnectionBanner', () => {
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
         bannerType: 'unavailable',
         eventName:
-          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
         networkClientId: 'custom-arbitrum',
       });
     });

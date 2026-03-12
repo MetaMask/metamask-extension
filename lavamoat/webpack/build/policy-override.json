@@ -12,6 +12,17 @@
       },
       "native": true
     },
+    "copy-webpack-plugin": {
+      "packages": {
+        "copy-webpack-plugin>serialize-javascript": true
+      }
+    },
+    "copy-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true,
+        "crypto.getRandomValues": true
+      }
+    },
     "@swc/core": {
       "packages": {
         "@swc/core>@swc/core-darwin-x64": true,
@@ -330,6 +341,13 @@
         "@babel/code-frame": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true
+      }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
       }
     }
   }
