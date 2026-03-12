@@ -1,28 +1,26 @@
 import React, { useMemo } from 'react';
 import {
   Box,
-  BoxProps,
   Button,
+  ButtonProps,
   ButtonSize,
   ButtonVariant,
   Icon,
   IconName,
   IconSize,
-  PolymorphicRef,
   Text,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
   FontWeight,
   IconColor,
-  JustifyContent,
   TextAlign,
   TextColor,
-  TextTransform,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxFlexDirection,
+  TextTransform,
+} from '@metamask/design-system-react';
+import classnames from 'clsx';
+import { PolymorphicRef } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
@@ -33,24 +31,28 @@ export const SocialButton = React.forwardRef(
     {
       icon,
       label,
+      btnClass,
       ...props
-    }: { icon: React.ReactNode; label: string } & BoxProps<'button'>,
+    }: {
+      icon: React.ReactNode;
+      label: string;
+      btnClass?: string;
+    } & Omit<ButtonProps, 'children'>,
     ref?: PolymorphicRef<'button'>,
   ) => {
     return (
       <Button
         ref={ref}
-        className="options-modal__plain-button"
+        className={classnames('options-modal__plain-button w-full', btnClass)}
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
-        block
         {...props}
       >
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          width={BlockSize.Full}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          className="w-full"
           gap={2}
         >
           {icon}
@@ -99,7 +101,7 @@ export default function LoginOptions({
             ? t('onboardingSignInWith', ['Google'])
             : t('onboardingContinueWith', ['Google'])
         }
-        marginBottom={4}
+        btnClass="mb-4"
         onClick={() => handleLogin(LOGIN_TYPE.GOOGLE)}
       />
       <SocialButton
@@ -110,8 +112,8 @@ export default function LoginOptions({
         }
         icon={
           <Icon
-            name={IconName.Apple}
-            color={IconColor.infoInverse}
+            name={IconName.AppleLogo}
+            color={IconColor.InfoInverse}
             size={IconSize.Lg}
           />
         }
@@ -120,26 +122,22 @@ export default function LoginOptions({
             ? t('onboardingSignInWith', ['Apple'])
             : t('onboardingContinueWith', ['Apple'])
         }
-        marginBottom={2}
+        btnClass="mb-2"
         onClick={() => handleLogin(LOGIN_TYPE.APPLE)}
       />
       <Box
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         marginBottom={4}
         className="options-modal__or"
       >
         <Text
-          width={BlockSize.Max}
-          variant={TextVariant.bodyMd}
+          className="w-max px-2 mx-auto relative z-[1]"
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
-          color={TextColor.textAlternative}
-          paddingInline={2}
-          marginInline="auto"
+          color={TextColor.TextAlternative}
           textTransform={TextTransform.Lowercase}
-          as="div"
           style={{
-            position: 'relative',
-            zIndex: 1,
             backgroundColor: backgroundColorForLoginOptions,
           }}
         >
@@ -154,7 +152,7 @@ export default function LoginOptions({
             : 'onboarding-create-with-srp-button'
         }
         variant={ButtonVariant.Primary}
-        width={BlockSize.Full}
+        className="w-full"
         size={ButtonSize.Lg}
         onClick={() => handleLogin(LOGIN_TYPE.SRP)}
       >
@@ -163,38 +161,42 @@ export default function LoginOptions({
           : t('onboardingSrpCreate')}
       </Button>
       <Text
-        variant={TextVariant.bodySm}
+        variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         textAlign={TextAlign.Center}
-        paddingTop={8}
-        color={TextColor.textDefault}
-        width={BlockSize.Full}
-        margin={'auto'}
+        color={TextColor.TextDefault}
+        className="w-full mx-auto pt-8"
       >
         {t('onboardingLoginFooter', [
           <Text
-            as="a"
-            href="https://consensys.io/terms-of-use"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant={TextVariant.bodySm}
+            variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={TextColor.primaryDefault}
+            color={TextColor.PrimaryDefault}
             key="onboardingLoginFooterTermsOfUse"
+            asChild
           >
-            {t('onboardingLoginFooterTermsOfUse')}
+            <a
+              href="https://consensys.io/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('onboardingLoginFooterTermsOfUse')}
+            </a>
           </Text>,
           <Text
-            as="a"
-            variant={TextVariant.bodySm}
+            variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            href="https://consensys.io/privacy-notice"
-            target="_blank"
-            rel="noopener noreferrer"
-            color={TextColor.primaryDefault}
+            color={TextColor.PrimaryDefault}
             key="onboardingLoginFooterPrivacyNotice"
+            asChild
           >
-            {t('onboardingLoginFooterPrivacyNotice')}
+            <a
+              href="https://consensys.io/privacy-notice"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('onboardingLoginFooterPrivacyNotice')}
+            </a>
           </Text>,
         ])}
       </Text>
