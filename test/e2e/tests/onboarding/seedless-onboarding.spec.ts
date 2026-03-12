@@ -58,6 +58,11 @@ describe('Metamask onboarding (with social login)', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPreferencesController({
+            preferences: {
+              showNativeTokenAsMainBalance: true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
