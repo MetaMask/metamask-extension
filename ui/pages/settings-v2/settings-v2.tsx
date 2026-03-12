@@ -67,10 +67,7 @@ const AccountIdenticonSubPage = mmLazy(
 );
 
 const ThirdPartyApisSubPage = mmLazy(
-  (() =>
-    import(
-      './privacy-tab/third-party-apis-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
 );
 
 // Get the first tab's component for rendering at the settings root (like Settings V1)
