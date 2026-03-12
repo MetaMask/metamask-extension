@@ -644,7 +644,7 @@ describe('ConfirmFooter', () => {
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
       useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: 'default' as const,
+        loader: undefined,
         returnTo: '/asset/0x123',
       });
 
@@ -653,7 +653,9 @@ describe('ConfirmFooter', () => {
 
       const rejectSpy = jest
         .spyOn(Actions, 'rejectPendingApproval')
-        .mockImplementation(() => Promise.resolve() as ReturnType<typeof Actions.rejectPendingApproval>);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => Promise.resolve() as any);
 
       fireEvent.click(cancelButton);
 
@@ -673,7 +675,7 @@ describe('ConfirmFooter', () => {
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
       useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: 'default' as const,
+        loader: undefined,
         returnTo: undefined,
       });
 
@@ -682,7 +684,9 @@ describe('ConfirmFooter', () => {
 
       const rejectSpy = jest
         .spyOn(Actions, 'rejectPendingApproval')
-        .mockImplementation(() => Promise.resolve() as ReturnType<typeof Actions.rejectPendingApproval>);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => Promise.resolve() as any);
 
       fireEvent.click(cancelButton);
 

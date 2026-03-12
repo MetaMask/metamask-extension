@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import type { Hex } from '@metamask/utils';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MusdClaimableBonus } from './musd-claimable-bonus';
 import { useMerklRewards } from './hooks/useMerklRewards';
 import { useMerklClaim } from './hooks/useMerklClaim';
@@ -125,7 +126,9 @@ describe('MusdClaimableBonus', () => {
     );
 
     expect(screen.getByTestId('musd-claimable-bonus')).toBeInTheDocument();
-    expect(screen.getByText('Claimable bonus')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.musdClaimableBonus.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('3% bonus on Linea')).toBeInTheDocument();
     expect(screen.getByText('$10.01')).toBeInTheDocument();
     expect(
@@ -195,7 +198,7 @@ describe('MusdClaimableBonus', () => {
       screen.getByTestId('musd-claimable-bonus-error'),
     ).toBeInTheDocument();
     expect(
-      screen.getByText('Unexpected error. Please try again.'),
+      screen.getByText(messages.merklRewardsUnexpectedError.message),
     ).toBeInTheDocument();
   });
 
@@ -211,7 +214,9 @@ describe('MusdClaimableBonus', () => {
       <MusdClaimableBonus tokenAddress={TOKEN_ADDRESS} chainId={CHAIN_ID} />,
     );
 
-    expect(screen.getByText('Claimable bonus')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.musdClaimableBonus.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/\$/u)).toBeNull();
   });
 

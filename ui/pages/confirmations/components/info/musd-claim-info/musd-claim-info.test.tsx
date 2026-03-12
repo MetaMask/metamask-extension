@@ -10,6 +10,7 @@ import { Interface } from '@ethersproject/abi';
 import { ApprovalType } from '@metamask/controller-utils';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_DISTRIBUTOR_ADDRESS,
@@ -167,10 +168,14 @@ describe('MusdClaimInfo', () => {
     expect(screen.getByTestId('musd-claim-heading')).toBeInTheDocument();
 
     // Details section (ClaimingToRow) is rendered
-    expect(screen.getByTestId('musd-claim-details-section')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('musd-claim-details-section'),
+    ).toBeInTheDocument();
 
     // Network section is rendered
-    expect(screen.getByTestId('musd-claim-network-section')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('musd-claim-network-section'),
+    ).toBeInTheDocument();
 
     // Gas fee section is rendered
     expect(screen.getByTestId('musd-claim-gas-section')).toBeInTheDocument();
@@ -186,7 +191,9 @@ describe('MusdClaimInfo', () => {
     });
 
     // ClaimingToRow displays the "Claiming to" label
-    expect(screen.getByText('Claiming to')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.musdClaimClaimingTo.message),
+    ).toBeInTheDocument();
   });
 
   it('displays "Network" label in the network section', async () => {
@@ -199,7 +206,7 @@ describe('MusdClaimInfo', () => {
     });
 
     // ClaimNetworkRow displays the "Network" label
-    expect(screen.getByText('Network')).toBeInTheDocument();
+    expect(screen.getByText(messages.network.message)).toBeInTheDocument();
   });
 
   it('displays the network name from transaction chainId', async () => {
@@ -226,7 +233,9 @@ describe('MusdClaimInfo', () => {
 
     // Wait for the claim amount to load
     await waitFor(() => {
-      expect(screen.getByTestId('musd-claim-heading-amount')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('musd-claim-heading-amount'),
+      ).toBeInTheDocument();
     });
 
     // Should display MUSD symbol
@@ -263,6 +272,8 @@ describe('MusdClaimInfo', () => {
     expect(detailsSection).toBeInTheDocument();
 
     // Should have the "Claiming to" row with account display
-    expect(screen.getByText('Claiming to')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.musdClaimClaimingTo.message),
+    ).toBeInTheDocument();
   });
 });
