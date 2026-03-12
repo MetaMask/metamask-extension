@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import Homepage from '../pages/home/homepage';
+import { openPermissionsPageFlow } from './permissions.flow';
 import PermissionListPage from '../pages/permission/permission-list-page';
 import SitePermissionPage from '../pages/permission/site-permission-page';
 
@@ -18,8 +18,7 @@ export async function getPermissionsPageForHost(
   driver: Driver,
   hostname: string,
 ): Promise<SitePermissionPage> {
-  const homepage = new Homepage(driver);
-  await homepage.headerNavbar.openPermissionsPage();
+  await openPermissionsPageFlow(driver);
   const permissionListPage = new PermissionListPage(driver);
   await permissionListPage.checkPageIsLoaded();
   await permissionListPage.openPermissionPageForSite(hostname);
