@@ -329,6 +329,8 @@ import {
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './controller-init/perps-controller-init';
+import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -427,9 +429,9 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -611,6 +613,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      PerpsController: PerpsControllerInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -1544,6 +1547,11 @@ export default class MetamaskController extends EventEmitter {
         }
       });
     }
+
+    // Start perps eligibility monitoring (deferred during onboarding to avoid geo API call)
+    this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+      console.error(error);
+    });
   }
 
   /**
@@ -6560,9 +6568,28 @@ export default class MetamaskController extends EventEmitter {
       outStream,
     );
 
+    const perpsStream = new PerpsStreamBridge({
+      controller: this.controllersByName.PerpsController,
+      perpsInit: this.controllerApi.perpsInit,
+      perpsDisconnect: this.controllerApi.perpsDisconnect,
+      perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
+      isConnectionAlive: () => !outStream.mmFinished,
+      emit: (channel, data, extra) => {
+        if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+          return;
+        }
+        outStream.write({
+          jsonrpc: '2.0',
+          method: 'perpsStreamUpdate',
+          params: [{ channel, data, ...extra }],
+        });
+      },
+    });
+
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      ...perpsStream.bridgeApi(),
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
@@ -6621,6 +6648,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
+        perpsStream.destroy();
       }
     };
 

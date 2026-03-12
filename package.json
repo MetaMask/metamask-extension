@@ -364,7 +364,7 @@
     "@metamask/permission-controller": "^12.1.0",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.1.0",
-    "@metamask/perps-controller": "^1.0.0",
+    "@metamask/perps-controller": "npm:@metamask-previews/perps-controller@1.0.1-preview-935b6049c",
     "@metamask/phishing-controller": "^16.3.0",
     "@metamask/polling-controller": "^16.0.2",
     "@metamask/post-message-stream": "^10.0.0",

@@ -81,6 +81,16 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
+jest.mock('./controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
@@ -458,6 +468,14 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
+    nock('https://on-ramp.uat-api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
+    nock('https://on-ramp.api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
 
     globalThis.sentry = {
       withIsolationScope: jest.fn(),

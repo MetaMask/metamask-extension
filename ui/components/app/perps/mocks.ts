@@ -6,7 +6,6 @@
  * Once integration is complete, import from:
  * `app/scripts/controllers/perps/mocks`
  */
-
 import {
   AccountState,
   Order,

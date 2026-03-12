@@ -27,6 +27,16 @@ import MetaMaskController from './metamask-controller';
 const mockToHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
+jest.mock('./controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
 jest.mock('../../ui/contexts/hardware-wallets', () => ({
   toHardwareWalletError: (...args) => mockToHardwareWalletError(...args),
   isUserRejectedHardwareWalletError: (...args) =>
@@ -142,6 +152,14 @@ describe('MetaMaskController', function () {
           { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
         ]),
       );
+    nock('https://on-ramp.uat-api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
+    nock('https://on-ramp.api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: mockEncryptor,

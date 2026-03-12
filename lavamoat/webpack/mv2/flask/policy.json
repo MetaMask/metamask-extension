@@ -770,6 +770,12 @@
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
       }
     },
+    "@metamask/perps-controller>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/perps-controller>@metamask/abi-utils>@metamask/utils": true
+      }
+    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-utils": true
@@ -1818,6 +1824,29 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/perps-controller": {
+      "globals": {
+        "AbortController": true,
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "fetch": true,
+        "performance.now": true,
+        "process": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/perps-controller>@metamask/abi-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "@metamask/perps-controller>@myx-trade/sdk": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid": true,
+        "@metamask/perps-controller>bignumber.js": true,
+        "uuid": true
+      }
+    },
     "@metamask/phishing-controller": {
       "globals": {
         "TextEncoder": true,
@@ -2360,6 +2389,51 @@
         "semver": true
       }
     },
+    "@metamask/perps-controller>@metamask/abi-utils>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk": {
+      "globals": {
+        "MxSDK": "write",
+        "TextEncoder": true,
+        "URLSearchParams": true,
+        "WebSocket.CONNECTING": true,
+        "WebSocket.OPEN": true,
+        "clearInterval": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto.subtle.digest": true,
+        "fetch": true,
+        "queueMicrotask": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethersproject/bytes": true,
+        "@ethersproject/providers": true,
+        "@metamask/perps-controller>@myx-trade/sdk>crypto-es": true,
+        "@metamask/perps-controller>@myx-trade/sdk>dayjs": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers": true,
+        "@metamask/perps-controller>@myx-trade/sdk>lodash-es": true,
+        "@metamask/perps-controller>@myx-trade/sdk>mitt": true,
+        "@metamask/perps-controller>@myx-trade/sdk>reconnecting-websocket": true,
+        "@metamask/perps-controller>@myx-trade/sdk>wretch": true
+      }
+    },
     "@ngraveio/bc-ur": {
       "globals": {
         "Buffer.alloc": true,
@@ -2377,6 +2451,44 @@
         "@ngraveio/bc-ur>crc": true,
         "@ngraveio/bc-ur>jsbi": true,
         "@ngraveio/bc-ur>sha.js": true
+      }
+    },
+    "@metamask/perps-controller>@nktkas/hyperliquid": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "CustomEvent": true,
+        "DOMException": true,
+        "Event": true,
+        "EventTarget": true,
+        "Headers": true,
+        "TextEncoder": true,
+        "URL": true,
+        "clearInterval": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": true,
+        "@swc/helpers": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid>valibot": true
+      }
+    },
+    "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "CustomEvent": true,
+        "DOMException": true,
+        "WebSocket": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers": true
       }
     },
     "@noble/ciphers": {
@@ -2431,6 +2543,14 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true
+      }
+    },
     "@noble/hashes": {
       "globals": {
         "TextDecoder": true,
@@ -2442,6 +2562,15 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@swc/helpers": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
@@ -2492,6 +2621,12 @@
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@open-rpc/schema-utils-js": {
@@ -3405,6 +3540,11 @@
         "crypto": true
       }
     },
+    "@metamask/perps-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
         "crypto": true
@@ -3857,6 +3997,11 @@
         "crypto-browserify>randomfill": true
       }
     },
+    "@metamask/perps-controller>@myx-trade/sdk>crypto-es": {
+      "packages": {
+        "@swc/helpers": true
+      }
+    },
     "@metamask/ppom-validator>crypto-js": {
       "globals": {
         "crypto": true,
@@ -3890,6 +4035,11 @@
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
         "react>object-assign": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>dayjs": {
+      "globals": {
+        "define": true
       }
     },
     "nock>debug": {
@@ -4240,6 +4390,31 @@
         "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": {
+      "packages": {
+        "@metamask/perps-controller>@myx-trade/sdk>ethers": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers": {
+      "globals": {
+        "AbortController": true,
+        "Event": true,
+        "Headers": true,
+        "atob": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@adraffy/ens-normalize": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true,
+        "@swc/helpers": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>aes-js": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
@@ -4791,6 +4966,12 @@
     "lodash": {
       "globals": {
         "define": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>lodash-es": {
+      "globals": {
+        "exports": true,
+        "module": true
       }
     },
     "loglevel": {
@@ -5732,6 +5913,15 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
       }
     },
+    "@metamask/perps-controller>@myx-trade/sdk>reconnecting-websocket": {
+      "globals": {
+        "Blob": true,
+        "WebSocket": true,
+        "clearTimeout": true,
+        "console": true,
+        "setTimeout": true
+      }
+    },
     "redux": {
       "globals": {
         "console": true
@@ -6323,6 +6513,15 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "@metamask/perps-controller>@nktkas/hyperliquid>valibot": {
+      "globals": {
+        "Blob": true,
+        "File": true,
+        "Intl.Segmenter": true,
+        "TextEncoder": true,
+        "URL": true
       }
     },
     "@metamask/snaps-utils>validate-npm-package-name": {

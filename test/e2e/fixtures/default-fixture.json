@@ -818,6 +818,40 @@
     "PermissionLogController": {
       "permissionHistory": {}
     },
+    "PerpsController": {
+      "accountState": null,
+      "activeProvider": "hyperliquid",
+      "depositRequests": [],
+      "hasPlacedFirstOrder": {
+        "mainnet": false,
+        "testnet": false
+      },
+      "hip3ConfigVersion": 1,
+      "isFirstTimeUser": {
+        "mainnet": true,
+        "testnet": true
+      },
+      "isTestnet": false,
+      "marketFilterPreferences": {
+        "direction": "desc",
+        "optionId": "volume"
+      },
+      "perpsBalances": {},
+      "tradeConfigurations": {
+        "mainnet": {},
+        "testnet": {}
+      },
+      "watchlistMarkets": {
+        "mainnet": [],
+        "testnet": []
+      },
+      "withdrawalProgress": {
+        "activeWithdrawalId": null,
+        "lastUpdated": 0,
+        "progress": 0
+      },
+      "withdrawalRequests": []
+    },
     "PhishingController": {
       "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 1770282505,
