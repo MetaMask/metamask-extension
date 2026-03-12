@@ -88,8 +88,17 @@ export function renderWithUserEvent(jsx) {
  * @returns The rendered result from testing library.
  */
 export async function integrationTestRender(extendedRenderOptions) {
-  const mux = new ObjectMultiplex();
-  const mockPatchStoreSubstream = mux.createStream('patch-store');
+  const uiMux = new ObjectMultiplex();
+  const backgroundMux = new ObjectMultiplex();
+  uiMux.pipe(backgroundMux).pipe(uiMux);
+  const mockPatchStoreSubstream = uiMux.createStream('patch-store');
+  const mockBackgroundStream = backgroundMux.createStream('patch-store');
+  mockBackgroundStream.on('data', (msg) => {
+    // Only requests get a response (notifications do not)
+    if (msg?.id !== undefined) {
+      mockBackgroundStream.write({ jsonrpc: '2.0', id: msg.id, result: [] });
+    }
+  });
   const {
     preloadedState = {},
     backgroundConnection,
