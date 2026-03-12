@@ -15,7 +15,6 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -24,7 +23,12 @@ import TokenTransferTransactionConfirmation from '../../page-objects/pages/confi
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
-import { DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_PATH,
+  DAPP_URL,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
@@ -165,9 +169,10 @@ describe('Send ETH', function () {
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_SNAPS],
           },
-          fixtures: new FixtureBuilder({
-            inputChainId: CHAIN_IDS.MAINNET,
-          }).build(),
+          fixtures: new FixtureBuilderV2()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+            .withEnabledNetworks({ eip155: { [CHAIN_IDS.MAINNET]: true } })
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (mockServer: Mockttp) => {
             mockLookupSnap(mockServer);

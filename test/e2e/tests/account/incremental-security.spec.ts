@@ -39,7 +39,6 @@ describe('Incremental Security', function (this: Suite) {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

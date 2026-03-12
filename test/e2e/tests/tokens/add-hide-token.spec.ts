@@ -1,7 +1,8 @@
 import { toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
@@ -17,7 +18,7 @@ describe('Add hide token', function () {
   it('hides the token when clicked', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensController({
             allTokens: {
@@ -26,22 +27,12 @@ describe('Add hide token', function () {
                   {
                     address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
                     decimals: 4,
-                    image: null,
                     isERC721: false,
                     symbol: 'TST',
                   },
                 ],
               },
             },
-            tokens: [
-              {
-                address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
           })
           .withTokenBalancesController({
             tokenBalances: {
@@ -69,13 +60,14 @@ describe('Add hide token', function () {
   });
 
   it('updates token balance when a WebSocket balance update is received', async function () {
-    const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-    const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
+    const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE as Hex;
+    const tokenAddress: Hex =
+      '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
     const chainId = 1337;
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensController({
             allTokens: {
@@ -84,28 +76,18 @@ describe('Add hide token', function () {
                   {
                     address: tokenAddress,
                     decimals: 4,
-                    image: null,
                     isERC721: false,
                     symbol: 'TST',
                   },
                 ],
               },
             },
-            tokens: [
-              {
-                address: tokenAddress,
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
           })
           .withTokenBalancesController({
             tokenBalances: {
               [account]: {
                 [toHex(chainId)]: {
-                  [tokenAddress]: '0x186a0', // 100000 raw = 10 TST (4 decimals)
+                  [tokenAddress]: '0x186a0',
                 },
               },
             },

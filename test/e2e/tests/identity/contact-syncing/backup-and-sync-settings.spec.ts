@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 import { withFixtures, getCleanAppState } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
@@ -27,7 +27,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -148,7 +148,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
       // Launch a new instance to verify the change wasn't synced
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -197,7 +197,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(

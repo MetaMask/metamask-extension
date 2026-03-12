@@ -1,7 +1,13 @@
 import { merge, cloneDeep } from 'lodash';
+import { toHex } from '@metamask/controller-utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
-import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type {
+  CurrencyRateState,
+  TokenBalancesControllerState,
+  TokenListState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
@@ -45,6 +51,7 @@ import {
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
+import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
@@ -161,6 +168,27 @@ class FixtureBuilderV2 {
     data: Partial<SelectedNetworkControllerState>,
   ): this {
     merge(this.fixture.data.SelectedNetworkController, data);
+    return this;
+  }
+
+  withTokenBalancesController(
+    data: Partial<TokenBalancesControllerState>,
+  ): this {
+    merge(this.fixture.data.TokenBalancesController, data);
+    return this;
+  }
+
+  withTokenListController(data: Partial<TokenListState>): this {
+    (this.fixture.data as Record<string, unknown>).TokenListController ??= {};
+    merge(
+      (this.fixture.data as Record<string, unknown>).TokenListController,
+      data,
+    );
+    return this;
+  }
+
+  withTokensController(data: Partial<TokensControllerState>): this {
+    merge(this.fixture.data.TokensController, data);
     return this;
   }
 
@@ -420,6 +448,14 @@ class FixtureBuilderV2 {
     return this.withPermissionController({ subjects });
   }
 
+  withPetnamesDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        petnamesEnabled: false,
+      },
+    });
+  }
+
   withSelectedNetwork(
     networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
   ): this {
@@ -442,6 +478,36 @@ class FixtureBuilderV2 {
       preferences: {
         showNativeTokenAsMainBalance: false,
       },
+    });
+  }
+
+  withSmartTransactionsOptedOut(): this {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
+      },
+    });
+  }
+
+  withTokensControllerERC20({ chainId = 1337 } = {}): this {
+    return this.withTokensController({
+      allTokens: {
+        [toHex(chainId)]: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
+              symbol: 'TST',
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              isERC721: false,
+              decimals: 4,
+              aggregators: ['Metamask', 'Aave'],
+              name: 'test',
+            },
+          ],
+        },
+      },
+      allIgnoredTokens: {},
+      allDetectedTokens: {},
     });
   }
 
@@ -509,22 +575,6 @@ class FixtureBuilderV2 {
         selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
       },
     }).withKeyringController({ vault: TREZOR_VAULT });
-  }
-
-  withShowNativeTokenAsMainBalanceEnabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        showNativeTokenAsMainBalance: true,
-      },
-    });
-  }
-
-  withSmartTransactionsOptedOut(): this {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: false,
-      },
-    });
   }
 
   withTransactionControllerApprovedTransaction(): this {

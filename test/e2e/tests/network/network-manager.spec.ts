@@ -1,8 +1,7 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { WINDOW_TITLES } from '../../constants';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import NetworkManager, {
@@ -16,8 +15,8 @@ describe('Network Manager', function (this: Suite) {
   it('should reflect the enabled networks state in the network manager', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
@@ -35,8 +34,8 @@ describe('Network Manager', function (this: Suite) {
   it('should reflect the enabled networks state in the network manager, when multiple networks are enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true, '0xe708': true } })
           .build(),
         title: this.test?.fullTitle(),
@@ -55,8 +54,8 @@ describe('Network Manager', function (this: Suite) {
   it('should select and deselect multiple default networks', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
@@ -106,8 +105,8 @@ describe('Network Manager', function (this: Suite) {
   it('should default to default tab when default network is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
@@ -124,8 +123,8 @@ describe('Network Manager', function (this: Suite) {
   it('should filter tokens by enabled networks', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
@@ -155,7 +154,7 @@ describe('Network Manager', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
             eip155: {
@@ -240,7 +239,7 @@ describe('Network Manager', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
             eip155: {

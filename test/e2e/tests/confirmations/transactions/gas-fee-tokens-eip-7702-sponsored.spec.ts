@@ -3,8 +3,12 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
@@ -23,9 +27,11 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withSmartTransactionsOptedOut()
           .build(),
         manifestFlags: {
           testing: { disableSmartTransactionsOverride: true },
@@ -86,9 +92,10 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         localNodeOptions: {
           loadState:
