@@ -188,9 +188,10 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         for (const [chainId, expectedHex] of expectedChainIds) {
           const result = await testDapp.invokeMethod(chainId, 'eth_chainId');
-          assert.ok(
-            result.includes(expectedHex),
-            `Expected eth_chainId for ${chainId} to include "${expectedHex}", got: "${result}"`,
+          assert.strictEqual(
+            result,
+            `"${expectedHex}"`,
+            `Expected eth_chainId for ${chainId} to equal "${expectedHex}", got: "${result}"`,
           );
         }
       },
