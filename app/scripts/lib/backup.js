@@ -1,4 +1,4 @@
-import { prependZero } from '../../../shared/modules/string-utils';
+import { prependZero } from '../../../shared/lib/string-utils';
 
 export default class Backup {
   constructor(opts = {}) {

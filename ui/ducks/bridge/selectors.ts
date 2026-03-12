@@ -49,12 +49,12 @@ import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
 } from '../../../shared/constants/bridge';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
@@ -66,12 +66,12 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
-} from '../../../shared/modules/selectors';
+} from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {
@@ -976,3 +976,11 @@ export const getIsGasIncluded = createSelector(
     return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
+
+export const getIsSrcAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isSrcAssetPickerOpen;
+
+export const getIsDestAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isDestAssetPickerOpen;
+
+export const getBridgeState = (state: BridgeAppState) => state.bridge;

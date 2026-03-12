@@ -1,6 +1,6 @@
 import { waitFor } from '@testing-library/react';
 
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';

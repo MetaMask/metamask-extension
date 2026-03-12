@@ -40,7 +40,7 @@ import { getImageForChainId } from '../../../selectors/multichain';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   addToAddressBook,
   showQrScanner,
@@ -59,7 +59,7 @@ import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+} from '../../../../shared/lib/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';
