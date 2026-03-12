@@ -9,12 +9,10 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
-# LavaMoat policy changes can highlight security risks. Teams are encouraged to
-# audit these changes on their own, and leave their analysis in a comment.
-# These codeowners will review this analysis, and review the policy changes in
-# further detail if warranted.
-lavamoat/                            @MetaMask/policy-reviewers
-development/build/index.js           @MetaMask/policy-reviewers @MetaMask/extension-platform
+# Repository Administration
+/.github/guidelines/                                   @MetaMask/extension-platform @MetaMask/extension-admins
+/.github/ISSUE_TEMPLATE/                               @MetaMask/extension-platform @MetaMask/extension-admins
+/.github/pull-request-template.md                      @MetaMask/extension-platform @MetaMask/extension-admins
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
@@ -22,30 +20,11 @@ development/build/index.js           @MetaMask/policy-reviewers @MetaMask/extens
 # snaps development team to review and approve the changes.
 app/offscreen/offscreen.ts       @MetaMask/core-platform
 
-
-# The privacy-snapshot.json file includes a list of all hosts that the
-# extension communicates with during the E2E test suite runs. It is not a
-# complete list of all hosts that the extension communicates with until the E2E
-# test suite has full coverage. Anytime the privacy-snapshot file changes,
-# extra scrutiny should be applied to the pull request to confirm that it does
-# not broaden the number of hosts the extension communicates with without also
-# providing a path for users to avoid that communication. MetaMask strives to
-# make all such communication opt IN versus opt OUT.
-privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
-
-
 # A machine-generated file that tracks circular dependencies in the codebase.
 # It is updated using yarn circular-deps:update
 development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham
 development/circular-deps.ts         @MetaMask/extension-security-team
 /.madgerc                            @MetaMask/extension-security-team
-
-# The CODEOWNERS file constitutes an agreement amongst organization
-# admins and maintainers to restrict approval capabilities to a subset
-# of contributors. Modifications to this file result in a modification of
-# that agreement and can only be approved by those with the knowledge
-# and responsibility to publish libraries under the MetaMask name.
-.github/CODEOWNERS                   @MetaMask/extension-security-team
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
@@ -242,6 +221,15 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
 /.yarn/                                               @MetaMask/extension-platform
 /.env.yarn                                            @MetaMask/extension-platform
 /.yarnrc.yml                                          @MetaMask/extension-platform
+app/scripts/lib/setup-initial-state-hooks.js          @MetaMask/extension-platform @MetaMask/qa
+
+# Release
+/.metamaskrc.dist                                     @MetaMask/extension-platform @MetaMask/release-team
+/builds.yml                                           @MetaMask/extension-platform @MetaMask/release-team
+development/attributions-check.sh                     @MetaMask/extension-platform @MetaMask/release-team
+development/generate-attributions.sh                  @MetaMask/extension-platform @MetaMask/release-team
+app/scripts/lib/setupSentry.js                        @MetaMask/extension-platform @MetaMask/release-team
+shared/lib/trace.ts                                   @MetaMask/extension-platform @MetaMask/release-team
 
 # CI
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
@@ -261,6 +249,45 @@ development/generate-lavamoat-policies.js             @MetaMask/extension-platfo
 /tsconfig.json                                        @MetaMask/extension-platform
 /tsconfig.*.json                                      @MetaMask/extension-platform
 
-# Background Process
+# Platform
+app/service-worker.ts                                @MetaMask/extension-platform
+app/scripts/app-init.js                              @MetaMask/extension-platform
+app/scripts/background.js                            @MetaMask/extension-platform
+app/scripts/contentscript.js                         @MetaMask/extension-platform
+app/scripts/offscreen.js                             @MetaMask/extension-platform
+app/scripts/ui.js                                    @MetaMask/extension-platform
 app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platform
 app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
+
+# LavaMoat policy changes can highlight security risks. Teams are encouraged to
+# audit these changes on their own, and leave their analysis in a comment.
+# These codeowners will review this analysis, and review the policy changes in
+# further detail if warranted.
+lavamoat/                            @MetaMask/policy-reviewers
+development/build/index.js           @MetaMask/policy-reviewers @MetaMask/extension-platform
+
+# The privacy-snapshot.json file includes a list of all hosts that the
+# extension communicates with during the E2E test suite runs. It is not a
+# complete list of all hosts that the extension communicates with until the E2E
+# test suite has full coverage. Anytime the privacy-snapshot file changes,
+# extra scrutiny should be applied to the pull request to confirm that it does
+# not broaden the number of hosts the extension communicates with without also
+# providing a path for users to avoid that communication. MetaMask strives to
+# make all such communication opt IN versus opt OUT.
+/privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
+
+# Application manifest, build types, and browserslist config
+# must be approved by those with the knowledge and responsibility to
+# publish libraries under the MetaMask name.
+/.browserslistrc                      @MetaMask/extension-security-team
+app/manifest/                         @MetaMask/extension-security-team
+app/build-types/                      @MetaMask/extension-security-team
+
+# The CODEOWNERS, CONTRIBUTING, LICENSE files constitute agreements
+# amongst organization admins and maintainers. Modifications to these files
+# result in modifications to said agreements and must only be approved by
+# those with the knowledge and responsibility to publish libraries
+# under the MetaMask name.
+/.github/CODEOWNERS                   @MetaMask/extension-security-team
+/.github/CONTRIBUTING.md              @MetaMask/extension-admins
+/LICENSE                              @MetaMask/extension-admins
