@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
+import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
@@ -160,7 +161,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
+          fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               useTransactionSimulations: false,
@@ -168,10 +169,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withAppStateController({
               [CHAIN_IDS.OPTIMISM]: true,
             })
-            .withSelectedNetwork(NETWORK_CLIENT_ID.OPTIMISM_MAINNET)
-            .withEnabledNetworks({
-              eip155: { [CHAIN_IDS.OPTIMISM]: true },
-            })
+            .withNetworkControllerOnOptimism()
             .build(),
           localNodeOptions: {
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),

@@ -79,6 +79,7 @@ const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
   'avalanche-mainnet.infura.io',
+  'bsc-dataseed.binance.org',
   'bsc-mainnet.infura.io',
   'carrot.megaeth.com',
   'linea-mainnet.infura.io',
