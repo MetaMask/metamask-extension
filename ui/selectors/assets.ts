@@ -1125,6 +1125,8 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
   (nonTestNetworks) => {
     const enabledNetworkMap: Record<string, Record<string, boolean>> = {};
 
+    console.log('nonTestNetworks +++++++', nonTestNetworks);
+
     nonTestNetworks.forEach((network) => {
       const { caipChainId } = network;
       const { namespace, reference } = parseCaipChainId(caipChainId);
@@ -1236,6 +1238,8 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       },
     );
 
+    console.log('allMainnetNetworksMap ........', allMainnetNetworksMap);
+
     // Get mainnet EVM and non-EVM chain IDs for filtering
     const mainnetEvmChainIds = new Set(
       Object.keys(allMainnetNetworksMap?.eip155 || {}),
@@ -1246,16 +1250,21 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       ),
     );
 
+    console.log('accountsByChainId ........', accountsByChainId);
     // Check EVM native token balances from accountsByChainId (only for accounts in this group and mainnet chains)
     const hasEvmBalance = Object.entries(accountsByChainId || {}).some(
       ([chainId, chainAccounts]) => {
+        console.log('chainId ........', chainId);
+        console.log('mainnetEvmChainIds ........', mainnetEvmChainIds);
         // Only check mainnet chains
         if (!mainnetEvmChainIds.has(chainId)) {
           return false;
         }
+        console.log('chainAccounts ........', chainAccounts);
         if (!isObject(chainAccounts)) {
           return false;
         }
+        console.log('chainAccounts ........', chainAccounts);
         return Object.entries(chainAccounts).some(([address, account]) => {
           // Only check accounts that belong to the selected group
           if (!groupAddresses.has(address.toLowerCase())) {
@@ -1270,6 +1279,8 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
         });
       },
     );
+
+    console.log('hasEvmBalance ........', hasEvmBalance);
 
     // Check multichain balances for any non-zero non-EVM native token balances (only for accounts in this group and mainnet chains)
     const hasNonEvmBalance = Object.entries(
