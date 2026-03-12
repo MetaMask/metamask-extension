@@ -1787,7 +1787,8 @@
     "message": "I-unlock ang MetaMask sa device lang na ito."
   },
   "createPasswordDetailsSocial": {
-    "message": "Nangangahulugan ang pagkawala ng password ng pagkawala ng access sa lahat ng device, "
+    "message": "Nangangahulugan ang pagkawala ng password ng pagkawala ng access sa lahat ng device, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Hindi ito maire-reset ng MetaMask."
