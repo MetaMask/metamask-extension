@@ -61,6 +61,7 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
     mockedBackgroundConnection.submitRequestToBackground.mock.calls,
   ).toStrictEqual(expect.arrayContaining([expectedCall]));
 };
+
 describe('Notifications Activation', () => {
   beforeEach(() => {
     jest.resetAllMocks();

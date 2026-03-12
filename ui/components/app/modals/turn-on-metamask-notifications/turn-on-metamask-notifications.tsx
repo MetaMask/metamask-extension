@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
@@ -57,10 +57,12 @@ export default function TurnOnMetamaskNotifications() {
   const [isLoading, setIsLoading] = useState<boolean>(
     isUpdatingMetamaskNotifications,
   );
+  const isLoadingRef = useRef(isUpdatingMetamaskNotifications);
 
   const { enableNotifications, error } = useEnableNotifications();
 
   const handleTurnOnNotifications = async () => {
+    isLoadingRef.current = true;
     setIsLoading(true);
     trackEvent({
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
@@ -77,25 +79,26 @@ export default function TurnOnMetamaskNotifications() {
     await enableNotifications();
   };
 
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+
   const handleHideModal = () => {
+    if (!isLoadingRef.current) {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          action_type: 'dismissed',
+        },
+      });
+    }
     hideModal();
-    setIsLoading((prevLoadingState) => {
-      if (!prevLoadingState) {
-        trackEvent({
-          category: MetaMetricsEventCategory.NotificationsActivationFlow,
-          event: MetaMetricsEventName.NotificationsActivated,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_profile_syncing_enabled: isBackupAndSyncEnabled,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            action_type: 'dismissed',
-          },
-        });
-      }
-      return prevLoadingState;
-    });
   };
 
   useEffect(() => {
