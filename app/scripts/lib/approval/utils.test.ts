@@ -25,8 +25,8 @@ function createApprovalControllerMock(
     state: {
       pendingApprovals,
     },
-    accept: jest.fn(),
-    reject: jest.fn(),
+    acceptRequest: jest.fn(),
+    rejectRequest: jest.fn(),
   } as unknown as jest.Mocked<ApprovalController>;
 }
 
@@ -42,12 +42,12 @@ describe('Approval Utils', () => {
         approvalController,
       });
 
-      expect(approvalController.reject).toHaveBeenCalledTimes(2);
-      expect(approvalController.reject).toHaveBeenCalledWith(
+      expect(approvalController.rejectRequest).toHaveBeenCalledTimes(2);
+      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
         ID_MOCK,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
-      expect(approvalController.reject).toHaveBeenCalledWith(
+      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
         ID_MOCK_2,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
@@ -65,8 +65,8 @@ describe('Approval Utils', () => {
 
       rejectAllApprovals({ approvalController });
 
-      expect(approvalController.accept).toHaveBeenCalledTimes(1);
-      expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, null);
+      expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
+      expect(approvalController.acceptRequest).toHaveBeenCalledWith(ID_MOCK, null);
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -82,8 +82,8 @@ describe('Approval Utils', () => {
 
       rejectAllApprovals({ approvalController });
 
-      expect(approvalController.accept).toHaveBeenCalledTimes(1);
-      expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, false);
+      expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
+      expect(approvalController.acceptRequest).toHaveBeenCalledWith(ID_MOCK, false);
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -124,8 +124,8 @@ describe('Approval Utils', () => {
         origin,
       });
 
-      expect(approvalController.reject).toHaveBeenCalledTimes(1);
-      expect(approvalController.reject).toHaveBeenCalledWith(
+      expect(approvalController.rejectRequest).toHaveBeenCalledTimes(1);
+      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
         ID_MOCK,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );

@@ -489,11 +489,11 @@ describe('MetaMaskController', function () {
       ).rejects.toThrow(error);
     });
 
-    it('should normalize null options before calling approvalController.accept', async function () {
+    it('should normalize null options before calling approvalController.acceptRequest', async function () {
       const approvalId = mockULIDs[0];
       const approvalValue = { txMeta: { id: '0x1' } };
       metamaskController.approvalController = {
-        accept: jest.fn().mockResolvedValue(undefined),
+        acceptRequest: jest.fn().mockResolvedValue(undefined),
       };
 
       await metamaskController.resolvePendingApproval(
@@ -502,18 +502,18 @@ describe('MetaMaskController', function () {
         null,
       );
 
-      expect(metamaskController.approvalController.accept).toHaveBeenCalledWith(
+      expect(metamaskController.approvalController.acceptRequest).toHaveBeenCalledWith(
         approvalId,
         approvalValue,
         undefined,
       );
     });
 
-    it('should pass only waitForResult to approvalController.accept options', async function () {
+    it('should pass only waitForResult to approvalController.acceptRequest options', async function () {
       const approvalId = mockULIDs[1];
       const approvalValue = { txMeta: { id: '0x2' } };
       metamaskController.approvalController = {
-        accept: jest.fn().mockResolvedValue(undefined),
+        acceptRequest: jest.fn().mockResolvedValue(undefined),
       };
 
       await metamaskController.resolvePendingApproval(
@@ -525,7 +525,7 @@ describe('MetaMaskController', function () {
         },
       );
 
-      expect(metamaskController.approvalController.accept).toHaveBeenCalledWith(
+      expect(metamaskController.approvalController.acceptRequest).toHaveBeenCalledWith(
         approvalId,
         approvalValue,
         {
