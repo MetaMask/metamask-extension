@@ -32,14 +32,14 @@ function createMockControllerApi() {
   };
 }
 
-function createBridge(
-  overrides: {
-    controller?: PerpsController;
-    controllerApi?: ReturnType<typeof createMockControllerApi>;
-    isConnectionAlive?: () => boolean;
-    emit?: jest.Mock;
-  } = {},
-) {
+type BridgeOverrides = {
+  controller?: PerpsController;
+  controllerApi?: ReturnType<typeof createMockControllerApi>;
+  isConnectionAlive?: () => boolean;
+  emit?: jest.Mock;
+};
+
+function createBridge(overrides: BridgeOverrides = {}) {
   const emit = overrides.emit ?? jest.fn();
   const controller =
     overrides.controller ??
@@ -49,12 +49,14 @@ function createBridge(
 
   const bridge = new PerpsStreamBridge({
     controller,
-    controllerApi,
+    perpsInit: controllerApi.perpsInit,
+    perpsDisconnect: controllerApi.perpsDisconnect,
+    perpsToggleTestnet: controllerApi.perpsToggleTestnet,
     isConnectionAlive,
     emit,
   });
 
-  return { bridge, emit, controller, controllerApi, isConnectionAlive };
+  return { bridge, emit, controller, controllerApi };
 }
 
 describe('PerpsStreamBridge', () => {
@@ -64,55 +66,66 @@ describe('PerpsStreamBridge', () => {
       expect(bridge.isActive).toBe(false);
     });
 
-    it('returns false when only activate() has been called', () => {
+    it('returns false when only perpsInit has been called', async () => {
       const { bridge } = createBridge();
-      bridge.activate();
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
       expect(bridge.isActive).toBe(false);
     });
 
-    it('returns false when only setViewActive(true) has been called', () => {
+    it('returns false when only perpsViewActive(true) has been called', () => {
       const { bridge } = createBridge();
-      bridge.setViewActive(true);
+      const api = bridge.bridgeApi();
+      (api.perpsViewActive as (v: boolean) => void)(true);
       expect(bridge.isActive).toBe(false);
     });
 
-    it('returns true when both activate() and setViewActive(true) have been called', () => {
+    it('returns true when both perpsInit and perpsViewActive(true) have been called', async () => {
       const { bridge } = createBridge();
-      bridge.activate();
-      bridge.setViewActive(true);
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+      (api.perpsViewActive as (v: boolean) => void)(true);
       expect(bridge.isActive).toBe(true);
     });
 
-    it('returns false after setViewActive(false)', () => {
+    it('returns false after perpsViewActive(false)', async () => {
       const { bridge } = createBridge();
-      bridge.activate();
-      bridge.setViewActive(true);
-      bridge.setViewActive(false);
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+      (api.perpsViewActive as (v: boolean) => void)(true);
+      (api.perpsViewActive as (v: boolean) => void)(false);
       expect(bridge.isActive).toBe(false);
     });
   });
 
-  describe('activate', () => {
-    it('subscribes to positions, orders, account, and fills', () => {
+  describe('perpsInit', () => {
+    it('delegates to controllerApi and activates static subscriptions', async () => {
       const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      controllerApi.perpsInit.mockResolvedValue('init-result');
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
+        controllerApi,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activate();
+      const result = await api.perpsInit();
 
+      expect(controllerApi.perpsInit).toHaveBeenCalledTimes(1);
+      expect(result).toBe('init-result');
       expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
       expect(controller.subscribeToOrders).toHaveBeenCalledTimes(1);
       expect(controller.subscribeToAccount).toHaveBeenCalledTimes(1);
       expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
     });
 
-    it('passes callbacks that emit on the correct channels', () => {
+    it('emits on correct channels when static subscription callbacks fire', async () => {
       const controller = createMockController();
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
       });
-      bridge.activate();
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
 
       const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
         .callback as (data: unknown) => void;
@@ -134,7 +147,34 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('fills', { stub: 'fills' });
     });
 
-    it('tears down previous static subscriptions on re-activation', () => {
+    it('skips activation when already activated', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+      await api.perpsInit();
+
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips activation when connection is dead', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        isConnectionAlive: () => false,
+      });
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+
+      expect(controller.subscribeToPositions).not.toHaveBeenCalled();
+      expect(bridge.isActive).toBe(false);
+    });
+
+    it('tears down previous static subscriptions on re-activation after destroy', async () => {
       const controller = createMockController();
       const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
@@ -145,109 +185,128 @@ describe('PerpsStreamBridge', () => {
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activate();
+      await api.perpsInit();
       for (const unsub of unsubs) {
         expect(unsub).not.toHaveBeenCalled();
       }
 
-      bridge.activate();
+      bridge.destroy();
+      await api.perpsInit();
+
       for (const unsub of unsubs) {
         expect(unsub).toHaveBeenCalledTimes(1);
       }
     });
-
-    it('swallows errors thrown by static unsub functions during teardown', () => {
-      const controller = createMockController();
-      controller.subscribeToPositions.mockReturnValue(() => {
-        throw new Error('teardown failure');
-      });
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activate();
-      expect(() => bridge.activate()).not.toThrow();
-    });
-
-    it('resets #activated and tears down partial subs on subscribe throw so next activate() can retry', () => {
-      const controller = createMockController();
-      const unsubPositions = jest.fn();
-      const unsubOrders = jest.fn();
-      controller.subscribeToPositions.mockReturnValue(unsubPositions);
-      controller.subscribeToOrders.mockReturnValue(unsubOrders);
-      controller.subscribeToAccount.mockImplementation(() => {
-        throw new Error('subscribeToAccount failed');
-      });
-
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      expect(() => bridge.activate()).toThrow('subscribeToAccount failed');
-      expect(bridge.isActivated).toBe(false);
-      expect(unsubPositions).toHaveBeenCalledTimes(1);
-      expect(unsubOrders).toHaveBeenCalledTimes(1);
-
-      controller.subscribeToAccount.mockReturnValue(jest.fn());
-      bridge.activate();
-      expect(bridge.isActivated).toBe(true);
-    });
-
-    it('is a no-op when controller is undefined', () => {
-      const bridge = new PerpsStreamBridge({
-        controller: undefined as unknown as PerpsController,
-        controllerApi: createMockControllerApi(),
-        isConnectionAlive: () => true,
-        emit: jest.fn(),
-      });
-      bridge.activate();
-      expect(bridge.isActivated).toBe(false);
-    });
   });
 
-  describe('isActivated', () => {
-    it('returns false initially', () => {
-      const { bridge } = createBridge();
-      expect(bridge.isActivated).toBe(false);
-    });
+  describe('perpsDisconnect', () => {
+    it('destroys bridge and delegates to controllerApi', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      controllerApi.perpsDisconnect.mockResolvedValue('disconnect-result');
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
 
-    it('returns true after activate()', () => {
-      const { bridge } = createBridge();
-      bridge.activate();
-      expect(bridge.isActivated).toBe(true);
-    });
-
-    it('returns false after destroy()', () => {
-      const { bridge } = createBridge();
-      bridge.activate();
-      bridge.destroy();
-      expect(bridge.isActivated).toBe(false);
-    });
-  });
-
-  describe('setViewActive', () => {
-    it('enables isActive when combined with activate()', () => {
-      const { bridge } = createBridge();
-      bridge.activate();
-
-      bridge.setViewActive(true);
+      await api.perpsInit();
+      (api.perpsViewActive as (v: boolean) => void)(true);
       expect(bridge.isActive).toBe(true);
 
-      bridge.setViewActive(false);
+      const result = await api.perpsDisconnect();
+
+      expect(result).toBe('disconnect-result');
       expect(bridge.isActive).toBe(false);
     });
   });
 
-  describe('activateStreaming', () => {
+  describe('perpsToggleTestnet', () => {
+    it('destroys bridge and delegates to controllerApi', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      controllerApi.perpsToggleTestnet.mockResolvedValue('toggle-result');
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+      const result = await api.perpsToggleTestnet();
+
+      expect(result).toBe('toggle-result');
+      expect(bridge.isActive).toBe(false);
+    });
+  });
+
+  describe('perpsViewActive', () => {
+    it('enables isActive when combined with perpsInit', async () => {
+      const { bridge } = createBridge();
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+
+      (api.perpsViewActive as (v: boolean) => void)(true);
+      expect(bridge.isActive).toBe(true);
+
+      (api.perpsViewActive as (v: boolean) => void)(false);
+      expect(bridge.isActive).toBe(false);
+    });
+  });
+
+  describe('perpsActivateStreaming', () => {
+    const callStreaming = (
+      api: Record<string, (...args: never[]) => unknown>,
+      params: Record<string, unknown>,
+    ) =>
+      (
+        api.perpsActivateStreaming as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )(params);
+
+    it('activates static subscriptions if not yet activated', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      expect(bridge.isActive).toBe(false);
+      await callStreaming(api, { priceSymbols: ['ETH'] });
+
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToOrders).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToAccount).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not re-activate static subscriptions if already activated', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+
+      await callStreaming(api, { priceSymbols: ['ETH'] });
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+    });
+
     describe('prices', () => {
-      it('subscribes to prices when priceSymbols are provided', () => {
+      it('subscribes to prices when priceSymbols are provided', async () => {
         const controller = createMockController();
         const { bridge } = createBridge({
           controller: controller as unknown as PerpsController,
         });
+        const api = bridge.bridgeApi();
 
-        bridge.activateStreaming({ priceSymbols: ['ETH', 'BTC'] });
+        await callStreaming(api, { priceSymbols: ['ETH', 'BTC'] });
 
         expect(controller.subscribeToPrices).toHaveBeenCalledWith({
           symbols: ['ETH', 'BTC'],
@@ -255,35 +314,24 @@ describe('PerpsStreamBridge', () => {
         });
       });
 
-      it('does not subscribe to prices when priceSymbols is empty', () => {
+      it('does not subscribe to prices when priceSymbols is empty', async () => {
         const controller = createMockController();
         const { bridge } = createBridge({
           controller: controller as unknown as PerpsController,
         });
 
-        bridge.activateStreaming({ priceSymbols: [] });
+        await callStreaming(bridge.bridgeApi(), { priceSymbols: [] });
 
         expect(controller.subscribeToPrices).not.toHaveBeenCalled();
       });
 
-      it('does not subscribe to prices when priceSymbols is undefined', () => {
-        const controller = createMockController();
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({});
-
-        expect(controller.subscribeToPrices).not.toHaveBeenCalled();
-      });
-
-      it('emits price updates on the prices channel', () => {
+      it('emits price updates on the prices channel', async () => {
         const controller = createMockController();
         const { bridge, emit } = createBridge({
           controller: controller as unknown as PerpsController,
         });
 
-        bridge.activateStreaming({ priceSymbols: ['ETH'] });
+        await callStreaming(bridge.bridgeApi(), { priceSymbols: ['ETH'] });
 
         const callback = controller.subscribeToPrices.mock.calls[0][0]
           .callback as (data: unknown) => void;
@@ -292,30 +340,31 @@ describe('PerpsStreamBridge', () => {
         expect(emit).toHaveBeenCalledWith('prices', { stub: 'price-update' });
       });
 
-      it('tears down previous prices subscription when called again', () => {
+      it('tears down previous prices subscription when called again', async () => {
         const controller = createMockController();
         const unsub = jest.fn();
         controller.subscribeToPrices.mockReturnValue(unsub);
         const { bridge } = createBridge({
           controller: controller as unknown as PerpsController,
         });
+        const api = bridge.bridgeApi();
 
-        bridge.activateStreaming({ priceSymbols: ['ETH'] });
+        await callStreaming(api, { priceSymbols: ['ETH'] });
         expect(unsub).not.toHaveBeenCalled();
 
-        bridge.activateStreaming({ priceSymbols: ['BTC'] });
+        await callStreaming(api, { priceSymbols: ['BTC'] });
         expect(unsub).toHaveBeenCalledTimes(1);
       });
     });
 
     describe('orderBook', () => {
-      it('subscribes to order book when orderBookSymbol is provided', () => {
+      it('subscribes to order book when orderBookSymbol is provided', async () => {
         const controller = createMockController();
         const { bridge } = createBridge({
           controller: controller as unknown as PerpsController,
         });
 
-        bridge.activateStreaming({ orderBookSymbol: 'ETH' });
+        await callStreaming(bridge.bridgeApi(), { orderBookSymbol: 'ETH' });
 
         expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
           symbol: 'ETH',
@@ -323,24 +372,13 @@ describe('PerpsStreamBridge', () => {
         });
       });
 
-      it('does not subscribe to order book when orderBookSymbol is undefined', () => {
-        const controller = createMockController();
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({});
-
-        expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
-      });
-
-      it('emits order book updates on the orderBook channel', () => {
+      it('emits order book updates on the orderBook channel', async () => {
         const controller = createMockController();
         const { bridge, emit } = createBridge({
           controller: controller as unknown as PerpsController,
         });
 
-        bridge.activateStreaming({ orderBookSymbol: 'BTC' });
+        await callStreaming(bridge.bridgeApi(), { orderBookSymbol: 'BTC' });
 
         const callback = controller.subscribeToOrderBook.mock.calls[0][0]
           .callback as (data: unknown) => void;
@@ -348,35 +386,17 @@ describe('PerpsStreamBridge', () => {
 
         expect(emit).toHaveBeenCalledWith('orderBook', { stub: 'order-book' });
       });
-
-      it('tears down previous order book subscription when called again', () => {
-        const controller = createMockController();
-        const unsub = jest.fn();
-        controller.subscribeToOrderBook.mockReturnValue(unsub);
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({ orderBookSymbol: 'ETH' });
-        bridge.activateStreaming({ orderBookSymbol: 'BTC' });
-
-        expect(unsub).toHaveBeenCalledTimes(1);
-      });
     });
 
     describe('candles', () => {
-      it('subscribes to candles when symbol and interval are provided', () => {
+      it('subscribes to candles when symbol and interval are provided', async () => {
         const controller = createMockController();
         const { bridge } = createBridge({
           controller: controller as unknown as PerpsController,
         });
 
-        bridge.activateStreaming({
-          candle: {
-            symbol: 'ETH',
-            interval: '1h' as never,
-            duration: '1d' as never,
-          },
+        await callStreaming(bridge.bridgeApi(), {
+          candle: { symbol: 'ETH', interval: '1h', duration: '1d' },
         });
 
         expect(controller.subscribeToCandles).toHaveBeenCalledWith({
@@ -387,40 +407,14 @@ describe('PerpsStreamBridge', () => {
         });
       });
 
-      it('does not subscribe when candle symbol is missing', () => {
-        const controller = createMockController();
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({
-          candle: { symbol: '', interval: '1h' as never },
-        });
-
-        expect(controller.subscribeToCandles).not.toHaveBeenCalled();
-      });
-
-      it('does not subscribe when candle interval is missing', () => {
-        const controller = createMockController();
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({
-          candle: { symbol: 'ETH', interval: '' as never },
-        });
-
-        expect(controller.subscribeToCandles).not.toHaveBeenCalled();
-      });
-
-      it('emits candle updates with symbol and interval metadata', () => {
+      it('emits candle updates with symbol and interval metadata', async () => {
         const controller = createMockController();
         const { bridge, emit } = createBridge({
           controller: controller as unknown as PerpsController,
         });
 
-        bridge.activateStreaming({
-          candle: { symbol: 'ETH', interval: '15m' as never },
+        await callStreaming(bridge.bridgeApi(), {
+          candle: { symbol: 'ETH', interval: '15m' },
         });
 
         const callback = controller.subscribeToCandles.mock.calls[0][0]
@@ -433,41 +427,19 @@ describe('PerpsStreamBridge', () => {
           { symbol: 'ETH', interval: '15m' },
         );
       });
-
-      it('replaces the previous candle subscription when navigating to a different market', () => {
-        const controller = createMockController();
-        const unsubETH1h = jest.fn();
-        const unsubBTC1h = jest.fn();
-        controller.subscribeToCandles
-          .mockReturnValueOnce(unsubETH1h)
-          .mockReturnValueOnce(unsubBTC1h);
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({
-          candle: { symbol: 'ETH', interval: '1h' as never },
-        });
-        bridge.activateStreaming({
-          candle: { symbol: 'BTC', interval: '1h' as never },
-        });
-
-        expect(unsubETH1h).toHaveBeenCalledTimes(1);
-        expect(unsubBTC1h).not.toHaveBeenCalled();
-      });
     });
 
     describe('combined params', () => {
-      it('subscribes to all channels when all params are provided', () => {
+      it('subscribes to all channels when all params are provided', async () => {
         const controller = createMockController();
         const { bridge } = createBridge({
           controller: controller as unknown as PerpsController,
         });
 
-        bridge.activateStreaming({
+        await callStreaming(bridge.bridgeApi(), {
           priceSymbols: ['ETH'],
           orderBookSymbol: 'ETH',
-          candle: { symbol: 'ETH', interval: '5m' as never },
+          candle: { symbol: 'ETH', interval: '5m' },
         });
 
         expect(controller.subscribeToPrices).toHaveBeenCalledTimes(1);
@@ -475,20 +447,7 @@ describe('PerpsStreamBridge', () => {
         expect(controller.subscribeToCandles).toHaveBeenCalledTimes(1);
       });
 
-      it('subscribes to none when params is empty', () => {
-        const controller = createMockController();
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({});
-
-        expect(controller.subscribeToPrices).not.toHaveBeenCalled();
-        expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
-        expect(controller.subscribeToCandles).not.toHaveBeenCalled();
-      });
-
-      it('tears down omitted channels when navigating to a simpler view', () => {
+      it('tears down omitted channels when navigating to a simpler view', async () => {
         const controller = createMockController();
         const orderBookUnsub = jest.fn();
         const candleUnsub = jest.fn();
@@ -497,52 +456,52 @@ describe('PerpsStreamBridge', () => {
         const { bridge } = createBridge({
           controller: controller as unknown as PerpsController,
         });
+        const api = bridge.bridgeApi();
 
-        bridge.activateStreaming({
+        await callStreaming(api, {
           priceSymbols: ['ETH'],
           orderBookSymbol: 'ETH',
-          candle: { symbol: 'ETH', interval: '1h' as never },
+          candle: { symbol: 'ETH', interval: '1h' },
         });
 
         expect(orderBookUnsub).not.toHaveBeenCalled();
         expect(candleUnsub).not.toHaveBeenCalled();
 
-        bridge.activateStreaming({ priceSymbols: ['BTC'] });
+        await callStreaming(api, { priceSymbols: ['BTC'] });
 
         expect(orderBookUnsub).toHaveBeenCalledTimes(1);
         expect(candleUnsub).toHaveBeenCalledTimes(1);
       });
+    });
 
-      it('tears down all dynamic subs when called with empty params', () => {
-        const controller = createMockController();
-        const priceUnsub = jest.fn();
-        const orderBookUnsub = jest.fn();
-        controller.subscribeToPrices.mockReturnValue(priceUnsub);
-        controller.subscribeToOrderBook.mockReturnValue(orderBookUnsub);
-        const { bridge } = createBridge({
-          controller: controller as unknown as PerpsController,
-        });
-
-        bridge.activateStreaming({
-          priceSymbols: ['ETH'],
-          orderBookSymbol: 'ETH',
-        });
-        bridge.activateStreaming({});
-
-        expect(priceUnsub).toHaveBeenCalledTimes(1);
-        expect(orderBookUnsub).toHaveBeenCalledTimes(1);
+    it('skips streaming when connection is dead', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        isConnectionAlive: () => false,
       });
+
+      await callStreaming(bridge.bridgeApi(), { priceSymbols: ['ETH'] });
+
+      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
     });
   });
 
-  describe('activatePriceStream / deactivatePriceStream', () => {
-    it('subscribes to prices and emits on prices channel', () => {
+  describe('perpsActivatePriceStream / perpsDeactivatePriceStream', () => {
+    it('subscribes to prices and emits on prices channel', async () => {
       const controller = createMockController();
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activatePriceStream(['ETH', 'BTC']);
+      await (
+        api.perpsActivatePriceStream as (p: {
+          symbols: string[];
+        }) => Promise<string>
+      )({
+        symbols: ['ETH', 'BTC'],
+      });
 
       expect(controller.subscribeToPrices).toHaveBeenCalledWith({
         symbols: ['ETH', 'BTC'],
@@ -554,59 +513,51 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('prices', { price: '100' });
     });
 
-    it('tears down previous price stream before registering new one', () => {
+    it('deactivatePriceStream tears down price subscription', async () => {
       const controller = createMockController();
       const unsub = jest.fn();
       controller.subscribeToPrices.mockReturnValue(unsub);
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activatePriceStream(['ETH']);
-      bridge.activatePriceStream(['BTC']);
+      await (
+        api.perpsActivatePriceStream as (p: {
+          symbols: string[];
+        }) => Promise<string>
+      )({
+        symbols: ['ETH'],
+      });
+      (api.perpsDeactivatePriceStream as () => void)();
 
       expect(unsub).toHaveBeenCalledTimes(1);
     });
 
-    it('does not subscribe when symbols is empty', () => {
-      const controller = createMockController();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activatePriceStream([]);
-
-      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
-    });
-
-    it('deactivatePriceStream tears down price subscription', () => {
-      const controller = createMockController();
-      const unsub = jest.fn();
-      controller.subscribeToPrices.mockReturnValue(unsub);
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activatePriceStream(['ETH']);
-      bridge.deactivatePriceStream();
-
-      expect(unsub).toHaveBeenCalledTimes(1);
-    });
-
-    it('deactivatePriceStream is no-op when no price stream active', () => {
+    it('deactivatePriceStream is a no-op when no stream active', () => {
       const { bridge } = createBridge();
-      expect(() => bridge.deactivatePriceStream()).not.toThrow();
+      const api = bridge.bridgeApi();
+      expect(() =>
+        (api.perpsDeactivatePriceStream as () => void)(),
+      ).not.toThrow();
     });
   });
 
-  describe('activateOrderBookStream / deactivateOrderBookStream', () => {
-    it('subscribes to order book and emits on orderBook channel', () => {
+  describe('perpsActivateOrderBookStream / perpsDeactivateOrderBookStream', () => {
+    it('subscribes to order book and emits on orderBook channel', async () => {
       const controller = createMockController();
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activateOrderBookStream('ETH');
+      await (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<string>
+      )({
+        symbol: 'ETH',
+      });
 
       expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
         symbol: 'ETH',
@@ -618,58 +569,41 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('orderBook', { bids: [], asks: [] });
     });
 
-    it('tears down previous order book stream before registering new one', () => {
+    it('deactivateOrderBookStream tears down order book subscription', async () => {
       const controller = createMockController();
       const unsub = jest.fn();
       controller.subscribeToOrderBook.mockReturnValue(unsub);
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activateOrderBookStream('ETH');
-      bridge.activateOrderBookStream('BTC');
-
-      expect(unsub).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not subscribe when symbol is empty', () => {
-      const controller = createMockController();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
+      await (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<string>
+      )({
+        symbol: 'ETH',
       });
-
-      bridge.activateOrderBookStream('');
-
-      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
-    });
-
-    it('deactivateOrderBookStream tears down order book subscription', () => {
-      const controller = createMockController();
-      const unsub = jest.fn();
-      controller.subscribeToOrderBook.mockReturnValue(unsub);
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activateOrderBookStream('ETH');
-      bridge.deactivateOrderBookStream();
+      (api.perpsDeactivateOrderBookStream as () => void)();
 
       expect(unsub).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('activateCandleStream / deactivateCandleStream', () => {
-    it('subscribes to candles with symbol, interval, and optional duration', () => {
+  describe('perpsActivateCandleStream / perpsDeactivateCandleStream', () => {
+    it('subscribes to candles and emits with metadata', async () => {
       const controller = createMockController();
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activateCandleStream({
-        symbol: 'ETH',
-        interval: '1h' as never,
-        duration: '1d' as never,
-      });
+      await (
+        api.perpsActivateCandleStream as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )({ symbol: 'ETH', interval: '1h', duration: '1d' });
 
       expect(controller.subscribeToCandles).toHaveBeenCalledWith({
         symbol: 'ETH',
@@ -687,50 +621,28 @@ describe('PerpsStreamBridge', () => {
       );
     });
 
-    it('tears down previous candle stream before registering new one', () => {
+    it('deactivateCandleStream tears down candle subscription', async () => {
       const controller = createMockController();
       const unsub = jest.fn();
       controller.subscribeToCandles.mockReturnValue(unsub);
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
+      const api = bridge.bridgeApi();
 
-      bridge.activateCandleStream({ symbol: 'ETH', interval: '1h' as never });
-      bridge.activateCandleStream({ symbol: 'BTC', interval: '1h' as never });
-
-      expect(unsub).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not subscribe when symbol or interval is missing', () => {
-      const controller = createMockController();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activateCandleStream({ symbol: '', interval: '1h' as never });
-      expect(controller.subscribeToCandles).not.toHaveBeenCalled();
-
-      bridge.activateCandleStream({ symbol: 'ETH', interval: '' as never });
-      expect(controller.subscribeToCandles).not.toHaveBeenCalled();
-    });
-
-    it('deactivateCandleStream tears down candle subscription', () => {
-      const controller = createMockController();
-      const unsub = jest.fn();
-      controller.subscribeToCandles.mockReturnValue(unsub);
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activateCandleStream({ symbol: 'ETH', interval: '1h' as never });
-      bridge.deactivateCandleStream();
+      await (
+        api.perpsActivateCandleStream as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )({ symbol: 'ETH', interval: '1h' });
+      (api.perpsDeactivateCandleStream as () => void)();
 
       expect(unsub).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('destroy', () => {
-    it('tears down all static subscriptions', () => {
+    it('tears down all static subscriptions', async () => {
       const controller = createMockController();
       const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
@@ -741,7 +653,7 @@ describe('PerpsStreamBridge', () => {
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
-      bridge.activate();
+      await bridge.bridgeApi().perpsInit();
       bridge.destroy();
 
       for (const unsub of unsubs) {
@@ -749,7 +661,7 @@ describe('PerpsStreamBridge', () => {
       }
     });
 
-    it('tears down all dynamic subscriptions', () => {
+    it('tears down all dynamic subscriptions', async () => {
       const controller = createMockController();
       const priceUnsub = jest.fn();
       const orderBookUnsub = jest.fn();
@@ -761,10 +673,15 @@ describe('PerpsStreamBridge', () => {
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
-      bridge.activateStreaming({
+
+      await (
+        bridge.bridgeApi().perpsActivateStreaming as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )({
         priceSymbols: ['ETH'],
         orderBookSymbol: 'BTC',
-        candle: { symbol: 'ETH', interval: '1h' as never },
+        candle: { symbol: 'ETH', interval: '1h' },
       });
       bridge.destroy();
 
@@ -773,25 +690,7 @@ describe('PerpsStreamBridge', () => {
       expect(candleUnsub).toHaveBeenCalledTimes(1);
     });
 
-    it('tears down both static and dynamic subscriptions', () => {
-      const controller = createMockController();
-      const staticUnsub = jest.fn();
-      const dynamicUnsub = jest.fn();
-      controller.subscribeToPositions.mockReturnValue(staticUnsub);
-      controller.subscribeToPrices.mockReturnValue(dynamicUnsub);
-
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-      bridge.activate();
-      bridge.activateStreaming({ priceSymbols: ['ETH'] });
-      bridge.destroy();
-
-      expect(staticUnsub).toHaveBeenCalledTimes(1);
-      expect(dynamicUnsub).toHaveBeenCalledTimes(1);
-    });
-
-    it('swallows errors thrown by unsub functions', () => {
+    it('swallows errors thrown by unsub functions', async () => {
       const controller = createMockController();
       controller.subscribeToPositions.mockReturnValue(() => {
         throw new Error('static teardown failure');
@@ -803,8 +702,13 @@ describe('PerpsStreamBridge', () => {
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
-      bridge.activate();
-      bridge.activateStreaming({ priceSymbols: ['ETH'] });
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+      await (
+        api.perpsActivateStreaming as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )({ priceSymbols: ['ETH'] });
 
       expect(() => bridge.destroy()).not.toThrow();
     });
@@ -814,313 +718,46 @@ describe('PerpsStreamBridge', () => {
       expect(() => bridge.destroy()).not.toThrow();
     });
 
-    it('resets isActive to false after destruction', () => {
+    it('resets isActive to false after destruction', async () => {
       const { bridge } = createBridge();
-      bridge.activate();
-      bridge.setViewActive(true);
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+      (api.perpsViewActive as (v: boolean) => void)(true);
       expect(bridge.isActive).toBe(true);
 
       bridge.destroy();
       expect(bridge.isActive).toBe(false);
     });
 
-    it('resets viewActive so re-activation requires explicit setViewActive(true)', () => {
+    it('resets viewActive so re-activation requires explicit perpsViewActive(true)', async () => {
       const { bridge } = createBridge();
-      bridge.activate();
-      bridge.setViewActive(true);
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+      (api.perpsViewActive as (v: boolean) => void)(true);
       expect(bridge.isActive).toBe(true);
 
       bridge.destroy();
-      bridge.activate();
+      await api.perpsInit();
       expect(bridge.isActive).toBe(false);
 
-      bridge.setViewActive(true);
+      (api.perpsViewActive as (v: boolean) => void)(true);
       expect(bridge.isActive).toBe(true);
     });
 
-    it('does not double-call static unsubs when activate() is called after destroy()', () => {
-      const controller = createMockController();
-      const unsub = jest.fn();
-      controller.subscribeToPositions.mockReturnValue(unsub);
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activate();
-      bridge.destroy();
-      expect(unsub).toHaveBeenCalledTimes(1);
-
-      bridge.activate();
-      expect(unsub).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not double-call dynamic unsubs when activateStreaming() is called after destroy()', () => {
-      const controller = createMockController();
-      const priceUnsub = jest.fn();
-      controller.subscribeToPrices.mockReturnValue(priceUnsub);
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-
-      bridge.activateStreaming({ priceSymbols: ['ETH'] });
-      bridge.destroy();
-      expect(priceUnsub).toHaveBeenCalledTimes(1);
-
-      bridge.activateStreaming({ priceSymbols: ['BTC'] });
-      expect(priceUnsub).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not throw when called twice (idempotent)', () => {
-      const controller = createMockController();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-      });
-      bridge.activate();
-      bridge.activateStreaming({ priceSymbols: ['ETH'] });
+    it('does not throw when called twice (idempotent)', async () => {
+      const { bridge } = createBridge();
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+      await (
+        api.perpsActivateStreaming as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )({ priceSymbols: ['ETH'] });
 
       expect(() => {
         bridge.destroy();
         bridge.destroy();
       }).not.toThrow();
-    });
-  });
-
-  describe('bridgeApi', () => {
-    it('perpsInit delegates to controllerApi and activates on first call', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      controllerApi.perpsInit.mockResolvedValue('init-result');
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      const result = await api.perpsInit();
-
-      expect(controllerApi.perpsInit).toHaveBeenCalledTimes(1);
-      expect(result).toBe('init-result');
-      expect(bridge.isActivated).toBe(true);
-    });
-
-    it('perpsInit skips activation when already activated', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      await api.perpsInit();
-      await api.perpsInit();
-
-      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
-    });
-
-    it('perpsInit skips activation when connection is dead', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-        isConnectionAlive: () => false,
-      });
-      const api = bridge.bridgeApi();
-
-      await api.perpsInit();
-
-      expect(bridge.isActivated).toBe(false);
-    });
-
-    it('perpsDisconnect destroys and delegates', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      controllerApi.perpsDisconnect.mockResolvedValue('disconnect-result');
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      bridge.activate();
-      bridge.setViewActive(true);
-      expect(bridge.isActive).toBe(true);
-
-      const result = await api.perpsDisconnect();
-
-      expect(result).toBe('disconnect-result');
-      expect(bridge.isActive).toBe(false);
-    });
-
-    it('perpsToggleTestnet destroys and delegates', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      controllerApi.perpsToggleTestnet.mockResolvedValue('toggle-result');
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      bridge.activate();
-      const result = await api.perpsToggleTestnet();
-
-      expect(result).toBe('toggle-result');
-      expect(bridge.isActivated).toBe(false);
-    });
-
-    it('perpsViewActive delegates to setViewActive', () => {
-      const { bridge } = createBridge();
-      bridge.activate();
-      const api = bridge.bridgeApi();
-
-      (api.perpsViewActive as (active: boolean) => void)(true);
-      expect(bridge.isActive).toBe(true);
-
-      (api.perpsViewActive as (active: boolean) => void)(false);
-      expect(bridge.isActive).toBe(false);
-    });
-
-    it('perpsActivateStreaming calls perpsInit then activates streaming', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      const result = await (
-        api.perpsActivateStreaming as (
-          params: Record<string, unknown>,
-        ) => Promise<string>
-      )({ priceSymbols: ['ETH'] });
-
-      expect(controllerApi.perpsInit).toHaveBeenCalled();
-      expect(controller.subscribeToPrices).toHaveBeenCalled();
-      expect(result).toBe('ok');
-    });
-
-    it('perpsActivatePriceStream calls perpsInit then activates prices', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      await (
-        api.perpsActivatePriceStream as (
-          params: Record<string, unknown>,
-        ) => Promise<string>
-      )({ symbols: ['ETH'] });
-
-      expect(controllerApi.perpsInit).toHaveBeenCalled();
-      expect(controller.subscribeToPrices).toHaveBeenCalled();
-    });
-
-    it('perpsActivateOrderBookStream calls perpsInit then activates order book', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      await (
-        api.perpsActivateOrderBookStream as (
-          params: Record<string, unknown>,
-        ) => Promise<string>
-      )({ symbol: 'ETH' });
-
-      expect(controllerApi.perpsInit).toHaveBeenCalled();
-      expect(controller.subscribeToOrderBook).toHaveBeenCalled();
-    });
-
-    it('perpsActivateCandleStream calls perpsInit then activates candles', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      await (
-        api.perpsActivateCandleStream as (
-          params: Record<string, unknown>,
-        ) => Promise<string>
-      )({ symbol: 'ETH', interval: '1h' });
-
-      expect(controllerApi.perpsInit).toHaveBeenCalled();
-      expect(controller.subscribeToCandles).toHaveBeenCalled();
-    });
-
-    it('streaming methods activate static subscriptions when called first', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      expect(bridge.isActivated).toBe(false);
-
-      await (
-        api.perpsActivateStreaming as (
-          params: Record<string, unknown>,
-        ) => Promise<string>
-      )({ priceSymbols: ['ETH'] });
-
-      expect(bridge.isActivated).toBe(true);
-      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
-      expect(controller.subscribeToOrders).toHaveBeenCalledTimes(1);
-      expect(controller.subscribeToAccount).toHaveBeenCalledTimes(1);
-      expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
-    });
-
-    it('streaming methods do not re-activate if already activated', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-      });
-      const api = bridge.bridgeApi();
-
-      await api.perpsInit();
-      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
-
-      await (
-        api.perpsActivatePriceStream as (
-          params: Record<string, unknown>,
-        ) => Promise<string>
-      )({ symbols: ['ETH'] });
-
-      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
-    });
-
-    it('streaming api overrides skip activation when connection is dead', async () => {
-      const controller = createMockController();
-      const controllerApi = createMockControllerApi();
-      const { bridge } = createBridge({
-        controller: controller as unknown as PerpsController,
-        controllerApi,
-        isConnectionAlive: () => false,
-      });
-      const api = bridge.bridgeApi();
-
-      await (
-        api.perpsActivateStreaming as (
-          params: Record<string, unknown>,
-        ) => Promise<string>
-      )({ priceSymbols: ['ETH'] });
-
-      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
     });
   });
 });

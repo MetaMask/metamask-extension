@@ -30,16 +30,18 @@ type PerpsStreamBridgeOptions = {
  * subscriptions and a single UI outStream.
  *
  * Manages two categories of subscriptions:
- * - Static (positions/orders/account): registered once via activate() after
- * perpsInit resolves and the provider is ready. Calling activate() again
- * tears down and re-registers statics (handles address changes).
- * - Dynamic (prices/orderBook/candles): replaced on each activateStreaming()
- * call so navigating between markets doesn't leak subscriptions.
+ * Static (positions/orders/account): registered once via #activate() after
+ * perpsInit resolves and the provider is ready.
+ * Dynamic (prices/orderBook/candles): replaced on each streaming call so
+ * navigating between markets doesn't leak subscriptions.
  *
- * Emission is gated by isActive, which requires both activate() to have been
- * called and setViewActive(true) to be set. The UI calls setViewActive(true)
- * when PerpsLayout mounts and setViewActive(false) when it unmounts, ensuring
+ * Emission is gated by isActive, which requires both #activate() to have been
+ * called and perpsViewActive(true) to be set. The UI calls perpsViewActive(true)
+ * when PerpsLayout mounts and perpsViewActive(false) when it unmounts, ensuring
  * the background only pushes data while a Perps view is open.
+ *
+ * The only public members are the constructor, bridgeApi(), isActive, and
+ * destroy(). All subscription management is internal.
  */
 export class PerpsStreamBridge {
   #viewActive = false;
@@ -47,7 +49,9 @@ export class PerpsStreamBridge {
   readonly #controller: PerpsController;
 
   readonly #perpsInit: PerpsStreamBridgeOptions['perpsInit'];
+
   readonly #perpsDisconnect: PerpsStreamBridgeOptions['perpsDisconnect'];
+
   readonly #perpsToggleTestnet: PerpsStreamBridgeOptions['perpsToggleTestnet'];
 
   readonly #isConnectionAlive: () => boolean;
@@ -70,18 +74,6 @@ export class PerpsStreamBridge {
   }
 
   /**
-   * Ensures the controller is initialized and static subscriptions are
-   * established. Idempotent — skips activation if already activated or
-   * if the connection has closed.
-   */
-  async #initAndActivate(): Promise<void> {
-    await this.#perpsInit();
-    if (!this.#activated && this.#isConnectionAlive()) {
-      this.activate();
-    }
-  }
-
-  /**
    * Returns API method overrides for the metamask-controller RPC api object.
    * Encapsulates all perps-specific orchestration logic (init guards,
    * streaming lifecycle, view activation) so metamask-controller.js only
@@ -94,7 +86,7 @@ export class PerpsStreamBridge {
       perpsInit: async (...args: unknown[]) => {
         const result = await this.#perpsInit(...args);
         if (!this.#activated && this.#isConnectionAlive()) {
-          this.activate();
+          this.#activate();
         }
         return result;
       },
@@ -107,34 +99,34 @@ export class PerpsStreamBridge {
         return this.#perpsToggleTestnet(...args);
       },
       perpsViewActive: (active: boolean) => {
-        this.setViewActive(active);
+        this.#viewActive = active;
       },
       perpsActivateStreaming: async (params: ActivateStreamingParams) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.activateStreaming(params);
+          this.#activateStreaming(params);
         }
         return 'ok';
       },
       perpsActivatePriceStream: async ({ symbols }: { symbols: string[] }) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.activatePriceStream(symbols);
+          this.#activatePriceStream(symbols);
         }
         return 'ok';
       },
       perpsDeactivatePriceStream: () => {
-        this.deactivatePriceStream();
+        this.#tearDownChannel('prices');
       },
       perpsActivateOrderBookStream: async ({ symbol }: { symbol: string }) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.activateOrderBookStream(symbol);
+          this.#activateOrderBookStream(symbol);
         }
         return 'ok';
       },
       perpsDeactivateOrderBookStream: () => {
-        this.deactivateOrderBookStream();
+        this.#tearDownChannel('orderBook');
       },
       perpsActivateCandleStream: async ({
         symbol,
@@ -147,23 +139,40 @@ export class PerpsStreamBridge {
       }) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.activateCandleStream({ symbol, interval, duration });
+          this.#activateCandleStream({ symbol, interval, duration });
         }
         return 'ok';
       },
       perpsDeactivateCandleStream: () => {
-        this.deactivateCandleStream();
+        this.#tearDownChannel('candles');
       },
     };
   }
 
-  /**
-   * Register static subscriptions (positions, orders, account) after the
-   * controller provider is guaranteed to be ready. Idempotent — subsequent
-   * calls tear down existing statics and re-subscribe so an address change
-   * is handled cleanly.
-   */
-  activate(): void {
+  get isActive(): boolean {
+    return this.#activated && this.#viewActive;
+  }
+
+  destroy(): void {
+    for (const unsub of this.#staticUnsubs) {
+      this.#callAndClearUnsub(unsub);
+    }
+    this.#staticUnsubs.length = 0;
+
+    this.#tearDownAllDynamic();
+
+    this.#activated = false;
+    this.#viewActive = false;
+  }
+
+  async #initAndActivate(): Promise<void> {
+    await this.#perpsInit();
+    if (!this.#activated && this.#isConnectionAlive()) {
+      this.#activate();
+    }
+  }
+
+  #activate(): void {
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);
     }
@@ -202,11 +211,7 @@ export class PerpsStreamBridge {
     }
   }
 
-  setViewActive(active: boolean): void {
-    this.#viewActive = active;
-  }
-
-  activateStreaming(params: ActivateStreamingParams): void {
+  #activateStreaming(params: ActivateStreamingParams): void {
     const { priceSymbols, orderBookSymbol, candle } = params;
 
     this.#tearDownAllDynamic();
@@ -243,7 +248,7 @@ export class PerpsStreamBridge {
     }
   }
 
-  activatePriceStream(symbols: string[]): void {
+  #activatePriceStream(symbols: string[]): void {
     this.#tearDownChannel('prices');
     if (symbols.length) {
       this.#addDynamicSubscription('prices', () =>
@@ -255,11 +260,7 @@ export class PerpsStreamBridge {
     }
   }
 
-  deactivatePriceStream(): void {
-    this.#tearDownChannel('prices');
-  }
-
-  activateOrderBookStream(symbol: string): void {
+  #activateOrderBookStream(symbol: string): void {
     this.#tearDownChannel('orderBook');
     if (symbol) {
       this.#addDynamicSubscription('orderBook', () =>
@@ -271,11 +272,7 @@ export class PerpsStreamBridge {
     }
   }
 
-  deactivateOrderBookStream(): void {
-    this.#tearDownChannel('orderBook');
-  }
-
-  activateCandleStream(params: {
+  #activateCandleStream(params: {
     symbol: string;
     interval: CandlePeriod;
     duration?: TimeDuration;
@@ -293,18 +290,6 @@ export class PerpsStreamBridge {
         }),
       );
     }
-  }
-
-  deactivateCandleStream(): void {
-    this.#tearDownChannel('candles');
-  }
-
-  get isActive(): boolean {
-    return this.#activated && this.#viewActive;
-  }
-
-  get isActivated(): boolean {
-    return this.#activated;
   }
 
   #callAndClearUnsub(unsub: () => void): void {
@@ -334,17 +319,5 @@ export class PerpsStreamBridge {
 
   #addDynamicSubscription(key: string, subscribe: () => () => void): void {
     this.#dynamicUnsubs[key] = subscribe();
-  }
-
-  destroy(): void {
-    for (const unsub of this.#staticUnsubs) {
-      this.#callAndClearUnsub(unsub);
-    }
-    this.#staticUnsubs.length = 0;
-
-    this.#tearDownAllDynamic();
-
-    this.#activated = false;
-    this.#viewActive = false;
   }
 }
