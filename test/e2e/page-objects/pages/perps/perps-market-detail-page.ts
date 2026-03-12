@@ -20,11 +20,13 @@ export class PerpsMarketDetailPage {
 
   private readonly marketDetailPage = { testId: 'perps-market-detail-page' };
 
+  private readonly marketDetailBackButton = {
+    testId: 'perps-market-detail-back-button',
+  };
+
   private readonly modifyCtaButton = { testId: 'perps-modify-cta-button' };
 
   private readonly orderEntry = { testId: 'order-entry' };
-
-  private readonly percentPreset25 = { testId: 'percent-preset-25' };
 
   private readonly positionCtaButtons = {
     testId: 'perps-position-cta-buttons',
@@ -43,31 +45,25 @@ export class PerpsMarketDetailPage {
   /**
    * Asserts that the Close button is visible.
    * Requires an open position in this market.
-   *
-   * @param timeout
    */
-  async checkCloseButtonVisible(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.closeCtaButton, { timeout });
+  async checkCloseButtonVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.closeCtaButton);
   }
 
   /**
    * Asserts that the Modify button is visible.
    * Requires an open position in this market.
-   *
-   * @param timeout
    */
-  async checkModifyButtonVisible(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.modifyCtaButton, { timeout });
+  async checkModifyButtonVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.modifyCtaButton);
   }
 
   /**
    * Asserts that the position CTA buttons (Modify/Close) are visible.
    * Call after placing an order to verify the position was opened.
-   *
-   * @param timeout
    */
-  async checkPositionCtaButtonsVisible(timeout?: number): Promise<void> {
-    await this.waitForPositionCtaButtons(timeout);
+  async checkPositionCtaButtonsVisible(): Promise<void> {
+    await this.waitForPositionCtaButtons();
   }
 
   /**
@@ -78,10 +74,14 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Clicks the 25% balance preset to set order amount.
+   * Clicks a balance preset button by percentage (e.g. 25, 50, 75, 100).
+   *
+   * @param percentage - The preset percentage (e.g. 25 for 25%).
    */
-  async clickPercentPreset25(): Promise<void> {
-    await this.driver.clickElement(this.percentPreset25);
+  async clickPercentPreset(percentage: number): Promise<void> {
+    await this.driver.clickElement({
+      testId: `percent-preset-${percentage}`,
+    });
   }
 
   /**
@@ -92,11 +92,16 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Clicks the Submit order button.
-   * clickElement uses findClickableElement and waits for the button to be visible and enabled.
+   * Clicks the Submit order button and waits for it to disappear (e.g. modal closes).
+   * Optional custom timeout for slow environments.
+   *
+   * @param timeout - Optional wait timeout in ms (default 3000).
    */
-  async clickSubmitOrder(): Promise<void> {
-    await this.driver.clickElement(this.submitOrderButton);
+  async clickSubmitOrder(timeout = 3000): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.submitOrderButton,
+      timeout,
+    );
   }
 
   /**
@@ -127,7 +132,7 @@ export class PerpsMarketDetailPage {
     await this.driver.executeScript(
       `window.location.hash = '${PERPS_MARKET_DETAIL_ROUTE}/${encoded}';`,
     );
-    await this.waitForPageLoaded();
+    await this.checkPageIsLoaded();
   }
 
   /**
@@ -139,28 +144,28 @@ export class PerpsMarketDetailPage {
 
   /**
    * Waits for the market detail page to be loaded.
+   * Uses multiple selectors for robustness (convention).
    */
-  async waitForPageLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.marketDetailPage);
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.marketDetailBackButton,
+      this.marketDetailPage,
+    ]);
   }
 
   /**
    * Waits for the Modify/Close buttons (visible when user has an open position in this market).
    * Use after placing an order to confirm the position was opened and the stream updated.
    * Fails the test if the buttons do not appear within the timeout.
-   *
-   * @param timeout
    */
-  async waitForPositionCtaButtons(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.positionCtaButtons, { timeout });
+  async waitForPositionCtaButtons(): Promise<void> {
+    await this.driver.waitForSelector(this.positionCtaButtons);
   }
 
   /**
    * Waits for the Long/Short trade buttons (visible when user has no position in this market).
-   *
-   * @param timeout - Optional timeout in ms.
    */
-  async waitForTradeCtaButtons(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.tradeCtaButtons, { timeout });
+  async waitForTradeCtaButtons(): Promise<void> {
+    await this.driver.waitForSelector(this.tradeCtaButtons);
   }
 }

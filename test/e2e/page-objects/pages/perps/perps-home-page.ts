@@ -60,9 +60,14 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Waits for the Perps tab view to be loaded and visible.
+   * Uses multiple selectors for robustness (convention).
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsTabView);
+    await this.driver.waitForMultipleSelectors([
+      this.perpsHomeBackButton,
+      this.perpsHomeSearchButton,
+      this.perpsTabView,
+    ]);
   }
 
   /**
@@ -76,9 +81,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * Clicks the Add funds button (visible in empty state or when balance exists).
    */
   async clickAddFunds(): Promise<void> {
-    await this.driver.waitForSelector(this.addFundsButton);
-    const addFundsElement = await this.driver.findElement(this.addFundsButton);
-    await this.driver.scrollToElement(addFundsElement);
     await this.driver.clickElement(this.addFundsButton);
   }
 
@@ -120,13 +122,17 @@ export class PerpsHomePage extends PerpsPositionsBase {
     for (let i = 0; i < 5; i++) {
       await this.driver.clickElement(this.perpsTutorialContinueButton);
     }
-    await this.driver.clickElement(this.perpsTutorialLetsGoButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.perpsTutorialLetsGoButton,
+    );
   }
 
   /**
    * Navigates to the Perps Home route and waits for the page to load.
    * Uses window.location.hash so the SPA router switches view without a full page reload,
    * which keeps the extension context and avoids re-injecting the extension.
+   * In the UI, users reach this screen by opening the Perps tab from the account overview;
+   * this method is a test shortcut to land directly on Perps Home.
    */
   async navigateToPerpsHome(): Promise<void> {
     await this.driver.executeScript(
@@ -137,16 +143,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Waits for the balance section to be visible (empty or with balance).
-   *
-   * @param timeout - Optional timeout in ms for the selector wait.
    */
-  async waitForBalanceSection(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(this.balanceSection, { timeout });
+  async waitForBalanceSection(): Promise<void> {
+    await this.driver.waitForSelector(this.balanceSection);
   }
 
   /**
-   * Waits up to `timeout` ms for the number of position cards to equal `expectedCount`,
-   * to avoid flakiness when the UI is still updating.
+   * Waits until the number of position cards equals `expectedCount` (uses waitUntil to avoid race conditions).
    *
    * @param expectedCount - Expected number of position cards.
    * @param timeout - Max wait time in ms (default 10 000).
@@ -155,12 +158,15 @@ export class PerpsHomePage extends PerpsPositionsBase {
     expectedCount: number,
     timeout = 10000,
   ): Promise<void> {
-    await this.driver.wait(async () => {
-      const elements = await this.driver.findElements(
-        this.positionCardsSelector,
-      );
-      return elements.length === expectedCount;
-    }, timeout);
+    await this.driver.waitUntil(
+      async () => {
+        const elements = await this.driver.findElements(
+          this.positionCardsSelector,
+        );
+        return elements.length === expectedCount;
+      },
+      { timeout, interval: 500 },
+    );
   }
 
   /**

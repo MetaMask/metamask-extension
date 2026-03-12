@@ -31,9 +31,9 @@ export const PERPS_MARKET_LIST_ROUTE = '#/perps/market-list';
 
 /**
  * Default withFixtures config for Perps tests (feature flag enabled).
- * Implemented in fixtures/perps-fixture-config.ts; re-exported here for backward compatibility.
+ * Implemented in perps-fixture-config.ts in this directory; re-exported here for convenience.
  *
  * @param title - The test title (e.g. this.test?.fullTitle()) for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
  */
-export { getPerpsConfig as getConfig } from '../../fixtures/perps-fixture-config';
+export { getPerpsConfig as getConfig } from './perps-fixture-config';

@@ -113,7 +113,7 @@ describe('Perps', function (this: Suite) {
         await perpsHomePage.clickSearchButton();
 
         const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.waitForPageLoaded();
+        await marketListPage.checkPageIsLoaded();
         await marketListPage.waitForFilterSortRow();
         await marketListPage.selectFilter('crypto');
         await marketListPage.selectSortByVolumeHigh();

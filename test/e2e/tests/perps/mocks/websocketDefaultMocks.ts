@@ -14,7 +14,6 @@
 
 import type { WebSocketMessageMock } from '../../../websocket/types';
 
-export type { WebSocketMessageMock } from '../../../websocket/types';
 export function getResponsePayload(mock: WebSocketMessageMock): object {
   return typeof mock.response === 'function' ? mock.response() : mock.response;
 }

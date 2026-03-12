@@ -60,7 +60,7 @@ export class PerpsMarketListPage {
     await this.driver.executeScript(
       `window.location.hash = '${PERPS_MARKET_LIST_ROUTE}';`,
     );
-    await this.waitForPageLoaded();
+    await this.checkPageIsLoaded();
   }
 
   /**
@@ -103,8 +103,12 @@ export class PerpsMarketListPage {
 
   /**
    * Waits for the market list view to be visible.
+   * Uses multiple selectors for robustness (convention).
    */
-  async waitForPageLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.marketListView);
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.filterSortRow,
+      this.marketListView,
+    ]);
   }
 }

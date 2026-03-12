@@ -4,8 +4,6 @@
 
 import type { WebSocketMessageMock } from '../../../websocket/types';
 
-export type { WebSocketMessageMock } from '../../../websocket/types';
-
 export const DEFAULT_SOLANA_WS_MOCKS: WebSocketMessageMock[] = [
   {
     messageIncludes: 'signatureSubscribe',

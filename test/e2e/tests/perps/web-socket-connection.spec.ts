@@ -3,21 +3,23 @@ import { Driver } from '../../webdriver/driver';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { getConfig } from './helpers';
 
-async function waitForWebsocketConnections(
+async function waitForPerpsWebsocketConnections(
   driver: Driver,
   expectedCount: number,
 ) {
-  let connectionCount;
-  await driver.wait(async () => {
-    connectionCount = WebSocketRegistry.getServer(
-      WEBSOCKET_SERVICES.perps,
-    ).getWebsocketConnectionCount();
-    return connectionCount === expectedCount;
-  }, 10000);
+  await driver.waitUntil(
+    async () => {
+      const connectionCount = WebSocketRegistry.getServer(
+        WEBSOCKET_SERVICES.perps,
+      ).getWebsocketConnectionCount();
+      return connectionCount === expectedCount;
+    },
+    { timeout: 10000, interval: 500 },
+  );
 }
 
 /**
@@ -43,13 +45,13 @@ describe.skip('Perps Web Socket', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForBalanceSection();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForPerpsWebsocketConnections(driver, 1);
       },
     );
   });
@@ -60,20 +62,20 @@ describe.skip('Perps Web Socket', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForBalanceSection();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForPerpsWebsocketConnections(driver, 1);
 
         await driver.openNewPage('about:blank');
 
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForPerpsWebsocketConnections(driver, 1);
       },
     );
   });
@@ -84,29 +86,29 @@ describe.skip('Perps Web Socket', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForBalanceSection();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForPerpsWebsocketConnections(driver, 1);
 
         await driver.openNewPage('about:blank');
 
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForPerpsWebsocketConnections(driver, 1);
 
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForPerpsWebsocketConnections(driver, 1);
 
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForPerpsWebsocketConnections(driver, 1);
       },
     );
   });

@@ -1,4 +1,4 @@
-import FixtureBuilderV2 from './fixture-builder-v2';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 
 /**
  * Default withFixtures config for Perps E2E tests (feature flag enabled).
