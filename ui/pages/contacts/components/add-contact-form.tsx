@@ -321,11 +321,24 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
                       ''
                     }
                     onClick={() => {
-                      setNewName(resolution.domainName ?? '');
+                      const resolvedName = resolution.domainName ?? '';
+                      setNewName(resolvedName);
                       setInput(resolution.resolvedAddress);
                       setSelectedAddress(resolution.resolvedAddress);
-                      setEnteredDomainName(resolution.domainName ?? '');
+                      setEnteredDomainName(resolvedName);
                       dispatch(resetDomainResolution());
+
+                      const isValidName = !isDuplicateContact(
+                        addressBook,
+                        internalAccounts,
+                        resolvedName,
+                      );
+                      setNameInputError(
+                        resolvedName && !isValidName
+                          ? t('nameAlreadyInUse')
+                          : '',
+                      );
+                      setAddressInputError('');
                     }}
                     protocol={resolution.protocol}
                     resolvingSnap={resolution.resolvingSnap}
@@ -347,6 +360,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
             startAccessory={
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
+                className="rounded-md"
                 src={
                   typeof selectedChainId === 'string'
                     ? getImageForChainId(selectedChainId) || undefined
