@@ -82,7 +82,7 @@ For new test code, use `FixtureBuilderV2` by default.
 
 `FixtureBuilderV2` currently supports:
 
-**General controller methods** (accept `Partial<ControllerState>`):
+**General controller methods**:
 
 - `withAccountsController`
 - `withAddressBookController`
@@ -115,6 +115,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
+- `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
 - `withTokensControllerERC20`
 - `withTrezorAccount`
