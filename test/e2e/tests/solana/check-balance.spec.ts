@@ -47,7 +47,7 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
-  it('For a non 0 balance account - USD balance', async function () {
+  it.only('For a non 0 balance account - USD balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()

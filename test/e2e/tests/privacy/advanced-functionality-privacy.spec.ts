@@ -64,11 +64,7 @@ describe('MetaMask onboarding ', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withPreferencesController({
-            preferences: {
-              showNativeTokenAsMainBalance: true,
-            },
-          })
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -127,11 +123,7 @@ describe('MetaMask onboarding ', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withPreferencesController({
-            preferences: {
-              showNativeTokenAsMainBalance: true,
-            },
-          })
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

@@ -481,6 +481,14 @@ class FixtureBuilderV2 {
     });
   }
 
+  withShowNativeTokenAsMainBalanceEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: true,
+      },
+    });
+  }
+
   withSmartTransactionsOptedOut(): this {
     return this.withPreferencesController({
       preferences: {
