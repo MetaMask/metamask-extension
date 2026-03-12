@@ -3,6 +3,10 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import React from 'react';
 import {
@@ -10,11 +14,6 @@ import {
   RECURRING_INTERVALS,
 } from '@metamask/subscription-controller';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import { Text } from '../../../../../../components/component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getProductPrice } from '../../../../../shield-plan/utils';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../../../../../shared/constants/subscriptions';
@@ -54,10 +53,10 @@ export const SubscriptionDetails = ({
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Start}
         >
-          <Text variant={TextVariant.bodyMdBold} color={TextColor.textDefault}>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Bold} color={TextColor.TextDefault}>
             {t('transactionShield')}
           </Text>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
             {planDetailsStr}
           </Text>
         </Box>
@@ -73,7 +72,7 @@ export const SubscriptionDetails = ({
               backgroundColor: 'var(--color-primary-muted-hover)',
             }}
           >
-            <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
+            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
               {t('freeTrialDays', [
                 productPrice?.trialPeriodDays ??
                   SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
