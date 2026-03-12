@@ -7,7 +7,8 @@
     "sentry.io"
   ],
   "toBeRemoved": {
-    "accounts.google.com": "Should be removed - web3auth team - will only call during social login"
+    "accounts.google.com": "Should be removed - web3auth team - will only call during social login",
+    "bridge.api.cx.metamask.io": "Should be removed - STX team - when move to remote feature flag"
   },
   "untilOnboardingComplete": [
     "accounts.google.com",
