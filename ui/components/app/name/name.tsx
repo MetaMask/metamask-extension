@@ -96,6 +96,8 @@ const Name = memo(
         },
       });
       // using `[]` as we only want to call `trackEvent` on the initial render
+      // eslint-disable-next-line react-compiler/react-compiler
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleClick = useCallback(() => {

@@ -128,7 +128,7 @@ const BaseReader = ({
       clearTimeout(permissionCheckerRef.current);
       permissionCheckerRef.current = null;
     };
-  }, []);
+  }, [checkEnvironment]);
 
   useEffect(() => {
     if (ready === READY_STATE.READY) {
