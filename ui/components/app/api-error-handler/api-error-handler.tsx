@@ -38,6 +38,8 @@ const ApiErrorHandler = ({
       location,
     });
     // we only want to capture the event once when the component is mounted
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

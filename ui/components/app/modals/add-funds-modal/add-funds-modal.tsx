@@ -81,7 +81,7 @@ const AddFundsModal = ({
       },
     });
     onClose();
-  }, [chainId, openBuyCryptoInPdapp, token.symbol, trackEvent]);
+  }, [chainId, onClose, openBuyCryptoInPdapp, token.symbol, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -106,7 +106,7 @@ const AddFundsModal = ({
       address: token.address,
       chainId,
     });
-  }, [token, openBridgeExperience]);
+  }, [chainId, token, openBridgeExperience]);
 
   const buttonRow = ({
     label,

@@ -59,6 +59,8 @@ export default function useProcessNewDecimalValue(
       return { newFiatDecimalValue, newTokenDecimalValue };
     },
     // `tokenToFiatConversionRate` intentionally excluded to ensure that re-renders are only triggered when conversion rate value actually changes.
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [tokenToFiatConversionRateToString, isTokenPrimary, assetDecimals],
   );
 }
