@@ -9,6 +9,8 @@ import {
   Box,
   Text,
   AvatarTokenSize,
+  AvatarBase,
+  AvatarBaseSize,
 } from '../../../../../components/component-library';
 import {
   AlignItems,
@@ -90,7 +92,18 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <AvatarBase
+              size={AvatarBaseSize.Md}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+              }}
+            >
+              {name ? name.charAt(0) : collection?.name?.charAt(0) || 'N'}
+            </AvatarBase>
+          )}
         </BadgeWrapper>
       </Box>
       <Box

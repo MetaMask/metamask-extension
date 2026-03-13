@@ -200,4 +200,70 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders placeholder when neither NFT image nor collection imageUrl are available', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutAnyImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByText } = render(<Asset asset={assetWithoutAnyImage} />);
+
+    // Should render placeholder with first letter of NFT name
+    expect(getByText('T')).toBeInTheDocument(); // First letter of "Test NFT"
+  });
+
+  it('renders placeholder with collection name when NFT name is not available', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImageOrName = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      name: undefined,
+      collection: {
+        name: 'Collection Name',
+        imageUrl: undefined,
+      },
+    };
+    const { getByText } = render(<Asset asset={assetWithoutImageOrName} />);
+
+    // Should render placeholder with first letter of collection name
+    expect(getByText('C')).toBeInTheDocument(); // First letter of "Collection Name"
+  });
+
+  it('renders placeholder with default letter when both NFT and collection names are unavailable', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutAnyNames = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      name: undefined,
+      collection: {
+        name: undefined,
+        imageUrl: undefined,
+      },
+    };
+    const { getByText } = render(<Asset asset={assetWithoutAnyNames} />);
+
+    // Should render placeholder with default 'N' letter
+    expect(getByText('N')).toBeInTheDocument();
+  });
+
+  it('renders placeholder when image fails to load', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithFailedImage = {
+      ...mockNFTERC721Asset,
+      image: 'https://invalid-image-url.com/image.png',
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByText } = render(<Asset asset={assetWithFailedImage} />);
+
+    // Should render placeholder with first letter of NFT name when image fails
+    expect(getByText('T')).toBeInTheDocument(); // First letter of "Test NFT"
+  });
 });
