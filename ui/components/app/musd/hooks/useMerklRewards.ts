@@ -96,7 +96,7 @@ export const useMerklRewards = ({
     [showMerklBadge, merklRewardsEnabled, isGeoBlocked, chainId, tokenAddress],
   );
 
-  const { data: rewardData = EMPTY_RESULT, refetch: refetchQuery } = useQuery({
+  const { data: queryData = EMPTY_RESULT, refetch: refetchQuery } = useQuery({
     queryKey: ['merklRewards', selectedAddress, chainId, tokenAddress],
     queryFn: async ({ signal }): Promise<MerklRewardQueryResult> => {
       if (!tokenAddress || !selectedAddress) {
@@ -148,6 +148,11 @@ export const useMerklRewards = ({
     cacheTime: MERKL_REWARDS_CACHE_TIME,
   });
 
+  // When `enabled` is false TanStack Query v4 still returns the last cached
+  // `data` for this queryKey. Gate on `isEligible` so a stale `true` never
+  // leaks to callers that shouldn't show a badge.
+  const hasClaimableRewardData = isEligible ? queryData : undefined;
+
   const refetch = useCallback(() => {
     if (isEligible) {
       refetchQuery();
@@ -156,8 +161,8 @@ export const useMerklRewards = ({
 
   return {
     isEligible,
-    hasClaimableReward: rewardData.hasClaimable,
-    rewardAmountFiat: rewardData.unclaimedFiat,
+    hasClaimableReward: hasClaimableRewardData?.hasClaimable ?? false,
+    rewardAmountFiat: hasClaimableRewardData?.unclaimedFiat ?? null,
     refetch,
   };
 };

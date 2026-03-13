@@ -610,4 +610,55 @@ describe('useMerklRewards', () => {
     expect(secondResult.current.hasClaimableReward).toBe(true);
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
   });
+
+  it('does not leak cached true when showMerklBadge flips to false', async () => {
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10500000',
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const wrapper = createWrapper();
+
+    // First render with showMerklBadge=true — populates the cache
+    const { result: firstResult, waitForNextUpdate } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper },
+    );
+
+    await act(async () => {
+      await waitForNextUpdate();
+    });
+
+    expect(firstResult.current.hasClaimableReward).toBe(true);
+
+    // Second render with showMerklBadge=false — same queryKey, cache is warm
+    const { result: secondResult } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: false,
+        }),
+      { wrapper },
+    );
+
+    // Must be false despite the warm cache
+    expect(secondResult.current.hasClaimableReward).toBe(false);
+  });
 });
