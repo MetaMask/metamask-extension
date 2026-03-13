@@ -5,7 +5,6 @@ import type {
   ProdEnvironmentConfig,
 } from '@metamask/client-mcp-core';
 import type { MockedEndpoint, Mockttp } from '../../../mock-e2e';
-import { MetaMaskBuildCapability } from './build';
 import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
 import { MetaMaskContractSeedingCapability } from './seeding';
@@ -27,8 +26,6 @@ export type CreateMetaMaskContextOptions = {
       mockServer: Mockttp,
     ) => Promise<void | MockedEndpoint[]>;
   };
-  buildCommand?: string;
-  buildOutputPath?: string;
   forkUrl?: string;
   forkBlockNumber?: number;
 };
@@ -60,11 +57,6 @@ export function createMetaMaskE2EContext(
     ...options.config,
   };
 
-  const build = new MetaMaskBuildCapability({
-    command: options.buildCommand,
-    outputPath: options.buildOutputPath,
-  });
-
   const fixture = new MetaMaskFixtureCapability({
     port: options.ports?.fixtureServer,
   });
@@ -93,7 +85,6 @@ export function createMetaMaskE2EContext(
   });
 
   return {
-    build,
     fixture,
     chain,
     contractSeeding,
@@ -113,7 +104,6 @@ export type CreateMetaMaskProdContextOptions = Omit<
   'config'
 > & {
   config?: Partial<ProdEnvironmentConfig>;
-  includeBuild?: boolean;
   remoteChain?: RemoteChainConfig;
 };
 
@@ -129,13 +119,6 @@ export function createMetaMaskProdContext(
     defaultChainId: config.defaultChainId,
   });
 
-  const build = options.includeBuild
-    ? new MetaMaskBuildCapability({
-        command: options.buildCommand,
-        outputPath: options.buildOutputPath,
-      })
-    : undefined;
-
   const chain = options.remoteChain
     ? new NoOpChainCapability({
         rpcUrl: options.remoteChain.rpcUrl,
@@ -144,7 +127,6 @@ export function createMetaMaskProdContext(
     : undefined;
 
   return {
-    ...(build && { build }),
     ...(chain && { chain }),
     stateSnapshot,
     config,
