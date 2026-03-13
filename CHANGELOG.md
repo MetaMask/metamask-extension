@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.22.0]
+
+### Added
+
+- Replace activity list in asset page (#40542)
+- Added AsterDEX to the DeFi referral program (#40563)
+- Add network name and logo for Tempo Mainnet (#40571)
+- Adds "CHZ" to `CHAIN_ID_TO_CURRENCY_SYMBOL_MAP` (#40528)
+- UI updates for the Reveal SRP feature, specifically the Quiz Component and Reveal SRP views (#40243)
+- Updated the UI for speeding up and cancelling transactions (#39918)
+- Use chain-agnostic gas fee estimates for calculating swap and bridge network fees (#40172)
+
+### Changed
+
+- Changed styling of the MUSD rewards claiming modal (#40291)
+- Moved the Claim Bonus CTA to cover token percent change, rather than token quantity (#40535)
+- Remove activity log from activity details (#40380)
+
+### Fixed
+
+- Allow users to remove snap accounts if they are from a snap account wallet (#40404)
+- Reject `wallet_requestExecutionPermissions` requests that include chains that do not support EIP-7702 (#40152)
+- Fix error message displayed for Ledger hardware wallets (#40597)
+- Fixed infinite loader when using QR hardware wallets in popup mode after signing bridge transactions (#40014)
+- Fixed a bug when cancelling a hardware wallet tx that would cause swaps button to not display (#40501)
+- Fixed an issue where abandoning the Shield card payment checkout would not return users to the Shield plan page on next extension open (#39899)
+- Only show claim bonus CTA if there is at least 1 cent to claim (#40444)
+- Limit smart account navigation to entropy and simple accounts (#40487)
+- Non-EVM transaction details account display name (#40498)
+- Add enable networks null guards (#40402)
+- Clean up spammy Migration 164 Sentry logging (#40405)
+
 ## [13.21.0]
 
 ### Added
@@ -1886,7 +1918,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...HEAD
+[13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...v13.22.0
 [13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
 [13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1
 [13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0

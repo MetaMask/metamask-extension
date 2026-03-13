@@ -1038,9 +1038,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block explorer link copied"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Calculating..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
@@ -4163,9 +4160,6 @@
   },
   "musdBuyMusd": {
     "message": "Buy mUSD"
-  },
-  "musdClaimActivityTitle": {
-    "message": "Claim mUSD bonus"
   },
   "musdClaimClaimingTo": {
     "message": "Claiming to",

@@ -39,6 +39,7 @@ import { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+const HEADLESS = true;
 
 export class MetaMaskSessionManager implements ISessionManager {
   private activeSession: {
@@ -289,7 +290,10 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const extPrefix = `chrome-extension://${extensionId}`;
     if (url.startsWith(extPrefix)) {
-      return url.includes('notification.html') ? 'notification' : 'extension';
+      if (url.includes('notification.html')) {
+        return 'notification';
+      }
+      return 'extension';
     }
     if (url.startsWith('http')) {
       return 'dapp';
@@ -460,6 +464,7 @@ export class MetaMaskSessionManager implements ISessionManager {
       }
 
       const launchOptions: LauncherLaunchOptions = {
+        headless: HEADLESS,
         stateMode,
         slowMo: input.slowMo ?? 0,
         extensionPath,
@@ -653,13 +658,15 @@ export class MetaMaskSessionManager implements ISessionManager {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
 
+    const notificationPath = HEADLESS ? 'sidepanel' : 'notification';
+
     const context = this.getContext();
     const { extensionId } = this.activeSession.state;
-    const notificationUrl = `chrome-extension://${extensionId}/notification.html`;
+    const notificationUrl = `chrome-extension://${extensionId}/${notificationPath}.html`;
 
     const existingNotification = context
       .pages()
-      .find((p) => p.url().includes('notification.html'));
+      .find((p) => p.url().includes(`${notificationPath}.html`));
 
     if (existingNotification) {
       await existingNotification.bringToFront();
@@ -679,10 +686,12 @@ export class MetaMaskSessionManager implements ISessionManager {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    const notificationPage =
-      await this.activeSession.launcher.waitForNotificationPage(timeoutMs);
-    this.setActivePage(notificationPage);
-    return notificationPage;
+    const page = await this.activeSession.launcher.waitForNotificationPage(
+      HEADLESS,
+      timeoutMs,
+    );
+    this.setActivePage(page);
+    return page;
   }
 
   async screenshot(

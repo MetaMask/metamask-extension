@@ -110,8 +110,9 @@ function runHook(keyringType = 'HD Key Tree') {
 
         internalAccounts: {
           accounts: {
-            [MOCK_ADDRESS]: {
+            'mock-account-id': {
               address: MOCK_ADDRESS,
+              id: 'mock-account-id',
               metadata: {
                 keyring: {
                   type: keyringType,
@@ -119,6 +120,9 @@ function runHook(keyringType = 'HD Key Tree') {
               },
             },
           },
+        },
+        accountIdByAddress: {
+          [MOCK_ADDRESS]: 'mock-account-id',
         },
       },
     },

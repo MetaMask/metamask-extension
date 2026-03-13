@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Tautan block explorer disalin"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Menghitung..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Anda perlu mengonfirmasikan 2 transaksi pada dompet perangkat keras:"
   },

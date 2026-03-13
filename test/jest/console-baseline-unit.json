@@ -444,6 +444,9 @@
     "ui/components/app/multichain-transaction-details-modal/multichain-transaction-details-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/musd/hooks/useMerklRewards.test.ts": {
+      "error: Error: Network error": 1
+    },
     "ui/components/app/musd/musd-asset-cta.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1230,7 +1233,6 @@
     "ui/hooks/musd/useMusdConversion.test.ts": {
       "error: [MUSD] Transaction creation failed: Error:": 1,
       "warn: [MUSD] Conversion flow not enabled": 1,
-      "warn: [MUSD] Geo-blocking check still in": 1,
       "warn: [MUSD] User is geo-blocked": 1
     },
     "ui/hooks/musd/useMusdCtaVisibility.test.ts": {
@@ -2621,7 +2623,15 @@
     "ui/pages/contacts/components/delete-contact-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/contacts/contact-details-page.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/contacts/contacts-list-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/contacts/edit-contact-page.test.tsx": {
+      "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/core/defi-referral-consent/defi-referral-consent.test.tsx": {

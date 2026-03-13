@@ -7,6 +7,14 @@ import {
   waitForExtensionUiReady,
 } from '@metamask/client-mcp-core';
 import type { ExtensionReadinessConfig } from '@metamask/client-mcp-core';
+import {
+  CONNECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+} from '../../../../ui/helpers/constants/routes';
 import type {
   LauncherLaunchOptions,
   ScreenshotOptions,
@@ -17,6 +25,16 @@ import type {
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
+
+// Routes that indicate a confirmation screen when matched against the sidepanel URL hash.
+const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
+  CONNECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+];
 const METAMASK_EXTENSION_READINESS_CONFIG: ExtensionReadinessConfig = {
   readySelectors: [
     '[data-testid="unlock-password"]',
@@ -32,6 +50,7 @@ const METAMASK_EXTENSION_READINESS_CONFIG: ExtensionReadinessConfig = {
 
 type ResolvedOptions = {
   extensionPath: string;
+  headless: boolean;
   userDataDir: string;
   viewportWidth: number;
   viewportHeight: number;
@@ -81,6 +100,7 @@ export class MetaMaskExtensionLauncher {
     this.options = {
       extensionPath:
         options.extensionPath ?? path.join(process.cwd(), 'dist', 'chrome'),
+      headless: Boolean(options.headless),
       userDataDir: options.userDataDir ?? '',
       viewportWidth: options.viewportWidth ?? 1280,
       viewportHeight: options.viewportHeight ?? 800,
@@ -173,7 +193,8 @@ export class MetaMaskExtensionLauncher {
       );
 
       this.context = await chromium.launchPersistentContext(this.userDataDir, {
-        headless: false,
+        headless: this.options.headless,
+        channel: 'chromium',
         args: launchArgs,
         ignoreHTTPSErrors: Boolean(this.options.proxyServer),
         viewport: {
@@ -380,7 +401,32 @@ export class MetaMaskExtensionLauncher {
       .filter((page) => page.url().startsWith(extensionPrefix));
   }
 
-  async waitForNotificationPage(timeoutMs: number = 10000): Promise<Page> {
+  async waitForNotificationPage(
+    headless: boolean,
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
+    return headless
+      ? this.waitForSidepanelNotificationPage(timeoutMs)
+      : this.waitForPopupNotificationPage(timeoutMs);
+  }
+
+  private async throwNotifcationPageError(
+    timeoutMs: number,
+    notificationUrl: string,
+  ): Promise<never> {
+    const allPages = await this.getAllExtensionPages();
+    const pageUrls = allPages.map((p) => p.url()).join(', ');
+
+    throw new Error(
+      `Notification page did not appear within ${timeoutMs}ms. ` +
+        `Expected URL starting with: ${notificationUrl}. ` +
+        `Current extension pages: [${pageUrls}]`,
+    );
+  }
+
+  private async waitForPopupNotificationPage(
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
     // Notification pages may initially open as about:blank before the extension
     // redirects them. We wait for either an existing notification page or a new
     // page event, handling the about:blank → notification.html transition.
@@ -431,15 +477,51 @@ export class MetaMaskExtensionLauncher {
         return finalCheck;
       }
 
-      const allPages = await this.getAllExtensionPages();
-      const pageUrls = allPages.map((p) => p.url()).join(', ');
-
-      throw new Error(
-        `Notification page did not appear within ${timeoutMs}ms. ` +
-          `Expected URL starting with: ${notificationUrl}. ` +
-          `Current extension pages: [${pageUrls}]`,
-      );
+      return await this.throwNotifcationPageError(timeoutMs, notificationUrl);
     }
+  }
+
+  private async waitForSidepanelNotificationPage(
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
+    this.ensureBrowserContext();
+    const context = this.context as BrowserContext;
+    const sidepanelUrl = `chrome-extension://${this.extensionId as string}/sidepanel.html`;
+
+    let sidepanelPage = context
+      .pages()
+      .find((page) => page.url().startsWith(sidepanelUrl));
+
+    if (!sidepanelPage) {
+      sidepanelPage = await context.newPage();
+      await sidepanelPage.goto(sidepanelUrl);
+      await sidepanelPage.waitForLoadState('domcontentloaded');
+      this.attachConsoleListeners(sidepanelPage);
+    }
+
+    try {
+      await this.waitForSidepanelConfirmation(sidepanelPage, timeoutMs);
+      return sidepanelPage;
+    } catch {
+      return await this.throwNotifcationPageError(timeoutMs, sidepanelUrl);
+    }
+  }
+
+  private async waitForSidepanelConfirmation(
+    sidepanelPage: Page,
+    timeoutMs: number,
+  ): Promise<void> {
+    if (isOnConfirmationRoute(sidepanelPage.url())) {
+      await sidepanelPage.waitForLoadState('domcontentloaded');
+      return;
+    }
+
+    await sidepanelPage.waitForURL(
+      (url) => isOnConfirmationRoute(url.toString()),
+      { timeout: timeoutMs },
+    );
+
+    await sidepanelPage.waitForLoadState('domcontentloaded');
   }
 
   async cleanup(): Promise<void> {
@@ -471,6 +553,17 @@ export async function launchMetaMask(
   const launcher = new MetaMaskExtensionLauncher(options);
   await launcher.launch();
   return launcher;
+}
+
+function isOnConfirmationRoute(url: string): boolean {
+  const hashIndex = url.indexOf('#');
+  if (hashIndex === -1) {
+    return false;
+  }
+  const hashPath = url.substring(hashIndex + 1).split('?')[0];
+  return SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES.some(
+    (prefix) => hashPath === prefix || hashPath.startsWith(`${prefix}/`),
+  );
 }
 
 export { DEFAULT_PASSWORD };

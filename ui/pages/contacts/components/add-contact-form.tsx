@@ -54,7 +54,10 @@ import {
   lookupDomainName,
   initializeDomainSlice,
 } from '../../../ducks/domains';
-import { getAddressBook, getInternalAccounts } from '../../../selectors';
+import {
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../../selectors';
 import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
@@ -74,7 +77,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const addressBook = useSelector(getAddressBook);
+  const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
   const domainError = useSelector(getDomainError);
@@ -153,12 +156,13 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
-    const isValidName = !isDuplicateContact(
-      addressBook,
-      internalAccounts,
-      name,
-    );
-    setNameInputError(isValidName ? '' : t('nameAlreadyInUse'));
+    if (!name.trim()) {
+      setNameInputError(t('fieldRequired', [t('nickname')]));
+    } else if (isDuplicateContact(addressBook, internalAccounts, name)) {
+      setNameInputError(t('nameAlreadyInUse'));
+    } else {
+      setNameInputError('');
+    }
     setNewName(name);
   };
 
@@ -321,11 +325,24 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
                       ''
                     }
                     onClick={() => {
-                      setNewName(resolution.domainName ?? '');
+                      const resolvedName = resolution.domainName ?? '';
+                      setNewName(resolvedName);
                       setInput(resolution.resolvedAddress);
                       setSelectedAddress(resolution.resolvedAddress);
-                      setEnteredDomainName(resolution.domainName ?? '');
+                      setEnteredDomainName(resolvedName);
                       dispatch(resetDomainResolution());
+
+                      const isValidName = !isDuplicateContact(
+                        addressBook,
+                        internalAccounts,
+                        resolvedName,
+                      );
+                      setNameInputError(
+                        resolvedName && !isValidName
+                          ? t('nameAlreadyInUse')
+                          : '',
+                      );
+                      setAddressInputError('');
                     }}
                     protocol={resolution.protocol}
                     resolvingSnap={resolution.resolvingSnap}
@@ -347,6 +364,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
             startAccessory={
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
+                className="rounded-md"
                 src={
                   typeof selectedChainId === 'string'
                     ? getImageForChainId(selectedChainId) || undefined
