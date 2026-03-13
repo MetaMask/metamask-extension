@@ -9,8 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.23.0]
 
+### Uncategorized
+
+- Bump preferences controller (#40820)
+- Identicon cleanup (#40784)
+- Bump assets controllers to v100.2.0 (#40725)
+- Bump core-backend; refactor query (#40731)
+- Null (#40454)
+- Replace deprecated identicon (#40689)
+- Remove dead selectors (#40692)
+- Remove unused confirm remove modal (#40693)
+- Replace deprecated identicon (#40691)
+
 ### Added
 
+- Add new property `account_type` to `Metrics Opt Out` event. (#40603)
+- N/a (#40694)
+- Install perps-controller v1, remove local mocked alias (#40767)
+- N/a (#40690)
+- Bump `@metamask-assets-controllers` to `^100.1.0` (#40601)
 - Add support for additional icon colors in Snaps `Icon` component (#40790)
 - Enables token permissions via EIP-7715 (#40813)
 - Prevent MUSD reward claiming in geoblocked regions (#40634)
@@ -33,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Enabled type inference for lazily loaded components. (#40680)
 - Fix 'claim bonus' transactions being displayed as 'contract interaction' after reload (#40834)
 - Disable closing price impact modal while submitting a trade (#40811)
 - Fix memoization issue in top-level context provider that was causing cascading re-renders (#39309)
