@@ -2,7 +2,8 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { zeroAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -21,7 +22,10 @@ describe('Token List', function () {
   const symbol = 'foo';
 
   const fixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withEnabledNetworks({ eip155: { [chainId]: true } })
+      .build(),
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },

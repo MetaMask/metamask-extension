@@ -2,7 +2,8 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -178,8 +179,8 @@ describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -187,41 +188,37 @@ describe('Import flow', function () {
               [CHAIN_IDS.BASE]: true,
             },
           })
-          .withTokensController({
-            tokenList: [
-              {
-                name: 'Chain Games',
-                symbol: 'CHAIN',
-                address: '0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
-              },
-              {
-                address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
-                symbol: 'CHANGE',
-                name: 'ChangeX',
-              },
-              {
-                name: 'Chai',
-                symbol: 'CHAI',
-                address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
-              },
-            ],
+          .withTokenListController({
             tokensChainsCache: {
               '0x1': {
+                timestamp: Date.now(),
                 data: {
                   '0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
                     name: 'Chain Games',
                     symbol: 'CHAIN',
                     address: '0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+                    decimals: 18,
+                    occurrences: 1,
+                    aggregators: [],
+                    iconUrl: '',
                   },
                   '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
                     name: 'ChangeX',
                     symbol: 'CHANGE',
                     address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
+                    decimals: 18,
+                    occurrences: 6,
+                    aggregators: [],
+                    iconUrl: '',
                   },
                   '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
                     name: 'Chai',
                     symbol: 'CHAI',
                     address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
+                    decimals: 18,
+                    occurrences: 1,
+                    aggregators: [],
+                    iconUrl: '',
                   },
                 },
               },
@@ -265,9 +262,8 @@ describe('Import flow', function () {
   it('allows importing using contract address and not current network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withNetworkControllerOnPolygon()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -276,10 +272,10 @@ describe('Import flow', function () {
               [CHAIN_IDS.BASE]: true,
             },
           })
-          .withTokensController({
-            tokenList: [],
+          .withTokenListController({
             tokensChainsCache: {
               '0x1': {
+                timestamp: Date.now(),
                 data: {
                   '0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267': {
                     name: 'Entropy',
@@ -288,11 +284,13 @@ describe('Import flow', function () {
                     decimals: 18,
                     iconUrl:
                       'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267.png',
+                    occurrences: 1,
                     symbol: 'ERP',
                   },
                 },
               },
               '0x89': {
+                timestamp: Date.now(),
                 data: {
                   '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': {
                     name: 'USDT',

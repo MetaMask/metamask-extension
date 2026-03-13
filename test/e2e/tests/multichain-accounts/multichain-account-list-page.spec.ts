@@ -23,10 +23,11 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
 
         // Ensure that accounts within the wallets are displayed
+        // The balance is not loaded for a non-selected account (which was never selected before)
         await accountListPage.checkMultichainAccountBalanceDisplayed({
           wallet: 'Wallet 1',
           account: 'Account 1',
-          balance: '$85,025.00',
+          balance: '$0.00',
         });
         await accountListPage.checkMultichainAccountBalanceDisplayed({
           wallet: 'Ledger',

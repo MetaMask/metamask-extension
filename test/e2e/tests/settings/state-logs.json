@@ -199,11 +199,6 @@
           "balance": "string"
         }
       },
-      "0x531": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
       "0x539": {
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
           "balance": "string"
@@ -283,6 +278,7 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "alertEnabledness": {
+      "smartTransactionsMigration": "boolean",
       "unconnectedAccount": "boolean",
       "web3ShimUsage": "boolean"
     },
@@ -296,13 +292,7 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
-    "announcements": {
-      "8": {
-        "date": "string",
-        "id": "number",
-        "isShown": "boolean"
-      }
-    },
+    "announcements": {},
     "appActiveTab": {
       "favIconUrl": "null",
       "host": "string",
@@ -356,15 +346,20 @@
     "coverageResults": {},
     "cryptocurrencies": ["string"],
     "currencyRates": {
+      "BNB": {
+        "conversionDate": "null",
+        "conversionRate": "null",
+        "usdConversionRate": "null"
+      },
       "ETH": {
         "conversionDate": "number",
         "conversionRate": "number",
         "usdConversionRate": "number"
       },
-      "MON": {
-        "conversionDate": "number",
-        "conversionRate": "number",
-        "usdConversionRate": "number"
+      "POL": {
+        "conversionDate": "null",
+        "conversionRate": "null",
+        "usdConversionRate": "null"
       }
     },
     "currentAppVersion": "string",
@@ -409,8 +404,7 @@
         "0xa4b1": "boolean",
         "0x38": "boolean",
         "0xa": "boolean",
-        "0x89": "boolean",
-        "0x531": "boolean"
+        "0x89": "boolean"
       },
       "solana": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean",
@@ -435,7 +429,6 @@
       "eip155:56": "string",
       "eip155:10": "string",
       "eip155:137": "string",
-      "eip155:1329": "string",
       "eip155:6343": "string"
     },
     "enableMV3TimestampSave": "boolean",
@@ -542,10 +535,7 @@
     "featureFlags": {},
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
-    "firstTimeInfo": {
-      "date": "number",
-      "version": "string"
-    },
+    "firstTimeInfo": {},
     "forgottenPassword": "boolean",
     "fragments": {},
     "fullScreenGasPollTokens": ["string"],
@@ -561,6 +551,7 @@
     "historicalPrices": {},
     "ignoredNfts": [],
     "initialEnqueueCompleted": "boolean",
+    "initialDelayEndTimestamp": "number",
     "insights": {},
     "interfaces": {},
     "internalAccounts": {
@@ -675,7 +666,14 @@
     "logs": {},
     "manageInstitutionalWallets": "boolean",
     "marketData": {
-      "0x539": {}
+      "0x1": {},
+      "0x2105": {},
+      "0x38": {},
+      "0x539": {},
+      "0x89": {},
+      "0xa": {},
+      "0xa4b1": {},
+      "0xe708": {}
     },
     "marketingCampaignCookieId": "null",
     "metamaskNotificationsList": [],
@@ -773,7 +771,7 @@
       }
     },
     "networksWithTransactionActivity": {},
-    "newPrivacyPolicyToastClickedOrClosed": "boolean",
+    "newPrivacyPolicyToastClickedOrClosed": "null",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": "boolean",
     "nftsDropdownState": {},
@@ -798,7 +796,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "string",
+    "pendingShieldCohort": "null",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
@@ -824,7 +822,7 @@
       "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
-      "shouldShowAggregatedBalancePopover": "boolean",
+      "showConfirmationAdvancedDetails": "boolean",
       "showExtensionInFullSizeView": "boolean",
       "showFiatInTestnets": "boolean",
       "showMultiRpcModal": "boolean",
@@ -906,7 +904,7 @@
     "rewardsSeasonStatuses": {},
     "rewardsSubscriptions": {},
     "securityAlertsEnabled": "boolean",
-    "seedPhraseBackedUp": "boolean",
+    "seedPhraseBackedUp": "null",
     "segmentApiCalls": {},
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
@@ -918,7 +916,7 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
-    "showShieldEntryModalOnce": "boolean",
+    "showShieldEntryModalOnce": "null",
     "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
@@ -926,7 +924,7 @@
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
     "syncQueue": {
-      "01KG2PT3Y3FHYEM874K8J5SZ07": [
+      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
         {
           "address": "string",
           "scopes": ["string"]
@@ -939,17 +937,33 @@
     },
     "slides": [],
     "smartTransactionsState": {
-      "fees": {},
-      "feesByChainId": {},
+      "fees": {
+        "approvalTxFees": "null",
+        "tradeTxFees": "null"
+      },
+      "feesByChainId": {
+        "0x1": {
+          "approvalTxFees": "null",
+          "tradeTxFees": "null"
+        },
+        "0xaa36a7": {
+          "approvalTxFees": "null",
+          "tradeTxFees": "null"
+        }
+      },
       "liveness": "boolean",
-      "livenessByChainId": {},
+      "livenessByChainId": {
+        "0x1": "boolean",
+        "0xaa36a7": "boolean"
+      },
       "smartTransactions": {
         "0x1": []
-      }
+      },
+      "userOptIn": "null",
+      "userOptInV2": "null"
     },
     "snapRegistryList": {},
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "snapsInstallPrivacyWarningShown": "boolean",
     "socialBackupsMetadata": [],
     "srpSessionData": {
       "01KA0MT07W98B2G9474CFDC6VM": {

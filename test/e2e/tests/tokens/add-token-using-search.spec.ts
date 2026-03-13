@@ -1,6 +1,7 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -81,30 +82,27 @@ describe('Add existing token using search', function () {
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.BSC_MAINNET)
+          .withEnabledNetworks({ eip155: { [CHAIN_IDS.BSC]: true } })
           .withPreferencesController({ useTokenDetection: true })
           .withTokenListController({
-            tokenList: [
-              {
-                name: 'Basic Attention Token',
-                symbol: 'BAT',
-                address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-              },
-            ],
             tokensChainsCache: {
               '0x38': {
+                timestamp: Date.now(),
                 data: {
                   '0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
                     name: 'Basic Attention Token',
                     symbol: 'BAT',
+                    decimals: 18,
                     address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+                    occurrences: 1,
+                    aggregators: [],
+                    iconUrl: '',
                   },
                 },
               },
             },
-          })
-          .withAppStateController({
-            [CHAIN_IDS.OPTIMISM]: true,
           })
           .build(),
         localNodeOptions: {

@@ -34,12 +34,8 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$42,500.00',
-        );
+        // Balance is $0 as conversion on testnets is disabled
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0.00');
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -57,12 +53,8 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$42,500.00',
-        );
+        // Balance is $0 as conversion on testnets is disabled
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0.00');
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
