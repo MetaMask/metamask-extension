@@ -8904,6 +8904,9 @@
   "yourActivity": {
     "message": "Su actividad"
   },
+  "yourBalance": {
+    "message": "Su saldo"
+  },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"
   },

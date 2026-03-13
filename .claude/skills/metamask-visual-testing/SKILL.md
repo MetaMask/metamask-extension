@@ -1,6 +1,6 @@
 ---
 name: metamask-visual-testing
-description: Launch and test MetaMask Chrome extension with Playwright. Use for visual validation of UI changes, testing onboarding/unlock flows, and capturing screenshots.
+description: Launch and test MetaMask Chrome extension with Playwright in headless sidepanel mode. Use for visual validation of UI changes, testing onboarding/unlock flows, confirmations, and capturing screenshots.
 compatibility: opencode
 metadata:
   location: test/e2e/playwright/llm-workflow/mcp-server
@@ -43,7 +43,7 @@ The MetaMask MCP server provides tools for browser automation:
 | `mm_cleanup`                | Stop browser and all services                               |
 | `mm_get_state`              | Get current extension state (includes tab info)             |
 | `mm_navigate`               | Navigate to home, settings, notification, or URL            |
-| `mm_wait_for_notification`  | Wait for notification popup and set it as active page       |
+| `mm_wait_for_notification`  | Wait for sidepanel confirmation route and set it as active  |
 | `mm_switch_to_tab`          | Switch active page to a different tab (by role or URL)      |
 | `mm_close_tab`              | Close a tab (notification, dapp, or other)                  |
 | `mm_list_testids`           | List visible data-testid attributes                         |
@@ -202,6 +202,36 @@ mm_set_context {
 mm_launch { "stateMode": "default" }
 ```
 
+## Sidepanel Mode (Default)
+
+The MCP server runs in **headless mode by default**, which means the extension uses Chrome's side panel (`sidepanel.html`) instead of the traditional popup (`notification.html`). This is the default behavior — no configuration is needed.
+
+### Sidepanel vs Popup: Key Differences
+
+| Behavior                         | Sidepanel (headless, default)                                    | Popup (legacy)                                  |
+| -------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------- |
+| **Confirmation UI**              | Renders inside `sidepanel.html`                                  | Opens separate `notification.html` popup window |
+| **After confirming**             | Sidepanel stays open and navigates back to the home page (route) | Popup auto-closes                               |
+| **After rejecting**              | Sidepanel stays open and navigates back to the home page (route) | Popup auto-closes                               |
+| **Page lifecycle**               | Single persistent page, URL hash changes between routes          | New page opens, closes on completion            |
+| **Confirmation route detection** | Checks URL hash against known confirmation route prefixes        | Waits for `notification.html` page event        |
+
+### What This Means for Testing
+
+1. **No tab closing after confirmation**: In sidepanel mode, the confirmation page does not close. After clicking confirm/reject, the sidepanel navigates back to the home route within `sidepanel.html`. You do NOT need to switch tabs after a confirmation — just continue interacting with the sidepanel page.
+
+2. **`mm_wait_for_notification` behavior**: This tool opens or finds the `sidepanel.html` page and waits for a confirmation route to appear in its URL hash (e.g., `#/confirm-transaction/...`). It does NOT wait for a new popup window.
+
+3. **Post-confirmation state**: After a confirmation action, use `mm_describe_screen` to verify the extension returned to the home screen. The sidepanel page remains the active page.
+
+4. **Confirmation routes detected**:
+   - `/connect`
+   - `/confirm-transaction`
+   - `/confirmation`
+   - `/confirm-import-token`
+   - `/confirm-add-suggested-token`
+   - `/confirm-add-suggested-nft`
+
 ## Core Workflow
 
 ### 0. Reuse Existing Knowledge (REQUIRED)
@@ -357,31 +387,32 @@ Options:
 - `selector`: Capture specific element
 - `includeBase64`: Include base64 in response
 
-### 6. Handle Notifications (Dapp flows)
+### 6. Handle Confirmations (Dapp flows)
 
-When a dapp triggers a notification (connect, sign, send), wait for it:
+When a dapp triggers a confirmation (connect, sign, send), wait for it:
 
 ```
 mm_wait_for_notification { "timeoutMs": 10000 }
 ```
 
-This automatically sets the notification as the **active page**, so subsequent `mm_click`, `mm_type`, and `mm_describe_screen` calls operate on the notification popup.
+This opens or finds the `sidepanel.html` page, waits for a confirmation route to appear in the URL hash, and sets it as the **active page**. Subsequent `mm_click`, `mm_type`, and `mm_describe_screen` calls operate on the sidepanel.
 
-**Dapp connection flow example:**
+**Dapp connection flow example (sidepanel mode):**
 
 ```
 mm_navigate { "screen": "url", "url": "https://test-dapp.io" }  → Opens dapp in new tab, sets as active
-mm_click { "testId": "connectButton" }                          → Triggers notification
-mm_wait_for_notification                                        → Active page = notification
-mm_describe_screen                                              → Shows notification elements
-mm_click { "testId": "confirm-btn" }                            → Clicks on notification
+mm_click { "testId": "connectButton" }                          → Triggers confirmation
+mm_wait_for_notification                                        → Active page = sidepanel (on confirmation route)
+mm_describe_screen                                              → Shows confirmation elements
+mm_click { "testId": "confirm-btn" }                            → Confirms action
+mm_describe_screen                                              → Sidepanel navigates back to home page
 mm_switch_to_tab { "role": "dapp" }                             → Switch back to dapp
 mm_describe_screen                                              → Verify connected state
 ```
 
-**Note:** Notification popups typically close automatically after clicking confirm or cancel. After the action, switch to another tab (e.g., `mm_switch_to_tab { "role": "dapp" }`) to continue interacting.
+**Important sidepanel behavior:** After clicking confirm or reject, the sidepanel does **NOT** close. It stays open and navigates back to the home page (route). Use `mm_describe_screen` to verify the sidepanel returned to home, then switch to the dapp tab to continue.
 
-**Tab roles:** `extension` (home), `notification` (popups), `dapp` (external sites), `other`
+**Tab roles:** `extension` (home), `notification` (sidepanel), `dapp` (external sites), `other`
 
 ### 7. Navigate
 
@@ -627,7 +658,7 @@ Error responses:
 
 ## Known Limitations
 
-1. **Headed mode only**: Chrome extensions cannot run headless. Requires display (use XVFB on Linux CI).
+1. **Headless mode (default)**: The extension runs in headless mode using the Chrome side panel (`sidepanel.html`) instead of the popup (`notification.html`). This is the default and does not require a visible display.
 2. **Single session**: Only one browser session at a time. Call `mm_cleanup` before `mm_launch`.
 3. **macOS/Linux**: Port cleanup commands (`lsof`) are Unix-specific.
 

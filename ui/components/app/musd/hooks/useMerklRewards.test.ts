@@ -20,7 +20,18 @@ jest.mock('..', () => ({
   useOnMerklClaimConfirmed: jest.fn(),
 }));
 
+jest.mock('../../../../hooks/musd/useMusdGeoBlocking', () => ({
+  useMusdGeoBlocking: jest.fn(() => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+  })),
+}));
+
 const { useSelector } = jest.requireMock('react-redux');
+const { useMusdGeoBlocking } = jest.requireMock(
+  '../../../../hooks/musd/useMusdGeoBlocking',
+);
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 
@@ -102,6 +113,10 @@ describe('useMerklRewards', () => {
     merklClient.getClaimedAmountFromContract as jest.MockedFunction<
       typeof merklClient.getClaimedAmountFromContract
     >;
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -331,7 +346,6 @@ describe('useMerklRewards', () => {
   });
 
   it('handles API errors gracefully', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
     mockFetchMerklRewardsForAsset.mockRejectedValueOnce(
       new Error('Network error'),
     );
@@ -351,7 +365,25 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
-    consoleSpy.mockRestore();
+  });
+
+  it('aborts fetch on unmount', () => {
+    const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
+
+    const { unmount } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    unmount();
+
+    expect(abortSpy).toHaveBeenCalled();
   });
 
   it('returns false for sub-cent unclaimed amounts', async () => {
@@ -405,7 +437,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitForNextUpdate } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -416,11 +448,36 @@ describe('useMerklRewards', () => {
     );
 
     await act(async () => {
-      await waitForNextUpdate();
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(0.01);
+  });
+
+  it('returns false and skips API call when user is geoblocked', async () => {
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: true,
+      userCountry: 'GB',
+      isLoading: false,
+    });
+
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.hasClaimableReward).toBe(false);
+    expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
   it('falls back to API claimed value when getClaimedAmountFromContract returns null', async () => {
@@ -493,6 +550,59 @@ describe('useMerklRewards', () => {
 
     expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBeNull();
+  });
+
+  it('returns cached data on remount without refetching', async () => {
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10500000',
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const hookArgs = {
+      tokenAddress: MUSD_TOKEN_ADDRESS,
+      chainId: '0x1' as `0x${string}`,
+      showMerklBadge: true,
+    };
+
+    const wrapper = createWrapper();
+
+    // First mount — fetches from API
+    const {
+      result: firstResult,
+      waitForNextUpdate,
+      unmount,
+    } = renderHook(() => useMerklRewards(hookArgs), { wrapper });
+
+    await act(async () => {
+      await waitForNextUpdate();
+    });
+
+    expect(firstResult.current.hasClaimableReward).toBe(true);
+    expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
+
+    // Unmount (simulates switching to another tab)
+    unmount();
+
+    // Remount with the same QueryClient (simulates switching back)
+    const { result: secondResult } = renderHook(
+      () => useMerklRewards(hookArgs),
+      { wrapper },
+    );
+
+    // Should immediately have the cached value, no additional fetch
+    expect(secondResult.current.hasClaimableReward).toBe(true);
+    expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
   });
 
   it('returns cached data on remount without refetching', async () => {

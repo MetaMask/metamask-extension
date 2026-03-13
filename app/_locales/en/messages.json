@@ -1038,9 +1038,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block explorer link copied"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Calculating..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
@@ -2847,6 +2844,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see those addresses and your IP address. Your account address won’t be exposed to third parties."
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol."
+  },
   "failed": {
     "message": "Failed"
   },
@@ -3583,6 +3583,9 @@
   "ipfsGatewayDescription": {
     "message": "MetaMask uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
   },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Choose your preferred IPFS gateway below."
+  },
   "ipfsToggleModalDescriptionOne": {
     "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
   },
@@ -3887,6 +3890,12 @@
   "makeAnotherSwap": {
     "message": "Create a new swap"
   },
+  "makeSmartContractsEasier": {
+    "message": "Make smart contracts easier to read"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask uses 4byte.directory and Sourcify to translate this information."
+  },
   "manage": {
     "message": "Manage"
   },
@@ -4146,9 +4155,6 @@
   },
   "musdBuyMusd": {
     "message": "Buy mUSD"
-  },
-  "musdClaimActivityTitle": {
-    "message": "Claim mUSD bonus"
   },
   "musdClaimClaimingTo": {
     "message": "Claiming to",
@@ -8652,6 +8658,12 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
+  "thirdPartyApis": {
+    "message": "Third-party APIs"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Choose how you share your IP address or Ethereum address with third-party APIs. Changes will impact your MetaMask experience."
+  },
   "thirdPartySoftware": {
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -9121,6 +9133,9 @@
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask uses a third-party service called $1 to show accurate and standardized network details. This reduces your chances of connecting to malicious or incorrect network. When using this feature, your IP address is exposed to chainid.network."
   },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Reduces your chances of connecting to a malicious or incorrect network. MetaMask uses $1 to show accurate and standardized network details."
+  },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
@@ -9312,6 +9327,9 @@
   },
   "yourActivity": {
     "message": "Your activity"
+  },
+  "yourBalance": {
+    "message": "Your balance"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

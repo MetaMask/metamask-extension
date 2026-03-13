@@ -8904,6 +8904,9 @@
   "yourActivity": {
     "message": "Aktiviteniz"
   },
+  "yourBalance": {
+    "message": "Bakiyeniz"
+  },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
   },

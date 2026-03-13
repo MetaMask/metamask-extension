@@ -31,6 +31,7 @@ export type MultichainAccountsState = {
   metamask: {
     accountTree: AccountTreeState;
     internalAccounts: InternalAccountsState;
+    accountIdByAddress: Record<string, AccountId>;
   };
 };
 

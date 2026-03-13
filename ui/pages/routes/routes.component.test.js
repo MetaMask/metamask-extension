@@ -138,6 +138,7 @@ jest.mock('../../hooks/musd', () => ({
   BuyGetMusdCtaVariant: { BUY: 'buy', GET: 'get' },
   isTokenInWildcardList: jest.fn().mockReturnValue(false),
   checkTokenAllowed: jest.fn().mockReturnValue(false),
+  isMerklClaimTransaction: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock('../../hooks/useMultiPolling', () => ({

@@ -7120,6 +7120,9 @@
   "yourActivity": {
     "message": "Do ghníomhaíocht"
   },
+  "yourBalance": {
+    "message": "D'iarmhéid"
+  },
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
   },

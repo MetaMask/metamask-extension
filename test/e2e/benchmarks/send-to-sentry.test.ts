@@ -14,7 +14,7 @@ jest.mock('child_process', () => ({
 }));
 
 // eslint-disable-next-line import/first
-import { getGitCommitHash, getGitBranch } from './send-to-sentry-utils';
+import { getGitCommitHash, getGitBranch } from './utils/git';
 
 describe('send-to-sentry', () => {
   beforeEach(() => {

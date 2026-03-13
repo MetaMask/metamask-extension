@@ -111,7 +111,6 @@ export type ConnectPageProps = {
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: ConnectPageRequest) => void;
-  activeTabOrigin: string;
   targetSubjectMetadata: {
     extensionId: string | null;
     iconUrl: string | null;
