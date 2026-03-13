@@ -5,7 +5,7 @@
  * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
  */
 
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import type { Hex } from '@metamask/utils';
 import {
   FontWeight,
@@ -64,6 +64,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow } = useMusdConversion();
+  const [isLoading, setIsLoading] = useState(false);
 
   const displayText =
     ctaText ?? t('musdGetBonusPercentage', [String(MUSD_CONVERSION_APY)]);
@@ -72,6 +73,12 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
     async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault();
       e.stopPropagation();
+
+      if (isLoading) {
+        return;
+      }
+
+      setIsLoading(true);
 
       trackEvent({
         event: MetaMetricsEventName.MusdConversionCtaClicked,
@@ -89,15 +96,20 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
         },
       });
 
-      await startConversionFlow({
-        preferredToken: {
-          address: tokenAddress as Hex,
-          chainId: chainId as Hex,
-        },
-        entryPoint,
-      });
+      try {
+        await startConversionFlow({
+          preferredToken: {
+            address: tokenAddress as Hex,
+            chainId: chainId as Hex,
+          },
+          entryPoint,
+        });
+      } finally {
+        setIsLoading(false);
+      }
     },
     [
+      isLoading,
       chainId,
       tokenAddress,
       tokenSymbol,
@@ -112,6 +124,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
     <button
       type="button"
       onClick={handleClick}
+      disabled={isLoading}
       data-testid={`musd-convert-link-${chainId}`}
       className="musd-convert-link"
     >
@@ -120,6 +133,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
         color={TextColor.PrimaryDefault}
         fontWeight={FontWeight.Medium}
         data-testid="musd-convert-link-text"
+        style={isLoading ? { opacity: 0.5 } : undefined}
       >
         {displayText}
       </Text>

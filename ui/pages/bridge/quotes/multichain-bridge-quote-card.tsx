@@ -50,6 +50,8 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
+export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
+
 const getTimerColor = (timeInSeconds: number) => {
   if (timeInSeconds <= 3) {
     return TextColor.errorDefault;
