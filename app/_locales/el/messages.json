@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "Ο χρόνος κλειδώματος πρέπει να είναι ένας αριθμός μεταξύ 0 και 10080"
   },
-  "logOut": {
-    "message": "Αποσύνδεση"
-  },
   "loginErrorConnectButton": {
     "message": "Προσπαθήστε ξανά"
   },

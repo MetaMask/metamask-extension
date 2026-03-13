@@ -510,7 +510,7 @@ export function useGlobalMenuSections(
           iconName: IconName.Lock,
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
-          label: t('logOut'),
+          label: t('lock'),
           onClick: () => {
             navigate(DEFAULT_ROUTE);
             dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));

@@ -3829,9 +3829,6 @@
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
   },
-  "logOut": {
-    "message": "Log out"
-  },
   "loginErrorConnectButton": {
     "message": "Try again"
   },

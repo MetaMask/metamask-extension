@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "Sperrzeit muss eine Zahl zwischen 0 und 10080 sein"
   },
-  "logOut": {
-    "message": "Abmelden"
-  },
   "loginErrorConnectButton": {
     "message": "Erneut versuchen"
   },

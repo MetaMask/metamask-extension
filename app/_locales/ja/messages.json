@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "ロック時間は0～10080の間の数字で設定する必要があります"
   },
-  "logOut": {
-    "message": "ログアウト"
-  },
   "loginErrorConnectButton": {
     "message": "再試行"
   },

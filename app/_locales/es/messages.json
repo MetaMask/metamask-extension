@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "El tiempo de bloqueo debe ser un número entre 0 y 10080"
   },
-  "logOut": {
-    "message": "Cerrar sesión"
-  },
   "loginErrorConnectButton": {
     "message": "Inténtalo de nuevo"
   },

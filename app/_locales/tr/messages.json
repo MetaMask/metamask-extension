@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "Kilit süresi 0 ile 10080 arasında olmalıdır"
   },
-  "logOut": {
-    "message": "Oturumu kapat"
-  },
   "loginErrorConnectButton": {
     "message": "Tekrar deneyin"
   },

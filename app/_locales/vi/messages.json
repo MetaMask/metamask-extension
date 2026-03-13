@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "Thời gian khóa phải là một số từ 0 đến 10080"
   },
-  "logOut": {
-    "message": "Đăng xuất"
-  },
   "loginErrorConnectButton": {
     "message": "Thử lại"
   },

@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "锁定时间必须是 0 到 10080 之间的数字"
   },
-  "logOut": {
-    "message": "退出登录"
-  },
   "loginErrorConnectButton": {
     "message": "重试"
   },

@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "잠금 시간은 반드시 0에서 10080 사이여야 합니다"
   },
-  "logOut": {
-    "message": "로그아웃"
-  },
   "loginErrorConnectButton": {
     "message": "다시 시도"
   },

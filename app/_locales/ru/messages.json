@@ -3667,9 +3667,6 @@
   "lockTimeInvalid": {
     "message": "Время блокировки будет числом от 0 до 10080"
   },
-  "logOut": {
-    "message": "Выйти"
-  },
   "loginErrorConnectButton": {
     "message": "Повторить попытку"
   },
