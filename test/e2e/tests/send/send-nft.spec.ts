@@ -296,4 +296,38 @@ describe('Send NFT', function () {
       });
     });
   });
+
+  describe('Layout consistency', function () {
+    it('maintains consistent height for NFTs without images in send flow', async function () {
+      await withTransactionEnvelopeTypeFixtures(
+        this.test?.fullTitle(),
+        TransactionEnvelopeType.feeMarket,
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: {
+          driver: Driver;
+          contractRegistry?: ContractAddressRegistry;
+          localNodes?: Anvil[];
+        }) => {
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const homePage = new HomePage(driver);
+
+          await homePage.startSendFlow();
+          const sendPage = new SendPage(driver);
+          await sendPage.checkPageIsLoaded();
+
+          // Check that NFT assets maintain minimum height even without images
+          const nftAssets = await driver.findElements('[data-testid="nft-asset"]');
+          for (const asset of nftAssets) {
+            const height = await asset.getCSSProperty('min-height');
+            await driver.assert.equal(height.value, '70px', 'NFT asset should maintain minimum height');
+          }
+        },
+        erc721Mocks,
+        SMART_CONTRACTS.NFTS,
+      );
+    });
+  });
 });
