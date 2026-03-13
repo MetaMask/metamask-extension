@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added Stable network and native token logos ([#40879](https://github.com/MetaMask/metamask-extension/pull/40879))
+
 ## [13.22.0]
 
 ### Added
