@@ -306,6 +306,21 @@ async function mockGetPopularTokens(mockServer: Mockttp) {
   }));
 }
 
+function filterTokensByQuery<Token extends { symbol: string; name: string }>(
+  tokens: Token[],
+  query: string,
+): Token[] {
+  if (!query) {
+    return tokens;
+  }
+  const q = query.toLowerCase();
+  return tokens.filter(
+    (token) =>
+      token.symbol.toLowerCase() === q ||
+      token.name.toLowerCase().startsWith(q),
+  );
+}
+
 async function mockSearchTokens(mockServer: Mockttp) {
   return [
     await mockServer
@@ -313,13 +328,16 @@ async function mockSearchTokens(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         chainIds: ['eip155:1'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(
+          MOCK_TOKENS_ETHEREUM,
+          body.query ?? '',
+        );
         return {
           statusCode: 200,
           json: {
-            data: MOCK_TOKENS_ETHEREUM.map((token) =>
-              toBridgeTokenResponse(1, token),
-            ),
+            data: tokens.map((token) => toBridgeTokenResponse(1, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -329,17 +347,16 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
-
       .withJsonBodyIncluding({
         chainIds: ['eip155:59144'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(MOCK_TOKENS_LINEA, body.query ?? '');
         return {
           statusCode: 200,
           json: {
-            data: MOCK_TOKENS_LINEA.map((token) =>
-              toBridgeTokenResponse(59144, token),
-            ),
+            data: tokens.map((token) => toBridgeTokenResponse(59144, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -349,17 +366,20 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
-
       .withJsonBodyIncluding({
         chainIds: ['eip155:42161'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const allArbitrum = [
+          MOCK_TOKENS_ARBITRUM,
+          MOCK_GET_TOKEN_ARBITRUM,
+        ].flat();
+        const tokens = filterTokensByQuery(allArbitrum, body.query ?? '');
         return {
           statusCode: 200,
           json: {
-            data: [MOCK_TOKENS_ARBITRUM, MOCK_GET_TOKEN_ARBITRUM]
-              .flat()
-              .map((token) => toBridgeTokenResponse(42161, token)),
+            data: tokens.map((token) => toBridgeTokenResponse(42161, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,

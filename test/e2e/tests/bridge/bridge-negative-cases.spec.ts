@@ -156,6 +156,7 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
+        // await driver.delay(100000);
         await bridgePage.submitQuote();
 
         await homePage.goToActivityList();
