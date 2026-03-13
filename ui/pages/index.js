@@ -21,7 +21,7 @@ import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscripti
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
-import ErrorPage from './error-page/error-page.component';
+import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
 
@@ -29,31 +29,49 @@ function AppProviders() {
   return (
     <MetaMetricsProvider>
       <LegacyMetaMetricsProvider>
-        <AssetPollingProvider>
-          <MetamaskIdentityProvider>
-            <MetamaskNotificationsProvider>
-              <HardwareWalletErrorProvider>
-                <ShieldSubscriptionProvider>
-                  <RiveWasmProvider>
-                    <Routes />
-                  </RiveWasmProvider>
-                </ShieldSubscriptionProvider>
-              </HardwareWalletErrorProvider>
-            </MetamaskNotificationsProvider>
-          </MetamaskIdentityProvider>
-        </AssetPollingProvider>
+        <I18nProvider>
+          <LegacyI18nProvider>
+            <QueryClientProvider client={queryClient}>
+              <AssetPollingProvider>
+                <MetamaskIdentityProvider>
+                  <MetamaskNotificationsProvider>
+                    <HardwareWalletErrorProvider>
+                      <ShieldSubscriptionProvider>
+                        <RiveWasmProvider>
+                          <Routes />
+                        </RiveWasmProvider>
+                      </ShieldSubscriptionProvider>
+                    </HardwareWalletErrorProvider>
+                  </MetamaskNotificationsProvider>
+                </MetamaskIdentityProvider>
+              </AssetPollingProvider>
+            </QueryClientProvider>
+          </LegacyI18nProvider>
+        </I18nProvider>
       </LegacyMetaMetricsProvider>
     </MetaMetricsProvider>
   );
 }
 
-function RouteErrorBoundary() {
-  const error = useRouteError();
+function ErrorPage({ error }) {
   return (
     <MetaMetricsProvider>
-      <ErrorPage error={error} />
+      <I18nProvider>
+        <LegacyI18nProvider>
+          <ErrorPageBase error={error} />
+        </LegacyI18nProvider>
+      </I18nProvider>
     </MetaMetricsProvider>
   );
+}
+
+ErrorPage.propTypes = {
+  error: PropTypes.object,
+};
+
+function RouteErrorBoundary() {
+  const error = useRouteError();
+  return <ErrorPage error={error} />;
 }
 
 const router = createHashRouter([
@@ -83,13 +101,7 @@ class Index extends PureComponent {
       return (
         <Provider store={store}>
           <HashRouter>
-            <MetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <ErrorPage error={error} />
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </MetaMetricsProvider>
+            <ErrorPage error={error} />
           </HashRouter>
         </Provider>
       );
@@ -97,13 +109,7 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <I18nProvider>
-            <LegacyI18nProvider>
-              <RouterProvider router={router} />
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </QueryClientProvider>
+        <RouterProvider router={router} />
       </Provider>
     );
   }
