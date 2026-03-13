@@ -1,7 +1,7 @@
 import { AssetType } from '@metamask/bridge-controller';
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { getCurrencyRates, getMarketData } from '../../../selectors';
 import { getAssetsRates } from '../../../selectors/assets';
 import { Asset } from '../types/asset';

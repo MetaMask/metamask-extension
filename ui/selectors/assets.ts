@@ -42,7 +42,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
@@ -52,12 +52,13 @@ import {
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
-import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
+import { isEmptyHexString } from '../../shared/lib/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import {
+  getNetworkConfigurationsByChainId,
   getNonTestNetworks,
   NetworkState,
-} from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/selectors/networks';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getCurrencyRateControllerCurrencyRates,
@@ -71,8 +72,8 @@ import {
   getTokenRatesControllerMarketData,
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
-} from '../../shared/modules/selectors/assets-migration';
-import { getSelectedInternalAccount } from './accounts';
+} from '../../shared/lib/selectors/assets-migration';
+import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
@@ -794,9 +795,11 @@ const selectAccountsStateForBalances = createSelector(
   [
     (state: BalanceCalculationState) =>
       getMetamaskState(state).internalAccounts,
+    (state: BalanceCalculationState) => getAccountIdByAddress(state),
   ],
-  (internalAccounts) => ({
+  (internalAccounts, accountIdByAddress) => ({
     internalAccounts: internalAccounts ?? { accounts: {}, selectedAccount: '' },
+    accountIdByAddress: accountIdByAddress ?? {},
   }),
 );
 
@@ -905,6 +908,7 @@ export const selectBalanceForAllWallets = createSelector(
     selectTokensStateForBalances,
     selectCurrencyRateStateForBalances,
     selectEnabledNetworkMapForBalances,
+    getNetworkConfigurationsByChainId,
   ],
   (
     accountTreeState,
@@ -917,6 +921,7 @@ export const selectBalanceForAllWallets = createSelector(
     tokensState,
     currencyRateState,
     enabledNetworkMap,
+    networkConfigurationsByChainId,
   ) =>
     calculateBalanceForAllWallets(
       // TODO: fix this by ensuring @metamask/assets-controllers has proper types
@@ -930,6 +935,7 @@ export const selectBalanceForAllWallets = createSelector(
       tokensState,
       currencyRateState,
       enabledNetworkMap,
+      networkConfigurationsByChainId ?? {},
     ),
 );
 
@@ -1464,7 +1470,7 @@ export const selectAccountSupportsEnabledNetworks = createSelector(
   },
 );
 
-export const getAssetsBySelectedAccountGroupWithTronResources =
+export const getAssetsBySelectedAccountGroupWithTronSpecialAssets =
   createDeepEqualSelector(
     getStateForAssetSelector,
     (assetListState: AssetListState) =>

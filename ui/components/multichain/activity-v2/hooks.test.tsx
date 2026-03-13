@@ -5,10 +5,20 @@ import {
   act,
   renderHook as renderHookBase,
 } from '@testing-library/react-hooks';
+import thunk from 'redux-thunk';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
+import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import {
   useGetTitle,
   usePrefetchTransactions,
@@ -17,17 +27,27 @@ import {
 
 const mockUseInfiniteQuery = jest.fn();
 const mockUseQueryClient = jest.fn();
-const mockQueriesTransactions = jest.fn();
+const mockGetV4MultiAccountTransactionsInfiniteQueryOptions = jest.fn();
 
 jest.mock('@tanstack/react-query', () => ({
   useInfiniteQuery: (...args: unknown[]) => mockUseInfiniteQuery(...args),
   useQueryClient: () => mockUseQueryClient(),
 }));
 
-jest.mock('../../../helpers/queries', () => ({
-  queries: {
-    transactions: (...args: unknown[]) => mockQueriesTransactions(...args),
+jest.mock('../../../helpers/api-client', () => ({
+  apiClient: {
+    accounts: {
+      getV4MultiAccountTransactionsInfiniteQueryOptions: (...args: unknown[]) =>
+        mockGetV4MultiAccountTransactionsInfiniteQueryOptions(...args),
+    },
   },
+}));
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate,
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -261,82 +281,6 @@ describe('useGetTitle', () => {
     expect(result.current).toBe('revokePermissionTitle:token');
   });
 
-  it('returns bridgeApproval title for APPROVE transaction with known sourceTokenSymbol', () => {
-    const tx = {
-      chainId: '0xe708',
-      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
-      methodId: '0x3ce33bff',
-      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
-      toAddressName: 'METAMASK_BRIDGE_V2',
-      transactionCategory: 'APPROVE',
-      transactionProtocol: 'METAMASK',
-      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
-      value: '100000000000000',
-    } as unknown as TransactionViewModel;
-
-    jest
-      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
-      .mockReturnValue({
-        isBridgeTx: true,
-        isBridgeComplete: false,
-        isBridgeFailed: false,
-        showBridgeTxDetails: jest.fn(),
-        srcNetwork: undefined,
-        destNetwork: {
-          name: 'Linea',
-        } as unknown as ChainInfo,
-        category: TransactionGroupCategory.bridge,
-        displayCurrencyAmount: '',
-        sourceTokenSymbol: 'USDT',
-        sourceTokenAmountSent: undefined,
-        sourceTokenIconUrl: undefined,
-        destinationTokenSymbol: undefined,
-        destinationTokenIconUrl: undefined,
-      });
-
-    const { result } = renderHook(() => useGetTitle(tx));
-
-    expect(result.current).toBe('bridgeApproval:USDT');
-  });
-
-  it('returns swapApproval title for APPROVE transaction with known sourceTokenSymbol', () => {
-    const tx = {
-      chainId: '0xe708',
-      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
-      methodId: '0x3ce33bff',
-      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
-      toAddressName: 'METAMASK_BRIDGE_V2',
-      transactionCategory: 'APPROVE',
-      transactionProtocol: 'METAMASK',
-      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
-      value: '100000000000000',
-    } as unknown as TransactionViewModel;
-
-    jest
-      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
-      .mockReturnValue({
-        isBridgeTx: false,
-        isBridgeComplete: false,
-        isBridgeFailed: false,
-        showBridgeTxDetails: jest.fn(),
-        srcNetwork: undefined,
-        destNetwork: {
-          name: 'Linea',
-        } as unknown as ChainInfo,
-        category: TransactionGroupCategory.bridge,
-        displayCurrencyAmount: '',
-        sourceTokenSymbol: 'USDT',
-        sourceTokenAmountSent: undefined,
-        sourceTokenIconUrl: undefined,
-        destinationTokenSymbol: undefined,
-        destinationTokenIconUrl: undefined,
-      });
-
-    const { result } = renderHook(() => useGetTitle(tx));
-
-    expect(result.current).toBe('swapApproval:USDT');
-  });
-
   it('returns bridgedToChain title for BRIDGE_OUT transaction with known chainId', () => {
     const tx = {
       chainId: '0xe708',
@@ -373,60 +317,6 @@ describe('useGetTitle', () => {
     const { result } = renderHook(() => useGetTitle(tx));
 
     expect(result.current).toBe('bridgedToChain:Linea');
-  });
-
-  it('returns bridged title for BRIDGE_OUT transaction with missing destChainId', () => {
-    const tx = {
-      chainId: '0xe708',
-      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
-      methodId: '0x3ce33bff',
-      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
-      toAddressName: 'METAMASK_BRIDGE_V2',
-      transactionCategory: 'BRIDGE_OUT',
-      transactionProtocol: 'METAMASK',
-      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
-      value: '100000000000000',
-    } as unknown as TransactionViewModel;
-
-    jest
-      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
-      .mockReturnValue({
-        isBridgeTx: true,
-        isBridgeComplete: false,
-        isBridgeFailed: false,
-        showBridgeTxDetails: jest.fn(),
-        srcNetwork: undefined,
-        destNetwork: undefined,
-        category: TransactionGroupCategory.bridge,
-        displayCurrencyAmount: '',
-        sourceTokenSymbol: undefined,
-        sourceTokenAmountSent: undefined,
-        sourceTokenIconUrl: undefined,
-        destinationTokenSymbol: undefined,
-        destinationTokenIconUrl: undefined,
-      });
-
-    const { result } = renderHook(() => useGetTitle(tx));
-
-    expect(result.current).toBe('bridged');
-  });
-
-  it('returns bridged title for BRIDGE_IN transaction with known chainId', () => {
-    const tx = {
-      chainId: '0xe708',
-      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
-      methodId: '0x3ce33bff',
-      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
-      toAddressName: 'METAMASK_BRIDGE_V2',
-      transactionCategory: 'BRIDGE_IN',
-      transactionProtocol: 'METAMASK',
-      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
-      value: '100000000000000',
-    } as unknown as TransactionViewModel;
-
-    const { result } = renderHook(() => useGetTitle(tx));
-
-    expect(result.current).toBe('bridge');
   });
 
   it('returns sent NFT title for ERC_721_TRANSFER with empty valueTransfers', () => {
@@ -666,7 +556,7 @@ describe('Query hooks', () => {
 
   beforeEach(() => {
     mockUseInfiniteQuery.mockReturnValue({ data: undefined });
-    mockQueriesTransactions.mockReturnValue({
+    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue({
       queryKey: ['transactions'],
       queryFn: jest.fn(),
       getNextPageParam: jest.fn(),
@@ -686,16 +576,18 @@ describe('Query hooks', () => {
   it('useTransactionsQuery composes query options and delegates to useInfiniteQuery', () => {
     renderQueryHook(() => useTransactionsQuery());
 
-    expect(mockQueriesTransactions).toHaveBeenCalledWith(
-      {
-        accountAddresses: [`eip155:0:${expectedEvmAddress}`],
-        evmAddress: expectedEvmAddress,
-        networks: expectedNetworks,
-      },
-      { enabled: true, keepPreviousData: true },
-    );
+    expect(
+      mockGetV4MultiAccountTransactionsInfiniteQueryOptions,
+    ).toHaveBeenCalledWith({
+      accountAddresses: [`eip155:0:${expectedEvmAddress}`],
+      networks: expectedNetworks,
+      includeTxMetadata: true,
+    });
     expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ select: expect.any(Function) }),
+      expect.objectContaining({
+        select: expect.any(Function),
+        enabled: true,
+      }),
     );
   });
 
@@ -713,7 +605,9 @@ describe('Query hooks', () => {
     };
 
     mockUseQueryClient.mockReturnValue(mockQueryClient);
-    mockQueriesTransactions.mockReturnValue(queryOptions);
+    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue(
+      queryOptions,
+    );
 
     const { result } = renderQueryHook(() => usePrefetchTransactions());
 
@@ -723,6 +617,117 @@ describe('Query hooks', () => {
 
     expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
       queryOptions,
+    );
+  });
+});
+
+describe('useBridgeTxHistoryData', () => {
+  const middleware = [thunk];
+
+  const bridgeStore = configureMockStore(middleware)(
+    createBridgeMockStore({
+      metamaskStateOverrides: {
+        transactions: [
+          {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: mockBridgeTxData.bridgeHistoryItem.approvalTxId,
+            hash: '0xapprovalhash',
+            type: TransactionType.tokenMethodApprove,
+            status: TransactionStatus.confirmed,
+          },
+        ],
+      },
+      bridgeStatusStateOverrides: {
+        txHistory: {
+          intentOrderUid: {
+            ...mockBridgeTxData.bridgeHistoryItem,
+            approvalTxId: mockBridgeTxData.bridgeHistoryItem.approvalTxId,
+            status: {
+              ...mockBridgeTxData.bridgeHistoryItem.status,
+              status: StatusTypes.FAILED,
+            },
+          },
+        },
+      },
+    }),
+  );
+
+  it('does not treat completed approval txs as failed bridge rows', () => {
+    const { result } = renderHookBase(
+      () =>
+        useBridgeTxHistoryData({
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: '0xapprovalhash-1',
+            hash: '0xapprovalhash',
+            type: TransactionType.tokenMethodApprove,
+            status: TransactionStatus.confirmed,
+          } as never,
+        }),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={bridgeStore}>{children}</Provider>
+        ),
+      },
+    );
+
+    expect(result.current.isBridgeFailed).toBeNull();
+    expect(result.current.isBridgeComplete).toBeNull();
+    expect(result.current.showBridgeTxDetails).toBeUndefined();
+  });
+
+  it('uses originalTransactionId lookup for intent transactions without treating them as approvals', () => {
+    const intentStore = configureMockStore(middleware)(
+      createBridgeMockStore({
+        bridgeStatusStateOverrides: {
+          txHistory: {
+            intentOrderUid: {
+              ...mockBridgeTxData.bridgeHistoryItem,
+              originalTransactionId: 'intent-tx-meta-id',
+              approvalTxId: undefined,
+              status: {
+                ...mockBridgeTxData.bridgeHistoryItem.status,
+                status: StatusTypes.FAILED,
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    const { result } = renderHookBase(
+      () =>
+        useBridgeTxHistoryData({
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            id: 'intent-tx-meta-id',
+            hash: undefined,
+            type: TransactionType.swap,
+            status: TransactionStatus.submitted,
+          } as never,
+        }),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={intentStore}>{children}</Provider>
+        ),
+      },
+    );
+
+    expect(result.current.isBridgeFailed).toBe(true);
+    expect(result.current.isBridgeComplete).toBe(false);
+    expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+
+    act(() => result.current.showBridgeTxDetails?.());
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/intent-tx-meta-id`,
+      expect.objectContaining({
+        state: expect.objectContaining({
+          transaction: expect.objectContaining({
+            id: 'intent-tx-meta-id',
+          }),
+        }),
+      }),
     );
   });
 });

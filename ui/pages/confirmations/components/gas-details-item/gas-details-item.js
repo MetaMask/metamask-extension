@@ -25,7 +25,7 @@ import {
 import {
   hexWEIToDecGWEI,
   sumHexes,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

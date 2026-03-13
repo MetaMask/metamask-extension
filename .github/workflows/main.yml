@@ -150,7 +150,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: yarn build dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -161,7 +161,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: yarn build dist
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -198,7 +198,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: yarn build --build-type flask dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -209,7 +209,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: yarn build --build-type flask dist
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -282,6 +282,7 @@ jobs:
     with:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
+      enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -379,18 +380,74 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  page-load-benchmark:
+  dapp-page-load-benchmark:
     needs:
       - get-requirements
       - build-test-browserify
     if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
-    uses: ./.github/workflows/page-load-benchmark.yml
-    secrets:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    uses: ./.github/workflows/dapp-page-load-benchmark.yml
     with:
       browser-loads: 10
       page-loads: 10
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+
+  # Pushes benchmark results (dapp page-load + performance) to extension_benchmark_stats
+  # for historical comparison in PR comments. Runs on main/release/* pushes only.
+  store-benchmark-stats:
+    needs:
+      - get-requirements
+      - run-benchmarks
+      - dapp-page-load-benchmark
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name == 'push' &&
+        (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
+        needs.get-requirements.outputs.needs-benchmarks == 'true' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      OWNER: ${{ github.repository_owner }}
+      BRANCH_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download all performance benchmark artifacts
+        id: download-perf-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      - name: Commit performance stats to extension_benchmark_stats
+        if: steps.download-perf-benchmark.outcome == 'success'
+        continue-on-error: true
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: performance
+          BENCHMARK_RESULTS_DIR: benchmark-results
+
+      - name: Download dapp page-load benchmark artifact
+        id: download-dapp-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          name: dapp-page-load-benchmark-results
+          path: test-artifacts/benchmarks/
+
+      - name: Commit dapp page-load stats to extension_benchmark_stats
+        if: steps.download-dapp-benchmark.outcome == 'success'
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: dapp-page-load
+          BENCHMARK_FILE: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
 
   prep-e2e:
     needs:
@@ -603,7 +660,7 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - run-benchmarks
-      - page-load-benchmark
+      - dapp-page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
@@ -613,7 +670,11 @@ jobs:
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
-    secrets: inherit
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
+      E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+      E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
 
   trigger-regression-validation:
     name: Trigger Regression Validation
@@ -693,7 +754,7 @@ jobs:
       - run-benchmarks
       - run-tests
       - bundle-size
-      - page-load-benchmark
+      - dapp-page-load-benchmark
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
@@ -749,15 +810,6 @@ jobs:
           google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
           sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
-
-  publish-release:
-    name: Publish release
-    if: ${{ !cancelled() && needs.all-jobs-pass.result == 'success' && github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
-    needs:
-      - get-requirements
-      - all-jobs-pass
-    uses: ./.github/workflows/publish-release.yml
-    secrets: inherit
 
   check-retry-ci:
     name: Check for retry-ci label and retry

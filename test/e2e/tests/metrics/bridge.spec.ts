@@ -39,6 +39,7 @@ describe('Bridge tests', function (this: Suite) {
 
         const homePage = new HomePage(driver);
 
+        // QUOTE REQUEST #1
         await bridgeTransaction({
           driver,
           quote,
@@ -50,9 +51,11 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
+        // QUOTE REQUEST #2
         await bridgePage.enterBridgeQuote(quote);
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+        // QUOTE REQUEST #3
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
@@ -109,8 +112,8 @@ describe('Bridge tests', function (this: Suite) {
          */
 
         assert(
-          swapBridgeInputChanged.length === 18,
-          `Should have 18 input change events, but got ${swapBridgeInputChanged.length}`,
+          swapBridgeInputChanged.length === 16,
+          `Should have 16 input change events, but got ${swapBridgeInputChanged.length}`,
         );
 
         const swapBridgeInputChangedKeys = new Set(
@@ -161,8 +164,9 @@ describe('Bridge tests', function (this: Suite) {
         const crossChainQuotesReceived = findEventsByName(
           EventTypes.UnifiedSwapBridgeQuotesReceived,
         );
-        // The flow receives 2 quotes, so we expect 2 events
-        assert.ok(crossChainQuotesReceived.length === 2);
+        // The flow request quotes 3 times, but the 2nd response may be cancelled
+        // before QuotesReceived is emitted
+        assert.ok(crossChainQuotesReceived.length >= 2);
         assert.ok(
           crossChainQuotesReceived[0].properties.chain_id_source ===
             'eip155:1' &&

@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Προσθήκη token"
   },
-  "addTokenByContractAddress": {
-    "message": "Δεν μπορείτε να βρείτε ένα token; Μπορείτε να προσθέσετε χειροκίνητα οποιοδήποτε token επικολλώντας τη διεύθυνσή του. Οι διευθύνσεις συμβολαίων token μπορούν να βρεθούν στο $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ο σύνδεσμος από το Block explorer αντιγράφηκε"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Υπολογισμός..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Θα πρέπει να επιβεβαιώσετε 2 συναλλαγές στο πορτοφόλι υλικού σας:"
   },
@@ -1023,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "Κάθε τέλος δικτύου που αναφέρθηκε στην προηγούμενη οθόνη περιλαμβάνει και τις δύο συναλλαγές και θα διαχωριστούν."
   },
-  "bridgeNetCost": {
-    "message": "Καθαρό κόστος"
-  },
   "bridgeNoMMFee": {
     "message": "Χωρίς προμήθεια στο MM"
   },
@@ -1059,9 +1049,6 @@
   },
   "bridgePriceImpact": {
     "message": "Επίδραση στην τιμή"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Η επίδραση στην τιμή αντικατοπτρίζει πώς η ανταλλαγή σας επηρεάζει την τιμή της αγοράς. Αν δεν έχετε αρκετά για τα τέλη συναλλαγών, μέρος των token σας χρησιμοποιείται για την κάλυψη των τελών, γεγονός που αυξάνει την επίδραση στην τιμή. Το MetaMask δεν ορίζει ούτε ελέγχει αυτήν τη διαδικασία."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Επίδραση στην τιμή"
@@ -1131,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Ανταλλαγή $1 για $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 ελαχ",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Διασύνδεση προς"
@@ -1209,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
-  },
-  "buildContactList": {
-    "message": "Δημιουργήστε τη λίστα επαφών σας"
   },
   "builtAroundTheWorld": {
     "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
@@ -1804,7 +1784,8 @@
     "message": "Ξεκλειδώνει το MetaMask μόνο σε αυτή τη συσκευή."
   },
   "createPasswordDetailsSocial": {
-    "message": "Η απώλεια αυτού του κωδικού σημαίνει απώλεια πρόσβασης στο πορτοφόλι σε όλες τις συσκευές, "
+    "message": "Η απώλεια αυτού του κωδικού σημαίνει απώλεια πρόσβασης στο πορτοφόλι σε όλες τις συσκευές, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Το MetaMask δεν μπορεί να την επαναφέρει."
@@ -2134,9 +2115,6 @@
   "delete": {
     "message": "Διαγραφή"
   },
-  "deleteContact": {
-    "message": "Διαγραφή επαφής"
-  },
   "deleteMetaMetricsData": {
     "message": "Διαγραφή δεδομένων MetaMetrics"
   },
@@ -2367,9 +2345,6 @@
   },
   "editANickname": {
     "message": "Επεξεργασία ψευδωνύμου"
-  },
-  "editAccountName": {
-    "message": "Επεξεργασία ονόματος λογαριασμού"
   },
   "editAccounts": {
     "message": "Επεξεργασία λογαριασμών"
@@ -3131,9 +3106,6 @@
   },
   "hidden": {
     "message": "Απόκρυψη"
-  },
-  "hiddenAccounts": {
-    "message": "Κρυφοί λογαριασμοί"
   },
   "hide": {
     "message": "Απόκρυψη"
@@ -3999,10 +3971,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατροπή $1 σε mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Μετατροπή mUSD"
+    "message": "Μετατράπηκε σε mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε τουλάχιστον 1 token."
@@ -4270,9 +4244,6 @@
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Νέα επαφή"
   },
   "newContract": {
     "message": "Νέο συμβόλαιο"
@@ -5271,12 +5242,6 @@
   "perpsEntryPrice": {
     "message": "Τιμή εισόδου"
   },
-  "perpsExploreCrypto": {
-    "message": "Εξερευνήστε τα κρυπτονομίσματα"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Εξερευνήστε μετοχές και εμπορεύματα"
-  },
   "perpsFees": {
     "message": "Τέλη"
   },
@@ -5396,9 +5361,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Η διάμεσος των εξωτερικών τιμών που αναφέρονται από τους επικυρωτές, η οποία χρησιμοποιείται για τον υπολογισμό του ποσοστού χρηματοδότησης"
-  },
-  "perpsOrderAmount": {
-    "message": "Ποσό εντολής"
   },
   "perpsOrders": {
     "message": "Εντολές"
@@ -5546,12 +5508,6 @@
   },
   "perpsWithdraw": {
     "message": "Ανάληψη"
-  },
-  "perpsYourOrders": {
-    "message": "Οι εντολές σας"
-  },
-  "perpsYourPositions": {
-    "message": "Οι θέσεις σας"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
@@ -5823,12 +5779,6 @@
   "queued": {
     "message": "Σε Αναμονή"
   },
-  "quotedReceiveAmount": {
-    "message": "$1 ποσό που θα λάβετε"
-  },
-  "quotedTotalCost": {
-    "message": "$1 συνολικό κόστος"
-  },
   "rank": {
     "message": "Κατάταξη"
   },
@@ -5895,9 +5845,6 @@
   },
   "removeAccount": {
     "message": "Διαγραφή λογαριασμού"
-  },
-  "removeAccountDescription": {
-    "message": "Αυτός ο λογαριασμός θα αφαιρεθεί από το πορτοφόλι σας. Βεβαιωθείτε ότι έχετε την αρχική Μυστική Φράση Ανάκτησης ή το ιδιωτικό κλειδί για αυτόν τον λογαριασμό που έχετε εισαγάγει πριν συνεχίσετε. Μπορείτε να εισαγάγετε ή να δημιουργήσετε ξανά λογαριασμούς από το αναπτυσσόμενο μενού λογαριασμών. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Βεβαιωθείτε ότι έχετε τη Μυστική Φράση Ανάκτησης ή το ιδιωτικό κλειδί για αυτόν τον λογαριασμό πριν τον αφαιρέσετε.",
@@ -6278,9 +6225,6 @@
   },
   "search": {
     "message": "Αναζήτηση"
-  },
-  "searchAccounts": {
-    "message": "Αναζήτηση λογαριασμών"
   },
   "searchAnAcccountOrContact": {
     "message": "Αναζήτηση λογαριασμού ή επαφής"
@@ -8094,10 +8038,6 @@
     "message": "$1 προσφορές.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Δεν υπάρχουν διαθέσιμα tokens που να αντιστοιχούν σε $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Το $1 σας θα προστεθεί στον λογαριασμό σας μόλις ολοκληρωθεί αυτή η συναλλαγή.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8782,9 +8722,6 @@
   "usedByClients": {
     "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
-  "userName": {
-    "message": "Όνομα χρήστη"
-  },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"
   },
@@ -8803,9 +8740,6 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Προβολή επαφής"
   },
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"

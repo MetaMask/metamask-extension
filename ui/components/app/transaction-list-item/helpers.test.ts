@@ -1,7 +1,11 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import transactions from '../../../../test/data/transaction-data.json';
-import { mapTransactionTypeToCategory } from './helpers';
+import { MERKL_DISTRIBUTOR_ADDRESS } from '../musd/constants';
+import {
+  mapTransactionTypeToCategory,
+  resolveTransactionType,
+} from './helpers';
 
 const expectedResults = [
   {
@@ -66,6 +70,59 @@ describe('mapTransactionTypeToCategory', () => {
   it('returns send category for musdConversion', () => {
     expect(mapTransactionTypeToCategory(TransactionType.musdConversion)).toBe(
       TransactionGroupCategory.send,
+    );
+  });
+
+  it('returns send category for musdClaim', () => {
+    expect(mapTransactionTypeToCategory(TransactionType.musdClaim)).toBe(
+      TransactionGroupCategory.send,
+    );
+  });
+
+  it('returns send category for contractInteraction with Merkl distributor and claim method', () => {
+    const resolved = resolveTransactionType(
+      TransactionType.contractInteraction,
+      MERKL_DISTRIBUTOR_ADDRESS,
+      '0x71ee95c0abcdef',
+    );
+    expect(resolved).toBe(TransactionType.musdClaim);
+    expect(mapTransactionTypeToCategory(resolved)).toBe(
+      TransactionGroupCategory.send,
+    );
+  });
+
+  it('returns interaction category for contractInteraction with Merkl distributor but wrong method', () => {
+    const resolved = resolveTransactionType(
+      TransactionType.contractInteraction,
+      MERKL_DISTRIBUTOR_ADDRESS,
+      '0xdeadbeef',
+    );
+    expect(resolved).toBe(TransactionType.contractInteraction);
+    expect(mapTransactionTypeToCategory(resolved)).toBe(
+      TransactionGroupCategory.interaction,
+    );
+  });
+
+  it('returns interaction category for contractInteraction with Merkl distributor but no data', () => {
+    const resolved = resolveTransactionType(
+      TransactionType.contractInteraction,
+      MERKL_DISTRIBUTOR_ADDRESS,
+    );
+    expect(resolved).toBe(TransactionType.contractInteraction);
+    expect(mapTransactionTypeToCategory(resolved)).toBe(
+      TransactionGroupCategory.interaction,
+    );
+  });
+
+  it('returns interaction category for contractInteraction with a different address', () => {
+    const resolved = resolveTransactionType(
+      TransactionType.contractInteraction,
+      '0x0000000000000000000000000000000000000001',
+      '0x71ee95c0abcdef',
+    );
+    expect(resolved).toBe(TransactionType.contractInteraction);
+    expect(mapTransactionTypeToCategory(resolved)).toBe(
+      TransactionGroupCategory.interaction,
     );
   });
 

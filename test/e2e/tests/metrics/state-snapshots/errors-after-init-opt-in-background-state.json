@@ -12,6 +12,7 @@
     "isAccountTreeSyncingInProgress": "boolean"
   },
   "AccountsController": {
+    "accountIdByAddress": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
   "AddressBookController": { "addressBook": "object" },
@@ -269,13 +270,11 @@
     "enableMV3TimestampSave": true,
     "featureFlags": {},
     "forgottenPassword": false,
-    "identities": "object",
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "knownMethodData": "object",
     "ledgerTransportType": "webhid",
-    "lostIdentities": "object",
     "manageInstitutionalWallets": "boolean",
     "openSeaEnabled": false,
     "overrideContentSecurityPolicyHeader": true,
@@ -303,7 +302,6 @@
     },
     "referrals": "object",
     "securityAlertsEnabled": "boolean",
-    "selectedAddress": "string",
     "snapRegistryList": "object",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "theme": "light",

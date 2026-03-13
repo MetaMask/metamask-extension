@@ -1,12 +1,7 @@
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { MINUTE } from '../../../../shared/constants/time';
-import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
-import {
-  getBridgeAmountReceivedFormatted,
-  getBridgeAmountSentFormatted,
-  getIsDelayed,
-} from './tx-details';
+import { getIsDelayed } from './tx-details';
 
 describe('tx-details utils', () => {
   describe('getIsDelayed', () => {
@@ -60,131 +55,6 @@ describe('tx-details utils', () => {
       } as BridgeHistoryItem);
 
       expect(result).toBe(false);
-    });
-  });
-
-  describe('getBridgeAmountReceivedFormatted', () => {
-    it('returns the correct amount for a bridge history item', () => {
-      const result = getBridgeAmountReceivedFormatted({
-        bridgeHistoryItem: mockBridgeTxData.bridgeHistoryItem as never,
-        locale: 'en-US',
-        txMeta: mockBridgeTxData.transactionGroup.primaryTransaction as never,
-      });
-
-      expect(result).toBe('1.981');
-    });
-
-    it('returns undefined if txMeta is undefined', () => {
-      const result = getBridgeAmountReceivedFormatted({
-        locale: 'en-US',
-        txMeta: undefined,
-      });
-
-      expect(result).toBeUndefined();
-    });
-
-    it('returns the correct amount for a swap tx with no history item', () => {
-      const result = getBridgeAmountReceivedFormatted({
-        locale: 'en-US',
-        txMeta: {
-          ...mockBridgeTxData.transactionGroup.primaryTransaction,
-          type: undefined,
-          amounts: {
-            to: {
-              amount: BigInt('1000000'),
-              token: {
-                decimals: 6,
-                address: '0x0000000000000000000000000000000000000000',
-                symbol: 'USDC',
-                chainId: '0x1',
-              },
-            },
-          },
-        } as never,
-      });
-
-      expect(result).toBe('1');
-    });
-
-    it('returns undefined if amount and token decimals are undefined', () => {
-      const result = getBridgeAmountReceivedFormatted({
-        locale: 'en-US',
-        txMeta: {
-          ...mockBridgeTxData.transactionGroup.primaryTransaction,
-          type: undefined,
-          amounts: undefined,
-        } as never,
-      });
-
-      expect(result).toBeUndefined();
-    });
-  });
-
-  describe('getBridgeAmountSentFormatted', () => {
-    it('returns the correct amount for a bridge history item', () => {
-      const result = getBridgeAmountSentFormatted({
-        bridgeHistoryItem: mockBridgeTxData.bridgeHistoryItem as never,
-        locale: 'en-US',
-        txMeta: mockBridgeTxData.transactionGroup.primaryTransaction as never,
-      });
-
-      expect(result).toBe('2');
-    });
-
-    it('returns undefined if txMeta is undefined', () => {
-      const result = getBridgeAmountSentFormatted({
-        bridgeHistoryItem: mockBridgeTxData.bridgeHistoryItem as never,
-        locale: 'en-US',
-        txMeta: undefined,
-      });
-
-      expect(result).toBeUndefined();
-    });
-
-    it('returns correct amount from txMeta if bridgeHistoryItem is undefined', () => {
-      const result = getBridgeAmountSentFormatted({
-        bridgeHistoryItem: undefined,
-        locale: 'en-US',
-        txMeta: {
-          ...mockBridgeTxData.transactionGroup.primaryTransaction,
-          amounts: {
-            from: {
-              amount: BigInt('1000000'),
-              token: {
-                decimals: 6,
-                address: '0x0000000000000000000000000000000000000000',
-                symbol: 'USDC',
-                chainId: '0x1',
-              },
-            },
-          },
-        } as never,
-      });
-
-      expect(result).toBe('1');
-    });
-
-    it('returns undefined if decimals are undefined', () => {
-      const result = getBridgeAmountSentFormatted({
-        bridgeHistoryItem: undefined,
-        locale: 'en-US',
-        txMeta: {
-          ...mockBridgeTxData.transactionGroup.primaryTransaction,
-          amounts: {
-            from: {
-              amount: BigInt('1000000'),
-              token: {
-                decimals: 0,
-                address: '0x0000000000000000000000000000000000000000',
-                symbol: 'USDC',
-                chainId: '0x1',
-              },
-            },
-          },
-        } as never,
-      });
-
-      expect(result).toBeUndefined();
     });
   });
 });

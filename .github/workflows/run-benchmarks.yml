@@ -137,6 +137,15 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
 
+      - name: Upload benchmark result as artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+          retention-days: 7
+          if-no-files-found: ignore
+
   # Webpack user journey benchmarks - only on push to main/release branches.
   # Compares webpack vs browserify performance before releasing webpack to production.
   benchmarks-webpack-perf:
@@ -157,7 +166,7 @@ jobs:
           - userJourneyAssets
           - userJourneyTransactions
           - userJourneyAccountManagement
-    name: chrome-webpack-${{ matrix.pageType }}
+    name: chrome-webpack-${{ matrix.pageType }} (main/release only)
     env:
       SELENIUM_BROWSER: chrome
       HEADLESS: false

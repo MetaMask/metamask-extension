@@ -15,7 +15,7 @@ import {
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';

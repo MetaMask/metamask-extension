@@ -1,4 +1,4 @@
-import { AllProperties } from '../../../shared/modules/object.utils';
+import { AllProperties } from '../../../shared/lib/object.utils';
 
 type SentryMaskValue =
   | boolean
@@ -250,12 +250,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
     overrideContentSecurityPolicyHeader: true,
     featureFlags: true,
     forgottenPassword: true,
-    identities: false,
     isIpfsGatewayEnabled: false,
     ipfsGateway: false,
     knownMethodData: false,
     ledgerTransportType: true,
-    lostIdentities: false,
     openSeaEnabled: true,
     preferences: {
       autoLockTimeLimit: true,
@@ -271,7 +269,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
       avatarType: true,
     },
     useExternalServices: false,
-    selectedAddress: false,
     snapRegistryList: false,
     theme: true,
     signatureSecurityAlertResponses: false,

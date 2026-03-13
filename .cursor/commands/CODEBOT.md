@@ -185,7 +185,7 @@ For each changed section, check for violations across severity levels. **Referen
 - [ ] No non-serializable values in state (no Promises, functions, Maps/Sets)
 - [ ] **No inline selector functions** in useSelector (extract to memoized selectors)
 - [ ] **No identity functions** used as the result function of a memoized selector.
-- [ ] **No unmemoized input selectors** that return unstable object or array references. Use `createSelector` from the `reselect` library or an appropriate selector creator method from `shared/modules/selectors/selector-creators.ts` to memoize selector output.
+- [ ] **No unmemoized input selectors** that return unstable object or array references. Use `createSelector` from the `reselect` library or an appropriate selector creator method from `shared/lib/selectors/selector-creators.ts` to memoize selector output.
 
 **Component Files** → See `.cursor/rules/front-end-performance-rendering.mdc`, `.cursor/rules/front-end-performance-hooks-effects.mdc`, `.cursor/rules/front-end-performance-react-compiler.mdc`, and `.cursor/rules/coding-guidelines.mdc` for details:
 

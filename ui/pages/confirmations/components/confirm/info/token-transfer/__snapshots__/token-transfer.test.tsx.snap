@@ -1,29 +1,46 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TokenTransferInfo renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-2 mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    class="flex flex-col mb-2 pb-3 px-0"
   >
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+      class="mb-1"
     >
-      ?
-    </div>
-    <div>
-      <div
-        aria-describedby="tippy-tooltip-1"
-        class=""
-        data-original-title="0.000000000000000001"
-        data-tooltipped=""
-        style="display: inline;"
-        tabindex="0"
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        <h2
-          class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
-        >
-          &lt;0.000001 Unknown
-        </h2>
+        Sending
+      </p>
+    </div>
+    <div
+      class="flex flex-row items-center justify-between"
+    >
+      <div
+        class="flex flex-col"
+      >
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="0.000000000000000001"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <h2
+              class="mm-box mm-text mm-text--heading-lg mm-box--padding-bottom-1 mm-box--color-inherit"
+            >
+              &lt;0.000001 Unknown
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+      >
+        ?
       </div>
     </div>
   </div>
@@ -32,13 +49,13 @@ exports[`TokenTransferInfo renders correctly 1`] = `
     data-testid="confirmation__transaction-flow"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+      class="flex flex-col pr-2"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mm-box"
+          class=""
           style="flex: 1; min-width: 0;"
         >
           <div
@@ -61,14 +78,14 @@ exports[`TokenTransferInfo renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="mm-box w-full mm-box--margin-top-2"
+              class="w-full"
               data-testid="sender-address"
             >
               <div
                 class="flex flex-row gap-2 items-center"
               >
                 <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   data-testid="confirm-info-row-display-name"
                 >
                   Account 1
@@ -123,102 +140,101 @@ exports[`TokenTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box"
+        class="mt-1 mb-1 ml-2"
+      />
+      <div
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+          class=""
+          style="flex: 1; min-width: 0;"
         >
           <div
-            class="mm-box"
-            style="flex: 1; min-width: 0;"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column; width: 100%;"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column; width: 100%;"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+              style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
-                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
+                style="flex-shrink: 0;"
               >
-                <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
-                  style="flex-shrink: 0;"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                  >
-                    To
-                  </p>
-                </div>
+                  To
+                </p>
               </div>
+            </div>
+            <div
+              class="w-full"
+              data-testid="recipient-address"
+            >
               <div
-                class="mm-box w-full mm-box--margin-top-2"
-                data-testid="recipient-address"
+                class="flex flex-row gap-2 items-center"
               >
-                <div
-                  class="flex flex-row gap-2 items-center"
+                <span
+                  class="address-display-no-name"
                 >
-                  <span
-                    class="address-display-no-name"
+                  <button
+                    class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
+                    data-testid="confirm-info-row-display-name"
+                    role="button"
                   >
-                    <button
-                      class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
-                      data-testid="confirm-info-row-display-name"
-                      role="button"
+                    <span
+                      class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                     >
-                      <span
-                        class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                      >
-                        0x2e0D7E8c4522…097035d09B
-                      </span>
-                    </button>
-                  </span>
-                </div>
+                      0x2e0D7E8c4522…097035d09B
+                    </span>
+                  </button>
+                </span>
               </div>
             </div>
           </div>
+        </div>
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          style="flex-shrink: 0;"
+        >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
-            style="flex-shrink: 0;"
+            class="flex [&>div]:!rounded-none"
           >
             <div
-              class="flex [&>div]:!rounded-none"
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"
+              <svg
+                height="32"
+                width="32"
+                x="0"
+                y="0"
               >
-                <svg
+                <rect
+                  fill="#C81420"
                   height="32"
+                  transform="translate(-5.50523690490468 -5.26512336373754) rotate(385.9 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
-                >
-                  <rect
-                    fill="#C81420"
-                    height="32"
-                    transform="translate(-5.50523690490468 -5.26512336373754) rotate(385.9 16.00000000000000 16.00000000000000)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#E9F500"
-                    height="32"
-                    transform="translate(10.67446940672640 12.42992815919339) rotate(184.5 16.00000000000000 16.00000000000000)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FAB300"
-                    height="32"
-                    transform="translate(1.81545519923623 -26.03028190637629) rotate(431.3 16.00000000000000 16.00000000000000)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
+                />
+                <rect
+                  fill="#E9F500"
+                  height="32"
+                  transform="translate(10.67446940672640 12.42992815919339) rotate(184.5 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FAB300"
+                  height="32"
+                  transform="translate(1.81545519923623 -26.03028190637629) rotate(431.3 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+              </svg>
             </div>
           </div>
         </div>
@@ -503,13 +519,17 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
-              class="mm-box"
+              class=""
               data-testid="native-icon"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
               >
-                E
+                <span
+                  class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                >
+                  E
+                </span>
               </div>
             </div>
             <p

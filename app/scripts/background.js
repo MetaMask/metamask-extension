@@ -36,17 +36,17 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { maskObject } from '../../shared/modules/object.utils';
+import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { createCaipStream } from '../../shared/modules/caip-stream';
-import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import { createCaipStream } from '../../shared/lib/caip-stream';
+import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
@@ -694,7 +694,6 @@ function saveTimestamp() {
  * @property {number} unapprovedTypedMessagesCount - The number of messages in unapprovedTypedMessages.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
- * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
  * @property {number} currencyRates - An object mapping of nativeCurrency to conversion rate and date
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
@@ -1199,10 +1198,12 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const preferencesState = controller.controllerMessenger.call(
-    'PreferencesController:getState',
+  const accountsState = controller.controllerMessenger.call(
+    'AccountsController:getState',
   );
-  const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
+  const numberOfTotalAccounts = Object.keys(
+    accountsState.internalAccounts.accounts,
+  ).length;
 
   controller.metaMetricsController.trackEvent(
     {

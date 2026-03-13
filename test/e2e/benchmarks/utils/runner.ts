@@ -1,5 +1,12 @@
 import get from 'lodash/get';
 import { retry } from '../../../../development/lib/retry';
+import type {
+  BenchmarkResults,
+  BenchmarkType,
+  Persona,
+  StatisticalResult,
+  ThresholdConfig,
+} from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -19,13 +26,9 @@ import {
 } from './statistics';
 import type {
   BenchmarkFunction,
-  BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
-  BenchmarkType,
   Metrics,
-  Persona,
-  ThresholdConfig,
   TimerResult,
   TimerStatistics,
 } from './types';
@@ -71,7 +74,7 @@ export async function runBenchmarkWithIterations(
   benchmarkFn: BenchmarkFunction,
   iterations: number,
   retries: number,
-  thresholdConfig?: ThresholdConfig,
+  thresholdConfig: ThresholdConfig,
 ): Promise<BenchmarkSummary> {
   const allResults: BenchmarkRunResult[] = [];
   let successfulRuns = 0;
@@ -157,10 +160,7 @@ export async function runBenchmarkWithIterations(
     MAX_EXCLUSION_RATE,
   );
 
-  // Validate thresholds if configured
-  const thresholdResult = thresholdConfig
-    ? validateThresholds(timerStats, thresholdConfig)
-    : undefined;
+  const thresholdResult = validateThresholds(timerStats, thresholdConfig);
 
   // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
@@ -175,11 +175,53 @@ export async function runBenchmarkWithIterations(
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
     exclusionRate: overallExclusionCheck.rate,
-    ...(thresholdResult && {
-      thresholdViolations: thresholdResult.violations,
-      thresholdsPassed: thresholdResult.passed,
-    }),
+    thresholdViolations: thresholdResult.violations,
+    thresholdsPassed: thresholdResult.passed,
     benchmarkType,
+  };
+}
+
+/**
+ * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
+ * for consistent output with send-to-sentry.ts
+ *
+ * @param summary
+ * @param testTitle
+ * @param persona
+ * @param benchmarkType
+ */
+export function convertSummaryToResults(
+  summary: BenchmarkSummary,
+  testTitle: string,
+  persona: Persona = 'standard',
+  benchmarkType?: BenchmarkType,
+): BenchmarkResults {
+  const mean: StatisticalResult = {};
+  const min: StatisticalResult = {};
+  const max: StatisticalResult = {};
+  const stdDev: StatisticalResult = {};
+  const p75: StatisticalResult = {};
+  const p95: StatisticalResult = {};
+
+  for (const timer of summary.timers) {
+    mean[timer.id] = timer.mean;
+    min[timer.id] = timer.min;
+    max[timer.id] = timer.max;
+    stdDev[timer.id] = timer.stdDev;
+    p75[timer.id] = timer.p75;
+    p95[timer.id] = timer.p95;
+  }
+
+  return {
+    testTitle,
+    persona,
+    benchmarkType,
+    mean,
+    min,
+    max,
+    stdDev,
+    p75,
+    p95,
   };
 }
 
