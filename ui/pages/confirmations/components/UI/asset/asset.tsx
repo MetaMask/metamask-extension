@@ -15,6 +15,7 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -90,7 +91,26 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+              }}
+            >
+              <Text
+                variant={TextVariant.bodySmMedium}
+                color={TextColor.textAlternative}
+              >
+                {collection?.name ? collection.name.charAt(0).toUpperCase() : '?'}
+              </Text>
+            </Box>
+          )}
         </BadgeWrapper>
       </Box>
       <Box
