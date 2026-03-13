@@ -3,12 +3,13 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
-import { hasProperty, Hex, isObject } from '@metamask/utils';
+import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
 import {
   getFailoverUrlsForInfuraNetwork,
   infuraProjectId,
   QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
 } from '../../../shared/constants/network';
+import { captureException } from '../../../shared/lib/sentry';
 import type { Migrate } from './types';
 
 export const version = 199;
@@ -22,7 +23,15 @@ export const version = 199;
  */
 export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
-  transformState(versionedData.data, changedControllers);
+  try {
+    transformState(versionedData.data, changedControllers);
+  } catch (error) {
+    console.error(error);
+    const newError = new Error(
+      `Migration #${version}: ${getErrorMessage(error)}`,
+    );
+    captureException(newError);
+  }
 }) satisfies Migrate;
 
 function transformState(
@@ -49,35 +58,29 @@ function transformState(
       continue;
     }
 
-    for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
-      if (!isRPCEndpoint(rpcEndpoint) || rpcEndpoint.type === 'infura') {
-        // If the RPC endpoint doesn't have the expected structure or is already an Infura endpoint, we skip it.
-        continue;
-      }
+    const infuraBuiltInEndpoint = networkConfiguration.rpcEndpoints.find(
+      (rpcEndpoint) =>
+        isRPCEndpoint(rpcEndpoint) &&
+        rpcEndpoint.url.endsWith(`.infura.io/v3/${infuraProjectId}`) &&
+        rpcEndpoint.type !== 'infura',
+    );
 
-      if (rpcEndpoint.url.endsWith(`.infura.io/v3/${infuraProjectId}`)) {
-        rpcEndpoint.type = 'infura';
-        rpcEndpoint.url = rpcEndpoint.url.replace(
-          `.infura.io/v3/${infuraProjectId}`,
-          '.infura.io/v3/{infuraProjectId}',
-        );
-        changedControllers.add('NetworkController');
-      }
-    }
-
-    if (
-      !networkConfiguration.rpcEndpoints.some(
-        (rpcEndpoint) =>
-          isRPCEndpoint(rpcEndpoint) && rpcEndpoint.type === 'infura',
-      )
-    ) {
+    if (!infuraBuiltInEndpoint || !isRPCEndpoint(infuraBuiltInEndpoint)) {
       // There should be at least one Infura endpoint for each network configuration,
       // so we add one if none of the existing endpoints are Infura endpoints.
       networkConfiguration.rpcEndpoints.push(
         getDefaultInfuraRPCEndpointForNetworkClientId(networkName),
       );
       changedControllers.add('NetworkController');
+      continue;
     }
+
+    infuraBuiltInEndpoint.type = 'infura';
+    infuraBuiltInEndpoint.url = infuraBuiltInEndpoint.url.replace(
+      `.infura.io/v3/${infuraProjectId}`,
+      '.infura.io/v3/{infuraProjectId}',
+    );
+    changedControllers.add('NetworkController');
   }
 }
 
@@ -174,6 +177,7 @@ function getNetworkNameForChainId(chainId: Hex) {
 function getDefaultInfuraRPCEndpointForNetworkClientId(
   networkClientId: InfuraNetworkType,
 ): NetworkConfiguration['rpcEndpoints'][number] {
+  // TODO: Fix this
   const failoverUrls = getFailoverUrlsForInfuraNetwork(
     networkClientId as keyof typeof QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
   );
