@@ -26,7 +26,7 @@ import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
-import { hasTransactionType } from '../../../utils/transaction-pay';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 type TranslateFunction = (key: string, args?: string[]) => string;
 
