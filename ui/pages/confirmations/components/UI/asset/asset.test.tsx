@@ -200,4 +200,27 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders placeholder box when NFT has no image and no collection imageUrl', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutAnyImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutAnyImage} />);
+
+    const nftAsset = getByTestId('nft-asset');
+    expect(nftAsset).toBeInTheDocument();
+
+    // Check that a placeholder box is rendered by checking for the presence of a box element
+    // The placeholder box should maintain the 32x32 dimensions to prevent layout collapse
+    const imageContainer = nftAsset.querySelector('div[style*="width: 32"]');
+    expect(imageContainer).toBeInTheDocument();
+    expect(imageContainer).toHaveStyle('width: 32px');
+    expect(imageContainer).toHaveStyle('height: 32px');
+  });
 });
