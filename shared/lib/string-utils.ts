@@ -37,6 +37,6 @@ export function prependZero(num: number, maxLength: number): string {
  */
 export function toKebabCase(str: string): string {
   return str
-    .replace(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
+    .replaceAll(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
     .replace(/^-/u, '');
 }

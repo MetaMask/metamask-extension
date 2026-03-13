@@ -972,7 +972,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(103)
       .always()
       .thenCallback(
-        delayedCallback(200, (req) =>
+        delayedCallback(4000, (req) =>
           buildSpotPricesResponse(req.url, POWER_USER_PRICES),
         ),
       ),
@@ -984,7 +984,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(101)
       .always()
       .thenCallback(
-        delayedCallback(200, (req) =>
+        delayedCallback(4000, (req) =>
           buildSpotPricesResponse(req.url, POWER_USER_PRICES),
         ),
       ),
@@ -1176,7 +1176,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedCallback(2000, (req) => {
+        delayedCallback(700, (req) => {
           const isSolana = req.url.includes('srcChainId=1151111081099710');
           const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
           return {

@@ -16,14 +16,13 @@
  * 2 — usage error or fatal crash
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
-import { parseArgs } from 'util';
-import {
-  ThresholdSeverity,
-  PercentileKey,
-} from '../../shared/constants/benchmarks';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { parseArgs } from 'node:util';
+import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type {
+  ThresholdSeverity,
+  ComparisonKey,
   BenchmarkResults,
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
@@ -33,8 +32,8 @@ import {
   compareBenchmarkEntries,
   formatDeltaPercent,
   getTrafficLightIndication,
-  ComparisonSeverity,
-  ComparisonDirection,
+  COMPARISON_SEVERITY,
+  COMPARISON_DIRECTION,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
 import type { HistoricalBaselineReference } from './historical-comparison';
@@ -80,15 +79,24 @@ export function resolveThresholdConfig(
     return THRESHOLD_REGISTRY[benchmarkName];
   }
 
-  const prefixPattern = /^benchmark-[a-z]+-[a-z]+-/u;
-  const stripped = benchmarkName.replace(prefixPattern, '');
-  if (stripped !== benchmarkName) {
-    if (THRESHOLD_REGISTRY[stripped]) {
-      return THRESHOLD_REGISTRY[stripped];
-    }
-    const strippedKebab = toKebabCase(stripped);
-    if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
-      return THRESHOLD_REGISTRY[strippedKebab];
+  const prefixes = [
+    /^benchmark-chrome-browserify-/u,
+    /^benchmark-firefox-browserify-/u,
+    /^benchmark-chrome-webpack-/u,
+    /^benchmark-firefox-webpack-/u,
+  ];
+  for (const prefix of prefixes) {
+    const stripped = benchmarkName.replace(prefix, '');
+    if (stripped !== benchmarkName) {
+      // Try stripped name directly
+      if (THRESHOLD_REGISTRY[stripped]) {
+        return THRESHOLD_REGISTRY[stripped];
+      }
+      // Try stripped name converted to kebab-case
+      const strippedKebab = toKebabCase(stripped);
+      if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
+        return THRESHOLD_REGISTRY[strippedKebab];
+      }
     }
   }
 
@@ -190,10 +198,10 @@ export function runComparison(
 
 function violationIcon(severity: ThresholdSeverity): string {
   const mapped =
-    severity === ThresholdSeverity.Fail
-      ? ComparisonSeverity.Regression
-      : ComparisonSeverity.Warn;
-  return getTrafficLightIndication(mapped, ComparisonDirection.Slower);
+    severity === THRESHOLD_SEVERITY.Fail
+      ? COMPARISON_SEVERITY.Regression
+      : COMPARISON_SEVERITY.Warn;
+  return getTrafficLightIndication(mapped, COMPARISON_DIRECTION.Slower);
 }
 
 type MetricLine = { metric: string; parts: string[] };
@@ -217,7 +225,7 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
     comparison.relativeMetrics.map((m) => [`${m.metric}:${m.percentile}`, m]),
   );
 
-  const allMetrics = new Map<string, PercentileKey[]>();
+  const allMetrics = new Map<string, ComparisonKey[]>();
   for (const m of comparison.relativeMetrics) {
     const list = allMetrics.get(m.metric) ?? [];
     list.push(m.percentile);
@@ -239,19 +247,19 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
         const delta = formatDeltaPercent(rel.deltaPercent, rel.direction);
         const absoluteSeverity = violationsByKey.get(key);
         let icon: string;
-        if (absoluteSeverity === ThresholdSeverity.Fail) {
+        if (absoluteSeverity === THRESHOLD_SEVERITY.Fail) {
           icon = getTrafficLightIndication(
-            ComparisonSeverity.Regression,
+            COMPARISON_SEVERITY.Regression,
             rel.direction,
           );
-        } else if (absoluteSeverity === ThresholdSeverity.Warn) {
+        } else if (absoluteSeverity === THRESHOLD_SEVERITY.Warn) {
           icon = getTrafficLightIndication(
-            ComparisonSeverity.Warn,
+            COMPARISON_SEVERITY.Warn,
             rel.direction,
           );
-        } else if (rel.severity === ComparisonSeverity.Regression) {
+        } else if (rel.severity === COMPARISON_SEVERITY.Regression) {
           icon = getTrafficLightIndication(
-            ComparisonSeverity.Warn,
+            COMPARISON_SEVERITY.Warn,
             rel.direction,
           );
         } else {
@@ -265,8 +273,8 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
       const icon = violation
         ? violationIcon(violation.severity)
         : getTrafficLightIndication(
-            ComparisonSeverity.Neutral,
-            ComparisonDirection.Same,
+            COMPARISON_SEVERITY.Neutral,
+            COMPARISON_DIRECTION.Same,
           );
       const value = violation?.value ?? 0;
       return `${icon} ${pKey}: ${value.toFixed(0)}ms (no baseline)`;
@@ -308,7 +316,7 @@ export function printReport(result: {
   const warnCount = result.comparisons.filter(
     (c) =>
       !c.absoluteFailed &&
-      c.absoluteViolations.some((v) => v.severity === ThresholdSeverity.Warn),
+      c.absoluteViolations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
   ).length;
 
   console.log('\n───────────────────────────────────────');

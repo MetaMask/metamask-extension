@@ -3,14 +3,15 @@ import type {
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
 import { DEFAULT_RELATIVE_THRESHOLDS } from '../../shared/constants/benchmarks';
+import { BENCHMARK_PERSONA } from '../../test/e2e/benchmarks/utils/constants';
 
 import {
   compareMetric,
   compareBenchmarkEntries,
   getTrafficLightIndication,
   formatDeltaPercent,
-  ComparisonSeverity,
-  ComparisonDirection,
+  COMPARISON_SEVERITY,
+  COMPARISON_DIRECTION,
 } from './comparison-utils';
 
 describe('benchmark-comparison', () => {
@@ -23,8 +24,8 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Regression);
-      expect(result.direction).toBe(ComparisonDirection.Slower);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Regression);
+      expect(result.direction).toBe(COMPARISON_DIRECTION.Slower);
       expect(result.indication).toBe('🔺');
       expect(result.deltaPercent).toBeCloseTo(0.1);
       expect(result.percentile).toBe('p75');
@@ -38,8 +39,8 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Improvement);
-      expect(result.direction).toBe(ComparisonDirection.Faster);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Improvement);
+      expect(result.direction).toBe(COMPARISON_DIRECTION.Faster);
       expect(result.indication).toBe('🟢⬇️');
     });
 
@@ -51,8 +52,8 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Warn);
-      expect(result.direction).toBe(ComparisonDirection.Slower);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Warn);
+      expect(result.direction).toBe(COMPARISON_DIRECTION.Slower);
       expect(result.indication).toBe('🟡⬆️');
       expect(result.percentile).toBe('p95');
     });
@@ -65,7 +66,7 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Neutral);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Neutral);
       expect(result.indication).toBe('➡️');
     });
 
@@ -77,8 +78,8 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Neutral);
-      expect(result.direction).toBe(ComparisonDirection.Same);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Neutral);
+      expect(result.direction).toBe(COMPARISON_DIRECTION.Same);
       expect(result.delta).toBe(0);
     });
 
@@ -91,7 +92,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.deltaPercent).toBe(0);
-      expect(result.severity).toBe(ComparisonSeverity.Neutral);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Neutral);
     });
   });
 
@@ -107,7 +108,7 @@ describe('benchmark-comparison', () => {
     it('passes when within thresholds', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -129,7 +130,7 @@ describe('benchmark-comparison', () => {
     it('fails when p75 exceeds fail threshold', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 2600 },
         min: { uiStartup: 2000 },
         max: { uiStartup: 3000 },
@@ -151,7 +152,7 @@ describe('benchmark-comparison', () => {
     it('warns but does not fail when p75 exceeds warn but not fail', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 2100 },
         min: { uiStartup: 1800 },
         max: { uiStartup: 2400 },
@@ -174,7 +175,7 @@ describe('benchmark-comparison', () => {
     it('includes relative metrics when baseline is provided', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -183,7 +184,7 @@ describe('benchmark-comparison', () => {
         p95: { uiStartup: 2200 },
       };
       const baseline = {
-        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
       };
 
       const comparison = compareBenchmarkEntries(
@@ -193,18 +194,21 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(2);
+      expect(comparison.relativeMetrics).toHaveLength(4);
       expect(comparison.relativeMetrics[0].metric).toBe('uiStartup');
-      expect(comparison.relativeMetrics[0].percentile).toBe('p75');
+      expect(comparison.relativeMetrics[0].percentile).toBe('mean');
       expect(comparison.relativeMetrics[0].delta).toBeCloseTo(100);
-      expect(comparison.relativeMetrics[1].percentile).toBe('p95');
-      expect(comparison.relativeMetrics[1].delta).toBeCloseTo(100);
+      expect(comparison.relativeMetrics[1].percentile).toBe('stdDev');
+      expect(comparison.relativeMetrics[2].percentile).toBe('p75');
+      expect(comparison.relativeMetrics[2].delta).toBeCloseTo(100);
+      expect(comparison.relativeMetrics[3].percentile).toBe('p95');
+      expect(comparison.relativeMetrics[3].delta).toBeCloseTo(100);
     });
 
     it('omits relative metrics when no baseline', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -239,7 +243,7 @@ describe('benchmark-comparison', () => {
         p95: {},
       };
       const baseline = {
-        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
       };
 
       const comparison = compareBenchmarkEntries(
@@ -249,8 +253,10 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(1);
-      expect(comparison.relativeMetrics[0].percentile).toBe('p75');
+      expect(comparison.relativeMetrics).toHaveLength(3);
+      expect(comparison.relativeMetrics[0].percentile).toBe('mean');
+      expect(comparison.relativeMetrics[1].percentile).toBe('stdDev');
+      expect(comparison.relativeMetrics[2].percentile).toBe('p75');
     });
   });
 
@@ -258,8 +264,8 @@ describe('benchmark-comparison', () => {
     it('returns 🔺 for regression slower', () => {
       expect(
         getTrafficLightIndication(
-          ComparisonSeverity.Regression,
-          ComparisonDirection.Slower,
+          COMPARISON_SEVERITY.Regression,
+          COMPARISON_DIRECTION.Slower,
         ),
       ).toBe('🔺');
     });
@@ -267,8 +273,8 @@ describe('benchmark-comparison', () => {
     it('returns 🔻 for regression faster', () => {
       expect(
         getTrafficLightIndication(
-          ComparisonSeverity.Regression,
-          ComparisonDirection.Faster,
+          COMPARISON_SEVERITY.Regression,
+          COMPARISON_DIRECTION.Faster,
         ),
       ).toBe('🔻');
     });
@@ -276,8 +282,8 @@ describe('benchmark-comparison', () => {
     it('returns 🟡⬆️ for warn slower', () => {
       expect(
         getTrafficLightIndication(
-          ComparisonSeverity.Warn,
-          ComparisonDirection.Slower,
+          COMPARISON_SEVERITY.Warn,
+          COMPARISON_DIRECTION.Slower,
         ),
       ).toBe('🟡⬆️');
     });
@@ -285,8 +291,8 @@ describe('benchmark-comparison', () => {
     it('returns 🟡⬇️ for warn faster', () => {
       expect(
         getTrafficLightIndication(
-          ComparisonSeverity.Warn,
-          ComparisonDirection.Faster,
+          COMPARISON_SEVERITY.Warn,
+          COMPARISON_DIRECTION.Faster,
         ),
       ).toBe('🟡⬇️');
     });
@@ -294,8 +300,8 @@ describe('benchmark-comparison', () => {
     it('returns 🟢⬇️ for improvement faster', () => {
       expect(
         getTrafficLightIndication(
-          ComparisonSeverity.Improvement,
-          ComparisonDirection.Faster,
+          COMPARISON_SEVERITY.Improvement,
+          COMPARISON_DIRECTION.Faster,
         ),
       ).toBe('🟢⬇️');
     });
@@ -303,8 +309,8 @@ describe('benchmark-comparison', () => {
     it('returns ➡️ for neutral', () => {
       expect(
         getTrafficLightIndication(
-          ComparisonSeverity.Neutral,
-          ComparisonDirection.Same,
+          COMPARISON_SEVERITY.Neutral,
+          COMPARISON_DIRECTION.Same,
         ),
       ).toBe('➡️');
     });
@@ -312,19 +318,19 @@ describe('benchmark-comparison', () => {
 
   describe('formatDeltaPercent', () => {
     it('formats slower as positive', () => {
-      expect(formatDeltaPercent(0.15, ComparisonDirection.Slower)).toBe(
-        '+15.0%',
+      expect(formatDeltaPercent(0.15, COMPARISON_DIRECTION.Slower)).toBe(
+        '+15%',
       );
     });
 
     it('formats faster as negative', () => {
-      expect(formatDeltaPercent(-0.08, ComparisonDirection.Faster)).toBe(
-        '-8.0%',
+      expect(formatDeltaPercent(-0.08, COMPARISON_DIRECTION.Faster)).toBe(
+        '-8%',
       );
     });
 
-    it('formats same as 0.0%', () => {
-      expect(formatDeltaPercent(0, ComparisonDirection.Same)).toBe('0.0%');
+    it('formats same as 0%', () => {
+      expect(formatDeltaPercent(0, COMPARISON_DIRECTION.Same)).toBe('0%');
     });
   });
 });

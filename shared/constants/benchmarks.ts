@@ -22,25 +22,32 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
 };
 
-export const StatKey = {
+export const STAT_KEY = {
   Mean: 'mean',
+  StdDev: 'stdDev',
   P75: 'p75',
   P95: 'p95',
 } as const;
-export type StatKey = (typeof StatKey)[keyof typeof StatKey];
+export type StatKey = (typeof STAT_KEY)[keyof typeof STAT_KEY];
 
-export const PercentileKey = {
-  P75: StatKey.P75,
-  P95: StatKey.P95,
+export const PERCENTILE_KEY = {
+  P75: STAT_KEY.P75,
+  P95: STAT_KEY.P95,
 } as const;
-export type PercentileKey = (typeof PercentileKey)[keyof typeof PercentileKey];
+export type PercentileKey =
+  (typeof PERCENTILE_KEY)[keyof typeof PERCENTILE_KEY];
 
-export const ThresholdSeverity = {
+export type ComparisonKey =
+  | PercentileKey
+  | typeof STAT_KEY.Mean
+  | typeof STAT_KEY.StdDev;
+
+export const THRESHOLD_SEVERITY = {
   Warn: 'warn',
   Fail: 'fail',
 } as const;
 export type ThresholdSeverity =
-  (typeof ThresholdSeverity)[keyof typeof ThresholdSeverity];
+  (typeof THRESHOLD_SEVERITY)[keyof typeof THRESHOLD_SEVERITY];
 
 /**
  * Threshold limits for a single percentile.
