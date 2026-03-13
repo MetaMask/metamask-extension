@@ -15,13 +15,6 @@
     "ui/store/actions.ts"
   ],
   [
-    "ui/components/app/metamask-template-renderer/index.js",
-    "ui/components/app/metamask-template-renderer/metamask-template-renderer.js",
-    "ui/components/app/metamask-template-renderer/safe-component-list.js",
-    "ui/components/app/metamask-translation/index.js",
-    "ui/components/app/metamask-translation/metamask-translation.js"
-  ],
-  [
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
