@@ -226,6 +226,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           symbol: update.symbol,
           price: update.price,
           timestamp: ts ?? Date.now(),
+          percentChange24h: update.percentChange24h,
           markPrice: mark ?? update.price,
         });
       }
@@ -366,9 +367,9 @@ const PerpsMarketDetailPage: React.FC = () => {
     return market?.price ?? '$0.00';
   }, [chartCurrentPrice, market, formatNumber]);
 
-  // 24h change from market data.
-  // TODO: Subscribe to usePerpsLivePrices for live 24h change updates.
-  const displayChange = market?.change24hPercent ?? '';
+  // 24h change prefers live stream updates when available, with market-data fallback.
+  const displayChange =
+    livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
 
   // Build price lines for chart overlay (current price + TP, Entry, SL)
   // Current price line is always shown; TP/Entry/SL only when position exists.
