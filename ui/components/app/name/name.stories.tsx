@@ -125,7 +125,6 @@ export default {
  * No name has been saved for the value and type.
  */
 export const NoSavedName = {
-  name: 'No Saved Name',
   args: {
     value: ADDRESS_MOCK,
     type: NameType.ETHEREUM_ADDRESS,

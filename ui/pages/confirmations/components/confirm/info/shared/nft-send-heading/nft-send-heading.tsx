@@ -82,9 +82,6 @@ const NFTSendHeading = () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
 
         name={assetName || nameFromTokenURI}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-
-        tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}
         networkSrc={
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
