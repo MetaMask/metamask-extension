@@ -471,7 +471,6 @@ describe('preferences controller', () => {
         showDefaultAddress: false,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -503,7 +502,6 @@ describe('preferences controller', () => {
         showDefaultAddress: false,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -654,7 +652,6 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": false,
@@ -725,7 +722,6 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": false,
@@ -809,7 +805,6 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": false,
@@ -893,7 +888,6 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": false,
@@ -1218,7 +1212,6 @@ describe('preferences controller', () => {
             showDefaultAddress: false,
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
-            petnamesEnabled: false,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,
@@ -1253,7 +1246,6 @@ describe('preferences controller', () => {
       expect(controller.state.preferences.showFiatInTestnets).toBe(false);
       expect(controller.state.preferences.showTestNetworks).toBe(false);
       expect(controller.state.preferences.hideZeroBalanceTokens).toBe(false);
-      expect(controller.state.preferences.petnamesEnabled).toBe(true);
       expect(controller.state.preferences.featureNotificationsEnabled).toBe(
         false,
       );

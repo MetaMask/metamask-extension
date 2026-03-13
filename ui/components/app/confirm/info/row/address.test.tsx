@@ -33,7 +33,6 @@ describe('ConfirmInfoRowAddress', () => {
         ...mockState.metamask,
         preferences: {
           ...mockState.metamask.preferences,
-          petnamesEnabled: true,
         },
       },
     });

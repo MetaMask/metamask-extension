@@ -821,7 +821,6 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
-      "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean",

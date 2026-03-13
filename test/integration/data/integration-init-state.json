@@ -811,7 +811,6 @@
     "showFiatInTestnets": false,
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": true,
-    "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
     "showDefaultAddress": false,
     "featureNotificationsEnabled": false,

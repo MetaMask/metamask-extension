@@ -71,7 +71,7 @@ function getInitRequestMock(): jest.Mocked<
     useTokenDetection: true,
     useExternalServices: true,
     // @ts-expect-error: Partial mock.
-    preferences: { petnamesEnabled: false },
+    preferences: {},
     useTransactionSimulations: false,
   }));
 

@@ -132,7 +132,6 @@
       "preferences": {
         "defaultAddressScope": "string",
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
