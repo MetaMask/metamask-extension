@@ -76,6 +76,7 @@
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: TypeError: Cannot convert undefined or": 2,
       "error: {": 1,
+      "warn: 'startSendingPatches' has not been called": 7,
       "warn: Error during SnapController initialization. AssertionError:": 2,
       "warn: Unable to create some accounts": 1,
       "µWebSockets: Compatibility warnings": 1,
@@ -445,6 +446,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/musd/hooks/useMerklRewards.test.ts": {
+      "React: State updates on unmounted components": 1,
       "error: Error: Network error": 1
     },
     "ui/components/app/musd/musd-asset-cta.test.tsx": {

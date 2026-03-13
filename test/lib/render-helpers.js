@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
+
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';

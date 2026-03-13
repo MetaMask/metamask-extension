@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { pipeline } from 'readable-stream';
+import { finished, pipeline } from 'readable-stream';
 
 /**
  * Sets up stream multiplexing for the given stream
@@ -41,4 +41,52 @@ export function isStreamWritable(stream) {
   return Boolean(
     stream.writable && !stream.destroyed && !stream._writableState?.ended,
   );
+}
+
+/**
+ * Calls the given callback when the stream ends.
+ *
+ * Supports `readable-stream` v2 and v3.
+ *
+ * @param {stream.Stream} stream - A stream.
+ * @param {() => void} callback - The function to call when the stream ends.
+ */
+export function onStreamClosed(stream, callback) {
+  // There is some redundant-looking code here: we have three ways of detecting
+  // whether the stream is closed, and we are setting and checking an ad-hoc
+  // `mmFinished` property.
+  //
+  // For context, a previous change upgraded `@metamask/object-multiplex` from
+  // v2 to v3, and with it, `readable-stream` was upgraded from v2 to v3. After
+  // this update, we saw new "premature close" errors in the background. It
+  // seems that these errors were already present in v2, surfacing as an "error"
+  // event, and as of v3, this does not happen. Additionally, in v3, the "end"
+  // event is no longer called either.
+  //
+  // To this day, we still don't know why these errors were happening in the
+  // first place. But to address this issue and protect against unexpected
+  // behavioral changes in future `readable-streams` version, we redundantly use
+  // multiple paths to attach the same event handler (which calls our callback).
+  // We then use a property we add to the stream object to ensure that our
+  // callback only runs once.
+  //
+  // (This is a rewritten version of the comment added in
+  // commit 8f6c83e2c29fa1a200afc03e9adce2d22ac5dd47. See there for more.)
+
+  stream.mmFinished = false;
+  const wrappedCallback = () => {
+    if (stream.mmFinished) {
+      return undefined;
+    }
+
+    try {
+      return callback();
+    } finally {
+      stream.mmFinished = true;
+    }
+  };
+
+  finished(stream, wrappedCallback);
+  stream.once('close', wrappedCallback);
+  stream.once('end', wrappedCallback);
 }
