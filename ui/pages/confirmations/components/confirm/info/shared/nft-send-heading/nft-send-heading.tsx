@@ -82,9 +82,6 @@ const NFTSendHeading = () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         name={assetName || nameFromTokenURI}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}
         networkSrc={
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[

@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block-Explorer-Link kopiert"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Berechnungsvorgang ..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Sie werden 2 Transaktionen auf Ihrer Hardware-Wallet bestätigen müssen:"
   },
@@ -1787,7 +1784,8 @@
     "message": "Schaltet MetaMask nur auf diesem Gerät frei."
   },
   "createPasswordDetailsSocial": {
-    "message": "Der Verlust dieses Passworts bedeutet einen Verlust des Wallet-Zugriffs auf allen Geräten, "
+    "message": "Der Verlust dieses Passworts bedeutet einen Verlust des Wallet-Zugriffs auf allen Geräten, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask kann es nicht zurücksetzen."

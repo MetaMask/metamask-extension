@@ -40,6 +40,7 @@ import {
 } from '../ducks/bridge-status/selectors';
 
 import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
+import { resolveTransactionType } from '../components/app/transaction-list-item/helpers';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -128,8 +129,14 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { transferInformation, type } = initialTransaction;
+  const { transferInformation, type: rawType } = initialTransaction;
   const { from: senderAddress, to } = initialTransaction.txParams || {};
+
+  const type = resolveTransactionType(
+    rawType,
+    to,
+    initialTransaction.txParams?.data,
+  );
 
   const isUnifiedSwapTx =
     [TransactionType.swap, TransactionType.bridge].includes(type) &&
@@ -410,7 +417,7 @@ export function useTransactionDisplayData(transactionGroup) {
     if (type === TransactionType.perpsDeposit) {
       title = t('perpsDepositActivityTitle');
     } else if (type === TransactionType.musdClaim) {
-      title = t('musdClaimActivityTitle');
+      title = t('musdClaimTitle');
     } else {
       title = t('musdConversionActivityTitle', [
         sourceToken?.symbol ?? 'Token',

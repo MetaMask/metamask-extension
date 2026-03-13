@@ -41,6 +41,10 @@ const store = configureStore({
         },
       },
     },
+    accountIdByAddress: {
+      ...mockState.metamask.accountIdByAddress,
+      [mockAccountAddress]: 'test-account-id',
+    },
   },
 });
 

@@ -1,6 +1,8 @@
 import type { Page } from '@playwright/test';
 import {
   CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONNECT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   SEND_ROUTE,
@@ -98,6 +100,14 @@ export function detectScreenFromUrl(
     {
       matcher: (path) => hasRoutePrefix(path, CONFIRM_TRANSACTION_ROUTE),
       screen: 'confirm-transaction',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, CONFIRMATION_V_NEXT_ROUTE),
+      screen: 'confirmation',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, CONNECT_ROUTE),
+      screen: 'connect',
     },
     {
       matcher: (path) => hasRoutePrefix(path, SETTINGS_ROUTE),
