@@ -1,4 +1,4 @@
-/* eslint-disable import/no-restricted-paths */
+/* eslint-disable import-x/no-restricted-paths */
 /** Type import paths do not need to be restricted, as they are stripped at runtime and do not have any build time impact. */
 import type {
   CurrencyRateState,

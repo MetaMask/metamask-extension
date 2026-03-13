@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import React, { Suspense } from 'react';
 import {
   Routes as RouterRoutes,
@@ -37,7 +37,7 @@ import TabBar from '../../components/app/tab-bar';
 import MetafoxLogo from '../../components/ui/metafox-logo';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,

@@ -2,7 +2,7 @@
  * Claude API integration for analyzing PR changes and generating testing scenarios
  */
 
-// eslint-disable-next-line import/no-named-as-default
+// eslint-disable-next-line import-x/no-named-as-default
 import Anthropic from '@anthropic-ai/sdk';
 import type {
   PullRequestInfo,

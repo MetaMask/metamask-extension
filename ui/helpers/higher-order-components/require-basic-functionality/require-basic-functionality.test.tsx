@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 import { SWAP_PATH } from '../../constants/routes';
 import { getMessage } from '../../utils/i18n-helper';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
 import BasicFunctionalityRequired from './require-basic-functionality';
 

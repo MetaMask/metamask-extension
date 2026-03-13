@@ -15,7 +15,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { THEME_ROUTE, LANGUAGE_ROUTE } from '../../../helpers/constants/routes';
 import type { MetaMaskReduxState } from '../../../store/store';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
 import { AccountIdenticonItem } from './account-identicon-item';
 import { ShowDefaultAddressItem } from './show-default-address-item';

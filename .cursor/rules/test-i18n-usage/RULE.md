@@ -15,14 +15,14 @@ Reference: [PR #39859 - Replace hardcoded strings with i18n message references](
 - **Import locale messages from `test/lib/i18n-helpers`**, not directly from `app/_locales/en/messages.json`
 - Use the alias `enLocale as messages` for consistency
 - This prevents tests from breaking when translations change
-- Eliminates need for `eslint-disable-next-line import/no-restricted-paths`
+- Eliminates need for `eslint-disable-next-line import-x/no-restricted-paths`
 
 ```typescript
 ✅ CORRECT:
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 
 ❌ WRONG:
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import enMessages from '../../../app/_locales/en/messages.json';
 ```
 

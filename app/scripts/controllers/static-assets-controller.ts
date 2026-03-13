@@ -39,7 +39,6 @@ export type StaticAssetsPollingFeatureFlagOptions = {
   occurrenceFloor?: Record<string, number>;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type StaticAssetsControllerState = {};
 
 export type StaticAssetsControllerGetStateAction = ControllerGetStateAction<
