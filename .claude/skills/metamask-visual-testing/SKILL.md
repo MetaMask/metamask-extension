@@ -19,12 +19,15 @@ Use this skill when you need to:
 
 ## Prerequisites
 
-Run from repository root (macOS/Linux):
+**Build the extension first** (required before any MCP tool will work):
 
 ```bash
-yarn install      # Install dependencies
-yarn build:test   # Build the extension (or use mm_build tool)
+yarn install      # Install dependencies (first time only)
+yarn build:test   # Build extension to dist/chrome/
 ```
+
+You only need to rebuild after source code changes. `mm_launch` validates the
+build exists and returns a clear error with the exact command if it's missing.
 
 If ports are in use from previous runs:
 
@@ -38,7 +41,6 @@ The MetaMask MCP server provides tools for browser automation:
 
 | Tool                        | Description                                                 |
 | --------------------------- | ----------------------------------------------------------- |
-| `mm_build`                  | Build extension using `yarn build:test`                     |
 | `mm_launch`                 | Launch MetaMask in headed Chrome                            |
 | `mm_cleanup`                | Stop browser and all services                               |
 | `mm_get_state`              | Get current extension state (includes tab info)             |
@@ -75,7 +77,6 @@ The MCP server supports two execution contexts with different capabilities:
 
 ### E2E Context Capabilities (Default)
 
-- `build` - Build the extension
 - `fixture` - Wallet state management with presets
 - `chain` - Local Anvil blockchain (port 8545)
 - `contractSeeding` - Deploy test contracts (ERC-20, NFTs, etc.)
@@ -85,7 +86,6 @@ The MCP server supports two execution contexts with different capabilities:
 ### Prod Context Capabilities
 
 - `stateSnapshot` - Extension state detection
-- `build` - Optional, if configured
 
 ### Switching Contexts
 
@@ -256,13 +256,16 @@ If you need to discover which sessions exist:
 mm_knowledge_sessions { "limit": 10, "filters": { "sinceHours": 48 } }
 ```
 
-### 1. Build Extension (if needed)
+### 1. Build Extension (prerequisite — run outside MCP)
 
-```
-mm_build
+Build the extension before using any MCP tools:
+
+```bash
+yarn build:test
 ```
 
-Builds the extension using `yarn build:test`. Skip if already built.
+Skip if already built. `mm_launch` validates the build and returns an
+actionable error if it's missing.
 
 ### 2. Launch Extension (ALWAYS TAG THE SESSION)
 
@@ -435,7 +438,7 @@ Stops browser and all background services.
 
 ```
 0. mm_knowledge_search { "query": "unlock", "scope": "all", "sinceHours": 48 }
-1. mm_build
+1. [prerequisite] yarn build:test (run via Bash if not already built)
 2. mm_launch { "stateMode": "default", "goal": "Unlock smoke", "flowTags": ["unlock"], "tags": ["smoke"] }
 3. mm_describe_screen
 4. mm_type { "testId": "unlock-password", "text": "correct horse battery staple" }
@@ -566,7 +569,6 @@ The MCP server is a long-lived process. If you update the MCP server code (inclu
 
 | Code                         | Meaning                                     |
 | ---------------------------- | ------------------------------------------- |
-| `MM_BUILD_FAILED`            | Build command failed                        |
 | `MM_SESSION_ALREADY_RUNNING` | Session exists, call mm_cleanup first       |
 | `MM_NO_ACTIVE_SESSION`       | No session, call mm_launch first            |
 | `MM_LAUNCH_FAILED`           | Browser launch failed                       |
@@ -668,7 +670,7 @@ Error responses:
 | ---------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------- |
 | `MM_SESSION_ALREADY_RUNNING`                         | Previous session not cleaned                   | Call `mm_cleanup` first                                                           |
 | `MM_NO_ACTIVE_SESSION`                               | No browser running                             | Call `mm_launch` first                                                            |
-| Extension not loading                                | Extension not built                            | Call `mm_build` or `yarn build:test`                                              |
+| Extension not loading                                | Extension not built                            | Run `yarn build:test` then retry `mm_launch`                                      |
 | `EADDRINUSE` port error                              | Orphan processes                               | `lsof -ti:8545,12345,8000 \| xargs kill -9`                                       |
 | `MM_TARGET_NOT_FOUND`                                | Element not visible                            | Use `mm_describe_screen` to check state                                           |
 | `MM_WAIT_TIMEOUT`                                    | Slow environment or UI change                  | Increase timeout, check screenshot                                                |
