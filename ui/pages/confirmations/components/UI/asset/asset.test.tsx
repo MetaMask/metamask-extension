@@ -200,4 +200,18 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders placeholder when NFT has no image', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+      },
+    };
+    const { getByText } = render(<Asset asset={assetWithoutImage} />);
+
+    expect(getByText('NFT')).toBeInTheDocument();
+  });
 });

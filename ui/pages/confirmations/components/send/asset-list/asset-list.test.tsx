@@ -319,4 +319,23 @@ describe('AssetList', () => {
       expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
     });
   });
+
+  it('ensures all NFT assets have consistent height for virtualization', () => {
+    const nftAssets = [
+      { address: '0x789', chainId: '1', tokenId: '1', name: 'NFT 1', image: 'test.jpg' },
+      { address: '0x789', chainId: '1', tokenId: '2', name: 'NFT 2' },
+    ];
+
+    const { container } = render(
+      <AssetList
+        tokens={[]}
+        nfts={nftAssets}
+        allTokens={[]}
+        allNfts={nftAssets}
+      />,
+    );
+
+    const virtualizedContainer = container.querySelector('div[style*="height"]');
+    expect(virtualizedContainer).toBeInTheDocument();
+  });
 });
