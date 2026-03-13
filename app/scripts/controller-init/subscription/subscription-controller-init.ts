@@ -3,6 +3,8 @@ import {
   SubscriptionControllerMessenger,
   SubscriptionService,
 } from '@metamask/subscription-controller';
+import { createDeferredPromise } from '@metamask/utils';
+import type { SnapControllerState } from '@metamask/snaps-controllers';
 import { ControllerInitFunction } from '../types';
 import { SubscriptionControllerInitMessenger } from '../messengers/subscription';
 import { loadShieldConfig } from '../../../../shared/lib/shield';
@@ -10,16 +12,72 @@ import { captureException as captureExceptionWithSentry } from '../../../../shar
 
 const shieldConfig = loadShieldConfig();
 
+// Track snap initialization state to avoid race condition with authentication
+const snapInitPromise = createDeferredPromise<void>();
+let snapInitialized = false;
+
 export const SubscriptionControllerInit: ControllerInitFunction<
   SubscriptionController,
   SubscriptionControllerMessenger,
   SubscriptionControllerInitMessenger
 > = (request) => {
   const { initMessenger, controllerMessenger, persistedState } = request;
+
+  // Subscribe to SnapController initialization completion
+  // This resolves the race condition between snap initialization and authentication
+  const handleSnapStateChange = (state: SnapControllerState) => {
+    // Check if message-signing snap is loaded (has source code)
+    const messageSigningSnap =
+      state.snaps?.['npm:@metamask/message-signing-snap'];
+    if (messageSigningSnap && !snapInitialized) {
+      snapInitialized = true;
+      snapInitPromise.resolve();
+      // Unsubscribe after initialization
+      initMessenger.unsubscribe(
+        'SnapController:stateChange',
+        handleSnapStateChange,
+      );
+    }
+  };
+
+  // Listen for snap state changes
+  initMessenger.subscribe('SnapController:stateChange', handleSnapStateChange);
+
+  // Also check current state in case snap is already loaded
+  try {
+    const currentState = initMessenger.call('SnapController:getState');
+    handleSnapStateChange(currentState);
+  } catch {
+    // If we can't get state, we'll wait for the event
+  }
+
   const subscriptionService = new SubscriptionService({
     env: shieldConfig.subscriptionEnv,
     auth: {
       getAccessToken: async () => {
+        // Wait for snap initialization before attempting authentication
+        if (!snapInitialized) {
+          try {
+            // Wait up to 10 seconds for snap initialization
+            await Promise.race([
+              snapInitPromise.promise,
+              new Promise((_, reject) =>
+                setTimeout(
+                  () => reject(new Error('Snap initialization timeout')),
+                  10000,
+                ),
+              ),
+            ]);
+          } catch (error) {
+            // If initialization times out, let the auth attempt proceed
+            // It will fail with a more specific error
+            console.warn(
+              'Snap initialization not complete before auth request:',
+              error,
+            );
+          }
+        }
+
         try {
           return await initMessenger.call(
             'AuthenticationController:getBearerToken',

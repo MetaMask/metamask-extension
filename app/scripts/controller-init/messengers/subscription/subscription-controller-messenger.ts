@@ -1,5 +1,9 @@
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { Messenger } from '@metamask/messenger';
+import {
+  SnapControllerStateChangeEvent,
+  SnapControllerGetStateAction,
+} from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
@@ -43,9 +47,10 @@ export function getSubscriptionControllerMessenger(
 }
 
 type InitActions =
-  AuthenticationController.AuthenticationControllerGetBearerTokenAction;
+  | AuthenticationController.AuthenticationControllerGetBearerTokenAction
+  | SnapControllerGetStateAction;
 
-type InitEvents = never;
+type InitEvents = SnapControllerStateChangeEvent;
 
 export type SubscriptionControllerInitMessenger = ReturnType<
   typeof getSubscriptionControllerInitMessenger
@@ -65,7 +70,11 @@ export function getSubscriptionControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['AuthenticationController:getBearerToken'],
+    actions: [
+      'AuthenticationController:getBearerToken',
+      'SnapController:getState',
+    ],
+    events: ['SnapController:stateChange'],
   });
   return controllerInitMessenger;
 }
