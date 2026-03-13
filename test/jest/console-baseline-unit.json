@@ -541,6 +541,9 @@
       "React: Component update warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/qr-hardware-popover/qr-hardware-popover.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/rewards/onboarding/OnboardingIntroStep.test.tsx": {
       "error: Warning: React does not recognize": 1
     },
