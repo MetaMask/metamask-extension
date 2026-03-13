@@ -9,7 +9,6 @@ import {
   type SessionState,
   type SessionMetadata,
   type ScreenshotResult,
-  type BuildCapability,
   type FixtureCapability,
   type ChainCapability,
   type ContractSeedingCapability,
@@ -22,6 +21,7 @@ import {
   knowledgeStore,
   MockServerCapability,
 } from '@metamask/client-mcp-core';
+import { validateExtensionBuilt } from '../validate-extension';
 
 import { MetaMaskExtensionLauncher } from '..';
 import {
@@ -71,8 +71,8 @@ export class MetaMaskSessionManager implements ISessionManager {
     return this.workflowContext?.config?.environment ?? 'e2e';
   }
 
-  getBuildCapability(): BuildCapability | undefined {
-    return this.workflowContext?.build;
+  getBuildCapability(): undefined {
+    return undefined;
   }
 
   getFixtureCapability(): FixtureCapability | undefined {
@@ -158,9 +158,6 @@ export class MetaMaskSessionManager implements ISessionManager {
     const hasSession = this.hasActiveSession();
 
     const availableCapabilities: string[] = [];
-    if (this.getBuildCapability()) {
-      availableCapabilities.push('build');
-    }
     if (this.getFixtureCapability()) {
       availableCapabilities.push('fixture');
     }
@@ -350,7 +347,6 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const sessionId = generateSessionId();
     const stateMode = input.stateMode ?? 'default';
-    const autoBuild = input.autoBuild ?? true;
     const environment = this.workflowContext?.config?.environment ?? 'e2e';
     const isProdMode = environment === 'prod';
 
@@ -367,30 +363,13 @@ export class MetaMaskSessionManager implements ISessionManager {
       );
     }
 
-    // Handle build logic
-    if (autoBuild) {
-      const buildCapability = this.getBuildCapability();
-      if (!buildCapability) {
-        throw new Error(
-          'autoBuild is enabled but BuildCapability is not available.\n\n' +
-            'Options:\n' +
-            '  1. Use mm_build tool first to build the extension\n' +
-            '  2. Set autoBuild: false and provide extensionPath\n' +
-            '  3. Ensure BuildCapability is registered in the workflow context',
-        );
-      }
-
-      const buildResult = await buildCapability.build({ force: false });
-      if (!buildResult.success) {
-        throw new Error(
-          `Build failed: ${buildResult.error ?? 'Unknown error'}\n\n` +
-            'Use mm_build tool to diagnose build issues.',
-        );
-      }
-
-      if (!extensionPath && buildResult.extensionPath) {
-        extensionPath = buildResult.extensionPath;
-      }
+    // Resolve extension path — build is a manual prerequisite, validate only
+    try {
+      extensionPath = await validateExtensionBuilt(extensionPath);
+    } catch (error) {
+      throw new Error(
+        `${ErrorCodes.MM_LAUNCH_FAILED}: ${(error as Error).message}`,
+      );
     }
 
     const fixtureCapability = this.getMetaMaskFixtureCapability();
@@ -523,10 +502,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       goal: input.goal,
       flowTags: input.flowTags ?? [],
       tags: input.tags ?? [],
-      build: {
-        buildType: 'build:test',
-        extensionPathResolved: extensionPath,
-      },
       launch: {
         stateMode,
         fixturePreset: input.fixturePreset ?? null,

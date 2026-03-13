@@ -15,6 +15,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
+import { validateExtensionBuilt } from './validate-extension';
 import type {
   LauncherLaunchOptions,
   ScreenshotOptions,
@@ -225,31 +226,9 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
-  /**
-   * Validates that the extension is built and ready to load.
-   * This method only validates - it does NOT build the extension.
-   * Build logic is handled by BuildCapability in the MCP workflow.
-   *
-   * @throws Error if extension is not found at the configured path
-   */
   private async validateExtensionExists(): Promise<void> {
-    const manifestPath = path.join(this.options.extensionPath, 'manifest.json');
-
-    try {
-      await fs.access(this.options.extensionPath);
-      await fs.access(manifestPath);
-      console.log('Extension build found at:', this.options.extensionPath);
-    } catch {
-      throw new Error(
-        `Extension not found at: ${this.options.extensionPath}\n\n` +
-          'The extension must be built before launching.\n\n' +
-          'Options:\n' +
-          '  1. Use mm_build tool to build the extension\n' +
-          '  2. Run "yarn build:test" manually\n' +
-          '  3. Use MCP workflow with autoBuild: true (handled by BuildCapability)\n\n' +
-          `Expected manifest at: ${manifestPath}`,
-      );
-    }
+    await validateExtensionBuilt(this.options.extensionPath);
+    console.log('Extension build found at:', this.options.extensionPath);
   }
 
   private async ensureDirectories(): Promise<void> {
