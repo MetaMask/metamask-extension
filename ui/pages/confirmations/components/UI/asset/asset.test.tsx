@@ -200,4 +200,36 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders fallback placeholder when NFT has no image or collection imageUrl', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByText } = render(<Asset asset={assetWithoutImages} />);
+
+    // Should render the first letter of collection name as fallback
+    expect(getByText('T')).toBeInTheDocument();
+  });
+
+  it('renders question mark fallback when NFT has no image and no collection name', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImagesOrName = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: undefined,
+        imageUrl: undefined,
+      },
+    };
+    const { getByText } = render(<Asset asset={assetWithoutImagesOrName} />);
+
+    // Should render '?' as fallback
+    expect(getByText('?')).toBeInTheDocument();
+  });
 });
