@@ -48,6 +48,5 @@
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
-  ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"],
-  ["ui/ducks/metamask/metamask.js", "ui/store/actions.ts"]
+  ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"]
 ]

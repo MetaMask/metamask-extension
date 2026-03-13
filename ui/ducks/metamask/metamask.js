@@ -31,6 +31,13 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  getAlertEnabledness,
+  getUnconnectedAccountAlertEnabledness,
+  getCompletedOnboarding,
+} from '../../selectors/metamask-state-basic';
+
+export { getAlertEnabledness, getUnconnectedAccountAlertEnabledness, getCompletedOnboarding };
 
 const initialState = {
   isInitialized: false,
@@ -247,11 +254,6 @@ export function updateGasFees({
 }
 
 // Selectors
-
-export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
-
-export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
 export const getWeb3ShimUsageAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
@@ -526,9 +528,6 @@ export function getIsNetworkBusyByChainId(state, chainId) {
   return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
-export function getCompletedOnboarding(state) {
-  return state.metamask.completedOnboarding;
-}
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
