@@ -4930,7 +4930,7 @@ export function toggleExternalServices(
 }
 
 export function setIsIpfsGatewayEnabled(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setIsIpfsGatewayEnabled`);
@@ -7745,15 +7745,6 @@ export function setMusdConversionEducationSeen(value: boolean) {
 export function addMusdConversionDismissedCtaKey(key: string) {
   return async () => {
     await submitRequestToBackground('addMusdConversionDismissedCtaKey', [key]);
-  };
-}
-
-/**
- * Mark the Merkl claim modal as shown for the current install.
- */
-export function setMerklClaimModalShown() {
-  return async () => {
-    await submitRequestToBackground('setMerklClaimModalShown', [true]);
   };
 }
 

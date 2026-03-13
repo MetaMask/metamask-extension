@@ -83,6 +83,7 @@
   "localeMessages": "object",
   "metamask": {
     "accountGroupsMetadata": "object",
+    "accountIdByAddress": "object",
     "accountTree": "object",
     "accountWalletsMetadata": "object",
     "accountsAssets": "object",
@@ -220,7 +221,6 @@
     "manageInstitutionalWallets": "boolean",
     "marketData": "object",
     "marketingCampaignCookieId": null,
-    "merklClaimModalShown": "boolean",
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0,
     "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",

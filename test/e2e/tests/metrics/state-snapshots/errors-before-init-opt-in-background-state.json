@@ -28,7 +28,6 @@
       "fullScreenGasPollTokens": "object",
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isRampCardClosed": false,
-      "merklClaimModalShown": "boolean",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",

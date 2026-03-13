@@ -6,7 +6,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
-  AvatarTokenSize,
   BadgeWrapper,
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
@@ -65,7 +64,7 @@ export const AssetCellBadge = React.memo(
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            size={AvatarNetworkSize.Sm}
+            size={AvatarNetworkSize.Xs}
             name={allNetworks?.[chainId as Hex]?.name}
             src={badgeWrapperSrc}
             backgroundColor={BackgroundColor.backgroundSection}
@@ -77,7 +76,6 @@ export const AssetCellBadge = React.memo(
       >
         <AvatarToken
           name={symbol}
-          size={AvatarTokenSize.Lg}
           backgroundColor={BackgroundColor.backgroundSection}
           src={avatarTokenSrc}
         />

@@ -3948,22 +3948,6 @@
   "memo": {
     "message": "memo"
   },
-  "merklClaimButton": {
-    "message": "Claim",
-    "description": "Label for the full-width claim button on the mUSD asset detail page"
-  },
-  "merklClaimModalDescription": {
-    "message": "Your bonus will be issued on Linea, separate from your Ethereum mUSD balance. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "merklClaimModalTitle": {
-    "message": "Claim bonuses on Linea",
-    "description": "Title for the one-time Merkl claim bonus modal"
-  },
-  "merklClaimableBonusSubtitle": {
-    "message": "$1% bonus on Linea",
-    "description": "$1 is the bonus APY percentage (e.g. 3). Shown below the 'Claimable bonus' label on the mUSD asset detail page."
-  },
   "merklRewardsClaimBonus": {
     "message": "Claim bonus",
     "description": "Short label shown in token list for tokens with claimable Merkl rewards"

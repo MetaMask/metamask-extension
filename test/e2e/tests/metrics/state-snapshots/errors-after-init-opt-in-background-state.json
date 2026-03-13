@@ -12,6 +12,7 @@
     "isAccountTreeSyncingInProgress": "boolean"
   },
   "AccountsController": {
+    "accountIdByAddress": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
   "AddressBookController": { "addressBook": "object" },
@@ -45,7 +46,6 @@
     "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
-    "merklClaimModalShown": "boolean",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",

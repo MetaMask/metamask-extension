@@ -150,7 +150,6 @@ export type AppStateControllerState = {
   hasShownMultichainAccountsIntroModal: boolean;
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
-  merklClaimModalShown: boolean;
   showShieldEntryModalOnce: boolean | null;
   /**
    * The pending redirect route to be applied after the default page is loaded.
@@ -349,7 +348,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hasShownMultichainAccountsIntroModal: false,
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
-  merklClaimModalShown: false,
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
   pendingShieldCohort: null,
@@ -689,12 +687,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: true,
   },
   musdConversionDismissedCtaKeys: {
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  merklClaimModalShown: {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
@@ -1383,17 +1375,6 @@ export class AppStateController extends BaseController<
   setMusdConversionEducationSeen(value: boolean): void {
     this.update((state) => {
       state.musdConversionEducationSeen = value;
-    });
-  }
-
-  /**
-   * Sets whether the Merkl claim modal has been shown.
-   *
-   * @param shown - Whether the modal has been shown
-   */
-  setMerklClaimModalShown(shown: boolean): void {
-    this.update((state) => {
-      state.merklClaimModalShown = shown;
     });
   }
 

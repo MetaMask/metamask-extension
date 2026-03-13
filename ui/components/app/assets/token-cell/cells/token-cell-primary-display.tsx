@@ -36,7 +36,7 @@ export const TokenCellPrimaryDisplay = React.memo(
         <SensitiveText
           data-testid="multichain-token-list-item-value"
           color={TextColor.textAlternative}
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodySmMedium}
           textAlign={TextAlign.End}
           isHidden={privacyMode}
           length={SensitiveTextLength.Short}
