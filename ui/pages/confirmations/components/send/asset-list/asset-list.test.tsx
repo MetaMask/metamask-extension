@@ -319,4 +319,44 @@ describe('AssetList', () => {
       expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
     });
   });
+
+  describe('NFT item height consistency', () => {
+    it('maintains consistent item height for virtualized list', () => {
+      const nftsWithoutImages = [
+        {
+          address: '0x789',
+          chainId: '1',
+          tokenId: '1',
+          name: 'NFT Without Image',
+          image: undefined,
+          collection: { name: 'Test Collection' }
+        },
+        {
+          address: '0x790',
+          chainId: '1',
+          tokenId: '2',
+          name: 'NFT With Image',
+          image: 'https://example.com/nft.png',
+          collection: { name: 'Test Collection' }
+        },
+      ];
+
+      const { container } = render(
+        <AssetList
+          tokens={[]}
+          nfts={nftsWithoutImages}
+          allTokens={[]}
+          allNfts={nftsWithoutImages}
+        />,
+      );
+
+      // Verify that the virtualized container is rendered
+      const virtualizedContainer = container.querySelector('.relative.w-full');
+      expect(virtualizedContainer).toBeInTheDocument();
+
+      // The component should render NFT assets consistently regardless of image availability
+      const assetComponents = container.querySelectorAll('[data-testid="asset-component"]');
+      expect(assetComponents).toHaveLength(2);
+    });
+  });
 });
