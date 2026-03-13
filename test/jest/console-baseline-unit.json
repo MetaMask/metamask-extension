@@ -58,7 +58,7 @@
       "error: StorageService: Failed to set item:": 1
     },
     "app/scripts/metamask-controller.actions.test.js": {
-      "Test errors: Fetch failures": 2,
+      "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "µWebSockets: Compatibility warnings": 1,
@@ -274,6 +274,10 @@
     "ui/components/app/assets/nfts/nft-grid/nft-grid-item-error-boundary.test.tsx": {
       "Test errors: Uncaught Errors": 1,
       "error: The above error occurred in": 1
+    },
+    "ui/components/app/assets/nfts/nft-grid/nft-grid.test.tsx": {
+      "Test errors: Uncaught Errors": 3,
+      "error: The above error occurred in": 3
     },
     "ui/components/app/assets/nfts/nft-options/nft-options.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
