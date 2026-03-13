@@ -444,9 +444,6 @@
     "ui/components/app/multichain-transaction-details-modal/multichain-transaction-details-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/musd/hooks/useMerklRewards.test.ts": {
-      "error: Error: Network error": 1
-    },
     "ui/components/app/musd/musd-asset-cta.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2045,7 +2042,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
       "Reselect: Identity function warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
     },

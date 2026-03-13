@@ -303,7 +303,7 @@ export type TransactionControllerCallbacks = {
   }) => void;
 
   /** Reject an approval */
-  rejectApproval?: (id: string, error: Error) => void;
+  rejectApproval?: (id: string) => Promise<void>;
 };
 
 /**
@@ -396,14 +396,8 @@ export async function replaceMusdConversionTransactionForPayToken(
 
     // Reject the previous approval (automatic rejection, not user-initiated)
     try {
-      callbacks.rejectApproval?.(
-        transactionMeta.id,
-        new Error(
-          'Automatically rejected previous transaction due to same-chain enforcement for mUSD conversions',
-        ),
-      );
+      await callbacks.rejectApproval?.(transactionMeta.id);
     } catch (rejectError) {
-      // This can throw if the approval doesn't exist or has already been resolved
       console.warn(
         '[mUSD Conversion] Failed to reject previous transaction approval during replacement',
         rejectError,

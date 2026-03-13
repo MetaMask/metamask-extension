@@ -108,13 +108,13 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('123.46');
     });
 
-    it('returns state amount when isMaxAmount is false', () => {
+    it('pre-populates from transaction data when user has not typed yet', () => {
       const { result } = runHook({
         isMaxAmount: false,
         requiredTokens: [{ amountUsd: '123.456', skipIfBalance: false }],
       });
 
-      expect(result.current.amountFiat).toBe('0');
+      expect(result.current.amountFiat).toBe('123.46');
     });
   });
 

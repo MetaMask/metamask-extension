@@ -4169,8 +4169,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $1",
-    "description": "$1 is the 'Terms apply' link"
+    "message": "$1% annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",

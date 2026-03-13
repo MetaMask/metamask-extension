@@ -46,8 +46,20 @@ type UseMerklRewardsOptions = {
   showMerklBadge: boolean;
 };
 
+type MerklRewardQueryResult = {
+  hasClaimable: boolean;
+  unclaimedFiat: number | null;
+};
+
+const EMPTY_RESULT: MerklRewardQueryResult = {
+  hasClaimable: false,
+  unclaimedFiat: null,
+};
+
 type UseMerklRewardsReturn = {
+  isEligible: boolean;
   hasClaimableReward: boolean;
+  rewardAmountFiat: number | null;
   refetch: () => void;
 };
 
@@ -84,11 +96,11 @@ export const useMerklRewards = ({
     [showMerklBadge, merklRewardsEnabled, isGeoBlocked, chainId, tokenAddress],
   );
 
-  const { data: hasClaimableReward = false, refetch: refetchQuery } = useQuery({
+  const { data: queryData = EMPTY_RESULT, refetch: refetchQuery } = useQuery({
     queryKey: ['merklRewards', selectedAddress, chainId, tokenAddress],
-    queryFn: async ({ signal }): Promise<boolean> => {
+    queryFn: async ({ signal }): Promise<MerklRewardQueryResult> => {
       if (!tokenAddress || !selectedAddress) {
-        return false;
+        return EMPTY_RESULT;
       }
 
       const matchingReward = await fetchMerklRewardsForAsset(
@@ -98,8 +110,8 @@ export const useMerklRewards = ({
         signal,
       );
 
-      if (!matchingReward) {
-        return false;
+      if (!matchingReward || signal.aborted) {
+        return EMPTY_RESULT;
       }
 
       // Get claimed amount from on-chain read for instant update after claims.
@@ -112,6 +124,10 @@ export const useMerklRewards = ({
         rewardTokenAddress,
       );
 
+      if (signal.aborted) {
+        return EMPTY_RESULT;
+      }
+
       if (onChainClaimed !== null) {
         claimedAmount = onChainClaimed;
       }
@@ -120,19 +136,37 @@ export const useMerklRewards = ({
         BigInt(matchingReward.amount) - BigInt(claimedAmount);
       const oneCentInBaseUnits =
         10n ** BigInt(matchingReward.token.decimals - 2);
-      return unclaimedBaseUnits >= oneCentInBaseUnits;
+      const hasClaimable = unclaimedBaseUnits >= oneCentInBaseUnits;
+
+      let unclaimedFiat: number | null = null;
+      if (hasClaimable && matchingReward.token.price !== null) {
+        const divisor = 10 ** matchingReward.token.decimals;
+        unclaimedFiat =
+          (Number(unclaimedBaseUnits) / divisor) * matchingReward.token.price;
+      }
+
+      return { hasClaimable, unclaimedFiat };
     },
     enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
     staleTime: MERKL_REWARDS_STALE_TIME,
     cacheTime: MERKL_REWARDS_CACHE_TIME,
   });
 
+  // When `enabled` is false TanStack Query v4 still returns the last cached
+  // `data` for this queryKey. Gate on `isEligible` so a stale `true` never
+  // leaks to callers that shouldn't show a badge.
+  const hasClaimableRewardData = isEligible ? queryData : undefined;
+
   const refetch = useCallback(() => {
-    refetchQuery();
-  }, [refetchQuery]);
+    if (isEligible) {
+      refetchQuery();
+    }
+  }, [refetchQuery, isEligible]);
 
   return {
-    hasClaimableReward,
+    isEligible,
+    hasClaimableReward: hasClaimableRewardData?.hasClaimable ?? false,
+    rewardAmountFiat: hasClaimableRewardData?.unclaimedFiat ?? null,
     refetch,
   };
 };
