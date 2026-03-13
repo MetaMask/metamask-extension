@@ -333,56 +333,12 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
     next: () => IteratorResult<IteratorValueType, BuiltinIteratorReturn>,
     onDispose: () => void,
   ): MapIterator<IteratorValueType> {
-    const tag = 'WeakRefObjectMapIterator';
-    const makeMsg = (name: string) => `${tag}.${name} is not supported`;
     return {
-      [Symbol.toStringTag]: tag,
       [Symbol.dispose]: () => onDispose(),
       [Symbol.iterator]() {
         return this;
       },
       next,
-      // these functions are needed to satisfy the MapIterator type. There are
-      // two ways of implementing these functions, and neither are worth it:
-      // 1: do `const cleanMap = [...this.map.entires()];`, then return this
-      //   new map, as its already an iterator. But this is kind of expensive in
-      // CPU and memory (for a module that already attempts to save on both).
-      // 2. use the given next function to iterate, then implement the
-      // appropriate behavior on to of the returned values. This is cheap, both
-      // in memory and CPU, but very verbose for code that isn't used.
-      map() {
-        throw new Error(makeMsg('map'));
-      },
-      filter() {
-        throw new Error(makeMsg('filter'));
-      },
-      take() {
-        throw new Error(makeMsg('take'));
-      },
-      drop() {
-        throw new Error(makeMsg('drop'));
-      },
-      flatMap() {
-        throw new Error(makeMsg('flatMap'));
-      },
-      reduce() {
-        throw new Error(makeMsg('reduce'));
-      },
-      toArray() {
-        throw new Error(makeMsg('toArray'));
-      },
-      forEach() {
-        throw new Error(makeMsg('forEach'));
-      },
-      some() {
-        throw new Error(makeMsg('some'));
-      },
-      every() {
-        throw new Error(makeMsg('every'));
-      },
-      find() {
-        throw new Error(makeMsg('find'));
-      },
     };
   }
 }

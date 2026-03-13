@@ -83,6 +83,7 @@ describe('useBridging', () => {
         { ...getNativeAssetForChainId(CHAIN_IDS.OPTIMISM), chainId: 123 },
         MetaMetricsSwapsEventSource.TokenView,
         false,
+        { token: null },
       ],
       [
         BRIDGE_PREPARE_PATH,
@@ -92,6 +93,7 @@ describe('useBridging', () => {
         },
         MetaMetricsSwapsEventSource.TokenView,
         false,
+        { token: null },
       ],
       [
         BRIDGE_PREPARE_PATH,
@@ -127,13 +129,7 @@ describe('useBridging', () => {
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      async (
-        expectedUrl: string,
-        token: Record<string, unknown>,
-        location: string,
-        isSwap: boolean,
-        expectedState: { token: { chainId: string } | null } = { token: null },
-      ) => {
+      async (expectedUrl, token, location, isSwap, expectedState) => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -233,6 +229,7 @@ describe('useBridging', () => {
         },
         undefined,
         'Home',
+        { token: null },
       ],
       [
         '/asset/0xa/',
@@ -300,6 +297,7 @@ describe('useBridging', () => {
           decimals: 18,
         },
         MetaMetricsSwapsEventSource.TokenView,
+        { token: null },
       ],
       // Should use bip44 default asset for BTC
       [
@@ -350,13 +348,7 @@ describe('useBridging', () => {
       ],
     ])(
       'should open swap with correct token pair when pathname is %s',
-      async (
-        pathname: string,
-        expectedUrl: string,
-        token: { symbol: string },
-        location: string,
-        expectedState: { token: { chainId: string } | null } = { token: null },
-      ) => {
+      async (pathname, expectedUrl, token, location, expectedState) => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -428,7 +420,8 @@ describe('useBridging', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              token_symbol_source: token?.symbol ?? 'ETH',
+              token_symbol_source:
+                (token as { symbol?: string } | undefined)?.symbol ?? 'ETH',
             },
           ],
           [UnifiedSwapBridgeEventName.PageViewed, {}],
