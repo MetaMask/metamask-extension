@@ -142,7 +142,6 @@ describe('useRecipientSelectionMetrics', () => {
   });
 
   describe('parameterized input method tests', () => {
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Manual', 'setRecipientInputMethodManual'],
       ['Pasted', 'setRecipientInputMethodPasted'],

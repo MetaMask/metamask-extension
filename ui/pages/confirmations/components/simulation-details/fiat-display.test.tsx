@@ -51,7 +51,6 @@ describe('FiatDisplay', () => {
   });
 
   describe('IndividualFiatDisplay', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [100, '$100.00'],
       [-100, '$100.00'],
@@ -76,7 +75,6 @@ describe('FiatDisplay', () => {
   });
 
   describe('TotalFiatDisplay', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [[100, 200, FIAT_UNAVAILABLE, 300], 'Total = $600.00'],
       [[-100, -200, FIAT_UNAVAILABLE, -300], 'Total = $600.00'],
@@ -99,7 +97,6 @@ describe('FiatDisplay', () => {
       expect(queryByText('600.00')).toBe(null);
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         [1_000_000_000_000_000, 2_000_000_000_000_000],

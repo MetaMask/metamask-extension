@@ -211,7 +211,6 @@ describe('Accounts Selectors', () => {
   });
 
   describe('isSelectedInternalAccountEth', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isEth: true },
       {

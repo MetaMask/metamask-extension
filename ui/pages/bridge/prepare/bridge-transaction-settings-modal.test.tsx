@@ -272,7 +272,10 @@ describe('BridgeTransactionSettingsModal', () => {
     });
   });
 
-  const ACTIONS = [
+  const ACTIONS: [
+    string,
+    (input: HTMLElement, value: string) => Promise<void>,
+  ][] = [
     [
       'paste',
       async (_input: HTMLElement, value: string) => {
@@ -290,14 +293,9 @@ describe('BridgeTransactionSettingsModal', () => {
     ],
   ];
 
-  // @ts-expect-error - each is a valid test function
   describe.each(ACTIONS)(
     'Valid amount validation on %s input',
-    (
-      _actionName: string,
-      setValue: (input: HTMLElement, value: string) => void | Promise<void>,
-    ) => {
-      // @ts-expect-error - each is a valid test function
+    (_actionName, setValue) => {
       it.each([
         ['1234', '1234'],
         ['12.34', '12.34'],
@@ -335,14 +333,9 @@ describe('BridgeTransactionSettingsModal', () => {
     },
   );
 
-  // @ts-expect-error - each is a valid test function
   describe.each(ACTIONS)(
     'Invalid amount validation on %s input',
-    (
-      _actionName: string,
-      setValue: (input: HTMLElement, value: string) => void | Promise<void>,
-    ) => {
-      // @ts-expect-error - each is a valid test function
+    (_actionName, setValue) => {
       it.each(['abc', '!', '.', ' ', ', '])(
         `should disable submit button: %s`,
         async (value: string) => {

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.e2e.tsbuildinfo",
+    "types": ["mocha", "chrome", "w3c-web-hid", "w3c-web-usb"]
+  },
+  "exclude": ["storybook-build", "**/*.stories.tsx", "**/*.stories.ts"],
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "test/e2e/**/*.spec.js",
+    "test/e2e/**/*.spec.ts",
+    "test/e2e/**/*.spec.tsx",
+    "app/scripts/fixtures",
+    "types"
+  ]
+}

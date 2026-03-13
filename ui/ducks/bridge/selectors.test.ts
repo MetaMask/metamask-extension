@@ -1763,7 +1763,6 @@ describe('Bridge selectors', () => {
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
 
-    // @ts-expect-error: each is a valid test function in jest
     it.each([
       {
         priceImpact: '-0.05',
@@ -1802,15 +1801,7 @@ describe('Bridge selectors', () => {
       },
     ])(
       'should return isPriceImpactWarning=$isPriceImpactWarning and isPriceImpactError=$isPriceImpactError when priceImpact=$priceImpact',
-      ({
-        priceImpact,
-        isPriceImpactWarning,
-        isPriceImpactError,
-      }: {
-        priceImpact: string;
-        isPriceImpactWarning: boolean;
-        isPriceImpactError: boolean;
-      }) => {
+      ({ priceImpact, isPriceImpactWarning, isPriceImpactError }) => {
         const state = createBridgeMockStore({
           bridgeStateOverrides: {
             quotes: mockBridgeQuotesNativeErc20.map((quote) => ({

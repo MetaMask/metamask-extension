@@ -698,8 +698,15 @@ export default class MetaMetricsController extends BaseController<
         }
       : {};
 
+    const mergedFragment = merge(
+      {},
+      additionalFragmentProps,
+      fragment,
+    ) as MetaMetricsEventFragment;
+
     this.update((state) => {
-      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
+      (state.fragments as Record<string, MetaMetricsEventFragment>)[id] =
+        mergedFragment;
     });
 
     if (fragment.initialEvent) {
@@ -769,7 +776,7 @@ export default class MetaMetricsController extends BaseController<
 
     if (createIfNotFound) {
       this.update((state) => {
-        state.fragments[id] = {
+        (state.fragments as Record<string, MetaMetricsEventFragment>)[id] = {
           canDeleteIfAbandoned: true,
           category: MetaMetricsEventCategory.Transactions,
           successEvent: TransactionMetaMetricsEvent.finalized,
@@ -784,10 +791,15 @@ export default class MetaMetricsController extends BaseController<
     }
 
     this.update((state) => {
-      state.fragments[id] = merge(state.fragments[id], {
-        ...payload,
-        lastUpdated: Date.now(),
-      });
+      const currentFragment = state.fragments[id] as unknown as object;
+      (state.fragments as Record<string, MetaMetricsEventFragment>)[id] = merge(
+        {},
+        currentFragment,
+        {
+          ...payload,
+          lastUpdated: Date.now(),
+        },
+      ) as MetaMetricsEventFragment;
     });
   }
 
@@ -1169,8 +1181,14 @@ export default class MetaMetricsController extends BaseController<
 
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
-    this.update((state) => {
-      state.eventsBeforeMetricsOptIn.push(event);
+    this.update(() => {
+      return {
+        ...this.state,
+        eventsBeforeMetricsOptIn: [
+          ...this.state.eventsBeforeMetricsOptIn,
+          event,
+        ],
+      };
     });
   }
 
@@ -1195,8 +1213,14 @@ export default class MetaMetricsController extends BaseController<
 
   // It adds a trace into a queue, which is only tracked if a user opts into metrics.
   addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
-    this.update((state) => {
-      state.tracesBeforeMetricsOptIn.push(traceData);
+    this.update(() => {
+      return {
+        ...this.state,
+        tracesBeforeMetricsOptIn: [
+          ...this.state.tracesBeforeMetricsOptIn,
+          traceData,
+        ],
+      };
     });
   }
 

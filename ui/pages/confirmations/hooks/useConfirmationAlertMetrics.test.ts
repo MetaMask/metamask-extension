@@ -149,22 +149,9 @@ describe('useConfirmationAlertMetrics', () => {
     },
   ];
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(testCases)(
     '$description',
-    ({
-      alertKey,
-      action,
-      expectedProperties,
-    }: {
-      description: string;
-      alertKey: string;
-      action:
-        | 'trackAlertRender'
-        | 'trackInlineAlertClicked'
-        | 'trackAlertActionClicked';
-      expectedProperties: Record<string, unknown>;
-    }) => {
+    ({ alertKey, action, expectedProperties }) => {
       const finalExpectedProperties = {
         ...EXPECTED_PROPERTIES_BASE,
         ...expectedProperties,

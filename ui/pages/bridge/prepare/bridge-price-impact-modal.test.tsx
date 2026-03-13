@@ -92,7 +92,6 @@ describe('BridgePriceImpactModal', () => {
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
     });
 
-    // @ts-expect-error: each is a valid test function in jest
     it.each([
       '0.001',
       '0.07', // warning
@@ -142,7 +141,6 @@ describe('BridgePriceImpactModal', () => {
         });
     });
 
-    // @ts-expect-error: each is a valid test function in jest
     it.each([
       '0.07', // warning
       '0.27', // error
@@ -177,7 +175,6 @@ describe('BridgePriceImpactModal', () => {
       },
     );
 
-    // @ts-expect-error: each is a valid test function in jest
     it.each(['0.001', '-0.1', undefined, '0'])(
       'should not render when there is no price impact warning or error: %s',
       async (priceImpact: string | undefined) => {

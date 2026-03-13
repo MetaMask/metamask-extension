@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.unit.tsbuildinfo",
+    "types": ["jest", "chrome", "w3c-web-usb"]
+  },
+  "exclude": ["storybook-build", "**/*.stories.tsx", "**/*.stories.ts"],
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "**/*.test.js",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "test/jest",
+    "types"
+  ]
+}

@@ -7,7 +7,6 @@ import {
   version,
   MEGAETH_TESTNET_V2_CONFIG,
   MEGAETH_TESTNET_V1_CHAIN_ID,
-  type VersionedData,
 } from './184';
 
 const VERSION = version;
@@ -150,10 +149,9 @@ describe(`migration #${VERSION}`, () => {
     },
   ];
 
-  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidStates)(
     'should capture exception if $scenario',
-    async ({ state }: { errorMessage: string; state: VersionedData }) => {
+    async ({ state }) => {
       const orgState = cloneDeep(state);
 
       const migratedState = await migrate(state);
@@ -283,7 +281,6 @@ describe(`migration #${VERSION}`, () => {
     expect(newStorage).toStrictEqual(expectedStorage);
   });
 
-  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(['megaeth-testnet', 'random-network-client-id'])(
     'switchs to mainnet when the selected network client id is in MegaETH Testnet v1 - %s',
     async (selectedNetworkClientId: string) => {

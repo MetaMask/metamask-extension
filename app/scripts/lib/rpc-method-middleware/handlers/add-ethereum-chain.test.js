@@ -4,7 +4,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import addEthereumChain from './add-ethereum-chain';
-import EthChainUtils from './ethereum-chain-utils';
+import * as EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({
   ...jest.requireActual('./ethereum-chain-utils'),

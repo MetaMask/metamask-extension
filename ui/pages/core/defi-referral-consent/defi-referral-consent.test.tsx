@@ -29,7 +29,6 @@ describe('DefiReferralConsent', () => {
     jest.clearAllMocks();
   });
 
-  // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each(partnerTestCases)(
     'with $partnerName',
     ({ partnerId, partnerName, learnMoreUrl }: PartnerTestCase) => {

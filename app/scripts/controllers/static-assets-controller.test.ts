@@ -170,7 +170,6 @@ describe('StaticAssetsController', () => {
       );
     });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       {
         payload: {
@@ -285,7 +284,6 @@ describe('StaticAssetsController', () => {
         expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
       });
 
-      // @ts-expect-error This function is missing from the Mocha type definitions
       it.each([
         {
           testCase: 'it has no assetId',
@@ -324,72 +322,60 @@ describe('StaticAssetsController', () => {
             name: 'No Decimals',
           },
         },
-      ])(
-        'ignores the token if $testCase',
-        async ({
-          token,
-        }: {
-          token: {
-            assetId: string;
-            symbol: string;
-            decimals: number;
-            name: string;
-          };
-        }) => {
-          const {
-            controller,
-            spies: {
-              tokensControllerAddTokensSpy,
-              networkControllerFindNetworkClientIdByChainIdSpy,
-              tokensControllerGetStateSpy,
-              fetchWithCacheSpy,
-            },
-          } = setupController({
-            supportedChains: [CHAIN_IDS.MAINNET],
-          });
-          networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
-            'mainnet',
-          );
-          tokensControllerGetStateSpy.mockResolvedValue({
-            allIgnoredTokens: {},
-          });
-          tokensControllerAddTokensSpy.mockReturnThis();
-          fetchWithCacheSpy.mockResolvedValue([...mockTopAssets, token]);
-
-          await controller._executePoll({
-            chainIds: [CHAIN_IDS.MAINNET],
-            selectedAccountAddress: '0x123',
-          });
-
-          expect(
+      ])('ignores the token if $testCase', async ({ token }) => {
+        const {
+          controller,
+          spies: {
+            tokensControllerAddTokensSpy,
             networkControllerFindNetworkClientIdByChainIdSpy,
-          ).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
-          expect(tokensControllerGetStateSpy).toHaveBeenCalled();
-          expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
-            [
-              {
-                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                symbol: 'WETH',
-                decimals: 18,
-                name: 'Wrapped Ether',
-                aggregators: [],
-                image:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
-              },
-              {
-                address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-                symbol: 'WBTC',
-                decimals: 8,
-                name: 'Wrapped Bitcoin',
-                aggregators: [],
-                image:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
-              },
-            ],
-            'mainnet',
-          );
-        },
-      );
+            tokensControllerGetStateSpy,
+            fetchWithCacheSpy,
+          },
+        } = setupController({
+          supportedChains: [CHAIN_IDS.MAINNET],
+        });
+        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
+          'mainnet',
+        );
+        tokensControllerGetStateSpy.mockResolvedValue({
+          allIgnoredTokens: {},
+        });
+        tokensControllerAddTokensSpy.mockReturnThis();
+        fetchWithCacheSpy.mockResolvedValue([...mockTopAssets, token]);
+
+        await controller._executePoll({
+          chainIds: [CHAIN_IDS.MAINNET],
+          selectedAccountAddress: '0x123',
+        });
+
+        expect(
+          networkControllerFindNetworkClientIdByChainIdSpy,
+        ).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
+        expect(tokensControllerGetStateSpy).toHaveBeenCalled();
+        expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
+          [
+            {
+              address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              symbol: 'WETH',
+              decimals: 18,
+              name: 'Wrapped Ether',
+              aggregators: [],
+              image:
+                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
+            },
+            {
+              address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+              symbol: 'WBTC',
+              decimals: 8,
+              name: 'Wrapped Bitcoin',
+              aggregators: [],
+              image:
+                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
+            },
+          ],
+          'mainnet',
+        );
+      });
     });
 
     describe('filterIgnoredTokens', () => {
@@ -458,7 +444,6 @@ describe('StaticAssetsController', () => {
         );
       });
 
-      // @ts-expect-error This function is missing from the Mocha type definitions
       it.each([
         {
           testCase: 'allIgnoredTokens is not found',
@@ -476,11 +461,7 @@ describe('StaticAssetsController', () => {
         },
       ])(
         `does not filter the tokens if $testCase`,
-        async ({
-          allIgnoredTokens,
-        }: {
-          allIgnoredTokens: Record<string, Record<string, string[]>>;
-        }) => {
+        async ({ allIgnoredTokens }) => {
           const {
             controller,
             spies: {

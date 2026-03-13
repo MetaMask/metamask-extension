@@ -98,7 +98,7 @@ describe('Deep link utils', () => {
     });
 
     describe('createdAt validation', () => {
-      const invalidCreatedAtValues = [
+      const invalidCreatedAtValues: [string, unknown][] = [
         ['undefined', undefined],
         ['null', null],
         ['string', '1234567890'],
@@ -110,10 +110,9 @@ describe('Deep link utils', () => {
         ['array', []],
       ];
 
-      // @ts-expect-error '.each' is missing from type definitions
       it.each(invalidCreatedAtValues)(
         'returns null when createdAt is %s',
-        async (_description: unknown, invalidValue: unknown) => {
+        async (_description, invalidValue) => {
           const mockData = {
             createdAt: invalidValue,
             referringLink: 'https://link.metamask.io/deep-link',

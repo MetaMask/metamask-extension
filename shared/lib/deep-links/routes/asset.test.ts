@@ -36,7 +36,6 @@ describe('assetRoute', () => {
     },
   ];
 
-  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each(testCases)(
     'assetRoute.handler correctly handles assetId param: input=$assetIdParam, expected=$expected',
     ({ assetIdParam: searchParamVal, expectedPath }: TestCase) => {
@@ -68,7 +67,6 @@ describe('assetRoute', () => {
     },
   ];
 
-  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each(testCasesWithInvalidAssetId)(
     'assetRoute.handler throws error for invalid assetId param: input=$assetIdParam, expectedError=$expectedError',
     ({ assetIdParam, expectedError }: TestCaseWithInvalidAssetId) => {

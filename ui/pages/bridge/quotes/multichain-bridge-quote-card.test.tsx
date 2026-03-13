@@ -382,7 +382,6 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(container).toMatchSnapshot();
   });
 
-  // @ts-expect-error: each is a valid test function in jest
   it.each(['.26', '.06'])(
     'should render price impact warnings: %s',
     async (priceImpact: string) => {

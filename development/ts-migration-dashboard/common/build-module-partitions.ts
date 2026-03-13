@@ -93,7 +93,7 @@ export default async function buildModulePartitions(): Promise<
 
   const result = await madge(entryFilePaths, {
     baseDir: ROOT_DIRECTORY_PATH,
-    tsConfig: path.join(ROOT_DIRECTORY_PATH, 'tsconfig.json'),
+    tsConfig: path.join(ROOT_DIRECTORY_PATH, 'tsconfig.base.json'),
   });
   const dependenciesByFilePath = result.obj();
   const modulesById = buildModulesWithLevels(

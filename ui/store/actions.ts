@@ -166,6 +166,7 @@ import type { DefaultAddressScope } from '../../shared/constants/default-address
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
+import type { NftDropdownState } from '../../shared/types/nfts';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import {
@@ -3980,19 +3981,8 @@ export function hideDeprecatedNetworkModal(): Action {
   };
 }
 
-/**
- * TODO: this should be moved somewhere else when it makese sense to do so
- */
-type NftDropDownState = {
-  [address: string]: {
-    [chainId: string]: {
-      [nftAddress: string]: boolean;
-    };
-  };
-};
-
 export function updateNftDropDownState(
-  value: NftDropDownState,
+  value: NftDropdownState,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises

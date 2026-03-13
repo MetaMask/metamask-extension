@@ -4,12 +4,6 @@ import {
   normalizeSafeAddress,
 } from './address';
 
-type TestAddress = {
-  address: string;
-  normalizedAddress: string;
-  checksumAddress: string;
-};
-
 const ETH_ADDRESSES = [
   // Lower-case address
   {
@@ -36,48 +30,43 @@ const NON_EVM_ADDRESSES = [
 
 describe('address', () => {
   describe('isEthAddress', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
       'returns true if address is an ethereum address: $address',
-      ({ address }: TestAddress) => {
+      ({ address }) => {
         expect(isEthAddress(address)).toBe(true);
         expect(isEthAddress(address.toLowerCase())).toBe(true);
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(NON_EVM_ADDRESSES)(
       'returns false if address is not an ethereum address: $address',
-      ({ address }: TestAddress) => {
+      ({ address }) => {
         expect(isEthAddress(address)).toBe(false);
       },
     );
   });
 
   describe('normalizeAddress', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
       'normalizes address: $address',
-      ({ address, normalizedAddress }: TestAddress) => {
+      ({ address, normalizedAddress }) => {
         expect(normalizeAddress(address)).toBe(normalizedAddress);
         expect(normalizeAddress(address.toLowerCase())).toBe(normalizedAddress);
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(NON_EVM_ADDRESSES)(
       'returns the original address if its a non-EVM address',
-      ({ address }: TestAddress) => {
+      ({ address }) => {
         expect(normalizeAddress(address)).toBe(address);
       },
     );
   });
 
   describe('normalizeSafeAddress', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
       'normalizes address to its "safe" form: $address to: $checksumAddress',
-      ({ address, checksumAddress }: TestAddress) => {
+      ({ address, checksumAddress }) => {
         expect(normalizeSafeAddress(address)).toBe(checksumAddress);
         expect(normalizeSafeAddress(address.toLowerCase())).toBe(
           checksumAddress,
@@ -85,10 +74,9 @@ describe('address', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(NON_EVM_ADDRESSES)(
       'returns the original address if its a non-EVM address',
-      ({ address }: TestAddress) => {
+      ({ address }) => {
         expect(normalizeSafeAddress(address)).toBe(address);
       },
     );

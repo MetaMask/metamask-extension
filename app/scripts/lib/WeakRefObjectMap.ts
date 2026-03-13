@@ -330,17 +330,15 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * @param onDispose - A callback function that is called when the iterator is disposed, allowing for any necessary cleanup.
    */
   private createMapIterator<IteratorValueType>(
-    next: () => IteratorResult<IteratorValueType>,
+    next: () => IteratorResult<IteratorValueType, BuiltinIteratorReturn>,
     onDispose: () => void,
   ): MapIterator<IteratorValueType> {
     return {
+      [Symbol.dispose]: () => onDispose(),
       [Symbol.iterator]() {
         return this;
       },
       next,
-      [Symbol.dispose]() {
-        onDispose();
-      },
     };
   }
 }

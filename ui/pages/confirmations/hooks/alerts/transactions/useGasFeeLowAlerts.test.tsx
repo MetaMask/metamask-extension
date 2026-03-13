@@ -90,7 +90,6 @@ describe('useGasFeeLowAlerts', () => {
     ).toEqual([]);
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(
     Object.values(PriorityLevels).filter(
       (level) => level !== PriorityLevels.low,

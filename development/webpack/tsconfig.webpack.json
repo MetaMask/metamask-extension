@@ -10,5 +10,5 @@
   },
   "exclude": ["test"],
   // this should match our node version in .nvmrc
-  "extends": "@tsconfig/node22/tsconfig.json"
+  "extends": "@tsconfig/node24/tsconfig.json"
 }

@@ -920,7 +920,6 @@ describe('submitSmartTransactionHook', () => {
       extensionReturnTxHashAsapBatch: false,
     };
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       { flag: true, shouldShow: false, desc: 'skips status page when true' },
       { flag: false, shouldShow: true, desc: 'shows status page when false' },

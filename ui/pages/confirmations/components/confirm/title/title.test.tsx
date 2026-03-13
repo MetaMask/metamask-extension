@@ -287,7 +287,6 @@ describe('ConfirmTitle', () => {
       expect(getByText(alertMock2.reason)).toBeInTheDocument();
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       TransactionType.musdClaim,
       TransactionType.musdConversion,

@@ -8,7 +8,7 @@
     "ts",
     "tsx"
   ],
-  "tsConfig": "tsconfig.json",
+  "tsConfig": "tsconfig.source.json",
   "detectiveOptions": {
     "es6": {
       "skipTypeImports": true

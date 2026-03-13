@@ -13,7 +13,7 @@ jest.mock('../../../shared/constants/network', () => ({
 }));
 
 // eslint-disable-next-line import/first
-import { migrate, version, HYPEREVM_CHAIN_ID, type VersionedData } from './197';
+import { migrate, version, HYPEREVM_CHAIN_ID } from './197';
 
 const VERSION = version;
 const oldVersion = VERSION - 1;
@@ -153,10 +153,9 @@ describe(`migration #${VERSION}`, () => {
     },
   ];
 
-  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidStates)(
     'should capture exception if $scenario',
-    async ({ state }: { errorMessage: string; state: VersionedData }) => {
+    async ({ state }) => {
       const orgState = cloneDeep(state);
       const localChangedControllers = new Set<string>();
 

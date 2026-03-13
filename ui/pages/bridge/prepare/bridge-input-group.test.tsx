@@ -367,7 +367,6 @@ describe('BridgeInputGroup', () => {
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });
 
-  // @ts-expect-error - each is a valid test function
   it.each([
     [
       'source',
@@ -392,15 +391,12 @@ describe('BridgeInputGroup', () => {
   ])(
     'should render %s networks',
     async (
-      _description: string,
-      getToken: typeof getFromToken,
-      enabledNetworkMap: Record<string, Record<string, boolean>>,
-      getChains: typeof getFromChains,
-      isDestination: boolean,
-      {
-        expectedDefaultToken,
-        expectedNetworkCount,
-      }: { expectedDefaultToken: string; expectedNetworkCount: number },
+      _description,
+      getToken,
+      enabledNetworkMap,
+      getChains,
+      isDestination,
+      { expectedDefaultToken, expectedNetworkCount },
     ) => {
       setupFetchMock(
         undefined,

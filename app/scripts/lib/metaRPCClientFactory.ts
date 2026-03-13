@@ -11,9 +11,6 @@ import {
 } from '@metamask/utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import getNextId from '../../../shared/lib/random-id';
-// It *is* used: in TypeDoc comment, you silly goose.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type MetamaskController from '../metamask-controller';
 
 const JSON_RPC_VERSION = '2.0' as const;
 
@@ -301,7 +298,8 @@ export type MetaRpcClientFactory<Api extends FunctionRegistry<Api>> =
  * It can parse JSON-RPC 2.0 requests and responses.
  *
  * In practice, this is used to send messages to from the UI to the background's
- * API methods configured within {@link MetamaskController}.
+ * API methods configured within
+ * {@link import('../metamask-controller').default | MetamaskController}.
  *
  * @template Api - The type of the methods available on the MetaRPCClient.
  * @param connectionStream - The connection stream to use for the RPC client.
