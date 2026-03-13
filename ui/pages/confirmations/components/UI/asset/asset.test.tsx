@@ -200,4 +200,50 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders NFT with minimum height when no image is available', () => {
+    const assetWithoutImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImage} />);
+
+    const nftAsset = getByTestId('nft-asset');
+    expect(nftAsset).toHaveStyle('min-height: 70px');
+  });
+
+  it('displays NFT placeholder when no image is available', () => {
+    const assetWithoutImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImage} />);
+
+    expect(getByTestId('nft-placeholder')).toBeInTheDocument();
+    expect(getByTestId('nft-placeholder')).toHaveTextContent('NFT');
+  });
+
+  it('renders ERC1155 NFT with minimum height when no image is available', () => {
+    const assetWithoutImage = {
+      ...mockNFTERC1155Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC1155Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImage} />);
+
+    const nftAsset = getByTestId('nft-asset');
+    expect(nftAsset).toHaveStyle('min-height: 70px');
+    expect(getByTestId('nft-placeholder')).toBeInTheDocument();
+  });
 });

@@ -65,6 +65,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
+      style={{ minHeight: 70 }}
     >
       <Box marginRight={4} style={{ minWidth: 32 }}>
         <BadgeWrapper
@@ -90,7 +91,25 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <Box
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                backgroundColor: 'var(--color-background-alternative)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--color-text-muted)',
+                fontSize: '12px',
+                fontWeight: '500',
+              }}
+              data-testid="nft-placeholder"
+            >
+              NFT
+            </Box>
+          )}
         </BadgeWrapper>
       </Box>
       <Box
