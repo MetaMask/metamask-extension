@@ -3,22 +3,12 @@ import { is } from '@metamask/superstruct';
 
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import * as randomId from '../../shared/lib/random-id';
-import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
-import { updateMetamaskState } from './actions';
 import {
   getStatePatches,
   PatchesStruct,
   setupPatchStoreSubstreamConnection,
 } from './patch-store-substream-connection';
-import configureStore, { Store } from './store';
-
-jest.mock('./actions', () => ({
-  updateMetamaskState: jest.fn((patches) => ({
-    type: 'UPDATE_METAMASK_STATE',
-    patches,
-  })),
-}));
 
 jest.mock('../../shared/lib/random-id');
 
@@ -42,13 +32,6 @@ function createPatchStreamPair() {
   const backgroundStream = backgroundMux.createStream('patch-store');
 
   return { uiStream, backgroundStream };
-}
-
-/**
- * Creates a deferred store promise pair for use in tests.
- */
-function createStorePromise(): PromiseWithResolvers<Store> {
-  return withResolvers<Store>();
 }
 
 /**
@@ -136,58 +119,33 @@ describe('patch-store substream connection', () => {
 
   describe('setupPatchStoreSubstreamConnection', () => {
     describe('when a sendUpdate notification is received', () => {
-      it('dispatches updateMetamaskState with the received patches', async () => {
+      it('calls handleSendUpdate with the received notification', async () => {
         const { uiStream, backgroundStream } = createPatchStreamPair();
-        const storePromise = createStorePromise();
-        const store = configureStore({});
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const handleSendUpdate = jest.fn();
         const patches = [{ op: 'replace' as const, path: ['y'], value: 2 }];
-        setupPatchStoreSubstreamConnection(uiStream, storePromise);
-        storePromise.resolve(store);
-
-        backgroundStream.write({
+        setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
+        const notification = {
           jsonrpc: '2.0',
           method: SEND_UPDATE,
           params: [patches],
-        });
+        };
+
+        backgroundStream.write(notification);
         await flushBufferedWrites();
 
-        expect(updateMetamaskState).toHaveBeenCalledWith(patches);
-        expect(dispatchSpy).toHaveBeenCalledWith(updateMetamaskState(patches));
-      });
-
-      it('waits for the Redux store to be ready before dispatching', async () => {
-        const { uiStream, backgroundStream } = createPatchStreamPair();
-        const storePromise = createStorePromise();
-        const store = configureStore({});
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const patches = [{ op: 'replace' as const, path: ['z'], value: 3 }];
-        setupPatchStoreSubstreamConnection(uiStream, storePromise);
-
-        backgroundStream.write({
-          jsonrpc: '2.0',
-          method: SEND_UPDATE,
-          params: [patches],
-        });
-        // Store not yet resolved — dispatch has not been called
-        await flushBufferedWrites();
-        expect(dispatchSpy).not.toHaveBeenCalled();
-
-        // Now resolve the store
-        storePromise.resolve(store);
-        await flushBufferedWrites();
-        expect(dispatchSpy).toHaveBeenCalledWith(updateMetamaskState(patches));
+        expect(handleSendUpdate).toHaveBeenCalledWith(
+          expect.objectContaining(notification),
+        );
       });
     });
 
     describe('when a notification is received with an unknown method', () => {
       it('logs an error', async () => {
         const { uiStream, backgroundStream } = createPatchStreamPair();
-        const storePromise = createStorePromise();
         const consoleSpy = jest
           .spyOn(console, 'error')
           .mockImplementation(() => undefined);
-        setupPatchStoreSubstreamConnection(uiStream, storePromise);
+        setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
         const message = {
           id: 9999,
           jsonrpc: '2.0',
@@ -209,11 +167,10 @@ describe('patch-store substream connection', () => {
   describe('getStatePatches', () => {
     it('writes a getStatePatches JSON-RPC request to the substream', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
-      const storePromise = createStorePromise();
       const sentMessages: unknown[] = [];
       backgroundStream.on('data', (msg) => sentMessages.push(msg));
       mockGetNextId.mockReturnValue(10);
-      setupPatchStoreSubstreamConnection(uiStream, storePromise);
+      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
 
       const patchesPromise = getStatePatches();
       await flushBufferedWrites();
@@ -233,10 +190,9 @@ describe('patch-store substream connection', () => {
 
     it('resolves with the patches from the background response', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
-      const storePromise = createStorePromise();
       const expectedPatches = [{ op: 'replace', path: ['foo'], value: 'bar' }];
       mockGetNextId.mockReturnValue(20);
-      setupPatchStoreSubstreamConnection(uiStream, storePromise);
+      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
 
       const patchesPromise = getStatePatches();
       backgroundStream.write({
@@ -251,10 +207,9 @@ describe('patch-store substream connection', () => {
 
     it('rejects when the background responds with an error', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
-      const storePromise = createStorePromise();
       const rpcError = { code: -32000, message: 'Internal error' };
       mockGetNextId.mockReturnValue(30);
-      setupPatchStoreSubstreamConnection(uiStream, storePromise);
+      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
 
       const patchesPromise = getStatePatches();
       backgroundStream.write({ jsonrpc: '2.0', id: 30, error: rpcError });
@@ -264,12 +219,11 @@ describe('patch-store substream connection', () => {
 
     it('logs an error when a getStatePatches response result is not a valid patch array', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
-      const storePromise = createStorePromise();
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       mockGetNextId.mockReturnValue(50);
-      setupPatchStoreSubstreamConnection(uiStream, storePromise);
+      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
       const message = {
         jsonrpc: '2.0',
         id: 50,

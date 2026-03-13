@@ -23,8 +23,6 @@ import {
 } from '@metamask/superstruct';
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import getNextId from '../../shared/lib/random-id';
-import { Store } from './store';
-import { updateMetamaskState } from './actions';
 
 let patchStoreSubstreamSingleton: Substream | undefined;
 
@@ -152,20 +150,6 @@ function resolvePendingGetStatePatchesRequest(
 }
 
 /**
- * Acts on the notification `sendUpdate` by patching the `metamask` slice.
- *
- * @param notification - The notification data.
- * @param reduxStorePromise - The promise that resolves to the Redux store.
- */
-async function handleSendUpdate(
-  notification: JsonRpcNotification & { params: [Patch[]] },
-  reduxStorePromise: PromiseWithResolvers<Store>,
-): Promise<void> {
-  const store = await reduxStorePromise.promise;
-  store.dispatch(updateMetamaskState(notification.params[0]));
-}
-
-/**
  * Handler to act on messages sent from the background process to this UI
  * process. These messages are:
  *
@@ -176,19 +160,21 @@ async function handleSendUpdate(
  * MetamaskController.
  *
  * @param message - The message received through the connection stream.
- * @param reduxStorePromise - The promise that resolves to the Redux store
- * (updated when receiving `sendUpdate`).
+ * @param handleSendUpdate - Function to call when receiving a `sendUpdate`
+ * notification.
  */
 async function receiveMessage(
   message: JsonRpcResponse | JsonRpcNotification,
-  reduxStorePromise: PromiseWithResolvers<Store>,
+  handleSendUpdate: (
+    notification: JsonRpcNotification & { params: [Patch[]] },
+  ) => void | Promise<void>,
 ): Promise<void> {
   if (isValidJsonRpcResponse(message)) {
     return resolvePendingGetStatePatchesRequest(message);
   }
 
   if (isJsonRpcNotification(message) && isSendUpdateNotification(message)) {
-    return await handleSendUpdate(message, reduxStorePromise);
+    return await handleSendUpdate(message);
   }
 
   console.error('Invalid patch-store substream message', message);
@@ -199,16 +185,23 @@ async function receiveMessage(
  * and `sendUpdate` notifications.
  *
  * @param patchStoreSubstream - The connection with the background process.
- * @param reduxStorePromise - The promise that resolves to the Redux store
- * (updated when receiving `sendUpdate`).
+ * @param options - Options for the patch store connection.
+ * @param options.handleSendUpdate - Function to call when receiving a
+ * `sendUpdate` notification.
  */
 export function setupPatchStoreSubstreamConnection(
   patchStoreSubstream: Substream,
-  reduxStorePromise: PromiseWithResolvers<Store>,
+  {
+    handleSendUpdate,
+  }: {
+    handleSendUpdate: (
+      notification: JsonRpcNotification & { params: [Patch[]] },
+    ) => void | Promise<void>;
+  },
 ) {
   patchStoreSubstreamSingleton = patchStoreSubstream;
   patchStoreSubstreamSingleton.on('data', (message) => {
-    receiveMessage(message, reduxStorePromise);
+    receiveMessage(message, handleSendUpdate);
   });
 }
 

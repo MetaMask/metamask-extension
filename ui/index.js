@@ -103,7 +103,12 @@ export const connectToBackground = (
 export const connectToBackgroundViaPatchStoreSubstream = (
   patchStoreSubstream,
 ) => {
-  setupPatchStoreSubstreamConnection(patchStoreSubstream, reduxStore);
+  setupPatchStoreSubstreamConnection(patchStoreSubstream, {
+    handleSendUpdate: async (notification) => {
+      const store = await reduxStore.promise;
+      store.dispatch(actions.updateMetamaskState(notification.params[0]));
+    },
+  });
 };
 
 export async function launchMetamaskUi(opts) {
