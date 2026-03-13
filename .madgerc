@@ -25,7 +25,6 @@
   "allowedCircularGlob": [
     "ui/ducks/**",
     "ui/selectors/**",
-    "ui/store/**",
-    "ui/pages/confirmations/**"
+    "ui/store/**"
   ]
 }

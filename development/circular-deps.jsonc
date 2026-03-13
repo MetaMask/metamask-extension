@@ -9,12 +9,8 @@
 [
   [
     "ui/ducks/metamask/metamask.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
   ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"]

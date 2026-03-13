@@ -49,8 +49,7 @@ const APPROVAL_TEMPLATES = {
   [GMX_APPROVAL_TYPE]: defiReferralConsent,
 };
 
-export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
-  Object.keys(APPROVAL_TEMPLATES);
+export { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from './approval-types';
 
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
