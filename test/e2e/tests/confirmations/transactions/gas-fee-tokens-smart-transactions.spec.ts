@@ -34,8 +34,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
           .withAssetsController({
-            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-              'eip155:1/slip44:60': { amount: '25' },
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1/slip44:60': { amount: '25' },
+              },
             },
           })
           .build(),

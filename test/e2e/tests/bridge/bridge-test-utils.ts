@@ -36,6 +36,7 @@ import {
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
   SSE_RESPONSE_HEADER,
+  MOCK_ASSETS_PRICE,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 
@@ -919,6 +920,9 @@ export const getBridgeFixtures = (
       pna25Acknowledged: true,
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withAssetsController({
+      assetsPrice: MOCK_ASSETS_PRICE,
+    })
     .withBridgeControllerDefaultState()
     .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensController({
@@ -1161,6 +1165,9 @@ export const getInsufficientFundsFixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withAssetsController({
+      assetsPrice: MOCK_ASSETS_PRICE,
+    })
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withPreferencesControllerSmartTransactionsOptedOut()

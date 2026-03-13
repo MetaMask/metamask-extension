@@ -34,8 +34,10 @@ function createShieldFixtureCard() {
       },
     })
     .withAssetsController({
-      'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-        'eip155:1/slip44:60': { amount: '25' },
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+        },
       },
     })
     .withAppStateController({
@@ -76,14 +78,16 @@ function createShieldFixtureCrypto() {
       },
     })
     .withAssetsController({
-      'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
-          amount: '100',
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+            amount: '100',
+          },
+          'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': {
+            amount: '100',
+          },
+          'eip155:1/slip44:60': { amount: '25' },
         },
-        'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': {
-          amount: '100',
-        },
-        'eip155:1/slip44:60': { amount: '25' },
       },
     })
     .withAppStateController({

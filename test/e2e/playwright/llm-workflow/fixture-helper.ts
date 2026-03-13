@@ -16,7 +16,11 @@ export type FixtureBuilderOptions = {
 
 export type FixtureBuilder = {
   withAddressBookController(data: Record<string, unknown>): FixtureBuilder;
-  withAssetsController(data: Record<string, unknown>): FixtureBuilder;
+  withAssetsController(data: {
+    assetsBalance?: Record<string, unknown>;
+    assetsPrice?: Record<string, unknown>;
+    assetsInfo?: Record<string, unknown>;
+  }): FixtureBuilder;
   withPreferencesController(data: Record<string, unknown>): FixtureBuilder;
   withNetworkController(data: Record<string, unknown>): FixtureBuilder;
   withNetworkControllerOnMainnet(): FixtureBuilder;

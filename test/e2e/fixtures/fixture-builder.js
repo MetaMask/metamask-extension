@@ -1195,14 +1195,26 @@ class FixtureBuilder {
     return this;
   }
 
-  withAssetsController(data) {
+  withAssetsController({
+    assetsBalance = {},
+    assetsPrice = {},
+    assetsInfo = {},
+  } = {}) {
     if (!this.fixture.data.AssetsController) {
       this.fixture.data.AssetsController = {};
     }
     if (!this.fixture.data.AssetsController.assetsBalance) {
       this.fixture.data.AssetsController.assetsBalance = {};
     }
-    merge(this.fixture.data.AssetsController.assetsBalance, data);
+    if (!this.fixture.data.AssetsController.assetsPrice) {
+      this.fixture.data.AssetsController.assetsPrice = {};
+    }
+    if (!this.fixture.data.AssetsController.assetsInfo) {
+      this.fixture.data.AssetsController.assetsInfo = {};
+    }
+    merge(this.fixture.data.AssetsController.assetsBalance, assetsBalance);
+    merge(this.fixture.data.AssetsController.assetsPrice, assetsPrice);
+    merge(this.fixture.data.AssetsController.assetsInfo, assetsInfo);
     return this;
   }
 
@@ -1741,11 +1753,13 @@ class FixtureBuilder {
 
   withTrezorAccount() {
     return this.withAssetsController({
-      'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-        'eip155:1337/slip44:60': { amount: '25' },
-      },
-      '221ecb67-0d29-4c04-83b2-dff07c263634': {
-        'eip155:1337/slip44:60': { amount: '100' },
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1337/slip44:60': { amount: '25' },
+        },
+        '221ecb67-0d29-4c04-83b2-dff07c263634': {
+          'eip155:1337/slip44:60': { amount: '100' },
+        },
       },
     })
       .withAccountsController({

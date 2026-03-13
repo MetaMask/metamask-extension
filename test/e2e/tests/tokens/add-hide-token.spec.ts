@@ -51,9 +51,12 @@ describe('Add hide token', function () {
             ],
           })
           .withAssetsController({
-            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-              'eip155:1337/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947': {
-                amount: '10',
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1337/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':
+                  {
+                    amount: '10',
+                  },
               },
             },
           })
@@ -105,9 +108,12 @@ describe('Add hide token', function () {
             ],
           })
           .withAssetsController({
-            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-              'eip155:1337/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947': {
-                amount: '10',
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1337/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':
+                  {
+                    amount: '10',
+                  },
               },
             },
           })
