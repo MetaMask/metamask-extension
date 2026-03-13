@@ -454,7 +454,7 @@
     "message": "Chỉnh sửa phí mạng"
   },
   "alertActionUpdateGas": {
-    "message": "Cập nhập hạn mức phí gas"
+    "message": "Cập nhật hạn mức phí gas"
   },
   "alertActionUpdateGasFee": {
     "message": "Cập nhật phí"
