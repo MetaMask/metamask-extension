@@ -200,4 +200,23 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders placeholder when NFT has no image and no collection imageUrl', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { container } = render(<Asset asset={assetWithoutImage} />);
+
+    const placeholder = container.querySelector('.nft-placeholder');
+    expect(placeholder).toBeInTheDocument();
+    expect(placeholder).toHaveStyle('width: 32px');
+    expect(placeholder).toHaveStyle('height: 32px');
+    expect(placeholder).toHaveStyle('border-radius: 8px');
+  });
 });
