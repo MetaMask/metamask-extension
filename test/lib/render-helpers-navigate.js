@@ -9,7 +9,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import {
