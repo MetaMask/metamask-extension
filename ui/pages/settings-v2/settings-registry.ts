@@ -1,3 +1,5 @@
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
@@ -92,20 +94,20 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     path: ASSETS_ROUTE,
     labelKey: 'assets',
     iconName: IconName.Dollar,
-    component: mmLazy(() => import('./assets-tab')),
+    component: mmLazy(() => import('./assets-tab/index.ts')),
   },
   {
     id: 'preferences-and-display',
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     labelKey: 'preferencesAndDisplay',
     iconName: IconName.Setting,
-    component: mmLazy(() => import('./preferences-and-display-tab')),
+    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
   },
   {
     id: 'privacy',
     path: PRIVACY_ROUTE,
     labelKey: 'privacy',
     iconName: IconName.Lock,
-    component: mmLazy(() => import('./privacy-tab')),
+    component: mmLazy(() => import('./privacy-tab/index.ts')),
   },
 ];

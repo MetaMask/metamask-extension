@@ -1,3 +1,4 @@
+/* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
@@ -149,37 +150,43 @@ import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
 
 // Begin Lazy Routes
-const OnboardingFlow = mmLazy(() => import('../onboarding-flow'));
-const Lock = mmLazy(() => import('../lock'));
-const UnlockPage = mmLazy(() => import('../unlock-page'));
+const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
+const Lock = mmLazy(() => import('../lock/index.ts'));
+const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
-const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp'));
+const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(() => import('../settings'));
-const SettingsV2 = mmLazy(() => import('../settings-v2'));
-const NotificationDetails = mmLazy(() => import('../notification-details'));
-const Notifications = mmLazy(() => import('../notifications'));
-const SnapList = mmLazy(() => import('../snaps/snaps-list'));
-const SnapView = mmLazy(() => import('../snaps/snap-view'));
+const Settings = mmLazy(() => import('../settings/index.js'));
+const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NotificationDetails = mmLazy(
+  () => import('../notification-details/index.js'),
+);
+const Notifications = mmLazy(() => import('../notifications/index.js'));
+const SnapList = mmLazy(() => import('../snaps/snaps-list/index.js'));
+const SnapView = mmLazy(() => import('../snaps/snap-view/index.js'));
 const ConfirmEncryptionPublicKey = mmLazy(
-  () => import('../confirm-encryption-public-key'),
+  () => import('../confirm-encryption-public-key/index.js'),
 );
 const ConfirmDecryptMessage = mmLazy(
-  () => import('../confirm-decrypt-message'),
+  () => import('../confirm-decrypt-message/index.js'),
 );
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
-const SendPage = mmLazy(() => import('../confirmations/send'));
-const CrossChainSwap = mmLazy(() => import('../bridge'));
-const PermissionsConnect = mmLazy(() => import('../permissions-connect'));
+const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
+const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const PermissionsConnect = mmLazy(
+  () => import('../permissions-connect/index.js'),
+);
 const ConfirmAddSuggestedTokenPage = mmLazy(
-  () => import('../confirm-add-suggested-token'),
+  () => import('../confirm-add-suggested-token/index.js'),
 );
 const ConfirmAddSuggestedNftPage = mmLazy(
-  () => import('../confirm-add-suggested-nft'),
+  () => import('../confirm-add-suggested-nft/index.js'),
 );
-const ConfirmationPage = mmLazy(() => import('../confirmations/confirmation'));
+const ConfirmationPage = mmLazy(
+  () => import('../confirmations/confirmation/index.js'),
+);
 const CreateAccountPage = mmLazy(
   () => import('../create-account/create-account.component.js'),
 );
@@ -187,8 +194,8 @@ const NftFullImage = mmLazy(
   () =>
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
-const Asset = mmLazy(() => import('../asset'));
-const DeFiPage = mmLazy(() => import('../defi'));
+const Asset = mmLazy(() => import('../asset/index.js'));
+const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
     import(
@@ -213,31 +220,34 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
       '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
     ),
 );
-const Home = mmLazy(() => import('../home'));
+const Home = mmLazy(() => import('../home/index.js'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
     import('../basic-functionality-required/basic-functionality-required.tsx'),
 );
 const MultichainAccountDetailsPage = mmLazy(
-  () => import('../multichain-accounts/multichain-account-details-page'),
+  () =>
+    import('../multichain-accounts/multichain-account-details-page/index.ts'),
 );
 const SmartAccountPage = mmLazy(
-  () => import('../multichain-accounts/smart-account-page'),
+  () => import('../multichain-accounts/smart-account-page/index.ts'),
 );
-const NonEvmBalanceCheck = mmLazy(() => import('../nonevm-balance-check'));
-const ShieldPlan = mmLazy(() => import('../shield-plan'));
+const NonEvmBalanceCheck = mmLazy(
+  () => import('../nonevm-balance-check/index.tsx'),
+);
+const ShieldPlan = mmLazy(() => import('../shield-plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
 );
-const MarketListView = mmLazy(() => import('../perps/market-list'));
+const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
 );
 const PerpsOrderEntryPage = mmLazy(
   () => import('../perps/perps-order-entry-page.tsx'),
 );
-const MusdConversionPage = mmLazy(() => import('../musd'));
+const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 // End Lazy Routes
 
 const NotificationsSettingsRedirect = () => (
