@@ -1,6 +1,10 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  notifyManager,
+} from '@tanstack/react-query';
 import * as merklClient from '../merkl-client';
 import {
   AGLAMERKL_ADDRESS_MAINNET,
@@ -115,6 +119,7 @@ describe('useMerklRewards', () => {
     >;
 
   afterEach(() => {
+    queryClient.clear();
     jest.restoreAllMocks();
   });
 
@@ -122,6 +127,9 @@ describe('useMerklRewards', () => {
     jest.clearAllMocks();
     setupSelectorMock();
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
+    // Synchronous scheduler prevents deferred microtask notifications from
+    // firing after @testing-library/react-hooks cleanup unmounts components.
+    notifyManager.setScheduler((cb) => cb());
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },

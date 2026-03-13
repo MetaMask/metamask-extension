@@ -110,7 +110,7 @@ export const useMerklRewards = ({
         signal,
       );
 
-      if (!matchingReward) {
+      if (!matchingReward || signal.aborted) {
         return EMPTY_RESULT;
       }
 
@@ -123,6 +123,10 @@ export const useMerklRewards = ({
         selectedAddress,
         rewardTokenAddress,
       );
+
+      if (signal.aborted) {
+        return EMPTY_RESULT;
+      }
 
       if (onChainClaimed !== null) {
         claimedAmount = onChainClaimed;

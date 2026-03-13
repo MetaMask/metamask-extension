@@ -444,10 +444,6 @@
     "ui/components/app/multichain-transaction-details-modal/multichain-transaction-details-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/musd/hooks/useMerklRewards.test.ts": {
-      "React: State updates on unmounted components": 1,
-      "error: Error: Network error": 1
-    },
     "ui/components/app/musd/musd-asset-cta.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
