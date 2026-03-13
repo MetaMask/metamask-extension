@@ -17,10 +17,15 @@ export type ToggleEventConfig = {
   properties: (newValue: boolean) => Record<string, Json>;
 };
 
+type TranslateFunction = ReturnType<typeof useI18nContext>;
+
 export type ToggleItemConfig = {
   name: string;
   titleKey: string;
-  descriptionKey: string;
+  /** Simple description via i18n key */
+  descriptionKey?: string;
+  /** Custom description formatter. Receives translation function for i18n. Takes precedence over descriptionKey. */
+  formatDescription?: (t: TranslateFunction) => string | React.ReactNode;
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
@@ -53,10 +58,17 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
       }
     };
 
+    let description: string | React.ReactNode;
+    if (config.formatDescription) {
+      description = config.formatDescription(t);
+    } else if (config.descriptionKey) {
+      description = t(config.descriptionKey);
+    }
+
     return (
       <SettingsToggleItem
         title={t(config.titleKey)}
-        description={t(config.descriptionKey)}
+        description={description}
         value={value}
         onToggle={handleToggle}
         dataTestId={config.dataTestId}

@@ -18,7 +18,7 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import * as actions from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { getErrorMessage as toErrorMessage } from '../../../../shared/modules/error';
 import {
   getMetaMaskAccounts,

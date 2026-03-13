@@ -1,12 +1,52 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
-import { SettingsTab } from '../shared';
+import { SettingsTab, createToggleItem } from '../shared';
+import {
+  getUseTokenDetection,
+  getShouldHideZeroBalanceTokens,
+  getShowNativeTokenAsMainBalance,
+} from '../../../selectors';
+import {
+  setUseTokenDetection,
+  setHideZeroBalanceTokens,
+  setShowNativeTokenAsMainBalancePreference,
+} from '../../../store/actions';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
+import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import { LocalCurrencyItem } from './local-currency-item';
-import { ShowNetworkTokenToggleItem } from './show-network-token-item';
-import { HideZeroBalanceTokensToggleItem } from './hide-zero-balance-tokens-item';
-import { DisplayNftMediaToggleItem } from './display-nft-media-item';
-import { AutodetectNftsToggleItem } from './autodetect-nfts-item';
-import { AutodetectTokensToggleItem } from './autodetect-tokens-item';
+
+const ShowNetworkTokenToggleItem = createToggleItem({
+  name: 'ShowNetworkTokenToggleItem',
+  titleKey: 'showNativeTokenAsMainBalance',
+  selector: getShowNativeTokenAsMainBalance,
+  action: setShowNativeTokenAsMainBalancePreference,
+  dataTestId: 'show-native-token-as-main-balance',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      show_native_token_as_main_balance: newValue,
+    }),
+  },
+});
+
+const HideZeroBalanceTokensToggleItem = createToggleItem({
+  name: 'HideZeroBalanceTokensToggleItem',
+  titleKey: 'hideZeroBalanceTokens',
+  selector: getShouldHideZeroBalanceTokens,
+  action: setHideZeroBalanceTokens,
+  dataTestId: 'toggle-zero-balance-button',
+});
+
+const AutodetectTokensToggleItem = createToggleItem({
+  name: 'AutodetectTokensToggleItem',
+  titleKey: 'autoDetectTokens',
+  descriptionKey: 'autoDetectTokensDescriptionV2',
+  selector: getUseTokenDetection,
+  action: setUseTokenDetection,
+  dataTestId: 'autodetect-tokens',
+});
 
 /** Registry of setting items for the Assets page. Add new items here */
 const ASSET_SETTING_ITEMS: SettingItemConfig[] = [

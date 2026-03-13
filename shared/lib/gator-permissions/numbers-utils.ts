@@ -1,5 +1,5 @@
 import { Hex } from '@metamask/utils';
-import { Numeric } from '../../modules/Numeric';
+import { Numeric } from '../Numeric';
 
 /**
  * Minimum displayable token amount.

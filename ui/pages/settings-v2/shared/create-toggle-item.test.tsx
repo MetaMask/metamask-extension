@@ -122,6 +122,30 @@ describe('createToggleItem', () => {
     expect(TestToggleItem.displayName).toBe('TestToggleItem');
   });
 
+  it('renders without description when descriptionKey is not provided', () => {
+    const configWithoutDescription: ToggleItemConfig = {
+      ...testConfig,
+      descriptionKey: undefined,
+      dataTestId: 'test-toggle-no-description',
+    };
+
+    const TestToggleWithoutDescription = createToggleItem(
+      configWithoutDescription,
+    );
+    const mockStore = createMockStore();
+
+    renderWithProvider(<TestToggleWithoutDescription />, mockStore);
+
+    expect(
+      screen.getByText(messages.showExtensionInFullSizeView.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        messages.showExtensionInFullSizeViewDescription.message,
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   describe('with trackEvent', () => {
     const mockTrackEvent = jest.fn();
 

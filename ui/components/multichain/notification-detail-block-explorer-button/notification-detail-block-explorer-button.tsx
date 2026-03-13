@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { OnChainRawNotification } from '@metamask/notification-services-controller/notification-services';
 import { toHex } from '@metamask/controller-utils';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NotificationDetailButton } from '../notification-detail-button';

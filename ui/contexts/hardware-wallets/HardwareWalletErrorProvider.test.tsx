@@ -68,6 +68,7 @@ mockCloseCurrentNotificationWindow.mockImplementation(() => ({
 const createMockState = (
   keyringType: string | null = KeyringTypes.ledger,
   address = '0x123',
+  isHardwareWalletModalVisible = false,
 ) => ({
   metamask: {
     internalAccounts: {
@@ -88,7 +89,9 @@ const createMockState = (
   appState: {
     modal: {
       modalState: {
-        name: null,
+        name: isHardwareWalletModalVisible
+          ? HARDWARE_WALLET_ERROR_MODAL_NAME
+          : null,
       },
     },
   },
@@ -164,6 +167,61 @@ describe('HardwareWalletErrorProvider', () => {
         onCancel: expect.any(Function),
         isOpen: true,
       });
+    });
+
+    it('does not show manually triggered error modal when suppression is enabled', () => {
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      act(() => {
+        result.current.setErrorModalSuppressed(true);
+      });
+
+      act(() => {
+        result.current.showErrorModal(error);
+      });
+
+      expect(mockShowModal).not.toHaveBeenCalled();
+    });
+
+    it('hides manually triggered modal when suppression is enabled', () => {
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      act(() => {
+        result.current.showErrorModal(error);
+      });
+
+      expect(mockShowModal).toHaveBeenCalled();
+
+      act(() => {
+        result.current.setErrorModalSuppressed(true);
+      });
+
+      expect(mockHideModal).toHaveBeenCalled();
+    });
+
+    it('hides redux-visible hardware wallet modal when suppression is enabled', () => {
+      const store = mockStore(createMockState(undefined, undefined, true));
+      const { result } = renderHardwareWalletErrorHook(store);
+
+      act(() => {
+        result.current.setErrorModalSuppressed(true);
+      });
+
+      expect(mockHideModal).toHaveBeenCalled();
     });
 
     it('dismisses error modal when dismissErrorModal is called', () => {
@@ -370,6 +428,36 @@ describe('HardwareWalletErrorProvider', () => {
           error,
         }),
       );
+    });
+
+    it('does not auto-show errors when suppression is enabled', () => {
+      const store = mockStore(createMockState());
+      const { result, rerender } = renderHardwareWalletErrorHook(
+        store,
+        CONFIRM_TRANSACTION_ROUTE,
+      );
+
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      act(() => {
+        result.current.setErrorModalSuppressed(true);
+      });
+
+      mockShowModal.mockClear();
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error,
+      };
+
+      act(() => {
+        rerender();
+      });
+
+      expect(mockShowModal).not.toHaveBeenCalled();
     });
 
     it('auto-shows errors on the bridge page', () => {
