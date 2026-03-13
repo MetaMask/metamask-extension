@@ -704,14 +704,9 @@ export default class MetaMetricsController extends BaseController<
       fragment,
     ) as MetaMetricsEventFragment;
 
-    this.update(() => {
-      return {
-        ...this.state,
-        fragments: {
-          ...this.state.fragments,
-          [id]: mergedFragment,
-        },
-      };
+    this.update((state) => {
+      (state.fragments as Record<string, MetaMetricsEventFragment>)[id] =
+        mergedFragment;
     });
 
     if (fragment.initialEvent) {
@@ -780,20 +775,14 @@ export default class MetaMetricsController extends BaseController<
     const createIfNotFound = !fragment && id.includes('transaction-submitted-');
 
     if (createIfNotFound) {
-      this.update(() => {
-        return {
-          ...this.state,
-          fragments: {
-            ...this.state.fragments,
-            [id]: {
-              canDeleteIfAbandoned: true,
-              category: MetaMetricsEventCategory.Transactions,
-              successEvent: TransactionMetaMetricsEvent.finalized,
-              id,
-              ...payload,
-              lastUpdated: Date.now(),
-            },
-          },
+      this.update((state) => {
+        (state.fragments as Record<string, MetaMetricsEventFragment>)[id] = {
+          canDeleteIfAbandoned: true,
+          category: MetaMetricsEventCategory.Transactions,
+          successEvent: TransactionMetaMetricsEvent.finalized,
+          id,
+          ...payload,
+          lastUpdated: Date.now(),
         };
       });
       return;
@@ -801,17 +790,16 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
-    this.update(() => {
-      return {
-        ...this.state,
-        fragments: {
-          ...this.state.fragments,
-          [id]: merge({}, this.state.fragments[id], {
-            ...payload,
-            lastUpdated: Date.now(),
-          }),
+    this.update((state) => {
+      const currentFragment = state.fragments[id] as unknown as object;
+      (state.fragments as Record<string, MetaMetricsEventFragment>)[id] = merge(
+        {},
+        currentFragment,
+        {
+          ...payload,
+          lastUpdated: Date.now(),
         },
-      };
+      ) as MetaMetricsEventFragment;
     });
   }
 

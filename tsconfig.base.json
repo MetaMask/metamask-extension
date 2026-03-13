@@ -31,9 +31,6 @@
     // baseUrl is required for path mappings
     "baseUrl": ".",
     // Path mappings for module resolution
-    "paths": {
-      "@metamask/perps-controller": ["ui/__mocks__/perps/perps-controller"]
-    }
   },
   "exclude": ["storybook-build"],
   "extends": "@tsconfig/node24/tsconfig.json",
