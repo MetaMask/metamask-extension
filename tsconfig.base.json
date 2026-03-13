@@ -29,7 +29,7 @@
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
     "useUnknownInCatchVariables": true,
     // baseUrl is required for path mappings
-    "baseUrl": ".",
+    "baseUrl": "."
     // Path mappings for module resolution
   },
   "exclude": ["storybook-build"],
