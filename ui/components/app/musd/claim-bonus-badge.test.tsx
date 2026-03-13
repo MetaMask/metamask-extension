@@ -52,11 +52,12 @@ describe('ClaimBonusBadge', () => {
     );
   });
 
-  it('calls claimRewards when badge is clicked', () => {
+  it('calls claimRewards and stopPropagation on click', () => {
     render(<ClaimBonusBadge {...defaultProps} />);
 
     const button = screen.getByRole('button');
-    fireEvent.click(button);
+    const stopPropagation = jest.fn();
+    fireEvent.click(button, { stopPropagation });
 
     expect(mockClaimRewards).toHaveBeenCalledTimes(1);
   });

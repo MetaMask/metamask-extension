@@ -34,7 +34,7 @@ export const ClaimBonusBadge = ({
     tokenAddress,
     chainId,
   });
-
+  // Trigger the claim transaction directly, routing to the confirmation page.
   const handleBadgeClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
