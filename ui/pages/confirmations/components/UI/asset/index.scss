@@ -1,6 +1,10 @@
 @use "design-system";
 
 .send-asset {
+  // Ensure consistent height for virtual list items
+  min-height: 70px;
+  box-sizing: border-box;
+
   &:hover {
     background-color: var(--color-background-hover) !important;
     cursor: pointer;

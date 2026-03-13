@@ -49,6 +49,8 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       : `(${balance?.toString() as string}) #${tokenId}`;
   }
 
+  const hasImage = Boolean(nftItemSrc || collection?.imageUrl);
+
   return (
     <Box
       alignItems={AlignItems.center}
@@ -65,8 +67,9 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
+      style={{ minHeight: 70 }}
     >
-      <Box marginRight={4} style={{ minWidth: 32 }}>
+      <Box marginRight={4} style={{ minWidth: 32, minHeight: 32 }}>
         <BadgeWrapper
           badge={
             nftData.chainId ? (
@@ -78,7 +81,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
             ) : null
           }
         >
-          {image || collection?.imageUrl ? (
+          {hasImage ? (
             <Box
               as="img"
               src={nftItemSrc || (collection?.imageUrl as string)}
@@ -90,7 +93,26 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <Box
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                backgroundColor: 'var(--color-background-alternative)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text
+                variant={TextVariant.bodyXs}
+                color={TextColor.textAlternative}
+              >
+                NFT
+              </Text>
+            </Box>
+          )}
         </BadgeWrapper>
       </Box>
       <Box
@@ -160,6 +182,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
+      style={{ minHeight: 70 }}
     >
       <Box marginRight={4}>
         <BadgeWrapper
