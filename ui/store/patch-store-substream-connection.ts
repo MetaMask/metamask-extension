@@ -12,14 +12,15 @@ import {
 } from '@metamask/utils';
 import {
   array,
-  is,
   literal,
   number,
   object,
   optional,
   string,
+  tuple,
   union,
   unknown,
+  validate,
 } from '@metamask/superstruct';
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import getNextId from '../../shared/lib/random-id';
@@ -50,13 +51,10 @@ export const PatchesStruct = array(
 );
 
 /**
- * Identifies an array of JSON patch objects.
- *
- * @param patches - The possible list of JSON patches.
+ * The struct that identifies the params of a `sendUpdate` notification, which
+ * is a tuple whose first element is an array of JSON patch objects.
  */
-function arePatches(patches: unknown): patches is Patch[] {
-  return is(patches, PatchesStruct);
-}
+const SendUpdateParamsStruct = tuple([PatchesStruct]);
 
 /**
  * The `id` property for a JSON-RPC response is technically allowed to be
@@ -69,21 +67,6 @@ function isValidJsonRpcResponse(
   response: unknown,
 ): response is JsonRpcResponse & { id: number } {
   return isJsonRpcResponse(response) && typeof response.id === 'number';
-}
-
-/**
- * Identifies a `sendUpdate` notification.
- *
- * @param notification - A JSON-RPC notification.
- */
-function isSendUpdateNotification(
-  notification: JsonRpcNotification,
-): notification is JsonRpcNotification & { params: [Patch[]] } {
-  return (
-    notification.method === SEND_UPDATE &&
-    Array.isArray(notification.params) &&
-    arePatches(notification.params[0])
-  );
 }
 
 /**
@@ -138,14 +121,33 @@ function resolvePendingGetStatePatchesRequest(
   } else {
     const { result } = message;
 
-    if (arePatches(result)) {
-      request.resolve(result);
-    } else {
+    const [patchError, patches] = validate(result, PatchesStruct);
+    if (patchError) {
       console.error(
-        `Invalid response for patch-store stream request ID '${id}'`,
+        `Invalid response for patch-store stream request ID '${id}': ${patchError.message}`,
         message,
       );
+    } else {
+      request.resolve(patches);
     }
+  }
+}
+
+/**
+ * Normalizes a message received from the background process by serializing and
+ * deserializing it as JSON. This strips properties with `undefined` values,
+ * which is necessary because while Chrome uses JSON serialization for
+ * inter-process messages (so `undefined` values are already stripped),
+ * Firefox does not, and so this function emulates that behavior.
+ *
+ * @param message - The raw message to normalize.
+ * @returns The normalized message.
+ */
+function normalizeMessage(message: unknown): unknown {
+  try {
+    return JSON.parse(JSON.stringify(message)) as unknown;
+  } catch {
+    return message;
   }
 }
 
@@ -159,25 +161,52 @@ function resolvePendingGetStatePatchesRequest(
  * For the background side of this, see `setupPatchStoreSubstream` in
  * MetamaskController.
  *
- * @param message - The message received through the connection stream.
+ * @param message - The raw message received through the connection stream.
  * @param handleSendUpdate - Function to call when receiving a `sendUpdate`
  * notification.
  */
 async function receiveMessage(
-  message: JsonRpcResponse | JsonRpcNotification,
+  message: unknown,
   handleSendUpdate: (
     notification: JsonRpcNotification & { params: [Patch[]] },
   ) => void | Promise<void>,
 ): Promise<void> {
-  if (isValidJsonRpcResponse(message)) {
-    return resolvePendingGetStatePatchesRequest(message);
+  const normalizedMessage = normalizeMessage(message);
+
+  if (isValidJsonRpcResponse(normalizedMessage)) {
+    return resolvePendingGetStatePatchesRequest(normalizedMessage);
   }
 
-  if (isJsonRpcNotification(message) && isSendUpdateNotification(message)) {
-    return await handleSendUpdate(message);
+  if (isJsonRpcNotification(normalizedMessage)) {
+    if (normalizedMessage.method === SEND_UPDATE) {
+      const [paramsError, params] = validate(
+        normalizedMessage.params,
+        SendUpdateParamsStruct,
+      );
+
+      if (paramsError) {
+        console.error(
+          `Invalid patch-store update: ${paramsError.message}`,
+          normalizedMessage,
+        );
+        return;
+      }
+
+      return await handleSendUpdate(
+        normalizedMessage as JsonRpcNotification & { params: typeof params },
+      );
+    }
+
+    console.error(
+      `Invalid method '${normalizedMessage.method}' for patch-store notification`,
+    );
+    return;
   }
 
-  console.error('Invalid patch-store substream message', message);
+  console.error(
+    'Unrecognized patch-store substream message (not a response or notification)',
+    normalizedMessage,
+  );
 }
 
 /**

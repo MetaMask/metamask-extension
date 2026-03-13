@@ -118,51 +118,112 @@ describe('patch-store substream connection', () => {
   });
 
   describe('setupPatchStoreSubstreamConnection', () => {
-    describe('when a sendUpdate notification is received', () => {
-      it('calls handleSendUpdate with the received notification', async () => {
-        const { uiStream, backgroundStream } = createPatchStreamPair();
-        const handleSendUpdate = jest.fn();
-        const patches = [{ op: 'replace' as const, path: ['y'], value: 2 }];
-        setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
-        const notification = {
-          jsonrpc: '2.0',
-          method: SEND_UPDATE,
-          params: [patches],
-        };
+    it('calls handleSendUpdate when a valid sendUpdate notification is received', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const handleSendUpdate = jest.fn();
+      const patches = [{ op: 'replace' as const, path: ['y'], value: 2 }];
+      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
+      const notification = {
+        jsonrpc: '2.0',
+        method: SEND_UPDATE,
+        params: [patches],
+      };
 
-        backgroundStream.write(notification);
-        await flushBufferedWrites();
+      backgroundStream.write(notification);
+      await flushBufferedWrites();
 
-        expect(handleSendUpdate).toHaveBeenCalledWith(
-          expect.objectContaining(notification),
-        );
-      });
+      expect(handleSendUpdate).toHaveBeenCalledWith(
+        expect.objectContaining(notification),
+      );
     });
 
-    describe('when a notification is received with an unknown method', () => {
-      it('logs an error', async () => {
-        const { uiStream, backgroundStream } = createPatchStreamPair();
-        const consoleSpy = jest
-          .spyOn(console, 'error')
-          .mockImplementation(() => undefined);
-        setupPatchStoreSubstreamConnection(uiStream, {
-          handleSendUpdate: jest.fn(),
-        });
-        const message = {
-          id: 9999,
-          jsonrpc: '2.0',
-          method: 'unknown',
-          result: [],
-        };
-
-        backgroundStream.write(message);
-        await flushBufferedWrites();
-
-        expect(consoleSpy).toHaveBeenCalledWith(
-          'Invalid patch-store substream message',
-          message,
-        );
+    it('logs an error (including the Superstruct validation message) when a sendUpdate notification is received with an invalid patch array', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
       });
+      const notification = {
+        jsonrpc: '2.0',
+        method: SEND_UPDATE,
+        params: ['not-a-patch-array'],
+      };
+
+      backgroundStream.write(notification);
+      await flushBufferedWrites();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Invalid patch-store update: At path: 0 -- Expected an array value, but received: "not-a-patch-array"',
+        notification,
+      );
+    });
+
+    it('logs an error when a notification is received with an unknown method', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+      const notification = {
+        jsonrpc: '2.0',
+        method: 'unknown',
+      };
+
+      backgroundStream.write(notification);
+      await flushBufferedWrites();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Invalid method 'unknown' for patch-store notification",
+      );
+    });
+
+    it('calls handleSendUpdate when a sendUpdate notification contains a patch with not quite valid JSON (contains undefined)', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const handleSendUpdate = jest.fn();
+      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
+      const notification = {
+        jsonrpc: '2.0',
+        method: SEND_UPDATE,
+        params: [[{ op: 'replace', path: ['foo'], value: undefined }]],
+      };
+
+      backgroundStream.write(notification);
+      await flushBufferedWrites();
+
+      expect(consoleSpy).not.toHaveBeenCalled();
+      expect(handleSendUpdate).toHaveBeenCalled();
+    });
+
+    it('logs an error when an invalid message is received', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+      // Responses aren't supposed to contain methods
+      const message = {
+        id: 9999,
+        jsonrpc: '2.0',
+        method: 'unknown',
+        result: [],
+      };
+
+      backgroundStream.write(message);
+      await flushBufferedWrites();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Unrecognized patch-store substream message (not a response or notification)',
+        message,
+      );
     });
   });
 
@@ -225,6 +286,28 @@ describe('patch-store substream connection', () => {
       await expect(patchesPromise).rejects.toStrictEqual(rpcError);
     });
 
+    it('does not log an error and resolves when a getStatePatches response contains a patch with not quite valid JSON (contains undefined)', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockGetNextId.mockReturnValue(40);
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+
+      const patchesPromise = getStatePatches();
+      backgroundStream.write({
+        jsonrpc: '2.0',
+        id: 40,
+        result: [{ op: 'replace', path: ['foo'], value: undefined }],
+      });
+
+      const patches = await patchesPromise;
+      expect(consoleSpy).not.toHaveBeenCalled();
+      expect(patches).toStrictEqual([{ op: 'replace', path: ['foo'] }]);
+    });
+
     it('logs an error when a getStatePatches response result is not a valid patch array', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
@@ -247,7 +330,9 @@ describe('patch-store substream connection', () => {
       await flushBufferedWrites();
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        "Invalid response for patch-store stream request ID '50'",
+        expect.stringMatching(
+          /^Invalid response for patch-store stream request ID '50': /u,
+        ),
         message,
       );
     });
