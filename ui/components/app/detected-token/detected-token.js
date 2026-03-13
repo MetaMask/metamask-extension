@@ -114,9 +114,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     };
 
     setTokensListDetected(newTokensList());
-    // `tokensListDetected` is intentionally excluded to avoid an infinite loop
-    // eslint-disable-next-line react-compiler/react-compiler
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- `tokensListDetected` intentionally excluded to avoid infinite loop
   }, [
     isTokenNetworkFilterEqualCurrentNetwork,
     detectedTokensMultichain,
