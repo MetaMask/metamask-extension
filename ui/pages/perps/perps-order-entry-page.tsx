@@ -40,8 +40,10 @@ import {
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility, usePerpsDeposit } from '../../hooks/perps';
-import { getPerpsController } from '../../providers/perps';
+import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
+import { getPerpsStreamManager } from '../../providers/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getDisplayName,
   safeDecodeURIComponent,
@@ -121,7 +123,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
-  const { triggerDeposit } = usePerpsDeposit();
+  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
@@ -198,40 +200,32 @@ const PerpsOrderEntryPage: React.FC = () => {
       setLivePrice(undefined);
       return undefined;
     }
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
-    const subscribe = async () => {
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = controller.subscribeToPrices({
-          symbols: [decodedSymbol],
-          includeMarketData: true,
-          callback: (priceUpdates) => {
-            const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
-            if (update) {
-              const ts = (update as { timestamp?: number }).timestamp;
-              const mark = (update as { markPrice?: string }).markPrice;
-              setLivePrice({
-                symbol: update.symbol,
-                price: update.price,
-                timestamp: ts ?? Date.now(),
-                markPrice: mark ?? update.price,
-              });
-            }
-          },
-          throttleMs: 1000,
+    // Activate background price stream for this symbol
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: [decodedSymbol] },
+    ]).catch(() => {
+      // Controller not ready
+    });
+
+    // Subscribe to price updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
+      const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
+      if (update) {
+        const ts = (update as { timestamp?: number }).timestamp;
+        const mark = (update as { markPrice?: string }).markPrice;
+        setLivePrice({
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          markPrice: mark ?? update.price,
         });
-      } catch {
-        // Controller not ready
       }
-    };
-    subscribe();
+    });
+
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      submitRequestToBackground('perpsDeactivatePriceStream', []);
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 
@@ -243,39 +237,33 @@ const PerpsOrderEntryPage: React.FC = () => {
       setTopOfBook(null);
       return undefined;
     }
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
-    const subscribe = async () => {
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = controller.subscribeToOrderBook({
-          symbol: decodedSymbol,
-          levels: 1,
-          nSigFigs: 5,
-          mantissa: 2,
-          callback: (orderBook) => {
-            if (
-              orderBook.bids.length > 0 &&
-              orderBook.asks.length > 0 &&
-              orderBook.midPrice
-            ) {
-              setTopOfBook({
-                midPrice: parseFloat(orderBook.midPrice),
-              });
-            }
-          },
-        });
-      } catch {
-        // Controller not ready
+    // Activate background orderBook stream for this symbol
+    submitRequestToBackground('perpsActivateOrderBookStream', [
+      { symbol: decodedSymbol },
+    ]).catch(() => {
+      // Controller not ready
+    });
+
+    // Subscribe to order book updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.orderBook.subscribe((orderBook) => {
+      if (!orderBook) {
+        return;
       }
-    };
-    subscribe();
+      if (
+        orderBook.bids.length > 0 &&
+        orderBook.asks.length > 0 &&
+        orderBook.midPrice
+      ) {
+        setTopOfBook({
+          midPrice: parseFloat(orderBook.midPrice),
+        });
+      }
+    });
+
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      submitRequestToBackground('perpsDeactivateOrderBookStream', []);
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 
@@ -364,15 +352,16 @@ const PerpsOrderEntryPage: React.FC = () => {
     setSubmitError(null);
 
     try {
-      const controller = await getPerpsController(selectedAddress);
-
       if (orderMode === 'close' && position) {
         const closeParams = {
           symbol: orderFormState.asset,
           orderType: 'market' as const,
           currentPrice,
         };
-        const result = await controller.closePosition(closeParams);
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsClosePosition', [closeParams]);
         if (!result.success) {
           throw new Error(result.error || 'Failed to close position');
         }
@@ -385,11 +374,16 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
             ? orderFormState.stopLossPrice.replace(/,/gu, '')
             : undefined;
-        const result = await controller.updatePositionTPSL({
-          symbol: orderFormState.asset,
-          takeProfitPrice: cleanTp || undefined,
-          stopLossPrice: cleanSl || undefined,
-        });
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsUpdatePositionTPSL', [
+          {
+            symbol: orderFormState.asset,
+            takeProfitPrice: cleanTp || undefined,
+            stopLossPrice: cleanSl || undefined,
+          },
+        ]);
         if (!result.success) {
           throw new Error(result.error || 'Failed to update TP/SL');
         }
@@ -400,7 +394,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderMode,
           position?.size,
         );
-        const result = await controller.placeOrder(orderParams);
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsPlaceOrder', [orderParams]);
         if (!result.success) {
           throw new Error(result.error || 'Failed to place order');
         }

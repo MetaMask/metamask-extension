@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -65,44 +65,69 @@ jest.mock('loglevel', () => ({
     error: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
+    setLevel: jest.fn(),
+    setDefaultLevel: jest.fn(),
   },
   info: jest.fn(),
   warn: jest.fn(),
   error: jest.fn(),
   debug: jest.fn(),
   trace: jest.fn(),
+  setLevel: jest.fn(),
+  setDefaultLevel: jest.fn(),
 }));
 
-// Mock the PerpsControllerProvider to render children directly
+const mockSubmitRequestToBackground = jest
+  .fn()
+  .mockResolvedValue({ success: true });
+let latestPriceSubscriber:
+  | ((updates: Array<{ symbol: string; percentChange24h?: string }>) => void)
+  | undefined;
+const mockPriceSubscribe = jest.fn((callback) => {
+  latestPriceSubscriber = callback;
+  return jest.fn();
+});
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('../../selectors/accounts', () => ({
+  ...jest.requireActual('../../selectors/accounts'),
+  getSelectedInternalAccount: () => ({ address: '0x123' }),
+}));
+
 jest.mock('../../providers/perps', () => ({
-  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
-  getPerpsController: jest.fn().mockResolvedValue({
-    closePosition: jest.fn().mockResolvedValue({ success: true }),
-    placeOrder: jest.fn().mockResolvedValue({ success: true }),
-    updateMargin: jest.fn().mockResolvedValue({ success: true }),
-    updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
-  }),
-}));
-
-jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
-}));
-
-jest.mock('../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => ({
-    positions: { getCachedData: () => [], pushData: jest.fn() },
+    positions: {
+      getCachedData: () => [],
+      pushData: jest.fn(),
+      subscribe: jest.fn(() => jest.fn()),
+    },
     orders: { getCachedData: () => [], pushData: jest.fn() },
     account: { getCachedData: () => null, pushData: jest.fn() },
     markets: { getCachedData: () => [], pushData: jest.fn() },
+    prices: {
+      subscribe: (...args: unknown[]) => mockPriceSubscribe(...args),
+      getCachedData: () => [],
+    },
     setOptimisticTPSL: jest.fn(),
     clearOptimisticTPSL: jest.fn(),
     pushPositionsWithOverrides: jest.fn(),
     prewarm: jest.fn(),
     cleanupPrewarm: jest.fn(),
     isInitialized: () => true,
-    init: jest.fn().mockResolvedValue(undefined),
+    init: jest.fn(),
   }),
+}));
+
+jest.mock('../../hooks/perps', () => ({
+  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsOrderForm: jest.fn(),
+  useUserHistory: jest.fn(),
+  usePerpsTransactionHistory: jest.fn(),
+  usePerpsMarginCalculations: jest.fn(),
 }));
 
 // Mock the perps stream hooks
@@ -193,6 +218,7 @@ describe('PerpsMarketDetailPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
+    latestPriceSubscriber = undefined;
   });
 
   describe('when perps feature is enabled', () => {
@@ -259,7 +285,7 @@ describe('PerpsMarketDetailPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/');
     });
 
-    it('displays market price change', () => {
+    it('uses market 24h change as fallback when no live percent update exists', () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = renderWithProvider(
@@ -267,7 +293,36 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByTestId('perps-market-detail-change')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-change')).toHaveTextContent(
+        '+2.56%',
+      );
+    });
+
+    it('uses live percentChange24h when the price stream provides it', async () => {
+      const store = mockStore(createMockState(true));
+      const { getByTestId } = renderWithProvider(
+        <PerpsMarketDetailPage />,
+        store,
+      );
+
+      await waitFor(() => {
+        expect(mockPriceSubscribe).toHaveBeenCalled();
+      });
+
+      act(() => {
+        latestPriceSubscriber?.([
+          {
+            symbol: 'ETH',
+            percentChange24h: '+9.99%',
+          },
+        ]);
+      });
+
+      await waitFor(() => {
+        expect(getByTestId('perps-market-detail-change')).toHaveTextContent(
+          '+9.99%',
+        );
+      });
     });
 
     it('displays candlestick chart', () => {

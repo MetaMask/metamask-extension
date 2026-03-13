@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
+import type { Funding } from '@metamask/perps-controller';
 import {
   transformFillsToTransactions,
   transformOrdersToTransactions,
@@ -11,7 +12,7 @@ import type {
   OrderFill,
   PerpsTransaction,
 } from '../../components/app/perps/types';
-import { usePerpsController } from '../../providers/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { useUserHistory } from './useUserHistory';
 import { usePerpsLiveFills } from './stream';
 
@@ -82,7 +83,6 @@ export function usePerpsTransactionHistory({
   accountId,
   skipInitialFetch = false,
 }: UsePerpsTransactionHistoryParams = {}): UsePerpsTransactionHistoryResult {
-  const controller = usePerpsController();
   const [transactions, setTransactions] = useState<PerpsTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -113,23 +113,14 @@ export function usePerpsTransactionHistory({
       setIsLoading(true);
       setError(null);
 
-      const provider = controller.getActiveProvider();
-      if (!provider) {
-        throw new Error('No active provider available');
-      }
-
-      // Fetch all transaction data in parallel
       const [fillsResult, ordersResult, funding] = await Promise.all([
-        provider.getOrderFills({
-          accountId,
-          aggregateByTime: false,
-        }),
-        provider.getOrders({ accountId }),
-        provider.getFunding({
-          accountId,
-          startTime,
-          endTime,
-        }),
+        submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
+          { accountId, aggregateByTime: false },
+        ]),
+        submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
+        submitRequestToBackground<Funding[]>('perpsGetFunding', [
+          { accountId, startTime, endTime },
+        ]),
       ]);
 
       const fills: OrderFill[] = Array.isArray(fillsResult) ? fillsResult : [];
@@ -181,7 +172,7 @@ export function usePerpsTransactionHistory({
     } finally {
       setIsLoading(false);
     }
-  }, [controller, startTime, endTime, accountId]);
+  }, [startTime, endTime, accountId]);
 
   const refetch = useCallback(async () => {
     // Fetch user history first, then fetch all transactions

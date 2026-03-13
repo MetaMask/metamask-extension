@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
 import type { OrderBookData } from '@metamask/perps-controller';
-import { usePerpsController } from '../../../providers/perps';
+import type { PerpsStreamManager } from '../../../providers/perps';
+import { usePerpsChannel } from './usePerpsChannel';
 
 /**
  * Options for usePerpsLiveOrderBook hook
@@ -28,10 +28,17 @@ export type UsePerpsLiveOrderBookReturn = {
   isInitialLoading: boolean;
 };
 
+const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
+
 /**
- * Hook for real-time order book data via stream subscription
+ * Hook for real-time order book data via background stream notifications.
  *
- * Uses the PerpsController directly for WebSocket subscriptions.
+ * Receives data pushed from the background PerpsController via
+ * perpsStreamUpdate notifications → PerpsStreamManager.handleBackgroundUpdate().
+ *
+ * Note: The background emits a single orderBook channel for the currently
+ * subscribed symbol. The symbol/levels/nSigFigs parameters are used
+ * for the perpsSubscriberChange registration (future: per-symbol scoping).
  *
  * @param options - Configuration options
  * @returns Object containing order book data and loading state
@@ -59,42 +66,14 @@ export type UsePerpsLiveOrderBookReturn = {
 export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
-  const { symbol, levels, nSigFigs, mantissa } = options;
-  const controller = usePerpsController();
-  const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const hasReceivedFirstUpdate = useRef(false);
+  // options.symbol is available for future per-symbol scoping
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { symbol: _symbol } = options;
 
-  useEffect(() => {
-    // Reset state when controller changes (account switch)
-    setOrderBook(null);
-    setIsInitialLoading(true);
-    hasReceivedFirstUpdate.current = false;
-
-    if (!symbol) {
-      setOrderBook(null);
-      setIsInitialLoading(false);
-      return undefined;
-    }
-
-    const unsubscribe = controller.subscribeToOrderBook({
-      symbol,
-      levels: levels ?? 10,
-      nSigFigs,
-      mantissa,
-      callback: (data) => {
-        if (!hasReceivedFirstUpdate.current) {
-          hasReceivedFirstUpdate.current = true;
-          setIsInitialLoading(false);
-        }
-        setOrderBook(data);
-      },
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [controller, symbol, levels, nSigFigs, mantissa]);
+  const { data: orderBook, isInitialLoading } = usePerpsChannel(
+    getOrderBookChannel,
+    null,
+  );
 
   return { orderBook, isInitialLoading };
 }
