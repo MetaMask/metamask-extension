@@ -200,4 +200,49 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders placeholder when both image and collection.imageUrl are missing', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImages} />);
+
+    const nftAsset = getByTestId('nft-asset');
+    expect(nftAsset).toBeInTheDocument();
+
+    // Verify the placeholder box exists with correct dimensions
+    const placeholder = nftAsset.querySelector('div[style*="width: 32"]');
+    expect(placeholder).toBeInTheDocument();
+    expect(placeholder).toHaveStyle({
+      width: '32px',
+      height: '32px',
+      borderRadius: '8px',
+    });
+  });
+
+  it('maintains consistent layout height with missing images', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImages} />);
+
+    const nftAsset = getByTestId('nft-asset');
+    const computedStyle = window.getComputedStyle(nftAsset);
+
+    // Verify consistent padding is applied for virtualized list
+    expect(computedStyle.paddingTop).toBe('12px'); // 3 * 4px base unit
+    expect(computedStyle.paddingBottom).toBe('12px'); // 3 * 4px base unit
+  });
 });
