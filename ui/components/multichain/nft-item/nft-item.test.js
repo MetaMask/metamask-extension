@@ -57,5 +57,20 @@ describe('NftItem component', () => {
       fireEvent.click(getByTestId('nft-image'));
       expect(props.onClick).toHaveBeenCalled();
     });
+
+    it('maintains proper dimensions when image fails to load', () => {
+      const { getByTestId } = renderWithProvider(<NftItem {...props} />, store);
+      const nftImage = getByTestId('nft-image');
+
+      expect(nftImage).toHaveAttribute('src', 'test-src');
+
+      fireEvent.error(nftImage);
+
+      expect(nftImage).not.toHaveAttribute('src');
+      expect(nftImage).toHaveAttribute('data-failed-src', 'test-src');
+
+      const computedStyle = window.getComputedStyle(nftImage);
+      expect(computedStyle.minHeight).toBe('150px');
+    });
   });
 });
