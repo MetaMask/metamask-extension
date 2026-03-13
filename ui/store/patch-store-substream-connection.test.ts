@@ -145,7 +145,9 @@ describe('patch-store substream connection', () => {
         const consoleSpy = jest
           .spyOn(console, 'error')
           .mockImplementation(() => undefined);
-        setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
+        setupPatchStoreSubstreamConnection(uiStream, {
+          handleSendUpdate: jest.fn(),
+        });
         const message = {
           id: 9999,
           jsonrpc: '2.0',
@@ -170,7 +172,9 @@ describe('patch-store substream connection', () => {
       const sentMessages: unknown[] = [];
       backgroundStream.on('data', (msg) => sentMessages.push(msg));
       mockGetNextId.mockReturnValue(10);
-      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
 
       const patchesPromise = getStatePatches();
       await flushBufferedWrites();
@@ -192,7 +196,9 @@ describe('patch-store substream connection', () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const expectedPatches = [{ op: 'replace', path: ['foo'], value: 'bar' }];
       mockGetNextId.mockReturnValue(20);
-      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
 
       const patchesPromise = getStatePatches();
       backgroundStream.write({
@@ -209,7 +215,9 @@ describe('patch-store substream connection', () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const rpcError = { code: -32000, message: 'Internal error' };
       mockGetNextId.mockReturnValue(30);
-      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
 
       const patchesPromise = getStatePatches();
       backgroundStream.write({ jsonrpc: '2.0', id: 30, error: rpcError });
@@ -223,7 +231,9 @@ describe('patch-store substream connection', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       mockGetNextId.mockReturnValue(50);
-      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate: jest.fn() });
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
       const message = {
         jsonrpc: '2.0',
         id: 50,
