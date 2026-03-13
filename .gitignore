@@ -29,6 +29,7 @@ package
 
 temp
 .tmp
+.temp-audit
 .sass-cache
 .DS_Store
 app/.DS_Store
