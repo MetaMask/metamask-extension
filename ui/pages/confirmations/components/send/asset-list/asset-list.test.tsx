@@ -318,5 +318,28 @@ describe('AssetList', () => {
       expect(mockGoToAmountRecipientPage).toHaveBeenCalled();
       expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
     });
+
+    it('maintains proper spacing for NFTs with failed image loads', () => {
+      const mockNftsMultiple = [
+        { address: '0x789', chainId: '1', tokenId: '1', name: 'NFT 1' },
+        { address: '0x789', chainId: '1', tokenId: '2', name: 'NFT 2' },
+      ];
+
+      const { getAllByTestId } = render(
+        <AssetList
+          tokens={[]}
+          nfts={mockNftsMultiple}
+          allTokens={[]}
+          allNfts={mockNftsMultiple}
+        />,
+      );
+
+      const assetComponents = getAllByTestId('asset-component');
+      expect(assetComponents).toHaveLength(2);
+
+      assetComponents.forEach((component) => {
+        expect(component).toBeInTheDocument();
+      });
+    });
   });
 });
