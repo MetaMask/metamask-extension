@@ -338,7 +338,12 @@ describe('useMerklRewards', () => {
 
   it('aborts fetch on unmount', () => {
     const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
-    mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
+    // Use a never-resolving promise to prevent state updates after unmount
+    mockFetchMerklRewardsForAsset.mockReturnValueOnce(
+      new Promise<null>(() => {
+        // intentionally never resolves
+      }),
+    );
 
     const { unmount } = renderHook(
       () =>
