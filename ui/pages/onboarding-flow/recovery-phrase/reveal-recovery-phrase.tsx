@@ -1,7 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Text,
   Box,
@@ -11,21 +10,20 @@ import {
   ButtonIcon,
   IconName,
   ButtonIconSize,
+  TextVariant,
+  TextAlign,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  IconColor,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
   FormTextFieldSize,
   FormTextField,
   TextFieldType,
 } from '../../../components/component-library';
-import {
-  TextVariant,
-  JustifyContent,
-  BlockSize,
-  IconColor,
-  Display,
-  FlexDirection,
-  AlignItems,
-  FontWeight,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
+import { FontWeight as DesignSystemFontWeight } from '../../../helpers/constants/design-system';
 import { getSeedPhrase } from '../../../store/actions';
 import {
   DEFAULT_ROUTE,
@@ -103,78 +101,75 @@ export default function RevealRecoveryPhrase({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
       gap={6}
-      className="reveal-recovery-phrase"
+      className="reveal-recovery-phrase h-full"
       data-testid="reveal-recovery-phrase"
     >
-      <Box width={BlockSize.Full}>
+      <Box className="w-full">
         <Box
-          className="recovery-phrase__header"
-          display={Display.Grid}
-          alignItems={AlignItems.center}
+          className="recovery-phrase__header grid w-full"
+          alignItems={BoxAlignItems.Center}
           gap={3}
           marginBottom={4}
-          width={BlockSize.Full}
         >
           <ButtonIcon
             iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="reveal-recovery-phrase-back-button"
             onClick={returnToPreviousPage}
             ariaLabel={t('back')}
           />
-          <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+          <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
             {t('revealSecretRecoveryPhrase')}
           </Text>
           <ButtonIcon
             iconName={IconName.Close}
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="reveal-recovery-phrase-close-button"
             onClick={returnToPreviousPage}
             ariaLabel={t('close')}
           />
         </Box>
-        <Box
-          width={BlockSize.Full}
-          as="form"
-          onSubmit={(e: FormEvent<HTMLElement>) => {
-            e.preventDefault();
-            onSubmit(password);
-          }}
-        >
-          <FormTextField
-            size={FormTextFieldSize.Lg}
-            id="account-details-authenticate"
-            label={t('enterYourPasswordContinue')}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setIsIncorrectPasswordError(false);
+        <Box className="w-full" asChild>
+          <form
+            onSubmit={(e: FormEvent<HTMLElement>) => {
+              e.preventDefault();
+              onSubmit(password);
             }}
-            value={password}
-            error={isIncorrectPasswordError}
-            helpText={
-              isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
-            }
-            type={TextFieldType.Password}
-            labelProps={{ fontWeight: FontWeight.Medium }}
-            autoFocus
-          />
+          >
+            <FormTextField
+              size={FormTextFieldSize.Lg}
+              id="account-details-authenticate"
+              label={t('enterYourPasswordContinue')}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setIsIncorrectPasswordError(false);
+              }}
+              value={password}
+              error={isIncorrectPasswordError}
+              helpText={
+                isIncorrectPasswordError
+                  ? t('unlockPageIncorrectPassword')
+                  : null
+              }
+              type={TextFieldType.Password}
+              labelProps={{ fontWeight: DesignSystemFontWeight.Medium }}
+              autoFocus
+            />
+          </form>
         </Box>
       </Box>
-      <Box width={BlockSize.Full}>
+      <Box className="w-full">
         <Button
-          width={BlockSize.Full}
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           data-testid="reveal-recovery-phrase-continue"
-          className="reveal-recovery-phrase__footer--button"
+          className="reveal-recovery-phrase__footer--button w-full"
           onClick={() => onSubmit(password)}
         >
           {t('continue')}

@@ -3,208 +3,208 @@
 exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+    class="flex flex-col gap-4"
   >
     <div
-      class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+      class="bg-section recovery-phrase__secret rounded-lg w-full"
     >
       <div
-        class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
+        class="items-center justify-center recovery-phrase__chips grid"
         data-quiz-words="[]"
         data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
         data-testid="recovery-phrase-chips"
       >
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-0"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             1
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             debris
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-1"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             2
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             dizzy
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-2"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             3
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             just
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-3"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             4
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             program
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-4"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             5
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             just
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-5"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             6
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             float
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-6"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             7
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             decrease
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-7"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             8
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             vacant
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-8"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             9
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             alarm
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-9"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             10
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             reduce
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-10"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             11
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             speak
-          </span>
+          </p>
         </div>
         <div
-          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
           data-testid="recovery-phrase-chip-11"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             12
             .
-          </span>
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             stadium
-          </span>
+          </p>
         </div>
       </div>
     </div>
@@ -215,13 +215,13 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
 exports[`Recovery Phrase Chips Component should match snapshot of confirm recovery phrase with inputs of indicies to check 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+    class="flex flex-col gap-4"
   >
     <div
-      class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+      class="bg-section recovery-phrase__secret rounded-lg w-full"
     >
       <div
-        class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
+        class="items-center justify-center recovery-phrase__chips grid"
         data-quiz-words="[]"
         data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
         data-testid="recovery-phrase-chips"
@@ -229,15 +229,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             1
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-0"
             disabled=""
             focused="false"
@@ -249,15 +249,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             2
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-1"
             disabled=""
             focused="false"
@@ -269,15 +269,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             3
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-2"
             disabled=""
             focused="false"
@@ -289,15 +289,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             4
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-3"
             disabled=""
             focused="false"
@@ -309,15 +309,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             5
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-4"
             disabled=""
             focused="false"
@@ -329,15 +329,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             6
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-5"
             disabled=""
             focused="false"
@@ -349,15 +349,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             7
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-6"
             disabled=""
             focused="false"
@@ -369,15 +369,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             8
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-7"
             disabled=""
             focused="false"
@@ -389,15 +389,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             9
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-8"
             disabled=""
             focused="false"
@@ -409,15 +409,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             10
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-9"
             disabled=""
             focused="false"
@@ -429,15 +429,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             11
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-10"
             disabled=""
             focused="false"
@@ -449,15 +449,15 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          <span
-            class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
           >
             12
             .
-          </span>
+          </p>
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--inherit mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="recovery-phrase-chip-11"
             disabled=""
             focused="false"

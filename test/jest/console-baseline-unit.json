@@ -2790,6 +2790,9 @@
     "ui/pages/onboarding-flow/recovery-phrase/recovery-phrase-chips.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/onboarding-flow/recovery-phrase/reveal-recovery-phrase.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/onboarding-flow/recovery-phrase/review-recovery-phrase.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
