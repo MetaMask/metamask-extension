@@ -12,8 +12,8 @@ import {
 import { getSeedPhrase } from '../../../store/actions';
 import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import RevealRecoveryPhrase from './reveal-recovery-phrase';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import RevealRecoveryPhrase from './reveal-recovery-phrase';
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -71,8 +71,12 @@ describe('RevealRecoveryPhrase', () => {
     );
 
     expect(getByTestId('reveal-recovery-phrase')).toBeInTheDocument();
-    expect(getByText(messages.revealSecretRecoveryPhrase.message )).toBeInTheDocument();
-    expect(getByText(messages.enterPasswordContinue.message)).toBeInTheDocument();
+    expect(
+      getByText(messages.revealSecretRecoveryPhrase.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.enterPasswordContinue.message),
+    ).toBeInTheDocument();
     expect(getByTestId('reveal-recovery-phrase-continue')).toBeInTheDocument();
   });
 
@@ -186,7 +190,7 @@ describe('RevealRecoveryPhrase', () => {
     fireEvent.click(continueButton);
 
     const errorMessage = await findByText(
-      messages.unlockPageIncorrectPassword.message
+      messages.unlockPageIncorrectPassword.message,
     );
     expect(errorMessage).toBeInTheDocument();
   });
