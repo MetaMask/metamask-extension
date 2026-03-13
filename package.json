@@ -90,7 +90,6 @@
     "lint:changelog:rc": "auto-changelog validate --prettier --rc",
     "lint:debug": "DEBUG=eslint:cli-engine yarn lint",
     "lint:eslint": "node development/lint-eslint.mts",
-    "lint:eslint2": "eslint . --ext js,ts,tsx,snap --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:eslint:fix": "node development/lint-eslint.mts --fix",
     "lint:lockfile:dedupe": "yarn dedupe --check",
     "lint:lockfile:dedupe:fix": "yarn dedupe",
