@@ -27,6 +27,7 @@ describe('Add hide token', function () {
                   {
                     address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
                     decimals: 4,
+                    image: null,
                     isERC721: false,
                     symbol: 'TST',
                   },
@@ -75,6 +76,7 @@ describe('Add hide token', function () {
                   {
                     address: tokenAddress,
                     decimals: 4,
+                    image: null,
                     isERC721: false,
                     symbol: 'TST',
                   },
