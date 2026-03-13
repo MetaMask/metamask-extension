@@ -355,10 +355,6 @@ function convertDataToHardwareWalletError(
  * @returns The corresponding ErrorCode enum value
  */
 function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
-  if (numericCode === errorCodes.provider.userRejectedRequest) {
-    return ErrorCode.UserRejected;
-  }
-
   const errorCodeValues = Object.values(ErrorCode).filter(
     (v): v is number => typeof v === 'number',
   );
