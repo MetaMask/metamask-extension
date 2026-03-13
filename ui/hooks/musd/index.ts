@@ -58,3 +58,5 @@ export {
   useMusdPaymentToken,
   type UseMusdPaymentTokenResult,
 } from './useMusdPaymentToken';
+
+export { isMerklClaimTransaction } from './useMerklClaimStatus';
