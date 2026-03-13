@@ -3,6 +3,7 @@ import type {
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
 import { DEFAULT_RELATIVE_THRESHOLDS } from '../../shared/constants/benchmarks';
+import { BENCHMARK_PERSONA } from '../../test/e2e/benchmarks/utils/constants';
 
 import {
   compareMetric,
@@ -107,7 +108,7 @@ describe('benchmark-comparison', () => {
     it('passes when within thresholds', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -129,7 +130,7 @@ describe('benchmark-comparison', () => {
     it('fails when p75 exceeds fail threshold', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 2600 },
         min: { uiStartup: 2000 },
         max: { uiStartup: 3000 },
@@ -151,7 +152,7 @@ describe('benchmark-comparison', () => {
     it('warns but does not fail when p75 exceeds warn but not fail', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 2100 },
         min: { uiStartup: 1800 },
         max: { uiStartup: 2400 },
@@ -174,7 +175,7 @@ describe('benchmark-comparison', () => {
     it('includes relative metrics when baseline is provided', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -183,7 +184,7 @@ describe('benchmark-comparison', () => {
         p95: { uiStartup: 2200 },
       };
       const baseline = {
-        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
       };
 
       const comparison = compareBenchmarkEntries(
@@ -193,20 +194,21 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(3);
+      expect(comparison.relativeMetrics).toHaveLength(4);
       expect(comparison.relativeMetrics[0].metric).toBe('uiStartup');
       expect(comparison.relativeMetrics[0].percentile).toBe('mean');
       expect(comparison.relativeMetrics[0].delta).toBeCloseTo(100);
-      expect(comparison.relativeMetrics[1].percentile).toBe('p75');
-      expect(comparison.relativeMetrics[1].delta).toBeCloseTo(100);
-      expect(comparison.relativeMetrics[2].percentile).toBe('p95');
+      expect(comparison.relativeMetrics[1].percentile).toBe('stdDev');
+      expect(comparison.relativeMetrics[2].percentile).toBe('p75');
       expect(comparison.relativeMetrics[2].delta).toBeCloseTo(100);
+      expect(comparison.relativeMetrics[3].percentile).toBe('p95');
+      expect(comparison.relativeMetrics[3].delta).toBeCloseTo(100);
     });
 
     it('omits relative metrics when no baseline', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -241,7 +243,7 @@ describe('benchmark-comparison', () => {
         p95: {},
       };
       const baseline = {
-        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
       };
 
       const comparison = compareBenchmarkEntries(
@@ -251,9 +253,10 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(2);
+      expect(comparison.relativeMetrics).toHaveLength(3);
       expect(comparison.relativeMetrics[0].percentile).toBe('mean');
-      expect(comparison.relativeMetrics[1].percentile).toBe('p75');
+      expect(comparison.relativeMetrics[1].percentile).toBe('stdDev');
+      expect(comparison.relativeMetrics[2].percentile).toBe('p75');
     });
   });
 

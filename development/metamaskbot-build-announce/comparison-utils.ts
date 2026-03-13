@@ -14,6 +14,7 @@
 
 import type {
   BenchmarkResults,
+  HistoricalBaselineMetrics,
   ThresholdConfig,
   ThresholdViolation,
   RelativeThresholds,
@@ -122,7 +123,7 @@ function deltaToDirection(delta: number): ComparisonDirection {
  * severity, direction, and traffic-light indication.
  *
  * @param metric - Metric name.
- * @param percentile - Which stat key this comparison is for ('mean', 'p75', or 'p95').
+ * @param percentile - Which stat key this comparison is for.
  * @param current - Current value (ms).
  * @param baseline - Baseline value (ms).
  * @param thresholds - Relative thresholds for severity classification.
@@ -138,24 +139,23 @@ export function compareMetric(
   const deltaPercent = baseline === 0 ? 0 : delta / baseline;
 
   const direction = deltaToDirection(delta);
-
-  let severity: ComparisonSeverity;
   const absDelta = Math.abs(deltaPercent);
 
-  if (
-    direction === COMPARISON_DIRECTION.Slower &&
-    absDelta >= thresholds.regressionPercent
-  ) {
-    severity = COMPARISON_SEVERITY.Regression;
-  } else if (
-    direction === COMPARISON_DIRECTION.Faster &&
-    absDelta >= thresholds.improvementPercent
-  ) {
-    severity = COMPARISON_SEVERITY.Improvement;
-  } else if (absDelta >= thresholds.warnPercent) {
-    severity = COMPARISON_SEVERITY.Warn;
-  } else {
-    severity = COMPARISON_SEVERITY.Neutral;
+  let severity: ComparisonSeverity;
+  switch (true) {
+    case direction === COMPARISON_DIRECTION.Slower &&
+      absDelta >= thresholds.regressionPercent:
+      severity = COMPARISON_SEVERITY.Regression;
+      break;
+    case direction === COMPARISON_DIRECTION.Faster &&
+      absDelta >= thresholds.improvementPercent:
+      severity = COMPARISON_SEVERITY.Improvement;
+      break;
+    case absDelta >= thresholds.warnPercent:
+      severity = COMPARISON_SEVERITY.Warn;
+      break;
+    default:
+      severity = COMPARISON_SEVERITY.Neutral;
   }
 
   return {
@@ -170,12 +170,6 @@ export function compareMetric(
     indication: getTrafficLightIndication(severity, direction),
   };
 }
-
-type BaselineMetrics = {
-  mean: number;
-  p75: number;
-  p95: number;
-};
 
 /**
  * Compares a full benchmark entry against thresholds and baseline.
@@ -195,7 +189,7 @@ export function compareBenchmarkEntries(
   benchmarkName: string,
   results: BenchmarkResults,
   thresholdConfig: ThresholdConfig,
-  baselineData?: Record<string, BaselineMetrics>,
+  baselineData?: Record<string, HistoricalBaselineMetrics>,
   relativeThresholds: RelativeThresholds = DEFAULT_RELATIVE_THRESHOLDS,
 ): BenchmarkEntryComparison {
   const { violations, passed } = validateResultThresholds(
@@ -207,6 +201,7 @@ export function compareBenchmarkEntries(
   if (baselineData && results.p75) {
     const comparisonKeys: ComparisonKey[] = [
       STAT_KEY.Mean,
+      STAT_KEY.StdDev,
       PERCENTILE_KEY.P75,
       PERCENTILE_KEY.P95,
     ];

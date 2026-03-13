@@ -391,11 +391,9 @@ jobs:
       page-loads: 10
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
 
-  # Pushes benchmark results (dapp page-load + performance) to extension_benchmark_stats
-  # for historical comparison in PR comments. Runs on main/release/* pushes only.
   store-benchmark-stats:
+    name: Store benchmark stats (main/release only)
     needs:
-      - get-requirements
       - run-benchmarks
       - dapp-page-load-benchmark
     if: >-
@@ -403,7 +401,6 @@ jobs:
         !cancelled() &&
         github.event_name == 'push' &&
         (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
-        needs.get-requirements.outputs.needs-benchmarks == 'true' &&
         !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
       }}
     runs-on: ubuntu-latest

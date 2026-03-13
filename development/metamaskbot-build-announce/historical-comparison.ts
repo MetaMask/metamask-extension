@@ -4,6 +4,8 @@
  * Retrieves benchmark data from MetaMask/extension_benchmark_stats
  * and aggregates it into a mean-of-means reference for PR comment comparisons.
  */
+import mean from 'lodash/mean';
+import { STAT_KEY } from '../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   HistoricalBaselineMetrics,
@@ -90,24 +92,6 @@ type CollectedMetricValues = {
 type CollectedData = Record<string, Record<string, CollectedMetricValues>>;
 
 /**
- * Coerces an unknown value to a finite number, or undefined if not parseable.
- * @param value
- */
-function toNumber(value: unknown): number | undefined {
-  if (typeof value === 'number') {
-    return Number.isNaN(value) ? undefined : value;
-  }
-  const parsed = Number.parseFloat(String(value));
-  return Number.isNaN(parsed) ? undefined : parsed;
-}
-
-function average(values: number[]): number {
-  return values.length === 0
-    ? 0
-    : values.reduce((sum, v) => sum + v, 0) / values.length;
-}
-
-/**
  * Collects metric values from a single benchmark result into the accumulator.
  *
  * @param key - Accumulator key (`presetName/benchmarkName`).
@@ -127,26 +111,16 @@ function collectMetrics(
   }
   for (const metricName of Object.keys(result.mean)) {
     if (!collected[key][metricName]) {
-      collected[key][metricName] = { mean: [], p75: [], p95: [] };
+      collected[key][metricName] = { mean: [], stdDev: [], p75: [], p95: [] };
     }
     const bucket = collected[key][metricName];
-    const meanVal = toNumber(
-      (result.mean as Record<string, unknown>)[metricName],
-    );
-    if (meanVal !== undefined) {
-      bucket.mean.push(meanVal);
-    }
-    const p75Val = toNumber(
-      (result.p75 as Record<string, unknown> | undefined)?.[metricName],
-    );
-    if (p75Val !== undefined) {
-      bucket.p75.push(p75Val);
-    }
-    const p95Val = toNumber(
-      (result.p95 as Record<string, unknown> | undefined)?.[metricName],
-    );
-    if (p95Val !== undefined) {
-      bucket.p95.push(p95Val);
+    for (const statKey of Object.values(STAT_KEY)) {
+      const raw = (result[statKey] as Record<string, unknown> | undefined)?.[
+        metricName
+      ];
+      if (typeof raw === 'number' && !Number.isNaN(raw)) {
+        bucket[statKey].push(raw);
+      }
     }
   }
 }
@@ -191,7 +165,7 @@ function buildMetricBaselines(
     if (values.mean.length === 0) {
       continue;
     }
-    const meanVal = average(values.mean);
+    const meanVal = mean(values.mean);
     if (Number.isNaN(meanVal)) {
       continue;
     }
@@ -203,8 +177,9 @@ function buildMetricBaselines(
     }
     result[metric] = {
       mean: meanVal,
-      p75: values.p75.length > 0 ? average(values.p75) : meanVal,
-      p95: values.p95.length > 0 ? average(values.p95) : meanVal,
+      stdDev: values.stdDev.length > 0 ? mean(values.stdDev) : 0,
+      p75: values.p75.length > 0 ? mean(values.p75) : meanVal,
+      p95: values.p95.length > 0 ? mean(values.p95) : meanVal,
     };
   }
   return result;

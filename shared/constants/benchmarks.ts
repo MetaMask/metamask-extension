@@ -24,6 +24,7 @@ export type BenchmarkResults = {
 
 export const STAT_KEY = {
   Mean: 'mean',
+  StdDev: 'stdDev',
   P75: 'p75',
   P95: 'p95',
 } as const;
@@ -36,12 +37,10 @@ export const PERCENTILE_KEY = {
 export type PercentileKey =
   (typeof PERCENTILE_KEY)[keyof typeof PERCENTILE_KEY];
 
-/**
- * Keys used for relative baseline comparisons: mean + percentiles.
- * Threshold validation uses only PercentileKey (p75/p95);
- * informational deltas in the PR comment also compare mean.
- */
-export type ComparisonKey = PercentileKey | typeof STAT_KEY.Mean;
+export type ComparisonKey =
+  | PercentileKey
+  | typeof STAT_KEY.Mean
+  | typeof STAT_KEY.StdDev;
 
 export const THRESHOLD_SEVERITY = {
   Warn: 'warn',

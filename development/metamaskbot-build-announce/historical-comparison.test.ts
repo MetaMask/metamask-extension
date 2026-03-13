@@ -172,29 +172,6 @@ describe('aggregateHistoricalData', () => {
     expect(result['pageLoad/entry']?.bad).toBeUndefined();
   });
 
-  it('parses string-encoded metric values', () => {
-    const data = asHistoricalFile({
-      c1: {
-        timestamp: 1,
-        presets: {
-          pageLoad: {
-            entry: {
-              mean: { uiStartup: '1234.5' },
-              p75: { uiStartup: '1350.0' },
-              p95: { uiStartup: '1600.0' },
-            },
-          },
-        },
-      },
-    });
-
-    const result = aggregateHistoricalData(data);
-
-    expect(result['pageLoad/entry']?.uiStartup?.mean).toBe(1234.5);
-    expect(result['pageLoad/entry']?.uiStartup?.p75).toBe(1350);
-    expect(result['pageLoad/entry']?.uiStartup?.p95).toBe(1600);
-  });
-
   it('skips commits where presets is missing', () => {
     const data = asHistoricalFile({
       c1: { timestamp: 1 },

@@ -2,12 +2,15 @@ import startCase from 'lodash/startCase';
 import {
   ENTRY_BENCHMARK_PLATFORMS,
   ENTRY_BENCHMARK_BUILD_TYPES,
+  STAT_KEY,
 } from '../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
+  ComparisonKey,
   StatisticalResult,
 } from '../../shared/constants/benchmarks';
 import {
+  BENCHMARK_PERSONA,
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
@@ -159,8 +162,13 @@ function formatCellValue(stats: StatisticalResult, metric: string): string {
 
 /**
  * Resolves the historical baseline for a benchmark entry.
- * Tries qualified key, bare benchmark name, suffix scan, then preset-name scan
- * (needed for startup presets stored as "pageLoad/chrome-browserify-{presetName}").
+ *
+ * Two key formats exist depending on preset type:
+ * - Interaction / User Journey: stored as "{presetName}/{benchmarkName}"
+ * e.g. "interactionUserActions/loadNewAccount"
+ * - Startup (page-load): stored as "pageLoad/chrome-browserify-{presetName}"
+ * e.g. "pageLoad/chrome-browserify-startupStandardHome"
+ * → matched via a substring scan on presetName.
  *
  * @param baseline - Full historical reference map.
  * @param presetName - Preset name (e.g. 'startupStandardHome').
@@ -172,40 +180,41 @@ function resolveEntryBaseline(
   presetName: string,
   benchmarkName: string,
 ): HistoricalBaselineReference[string] | undefined {
+  // TODO: Clean up can be done to only take 1 format in https://github.com/MetaMask/MetaMask-planning/issues/7106
+  // Interaction / User Journey: direct qualified match.
   const qualified = `${presetName}/${benchmarkName}`;
   if (baseline[qualified]) {
     return baseline[qualified];
   }
-  if (baseline[benchmarkName]) {
-    return baseline[benchmarkName];
+
+  // Startup: stored as "pageLoad/chrome-browserify-{presetName}".
+  // Guard against empty presetName — includes('') is always true.
+  if (presetName) {
+    const presetKey = Object.keys(baseline).find((k) => k.includes(presetName));
+    if (presetKey) {
+      return baseline[presetKey];
+    }
   }
-  // Suffix scan: find any key ending with "/benchmarkName"
-  const suffixKey = Object.keys(baseline).find((k) =>
-    k.endsWith(`/${benchmarkName}`),
-  );
-  if (suffixKey) {
-    return baseline[suffixKey];
-  }
-  // Preset-name scan: handles startup presets stored as
-  // "pageLoad/chrome-browserify-{presetName}" in performance_data.json.
-  const presetKey = Object.keys(baseline).find((k) => k.includes(presetName));
-  return presetKey ? baseline[presetKey] : undefined;
+
+  return undefined;
 }
 
 /**
- * Builds the traffic-light indicator for the mean comparison of a metric.
+ * Builds a traffic-light indicator for a specific percentile comparison of a metric.
  * Returns '' when no baseline is available.
  * Neutral returns just the icon; non-neutral returns icon + delta %.
  * Regressions are downgraded to Warn (regression is reserved for the CI gate).
  *
  * @param entry - The benchmark entry.
  * @param metric - The metric key being rendered.
+ * @param percentile - Which percentile to compare: 'mean' | 'p75' | 'p95'.
  * @param baselineMetrics - Resolved baseline for this entry (optional).
  * @returns Indicator string e.g. '🟢⬇️ -42%', '➡️', or '' if no baseline.
  */
-function meanCellIndicator(
+function percentileCellIndicator(
   entry: BenchmarkEntry,
   metric: string,
+  percentile: ComparisonKey,
   baselineMetrics: HistoricalBaselineReference[string] | undefined,
 ): string {
   if (!baselineMetrics?.[metric]) {
@@ -216,7 +225,7 @@ function meanCellIndicator(
     entry.benchmarkName,
     {
       testTitle: entry.benchmarkName,
-      persona: 'standard' as const,
+      persona: BENCHMARK_PERSONA.STANDARD,
       mean: entry.mean,
       min: entry.min,
       max: entry.max,
@@ -229,7 +238,7 @@ function meanCellIndicator(
   );
 
   const match = comparison.relativeMetrics.find(
-    (m) => m.metric === metric && m.percentile === 'mean',
+    (m) => m.metric === metric && m.percentile === percentile,
   );
   if (!match) {
     return '';
@@ -249,21 +258,21 @@ function meanCellIndicator(
 }
 
 /**
- * Formats the Result cell by combining the mean value with a traffic-light indicator.
- * e.g. '🟢⬇️ -90% · 621 ms', '➡️ · 218 ms', or '218 ms' when no baseline.
+ * Formats a stat cell by combining a value with a traffic-light indicator.
+ * e.g. '🟢⬇️ -90% · 648 ms', '➡️ · 218 ms', or '218 ms' when no baseline.
  *
- * @param meanValue - Rounded mean string (e.g. '621') or '-'.
- * @param indicator - Indicator from meanCellIndicator, or ''.
- * @returns Combined result string.
+ * @param value - Rounded value string (e.g. '648') or '-'.
+ * @param indicator - Indicator from percentileCellIndicator, or ''.
+ * @returns Combined cell string.
  */
-function resultCellContent(meanValue: string, indicator: string): string {
-  if (meanValue === '-') {
+function statCellContent(value: string, indicator: string): string {
+  if (value === '-') {
     return '-';
   }
   if (!indicator) {
-    return `${meanValue} ms`;
+    return `${value} ms`;
   }
-  return `${indicator} · ${meanValue} ms`;
+  return `${indicator} · ${value} ms`;
 }
 
 /**
@@ -285,9 +294,11 @@ function isSignificantImprovementIndicator(indicator: string): boolean {
 }
 
 /**
- * Builds table rows for a single benchmark entry in the 3-column format:
- * Step | Result (indicator · mean ms) | P95 (ms).
+ * Builds table rows for a single benchmark entry in the 7-column format:
+ * Metric | Mean (ms) | Min (ms) | Max (ms) | Std Dev (ms) | P75 (ms) | P95 (ms).
  *
+ * Mean, Std Dev, P75, and P95 cells each show their own traffic-light indicator
+ * when a baseline is available. Min and Max are raw extremes without comparison.
  * The 'total' metric row, when present, is ordered last and bolded.
  *
  * @param entry - A single benchmark entry.
@@ -298,7 +309,7 @@ export function buildTableRows(
   entry: BenchmarkEntry,
   baselineMetrics?: HistoricalBaselineReference[string],
 ): string[] {
-  const { mean, p95 } = entry;
+  const { mean, min, max, stdDev, p75, p95 } = entry;
   const metrics = Object.keys(mean);
   const nonTotalMetrics = metrics.filter((m) => m !== 'total');
   const orderedMetrics = [
@@ -308,14 +319,41 @@ export function buildTableRows(
 
   return orderedMetrics.map((metric) => {
     const isTotal = metric === 'total';
-    const meanVal = formatCellValue(mean, metric);
-    const indicator = meanCellIndicator(entry, metric, baselineMetrics);
-    const p95Val = formatCellValue(p95, metric);
     const stepCell = isTotal ? `<b>total</b>` : metric;
+
+    const meanInd = percentileCellIndicator(
+      entry,
+      metric,
+      STAT_KEY.Mean,
+      baselineMetrics,
+    );
+    const stdDevInd = percentileCellIndicator(
+      entry,
+      metric,
+      STAT_KEY.StdDev,
+      baselineMetrics,
+    );
+    const p75Ind = percentileCellIndicator(
+      entry,
+      metric,
+      STAT_KEY.P75,
+      baselineMetrics,
+    );
+    const p95Ind = percentileCellIndicator(
+      entry,
+      metric,
+      STAT_KEY.P95,
+      baselineMetrics,
+    );
+
     const row =
       `<td>${stepCell}</td>` +
-      `<td align="right">${resultCellContent(meanVal, indicator)}</td>` +
-      `<td align="right">${p95Val}</td>`;
+      `<td align="right">${statCellContent(formatCellValue(mean, metric), meanInd)}</td>` +
+      `<td align="right">${formatCellValue(min, metric)}</td>` +
+      `<td align="right">${formatCellValue(max, metric)}</td>` +
+      `<td align="right">${statCellContent(formatCellValue(stdDev, metric), stdDevInd)}</td>` +
+      `<td align="right">${statCellContent(formatCellValue(p75, metric), p75Ind)}</td>` +
+      `<td align="right">${statCellContent(formatCellValue(p95, metric), p95Ind)}</td>`;
     return `<tr>${row}</tr>`;
   });
 }
@@ -324,7 +362,8 @@ export function buildTableRows(
  * Builds an h4-headed sub-section for a single benchmark entry.
  *
  * Structure: h4 header, optional regression/improvement summary paragraphs,
- * then a 3-column table (Step | Result | P95 ms).
+ * then a 7-column table (Metric | Mean | Min | Max | Std Dev | P75 | P95 ms)
+ * where Mean, Std Dev, P75, and P95 each carry their own traffic-light indicator.
  *
  * @param entry - A single benchmark entry.
  * @param baseline - Optional historical baseline for traffic-light annotations.
@@ -345,8 +384,14 @@ function buildEntrySection(
   const nonTotalMetrics = Object.keys(mean).filter((m) => m !== 'total');
   const regressions: string[] = [];
   const improvements: string[] = [];
+  // Summary uses P95 as the primary signal for regressions/improvements.
   for (const metric of nonTotalMetrics) {
-    const ind = meanCellIndicator(entry, metric, baselineMetrics);
+    const ind = percentileCellIndicator(
+      entry,
+      metric,
+      STAT_KEY.P95,
+      baselineMetrics,
+    );
     if (isRegressionIndicator(ind)) {
       regressions.push(`<code>${metric}</code> ${ind}`);
     } else if (isSignificantImprovementIndicator(ind)) {
@@ -363,7 +408,15 @@ function buildEntrySection(
   }
 
   const rows = buildTableRows(entry, baselineMetrics);
-  const columns = ['Step', 'Result', 'P95 (ms)'];
+  const columns = [
+    'Metric',
+    'Mean (ms)',
+    'Min (ms)',
+    'Max (ms)',
+    'Std Dev (ms)',
+    'P75 (ms)',
+    'P95 (ms)',
+  ];
   const tableHeader = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
   const table = `<table>${tableHeader}<tbody>${rows.join('')}</tbody></table>\n`;
 
@@ -373,9 +426,8 @@ function buildEntrySection(
 /**
  * Builds a benchmark HTML section with per-benchmark sub-sections.
  *
- * Each entry becomes an h4-headed block with an optional regression/improvement
- * summary and a 3-column table (Step | Result | P95 ms). Missing-preset warnings
- * are surfaced at the top so reviewers can see exactly what data is absent.
+ * Each entry becomes an h4-headed block with an optional regression/improvement.
+ * Missing-preset warnings are surfaced at the top so reviewers can see exactly what data is absent.
  *
  * @param result - Fetched entries and missing preset descriptions.
  * @param summary - The collapsible header text (e.g. '👆 Interaction Benchmarks').

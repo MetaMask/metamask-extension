@@ -16,11 +16,12 @@
  * 2 — usage error or fatal crash
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
-import { parseArgs } from 'util';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { parseArgs } from 'node:util';
 import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type {
+  ThresholdSeverity,
   ComparisonKey,
   BenchmarkResults,
   ThresholdConfig,
@@ -82,6 +83,7 @@ export function resolveThresholdConfig(
     /^benchmark-chrome-browserify-/u,
     /^benchmark-firefox-browserify-/u,
     /^benchmark-chrome-webpack-/u,
+    /^benchmark-firefox-webpack-/u,
   ];
   for (const prefix of prefixes) {
     const stripped = benchmarkName.replace(prefix, '');
