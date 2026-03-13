@@ -23,6 +23,7 @@ import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getSelectedAccount
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -38,6 +39,8 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const selectedAccount = useSelector(getSelectedAccount);
+  const accountAddress = selectedAccount?.address;
   return (
     <button
       type="button"
@@ -52,6 +55,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
           metaMetricsId,
           isMetaMetricsEnabled,
           isMarketingEnabled,
+          accountAddress,
         );
         global.platform.openTab({ url });
         trackEvent({
