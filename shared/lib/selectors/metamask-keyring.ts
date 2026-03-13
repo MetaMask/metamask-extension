@@ -1,5 +1,7 @@
+import { KeyringTypes } from '@metamask/keyring-controller';
+
 /**
- * Minimal accessor for current keyring from MetaMask state.
+ * Minimal accessors for MetaMask state.
  * No UI imports - only reads state shape to break shared→ui cycle.
  */
 
@@ -9,6 +11,7 @@ type InternalAccountsState = {
       selectedAccount?: string;
       accounts?: Record<string, { metadata?: { keyring?: { type?: string } } }>;
     };
+    preferences?: Record<string, unknown>;
   };
 };
 
@@ -29,4 +32,20 @@ export function getCurrentKeyringFromState(
   }
   const account = accounts[selectedAccount];
   return account?.metadata?.keyring ?? null;
+}
+
+/**
+ * Returns metamask preferences. Used by smart-transactions to avoid ui import.
+ */
+export function getPreferences(state: InternalAccountsState): Record<string, unknown> {
+  return state.metamask?.preferences ?? {};
+}
+
+/**
+ * Returns true if the current account supports smart transactions (not a snap account).
+ * Used by smart-transactions to avoid ui import.
+ */
+export function accountSupportsSmartTx(state: InternalAccountsState): boolean {
+  const keyring = getCurrentKeyringFromState(state);
+  return keyring?.type !== KeyringTypes.snap;
 }

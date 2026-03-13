@@ -26,6 +26,6 @@
     "ui/ducks/**",
     "ui/selectors/**",
     "ui/store/**",
-    "shared/lib/selectors/**"
+    "ui/pages/confirmations/**"
   ]
 }
