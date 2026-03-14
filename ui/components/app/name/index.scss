@@ -17,6 +17,18 @@
     }
   }
 
+  &__saved {
+    .name__name {
+      color: var(--color-text-default);
+    }
+
+    &.name__clickable:hover {
+      .name__name {
+        color: var(--color-info-default);
+      }
+    }
+  }
+
   &__trust-signal-icon {
     width: 16px;
     height: 16px;

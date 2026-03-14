@@ -135,7 +135,6 @@ export default function SenderToRecipient({
       <Arrow variant={variant} />
       {recipientAddress ? (
         <RecipientWithAddress
-          className="justify-end"
           checksummedRecipientAddress={checksummedRecipientAddress}
           chainId={chainId}
         />
