@@ -1,11 +1,10 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
   HardwareWalletType,
@@ -50,10 +49,9 @@ const createMockRefs = (
   ...overrides,
 });
 
-const createWrapper =
-  (initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE]) =>
-  ({ children }: { children: React.ReactNode }) =>
-    React.createElement(MemoryRouter, { initialEntries }, children);
+const createWrapper = (
+  initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE],
+) => createMemoryRouterWrapper({ initialEntries });
 
 describe('useHardwareWalletAutoConnect', () => {
   let mockSetHardwareConnectionPermissionState: jest.Mock;

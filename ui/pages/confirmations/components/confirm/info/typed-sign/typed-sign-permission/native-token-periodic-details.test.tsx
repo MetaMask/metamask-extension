@@ -1,7 +1,10 @@
 import { NativeTokenPeriodicPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 
 import { NativeTokenPeriodicDetails } from './native-token-periodic-details';
@@ -90,7 +93,7 @@ describe('NativeTokenPeriodicDetails', () => {
       };
 
       expect(() =>
-        renderWithConfirmContextProvider(
+        renderWithConfirmContext(
           <NativeTokenPeriodicDetails
             {...defaultProps}
             permission={permissionWithoutStartTime}
@@ -249,7 +252,7 @@ describe('NativeTokenPeriodicDetails', () => {
       };
 
       expect(() =>
-        renderWithConfirmContextProvider(
+        renderWithConfirmContext(
           <NativeTokenPeriodicDetails
             {...defaultProps}
             permission={permissionWithNullStartTime}
