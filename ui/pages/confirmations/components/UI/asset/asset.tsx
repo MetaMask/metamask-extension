@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
@@ -28,6 +28,8 @@ import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import NftDefaultImage from '../../../../../components/app/assets/nfts/nft-default-image/nft-default-image';
+import './index.scss';
 
 type AssetProps = {
   asset: AssetType;
@@ -38,6 +40,7 @@ type AssetProps = {
 const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
   const nftData = asset;
   const { collection, name, tokenId, image, standard, balance } = nftData;
+  const [imageError, setImageError] = useState(false);
 
   const nftItemSrc = useNftImageUrl(image as string);
 
@@ -78,11 +81,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
             ) : null
           }
         >
-          {image || collection?.imageUrl ? (
+          {(image || collection?.imageUrl) && !imageError ? (
             <Box
               as="img"
               src={nftItemSrc || (collection?.imageUrl as string)}
               alt={name}
+              onError={() => setImageError(true)}
               style={{
                 width: 32,
                 height: 32,
@@ -90,7 +94,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <NftDefaultImage
+              className="nft-asset__default-image"
+              clickable={false}
+            />
+          )}
         </BadgeWrapper>
       </Box>
       <Box
