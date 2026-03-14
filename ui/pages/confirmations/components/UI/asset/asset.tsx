@@ -90,7 +90,14 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <AvatarToken
+              size={AvatarTokenSize.Md}
+              name={name || collection?.name || '?'}
+              showHalo={false}
+              data-testid="nft-fallback-avatar"
+            />
+          )}
         </BadgeWrapper>
       </Box>
       <Box
