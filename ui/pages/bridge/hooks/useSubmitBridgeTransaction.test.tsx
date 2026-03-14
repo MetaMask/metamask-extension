@@ -2,9 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import { act } from '@testing-library/react';
+import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
@@ -154,15 +153,17 @@ const makeMockStore = (
   );
 };
 
-const makeWrapper =
-  (store: ReturnType<typeof makeMockStore>) =>
-  ({ children }: { children: React.ReactNode }) => (
-    <Provider store={store}>
-      <MemoryRouter>
-        <HardwareWalletProvider>{children}</HardwareWalletProvider>
-      </MemoryRouter>
-    </Provider>
+const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
+  const MemoryRouter = createMemoryRouterWrapper({
+    store,
+  });
+
+  return ({ children }: { children: React.ReactNode }) => (
+    <MemoryRouter>
+      <HardwareWalletProvider>{children}</HardwareWalletProvider>
+    </MemoryRouter>
   );
+};
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');

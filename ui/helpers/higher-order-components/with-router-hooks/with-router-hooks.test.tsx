@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { MemoryRouter, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
 import withRouterHooks, { RouterHooksProps } from './with-router-hooks';
 
 // Mock the react-router-dom hooks
@@ -47,6 +48,11 @@ const TestComponent: React.FC<TestComponentProps & { testProp?: string }> = ({
 );
 
 describe('withRouterHooks HOC', () => {
+  const renderWithRouter = (ui: React.ReactElement) => {
+    const wrapper = createMemoryRouterWrapper({ initialEntries: ['/'] });
+    return render(ui, { wrapper });
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationKey = 'default-key';
@@ -55,10 +61,8 @@ describe('withRouterHooks HOC', () => {
 
   it('wraps component and provides router hooks as props', () => {
     const WrappedComponent = withRouterHooks(TestComponent);
-    const { getByTestId } = render(
-      <MemoryRouter>
-        <WrappedComponent testProp="test-value" />
-      </MemoryRouter>,
+    const { getByTestId } = renderWithRouter(
+      <WrappedComponent testProp="test-value" />,
     );
     expect(getByTestId('test-prop')).toHaveTextContent('test-value');
     expect(getByTestId('pathname')).toHaveTextContent('/test');
@@ -67,11 +71,7 @@ describe('withRouterHooks HOC', () => {
 
   it('passes navigate function that can be called', () => {
     const WrappedComponent = withRouterHooks(TestComponent);
-    const { getByTestId } = render(
-      <MemoryRouter>
-        <WrappedComponent />
-      </MemoryRouter>,
-    );
+    const { getByTestId } = renderWithRouter(<WrappedComponent />);
     getByTestId('navigate-button').click();
     expect(mockUseNavigate).toHaveBeenCalledWith('/new-route');
   });
@@ -117,11 +117,7 @@ describe('withRouterHooks HOC', () => {
       return <div>All hooks provided</div>;
     };
     const WrappedComponent = withRouterHooks(TestComponentForHooks);
-    render(
-      <MemoryRouter>
-        <WrappedComponent />
-      </MemoryRouter>,
-    );
+    renderWithRouter(<WrappedComponent />);
   });
 
   describe('memoization behavior', () => {
@@ -138,18 +134,10 @@ describe('withRouterHooks HOC', () => {
       };
 
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
-      const { rerender } = render(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      const { rerender } = renderWithRouter(<WrappedComponent />);
 
       // Force re-render with different prop - getMockUseParams() returns new object
-      rerender(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      rerender(<WrappedComponent />);
 
       // Params should be the same reference on both renders despite mock returning new objects
       expect(paramsReferences).toHaveLength(2);
@@ -168,20 +156,12 @@ describe('withRouterHooks HOC', () => {
       };
 
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
-      const { rerender } = render(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      const { rerender } = renderWithRouter(<WrappedComponent />);
 
       // Change params values
       mockParamsValues = { id: 'different-id' };
 
-      rerender(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      rerender(<WrappedComponent />);
 
       // Params should be different references when values change
       expect(paramsReferences).toHaveLength(2);
@@ -201,18 +181,10 @@ describe('withRouterHooks HOC', () => {
       };
 
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
-      const { rerender } = render(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      const { rerender } = renderWithRouter(<WrappedComponent />);
 
       // Force re-render with different prop
-      rerender(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      rerender(<WrappedComponent />);
 
       // Location should be the same reference on both renders
       expect(locationReferences).toHaveLength(2);
@@ -231,11 +203,7 @@ describe('withRouterHooks HOC', () => {
       };
 
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
-      render(
-        <MemoryRouter>
-          <WrappedComponent params={customParams} />
-        </MemoryRouter>,
-      );
+      renderWithRouter(<WrappedComponent params={customParams} />);
 
       expect(paramsReceived[0]).toBe(customParams);
     });
@@ -258,11 +226,7 @@ describe('withRouterHooks HOC', () => {
       };
 
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
-      render(
-        <MemoryRouter>
-          <WrappedComponent location={customLocation} />
-        </MemoryRouter>,
-      );
+      renderWithRouter(<WrappedComponent location={customLocation} />);
 
       expect(locationsReceived[0]).toBe(customLocation);
     });
@@ -285,20 +249,12 @@ describe('withRouterHooks HOC', () => {
       mockParamsValues = { a: 'x,y', b: 'z' };
 
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
-      const { rerender } = render(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      const { rerender } = renderWithRouter(<WrappedComponent />);
 
       // Change to different params that would collide with naive comma-join
       mockParamsValues = { a: 'x', b: 'y,z' };
 
-      rerender(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      rerender(<WrappedComponent />);
 
       // Verify that the params are different references (memoization detected the change)
       expect(paramsReceived).toHaveLength(2);
@@ -323,20 +279,12 @@ describe('withRouterHooks HOC', () => {
       mockLocationKey = 'key-1';
 
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
-      const { rerender } = render(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      const { rerender } = renderWithRouter(<WrappedComponent />);
 
       // Change key to simulate same-path navigation (key changes, path stays same)
       mockLocationKey = 'key-2';
 
-      rerender(
-        <MemoryRouter>
-          <WrappedComponent />
-        </MemoryRouter>,
-      );
+      rerender(<WrappedComponent />);
 
       // Location should be the same reference because only key changed
       // (pathname, search, hash, state are all the same)

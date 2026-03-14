@@ -3,7 +3,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { waitFor } from '@testing-library/react';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../../../test/lib/confirmations/render-helpers';
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
 
@@ -165,7 +168,7 @@ describe('Erc20TokenStreamDetails', () => {
       };
 
       expect(() =>
-        renderWithConfirmContextProvider(
+        renderWithConfirmContext(
           <Erc20TokenStreamDetails
             {...defaultProps}
             permission={permissionWithoutStartTime}
