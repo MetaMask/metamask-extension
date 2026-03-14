@@ -200,4 +200,61 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('shows fallback image when NFT image fails to load', () => {
+    const { getByAltText, getByTestId } = render(
+      <Asset asset={mockNFTERC721Asset} />,
+    );
+
+    const image = getByAltText('Test NFT');
+    fireEvent.error(image);
+
+    expect(getByTestId('nft-default-image')).toBeInTheDocument();
+  });
+
+  it('shows fallback image when NFT has no image and no collection imageUrl', () => {
+    const assetWithNoImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithNoImages} />);
+
+    expect(getByTestId('nft-default-image')).toBeInTheDocument();
+  });
+
+  it('maintains layout when using fallback image', () => {
+    const assetWithNoImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithNoImages} />);
+
+    const fallbackImage = getByTestId('nft-default-image');
+    expect(fallbackImage).toHaveClass('nft-asset__default-image');
+  });
+
+  it('shows network badge with fallback image', () => {
+    const assetWithNoImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId, getByRole } = render(<Asset asset={assetWithNoImages} />);
+
+    expect(getByTestId('nft-default-image')).toBeInTheDocument();
+    expect(
+      getByRole('img', { name: messages.networkNameEthereum.message }),
+    ).toBeInTheDocument();
+  });
 });
