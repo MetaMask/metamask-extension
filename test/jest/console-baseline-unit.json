@@ -3187,6 +3187,9 @@
     },
     "ui/selectors/transactions.test.js": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/components/app/import-token/token-search/token-search.component.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
     }
   }
 }
