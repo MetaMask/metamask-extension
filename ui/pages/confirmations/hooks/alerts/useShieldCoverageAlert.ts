@@ -28,6 +28,26 @@ import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMe
 
 const N_A = 'N/A';
 
+const isMaliciousReasonCode = (reasonCode: string | undefined): boolean => {
+  if (!reasonCode) {
+    return false;
+  }
+  // Malicious or risky reason codes that indicate potential threats
+  const maliciousCodes = [
+    'E003', // Malicious blockaid result
+    'E005', // Malicious sentinel result
+    'E101', // Malicious domain
+    'E102', // Risky domain
+    'E301', // Receiver contract malicious
+    'E302', // Receiver contract risky
+    'E500', // Method params contract malicious
+    'E600', // Malicious token contract
+    'E601', // Risky token contract
+    'E800', // malicious token receiver contract in swap
+  ];
+  return maliciousCodes.includes(reasonCode);
+};
+
 const getModalBodyStr = (reasonCode: string | undefined) => {
   // grouping codes with a fallthrough pattern is not allowed by the linter
   let modalBodyStr: string;
@@ -287,6 +307,18 @@ export function useShieldCoverageAlert(): Alert[] {
           severity = Severity.Danger;
           inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
           iconColor = IconColor.errorDefault;
+          break;
+        case 'unknown':
+          // Differentiate between malicious and benign non-covered transactions
+          if (isMaliciousReasonCode(reasonCode)) {
+            severity = Severity.Danger;
+            inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
+            iconColor = IconColor.errorDefault;
+          } else {
+            severity = Severity.Warning;
+            inlineAlertTextBackgroundColor = BackgroundColor.warningMuted;
+            iconColor = IconColor.warningDefault;
+          }
           break;
         default:
       }
