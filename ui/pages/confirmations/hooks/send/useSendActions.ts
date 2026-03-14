@@ -4,6 +4,7 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -97,8 +98,18 @@ export const useSendActions = () => {
           return;
         }
 
-        // Success - navigate to activity tab
-        navigate(`${DEFAULT_ROUTE}?tab=activity`);
+        // TODO
+        const pendingToastId = result?.transactionId
+          ? `non-evm-tx-${result.transactionId}`
+          : 'non-evm-pending-fallback';
+
+        toast.loading('Transaction submitted', {
+          id: pendingToastId,
+          duration: 10000,
+        });
+
+        // Success - navigate to home
+        navigate(DEFAULT_ROUTE);
       } catch (error) {
         // Check for user rejection using error code (4001) - this is language-independent
         const errorCode = (error as { code?: number })?.code;
