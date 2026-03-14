@@ -138,12 +138,11 @@ import {
 import {
   getConversionRate,
   isNotEIP1559Network,
-  isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
   getCompletedOnboarding,
-} from '../ducks/metamask/metamask';
+} from './metamask-selectors-standalone';
 import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
@@ -184,6 +183,8 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { accountsWithSendEtherInfoSelector } from './send-ether-selectors';
+import { getIsMainnet } from './metamask-state-basic';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -403,10 +404,9 @@ export function getCurrentKeyring(state) {
  * @param state
  * @param [networkClientId] - The optional network client ID to check network and account for EIP-1559 support
  */
-export function checkNetworkAndAccountSupports1559(state, networkClientId) {
-  const networkSupports1559 = isEIP1559Network(state, networkClientId);
-  return networkSupports1559;
-}
+export {
+  checkNetworkAndAccountSupports1559,
+} from './send-ether-selectors';
 
 /**
  * The function returns true if network and account details are fetched and
@@ -1168,13 +1168,7 @@ export const getTokensMarketData = (state) => {
 
 export { getTokenRatesControllerMarketData as getMarketData };
 
-export function getAddressBook(state) {
-  const chainId = getCurrentChainId(state);
-  if (!state.metamask.addressBook[chainId]) {
-    return [];
-  }
-  return Object.values(state.metamask.addressBook[chainId]);
-}
+export { getAddressBook } from './send-ether-selectors';
 
 export function getCompleteAddressBook(state) {
   const addresses = state.metamask.addressBook;
@@ -1233,21 +1227,7 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export function accountsWithSendEtherInfoSelector(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const internalAccounts = getInternalAccounts(state);
-
-  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
-    (internalAccount) => {
-      return {
-        ...internalAccount,
-        ...accounts[internalAccount.address],
-      };
-    },
-  );
-
-  return accountsWithSendEtherInfo;
-}
+export { accountsWithSendEtherInfoSelector } from './send-ether-selectors';
 
 export const getAccountsWithLabels = createSelector(
   getMetaMaskAccountsOrdered,
@@ -1432,10 +1412,7 @@ export function getSuggestedNfts(state) {
   );
 }
 
-export function getIsMainnet(state) {
-  const chainId = getCurrentChainId(state);
-  return chainId === CHAIN_IDS.MAINNET;
-}
+export { getIsMainnet } from './metamask-state-basic';
 
 export function getIsLineaMainnet(state) {
   const chainId = getCurrentChainId(state);

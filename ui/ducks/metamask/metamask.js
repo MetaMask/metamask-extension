@@ -21,7 +21,7 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
-} from '../../selectors/selectors';
+} from '../../selectors/send-ether-selectors';
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
@@ -363,16 +363,6 @@ export function isNotEIP1559Network(state) {
  * @param state
  * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
  */
-export function isEIP1559Network(state, networkClientId) {
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-
-  return (
-    state.metamask.networksMetadata?.[
-      networkClientId ?? selectedNetworkClientId
-    ]?.EIPS[1559] === true
-  );
-}
-
 function getGasFeeControllerEstimateType(state) {
   return state.metamask.gasEstimateType;
 }

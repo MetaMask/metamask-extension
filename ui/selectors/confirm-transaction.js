@@ -14,7 +14,7 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
-} from '../ducks/metamask/metamask';
+} from './metamask-gas-selectors';
 import {
   GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
