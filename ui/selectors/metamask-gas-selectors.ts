@@ -8,29 +8,36 @@
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
+import type { MetaMaskReduxState } from '../store/store';
 
-function getGasFeeControllerEstimateType(state) {
+function getGasFeeControllerEstimateType(
+  state: MetaMaskReduxState,
+): string | undefined {
   return state.metamask.gasEstimateType;
 }
 
-function getGasFeeControllerEstimates(state) {
+function getGasFeeControllerEstimates(state: MetaMaskReduxState): unknown {
   return state.metamask.gasFeeEstimates;
 }
 
-function getTransactionGasFeeEstimates(state) {
+function getTransactionGasFeeEstimates(state: MetaMaskReduxState): unknown {
   const transactionMetadata = state.confirmTransaction?.txData;
   return transactionMetadata?.gasFeeEstimates;
 }
 
 const getTransactionGasFeeEstimateType = createSelector(
   getTransactionGasFeeEstimates,
-  (transactionGasFeeEstimates) => transactionGasFeeEstimates?.type,
+  (transactionGasFeeEstimates: unknown) =>
+    (transactionGasFeeEstimates as { type?: string })?.type,
 );
 
 export const getGasEstimateType = createSelector(
   getGasFeeControllerEstimateType,
   getTransactionGasFeeEstimateType,
-  (gasFeeControllerEstimateType, transactionGasFeeEstimateType) => {
+  (
+    gasFeeControllerEstimateType: string | undefined,
+    transactionGasFeeEstimateType: string | undefined,
+  ) => {
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
@@ -50,6 +57,6 @@ export const getGasFeeEstimates = createSelector(
   },
 );
 
-export function getNativeCurrency(state) {
+export function getNativeCurrency(state: MetaMaskReduxState): string {
   return getProviderConfig(state).ticker;
 }

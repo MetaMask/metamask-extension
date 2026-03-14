@@ -12,7 +12,7 @@ import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../../shared/constants/app';
 
-export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES = [
+export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES: readonly string[] = [
   ApprovalType.SwitchEthereumChain,
   ApprovalType.ResultSuccess,
   ApprovalType.ResultError,
