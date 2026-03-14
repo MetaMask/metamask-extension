@@ -9,12 +9,12 @@ import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../sha
 import {
   getGasEstimateType,
   getGasFeeEstimates,
-  isEIP1559Network,
-} from '../ducks/metamask/metamask';
+} from './metamask-gas-selectors';
+import { isEIP1559Network } from './send-ether-selectors';
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
-import { getIsMainnet } from './selectors';
+import { getIsMainnet } from './metamask-state-basic';
 
 export function getCustomGasLimit(state) {
   return state.gas.customData.limit;

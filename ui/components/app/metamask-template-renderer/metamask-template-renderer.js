@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { isEqual } from 'lodash';
 import { safeComponentList } from './safe-component-list';
+import { TemplateRendererContext } from './template-renderer-context';
 import { ValidChildren } from './section-shape';
 
 function getElement(section) {
@@ -42,25 +43,16 @@ function getPropComponents(components) {
 }
 
 const MetaMaskTemplateRenderer = ({ sections }) => {
-  if (!sections) {
-    // If sections is null eject early by returning null
-    return null;
-  } else if (typeof sections === 'string') {
-    // React can render strings directly, so return the string
-    return sections;
-  } else if (
-    sections &&
-    typeof sections === 'object' &&
-    !Array.isArray(sections)
-  ) {
-    // If dealing with a single entry, then render a single object without key
-    return renderElement(sections);
-  }
-
-  // The last case is dealing with an array of objects
-  return (
-    <>
-      {sections.reduce((allChildren, child) => {
+  const content =
+    !sections ? null : typeof sections === 'string' ? (
+      sections
+    ) : sections &&
+      typeof sections === 'object' &&
+      !Array.isArray(sections) ? (
+      renderElement(sections)
+    ) : (
+      <>
+        {sections.reduce((allChildren, child) => {
         if (child === undefined || child?.hide === true) {
           return allChildren;
         }
@@ -97,7 +89,13 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
         }
         return allChildren;
       }, [])}
-    </>
+      </>
+    );
+
+  return (
+    <TemplateRendererContext.Provider value={MetaMaskTemplateRenderer}>
+      {content}
+    </TemplateRendererContext.Provider>
   );
 };
 

@@ -21,7 +21,7 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
-} from '../../selectors/selectors';
+} from '../../selectors/send-ether-selectors';
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
@@ -31,6 +31,13 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  getAlertEnabledness,
+  getUnconnectedAccountAlertEnabledness,
+  getCompletedOnboarding,
+} from '../../selectors/metamask-state-basic';
+
+export { getAlertEnabledness, getUnconnectedAccountAlertEnabledness, getCompletedOnboarding };
 
 const initialState = {
   isInitialized: false,
@@ -248,11 +255,6 @@ export function updateGasFees({
 
 // Selectors
 
-export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
-
-export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
-
 export const getWeb3ShimUsageAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
 
@@ -361,16 +363,6 @@ export function isNotEIP1559Network(state) {
  * @param state
  * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
  */
-export function isEIP1559Network(state, networkClientId) {
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-
-  return (
-    state.metamask.networksMetadata?.[
-      networkClientId ?? selectedNetworkClientId
-    ]?.EIPS[1559] === true
-  );
-}
-
 function getGasFeeControllerEstimateType(state) {
   return state.metamask.gasEstimateType;
 }
@@ -526,9 +518,6 @@ export function getIsNetworkBusyByChainId(state, chainId) {
   return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
-export function getCompletedOnboarding(state) {
-  return state.metamask.completedOnboarding;
-}
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }

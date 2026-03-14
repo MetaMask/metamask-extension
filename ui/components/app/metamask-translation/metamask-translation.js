@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import MetaMaskTemplateRenderer from '../metamask-template-renderer';
+import { TemplateRendererContext } from '../metamask-template-renderer/template-renderer-context';
 import { SectionShape } from '../metamask-template-renderer/section-shape';
 
 /**
@@ -26,6 +26,7 @@ import { SectionShape } from '../metamask-template-renderer/section-shape';
  */
 export default function MetaMaskTranslation({ translationKey, variables }) {
   const t = useI18nContext();
+  const TemplateRenderer = useContext(TemplateRendererContext);
 
   return t(
     translationKey,
@@ -59,8 +60,13 @@ export default function MetaMaskTranslation({ translationKey, variables }) {
             'MetaMaskTranslation does not allow for component trees of non trivial depth',
           );
         }
+        if (!TemplateRenderer) {
+          throw new Error(
+            'MetaMaskTranslation must be used inside MetaMaskTemplateRenderer (TemplateRendererContext.Provider)',
+          );
+        }
         return (
-          <MetaMaskTemplateRenderer
+          <TemplateRenderer
             key={`${translationKey}-${variable.key}`}
             sections={variable}
           />

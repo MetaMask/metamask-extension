@@ -127,7 +127,7 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import {
   getUnconnectedAccountAlertEnabledness,
   getCompletedOnboarding,
-} from '../ducks/metamask/metamask';
+} from '../selectors/metamask-state-basic';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   HardwareDeviceNames,

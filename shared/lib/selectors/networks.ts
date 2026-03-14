@@ -68,6 +68,30 @@ export const getNetworkConfigurationsByChainId = (
   state: NetworkConfigurationsByChainIdState,
 ) => state.metamask.networkConfigurationsByChainId;
 
+/**
+ * Parameterized selector: returns network configuration for a given chain ID.
+ */
+export const selectNetworkConfigurationByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  (_state: NetworkConfigurationsByChainIdState, chainId: string) => chainId,
+  (networkConfigurationsByChainId, chainId) =>
+    networkConfigurationsByChainId?.[chainId],
+);
+
+/**
+ * Parameterized selector: returns the default RPC endpoint for a given chain ID.
+ */
+export const selectDefaultRpcEndpointByChainId = createSelector(
+  selectNetworkConfigurationByChainId,
+  (networkConfiguration) => {
+    if (!networkConfiguration) {
+      return undefined;
+    }
+    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
+    return rpcEndpoints[defaultRpcEndpointIndex];
+  },
+);
+
 export const selectDefaultNetworkClientIdsByChainId = createSelector(
   getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
