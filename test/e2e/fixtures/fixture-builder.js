@@ -26,9 +26,33 @@ const {
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
 const onboardingFixtureJson = require('./onboarding-fixture.json');
+const { loadE2EEnv } = require('../helpers/e2e-env.ts');
 
 function onboardingFixture() {
   return onboardingFixtureJson;
+}
+
+/**
+ * Get Infura Project ID from environment.
+ * Checks both process.env (build time) and .env.e2e (test time) for the variable.
+ */
+function getInfuraProjectId() {
+  // First try process.env (set during build)
+  if (process.env.INFURA_PROJECT_ID) {
+    return process.env.INFURA_PROJECT_ID;
+  }
+
+  // Fallback to .env.e2e (for E2E tests)
+  const e2eEnv = loadE2EEnv();
+  if (e2eEnv.INFURA_PROJECT_ID) {
+    return e2eEnv.INFURA_PROJECT_ID;
+  }
+
+  // If still not found, return a placeholder (will result in undefined in URL)
+  console.warn(
+    '[FixtureBuilder] INFURA_PROJECT_ID not found in process.env or .env.e2e',
+  );
+  return '';
 }
 
 class FixtureBuilder {
@@ -315,17 +339,17 @@ class FixtureBuilder {
 
   withNetworkControllerOnMonad() {
     return this.withNetworkController({
-      selectedNetworkClientId: 'monad-testnet',
+      selectedNetworkClientId: 'monad',
       networkConfigurations: {
-        'monad-testnet': {
-          chainId: CHAIN_IDS.MONAD_TESTNET,
-          nickname: 'Monad Testnet',
-          rpcUrl: 'https://testnet-rpc.monad.xyz',
+        'monad-mainnet': {
+          chainId: CHAIN_IDS.MONAD,
+          nickname: 'Monad Mainnet',
+          rpcUrl: `https://monad-mainnet.infura.io/v3/${getInfuraProjectId()}`,
           ticker: 'MON',
           rpcPrefs: {
-            blockExplorerUrl: 'https://testnet.monadexplorer.com',
+            blockExplorerUrl: 'https://monadscan.com',
           },
-          id: 'monad-testnet',
+          id: 'monad-mainnet',
           type: 'rpc',
           isCustom: true,
         },
@@ -346,6 +370,26 @@ class FixtureBuilder {
             blockExplorerUrl: 'https://seitrace.com',
           },
           id: 'sei',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnBase() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'base',
+      networkConfigurations: {
+        base: {
+          chainId: CHAIN_IDS.BASE,
+          nickname: 'Base',
+          rpcUrl: `https://base-mainnet.infura.io/v3/${getInfuraProjectId()}`,
+          ticker: 'BASE',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://basescan.org',
+          },
+          id: 'base',
           type: 'rpc',
           isCustom: true,
         },
@@ -761,6 +805,52 @@ class FixtureBuilder {
   withPreferencesController(data) {
     merge(this.fixture.data.PreferencesController, data);
     return this;
+  }
+
+  withPreferencesControllerAdditionalAccountIdentities() {
+    return this.withPreferencesController({
+      identities: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          lastSelected: 1665507600000,
+          name: 'Account 1',
+        },
+        '0x09781764c08de8ca82e156bbf156a3ca217c7950': {
+          address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+          lastSelected: 1665507800000,
+          name: 'Account 2',
+        },
+      },
+    });
+  }
+
+  withPreferencesControllerImportedAccountIdentities() {
+    return this.withPreferencesController({
+      identities: {
+        '0x0cc5261ab8ce458dc977078a3623e2badd27afd3': {
+          name: 'Account 1',
+          address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+          lastSelected: 1665507600000,
+        },
+        '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59': {
+          name: 'Account 2',
+          address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+        },
+        '0xd38d853771fb546bd8b18b2f3638491bc0b0e906': {
+          name: 'Account 3',
+          address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+        },
+      },
+      selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
+  withPreferencesControllerPetnamesDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        petnamesEnabled: false,
+      },
+    });
   }
 
   withPreferencesControllerShowNativeTokenAsMainBalanceDisabled() {
@@ -1732,7 +1822,21 @@ class FixtureBuilder {
           selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
         },
       })
-      .withPreferencesController();
+      .withPreferencesController({
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            lastSelected: 1665507800000,
+            name: 'Ledger 1',
+          },
+        },
+        selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+      });
   }
 
   withTrezorAccount() {
@@ -1837,7 +1941,33 @@ class FixtureBuilder {
           },
         },
       })
-      .withPreferencesController();
+      .withPreferencesController({
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            lastSelected: 1665507800000,
+            name: 'Trezor 1',
+          },
+        },
+        lostIdentities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            name: 'Account 1',
+            lastSelected: 1665507600000,
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            name: 'Trezor 1',
+            lastSelected: 1665507800000,
+          },
+        },
+        selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+      });
   }
 
   withIncomingTransactionsCache(cache) {
@@ -1978,22 +2108,6 @@ class FixtureBuilder {
       this.fixture.data.RemoteFeatureFlagController.remoteFeatureFlags,
       remoteFeatureFlags,
     );
-    return this;
-  }
-
-  withConversionRates(conversionRates = {}) {
-    this.fixture.data.MultichainRatesController ??= {};
-    this.fixture.data.MultichainRatesController.conversionRates = {
-      ...conversionRates,
-    };
-    return this;
-  }
-
-  withCurrencyRates(currencyRates = {}) {
-    this.fixture.data.CurrencyController ??= {};
-    this.fixture.data.CurrencyController.currencyRates = {
-      ...currencyRates,
-    };
     return this;
   }
 

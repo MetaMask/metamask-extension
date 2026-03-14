@@ -1,0 +1,42 @@
+{
+  "additionalNetworks": [
+    {
+      "id": "monad",
+      "networkName": "Monad",
+      "tab": "Popular",
+      "symbol": "MON",
+      "chainIdHex": "0x8f",
+      "sendAmount": "2",
+      "fixtureSetupMethod": "withNetworkControllerOnMonad",
+      "description": "Monad - Additional Network"
+    }
+  ],
+  "popularNetworks": [
+    {
+      "id": "base",
+      "networkName": "Base",
+      "tab": "Popular",
+      "symbol": "ETH",
+      "chainIdHex": "0x2105",
+      "sendAmount": "0.00001",
+      "fixtureSetupMethod": "withNetworkControllerOnBase",
+      "description": "Base - Popular Network"
+    }
+  ],
+  "customNetworks": [
+    {
+      "id": "chiliz",
+      "networkName": "Chiliz",
+      "networkNameLong": "Chiliz Chain",
+      "symbol": "CHZ",
+      "chainId": 88888,
+      "chainIdHex": "0x15b38",
+      "rpcUrl": "https://rpc.ankr.com/chiliz",
+      "rpcName": "Chiliz RPC",
+      "sendAmount": "2",
+      "fixtureSetupMethod": "withNetworkControllerOnMainnet",
+      "description": "Chiliz - Custom Network",
+      "requiresManualSetup": true
+    }
+  ]
+}

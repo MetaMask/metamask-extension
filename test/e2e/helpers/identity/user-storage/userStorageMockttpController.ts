@@ -5,10 +5,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
-
-const { getE2EIdentifierFromJwt } = AuthenticationController.Mocks;
 
 const baseUrl =
   'https://user-storage\\.api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
@@ -72,11 +69,10 @@ const determineIfFeatureEntryFromURL = (url: string) =>
 
 const getSrpIdentifierFromHeaders = (headers: Record<string, unknown>) => {
   const authHeader = headers.authorization;
-  const token =
+  return (
     authHeader?.toString()?.split(' ')[1] ||
-    `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_1`;
-
-  return getE2EIdentifierFromJwt(token);
+    `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_1`
+  );
 };
 
 export class UserStorageMockttpController {
