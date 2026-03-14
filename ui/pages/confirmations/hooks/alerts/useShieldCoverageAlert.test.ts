@@ -166,6 +166,70 @@ describe('useShieldCoverageAlert', () => {
     expect(alert.isOpenModalOnClick).toBe(true);
   });
 
+  it('returns danger alert for unknown status with malicious reason code', () => {
+    const state = getStateWithCoverage('unknown', 'E003'); // Malicious blockaid result
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useShieldCoverageAlert(),
+      state,
+    );
+
+    expect(result.current).toHaveLength(1);
+    const alert = result.current[0];
+    expect(alert.severity).toBe(Severity.Danger);
+    expect(alert.inlineAlertText).toBe(tEn('shieldNotCovered'));
+    expect(alert.inlineAlertTextBackgroundColor).toBe('error-muted');
+    expect(alert.iconColor).toBe('error-default');
+  });
+
+  it('returns warning alert for unknown status with benign non-coverage reason code', () => {
+    const state = getStateWithCoverage('unknown', 'E400'); // Transaction type not supported
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useShieldCoverageAlert(),
+      state,
+    );
+
+    expect(result.current).toHaveLength(1);
+    const alert = result.current[0];
+    expect(alert.severity).toBe(Severity.Warning);
+    expect(alert.inlineAlertText).toBe(tEn('shieldNotCovered'));
+    expect(alert.inlineAlertTextBackgroundColor).toBe('warning-muted');
+    expect(alert.iconColor).toBe('warning-default');
+  });
+
+  it('returns danger alert for unknown status with risky domain reason code', () => {
+    const state = getStateWithCoverage('unknown', 'E102'); // Risky domain
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useShieldCoverageAlert(),
+      state,
+    );
+
+    expect(result.current).toHaveLength(1);
+    const alert = result.current[0];
+    expect(alert.severity).toBe(Severity.Danger);
+    expect(alert.inlineAlertText).toBe(tEn('shieldNotCovered'));
+    expect(alert.inlineAlertTextBackgroundColor).toBe('error-muted');
+    expect(alert.iconColor).toBe('error-default');
+  });
+
+  it('returns warning alert for unknown status with local setup reason code', () => {
+    const state = getStateWithCoverage('unknown', 'E104'); // Local setup
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useShieldCoverageAlert(),
+      state,
+    );
+
+    expect(result.current).toHaveLength(1);
+    const alert = result.current[0];
+    expect(alert.severity).toBe(Severity.Warning);
+    expect(alert.inlineAlertText).toBe(tEn('shieldNotCovered'));
+    expect(alert.inlineAlertTextBackgroundColor).toBe('warning-muted');
+    expect(alert.iconColor).toBe('warning-default');
+  });
+
   it('updates transaction event fragment with covered status', () => {
     const state = getStateWithCoverage('covered', 'E104', true, 150);
     renderHookWithConfirmContextProvider(() => useShieldCoverageAlert(), state);
