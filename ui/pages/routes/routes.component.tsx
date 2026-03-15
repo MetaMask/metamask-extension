@@ -5,6 +5,7 @@ import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  useLoaderData,
   useLocation,
   useNavigationType,
   Navigate,
@@ -146,7 +147,7 @@ import Initialized from '../../helpers/higher-order-components/initialized';
 import BasicFunctionalityRequired from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
-import { createCtaMessage } from './basic-functionality-cta-loader';
+import { createCtaMessage } from './loaders';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -293,28 +294,17 @@ const InitializedLayout = () => (
   </Initialized>
 );
 
-const BasicFunctionalityLayout = ({
-  openPageCtaMessageKey,
-}: {
-  openPageCtaMessageKey: string;
-}) => (
-  <BasicFunctionalityRequired openPageCtaMessageKey={openPageCtaMessageKey}>
-    <Outlet />
-  </BasicFunctionalityRequired>
-);
+const BasicFunctionalityLayout = () => {
+  const { ctaMessageKey } = useLoaderData() as { ctaMessageKey: string };
 
-// Combined layout: BasicFunctionality + Authenticated
-const BasicFunctionalityAuthenticatedLayout = ({
-  openPageCtaMessageKey,
-}: {
-  openPageCtaMessageKey: string;
-}) => (
-  <BasicFunctionalityRequired openPageCtaMessageKey={openPageCtaMessageKey}>
-    <Authenticated>
-      <Outlet />
-    </Authenticated>
-  </BasicFunctionalityRequired>
-);
+  return (
+    <BasicFunctionalityRequired openPageCtaMessageKey={ctaMessageKey}>
+      <Authenticated>
+        <Outlet />
+      </Authenticated>
+    </BasicFunctionalityRequired>
+  );
+};
 
 export const routeConfig = [
   {
@@ -337,18 +327,6 @@ export const routeConfig = [
         children: [{ path: UNLOCK_ROUTE, element: <UnlockPage /> }],
       },
       {
-        loader: createCtaMessage('basicFunctionalityRequired_openSwapsPage'),
-        element: (
-          <BasicFunctionalityAuthenticatedLayout openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage" />
-        ),
-        children: [
-          {
-            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-            element: <CrossChainSwapTxDetails />,
-          },
-        ],
-      },
-      {
         element: <AuthenticatedLayout />,
         children: [
           {
@@ -362,12 +340,21 @@ export const routeConfig = [
         ],
       },
       {
+        loader: createCtaMessage('basicFunctionalityRequired_openSwapsPage'),
+        element: <BasicFunctionalityLayout />,
+        children: [
+          {
+            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
+            element: <CrossChainSwapTxDetails />,
+          },
+        ],
+      },
+
+      {
         loader: createCtaMessage(
           'basicFunctionalityRequired_openCreateSnapAccountPage',
         ),
-        element: (
-          <BasicFunctionalityAuthenticatedLayout openPageCtaMessageKey="basicFunctionalityRequired_openCreateSnapAccountPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
             path: NONEVM_BALANCE_CHECK_ROUTE,
@@ -379,9 +366,7 @@ export const routeConfig = [
         loader: createCtaMessage(
           'basicFunctionalityRequired_openTransactionShieldPage',
         ),
-        element: (
-          <BasicFunctionalityAuthenticatedLayout openPageCtaMessageKey="basicFunctionalityRequired_openTransactionShieldPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
             path: SHIELD_PLAN_ROUTE,
@@ -486,81 +471,53 @@ export const routeConfig = [
         loader: createCtaMessage(
           'basicFunctionalityRequired_openNotificationsPage',
         ),
-        element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openNotificationsPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: '/notifications/settings',
-                element: <NotificationsSettingsRedirect />,
-              },
-              {
-                path: `${NOTIFICATIONS_ROUTE}/:uuid`,
-                element: <NotificationDetails />,
-              },
-              {
-                path: NOTIFICATIONS_ROUTE,
-                element: <Notifications />,
-              },
-            ],
+            path: '/notifications/settings',
+            element: <NotificationsSettingsRedirect />,
+          },
+          {
+            path: `${NOTIFICATIONS_ROUTE}/:uuid`,
+            element: <NotificationDetails />,
+          },
+          {
+            path: NOTIFICATIONS_ROUTE,
+            element: <Notifications />,
           },
         ],
       },
       {
         loader: createCtaMessage('basicFunctionalityRequired_openSnapsPage'),
-        element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openSnapsPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: SNAPS_ROUTE,
-                element: <SnapList />,
-              },
-              {
-                path: SNAPS_VIEW_ROUTE,
-                element: <SnapView />,
-              },
-            ],
+            path: SNAPS_ROUTE,
+            element: <SnapList />,
+          },
+          {
+            path: SNAPS_VIEW_ROUTE,
+            element: <SnapView />,
           },
         ],
       },
       {
         loader: createCtaMessage('basicFunctionalityRequired_openSwapsPage'),
-        element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-                element: <CrossChainSwap />,
-              },
-            ],
+            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
+            element: <CrossChainSwap />,
           },
         ],
       },
       {
         loader: createCtaMessage('basicFunctionalityRequired_openDefiPage'),
-        element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openDefiPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: `${DEFI_ROUTE}/:chainId/:protocolId`,
-                element: <DeFiPage />,
-              },
-            ],
+            path: `${DEFI_ROUTE}/:chainId/:protocolId`,
+            element: <DeFiPage />,
           },
         ],
       },
@@ -568,64 +525,43 @@ export const routeConfig = [
         loader: createCtaMessage(
           'basicFunctionalityRequired_openMusdConversionPage',
         ),
-        element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openMusdConversionPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: `${MUSD_CONVERSION_ROUTE}/*`,
-                element: <MusdConversionPage />,
-              },
-            ],
+            path: `${MUSD_CONVERSION_ROUTE}/*`,
+            element: <MusdConversionPage />,
           },
         ],
       },
       {
         loader: createCtaMessage('basicFunctionalityRequired_openRewardsPage'),
-        element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openRewardsPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: REWARDS_ROUTE,
-                element: <RewardsPage />,
-              },
-            ],
+            path: REWARDS_ROUTE,
+            element: <RewardsPage />,
           },
         ],
       },
       {
         loader: createCtaMessage('basicFunctionalityRequired_openPerpsPage'),
-        element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openPerpsPage" />
-        ),
+        element: <BasicFunctionalityLayout />,
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-                element: <WrappedPerpsMarketDetailPage />,
-              },
-              {
-                path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-                element: <WrappedPerpsOrderEntryPage />,
-              },
-              {
-                path: PERPS_ACTIVITY_ROUTE,
-                element: <WrappedPerpsActivityPage />,
-              },
-              {
-                path: PERPS_MARKET_LIST_ROUTE,
-                element: <WrappedMarketListView />,
-              },
-            ],
+            path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+            element: <WrappedPerpsMarketDetailPage />,
+          },
+          {
+            path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+            element: <WrappedPerpsOrderEntryPage />,
+          },
+          {
+            path: PERPS_ACTIVITY_ROUTE,
+            element: <WrappedPerpsActivityPage />,
+          },
+          {
+            path: PERPS_MARKET_LIST_ROUTE,
+            element: <WrappedMarketListView />,
           },
         ],
       },
