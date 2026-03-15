@@ -114,7 +114,15 @@ describe('useMerklRewards', () => {
       typeof merklClient.getClaimedAmountFromContract
     >;
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Flush pending react-query notifications (scheduled via setTimeout)
+    // while the component is still mounted, before @testing-library/react-hooks
+    // cleanup unmounts it. This prevents "state updates on unmounted components".
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    queryClient.cancelQueries();
+    queryClient.clear();
     jest.restoreAllMocks();
   });
 
@@ -338,7 +346,12 @@ describe('useMerklRewards', () => {
 
   it('aborts fetch on unmount', () => {
     const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
-    mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
+    // Use a never-resolving promise to prevent state updates after unmount
+    mockFetchMerklRewardsForAsset.mockReturnValueOnce(
+      new Promise<null>(() => {
+        // intentionally never resolves
+      }),
+    );
 
     const { unmount } = renderHook(
       () =>
