@@ -51,7 +51,7 @@ export const mockSpotPrices = async (
     }));
 };
 
-export async function mockPriceApi(mockServer: Mockttp) {
+export async function mockPriceApi(mockServer: Mockttp, ethPrice: number = 1) {
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .always()
@@ -60,7 +60,7 @@ export async function mockPriceApi(mockServer: Mockttp) {
       json: {
         'eip155:1/slip44:60': {
           id: 'ethereum',
-          price: 1,
+          price: ethPrice,
           marketCap: 112500000,
           totalVolume: 4500000,
           dilutedMarketCap: 120000000,

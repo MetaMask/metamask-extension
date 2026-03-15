@@ -36,7 +36,7 @@ import {
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
   SSE_RESPONSE_HEADER,
-  MOCK_ASSETS_PRICE,
+  getMockAssetsPrice,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 
@@ -908,6 +908,7 @@ export const getBridgeFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   withErc20: boolean = true,
   withMockedSegment: boolean = false,
+  ethConversionRate: number = ETH_CONVERSION_RATE_USD,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
@@ -921,7 +922,7 @@ export const getBridgeFixtures = (
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withAssetsController({
-      assetsPrice: MOCK_ASSETS_PRICE,
+      assetsPrice: getMockAssetsPrice(ethConversionRate),
     })
     .withBridgeControllerDefaultState()
     .withPreferencesControllerSmartTransactionsOptedOut()
@@ -1160,13 +1161,14 @@ export const getBridgeNegativeCasesFixtures = (
 export const getInsufficientFundsFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
+  ethConversionRate: number = ETH_CONVERSION_RATE_USD,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withAssetsController({
-      assetsPrice: MOCK_ASSETS_PRICE,
+      assetsPrice: getMockAssetsPrice(ethConversionRate),
     })
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
