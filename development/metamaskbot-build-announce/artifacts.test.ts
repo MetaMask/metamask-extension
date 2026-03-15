@@ -64,8 +64,12 @@ describe('getWebpackBuildLinks', () => {
     const builds = getWebpackBuildLinks(HOST, '12.0.0');
 
     expect(builds['webpack builds'].chrome).toContain('build-dist-webpack');
-    expect(builds['webpack builds'].chrome).toContain('metamask-chrome-12.0.0.zip');
-    expect(builds['webpack builds'].firefox).toContain('build-dist-mv2-webpack');
+    expect(builds['webpack builds'].chrome).toContain(
+      'metamask-chrome-12.0.0.zip',
+    );
+    expect(builds['webpack builds'].firefox).toContain(
+      'build-dist-mv2-webpack',
+    );
     expect(builds['webpack builds (flask)'].chrome).toContain('flask');
   });
 
