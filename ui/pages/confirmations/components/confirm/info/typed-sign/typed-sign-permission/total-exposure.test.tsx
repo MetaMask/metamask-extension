@@ -197,7 +197,9 @@ describe('TotalExposure', () => {
         <TotalExposure {...defaultErc20Props} />,
         getMockStore(),
       );
-      expect(getByText(messages.confirmFieldTotalExposure.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.confirmFieldTotalExposure.message),
+      ).toBeInTheDocument();
     });
 
     it('renders unlimited when totalExposure is null (no max nor expiry)', () => {
@@ -232,7 +234,9 @@ describe('TotalExposure', () => {
         getMockStore(),
       );
       expect(container).toBeInTheDocument();
-      expect(container.textContent).toContain(messages.confirmFieldTotalExposure.message);
+      expect(container.textContent).toContain(
+        messages.confirmFieldTotalExposure.message,
+      );
       expect(container.textContent).not.toContain(messages.unlimited.message);
     });
   });
@@ -243,7 +247,9 @@ describe('TotalExposure', () => {
         <TotalExposure {...defaultNativeProps} />,
         getMockStore(),
       );
-      expect(getByText(messages.confirmFieldTotalExposure.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.confirmFieldTotalExposure.message),
+      ).toBeInTheDocument();
     });
 
     it('renders symbol when totalExposure is computed', () => {
@@ -252,7 +258,9 @@ describe('TotalExposure', () => {
         getMockStore(),
       );
       expect(getByText('ETH')).toBeInTheDocument();
-      expect(getByText(messages.confirmFieldTotalExposure.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.confirmFieldTotalExposure.message),
+      ).toBeInTheDocument();
     });
 
     it('renders unlimited with symbol when totalExposure is null', () => {
@@ -274,7 +282,9 @@ describe('TotalExposure', () => {
         getMockStore(),
       );
       expect(container).toBeInTheDocument();
-      expect(container.textContent).toContain(messages.confirmFieldTotalExposure.message);
+      expect(container.textContent).toContain(
+        messages.confirmFieldTotalExposure.message,
+      );
     });
   });
 });
