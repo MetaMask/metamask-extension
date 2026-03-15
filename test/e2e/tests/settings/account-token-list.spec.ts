@@ -13,6 +13,7 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
+import { ETH_CONVERSION_RATE_USD, getMockAssetsPrice } from '../bridge/constants';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -93,6 +94,9 @@ describe('Settings', function () {
         fixtures: new FixtureBuilderV2()
           .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(1700),
+          })
           .build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockPriceApi(mockServer);
@@ -124,6 +128,9 @@ describe('Settings', function () {
             preferences: { showFiatInTestnets: true, showTestNetworks: true },
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(1700),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -168,6 +175,9 @@ describe('Settings', function () {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: { showFiatInTestnets: true },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(1700),
           })
           .build(),
         title: this.test?.fullTitle(),

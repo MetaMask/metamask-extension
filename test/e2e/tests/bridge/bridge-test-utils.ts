@@ -1252,6 +1252,9 @@ export const getBridgeL2Fixtures = (
         },
       },
     })
+    .withAssetsController({
+      assetsPrice: getMockAssetsPrice(3010),
+    })
     .withEnabledNetworks({
       eip155: {
         '0x1': true, // Mainnet
