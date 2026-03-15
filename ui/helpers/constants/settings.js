@@ -16,6 +16,7 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  PRIVACY_ROUTE,
 } from './routes';
 
 /**
@@ -330,12 +331,12 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#network-details-check`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[16]
+  // privacy settingsRefs[0]
   {
-    tabMessage: (t) => t('securityAndPrivacy'),
+    tabMessage: (t) => t('privacy'),
     sectionMessage: (t) => t('externalNameSourcesSetting'),
     descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
-    route: `${SECURITY_ROUTE}#proposed-nicknames`,
+    route: `${PRIVACY_ROUTE}#proposed-nicknames`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[17]

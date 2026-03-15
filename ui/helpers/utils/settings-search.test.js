@@ -146,6 +146,8 @@ const t = (key) => {
       return 'Enable "Add a new Bitcoin account (Beta)"';
     case 'backupAndSync':
       return 'Backup and Sync';
+    case 'privacy':
+      return 'Privacy';
     default:
       return '';
   }
@@ -183,7 +185,11 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(22);
+      ).toStrictEqual(21);
+    });
+
+    it('returns "Privacy" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('privacy'))).toStrictEqual(1);
     });
 
     it('returns "Network" section count', () => {
