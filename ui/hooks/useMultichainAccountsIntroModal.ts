@@ -31,10 +31,25 @@ export function useMultichainAccountsIntroModal(
   const lastUpdatedFromVersion = useAppSelector(
     (state) => state.metamask.previousAppVersion,
   );
+  const currentAppVersion = useAppSelector(
+    (state) => state.metamask.currentAppVersion,
+  );
 
   useEffect(() => {
     // Only show modal on the main wallet/home route
     const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
+
+    // Defensive check: If the current version is >= BIP-44 introduction version,
+    // never show the modal regardless of previous version state
+    const parsedCurrentVersion = semverParse(currentAppVersion);
+    const strippedCurrentVersion = parsedCurrentVersion
+      ? `${parsedCurrentVersion.major}.${parsedCurrentVersion.minor}.${parsedCurrentVersion.patch}`
+      : null;
+
+    const isCurrentVersionAboveThreshold = Boolean(
+      strippedCurrentVersion &&
+        !semverLt(strippedCurrentVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
+    );
 
     const parsedLastVersion = semverParse(lastUpdatedFromVersion);
     // Strip prerelease versions as they just indicate build types.
@@ -42,18 +57,26 @@ export function useMultichainAccountsIntroModal(
       ? `${parsedLastVersion.major}.${parsedLastVersion.minor}.${parsedLastVersion.patch}`
       : null;
 
-    // Check if this is an upgrade from a version lower than BIP-44 introduction version
+    // Additional safeguard: If we can't parse the previous version properly,
+    // default to NOT showing the modal to avoid unexpected behavior
     const isUpgradeFromLowerThanBip44Version = Boolean(
       strippedLastVersion &&
         semverLt(strippedLastVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
     );
 
+    // Edge case protection: If lastUpdatedFromVersion is empty string or other
+    // falsy value that might indicate corrupted state, don't show modal
+    const hasValidPreviousVersion = Boolean(lastUpdatedFromVersion?.trim());
+
     // Show modal only for upgrades from versions < BIP-44 introduction version
+    // BUT never show if current version is already >= threshold (defensive guard)
     const shouldShowModal =
       isUnlocked &&
       !hasShownMultichainAccountsIntroModal &&
       lastUpdatedAt !== null && // null = fresh install, timestamp = upgrade
+      hasValidPreviousVersion && // Must have valid previous version data
       isUpgradeFromLowerThanBip44Version &&
+      !isCurrentVersionAboveThreshold && // Defensive guard against showing on versions >= 13.5.0
       isMainWalletArea;
 
     setShowMultichainIntroModal(shouldShowModal);
@@ -62,6 +85,7 @@ export function useMultichainAccountsIntroModal(
     hasShownMultichainAccountsIntroModal,
     lastUpdatedAt,
     lastUpdatedFromVersion,
+    currentAppVersion,
     location.pathname,
   ]);
 

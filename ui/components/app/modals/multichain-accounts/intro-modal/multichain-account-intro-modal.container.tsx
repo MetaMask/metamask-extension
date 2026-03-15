@@ -53,9 +53,12 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
     setIsLoading(true);
 
     try {
-      // Wait for alignment + minimum 2s UX delay
+      // Wait for alignment + minimum 2s UX delay with timeout protection
       await Promise.all([
-        alignmentPromise,
+        Promise.race([
+          alignmentPromise,
+          new Promise<void>((resolve) => setTimeout(resolve, 5000)), // 5 second timeout
+        ]),
         new Promise<void>((resolve) =>
           setTimeout(resolve, MINIMUM_LOADING_TIME_MS),
         ),
@@ -84,7 +87,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page
     window.open(SUPPORT_URL, '_blank', 'noopener,noreferrer');
-  }, []);
+  }, [SUPPORT_URL]);
 
   const handleClose = useCallback(async () => {
     // Prevent race condition if alignment is handling the close
@@ -93,9 +96,12 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
     }
     isClosingRef.current = true;
 
-    // Wait for alignment to complete
+    // Wait for alignment to complete with a timeout to prevent hanging
     try {
-      await alignmentPromise;
+      await Promise.race([
+        alignmentPromise,
+        new Promise<void>((resolve) => setTimeout(resolve, 5000)), // 5 second timeout
+      ]);
     } catch (err) {
       // Silently handle alignment errors during close
       console.error('Alignment failed during modal close:', err);
