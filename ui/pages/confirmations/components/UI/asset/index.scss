@@ -6,3 +6,18 @@
     cursor: pointer;
   }
 }
+
+.send-asset-nft-placeholder {
+  &__image {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 0 !important;
+
+    .nft-default__button {
+      display: none;
+    }
+  }
+}

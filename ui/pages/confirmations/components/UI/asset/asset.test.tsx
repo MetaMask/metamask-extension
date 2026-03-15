@@ -63,6 +63,17 @@ jest.mock('../../../hooks/useNftImageUrl', () => ({
   useNftImageUrl: jest.fn().mockReturnValue('https://example.com/nft.png'),
 }));
 
+jest.mock(
+  '../../../../../components/app/assets/nfts/nft-default-image/nft-default-image',
+  () => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const MockNftDefaultImage = ({ className }: { className: string }) => (
+      <div data-testid="nft-default-placeholder" className={className} />
+    );
+    return MockNftDefaultImage;
+  },
+);
+
 describe('TokenAsset', () => {
   it('renders token asset with correct information', () => {
     const { getByText, getByTestId } = render(<Asset asset={mockTokenAsset} />);
@@ -199,5 +210,23 @@ describe('NFTAsset', () => {
     const { getByText } = render(<Asset asset={assetWithAccountType} />);
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
+  });
+
+  it('renders default placeholder when NFT has no image or collection image', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId, queryByAltText } = render(
+      <Asset asset={assetWithoutImages} />,
+    );
+
+    expect(getByTestId('nft-default-placeholder')).toBeInTheDocument();
+    expect(queryByAltText('Test NFT')).not.toBeInTheDocument();
   });
 });
