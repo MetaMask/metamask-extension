@@ -146,6 +146,7 @@ import Initialized from '../../helpers/higher-order-components/initialized';
 import BasicFunctionalityRequired from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { createCtaMessage } from './basic-functionality-cta-loader';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -302,6 +303,19 @@ const BasicFunctionalityLayout = ({
   </BasicFunctionalityRequired>
 );
 
+// Combined layout: BasicFunctionality + Authenticated
+const BasicFunctionalityAuthenticatedLayout = ({
+  openPageCtaMessageKey,
+}: {
+  openPageCtaMessageKey: string;
+}) => (
+  <BasicFunctionalityRequired openPageCtaMessageKey={openPageCtaMessageKey}>
+    <Authenticated>
+      <Outlet />
+    </Authenticated>
+  </BasicFunctionalityRequired>
+);
+
 export const routeConfig = [
   {
     element: (
@@ -323,18 +337,14 @@ export const routeConfig = [
         children: [{ path: UNLOCK_ROUTE, element: <UnlockPage /> }],
       },
       {
+        loader: createCtaMessage('basicFunctionalityRequired_openSwapsPage'),
         element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage" />
+          <BasicFunctionalityAuthenticatedLayout openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage" />
         ),
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-                element: <CrossChainSwapTxDetails />,
-              },
-            ],
+            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
+            element: <CrossChainSwapTxDetails />,
           },
         ],
       },
@@ -352,29 +362,30 @@ export const routeConfig = [
         ],
       },
       {
+        loader: createCtaMessage(
+          'basicFunctionalityRequired_openCreateSnapAccountPage',
+        ),
         element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openCreateSnapAccountPage" />
+          <BasicFunctionalityAuthenticatedLayout openPageCtaMessageKey="basicFunctionalityRequired_openCreateSnapAccountPage" />
         ),
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [
-              {
-                path: NONEVM_BALANCE_CHECK_ROUTE,
-                element: <NonEvmBalanceCheck />,
-              },
-            ],
+            path: NONEVM_BALANCE_CHECK_ROUTE,
+            element: <NonEvmBalanceCheck />,
           },
         ],
       },
       {
+        loader: createCtaMessage(
+          'basicFunctionalityRequired_openTransactionShieldPage',
+        ),
         element: (
-          <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openTransactionShieldPage" />
+          <BasicFunctionalityAuthenticatedLayout openPageCtaMessageKey="basicFunctionalityRequired_openTransactionShieldPage" />
         ),
         children: [
           {
-            element: <AuthenticatedLayout />,
-            children: [{ path: SHIELD_PLAN_ROUTE, element: <ShieldPlan /> }],
+            path: SHIELD_PLAN_ROUTE,
+            element: <ShieldPlan />,
           },
         ],
       },
@@ -472,6 +483,9 @@ export const routeConfig = [
         ],
       },
       {
+        loader: createCtaMessage(
+          'basicFunctionalityRequired_openNotificationsPage',
+        ),
         element: (
           <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openNotificationsPage" />
         ),
@@ -487,12 +501,16 @@ export const routeConfig = [
                 path: `${NOTIFICATIONS_ROUTE}/:uuid`,
                 element: <NotificationDetails />,
               },
-              { path: NOTIFICATIONS_ROUTE, element: <Notifications /> },
+              {
+                path: NOTIFICATIONS_ROUTE,
+                element: <Notifications />,
+              },
             ],
           },
         ],
       },
       {
+        loader: createCtaMessage('basicFunctionalityRequired_openSnapsPage'),
         element: (
           <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openSnapsPage" />
         ),
@@ -500,13 +518,20 @@ export const routeConfig = [
           {
             element: <AuthenticatedLayout />,
             children: [
-              { path: SNAPS_ROUTE, element: <SnapList /> },
-              { path: SNAPS_VIEW_ROUTE, element: <SnapView /> },
+              {
+                path: SNAPS_ROUTE,
+                element: <SnapList />,
+              },
+              {
+                path: SNAPS_VIEW_ROUTE,
+                element: <SnapView />,
+              },
             ],
           },
         ],
       },
       {
+        loader: createCtaMessage('basicFunctionalityRequired_openSwapsPage'),
         element: (
           <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage" />
         ),
@@ -523,6 +548,7 @@ export const routeConfig = [
         ],
       },
       {
+        loader: createCtaMessage('basicFunctionalityRequired_openDefiPage'),
         element: (
           <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openDefiPage" />
         ),
@@ -539,6 +565,9 @@ export const routeConfig = [
         ],
       },
       {
+        loader: createCtaMessage(
+          'basicFunctionalityRequired_openMusdConversionPage',
+        ),
         element: (
           <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openMusdConversionPage" />
         ),
@@ -555,17 +584,24 @@ export const routeConfig = [
         ],
       },
       {
+        loader: createCtaMessage('basicFunctionalityRequired_openRewardsPage'),
         element: (
           <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openRewardsPage" />
         ),
         children: [
           {
             element: <AuthenticatedLayout />,
-            children: [{ path: REWARDS_ROUTE, element: <RewardsPage /> }],
+            children: [
+              {
+                path: REWARDS_ROUTE,
+                element: <RewardsPage />,
+              },
+            ],
           },
         ],
       },
       {
+        loader: createCtaMessage('basicFunctionalityRequired_openPerpsPage'),
         element: (
           <BasicFunctionalityLayout openPageCtaMessageKey="basicFunctionalityRequired_openPerpsPage" />
         ),
