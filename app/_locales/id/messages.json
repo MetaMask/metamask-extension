@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Aktifkan fungsionalitas dasar"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Buka halaman beranda"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "Fungsionalitas dasar tidak aktif"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Fungsionalitas dasar"
+  },
   "bestQuote": {
     "message": "Kuotasi terbaik"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Untuk $1 suatu transaksi, biaya gas harus ditingkatkan minimal 10% agar dapat dikenali oleh jaringan.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "Batalkan transaksi"
   },
   "cancelled": {
     "message": "Dibatalkan"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "Disalin."
   },
+  "copiedToClipboard": {
+    "message": "Disalin ke papan klip"
+  },
   "copyAddress": {
     "message": "Salin alamat ke papan klip"
   },
@@ -1759,6 +1774,9 @@
   },
   "copyTransactionId": {
     "message": "Salin ID transaksi"
+  },
+  "correct": {
+    "message": "Benar"
   },
   "create": {
     "message": "Buat"
@@ -1782,10 +1800,6 @@
   },
   "createPasswordDetails": {
     "message": "Membuka MetaMask hanya pada perangkat ini."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Kehilangan kata sandi ini berarti kehilangan akses dompet di semua perangkat, ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask tidak dapat meresetnya."
@@ -1943,7 +1957,7 @@
     "message": "Pengumpulan data untuk pemasaran"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
+    "message": "Kami akan menggunakan MetaMetrics untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk dan materi lainnya)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Dapatkan pembaruan produk, kiat, dan berita - termasuk melalui email. Kami dapat menggunakan interaksi Anda untuk meningkatkan konten yang kami bagikan."
@@ -3308,6 +3322,9 @@
   "includesXTransactions": {
     "message": "Termasuk transaksi $1"
   },
+  "incorrect": {
+    "message": "Salah"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask tidak dapat terhubung ke host blockchain. Tinjau alasan yang mungkin $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3745,9 @@
   "makeAnotherSwap": {
     "message": "Buat swap baru"
   },
+  "manage": {
+    "message": "Kelola"
+  },
   "manageDefaultSettings": {
     "message": "Kelola pengaturan default"
   },
@@ -3966,17 +3986,30 @@
     "message": "$1 ingin menggunakan Snap $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "Beli mUSD"
+  },
   "musdClaimClaimingTo": {
     "message": "Mengeklaim ke",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "Konversi $1 ke mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "Konversi mUSD gagal"
   },
-  "musdConversionTitle": {
-    "message": "Dikonversi ke mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "mUSD telah tiba!"
+  },
+  "musdEducationGetStarted": {
+    "message": "Mulai"
+  },
+  "musdEducationNotNow": {
+    "message": "Tidak sekarang"
+  },
+  "musdGetMusd": {
+    "message": "Dapatkan mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Syarat berlaku."
   },
   "mustSelectOne": {
     "message": "Harus memilih minimal 1 token."
@@ -4557,11 +4590,8 @@
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Pantau terus segala yang terjadi di dompet Anda dengan notifikasi. Untuk menggunakan notifikasi, kami menggunakan profil untuk menyinkronkan beberapa pengaturan di seluruh perangkat Anda. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Pelajari cara kami melindungi privasi Anda saat menggunakan fitur ini."
+    "message": "Pelajari caranya"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
@@ -5169,8 +5199,8 @@
   "perpsAddFundsDescription": {
     "message": "Tambahkan dana untuk mulai memperdagangkan kontrak perpetual dengan leverage"
   },
-  "perpsAddMargin": {
-    "message": "Tambahkan Margin"
+  "perpsAddMarginDescription": {
+    "message": "Tingkatkan margin untuk mengurangi risiko likuidasi"
   },
   "perpsAddToFavorites": {
     "message": "Tambahkan ke favorit"
@@ -5196,6 +5226,9 @@
   },
   "perpsCloseLong": {
     "message": "Tutup posisi Long"
+  },
+  "perpsClosePosition": {
+    "message": "Tutup posisi"
   },
   "perpsCloseShort": {
     "message": "Tutup posisi Short"
@@ -5241,6 +5274,9 @@
   },
   "perpsEntryPrice": {
     "message": "Harga masuk"
+  },
+  "perpsExploreMarkets": {
+    "message": "Jelajahi pasar"
   },
   "perpsFees": {
     "message": "Biaya"
@@ -5380,11 +5416,17 @@
   "perpsRecentActivity": {
     "message": "Aktivitas Terbaru"
   },
-  "perpsRemoveMargin": {
-    "message": "Hapus Margin"
+  "perpsReduceExposure": {
+    "message": "Kurangi eksposur"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Tarik kelebihan margin dari posisi"
   },
   "perpsReturn": {
     "message": "Laba"
+  },
+  "perpsReversePosition": {
+    "message": "Balik posisi"
   },
   "perpsSearchMarkets": {
     "message": "Cari pasar"
@@ -5506,8 +5548,14 @@
   "perpsUnrealizedPnl": {
     "message": "P&L Belum Terealisasi"
   },
+  "perpsWatchlist": {
+    "message": "Daftar pantauan"
+  },
   "perpsWithdraw": {
     "message": "Tarik"
+  },
+  "perpsYouWillReceive": {
+    "message": "Anda akan menerima"
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
@@ -5616,6 +5664,9 @@
   },
   "privateNetwork": {
     "message": "Jaringan pribadi"
+  },
+  "proceed": {
+    "message": "Lanjutkan"
   },
   "proceedWithTransaction": {
     "message": "Saya tetap ingin melanjutkan"
@@ -5778,6 +5829,9 @@
   },
   "queued": {
     "message": "Antrean"
+  },
+  "quizIntroduction": {
+    "message": "Untuk mengungkapkan Frasa Pemulihan Rahasia, Anda perlu menjawab dua pertanyaan dengan benar."
   },
   "rank": {
     "message": "Peringkat"
@@ -6002,25 +6056,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "Cadangkan Frasa Pemulihan Rahasia"
   },
-  "revealSeedWords": {
+  "revealSecretRecoveryPhraseSettings": {
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 memberikan $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
+  "revealSeedWords": {
+    "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Pemulihan Rahasia (FPR)"
+    "message": "Frasa Pemulihan Rahasia"
   },
   "revealSeedWordsText": {
     "message": "Teks"
   },
   "revealSeedWordsWarning": {
-    "message": "Pastikan tidak ada yang melihat layar Anda. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Pastikan tidak ada orang yang melihat layar Anda. Dukungan MetaMask tidak akan pernah meminta hal ini."
   },
   "revealSensitiveContent": {
     "message": "Tampilkan konten sensitif"
@@ -7545,6 +7597,9 @@
   "speedUpTooltipText": {
     "message": "Biaya gas baru"
   },
+  "speedUpTransactionTitle": {
+    "message": "Percepat transaksi"
+  },
   "spender": {
     "message": "Spender"
   },
@@ -8505,6 +8560,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask mengalami masalah saat memulai."
+  },
+  "trustSignalBlockDescription": {
+    "message": "Jika Anda terhubung ke situs ini, Anda bisa kehilangan seluruh aset Anda."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Situs berbahaya terdeteksi"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Tetap Terhubung"
   },
   "tryAgain": {
     "message": "Coba lagi"

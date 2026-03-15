@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Bật chức năng cơ bản"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Đến trang chủ"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "Chức năng cơ bản đã tắt"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Chức năng cơ bản"
+  },
   "bestQuote": {
     "message": "Báo giá tốt nhất"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Để $1 giao dịch, phí gas phải tăng thêm ít nhất 10% để được mạng lưới ghi nhận.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "Hủy giao dịch"
   },
   "cancelled": {
     "message": "Đã hủy"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "Đã sao chép."
   },
+  "copiedToClipboard": {
+    "message": "Đã sao chép vào bộ nhớ đệm"
+  },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
   },
@@ -1759,6 +1774,9 @@
   },
   "copyTransactionId": {
     "message": "Sao chép ID giao dịch"
+  },
+  "correct": {
+    "message": "Chính xác"
   },
   "create": {
     "message": "Tạo"
@@ -1782,10 +1800,6 @@
   },
   "createPasswordDetails": {
     "message": "Chỉ mở khóa MetaMask trên thiết bị này."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Mất mật khẩu này đồng nghĩa với việc mất quyền truy cập ví trên tất cả các thiết bị, ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask không thể đặt lại mật khẩu này."
@@ -1943,7 +1957,7 @@
     "message": "Thu thập dữ liệu cho mục đích tiếp thị"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
+    "message": "Chúng tôi sẽ sử dụng MetaMetrics để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm và các tài liệu khác)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Nhận thông tin cập nhật về sản phẩm, lời khuyên và tin tức - bao gồm qua email. Chúng tôi có thể sử dụng cách tương tác của bạn để cải thiện nội dung chia sẻ."
@@ -3308,6 +3322,9 @@
   "includesXTransactions": {
     "message": "Bao gồm $1 giao dịch"
   },
+  "incorrect": {
+    "message": "Không chính xác"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask không thể kết nối với máy chủ chuỗi khối. Hãy xem xét các lý do tiềm ẩn $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3745,9 @@
   "makeAnotherSwap": {
     "message": "Tạo một giao dịch hoán đổi mới"
   },
+  "manage": {
+    "message": "Quản lý"
+  },
   "manageDefaultSettings": {
     "message": "Quản lý cài đặt mặc định"
   },
@@ -3966,17 +3986,30 @@
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "Mua mUSD"
+  },
   "musdClaimClaimingTo": {
     "message": "Nhận vào",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "Chuyển đổi $1 sang mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "Chuyển đổi mUSD thất bại"
   },
-  "musdConversionTitle": {
-    "message": "Đã chuyển đổi sang mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "mUSD của bạn đã sẵn sàng!"
+  },
+  "musdEducationGetStarted": {
+    "message": "Bắt đầu"
+  },
+  "musdEducationNotNow": {
+    "message": "Không phải bây giờ"
+  },
+  "musdGetMusd": {
+    "message": "Nhận mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Áp dụng điều khoản."
   },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."
@@ -4557,11 +4590,8 @@
   "notificationsSettingsBoxError": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn. Để sử dụng tính năng thông báo, chúng tôi dùng hồ sơ để đồng bộ một số chế độ cài đặt trên các thiết bị của bạn. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
+    "message": "Tìm hiểu cách thức"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
@@ -5169,8 +5199,8 @@
   "perpsAddFundsDescription": {
     "message": "Nạp tiền để bắt đầu giao dịch hợp đồng vĩnh cửu có đòn bẩy"
   },
-  "perpsAddMargin": {
-    "message": "Nạp tiền ký quỹ"
+  "perpsAddMarginDescription": {
+    "message": "Tăng mức ký quỹ để giảm rủi ro thanh lý"
   },
   "perpsAddToFavorites": {
     "message": "Thêm vào mục yêu thích"
@@ -5196,6 +5226,9 @@
   },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
+  },
+  "perpsClosePosition": {
+    "message": "Đóng vị thế"
   },
   "perpsCloseShort": {
     "message": "Đóng vị thế bán khống"
@@ -5241,6 +5274,9 @@
   },
   "perpsEntryPrice": {
     "message": "Giá vào lệnh"
+  },
+  "perpsExploreMarkets": {
+    "message": "Khám phá thị trường"
   },
   "perpsFees": {
     "message": "Phí"
@@ -5380,11 +5416,17 @@
   "perpsRecentActivity": {
     "message": "Hoạt động gần đây"
   },
-  "perpsRemoveMargin": {
-    "message": "Rút tiền ký quỹ"
+  "perpsReduceExposure": {
+    "message": "Giảm mức tiếp xúc"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Rút phần ký quỹ dư thừa khỏi vị thế"
   },
   "perpsReturn": {
     "message": "Lợi nhuận"
+  },
+  "perpsReversePosition": {
+    "message": "Đảo ngược vị thế"
   },
   "perpsSearchMarkets": {
     "message": "Tìm kiếm thị trường"
@@ -5506,8 +5548,14 @@
   "perpsUnrealizedPnl": {
     "message": "Lãi/Lỗ chưa thực hiện"
   },
+  "perpsWatchlist": {
+    "message": "Danh sách theo dõi"
+  },
   "perpsWithdraw": {
     "message": "Rút tiền"
+  },
+  "perpsYouWillReceive": {
+    "message": "Bạn sẽ nhận được"
   },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
@@ -5616,6 +5664,9 @@
   },
   "privateNetwork": {
     "message": "Mạng riêng"
+  },
+  "proceed": {
+    "message": "Tiếp tục"
   },
   "proceedWithTransaction": {
     "message": "Tôi vẫn muốn tiếp tục"
@@ -5778,6 +5829,9 @@
   },
   "queued": {
     "message": "Đã đưa vào hàng đợi"
+  },
+  "quizIntroduction": {
+    "message": "Để hiển thị Cụm từ khôi phục bí mật, bạn cần trả lời đúng hai câu hỏi."
   },
   "rank": {
     "message": "Xếp hạng"
@@ -6002,25 +6056,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Hiển thị Cụm từ khôi phục bí mật"
+  },
   "revealSeedWords": {
     "message": "Hiện Cụm từ khôi phục bí mật"
-  },
-  "revealSeedWordsDescription1": {
-    "message": "$1 cung cấp $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "khôi phục bí mật (SRP)"
+    "message": "của bạn"
   },
   "revealSeedWordsText": {
     "message": "Văn bản"
   },
   "revealSeedWordsWarning": {
-    "message": "Đảm bảo không có ai đang nhìn vào màn hình của bạn. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Đảm bảo không có ai đang nhìn vào màn hình của bạn. Bộ phận Hỗ trợ MetaMask sẽ không bao giờ yêu cầu thông tin này."
   },
   "revealSensitiveContent": {
     "message": "Hiển thị nội dung nhạy cảm"
@@ -7545,6 +7597,9 @@
   "speedUpTooltipText": {
     "message": "Phí gas mới"
   },
+  "speedUpTransactionTitle": {
+    "message": "Tăng tốc giao dịch"
+  },
   "spender": {
     "message": "Người chi tiêu"
   },
@@ -8505,6 +8560,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask gặp sự cố khi khởi động."
+  },
+  "trustSignalBlockDescription": {
+    "message": "Nếu bạn kết nối với trang web này, bạn có thể mất toàn bộ tài sản của mình."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Phát hiện trang web độc hại"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Vẫn kết nối"
   },
   "tryAgain": {
     "message": "Thử lại"

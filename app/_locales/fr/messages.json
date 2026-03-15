@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Activer la fonctionnalité de base"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Accéder à la page d’accueil"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "La fonctionnalité de base est désactivée"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Fonctionnalité de base"
+  },
   "bestQuote": {
     "message": "Meilleure cotation"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Pour $1 une transaction, les frais de gaz doivent être augmentés de 10 % minimum pour qu’elle soit reconnue par le réseau.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "Annuler la transaction"
   },
   "cancelled": {
     "message": "Annulé"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "Copié."
   },
+  "copiedToClipboard": {
+    "message": "Copié dans le presse-papiers"
+  },
   "copyAddress": {
     "message": "Copier l’addresse dans le presse-papier"
   },
@@ -1759,6 +1774,9 @@
   },
   "copyTransactionId": {
     "message": "Copier le numéro de transaction"
+  },
+  "correct": {
+    "message": "Correct "
   },
   "create": {
     "message": "Créer"
@@ -1782,10 +1800,6 @@
   },
   "createPasswordDetails": {
     "message": "Déverrouille MetaMask sur cet appareil uniquement."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "La perte de ce mot de passe entraîne la perte de l’accès au portefeuille sur tous les appareils. ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask ne peut pas le réinitialiser."
@@ -3308,6 +3322,9 @@
   "includesXTransactions": {
     "message": "Inclut $1 transactions"
   },
+  "incorrect": {
+    "message": "Incorrect "
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask ne peut pas se connecter à l’hôte de la blockchain. Vérifiez les éventuelles raisons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3745,9 @@
   "makeAnotherSwap": {
     "message": "Créer un nouveau swap"
   },
+  "manage": {
+    "message": "Gérer"
+  },
   "manageDefaultSettings": {
     "message": "Gérer les paramètres de confidentialité par défaut"
   },
@@ -3966,17 +3986,30 @@
     "message": "$1 veut utiliser $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "Acheter des mUSD"
+  },
   "musdClaimClaimingTo": {
-    "message": "Réclamez à",
+    "message": "Réclamer vers",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "Convertir $1 en mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "Échec de la conversion en mUSD"
   },
-  "musdConversionTitle": {
-    "message": "Converti en mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "Votre mUSD est arrivé !"
+  },
+  "musdEducationGetStarted": {
+    "message": "Commencer"
+  },
+  "musdEducationNotNow": {
+    "message": "Pas maintenant"
+  },
+  "musdGetMusd": {
+    "message": "Obtenir des mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Des conditions s’appliquent."
   },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
@@ -4557,11 +4590,8 @@
   "notificationsSettingsBoxError": {
     "message": "Un problème est survenu, veuillez réessayer."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Restez au courant de ce qui se passe dans votre portefeuille grâce aux notifications. Pour activer les notifications, nous utilisons un profil pour synchroniser certains paramètres entre vos appareils. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Découvrez comment nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
+    "message": "Découvrir comment"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
@@ -5169,8 +5199,8 @@
   "perpsAddFundsDescription": {
     "message": "Ajoutez des fonds pour commencer à trader des contrats perpétuels avec effet de levier"
   },
-  "perpsAddMargin": {
-    "message": "Ajouter une marge"
+  "perpsAddMarginDescription": {
+    "message": "Augmentez la marge pour réduire le risque de liquidation"
   },
   "perpsAddToFavorites": {
     "message": "Ajouter aux favoris"
@@ -5196,6 +5226,9 @@
   },
   "perpsCloseLong": {
     "message": "Fermer la position longue"
+  },
+  "perpsClosePosition": {
+    "message": "Fermer la position"
   },
   "perpsCloseShort": {
     "message": "Fermer la position courte"
@@ -5241,6 +5274,9 @@
   },
   "perpsEntryPrice": {
     "message": "Prix d’ouverture"
+  },
+  "perpsExploreMarkets": {
+    "message": "Explorer les marchés"
   },
   "perpsFees": {
     "message": "Frais"
@@ -5377,11 +5413,17 @@
   "perpsRecentActivity": {
     "message": "Activité récente"
   },
-  "perpsRemoveMargin": {
-    "message": "Supprimer la marge"
+  "perpsReduceExposure": {
+    "message": "Réduire l’exposition"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Retirer la marge excédentaire de la position"
   },
   "perpsReturn": {
     "message": "Rendement"
+  },
+  "perpsReversePosition": {
+    "message": "Inverser la position"
   },
   "perpsSearchMarkets": {
     "message": "Rechercher des marchés"
@@ -5503,8 +5545,14 @@
   "perpsUnrealizedPnl": {
     "message": "Profits et pertes non réalisés"
   },
+  "perpsWatchlist": {
+    "message": "Liste de surveillance"
+  },
   "perpsWithdraw": {
     "message": "Retirer"
+  },
+  "perpsYouWillReceive": {
+    "message": "Vous recevrez"
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
@@ -5613,6 +5661,9 @@
   },
   "privateNetwork": {
     "message": "Réseau privé"
+  },
+  "proceed": {
+    "message": "Continuer"
   },
   "proceedWithTransaction": {
     "message": "Je veux tout de même continuer"
@@ -5775,6 +5826,9 @@
   },
   "queued": {
     "message": "En attente"
+  },
+  "quizIntroduction": {
+    "message": "Pour révéler votre Phrase secrète de récupération, vous devez répondre correctement à deux questions."
   },
   "rank": {
     "message": "Rang"
@@ -5999,25 +6053,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "Sauvegarder la phrase secrète de récupération"
   },
-  "revealSeedWords": {
+  "revealSecretRecoveryPhraseSettings": {
     "message": "Révéler la phrase secrète de récupération"
   },
-  "revealSeedWordsDescription1": {
-    "message": "La $1 donne $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
+  "revealSeedWords": {
+    "message": "Révéler la phrase secrète de récupération"
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "phrase secrète de récupération (PSR)"
+    "message": "Phrase secrète de récupération"
   },
   "revealSeedWordsText": {
     "message": "Texte"
   },
   "revealSeedWordsWarning": {
-    "message": "Assurez-vous que personne ne regarde votre écran. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Assurez-vous que personne ne regarde votre écran. Le service d’assistance de MetaMask ne vous demandera jamais de fournir ce type d’information."
   },
   "revealSensitiveContent": {
     "message": "Révéler un contenu sensible"
@@ -7542,6 +7594,9 @@
   "speedUpTooltipText": {
     "message": "Nouveaux frais de gaz"
   },
+  "speedUpTransactionTitle": {
+    "message": "Accélérer la transaction"
+  },
   "spender": {
     "message": "Dépenseur"
   },
@@ -8502,6 +8557,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask a rencontré des difficultés à démarrer."
+  },
+  "trustSignalBlockDescription": {
+    "message": "Si vous vous connectez à ce site, vous risquez de perdre tous vos actifs."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Site malveillant détecté"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Se connecter quand même"
   },
   "tryAgain": {
     "message": "Réessayer"

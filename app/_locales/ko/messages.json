@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "기본 기능 켜기"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "홈페이지로 가기"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "기본 기능이 꺼져 있습니다."
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "기본 기능"
+  },
   "bestQuote": {
     "message": "최적 견적"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "거래를 $1하려면 반드시 가스 요금을 최소 10% 인상해야 네트워크에서 인식될 수 있습니다.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "트랜잭션 취소"
   },
   "cancelled": {
     "message": "취소됨"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "복사 완료."
   },
+  "copiedToClipboard": {
+    "message": "클립보드에 복사되었습니다"
+  },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
   },
@@ -1759,6 +1774,9 @@
   },
   "copyTransactionId": {
     "message": "트랜잭션 ID 복사"
+  },
+  "correct": {
+    "message": "맞습니다"
   },
   "create": {
     "message": "생성"
@@ -1782,10 +1800,6 @@
   },
   "createPasswordDetails": {
     "message": "이 기기에서만 MetaMask 잠금해제에 사용됩니다."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "이 비밀번호를 분실하면 모든 기기에서 지갑에 액세스할 수 없습니다. ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask는 비밀번호를 재설정해 드릴 수 없습니다."
@@ -3308,6 +3322,9 @@
   "includesXTransactions": {
     "message": "$1건의 트랜잭션 포함"
   },
+  "incorrect": {
+    "message": "틀렸습니다"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask이 블록체인 호스트에 연결할 수 없습니다. $1 오류 가능성을 검토하세요.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3745,9 @@
   "makeAnotherSwap": {
     "message": "새 스왑 생성"
   },
+  "manage": {
+    "message": "관리"
+  },
   "manageDefaultSettings": {
     "message": "기본 개인정보 보호 설정 관리"
   },
@@ -3966,17 +3986,30 @@
     "message": "$1에서 $2 Snap 사용을 원합니다.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "mUSD 구매"
+  },
   "musdClaimClaimingTo": {
-    "message": "다음으로 요청 중:",
+    "message": "다음으로 수령:",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "$1을(를) mUSD로 전환",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "mUSD 전환 실패"
   },
-  "musdConversionTitle": {
-    "message": "mUSD로 전환됨",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "mUSD 전환 완료!"
+  },
+  "musdEducationGetStarted": {
+    "message": "시작하기"
+  },
+  "musdEducationNotNow": {
+    "message": "나중에"
+  },
+  "musdGetMusd": {
+    "message": "mUSD 받기"
+  },
+  "musdTermsApply": {
+    "message": "약관이 적용됩니다."
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
@@ -4557,11 +4590,8 @@
   "notificationsSettingsBoxError": {
     "message": "오류가 발생했습니다. 다시 시도해 주세요."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "알림을 통해 지갑에서 무슨 일이 일어나고 있는지 계속 확인하세요. 알림 기능을 사용하려면 프로필을 사용해 기기 간에 일부 설정을 동기화해야 합니다. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "이 기능을 사용하는 동안 개인정보가 어떻게 보호되는지 알아보세요."
+    "message": "방법 확인하기"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
@@ -5169,8 +5199,8 @@
   "perpsAddFundsDescription": {
     "message": "레버리지를 이용해 무기한 선물 거래를 시작하려면 자금을 추가하세요"
   },
-  "perpsAddMargin": {
-    "message": "마진 추가"
+  "perpsAddMarginDescription": {
+    "message": "마진을 늘려 청산 위험을 낮춥니다"
   },
   "perpsAddToFavorites": {
     "message": "즐겨찾기에 추가"
@@ -5196,6 +5226,9 @@
   },
   "perpsCloseLong": {
     "message": "롱 청산"
+  },
+  "perpsClosePosition": {
+    "message": "포지션 종료"
   },
   "perpsCloseShort": {
     "message": "숏 청산"
@@ -5241,6 +5274,9 @@
   },
   "perpsEntryPrice": {
     "message": "진입 가격"
+  },
+  "perpsExploreMarkets": {
+    "message": "시장 살펴보기"
   },
   "perpsFees": {
     "message": "수수료"
@@ -5380,11 +5416,17 @@
   "perpsRecentActivity": {
     "message": "최근 내역"
   },
-  "perpsRemoveMargin": {
-    "message": "마진 제거"
+  "perpsReduceExposure": {
+    "message": "익스포저 축소"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "포지션에서 초과 마진 인출"
   },
   "perpsReturn": {
     "message": "수익"
+  },
+  "perpsReversePosition": {
+    "message": "포지션 반전"
   },
   "perpsSearchMarkets": {
     "message": "시장 검색"
@@ -5506,8 +5548,14 @@
   "perpsUnrealizedPnl": {
     "message": "미실현 손익"
   },
+  "perpsWatchlist": {
+    "message": "관심 목록"
+  },
   "perpsWithdraw": {
     "message": "출금"
+  },
+  "perpsYouWillReceive": {
+    "message": "받을 금액:"
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
@@ -5616,6 +5664,9 @@
   },
   "privateNetwork": {
     "message": "비공개 네트워크"
+  },
+  "proceed": {
+    "message": "진행"
   },
   "proceedWithTransaction": {
     "message": "계속 진행"
@@ -5778,6 +5829,9 @@
   },
   "queued": {
     "message": "대기열에 지정됨"
+  },
+  "quizIntroduction": {
+    "message": "비밀복구구문을 찾으려면 두 가지 질문에 올바르게 답해야 합니다."
   },
   "rank": {
     "message": "순위"
@@ -6002,25 +6056,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "비밀복구구문 백업"
   },
-  "revealSeedWords": {
+  "revealSecretRecoveryPhraseSettings": {
     "message": "비밀복구구문 공개"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 활용으로 $2 기능을 사용할 수 있습니다",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
+  "revealSeedWords": {
+    "message": "비밀복구구문 공개"
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "비밀복구구문 (SRP)"
+    "message": "비밀복구구문입니다"
   },
   "revealSeedWordsText": {
     "message": "텍스트"
   },
   "revealSeedWordsWarning": {
-    "message": "다른 사람이 보고 있지 않은지 확인하세요. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "다른 사람에게 화면을 보여주지 마세요. MetaMask 지원팀은 해당 정보를 절대 요구하지 않습니다."
   },
   "revealSensitiveContent": {
     "message": "민감한 내용 표시"
@@ -7545,6 +7597,9 @@
   "speedUpTooltipText": {
     "message": "신규 가스비"
   },
+  "speedUpTransactionTitle": {
+    "message": "트랜잭션 속도 향상"
+  },
   "spender": {
     "message": "지출자"
   },
@@ -8505,6 +8560,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask 시작 중 문제가 발생했습니다."
+  },
+  "trustSignalBlockDescription": {
+    "message": "이 사이트에 연결하면 모든 자산을 잃을 수 있습니다."
+  },
+  "trustSignalBlockTitle": {
+    "message": "악성 사이트 감지됨"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "연결 계속"
   },
   "tryAgain": {
     "message": "다시 시도"

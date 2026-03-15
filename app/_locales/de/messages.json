@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Grundfunktionalität einschalten"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Zur Startseite gehen"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "Grundfunktionalität ist ausgeschaltet"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Grundfunktionalität"
+  },
   "bestQuote": {
     "message": "Bester Kurs"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Für eine Transaktion im Wert von $1 muss die Gasgebühr um mindestens 10 % erhöht werden, damit sie vom Netz erkannt wird.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "Transaktion storniert"
   },
   "cancelled": {
     "message": "Storniert"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "Kopiert."
   },
+  "copiedToClipboard": {
+    "message": "In die Zwischenablage kopiert"
+  },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },
@@ -1759,6 +1774,9 @@
   },
   "copyTransactionId": {
     "message": "Transaktions-ID kopieren"
+  },
+  "correct": {
+    "message": "Richtig"
   },
   "create": {
     "message": "Erstellen"
@@ -1782,10 +1800,6 @@
   },
   "createPasswordDetails": {
     "message": "Schaltet MetaMask nur auf diesem Gerät frei."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Der Verlust dieses Passworts bedeutet einen Verlust des Wallet-Zugriffs auf allen Geräten, ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask kann es nicht zurücksetzen."
@@ -1943,7 +1957,7 @@
     "message": "Datenerhebung für das Marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
+    "message": "Wir verwenden MetaMetrics, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale und andere Materialien) teilen."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Erhalten Sie Produkt-Updates, Tipps und Neuigkeiten – auch per E-Mail. Wir können Ihre Interaktionen zur Verbesserung unseres Angebots nutzen."
@@ -3308,6 +3322,9 @@
   "includesXTransactions": {
     "message": "Beinhaltet $1 Transaktionen"
   },
+  "incorrect": {
+    "message": "Falsch"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask kann sich nicht mit dem Blockchain Host verbinden. Überprüfen Sie mögliche Gründe $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3745,9 @@
   "makeAnotherSwap": {
     "message": "Ein neues Wallet erstellen"
   },
+  "manage": {
+    "message": "Verwalten"
+  },
   "manageDefaultSettings": {
     "message": "Standardeinstellungen verwalten"
   },
@@ -3966,17 +3986,30 @@
     "message": "$1 möchte $2 Snaps verwenden",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "mUSD kaufen"
+  },
   "musdClaimClaimingTo": {
     "message": "Einfordern auf",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "$1 in mUSD umrechnen",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "mUSD-Konvertierung fehlgeschlagen"
   },
-  "musdConversionTitle": {
-    "message": "In mUSD umgerechnet",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "Ihr mUSD ist hier!"
+  },
+  "musdEducationGetStarted": {
+    "message": "Erste Schritte"
+  },
+  "musdEducationNotNow": {
+    "message": "Nicht jetzt"
+  },
+  "musdGetMusd": {
+    "message": "mUSD erhalten"
+  },
+  "musdTermsApply": {
+    "message": "Es gelten die Nutzungsbedingungen."
   },
   "mustSelectOne": {
     "message": "Sie müssen mindestens 1 Token auswählen."
@@ -4557,11 +4590,8 @@
   "notificationsSettingsBoxError": {
     "message": "Etwas ist schiefgelaufen! Bitte versuchen Sie es erneut."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Bleiben Sie mit Benachrichtigungen stets darüber auf dem Laufenden, was in Ihrer Wallet passiert. Zur Nutzung von Benachrichtigungen verwenden wir ein Profil, um bestimmte Einstellungen auf Ihren Geräten zu synchronisieren. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Erfahren Sie, wie wir Ihre Privatsphäre bei der Nutzung dieser Funktion schützen."
+    "message": "Erfahren Sie, wie es funktioniert"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 neue Tokens in diesem Konto gefunden",
@@ -5169,8 +5199,8 @@
   "perpsAddFundsDescription": {
     "message": "Geld einzahlen, um mit dem Handel von Perpetual Contracts mit Hebelwirkung zu beginnen"
   },
-  "perpsAddMargin": {
-    "message": "Margin hinzufügen"
+  "perpsAddMarginDescription": {
+    "message": "Erhöhung der Margin zur Reduzierung des Liquidationsrisikos"
   },
   "perpsAddToFavorites": {
     "message": "Zu Favoriten hinzufügen"
@@ -5196,6 +5226,9 @@
   },
   "perpsCloseLong": {
     "message": "Long-Position schließen"
+  },
+  "perpsClosePosition": {
+    "message": "Position schließen"
   },
   "perpsCloseShort": {
     "message": "Short-Position schließen"
@@ -5241,6 +5274,9 @@
   },
   "perpsEntryPrice": {
     "message": "Einstiegspreis"
+  },
+  "perpsExploreMarkets": {
+    "message": "Märkte erkunden"
   },
   "perpsFees": {
     "message": "Gebühren"
@@ -5380,11 +5416,17 @@
   "perpsRecentActivity": {
     "message": "Neueste Aktivität"
   },
-  "perpsRemoveMargin": {
-    "message": "Margin entfernen"
+  "perpsReduceExposure": {
+    "message": "Exposure reduzieren"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Überschüssige margin aus der Position abziehen"
   },
   "perpsReturn": {
     "message": "Gewinn"
+  },
+  "perpsReversePosition": {
+    "message": "Position umkehren"
   },
   "perpsSearchMarkets": {
     "message": "Märkte durchsuchen"
@@ -5506,8 +5548,14 @@
   "perpsUnrealizedPnl": {
     "message": "Nicht realisierte GuV"
   },
+  "perpsWatchlist": {
+    "message": "Watchlist"
+  },
   "perpsWithdraw": {
     "message": "Auszahlen"
+  },
+  "perpsYouWillReceive": {
+    "message": "Sie empfangen"
   },
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte fügen Sie die Token Contract-Adresse ein."
@@ -5616,6 +5664,9 @@
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
+  },
+  "proceed": {
+    "message": "Fortfahren"
   },
   "proceedWithTransaction": {
     "message": "Ich möchte dennoch fortfahren."
@@ -6002,25 +6053,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase sichern"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Geheime Wiederherstellungsphrase offenlegen"
+  },
   "revealSeedWords": {
     "message": "Geheime Wiederherstellungsphrase anzeigen"
-  },
-  "revealSeedWordsDescription1": {
-    "message": "Die $1 bietet $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Geheime Wiederherstellungsphrase (Englisch: Secret Recovery Phrase, SRP)"
+    "message": "Geheime Wiederherstellungsphrase"
   },
   "revealSeedWordsText": {
     "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "Stellen Sie sicher, dass niemand auf Ihren Bildschirm schaut. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Stellen Sie sicher, dass niemand auf Ihren Bildschirm schaut. Der MetaMask-Support wird Sie nie danach fragen."
   },
   "revealSensitiveContent": {
     "message": "Sensible Inhalte anzeigen"
@@ -7545,6 +7594,9 @@
   "speedUpTooltipText": {
     "message": "Neue Gas-Gebühr"
   },
+  "speedUpTransactionTitle": {
+    "message": "Transaktion beschleunigen"
+  },
   "spender": {
     "message": "Spender"
   },
@@ -8505,6 +8557,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask hat Probleme beim Starten."
+  },
+  "trustSignalBlockDescription": {
+    "message": "Wenn Sie diese Website besuchen, könnten Sie all Ihre Assets verlieren."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Schadhafte Website erkannt"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Trotzdem verbinden"
   },
   "tryAgain": {
     "message": "Erneut versuchen"

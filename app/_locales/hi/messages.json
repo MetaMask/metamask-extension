@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "बेसिक फंक्शनलिटी को चालू करें"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "होम पेज पर जाएं"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "बेसिक फंक्शनलिटी बंद है"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "बेसिक फंक्शनलिटी"
+  },
   "bestQuote": {
     "message": "सबसे अच्छी क्वोट"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "लेनदेन को $1 करने के लिए गैस शुल्क में कम से कम 10% की वृद्धि होनी चाहिए ताकि नेटवर्क द्वारा इसे मान्यता प्राप्त हो सके।",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "ट्रांसेक्शन कैंसिल करें"
   },
   "cancelled": {
     "message": "कैंसिल किया गया"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
   },
+  "copiedToClipboard": {
+    "message": "क्लिपबोर्ड पर कॉपी किया गया"
+  },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर एड्रेस कॉपी करें"
   },
@@ -1782,10 +1797,6 @@
   },
   "createPasswordDetails": {
     "message": "केवल इस डिवाइस पर MetaMask को अनलॉक करता है।"
-  },
-  "createPasswordDetailsSocial": {
-    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask इसे रीसेट नहीं कर सकता।"
@@ -1943,7 +1954,7 @@
     "message": "मार्केटिंग के लिए डेटा संग्रह"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "हम इस डेटा का उपयोग यह जानने के लिए करेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स) साझा कर सकते हैं।"
+    "message": "आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं, यह जानने के लिए हम MetaMetrics का उपयोग करेंगे। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स और अन्य सामग्री) साझा कर सकते हैं।"
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "उत्पाद अपडेट, सुझाव और समाचार प्राप्त करें - ईमेल के माध्यम से भी। हम आपके इंटरैक्शन का उपयोग साझा की जाने वाली जानकारी को बेहतर बनाने के लिए कर सकते हैं।"
@@ -3308,6 +3319,9 @@
   "includesXTransactions": {
     "message": "इसमें $1 का ट्रांसेक्शन शामिल है"
   },
+  "incorrect": {
+    "message": "गलत"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask ब्लॉकचेन होस्ट से कनेक्ट करने में असमर्थ है। संभावित कारणों की समीक्षा करें $1।",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3742,9 @@
   "makeAnotherSwap": {
     "message": "एक नया स्वैप बनाएं"
   },
+  "manage": {
+    "message": "मैनेज करें"
+  },
   "manageDefaultSettings": {
     "message": "डिफॉल्ट सेटिंग्स मैनेज करें"
   },
@@ -3966,17 +3983,30 @@
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "mUSD खरीदें"
+  },
   "musdClaimClaimingTo": {
-    "message": "को क्लेम किया जा रहा है",
+    "message": "इसमें क्लेम किया जा रहा है",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "$1 को mUSD में बदलें",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "mUSD कन्वर्शन नहीं हो पाया"
   },
-  "musdConversionTitle": {
-    "message": "mUSD में बदला गया",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "आपका mUSD यहाँ है!"
+  },
+  "musdEducationGetStarted": {
+    "message": "शुरू करें"
+  },
+  "musdEducationNotNow": {
+    "message": "अभी नहीं"
+  },
+  "musdGetMusd": {
+    "message": "mUSD प्राप्त करें"
+  },
+  "musdTermsApply": {
+    "message": "नियम लागू।"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
@@ -4557,11 +4587,8 @@
   "notificationsSettingsBoxError": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "नोटिफिकेशंस के साथ आपके वॉलेट में क्या हो रहा है, इसकी जानकारी रखें। नोटिफिकेशंस का उपयोग करने के लिए, हम आपके डिवाइस में कुछ सेटिंग्स को सिंक करने के लिए एक प्रोफ़ाइल का उपयोग करते हैं। $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "जानें कि इस फीचर का उपयोग करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
+    "message": "जानें कैसे"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "इस अकाउंट में $1 के नए टोकन पाए गए",
@@ -5169,8 +5196,8 @@
   "perpsAddFundsDescription": {
     "message": "लेवरेज के साथ परपेचुअल कॉन्ट्रैक्ट्स में ट्रेडिंग शुरू करने के लिए फंड जोड़ें"
   },
-  "perpsAddMargin": {
-    "message": "मार्जिन जोड़ें"
+  "perpsAddMarginDescription": {
+    "message": "लिक्विडेशन रिस्क कम करने के लिए मार्जिन बढ़ाएं"
   },
   "perpsAddToFavorites": {
     "message": "पसंदीदा में जोड़े"
@@ -5196,6 +5223,9 @@
   },
   "perpsCloseLong": {
     "message": "लॉन्ग क्लोज़ करें"
+  },
+  "perpsClosePosition": {
+    "message": "पोज़िशन बंद करें"
   },
   "perpsCloseShort": {
     "message": "शॉर्ट क्लोज़ करें"
@@ -5241,6 +5271,9 @@
   },
   "perpsEntryPrice": {
     "message": "एंट्री प्राइस"
+  },
+  "perpsExploreMarkets": {
+    "message": "मार्केट एक्सप्लोर करें"
   },
   "perpsFees": {
     "message": "फीस"
@@ -5374,11 +5407,17 @@
   "perpsRecentActivity": {
     "message": "हालिया गतिविधि"
   },
-  "perpsRemoveMargin": {
-    "message": "मार्जिन हटाएं"
+  "perpsReduceExposure": {
+    "message": "एक्सपोज़र घटाएं"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "पोज़िशन से अतिरिक्त मार्जिन निकालें"
   },
   "perpsReturn": {
     "message": "कमाई"
+  },
+  "perpsReversePosition": {
+    "message": "पोज़िशन रिवर्स करें"
   },
   "perpsSearchMarkets": {
     "message": "मार्केट्स खोजें"
@@ -5500,8 +5539,14 @@
   "perpsUnrealizedPnl": {
     "message": "अनरियलाइज्ड P&L"
   },
+  "perpsWatchlist": {
+    "message": "वॉचलिस्ट"
+  },
   "perpsWithdraw": {
     "message": "निकालें"
+  },
+  "perpsYouWillReceive": {
+    "message": "आपको प्राप्त होगा"
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"
@@ -5610,6 +5655,9 @@
   },
   "privateNetwork": {
     "message": "निजी नेटवर्क"
+  },
+  "proceed": {
+    "message": "आगे बढ़ें"
   },
   "proceedWithTransaction": {
     "message": "मैं फिर भी आगे बढ़ना चाहता हूं"
@@ -5996,25 +6044,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ का बैकअप लें"
   },
-  "revealSeedWords": {
+  "revealSecretRecoveryPhraseSettings": {
     "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 प्रदान करता है $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
+  "revealSeedWords": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "सीक्रेट रिकवरी फ्रेज (SRP)"
+    "message": "सीक्रेट रिकवरी फ्रेज़"
   },
   "revealSeedWordsText": {
     "message": "टेक्स्ट"
   },
   "revealSeedWordsWarning": {
-    "message": "यह पक्का करें कि कोई भी आपकी स्क्रीन ना देख रहा हो। $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "सुनिश्चित करें कि कोई आपकी स्क्रीन को न देख रहा हो। MetaMask सपोर्ट कभी भी इसके लिए नहीं कहेगा।"
   },
   "revealSensitiveContent": {
     "message": "संवेदनशील कंटेंट दिखाएं"
@@ -7539,6 +7585,9 @@
   "speedUpTooltipText": {
     "message": "नया गैस फ़ीस"
   },
+  "speedUpTransactionTitle": {
+    "message": "ट्रांसेक्शन में तेज़ी लाएं"
+  },
   "spender": {
     "message": "खर्च करने वाला"
   },
@@ -8499,6 +8548,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask को शुरू करने में परेशानी हुई।"
+  },
+  "trustSignalBlockDescription": {
+    "message": "अगर आप इस साइट से कनेक्ट होते हैं, तो आप अपने सभी एसेट खो सकते हैं।"
+  },
+  "trustSignalBlockTitle": {
+    "message": "बुरी नीयत वाली साइट का पता चला"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "तब भी कनेक्ट करें"
   },
   "tryAgain": {
     "message": "फिर से प्रयास करें"

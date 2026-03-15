@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Ativar funcionalidade básica"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Ir para a página inicial"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "A funcionalidade básica está desativada"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Funcionalidade básica"
+  },
   "bestQuote": {
     "message": "Melhor cotação"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Para $1 uma transação, a taxa de gás deve ser aumentada em pelo menos 10% para que seja reconhecida pela rede.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "Cancelar transação"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "Copiado."
   },
+  "copiedToClipboard": {
+    "message": "Copiado para a área de transferência"
+  },
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
@@ -1759,6 +1774,9 @@
   },
   "copyTransactionId": {
     "message": "Copiar ID da transação"
+  },
+  "correct": {
+    "message": "Correto"
   },
   "create": {
     "message": "Criar"
@@ -1782,10 +1800,6 @@
   },
   "createPasswordDetails": {
     "message": "Desbloqueia a MetaMask somente neste dispositivo."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Perder esta senha significa perder acesso à carteira em todos os dispositivos, ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "a MetaMask não pode redefini-la."
@@ -3308,6 +3322,9 @@
   "includesXTransactions": {
     "message": "Inclui $1 transações"
   },
+  "incorrect": {
+    "message": "Incorreto"
+  },
   "infuraBlockedNotification": {
     "message": "Não foi possível conectar a MetaMask ao servidor da blockchain. Revise possíveis motivos $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3745,9 @@
   "makeAnotherSwap": {
     "message": "Criar nova troca"
   },
+  "manage": {
+    "message": "Gerenciar"
+  },
   "manageDefaultSettings": {
     "message": "Gerenciar configurações de privacidade padrão"
   },
@@ -3966,17 +3986,30 @@
     "message": "$1 quer usar Snaps de $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "Comprar mUSD"
+  },
   "musdClaimClaimingTo": {
-    "message": "Reivindicação para",
+    "message": "Resgatando para",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "Converter $1 para mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "Falha ao converter mUSD"
   },
-  "musdConversionTitle": {
-    "message": "Convertido para mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "Seu mUSD está aqui!"
+  },
+  "musdEducationGetStarted": {
+    "message": "Comece já"
+  },
+  "musdEducationNotNow": {
+    "message": "Agora não"
+  },
+  "musdGetMusd": {
+    "message": "Obter mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Sujeito a termos e condições."
   },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
@@ -4557,11 +4590,8 @@
   "notificationsSettingsBoxError": {
     "message": "Algo deu errado. Tente novamente."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fique por dentro do que acontece na sua carteira com as notificações. Para isso, nós usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Saiba como protegemos sua privacidade enquanto usa este recurso."
+    "message": "Saiba como"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 novos tokens encontrados nesta conta",
@@ -5169,8 +5199,8 @@
   "perpsAddFundsDescription": {
     "message": "Adicione fundos para começar a negociar contratos de futuros perpétuos com alavancagem"
   },
-  "perpsAddMargin": {
-    "message": "Adicionar margem"
+  "perpsAddMarginDescription": {
+    "message": "Aumentar a margem para reduzir o risco de liquidação"
   },
   "perpsAddToFavorites": {
     "message": "Adicionar aos favoritos"
@@ -5196,6 +5226,9 @@
   },
   "perpsCloseLong": {
     "message": "Encerrar long"
+  },
+  "perpsClosePosition": {
+    "message": "Encerrar posição"
   },
   "perpsCloseShort": {
     "message": "Encerrar short"
@@ -5241,6 +5274,9 @@
   },
   "perpsEntryPrice": {
     "message": "Preço de entrada"
+  },
+  "perpsExploreMarkets": {
+    "message": "Explorar mercados"
   },
   "perpsFees": {
     "message": "Taxas"
@@ -5380,11 +5416,17 @@
   "perpsRecentActivity": {
     "message": "Atividade recente"
   },
-  "perpsRemoveMargin": {
-    "message": "Remover margem"
+  "perpsReduceExposure": {
+    "message": "Reduzir exposição"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "Retirar excesso de margem da posição"
   },
   "perpsReturn": {
     "message": "Retorno"
+  },
+  "perpsReversePosition": {
+    "message": "Inverter posição"
   },
   "perpsSearchMarkets": {
     "message": "Pesquisar mercados"
@@ -5506,8 +5548,14 @@
   "perpsUnrealizedPnl": {
     "message": "P&L não realizados"
   },
+  "perpsWatchlist": {
+    "message": "Lista de acompanhamento"
+  },
   "perpsWithdraw": {
     "message": "Sacar"
+  },
+  "perpsYouWillReceive": {
+    "message": "Você receberá"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
@@ -5616,6 +5664,9 @@
   },
   "privateNetwork": {
     "message": "Rede privada"
+  },
+  "proceed": {
+    "message": "Prosseguir"
   },
   "proceedWithTransaction": {
     "message": "Quero prosseguir mesmo assim"
@@ -5778,6 +5829,9 @@
   },
   "queued": {
     "message": "Na fila"
+  },
+  "quizIntroduction": {
+    "message": "Para revelar sua Frase de Recuperação Secreta, você precisa responder corretamente duas perguntas."
   },
   "rank": {
     "message": "Classificação"
@@ -6002,25 +6056,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "Fazer backup da Frase de Recuperação Secreta"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Revelar frase de recuperação secreta"
+  },
   "revealSeedWords": {
     "message": "Revelar Frase de Recuperação Secreta"
-  },
-  "revealSeedWordsDescription1": {
-    "message": "A $1 concede $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Frase de Recuperação Secreta (FRS)"
+    "message": "Frase de Recuperação Secreta"
   },
   "revealSeedWordsText": {
     "message": "Texto"
   },
   "revealSeedWordsWarning": {
-    "message": "Certifique-se de que ninguém está olhando a sua tela. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Certifique-se de que ninguém esteja olhando para a sua tela. O Suporte da MetaMask nunca solicitará isso."
   },
   "revealSensitiveContent": {
     "message": "Mostrar conteúdo sensível"
@@ -7545,6 +7597,9 @@
   "speedUpTooltipText": {
     "message": "Nova taxa de gás"
   },
+  "speedUpTransactionTitle": {
+    "message": "Acelerar a transação"
+  },
   "spender": {
     "message": "Gastador"
   },
@@ -8505,6 +8560,15 @@
   },
   "troubleStartingTitle": {
     "message": "A MetaMask teve problemas para iniciar."
+  },
+  "trustSignalBlockDescription": {
+    "message": "Se você se conectar a este site, poderá perder todos os seus ativos."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Site malicioso detectado"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Conectar mesmo assim"
   },
   "tryAgain": {
     "message": "Tente novamente"
