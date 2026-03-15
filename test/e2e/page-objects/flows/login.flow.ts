@@ -42,11 +42,15 @@ export const loginWithBalanceValidation = async (
 ) => {
   await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
-  // Verify the expected balance on the homepage
+
+  // Wait for the homepage to be fully ready before checking balance
+  await homePage.waitForNetworkAndDOMReady();
+
+  // Verify the expected balance on the homepage with retry logic
   if (localNode) {
-    await homePage.checkLocalNodeBalanceIsDisplayed(localNode);
+    await homePage.checkLocalNodeBalanceIsDisplayedWithRetry(localNode);
   } else {
-    await homePage.checkExpectedBalanceIsDisplayed(value);
+    await homePage.checkExpectedBalanceIsDisplayedWithRetry(value);
   }
 };
 

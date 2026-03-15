@@ -41,13 +41,37 @@ class LoginPage {
     this.driver = driver;
   }
 
+  /**
+   * Wait for app to be ready before interacting with login page.
+   * This helps prevent race conditions during initial app loading.
+   */
+  private async waitForAppReady(): Promise<void> {
+    console.log('Waiting for app to be ready before login page interactions');
+    // Wait for DOM to be ready
+    await this.driver.executeScript(`
+      return new Promise((resolve) => {
+        if (document.readyState === 'complete') {
+          resolve();
+        } else {
+          window.addEventListener('load', () => resolve(), { once: true });
+        }
+      });
+    `);
+    // Add a small delay to ensure React has finished rendering
+    await this.driver.delay(500);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.forgotPasswordButton,
-        this.passwordInput,
-        this.unlockButton,
-      ]);
+      // First wait for app to be ready
+      await this.waitForAppReady();
+
+      // Then check elements sequentially with increased timeout
+      await this.driver.waitForSelector(this.forgotPasswordButton, {
+        timeout: 15000,
+      });
+      await this.driver.waitForSelector(this.passwordInput, { timeout: 15000 });
+      await this.driver.waitForSelector(this.unlockButton, { timeout: 15000 });
     } catch (e) {
       console.log('Timeout while waiting for login page to be loaded', e);
       throw e;

@@ -430,6 +430,76 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected balance is displayed on homepage with retry logic.
+   * Uses exponential backoff to handle timing issues with balance loading.
+   *
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
+   * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
+   * @param maxRetries - Maximum number of retry attempts. Defaults to 3.
+   */
+  async checkExpectedBalanceIsDisplayedWithRetry(
+    expectedBalance: string = '25',
+    symbol: string = 'ETH',
+    maxRetries: number = 3,
+  ): Promise<void> {
+    let lastError: Error | undefined;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(
+          `Attempt ${attempt}/${maxRetries}: Checking for balance ${expectedBalance} ${symbol}`,
+        );
+        await this.checkExpectedBalanceIsDisplayed(expectedBalance, symbol);
+        return; // Success, exit
+      } catch (error) {
+        lastError = error as Error;
+        console.log(`Attempt ${attempt} failed: ${lastError.message}`);
+
+        if (attempt < maxRetries) {
+          // Exponential backoff: 1s, 2s, 4s
+          const delay = Math.pow(2, attempt - 1) * 1000;
+          console.log(`Waiting ${delay}ms before retry...`);
+          await this.driver.delay(delay);
+
+          // Refresh the page state
+          await this.driver.executeScript(
+            'window.dispatchEvent(new Event("focus"));',
+          );
+        }
+      }
+    }
+
+    // All retries failed
+    throw new Error(
+      `Failed to verify balance after ${maxRetries} attempts: ${lastError?.message}`,
+    );
+  }
+
+  /**
+   * Checks if the local node balance is displayed on homepage with retry logic.
+   *
+   * @param localNode - The local node instance (Ganache or Anvil).
+   * @param address - The address to check balance for.
+   * @param maxRetries - Maximum number of retry attempts. Defaults to 3.
+   */
+  async checkLocalNodeBalanceIsDisplayedWithRetry(
+    localNode: Ganache | Anvil,
+    address = null,
+    maxRetries: number = 3,
+  ): Promise<void> {
+    let expectedBalance: string;
+    const balance = await localNode.getBalance(address);
+    expectedBalance = balance.toFixed(3);
+    expectedBalance = Number(expectedBalance).toString();
+
+    await this.checkExpectedBalanceIsDisplayedWithRetry(
+      expectedBalance,
+      'ETH',
+      maxRetries,
+    );
+  }
+
+  /**
    * Checks if the balance empty state is displayed on homepage.
    * Criteria:
    * - The account group has a zero balance across all aggregated mainnet networks.
