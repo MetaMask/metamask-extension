@@ -28,9 +28,7 @@ describe('Send - Hex Address Normalization', function () {
     it('normalizes address without 0x prefix and sends ETH', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
-            .withPreferencesControllerPetnamesDisabled()
-            .build(),
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
@@ -68,7 +66,6 @@ describe('Send - Hex Address Normalization', function () {
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
-            .withPreferencesControllerPetnamesDisabled()
             .withTokensControllerERC20()
             .withEnabledNetworks({ eip155: { '0x539': true } })
             .build(),
@@ -102,7 +99,6 @@ describe('Send - Hex Address Normalization', function () {
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
-            .withPreferencesControllerPetnamesDisabled()
             .withEnabledNetworks({ eip155: { '0x539': true } })
             .withTokensControllerERC20()
             .build(),
