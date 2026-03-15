@@ -92,6 +92,8 @@ export default class Home extends PureComponent {
   static propTypes = {
     navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
+    isNotification: PropTypes.bool,
+    hasApprovalFlows: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -104,8 +106,6 @@ export default class Home extends PureComponent {
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
@@ -123,11 +123,7 @@ export default class Home extends PureComponent {
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
     editedNetwork: PropTypes.object,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     isHardwareWalletErrorModalVisible: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
@@ -174,8 +170,23 @@ export default class Home extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { attemptCloseNotificationPopup } = this.props;
-    if (shouldCloseNotificationPopup(props)) {
+    const {
+      attemptCloseNotificationPopup,
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    } = this.props;
+    if (
+      shouldCloseNotificationPopup({
+        isNotification,
+        totalUnapprovedCount,
+        hasApprovalFlows,
+        isSigningQRHardwareTransaction,
+        isHardwareWalletErrorModalVisible,
+      })
+    ) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
     }
@@ -234,8 +245,20 @@ export default class Home extends PureComponent {
     }
   }
 
-  static getDerivedStateFromProps(props) {
-    const shouldClose = shouldCloseNotificationPopup(props);
+  static getDerivedStateFromProps({
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+    isHardwareWalletErrorModalVisible,
+  }) {
+    const shouldClose = shouldCloseNotificationPopup({
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    });
     if (shouldClose) {
       return { notificationClosing: true };
     }

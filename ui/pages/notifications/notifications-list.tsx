@@ -20,9 +20,15 @@ import { NotificationsListReadAllButton } from './notifications-list-read-all-bu
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
   notifications: INotification[];
+  notificationsCount: number;
   isLoading: boolean;
   isError: boolean;
 };
+
+type NotificationsListStatesProps = Omit<
+  NotificationsListProps,
+  'notificationsCount'
+>;
 
 // NOTE - Tab filters could change once we support more notifications.
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -84,7 +90,7 @@ const NotificationsListStates = ({
   notifications,
   isLoading,
   isError,
-}: NotificationsListProps) => {
+}: NotificationsListStatesProps) => {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
