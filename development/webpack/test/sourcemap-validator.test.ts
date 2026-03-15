@@ -213,13 +213,19 @@ describe('sourcemap-validator', () => {
     // includes 'background'), ui.def456.js+.map ('ui'), scripts/contentscript.js+.map ('contentscript').
     it('returns empty array when dist/chrome does not exist', async () => {
       mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling', platform: 'chrome' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sibling',
+        platform: 'chrome',
+      });
       assert.strictEqual(pairs.length, 0);
     });
 
     it('finds .js files that have a .map sibling', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling', platform: 'chrome' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sibling',
+        platform: 'chrome',
+      });
       assert.ok(pairs.length >= 2);
       assert.ok(pairs.some((p) => p.label.includes('background')));
       assert.ok(pairs.some((p) => p.label.includes('ui')));
@@ -230,7 +236,10 @@ describe('sourcemap-validator', () => {
 
     it('scans subdirectories (e.g. scripts/)', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling', platform: 'chrome' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sibling',
+        platform: 'chrome',
+      });
       assert.ok(pairs.some((p) => p.label.includes('contentscript')));
     });
 
@@ -282,7 +291,10 @@ describe('sourcemap-validator', () => {
 
     it('does not include sibling maps when map location is sourcemaps', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sourcemaps', platform: 'chrome' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sourcemaps',
+        platform: 'chrome',
+      });
       assert.strictEqual(pairs.length, 0);
     });
   });
