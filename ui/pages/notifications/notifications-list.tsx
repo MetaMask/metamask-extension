@@ -22,7 +22,6 @@ export type NotificationsListProps = {
   notifications: INotification[];
   isLoading: boolean;
   isError: boolean;
-  notificationsCount: number;
 };
 
 // NOTE - Tab filters could change once we support more notifications.

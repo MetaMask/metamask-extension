@@ -22,8 +22,6 @@ export const DisconnectAllModal = ({
   onClick,
   onClose,
 }: {
-  type: DisconnectType;
-  hostname: string;
   onClick: () => void;
   onClose: () => void;
 }) => {
