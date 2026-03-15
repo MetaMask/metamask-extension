@@ -1,7 +1,9 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { AddMultichainAccount } from './add-multichain-account';
-import { AddMultichainAccountProps } from './add-multichain-account';
+import {
+  AddMultichainAccount,
+  AddMultichainAccountProps,
+} from './add-multichain-account';
 
 export default {
   title: 'Components/MultichainAccounts/AddMultichainAccount',

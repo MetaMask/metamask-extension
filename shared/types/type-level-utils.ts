@@ -13,6 +13,7 @@ export type IsAny<Tau> = 0 extends 1 & Tau ? true : false;
  * Resolves to `true` if `Tau` is `never`, otherwise `false`.
  *
  * Wraps in a tuple to prevent distributive conditional evaluation.
+ *
  * @see {@link https://gist.github.com/MajorLift/1cf2f949dbe973a6178dd7ad4bcc7612}
  * @template Tau - The type to check.
  */

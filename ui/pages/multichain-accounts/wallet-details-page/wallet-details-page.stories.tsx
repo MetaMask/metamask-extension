@@ -1,9 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { WalletDetailsPage } from './wallet-details-page';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { WalletDetailsPage } from './wallet-details-page';
 
 const meta: Meta<typeof WalletDetailsPage> = {
   title: 'Pages/MultichainAccounts/WalletDetailsPage',

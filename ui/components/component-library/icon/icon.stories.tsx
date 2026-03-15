@@ -17,8 +17,6 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
-import { Icon } from './icon';
-import { IconName, IconSize } from './icon.types';
 
 import { Box } from '../box';
 import { Label } from '../label';
@@ -26,6 +24,8 @@ import { TextFieldSearch } from '../text-field-search';
 import { TextField, TextFieldSize } from '../text-field';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { IconName, IconSize } from './icon.types';
+import { Icon } from './icon';
 
 export default {
   title: 'Components/ComponentLibrary/Icon (deprecated)',

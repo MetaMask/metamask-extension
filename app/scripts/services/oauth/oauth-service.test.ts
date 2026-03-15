@@ -28,7 +28,7 @@ const MOCK_JWT_TOKEN =
 const MOCK_NONCE = 'mocked-nonce';
 const MOCK_STATE = JSON.stringify({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line camelcase, @typescript-eslint/naming-convention
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   client_redirect_back_uri: MOCK_REDIRECT_URI,
   nonce: MOCK_NONCE,
 });

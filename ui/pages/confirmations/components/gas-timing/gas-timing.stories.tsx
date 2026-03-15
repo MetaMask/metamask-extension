@@ -2,9 +2,9 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
-import GasTiming from './gas-timing.component';
 import mockState from '../../../../../test/data/mock-state.json';
 import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
+import GasTiming from './gas-timing.component';
 
 const storeMock = configureStore({
   metamask: {

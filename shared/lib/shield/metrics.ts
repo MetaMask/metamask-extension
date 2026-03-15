@@ -26,7 +26,7 @@ import {
   ExistingSubscriptionEventParams,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../types';
-// eslint-disable-next-line import/no-restricted-paths
+
 import {
   getDefaultSubscriptionPaymentOptions,
   getIsTrialedSubscription,

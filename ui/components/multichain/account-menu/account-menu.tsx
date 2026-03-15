@@ -53,14 +53,14 @@ import {
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import {
   MultichainWalletSnapClient,
@@ -275,7 +275,6 @@ export const AccountMenu = ({
     [actionMode, t],
   );
 
-  // eslint-disable-next-line no-empty-function
   let onBack;
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
@@ -414,7 +413,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={async () => {
                     await handleMultichainSnapAccountCreation(
                       solanaWalletSnapClient,
@@ -438,7 +437,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={async () => {
                     return await handleMultichainSnapAccountCreation(
                       bitcoinWalletSnapClient,
@@ -463,7 +462,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={async () => {
                     return await handleMultichainSnapAccountCreation(
                       tronWalletSnapClient,
@@ -618,7 +617,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Eye}
                   startIconProps={{ size: IconSize.Md }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                   onClick={handleAddWatchAccount}
                   data-testid="multichain-account-menu-popover-add-watch-only-account"
                 >

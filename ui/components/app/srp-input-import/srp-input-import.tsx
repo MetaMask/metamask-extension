@@ -32,7 +32,7 @@ import {
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
@@ -55,7 +55,7 @@ type SrpInputImportProps = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function SrpInputImport({
   onChange,
   onClearCallback,

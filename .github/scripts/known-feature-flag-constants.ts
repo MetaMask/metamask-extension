@@ -13,7 +13,10 @@ import { FeatureFlagNames } from '../../shared/lib/feature-flags';
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
-  Object.entries(FeatureFlagNames).map(([k, v]) => [`FeatureFlagNames.${k}`, v]),
+  Object.entries(FeatureFlagNames).map(([k, v]) => [
+    `FeatureFlagNames.${k}`,
+    v,
+  ]),
 );
 
 /**
@@ -50,6 +53,9 @@ const FILE_SOURCES: Array<{
 /**
  * Reads a source file and extracts the string value of an exported constant.
  * Matches patterns like: `export const NAME = 'value';`
+ *
+ * @param filePath
+ * @param constantName
  */
 function resolveConstantFromFile(
   filePath: string,
@@ -60,7 +66,8 @@ function resolveConstantFromFile(
     const content = fs.readFileSync(fullPath, 'utf-8');
     const escaped = constantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const re = new RegExp(
-      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` + '`([^`]+)`)',
+      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` +
+        '`([^`]+)`)',
     );
     const match = re.exec(content);
     return match?.[1] ?? match?.[2] ?? match?.[3];

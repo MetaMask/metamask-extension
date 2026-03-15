@@ -3,8 +3,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
-import { ApproveDetails } from './approve-details';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
+import { ApproveDetails } from './approve-details';
 
 const store = configureStore(getMockApproveConfirmState());
 

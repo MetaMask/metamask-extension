@@ -1,5 +1,5 @@
-import humanizeDuration from 'humanize-duration';
 import { setTimeout } from 'node:timers/promises';
+import humanizeDuration from 'humanize-duration';
 import * as xml2js from 'xml2js';
 
 // This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
@@ -61,7 +61,9 @@ export async function retry<T extends (...args: any[]) => any>(
     try {
       return await fn();
     } catch (err) {
-      if (attempt === retries) throw err;
+      if (attempt === retries) {
+        throw err;
+      }
       console.log(
         `Attempt ${attempt} failed: ${
           err instanceof Error ? err.message : String(err)
@@ -112,6 +114,8 @@ export function formatTime(ms: number): string {
 /**
  * Replaces HTML `<strong>` tags with ANSI escape codes to format
  * text as bold in the console output.
+ *
+ * @param str
  */
 export function consoleBold(str: string): string {
   return str

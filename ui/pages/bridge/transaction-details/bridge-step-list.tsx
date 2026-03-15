@@ -30,13 +30,13 @@ type BridgeStepsProps = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function BridgeStepList({
   bridgeHistoryItem,
   srcChainTxMeta,
 }: BridgeStepsProps) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
   const steps = bridgeHistoryItem?.quote.steps || [];
   const stepStatuses = steps.map((step) =>
     getStepStatus({ bridgeHistoryItem, step, srcChainTxMeta }),
@@ -70,10 +70,10 @@ export default function BridgeStepList({
             i,
             i === steps.length - 1,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             bridgeHistoryItem?.startTime || srcChainTxMeta?.time,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             bridgeHistoryItem?.estimatedProcessingTimeInSeconds || 0,
           ),
           'hh:mm a',

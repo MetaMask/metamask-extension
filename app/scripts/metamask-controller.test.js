@@ -1312,6 +1312,7 @@ describe('MetaMaskController', () => {
       /**
        * Run wallet_requestExecutionPermissions through the controller's
        * metamask middleware and return the JSON-RPC response.
+       *
        * @param params - The parameters for the wallet_requestExecutionPermissions request.
        * @returns The JSON-RPC response.
        */

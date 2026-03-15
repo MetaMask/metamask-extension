@@ -26,7 +26,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../../../selectors/multichain';
@@ -36,7 +36,7 @@ import {
 } from '../../../../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function NftFullImage() {
   const t = useI18nContext();
   const { asset, id } = useParams<{ asset: string; id: string }>();
@@ -77,7 +77,7 @@ export default function NftFullImage() {
 
   const isImageHosted =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   const navigationType = useNavigationType();
@@ -129,7 +129,7 @@ export default function NftFullImage() {
             <Box>
               <NftItem
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
                 src={isImageHosted ? image || imageFromTokenURI : nftImageURL}
                 alt={nftImageAlt}
                 name={name ?? ''}

@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
-import { AdvancedDetails } from './advanced-details';
 import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
+import { AdvancedDetails } from './advanced-details';
 
 const store = configureStore(getMockContractInteractionConfirmState());
 

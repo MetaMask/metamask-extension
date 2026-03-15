@@ -1,16 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
+import { CHAIN_IDS, GasFeeToken } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 
-import { SelectedGasFeeToken } from './selected-gas-fee-token';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { CHAIN_IDS, GasFeeToken } from '@metamask/transaction-controller';
 import { mockNetworkState } from '../../../../../../../../test/stub/networks';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
+import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 function getStore({
   gasFeeTokens,

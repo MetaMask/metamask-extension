@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 
@@ -8,6 +7,7 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
+import README from './README.mdx';
 import { TextareaResize } from './textarea.types';
 import { Textarea } from './textarea';
 
@@ -117,11 +117,9 @@ MaxLength.args = { maxLength: 13, value: 'Max length 13' };
 export const ReadOnly = Template.bind({});
 ReadOnly.args = { readOnly: true, value: 'Read only' };
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
 export const Required = Template.bind({});
 Required.args = { required: true, placeholder: 'Required' };
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
 export const Resize: StoryFn<typeof Textarea> = (args) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
     <Textarea

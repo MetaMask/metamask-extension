@@ -97,6 +97,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       { mockSwap: true },
     );
   });
+
   it('shows no trade route available when no quotes are returned', async function () {
     await withBtcAccountSnap(
       async (driver) => {

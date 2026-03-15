@@ -35,7 +35,7 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
          * to make the complete text available and later evaluate if scopes match.
          */
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
         // TODO: temporarily leave this line in place, will migrate to POM once the ticket is resolved
         const resultSummaries = await driver.findElements('.result-summary');
         resultSummaries.forEach(async (element) => await element.click());

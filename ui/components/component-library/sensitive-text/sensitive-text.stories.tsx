@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import README from './README.mdx';
-import { SensitiveText } from './sensitive-text';
-import { SensitiveTextLength } from './sensitive-text.types';
 import { Box } from '../box';
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
+import README from './README.mdx';
+import { SensitiveText } from './sensitive-text';
+import { SensitiveTextLength } from './sensitive-text.types';
 
 const meta: Meta<typeof SensitiveText> = {
   title: 'Components/ComponentLibrary/SensitiveText',

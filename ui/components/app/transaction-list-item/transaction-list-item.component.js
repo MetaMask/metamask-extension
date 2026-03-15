@@ -1,4 +1,3 @@
-/* eslint-disable import/no-duplicates */
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
@@ -30,7 +29,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 
-import { getStatusKey } from '../../../helpers/utils/transactions.util';
+import {
+  getStatusKey,
+  isLegacyTransaction,
+} from '../../../helpers/utils/transactions.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -42,7 +44,6 @@ import {
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';

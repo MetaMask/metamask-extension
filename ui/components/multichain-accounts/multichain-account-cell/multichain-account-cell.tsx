@@ -40,7 +40,7 @@ import {
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
 
@@ -79,6 +79,7 @@ const AccountCellAvatar = ({
 
 /**
  * Renders default address + copy only when needed
+ *
  * @param options0
  * @param options0.accountId
  */

@@ -1,11 +1,11 @@
 import React from 'react';
-import { ConfirmAlertModal } from './confirm-alert-modal';
 import { Meta, StoryFn } from '@storybook/react';
-import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
-import { Box, Button } from '../../../component-library';
 import { useArgs } from '@storybook/client-api';
+import configureStore from '../../../../store/store';
+import { Box, Button } from '../../../component-library';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
+import { ConfirmAlertModal } from './confirm-alert-modal';
 
 const OWNER_ID_MOCK = '123';
 

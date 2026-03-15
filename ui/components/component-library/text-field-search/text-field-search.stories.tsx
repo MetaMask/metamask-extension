@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { useArgs } from '@storybook/client-api';
 import type { Meta } from '@storybook/react';
 
@@ -10,6 +9,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { TextFieldSize, TextFieldType } from '../text-field';
+import README from './README.mdx';
 
 import { TextFieldSearch } from './text-field-search';
 

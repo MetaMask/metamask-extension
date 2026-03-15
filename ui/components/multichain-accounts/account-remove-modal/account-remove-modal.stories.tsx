@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
+import { Button } from '../../component-library';
 import {
   AccountRemoveModal,
   AccountRemoveModalProps,
 } from './account-remove-modal';
-import { Button } from '../../component-library';
 
 export default {
   title: 'Components/MultichainAccounts/AccountRemoveModal',

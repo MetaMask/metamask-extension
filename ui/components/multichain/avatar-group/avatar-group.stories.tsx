@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { AvatarGroup } from '.';
 import { AvatarType } from './avatar-group.types';
+import { AvatarGroup } from '.';
 
 export default {
   title: 'Components/Multichain/AvatarGroup',

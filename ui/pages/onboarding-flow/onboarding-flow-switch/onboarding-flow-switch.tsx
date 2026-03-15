@@ -35,9 +35,8 @@ import {
 } from '../../../../shared/lib/build-types';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function OnboardingFlowSwitch() {
-  /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);

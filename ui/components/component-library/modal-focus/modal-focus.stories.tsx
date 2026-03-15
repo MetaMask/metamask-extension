@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box';
 
@@ -8,6 +7,7 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
+import README from './README.mdx';
 
 import { ModalFocus } from './modal-focus';
 

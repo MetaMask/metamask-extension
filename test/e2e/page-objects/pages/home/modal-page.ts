@@ -7,7 +7,6 @@ class ModalPage {
     this.driver = driver;
   }
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async checkModalTitle(title: string): Promise<void> {
     try {
       await this.driver.waitForSelector({
@@ -20,7 +19,6 @@ class ModalPage {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async checkModalContent(content: string): Promise<void> {
     try {
       await this.driver.waitForSelector({

@@ -27,7 +27,7 @@ import {
   addNetwork,
 } from '../../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   AlignItems,
@@ -185,7 +185,7 @@ const PopularNetworkList = ({
                 size={ButtonIconSize.Md}
                 ariaLabel={t('add')}
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
 

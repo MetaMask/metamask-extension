@@ -1,12 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const {
-  Builder,
-  By,
-  until,
-  ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
-} = require('selenium-webdriver');
+const { Builder, By, until, ThenableWebDriver } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');

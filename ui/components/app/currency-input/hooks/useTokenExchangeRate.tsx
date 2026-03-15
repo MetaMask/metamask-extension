@@ -90,7 +90,7 @@ export default function useTokenExchangeRate(
           setExchangeRates((prev) => ({
             ...prev,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             [cacheKey]: addressToExchangeRate[tokenAddress] || FAILED,
           }));
         })

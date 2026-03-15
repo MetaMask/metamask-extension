@@ -21,7 +21,7 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });
 
-// eslint-disable-next-line
+ 
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 

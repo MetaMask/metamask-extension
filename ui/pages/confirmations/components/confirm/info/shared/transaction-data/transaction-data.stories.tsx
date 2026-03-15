@@ -12,9 +12,9 @@ import {
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { Confirmation } from '../../../../../types/confirm';
-import { TransactionData } from './transaction-data';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
+import { TransactionData } from './transaction-data';
 
 const DATA_RAW_MOCK =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';

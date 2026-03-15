@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { Button } from './button';
 import { IconName } from '../icon';
+import { Button } from './button';
 import { ButtonSize, ButtonVariant } from './button.types';
 
 export default {

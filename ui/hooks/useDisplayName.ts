@@ -66,15 +66,15 @@ export function useDisplayNames(
     let name =
       accountGroupName ||
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       nameEntry?.name ||
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       firstPartyContractName ||
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       erc20Token?.name ||
       watchedNftName ||
       ensName ||
@@ -85,7 +85,7 @@ export function useDisplayNames(
     const displayState = getDisplayState(trustSignal?.state, hasPetname, name);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     const image = erc20Token?.image;
 
     const trustSignalIcon = getTrustSignalIcon(displayState);

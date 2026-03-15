@@ -72,7 +72,7 @@ export function getBuildName(
 ) {
   const buildName =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     build.buildNameOverride ||
     `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
   if (isDev) {

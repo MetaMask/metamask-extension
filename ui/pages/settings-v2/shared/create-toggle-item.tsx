@@ -35,6 +35,7 @@ export type ToggleItemConfig = {
 
 /**
  * Factory function to create a simple toggle settings item component.
+ *
  * @param config
  */
 export const createToggleItem = (config: ToggleItemConfig): React.FC => {

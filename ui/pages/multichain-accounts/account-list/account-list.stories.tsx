@@ -1,9 +1,9 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { AccountList } from './account-list';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { AccountList } from './account-list';
 
 const store = configureStore({
   metamask: {

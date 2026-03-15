@@ -77,7 +77,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function CreationSuccessful() {
   const navigate = useNavigate();
   const dispatch = useDispatch();

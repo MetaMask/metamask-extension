@@ -168,9 +168,7 @@ function transformState(state: Record<string, unknown>) {
           ),
         );
         const isInfuraLike =
-          match &&
-          infuraChainWithFailover &&
-          match[1] === infuraChainWithFailover.subdomain;
+          match && match[1] === infuraChainWithFailover?.subdomain;
 
         const failoverUrl = infuraChainWithFailover?.getFailoverUrl();
 

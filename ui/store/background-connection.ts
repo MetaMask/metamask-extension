@@ -1,6 +1,6 @@
 import { NamespacedName } from '@metamask/messenger';
 import { Json, JsonRpcNotification } from '@metamask/utils';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
 

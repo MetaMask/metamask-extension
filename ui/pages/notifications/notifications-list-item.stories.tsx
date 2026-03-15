@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Meta } from '@storybook/react';
-import { Box } from '../../components/component-library';
 import {
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
@@ -21,11 +20,12 @@ import {
   createMockSnapNotification,
   createMockPlatformNotification,
 } from '@metamask/notification-services-controller/notification-services/mocks';
-import { NotificationsListItem } from './notifications-list-item';
 import {
   type INotification,
   processNotification,
 } from '@metamask/notification-services-controller/notification-services';
+import { Box } from '../../components/component-library';
+import { NotificationsListItem } from './notifications-list-item';
 
 const notificationMocks = {
   EthSent: createMockNotificationEthSent,

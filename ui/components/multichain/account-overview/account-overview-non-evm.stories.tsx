@@ -1,11 +1,11 @@
 import React from 'react';
-import { AccountOverviewNonEvm } from './account-overview-non-evm';
-import { AccountOverviewCommonProps } from './common';
 import {
   BtcAccountType,
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
+import { AccountOverviewNonEvm } from './account-overview-non-evm';
+import { AccountOverviewCommonProps } from './common';
 
 export default {
   title: 'Components/Multichain/AccountOverviewNonEvm',

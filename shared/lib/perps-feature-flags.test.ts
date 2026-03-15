@@ -164,7 +164,6 @@ describe('perps-feature-flags', () => {
 
         it('returns false when semver throws a non-Error exception', () => {
           semverGteMock.mockImplementation(() => {
-            // eslint-disable-next-line no-throw-literal
             throw 'Some string error';
           });
 

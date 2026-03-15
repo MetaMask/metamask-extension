@@ -60,6 +60,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
+
   it('can transfer an ERC20 token', async function () {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
@@ -120,6 +121,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
+
   it('can approve an ERC20 token', async function () {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
@@ -174,6 +176,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
+
   it('can increase token allowance', async function () {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(

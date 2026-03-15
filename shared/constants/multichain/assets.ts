@@ -26,7 +26,7 @@ export enum MultichainNativeAssets {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = `${MultichainNetworks.SOLANA_TESTNET}/slip44:501`,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   TRON = `${MultichainNetworks.TRON}/slip44:195`,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

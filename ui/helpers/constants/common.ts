@@ -10,7 +10,7 @@ export const TRANSACTION_SHIELD_SUPPORT_LINK = ZENDESK_URLS.TRANSACTION_SHIELD;
 export const TRANSACTION_SHIELD_LINK = 'https://metamask.io/transaction-shield';
 
 export const FIND_TRANSACTION_HASH_LINK = ZENDESK_URLS.FIND_TRANSACTION_HASH;
-// eslint-disable-next-line prefer-destructuring
+
 export const METAMETRICS_SETTINGS_LINK = ZENDESK_URLS.METAMETRICS_SETTINGS;
 // eslint-disable-next-line prefer-destructuring
 export const SUPPORT_LINK = process.env.SUPPORT_LINK;

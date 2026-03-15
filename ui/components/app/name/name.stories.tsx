@@ -1,15 +1,14 @@
-/* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Provider } from 'react-redux';
+import { cloneDeep } from 'lodash';
 import configureStore from '../../../store/store';
-import Name, { NameProps } from './name';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../../../shared/constants/first-party-contracts';
-import { cloneDeep } from 'lodash';
+import Name, { NameProps } from './name';
 
 const ADDRESS_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54978';
 const ADDRESS_NFT_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';

@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import README from './README.mdx';
 import { Display, FlexWrap } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
-
-import { ModalContent } from './modal-content';
-import { ModalContentSize } from './modal-content.types';
 
 import { Button, ButtonVariant } from '../button';
 import { Modal } from '../modal';
@@ -14,6 +10,9 @@ import { ModalHeader } from '../modal-header';
 import { ModalBody } from '../modal-body';
 import { ModalFooter } from '../modal-footer';
 import { Box } from '../box';
+import { ModalContentSize } from './modal-content.types';
+import { ModalContent } from './modal-content';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/ModalContent',

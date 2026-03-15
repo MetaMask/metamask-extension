@@ -38,11 +38,11 @@ import {
 } from '@metamask/utils';
 import { toRelativeRoutePath } from '../routes/utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+
 import {
   isEthAddress,
   normalizeSafeAddress,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import {
@@ -193,7 +193,6 @@ function getNonEvmRequestedCaipChainIds(
   return getRequestedCaipChainIds(permissions, false);
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function PermissionsConnect() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

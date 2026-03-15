@@ -824,6 +824,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
  * Returns all validation errors for the current bridge/swap form state.
  * Pass `currentTimeInMs` to include stock market-closed status (follows
  * the same pattern as {@link getIsQuoteExpired}).
+ *
  * @param state
  * @param currentTimeInMs
  */
@@ -841,6 +842,7 @@ export const getValidationErrors = (
 /**
  * Returns warning labels for metrics. Pass `currentTimeInMs` to include
  * the market_closed warning alongside the standard QuoteWarning values.
+ *
  * @param state
  * @param currentTimeInMs
  */

@@ -17,6 +17,7 @@ import { TestSuiteArguments } from '../../confirmations/transactions/shared';
 
 describe('Trezor Hardware', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.NFTS;
+
   it('deploys an ERC-721 token', async function () {
     await withFixtures(
       {

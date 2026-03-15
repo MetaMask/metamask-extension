@@ -128,7 +128,7 @@ export function compareProductionFlagsToRegistry(
       // Check if it exists in the full registry with inProd: false (stale metadata).
       const fullRegistry = fullRegistryOverride ?? FEATURE_FLAG_REGISTRY;
       const fullEntry = fullRegistry[name] as FullRegistryEntry | undefined;
-      if (fullEntry && fullEntry.inProd === false) {
+      if (fullEntry?.inProd === false) {
         inProdMismatches.push({
           name,
           productionValue: prodMap[name],
@@ -219,6 +219,7 @@ export async function fetchProductionFlags(): Promise<
 
 /**
  * Formats the sync result for console output.
+ *
  * @param result
  */
 function formatSyncReport(result: SyncResult): string {
@@ -402,6 +403,7 @@ function findBalancedEnd(content: string, openIndex: number): number {
  * Handles value mismatches, new flags, and removed flags.
  * Uses brace-depth counting (not regex) to correctly handle nested objects.
  * Formats the file with Prettier before writing.
+ *
  * @param result
  */
 async function updateRegistryFile(result: SyncResult): Promise<void> {

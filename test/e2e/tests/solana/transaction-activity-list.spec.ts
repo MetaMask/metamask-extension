@@ -55,6 +55,7 @@ describe('Transaction activity list', function (this: Suite) {
       },
     );
   });
+
   it('user can see activity list and a failed transaction details', async function () {
     this.timeout(120000);
     await withFixtures(

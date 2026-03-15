@@ -25,6 +25,7 @@ export type EditMarginExpandableProps = {
  * Expandable section for adding or removing margin from an isolated position.
  * Renders the expandable content only; the margin card header lives in the parent.
  * Uses EditMarginModalContent with a mode toggle for add/remove.
+ *
  * @param options0
  * @param options0.position
  * @param options0.account

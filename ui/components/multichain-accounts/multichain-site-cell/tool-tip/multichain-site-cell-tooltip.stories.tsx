@@ -2,12 +2,12 @@ import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { AccountGroupType } from '@metamask/account-api';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { MultichainSiteCellTooltip } from './multichain-site-cell-tooltip';
 import type { AccountGroupId } from '@metamask/account-api';
+import { CaipChainId } from '@metamask/utils';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
-import { CaipChainId } from '@metamask/utils';
+import { MultichainSiteCellTooltip } from './multichain-site-cell-tooltip';
 
 export default {
   title: 'Components/MultichainAccounts/MultichainSiteCellTooltip',

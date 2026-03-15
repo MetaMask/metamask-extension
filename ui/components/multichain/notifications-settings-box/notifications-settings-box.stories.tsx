@@ -2,12 +2,12 @@ import React from 'react';
 import { Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 import { IconName } from '@metamask/design-system-react';
+import { NotificationsSettingsType } from '../notifications-settings-type';
+import { NotificationsSettingsAccount } from '../notifications-settings-account';
 import {
   NotificationsSettingsBox,
   NotificationsSettingsBoxProps,
 } from './notifications-settings-box';
-import { NotificationsSettingsType } from '../notifications-settings-type';
-import { NotificationsSettingsAccount } from '../notifications-settings-account';
 
 export default {
   title: 'Components/Multichain/Notification/NotificationsSettingsBox',

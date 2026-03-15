@@ -219,7 +219,7 @@ import {
 import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import {
   isAssetsUnifyStateFeatureEnabled,
@@ -4624,11 +4624,8 @@ export default class MetamaskController extends EventEmitter {
           event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
           properties: {
             status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: newHdEntropyIndex,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
           },
         });
@@ -7374,7 +7371,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         startTrace: (options) => {
           // We intentionally strip out `_isStandaloneSpan` since it can be undefined
-          // eslint-disable-next-line no-unused-vars
+
           const { _isStandaloneSpan, ...result } = trace(options);
           return result;
         },

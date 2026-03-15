@@ -1,6 +1,9 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
-import README from './README.mdx';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { Text } from '../text';
 import {
   Display,
@@ -8,16 +11,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import { SelectButtonSize } from './select-button.types';
-import { SelectButton } from './select-button';
 import { AvatarBase, AvatarBaseSize } from '../avatar-base';
 import { SelectWrapper } from '../select-wrapper';
 import { Box } from '../box';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-} from '@metamask/design-system-react';
 import { SelectOption } from '../select-option';
+import { SelectButton } from './select-button';
+import { SelectButtonSize } from './select-button.types';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/SelectButton',

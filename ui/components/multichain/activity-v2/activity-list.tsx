@@ -140,7 +140,7 @@ export const ActivityList = ({ filter }: Props) => {
     getScrollElement: () => scrollContainerRef?.current || null,
     estimateSize: (index: number) => {
       const item = flattenedItems[index];
-      return item && item.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT;
+      return item?.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT;
     },
     overscan: 5,
     scrollMargin,

@@ -55,7 +55,6 @@ jest.mock('@metamask/assets-controller', () => ({
 }));
 
 jest.mock('@metamask/assets-controllers', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const actual = jest.requireActual('@metamask/assets-controllers');
   return {
     ...actual,

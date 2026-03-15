@@ -360,6 +360,7 @@ describe('Account Tracker API polling', function () {
         })),
     ];
   }
+
   it('should make token detection calls to account api as expected', async function () {
     if (process.env.PORTFOLIO_VIEW) {
       await withFixtures(

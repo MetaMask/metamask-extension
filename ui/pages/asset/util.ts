@@ -87,8 +87,7 @@ export const findAssetByAddress = <TItem extends { address: string }>(
   }
 
   return tokens.find(
-    (token) =>
-      token.address && token.address.toLowerCase() === address.toLowerCase(),
+    (token) => token.address?.toLowerCase() === address.toLowerCase(),
   );
 };
 

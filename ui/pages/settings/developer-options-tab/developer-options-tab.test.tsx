@@ -11,7 +11,7 @@ const mockSetServiceWorkerKeepAlivePreference = jest.fn().mockReturnValue({
   value: true,
 });
 const mockRemoteFeatureFlags = { feature1: 'value1' };
-// eslint-disable-next-line
+
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 

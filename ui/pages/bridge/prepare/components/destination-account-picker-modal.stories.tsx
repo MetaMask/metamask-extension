@@ -1,8 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, Provider } from 'react-redux';
 import { StoryFn } from '@storybook/react';
 import { getAddress } from 'ethers/lib/utils';
-import { Provider } from 'react-redux';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import configureStore from '../../../../store/store';
 import { toBridgeToken } from '../../../../ducks/bridge/utils';

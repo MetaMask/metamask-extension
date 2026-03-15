@@ -1,5 +1,5 @@
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
@@ -78,6 +78,7 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
 
 /**
  * Returns route meta for the given pathname, or null if not a known settings v2 route.
+ *
  * @param pathname
  */
 export function getSettingsV2RouteMeta(

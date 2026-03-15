@@ -35,6 +35,7 @@ export type LimitPriceInputProps = {
 
 /**
  * LimitPriceInput - Price input with Mid button as end accessory
+ *
  * @param options0
  * @param options0.limitPrice
  * @param options0.onLimitPriceChange

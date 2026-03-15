@@ -14,6 +14,8 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 
+import PerpsMarketDetailPage from './perps-market-detail-page';
+
 // Mock lightweight-charts to prevent DOM rendering issues in tests
 const mockPriceLine = { options: jest.fn() };
 jest.mock('lightweight-charts', () => ({
@@ -169,9 +171,6 @@ jest.mock('react-router-dom', () => ({
     return null;
   },
 }));
-
-// eslint-disable-next-line import/first
-import PerpsMarketDetailPage from './perps-market-detail-page';
 
 describe('PerpsMarketDetailPage', () => {
   const middlewares = [thunk];

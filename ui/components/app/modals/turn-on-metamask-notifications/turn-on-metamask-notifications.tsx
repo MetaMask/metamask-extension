@@ -38,7 +38,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
   const navigate = useNavigate();
@@ -144,14 +144,14 @@ export default function TurnOnMetamaskNotifications() {
           <Text as="p" paddingTop={4}>
             {
               // @ts-expect-error: Expected 0-1 arguments, but got an array.
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
               t('turnOnMetamaskNotificationsMessageSecond', [privacyLink])
             }
           </Text>
           <Text as="p" paddingTop={4}>
             {
               // @ts-expect-error: Expected 0-1 arguments, but got an array.
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
               t('turnOnMetamaskNotificationsMessageThird', [strongText])
             }
           </Text>
@@ -159,7 +159,7 @@ export default function TurnOnMetamaskNotifications() {
         <ModalFooter
           paddingTop={4}
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
           onSubmit={() => handleTurnOnNotifications()}
           containerProps={{
             flexDirection: FlexDirection.Column,

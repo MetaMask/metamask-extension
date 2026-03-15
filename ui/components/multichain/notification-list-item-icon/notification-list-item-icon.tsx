@@ -103,7 +103,7 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
     <BadgeWrapper
       data-testid="badge-wrapper"
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       position={badge.position || BadgeWrapperPosition.bottomRight}
       badge={
         <AvatarIcon

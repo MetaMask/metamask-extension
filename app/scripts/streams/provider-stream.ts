@@ -1,7 +1,7 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
@@ -166,8 +166,6 @@ export const setupExtensionStreams = () => {
   // connect "phishing" channel to warning system
   connectPhishingChannelToWarningSystem(extensionMux);
 
-  // eslint-disable-next-line no-use-before-define
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   extensionPort.onDisconnect.addListener(onDisconnectDestroyStreams);
 };
 

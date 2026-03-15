@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Anvil } from '../../../seeder/anvil';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';

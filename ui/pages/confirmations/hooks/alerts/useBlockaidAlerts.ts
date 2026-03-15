@@ -25,7 +25,7 @@ import { useConfirmContext } from '../../context/confirm';
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
 import { normalizeProviderAlert } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const zlib = require('zlib');
 
 export const ALERT_RESULT_TYPES = [
@@ -67,7 +67,7 @@ const useBlockaidAlerts = (): Alert[] => {
 
   const securityAlertResponse =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     signatureSecurityAlertResponse || transactionSecurityAlertResponse;
 
   const isTransactionTypeSupported =

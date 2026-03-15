@@ -40,6 +40,7 @@ export type UpdateTPSLModalContentProps = {
 /**
  * TP/SL form content: presets, price/percent inputs, save.
  * Used inside UpdateTPSLModal. Initializes from position when modal opens.
+ *
  * @param options0
  * @param options0.position
  * @param options0.currentPrice

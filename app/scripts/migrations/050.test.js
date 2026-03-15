@@ -18,7 +18,7 @@ describe('migration #50', () => {
 
   beforeEach(() => {
     mockLocalStorageRemoveItem = jest
-      // eslint-disable-next-line no-undef
+
       .spyOn(Storage.prototype, 'removeItem')
       .mockImplementation();
   });

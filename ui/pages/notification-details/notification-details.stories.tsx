@@ -1,11 +1,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 import { Provider } from 'react-redux';
-import configureStore from '../../store/store';
-import NotificationDetails from './notification-details';
-import testData from '../../../.storybook/test-data';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { Box } from '../../components/component-library';
 import {
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
@@ -24,6 +20,9 @@ import {
   createMockNotificationRocketPoolUnStakeCompleted,
   createMockFeatureAnnouncementRaw,
 } from '@metamask/notification-services-controller/notification-services/mocks';
+import testData from '../../../.storybook/test-data';
+import { Box } from '../../components/component-library';
+import configureStore from '../../store/store';
 import {
   BlockSize,
   Display,
@@ -32,6 +31,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { Content, Page } from '../../components/multichain/pages/page';
 import { NotificationComponents } from '../notifications/notification-components';
+import NotificationDetails from './notification-details';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
@@ -121,19 +121,19 @@ Object.entries(notificationMocks).forEach(([storyName, createMock]) => {
   stories[key].args = { notification: processNotification(createMock()) };
 });
 
-export const EthSent = stories.EthSent;
-export const EthReceived = stories.EthReceived;
-export const ERC20Sent = stories.ERC20Sent;
-export const ERC20Received = stories.ERC20Received;
-export const ERC721Sent = stories.ERC721Sent;
-export const ERC721Received = stories.ERC721Received;
-export const ERC1155Sent = stories.ERC1155Sent;
-export const ERC1155Received = stories.ERC1155Received;
-export const LidoReadyToBeWithdrawn = stories.LidoReadyToBeWithdrawn;
-export const LidoStakeCompleted = stories.LidoStakeCompleted;
-export const LidoWithdrawalCompleted = stories.LidoWithdrawalCompleted;
-export const LidoWithdrawalRequested = stories.LidoWithdrawalRequested;
-export const MetaMaskSwapsCompleted = stories.MetaMaskSwapsCompleted;
-export const RocketPoolStakeCompleted = stories.RocketPoolStakeCompleted;
-export const RocketPoolUnStakeCompleted = stories.RocketPoolUnStakeCompleted;
-export const FeatureAnnouncement = stories.FeatureAnnouncement;
+export const { EthSent } = stories;
+export const { EthReceived } = stories;
+export const { ERC20Sent } = stories;
+export const { ERC20Received } = stories;
+export const { ERC721Sent } = stories;
+export const { ERC721Received } = stories;
+export const { ERC1155Sent } = stories;
+export const { ERC1155Received } = stories;
+export const { LidoReadyToBeWithdrawn } = stories;
+export const { LidoStakeCompleted } = stories;
+export const { LidoWithdrawalCompleted } = stories;
+export const { LidoWithdrawalRequested } = stories;
+export const { MetaMaskSwapsCompleted } = stories;
+export const { RocketPoolStakeCompleted } = stories;
+export const { RocketPoolUnStakeCompleted } = stories;
+export const { FeatureAnnouncement } = stories;

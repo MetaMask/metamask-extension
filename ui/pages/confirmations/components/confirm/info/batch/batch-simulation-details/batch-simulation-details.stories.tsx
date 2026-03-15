@@ -1,23 +1,23 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import configureStore from '../../../../../../../store/store';
-import { BatchSimulationDetails } from './batch-simulation-details';
-import { ConfirmContextProvider } from '../../../../../context/confirm';
-import {
-  CHAIN_ID,
-  genUnapprovedContractInteractionConfirmation,
-} from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import {
   CHAIN_IDS,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
+import {
+  CHAIN_ID,
+  genUnapprovedContractInteractionConfirmation,
+} from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import configureStore from '../../../../../../../store/store';
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
 import { buildSetApproveForAllTransactionData } from '../../../../../../../../test/data/confirmations/set-approval-for-all';
+import { BatchSimulationDetails } from './batch-simulation-details';
 
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
 const ERC20_TOKEN_2_MOCK = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC
@@ -81,7 +81,7 @@ const STATE_MOCK = getMockConfirmStateForTransaction(TRANSACTION_MOCK, {
   metamask: {
     names: {
       [NameType.ETHEREUM_ADDRESS]: {
-        ['0x1234567890123456789012345678901234567890']: {
+        '0x1234567890123456789012345678901234567890': {
           [CHAIN_ID]: {
             name: 'USDC',
           },

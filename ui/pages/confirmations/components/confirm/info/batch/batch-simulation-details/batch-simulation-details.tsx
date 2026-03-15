@@ -20,7 +20,7 @@ import { updateAtomicBatchData } from '../../../../../../../store/controller-act
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
@@ -97,7 +97,7 @@ export function BatchSimulationDetails() {
               data={nestedTransactionToEdit?.data}
               isOpenEditSpendingCapModal={true}
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
               onSubmit={handleEditSubmit}
               setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
               to={nestedTransactionToEdit?.to}

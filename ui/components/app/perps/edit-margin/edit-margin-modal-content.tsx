@@ -52,6 +52,7 @@ export type EditMarginModalContentProps = {
 /**
  * Shared margin form content: amount input, presets, liquidation info, risk warning, save.
  * Used inside EditMarginModal (and optionally EditMarginExpandable) with a fixed mode.
+ *
  * @param options0
  * @param options0.position
  * @param options0.account

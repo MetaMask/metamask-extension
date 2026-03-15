@@ -109,7 +109,7 @@ export default function init() {
 
       // This keeps sendResponse function valid after return
       // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
-      // eslint-disable-next-line consistent-return
+
       return true;
     },
   );

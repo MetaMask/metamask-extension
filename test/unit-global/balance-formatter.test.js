@@ -1,4 +1,4 @@
-/* eslint-disable jest/no-conditional-expect, jest/no-if */
+/* eslint-disable jest/no-conditional-expect, jest/no-conditional-in-test */
 import currencyFormatter from 'currency-formatter';
 import availableCurrencies from '../../ui/helpers/constants/available-conversions.json';
 

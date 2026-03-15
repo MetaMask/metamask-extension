@@ -1,12 +1,12 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
-import README from './README.mdx';
 import { Box } from '../box';
 import {
   Display,
   FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import README from './README.mdx';
 
 import { ContainerMaxWidth } from './container.types';
 import { Container } from './container';

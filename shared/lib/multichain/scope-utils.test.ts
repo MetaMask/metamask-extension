@@ -3,7 +3,7 @@ import { EthScope } from '@metamask/keyring-api';
 import { KnownCaipNamespace, CaipChainId } from '@metamask/utils';
 
 // Import the actual type to avoid linting issues with restricted paths
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { AccountGroupWithInternalAccounts } from '../../../ui/selectors/multichain-accounts/account-tree.types';
 
 import {

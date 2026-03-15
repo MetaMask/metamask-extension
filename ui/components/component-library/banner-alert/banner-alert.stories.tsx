@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { Meta, StoryFn } from '@storybook/react';
 import { useState } from '@storybook/addons';
 import {
@@ -7,12 +6,13 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import { BannerAlert } from './banner-alert';
-import { BannerAlertSeverity } from './banner-alert.types';
 import { Box } from '../box';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { IconName } from '../icon';
 import { ButtonPrimary } from '../button-primary';
+import { BannerAlertSeverity } from './banner-alert.types';
+import { BannerAlert } from './banner-alert';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/BannerAlert',

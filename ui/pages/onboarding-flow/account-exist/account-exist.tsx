@@ -25,7 +25,7 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { AccountStatusLayout } from '../account-status-layout';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function AccountExist() {
   const navigate = useNavigate();
   const dispatch = useDispatch();

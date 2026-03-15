@@ -1,5 +1,5 @@
 import React from 'react';
-import DeveloperOptionsTab from './index';
+import DeveloperOptionsTab from '.';
 
 const DeveloperOptionsTabStory = {
   title: 'Pages/Settings/DeveloperOptionsTab',

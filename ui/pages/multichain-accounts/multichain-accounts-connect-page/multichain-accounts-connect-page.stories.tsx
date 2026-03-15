@@ -10,10 +10,10 @@ import {
   AccountGroupType,
   AccountGroupId,
 } from '@metamask/account-api';
-import { MultichainAccountsConnectPage } from './multichain-accounts-connect-page';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { createMockMultichainAccountsState } from '../../../selectors/multichain-accounts/test-utils';
+import { MultichainAccountsConnectPage } from './multichain-accounts-connect-page';
 
 const mockTargetSubjectMetadata = {
   extensionId: null,
@@ -128,7 +128,6 @@ const store = configureStore({
       mockState.metamask.networkConfigurationsByChainId,
     permissionHistory: {
       'https://test.dapp': {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_accounts: {
           accounts: {
             '0x123': 1709225290848,

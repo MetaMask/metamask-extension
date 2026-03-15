@@ -49,24 +49,10 @@ if (false) {
   require('@babel/preset-react');
   require('@babel/preset-typescript');
   require('@babel/core');
-  // ESLint-related
-  require('@babel/eslint-parser');
-  require('@babel/eslint-plugin');
-  require('@metamask/eslint-config');
-  require('@metamask/eslint-config-nodejs');
-  // eslint-disable-next-line import/no-unresolved
-  require('@typescript-eslint/parser');
-  require('eslint');
-  require('eslint-config-prettier');
-  require('eslint-import-resolver-node');
-  require('eslint-import-resolver-typescript');
-  require('eslint-plugin-import');
-  require('eslint-plugin-jsdoc');
-  require('eslint-plugin-n');
-  require('eslint-plugin-prettier');
-  require('eslint-plugin-react');
-  require('eslint-plugin-react-hooks');
-  require('eslint-plugin-jest');
+  // ESLint-related packages were previously listed here for LavaMoat's
+  // static analyzer, but ESLint runs independently from the build system
+  // and the ESLint 9 flat config packages use ESM (.mjs) which LavaMoat's
+  // CJS-based analyzer cannot handle.
 }
 /* eslint-enable no-constant-condition, n/global-require */
 

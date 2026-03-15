@@ -142,7 +142,7 @@ class MockPerpsController {
    * @param options0
    * @param options0.callback
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   subscribeToAccount({
     callback,
   }: {
@@ -255,6 +255,7 @@ class MockPerpsController {
   /**
    * Build a minimal Position from order params for stream update (mock only).
    * Sanitizes numeric values to avoid Infinity/NaN which can cause console errors in the UI.
+   *
    * @param params
    */
   private buildPositionFromOrderParams(params: OrderParams): Position {

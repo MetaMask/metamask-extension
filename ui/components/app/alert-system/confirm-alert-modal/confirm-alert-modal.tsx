@@ -115,7 +115,7 @@ function ConfirmDetails({
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function ConfirmAlertModal({
   onCancel,
   onClose,
@@ -142,7 +142,7 @@ export function ConfirmAlertModal({
 
       if (
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         request?.recursive ||
         hasUnconfirmedFieldDangerAlerts ||
         hasDangerBlockingAlerts

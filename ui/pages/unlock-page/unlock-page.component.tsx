@@ -308,7 +308,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'social',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+
             biometrics: false,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention

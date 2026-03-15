@@ -20,6 +20,7 @@ import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
+
   it('deposits to piggybank contract', async function () {
     await withFixtures(
       {

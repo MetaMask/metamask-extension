@@ -57,6 +57,7 @@ export class PerpsTabPage {
 
   /**
    * Waits for a position card for the given symbol to be visible.
+   *
    * @param symbol
    */
   async waitForPositionCard(symbol: string): Promise<void> {

@@ -28,6 +28,7 @@ function isCherryPickCommit(commit: PullRequestCommit): boolean {
  * Returns true if the cherry-pick commit targets the given release version.
  * A commit may be tagged for multiple releases (e.g., "cp-13.20.0 cp-13.20.1"),
  * so we check all matches rather than just the first one.
+ *
  * @param commit
  * @param releaseVersion
  */

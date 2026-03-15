@@ -56,6 +56,7 @@ async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
+
   it('Creating a new wallet', async function () {
     await withFixtures(
       {

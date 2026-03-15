@@ -37,7 +37,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getIsAddSnapAccountEnabled,
@@ -55,7 +55,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import { getSnapRoute } from '../../../helpers/utils/util';
 

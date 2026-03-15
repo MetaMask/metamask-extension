@@ -61,9 +61,9 @@ export const useHardwareWalletPermissions = ({
     return () => {
       // We intentionally want the current ref values at cleanup time
       // to abort whatever is currently running
-      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       checkAbortControllerRef.current?.abort();
-      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       requestAbortControllerRef.current?.abort();
     };
   }, []);
@@ -99,7 +99,7 @@ export const useHardwareWalletPermissions = ({
 
     return () => {
       // We intentionally want the current ref value at cleanup time
-      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       checkAbortControllerRef.current?.abort();
     };
     // Adding eslint ignore to exclude ref from dependencies

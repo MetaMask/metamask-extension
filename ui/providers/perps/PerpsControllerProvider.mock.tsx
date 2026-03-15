@@ -56,7 +56,7 @@ export type PerpsControllerProviderProps = {
  * </PerpsControllerProvider>
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function PerpsControllerProvider({
   children,
   controller: providedController,

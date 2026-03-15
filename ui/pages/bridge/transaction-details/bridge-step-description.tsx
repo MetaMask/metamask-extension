@@ -147,7 +147,7 @@ type BridgeStepProps = {
 // 2. Swap > Bridge
 // 3. Swap > Bridge > Swap: e.g. Optimism ETH to Avalanche USDC
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function BridgeStepDescription({
   step,
   time,

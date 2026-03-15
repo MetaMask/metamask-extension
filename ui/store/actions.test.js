@@ -11,10 +11,10 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
@@ -1725,7 +1725,7 @@ describe('Actions', () => {
 
     it('calls hideAsset in background with the assetId', async () => {
       const store = mockStore();
-      // eslint-disable-next-line prettier/prettier
+
       const assetId =
         'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
       const hideAssetStub = sinon.stub().resolves();

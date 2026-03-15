@@ -1210,7 +1210,7 @@ async function withController<ReturnValue>(
   rootMessenger.registerActionHandler(
     'ApprovalController:addRequest',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 

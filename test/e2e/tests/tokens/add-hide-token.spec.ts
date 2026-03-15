@@ -14,6 +14,7 @@ import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 describe('Add hide token', function () {
   const smartContract = SMART_CONTRACTS.HST;
+
   it('hides the token when clicked', async function () {
     await withFixtures(
       {

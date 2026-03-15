@@ -32,7 +32,7 @@ import {
   setServiceWorkerKeepAlivePreference,
 } from '../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../selectors';
@@ -174,7 +174,7 @@ const DeveloperOptionsTab = () => {
           <Button
             variant={ButtonVariant.Primary}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
             onClick={handleResetOnboardingClick}
           >
             Reset
@@ -208,7 +208,7 @@ const DeveloperOptionsTab = () => {
         description="Results in a timestamp being continuously saved to session.storage"
         isEnabled={isServiceWorkerKeptAlive}
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
         onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
         settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}

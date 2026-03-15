@@ -26,6 +26,7 @@ export type EditMarginModalProps = {
 /**
  * Modal for adding or decreasing margin on a position.
  * Title and content are single-purpose based on mode.
+ *
  * @param options0
  * @param options0.isOpen
  * @param options0.onClose

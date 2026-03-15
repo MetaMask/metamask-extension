@@ -39,6 +39,7 @@ const QR_CENTER_HOLE_MODULES = 8;
 /**
  * Creates a QR code data URL with a white center cutout so the code remains
  * scannable while the logo sits in the empty space.
+ *
  * @param seedWords
  */
 function createSeedQRCodeDataUrl(seedWords: string): string {

@@ -49,6 +49,7 @@ export class PerpsMarketListPage {
 
   /**
    * Fills the search input with the given query.
+   *
    * @param query
    */
   async fillSearch(query: string): Promise<void> {
@@ -59,6 +60,7 @@ export class PerpsMarketListPage {
   /**
    * Selects a filter by type (e.g. 'crypto', 'all').
    * Opens the filter dropdown and clicks the option.
+   *
    * @param optionId - 'all' | 'crypto' | 'stocks' | 'commodities' | 'forex' | 'new'
    */
   async selectFilter(optionId: string): Promise<void> {

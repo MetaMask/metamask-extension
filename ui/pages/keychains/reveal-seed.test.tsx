@@ -454,7 +454,7 @@ describe('Reveal Seed Page', () => {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           screen: 'QUIZ_INTRODUCTION_SCREEN',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { MultichainAccountCell } from './multichain-account-cell';
-import { MultichainAccountCellProps } from './multichain-account-cell';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,6 +8,10 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box, Icon, IconName, Checkbox } from '../../component-library';
+import {
+  MultichainAccountCell,
+  MultichainAccountCellProps,
+} from './multichain-account-cell';
 
 // End accessory
 const MoreOptionsAccessory = () => (

@@ -11,7 +11,7 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import {
   VirtualizedList,
@@ -39,11 +39,11 @@ const NFTGridItem = (props: {
 
   const isImageHosted =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
   const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   const nftImageAlt = getNftImageAlt(nft);
@@ -79,7 +79,7 @@ function extractRowKey(row: NFT[], index: number) {
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function NftGrid({
   nfts,
   handleNftClick,

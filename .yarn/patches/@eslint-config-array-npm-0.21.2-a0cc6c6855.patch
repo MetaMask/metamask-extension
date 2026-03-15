@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 191de929d8fd12b9de3a8cabd5682ed3e8e8e93b..ca2f8c6bd0b55be9117347f88ed3bf83f93845bc 100644
+--- a/package.json
++++ b/package.json
+@@ -4,7 +4,7 @@
+   "description": "General purpose glob-based configuration matching.",
+   "author": "Nicholas C. Zakas",
+   "type": "module",
+-  "main": "dist/esm/index.js",
++  "main": "dist/cjs/index.cjs",
+   "types": "dist/esm/index.d.ts",
+   "exports": {
+     "require": {

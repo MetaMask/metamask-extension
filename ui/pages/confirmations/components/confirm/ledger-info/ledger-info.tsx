@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import {
@@ -79,7 +79,7 @@ const LedgerInfo: React.FC = () => {
           textAlign={TextAlign.Left}
           fontWeight={FontWeight.Normal}
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
           onClick={async () => {
             if (environmentTypeIsFullScreen) {
               window.location.reload();
@@ -98,7 +98,7 @@ const LedgerInfo: React.FC = () => {
             textAlign={TextAlign.Left}
             fontWeight={FontWeight.Normal}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
                 let connectedDevices: HIDDevice[] = [];

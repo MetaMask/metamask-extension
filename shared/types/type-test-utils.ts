@@ -36,6 +36,7 @@ type _ = {
  * `TypeV = never` prevents infinite recursion (`Expect<never, never>` resolves to `never`).
  * `TypeX = never` passes the constraint silently (since `never extends T`
  * is always true), so this triggers TS2589 ("excessively deep") as the failure signal.
+ *
  * @template TypeX - The type to assert.
  * @template TypeV - The expected type.
  */

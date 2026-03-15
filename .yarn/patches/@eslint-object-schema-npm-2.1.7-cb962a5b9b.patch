@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index f5981d2f0195f9f9aa7e17e6697dca9780193de1..6d9ed937ec5f1c322d9492f881ff6c3fee8de07f 100644
+--- a/package.json
++++ b/package.json
+@@ -3,7 +3,7 @@
+   "version": "2.1.7",
+   "description": "An object schema merger/validator",
+   "type": "module",
+-  "main": "dist/esm/index.js",
++  "main": "dist/cjs/index.cjs",
+   "types": "dist/esm/index.d.ts",
+   "exports": {
+     "require": {

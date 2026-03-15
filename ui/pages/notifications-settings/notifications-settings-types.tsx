@@ -26,7 +26,7 @@ import {
 import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function NotificationsSettingsTypes({
   disabled,
 }: {
@@ -115,7 +115,7 @@ export function NotificationsSettingsTypes({
         <NotificationsSettingsBox
           value={featureAnnouncementsEnabled}
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
           onToggle={onToggleFeatureAnnouncements}
           error={errorFeatureAnnouncements}
           disabled={disabled}

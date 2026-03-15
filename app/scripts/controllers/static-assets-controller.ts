@@ -39,7 +39,7 @@ export type StaticAssetsPollingFeatureFlagOptions = {
   occurrenceFloor?: Record<string, number>;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type StaticAssetsControllerState = {};
 
 export type StaticAssetsControllerGetStateAction = ControllerGetStateAction<

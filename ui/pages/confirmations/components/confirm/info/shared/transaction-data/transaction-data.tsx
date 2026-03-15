@@ -30,7 +30,7 @@ import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
@@ -151,7 +151,7 @@ export function Container({
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
           copyText={transactionData || undefined}
         >
           <Box>{isLoading && <Preloader size={20} />}</Box>

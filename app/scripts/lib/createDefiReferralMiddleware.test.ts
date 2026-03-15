@@ -70,7 +70,7 @@ describe('createDefiReferralMiddleware', () => {
 
   beforeEach(async () => {
     // Dynamic import so each test gets a fresh map (pending reset in afterEach)
-    // eslint-disable-next-line import/extensions
+    // eslint-disable-next-line import-x/extensions
     const module = await import('./createDefiReferralMiddleware.ts');
     createDefiReferralMiddleware = module.createDefiReferralMiddleware;
     ReferralTriggerType = module.ReferralTriggerType;

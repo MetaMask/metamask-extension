@@ -41,6 +41,7 @@ export class PerpsMarketDetailPage {
   /**
    * Navigates to the market detail page for the given symbol.
    * Use a symbol with no existing position (e.g. AVAX) to see Long/Short buttons.
+   *
    * @param symbol
    */
   async navigateToMarket(symbol: string): Promise<void> {
@@ -60,6 +61,7 @@ export class PerpsMarketDetailPage {
 
   /**
    * Waits for the Long/Short trade buttons (visible when user has no position in this market).
+   *
    * @param timeout
    */
   async waitForTradeCtaButtons(timeout?: number): Promise<void> {
@@ -70,6 +72,7 @@ export class PerpsMarketDetailPage {
    * Waits for the Modify/Close buttons (visible when user has an open position in this market).
    * Use after placing an order to confirm the position was opened and the stream updated.
    * Fails the test if the buttons do not appear within the timeout.
+   *
    * @param timeout
    */
   async waitForPositionCtaButtons(timeout?: number): Promise<void> {
@@ -79,6 +82,7 @@ export class PerpsMarketDetailPage {
   /**
    * Asserts that the position CTA buttons (Modify/Close) are visible.
    * Call after placing an order to verify the position was opened.
+   *
    * @param timeout
    */
   async checkPositionCtaButtonsVisible(timeout?: number): Promise<void> {
@@ -88,6 +92,7 @@ export class PerpsMarketDetailPage {
   /**
    * Asserts that the Modify button is visible (same as Close: only checks the button).
    * Requires an open position in this market.
+   *
    * @param timeout
    */
   async checkModifyButtonVisible(timeout?: number): Promise<void> {
@@ -100,6 +105,7 @@ export class PerpsMarketDetailPage {
   /**
    * Asserts that the Close button is visible (only checks the button).
    * Requires an open position in this market.
+   *
    * @param timeout
    */
   async checkCloseButtonVisible(timeout?: number): Promise<void> {
@@ -140,6 +146,7 @@ export class PerpsMarketDetailPage {
   /**
    * Types an amount in the amount input (USD).
    * Targets the actual input inside the amount field so fill works.
+   *
    * @param amount
    */
   async fillAmount(amount: string): Promise<void> {
@@ -169,6 +176,7 @@ export class PerpsMarketDetailPage {
   /**
    * Waits for the submit button to be enabled (form valid and ready to submit).
    * Use after filling amount to avoid clicking while the button is still disabled.
+   *
    * @param timeout
    */
   async waitForSubmitButtonEnabled(timeout?: number): Promise<void> {
@@ -182,6 +190,7 @@ export class PerpsMarketDetailPage {
    * Waits for the order form to close after submit (submit button removed from DOM).
    * The UI switches to detail view when the position appears in the stream or after a fallback timeout.
    * Use after clickSubmitOrder() to know when submission finished and we left the order view.
+   *
    * @param timeout
    */
   async waitForOrderFormClosed(timeout?: number): Promise<void> {

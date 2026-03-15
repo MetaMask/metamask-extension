@@ -107,7 +107,7 @@ function getSeverityStyle(severity?: Severity) {
 function requiresAcknowledgement(alert: Alert) {
   return (
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     alert.severity === Severity.Danger &&
     !alert.isBlocking &&
     !alert.acknowledgeBypass
@@ -249,7 +249,7 @@ function AlertDetails({
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function AcknowledgeCheckboxBase({
   selectedAlert,
   onCheckboxClick,
@@ -366,7 +366,7 @@ function ActionButton({
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,

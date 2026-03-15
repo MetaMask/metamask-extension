@@ -6,7 +6,7 @@ import type { INotification } from '@metamask/notification-services-controller/n
  */
 type Compute<Item> = Item extends Item ? { [K in keyof Item]: Item[K] } : never;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type EmptyObj = {};
 
 /**

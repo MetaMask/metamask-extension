@@ -24,12 +24,12 @@ globalThis.stateHooks = globalThis.stateHooks || {};
 globalThis.stateHooks.lazyListener = lazyListener;
 
 // Represents if importAllScripts has been run
-// eslint-disable-next-line
+
 let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
-// eslint-disable-next-line import/unambiguous
+
 function tryImport(...fileNames) {
   try {
     const startTime = new Date().getTime();
@@ -86,7 +86,6 @@ function importAllScripts() {
   loadFile('../scripts/sentry-install.js');
 
   if (useSnow) {
-    // eslint-disable-next-line no-undef
     const isWorker = !self.document;
     if (!isWorker) {
       loadFile('../scripts/snow.js');
@@ -145,7 +144,7 @@ function importAllScripts() {
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
-// eslint-disable-next-line no-undef
+
 self.addEventListener('install', importAllScripts);
 
 // listen for connection events from other contexts, and respond to liveness
@@ -183,7 +182,7 @@ chrome.runtime.onConnect.addListener((port) => {
  * that whenever the already installed service worker is stopped and then restarted, the state
  * is 'activated'.
  */
-// eslint-disable-next-line no-undef
+
 if (self.serviceWorker.state === 'activated') {
   importAllScripts();
 }

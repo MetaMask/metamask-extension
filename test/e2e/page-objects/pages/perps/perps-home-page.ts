@@ -73,6 +73,7 @@ export class PerpsHomePage {
   /**
    * Waits up to `timeout` ms for the number of position cards to equal `expectedCount`,
    * to avoid flakiness when the UI is still updating.
+   *
    * @param expectedCount - Expected number of position cards.
    * @param timeout - Max wait time in ms (default 10000).
    */
@@ -98,6 +99,7 @@ export class PerpsHomePage {
 
   /**
    * Waits for a position card for the given symbol to be visible.
+   *
    * @param symbol
    */
   async waitForPositionCard(symbol: string): Promise<void> {
@@ -108,6 +110,7 @@ export class PerpsHomePage {
 
   /**
    * Waits for the balance dropdown to be visible.
+   *
    * @param timeout - Optional timeout in ms for the selector wait.
    */
   async waitForBalanceSection(timeout?: number): Promise<void> {

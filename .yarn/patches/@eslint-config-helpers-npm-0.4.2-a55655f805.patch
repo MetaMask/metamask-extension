@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 7ac79cecf148882a9840a458ae1ffa2b886ef4d7..09c1fe95c0676ac0eca111fc9dbeed8ae1b08ccb 100644
+--- a/package.json
++++ b/package.json
+@@ -3,7 +3,7 @@
+   "version": "0.4.2",
+   "description": "Helper utilities for creating ESLint configuration",
+   "type": "module",
+-  "main": "dist/esm/index.js",
++  "main": "dist/cjs/index.cjs",
+   "types": "dist/esm/index.d.ts",
+   "exports": {
+     "require": {

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars -- ESLint is confused here */
 /* global jest */
 import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';

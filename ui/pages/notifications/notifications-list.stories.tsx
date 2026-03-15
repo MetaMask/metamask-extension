@@ -1,9 +1,9 @@
 import React from 'react';
+import { Meta } from '@storybook/react';
 import {
   NotificationsList,
   type NotificationsListProps,
 } from './notifications-list';
-import { Meta } from '@storybook/react';
 import { TAB_KEYS } from './notifications-list';
 
 export default {

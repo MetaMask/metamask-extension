@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { getGasMetricsProperties } from './gas';
 import { createBuilderRequest } from './test-utils';

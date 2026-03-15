@@ -1,16 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
+import { GasFeeToken } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 
-import { GasFeeTokenModal } from './gas-fee-token-modal';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { GasFeeToken } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
+import { GasFeeTokenModal } from './gas-fee-token-modal';
 
 const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   amount: toHex(20000),

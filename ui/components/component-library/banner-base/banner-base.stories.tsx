@@ -1,11 +1,11 @@
 import React from 'react';
-import README from './README.mdx';
 import { Meta, StoryFn } from '@storybook/react';
 import { useState } from '@storybook/addons';
-import { BannerBase } from './banner-base';
 import { Icon, IconName, IconSize } from '../icon';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { ButtonPrimary } from '../button-primary';
+import { BannerBase } from './banner-base';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/BannerBase',

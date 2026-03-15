@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import README from './README.mdx';
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
-import { Modal } from './modal';
 
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { Box } from '../box';
@@ -16,6 +14,8 @@ import { ModalHeader } from '../modal-header';
 import { ModalBody } from '../modal-body';
 import { ModalFooter } from '../modal-footer';
 import { TextFieldSearch } from '../text-field-search';
+import { Modal } from './modal';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/Modal',

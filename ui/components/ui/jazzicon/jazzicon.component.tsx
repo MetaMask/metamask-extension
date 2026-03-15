@@ -39,7 +39,7 @@ const multichainIconFactory = new IconFactory(jazzicon, generateSeed);
  * @returns A React component displaying a Jazzicon or custom icon.
  */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 function Jazzicon({
   address,
   className,
@@ -61,7 +61,6 @@ function Jazzicon({
 
   useEffect(() => {
     if (!container.current) {
-      // eslint-disable-next-line consistent-return
       return;
     }
 
@@ -81,7 +80,7 @@ function Jazzicon({
     container.current.appendChild(imageNode);
 
     // Clean-up function to remove the icon from the DOM
-    // eslint-disable-next-line consistent-return
+
     return () => {
       while (container.current?.firstChild) {
         container.current.firstChild.remove();

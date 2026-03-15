@@ -18,6 +18,7 @@ export type SelectItemConfig = {
 
 /**
  * Factory function to create a simple select settings item component.
+ *
  * @param config
  */
 export const createSelectItem = (config: SelectItemConfig): React.FC => {

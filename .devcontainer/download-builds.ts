@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 import unzipper from 'unzipper';
-import { version } from '../package.json';
 import { program, Option } from 'commander';
+import { version } from '../package.json';
 
 const getBranch = () => {
   try {
@@ -78,8 +78,9 @@ program
 
     const latestRun = runs.data.workflow_runs.at(0);
 
-    if (!latestRun)
+    if (!latestRun) {
       throw new Error(`No successful builds found on branch '${args.branch}'`);
+    }
 
     console.log(`- Run number: ${latestRun.id}`);
 
@@ -111,8 +112,9 @@ program
     const builds: { chrome: string; firefox: string } | undefined =
       buildMap[args.buildType];
 
-    if (!builds)
+    if (!builds) {
       throw new Error(`No builds found for build type '${args.buildType}'`);
+    }
 
     console.log(`Downloading build for chrome from ${builds.chrome}`);
     console.log(`Downloading build for firefox from ${builds.firefox}`);

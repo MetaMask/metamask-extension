@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button, Text, TextVariant } from '@metamask/design-system-react';
-import { GlobalMenuDrawer } from './global-menu-drawer';
-import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
+import { GlobalMenuDrawer } from './global-menu-drawer';
+import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 
 const meta: Meta<typeof GlobalMenuDrawer> = {
   title: 'Components/Multichain/GlobalMenuDrawer',

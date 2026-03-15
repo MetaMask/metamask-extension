@@ -1,6 +1,7 @@
 import React from 'react';
-import { ShieldPaymentModal } from './shield-payment-modal';
 import { PAYMENT_TYPES } from '@metamask/subscription-controller';
+import { ShieldPaymentModal } from './shield-payment-modal';
+
 export default {
   title: 'Components/UI/ShieldPlan/ShieldPaymentModal',
   component: ShieldPaymentModal,

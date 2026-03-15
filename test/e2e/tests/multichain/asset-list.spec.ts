@@ -87,6 +87,7 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
+
   it('validate the tokens appear on send given network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),

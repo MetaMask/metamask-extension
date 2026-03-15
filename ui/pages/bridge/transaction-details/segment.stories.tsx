@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
+import { StatusTypes } from '@metamask/bridge-controller';
 import {
   BlockSize,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import Segment from './segment';
 import { Box } from '../../../components/component-library';
-import { StatusTypes } from '@metamask/bridge-controller';
+import Segment from './segment';
 
 export default {
   title: 'pages/bridge/transaction-details/Segment',

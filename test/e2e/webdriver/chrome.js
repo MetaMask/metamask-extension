@@ -1,6 +1,6 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+const { ThenableWebDriver } = require('selenium-webdriver');
 const { isHeadless } = require('../../helpers/env');
 
 /**

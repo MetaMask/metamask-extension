@@ -22,14 +22,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { setShowMultiRpcModal } from '../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NetworkListItem from './network-list-item/network-list-item';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 function MultiRpcEditModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();

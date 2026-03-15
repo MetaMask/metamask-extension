@@ -50,7 +50,6 @@ const EMPTY_FILLS: OrderFill[] = [];
  * ```
  */
 export function usePerpsLiveFills(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: UsePerpsLiveFillsOptions = {},
 ): UsePerpsLiveFillsReturn {
   const controller = usePerpsController();

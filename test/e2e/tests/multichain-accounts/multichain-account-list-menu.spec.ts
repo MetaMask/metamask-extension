@@ -51,6 +51,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
     );
   });
+
   it('should display wallet and accounts for hardware wallet', async function () {
     await withFixtures(
       {

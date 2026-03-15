@@ -14,12 +14,12 @@ import {
   getPreferences,
   selectDefaultRpcEndpointByChainId,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/selectors/remote-feature-flags';
 import { isProduction } from '../environment';
 import { getCurrentChainId, type NetworkState } from './networks';
@@ -155,7 +155,7 @@ export const getChainSupportsSmartTransactions = (
   chainId?: string,
 ): boolean => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
   const effectiveChainId = chainId || getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(effectiveChainId);
 };
@@ -165,7 +165,7 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   chainId?: string,
 ) => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
   const effectiveChainId = chainId || getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
   if (
@@ -194,7 +194,6 @@ export const getSmartTransactionsEnabled = (
   state: SmartTransactionsState,
   chainId?: string,
 ): boolean => {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = (chainId || getCurrentChainId(state)) as Hex;
   const supportedAccount = accountSupportsSmartTx(state);
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(

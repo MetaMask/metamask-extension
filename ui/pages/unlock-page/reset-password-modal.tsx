@@ -39,7 +39,7 @@ import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export default function ResetPasswordModal({
   onClose,
   onRestore,

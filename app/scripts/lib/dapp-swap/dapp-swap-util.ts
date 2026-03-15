@@ -90,7 +90,7 @@ export function getQuotesForConfirmation({
   try {
     const {
       enabled: dappSwapEnabled,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       bridge_quote_fees: bridgeQuoteFees,
       origins,
     } = dappSwapMetricsFlag;
