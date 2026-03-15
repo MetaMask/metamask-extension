@@ -175,6 +175,7 @@ export async function main(
       `SourcemapValidator (webpack) - no platform directories (${PLATFORMS.join(', ')}) found in dist/. Run a webpack build first (e.g. yarn webpack). Exiting with code 1.`,
     );
     process.exit(1);
+    return;
   }
 
   // Sourcemaps in dist/sourcemaps/ are shared across platforms, so we only
@@ -193,6 +194,7 @@ export async function main(
     } catch (error) {
       console.error(error);
       process.exit(1);
+      return;
     }
   } else {
     mapLocation = options.mapLocation;
@@ -206,6 +208,7 @@ export async function main(
       `SourcemapValidator (webpack) - no .js+.map pairs found for ${platform} using map location "${mapLocation}" (${searchedLocation}). Run a webpack build first and ensure bundles and their .map files are present. Exiting with code 1.`,
     );
     process.exit(1);
+    return;
   }
 
   console.log(
@@ -223,6 +226,7 @@ export async function main(
       'SourcemapValidator (webpack) - one or more bundles failed validation. Exiting with code 1.',
     );
     process.exit(1);
+    return;
   }
 
   console.log(
