@@ -28,6 +28,7 @@ import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import NftDefaultImage from '../../../../../components/app/assets/nfts/nft-default-image';
 
 type AssetProps = {
   asset: AssetType;
@@ -90,7 +91,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <NftDefaultImage
+              className="nft-asset__default-image"
+              clickable={false}
+            />
+          )}
         </BadgeWrapper>
       </Box>
       <Box

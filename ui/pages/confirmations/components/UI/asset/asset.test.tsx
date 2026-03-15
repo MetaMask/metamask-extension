@@ -63,6 +63,19 @@ jest.mock('../../../hooks/useNftImageUrl', () => ({
   useNftImageUrl: jest.fn().mockReturnValue('https://example.com/nft.png'),
 }));
 
+jest.mock(
+  '../../../../../components/app/assets/nfts/nft-default-image',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({ className }: { className?: string; clickable?: boolean }) => (
+      <div data-testid="nft-default-image" className={className}>
+        Default NFT Image
+      </div>
+    ),
+  }),
+);
+
 describe('TokenAsset', () => {
   it('renders token asset with correct information', () => {
     const { getByText, getByTestId } = render(<Asset asset={mockTokenAsset} />);
@@ -199,5 +212,77 @@ describe('NFTAsset', () => {
     const { getByText } = render(<Asset asset={assetWithAccountType} />);
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
+  });
+
+  it('renders default image when NFT has no image and no collection image', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImages} />);
+
+    expect(getByTestId('nft-default-image')).toBeInTheDocument();
+    expect(getByTestId('nft-default-image')).toHaveClass(
+      'nft-asset__default-image',
+    );
+  });
+
+  it('renders default image with correct dimensions for NFT without images', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImages} />);
+
+    const defaultImage = getByTestId('nft-default-image');
+    expect(defaultImage).toBeInTheDocument();
+    expect(defaultImage).toHaveClass('nft-asset__default-image');
+  });
+
+  it('handles click correctly with default image', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const mockOnClick = jest.fn();
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(
+      <Asset asset={assetWithoutImages} onClick={mockOnClick} />,
+    );
+
+    fireEvent.click(getByTestId('nft-asset'));
+    expect(mockOnClick).toHaveBeenCalled();
+  });
+
+  it('displays network badge correctly with default image', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId, getByRole } = render(
+      <Asset asset={assetWithoutImages} />,
+    );
+
+    expect(getByTestId('nft-default-image')).toBeInTheDocument();
+    expect(getByRole('img', { name: 'Ethereum logo' })).toBeInTheDocument();
   });
 });
