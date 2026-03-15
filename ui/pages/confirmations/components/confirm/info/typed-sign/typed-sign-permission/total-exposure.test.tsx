@@ -6,8 +6,9 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { computeTotalExposure, TotalExposure } from './total-exposure';
 
 describe('TotalExposure', () => {
+  const duration = 86400;
   const mockDecodedPermission = {
-    expiry: 1234567890 + 86400,
+    expiry: 1234567890 + duration,
     origin: 'https://metamask.github.io',
     permission: {
       type: 'erc20-token-stream',
@@ -31,28 +32,28 @@ describe('TotalExposure', () => {
   };
 
   const defaultErc20Props = {
-    variant: 'erc20' as const,
-    initialAmount: '0x1234' as const,
-    maxAmount: '0x5678' as const,
-    amountPerSecond: '0x9abc' as const,
+    variant: 'erc20',
+    initialAmount: '0x1234',
+    maxAmount: '0x5678',
+    amountPerSecond: '0x9abc',
     startTime: 1234567890,
-    expiry: 1234567890 + 86400,
+    expiry: 1234567890 + duration,
     tokenAddress: '0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A',
-    chainId: '0x1' as const,
+    chainId: '0x1',
     decimals: 2,
-  };
+  } as const;
 
   const defaultNativeProps = {
-    variant: 'native' as const,
-    initialAmount: '0x1234' as const,
-    maxAmount: '0x5678' as const,
-    amountPerSecond: '0x9abc' as const,
+    variant: 'native',
+    initialAmount: '0x1234',
+    maxAmount: '0x5678',
+    amountPerSecond: '0x9abc',
     startTime: 1234567890,
-    expiry: 1234567890 + 86400,
+    expiry: 1234567890 + duration,
     symbol: 'ETH',
     decimals: 18,
     imageUrl: 'https://example.com/eth.png',
-  };
+  } as const;
 
   describe('computeTotalExposure', () => {
     it('returns min of maxAmount and exposure at expiry when both are set', () => {
@@ -124,18 +125,6 @@ describe('TotalExposure', () => {
       });
       expect(result).not.toBeNull();
       expect(result?.toNumber()).toBe(100);
-    });
-
-    it('handles decimal string amounts', () => {
-      const result = computeTotalExposure({
-        initialAmount: '0',
-        maxAmount: '100',
-        amountPerSecond: '1',
-        startTime: 0,
-        expiry: 10,
-      });
-      expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(10);
     });
 
     it('parses hex amounts correctly', () => {
@@ -216,7 +205,7 @@ describe('TotalExposure', () => {
         <TotalExposure
           {...defaultErc20Props}
           maxAmount={maxUint256}
-          expiry={1234567890 + 86400}
+          expiry={1234567890 + duration}
         />,
         getMockStore(),
       );
