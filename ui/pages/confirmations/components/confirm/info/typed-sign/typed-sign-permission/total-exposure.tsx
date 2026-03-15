@@ -19,11 +19,11 @@ const MAX_UINT256 =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
 /**
- * Parses an amount string (hex or decimal) to BigNumber.
- * When value is defined (Hex), returns BigNumber; when value is undefined (or null), returns null.
+ * Parses an amount represented as a hex string to BigNumber.
+ * When value is defined, returns BigNumber; when value is undefined (or null), returns null.
  *
- * @param value - Hex string (0x-prefix) or decimal string; undefined/null treated as absent
- * @returns BigNumber when value is Hex, or null when value is undefined or null
+ * @param value - Hex string; undefined/null treated as absent
+ * @returns BigNumber when value is defined, or null when value is undefined or null
  */
 function toAmountBn(value: Hex): BigNumber;
 function toAmountBn(value: Hex | undefined | null): BigNumber | null;
@@ -31,9 +31,7 @@ function toAmountBn(value: Hex | undefined | null): BigNumber | null {
   if (value === undefined || value === null) {
     return null;
   }
-  return value.startsWith('0x')
-    ? new BigNumber(value, 16)
-    : new BigNumber(value);
+  return new BigNumber(value, 16);
 }
 
 /**
