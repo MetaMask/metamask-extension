@@ -3,6 +3,10 @@ import { render, act, waitFor } from '@testing-library/react';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import EnhancedReader from './enhanced-reader';
 
+const MockBrowserQRCodeReader = BrowserQRCodeReader as jest.MockedClass<
+  typeof BrowserQRCodeReader
+>;
+
 jest.mock('@zxing/browser', () => ({
   BrowserQRCodeReader: jest.fn(),
 }));
@@ -13,17 +17,20 @@ jest.mock('@zxing/library', () => ({
 }));
 
 describe('EnhancedReader', () => {
-  let mockDecodeFromVideoDevice;
-  let mockControls;
-  let mockVideoElem;
+  let mockDecodeFromVideoDevice: jest.Mock;
+  let mockControls: { stop: jest.Mock };
+  let mockVideoElem: HTMLVideoElement;
 
   beforeEach(() => {
     mockControls = { stop: jest.fn() };
     mockDecodeFromVideoDevice = jest.fn().mockResolvedValue(mockControls);
 
-    BrowserQRCodeReader.mockImplementation(() => ({
-      decodeFromVideoDevice: mockDecodeFromVideoDevice,
-    }));
+    MockBrowserQRCodeReader.mockImplementation(
+      () =>
+        ({
+          decodeFromVideoDevice: mockDecodeFromVideoDevice,
+        }) as unknown as BrowserQRCodeReader,
+    );
 
     // Create a mock video element in the DOM
     mockVideoElem = document.createElement('video');
@@ -32,7 +39,7 @@ describe('EnhancedReader', () => {
   });
 
   afterEach(() => {
-    if (mockVideoElem && mockVideoElem.parentNode) {
+    if (mockVideoElem?.parentNode) {
       mockVideoElem.parentNode.removeChild(mockVideoElem);
     }
     jest.restoreAllMocks();
@@ -43,7 +50,9 @@ describe('EnhancedReader', () => {
     const { container } = render(<EnhancedReader handleScan={handleScan} />);
 
     // The component renders a video element with id="video"
-    const renderedVideo = container.querySelector('video#video');
+    const renderedVideo = container.querySelector(
+      'video#video',
+    ) as HTMLVideoElement;
     expect(renderedVideo).toBeInTheDocument();
     expect(renderedVideo.style.display).toBe('none');
 
@@ -67,7 +76,11 @@ describe('EnhancedReader', () => {
 
     // Capture the decode callback
     mockDecodeFromVideoDevice.mockImplementation(
-      (_device, _elemId, callback) => {
+      (
+        _device: undefined,
+        _elemId: string,
+        callback: (result: { getText: () => string } | null) => void,
+      ) => {
         callback({ getText: () => 'scanned-data' });
         return Promise.resolve(mockControls);
       },
@@ -82,7 +95,11 @@ describe('EnhancedReader', () => {
     const handleScan = jest.fn();
 
     mockDecodeFromVideoDevice.mockImplementation(
-      (_device, _elemId, callback) => {
+      (
+        _device: undefined,
+        _elemId: string,
+        callback: (result: null) => void,
+      ) => {
         callback(null);
         return Promise.resolve(mockControls);
       },
@@ -106,7 +123,9 @@ describe('EnhancedReader', () => {
       expect(container.querySelector('.spinner')).not.toBeInTheDocument();
     });
 
-    const renderedVideo = container.querySelector('video#video');
+    const renderedVideo = container.querySelector(
+      'video#video',
+    ) as HTMLVideoElement;
     expect(renderedVideo.style.display).toBe('block');
   });
 

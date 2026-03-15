@@ -383,6 +383,9 @@
     "ui/components/app/import-token/token-list/token-list.component.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/import-token/token-search/token-search.component.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/modal/modal-content/modal-content.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3176,9 +3179,6 @@
     },
     "ui/selectors/transactions.test.js": {
       "Reselect: Identity function warnings": 3
-    },
-    "ui/components/app/import-token/token-search/token-search.component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
     }
   }
 }
