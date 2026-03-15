@@ -4,11 +4,6 @@
       "hiddenAccountList": [],
       "pinnedAccountList": []
     },
-    "AccountTracker": {
-      "accountsByChainId": {
-        "0x1": {}
-      }
-    },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
@@ -2123,9 +2118,7 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
+    "AssetsController": { "assetsBalance": {}, "assetsInfo": {} , "assetsPrice": {}, "assetPreferences": {}, "customAssets": {}, "selectedCurrency": "usd" },
     "TokenRatesController": {
       "marketData": {}
     },

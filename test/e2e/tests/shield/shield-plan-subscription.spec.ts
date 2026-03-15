@@ -33,12 +33,10 @@ function createShieldFixtureCard() {
         },
       },
     })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
         },
       },
     })
@@ -79,22 +77,16 @@ function createShieldFixtureCrypto() {
         },
       },
     })
-    .withTokenBalancesController({
-      tokenBalances: {
-        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          '0x1': {
-            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '100000000', // 100 USDC (6 decimals)
-            '0xdac17f958d2ee523a2206206994597c13d831ec7': '100000000', // 100 USDT (6 decimals)
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+            amount: '100',
           },
-        },
-      },
-    })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
+          'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': {
+            amount: '100',
           },
+          'eip155:1/slip44:60': { amount: '25' },
         },
       },
     })

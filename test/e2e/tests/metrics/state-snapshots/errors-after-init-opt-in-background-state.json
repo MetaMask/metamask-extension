@@ -3,7 +3,9 @@
     "hiddenAccountList": {},
     "pinnedAccountList": {}
   },
-  "AccountTracker": { "accountsByChainId": "object" },
+  "AccountTracker": {
+    "accountsByChainId": "object"
+  },
   "AccountTreeController": {
     "accountGroupsMetadata": "object",
     "accountTree": "object",
@@ -219,7 +221,8 @@
       "4": "object",
       "5": "object",
       "6": "object",
-      "7": "object"
+      "7": "object",
+      "8": "object"
     }
   },
   "NftController": {
@@ -377,7 +380,10 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenBalancesController": { "tokenBalances": "object" },
+  "TokenBalancesController": {
+    "tokenBalances": "object"
+  },
+  "AssetsController": "object",
   "TokenListController": {
     "tokensChainsCache": { "0x539": "object" }
   },

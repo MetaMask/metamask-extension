@@ -28,12 +28,10 @@ function createShieldFixture() {
         '0x1': true,
       },
     })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
         },
       },
     })
@@ -98,11 +96,15 @@ function createShieldFixtureCrypto() {
         '0x1': true,
       },
     })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+            amount: '100',
+          },
+          'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': {
+            amount: '100',
           },
         },
       },
@@ -110,7 +112,6 @@ function createShieldFixtureCrypto() {
     .withTokensController({
       allTokens: {
         '0x1': {
-          // USDC and USDT tokens on Mainnet
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -680,14 +681,14 @@ describe('Shield Plan Stripe Integration', function () {
     await withFixtures(
       {
         fixtures: createShieldFixtureCrypto()
-          .withTokenBalancesController({
-            tokenBalances: {
-              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                '0x1': {
-                  // 1000 USDT (6 decimals)
-                  '0xdac17f958d2ee523a2206206994597c13d831ec7': '0x3B9ACA00',
-                  // 1000 USDC (6 decimals)
-                  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '0x3B9ACA00',
+          .withAssetsController({
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+                  amount: '1000',
+                },
+                'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': {
+                  amount: '1000',
                 },
               },
             },

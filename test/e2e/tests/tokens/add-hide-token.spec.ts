@@ -4,7 +4,10 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+} from '../../constants';
 import {
   createBalanceUpdateNotification,
   waitForAccountActivitySubscription,
@@ -14,7 +17,11 @@ import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 describe('Add hide token', function () {
   const smartContract = SMART_CONTRACTS.HST;
+  const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
+  const chainId = 1337;
+
   it('hides the token when clicked', async function () {
+    const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -43,12 +50,13 @@ describe('Add hide token', function () {
               },
             ],
           })
-          .withTokenBalancesController({
-            tokenBalances: {
-              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                [toHex(1337)]: {
-                  '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947': '0x186a0', // 100000 in hex (10 TST with 4 decimals)
-                },
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1337/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':
+                  {
+                    amount: '10',
+                  },
               },
             },
           })
@@ -70,8 +78,6 @@ describe('Add hide token', function () {
 
   it('updates token balance when a WebSocket balance update is received', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-    const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
-    const chainId = 1337;
 
     await withFixtures(
       {
@@ -101,12 +107,13 @@ describe('Add hide token', function () {
               },
             ],
           })
-          .withTokenBalancesController({
-            tokenBalances: {
-              [account]: {
-                [toHex(chainId)]: {
-                  [tokenAddress]: '0x186a0', // 100000 raw = 10 TST (4 decimals)
-                },
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1337/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':
+                  {
+                    amount: '10',
+                  },
               },
             },
           })

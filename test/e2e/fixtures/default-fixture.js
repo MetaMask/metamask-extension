@@ -114,13 +114,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             [inputChainId]: true,
           },
           solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': false,
           },
           tron: {
-            'tron:728126428': true,
+            'tron:728126428': false,
           },
           bip122: {
-            'bip122:000000000019d6689c085ae165831e93': true,
+            'bip122:000000000019d6689c085ae165831e93': false,
           },
         },
         nativeAssetIdentifiers: {},

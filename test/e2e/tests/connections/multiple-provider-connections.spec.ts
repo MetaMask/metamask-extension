@@ -39,6 +39,7 @@ import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/networ
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
+import { ALL_POPULAR_NETWORKS } from '../../../../app/scripts/fixtures/with-networks';
 
 const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
@@ -285,6 +286,7 @@ describe('Multiple Standard Dapp Connections', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesController()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
@@ -345,6 +347,7 @@ describe('Multiple Standard Dapp Connections', function () {
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
@@ -400,6 +403,7 @@ describe('Multiple Standard Dapp Connections', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesController()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToMultichainTestDapp({
             // @ts-expect-error Type error is expected here since its being inferred as null
@@ -479,6 +483,7 @@ describe('Multiple Standard Dapp Connections', function () {
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },

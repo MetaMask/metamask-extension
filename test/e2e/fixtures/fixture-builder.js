@@ -44,11 +44,6 @@ class FixtureBuilder {
       onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
-  withAccountTracker(data) {
-    merge(this.fixture.data.AccountTracker, data);
-    return this;
-  }
-
   withAddressBookController(data) {
     merge(
       this.fixture.data.AddressBookController
@@ -1200,13 +1195,26 @@ class FixtureBuilder {
     return this;
   }
 
-  withTokenBalancesController(data) {
-    merge(
-      this.fixture.data.TokenBalancesController
-        ? this.fixture.data.TokenBalancesController
-        : (this.fixture.data.TokenBalancesController = {}),
-      data,
-    );
+  withAssetsController({
+    assetsBalance = {},
+    assetsPrice = {},
+    assetsInfo = {},
+  } = {}) {
+    if (!this.fixture.data.AssetsController) {
+      this.fixture.data.AssetsController = {};
+    }
+    if (!this.fixture.data.AssetsController.assetsBalance) {
+      this.fixture.data.AssetsController.assetsBalance = {};
+    }
+    if (!this.fixture.data.AssetsController.assetsPrice) {
+      this.fixture.data.AssetsController.assetsPrice = {};
+    }
+    if (!this.fixture.data.AssetsController.assetsInfo) {
+      this.fixture.data.AssetsController.assetsInfo = {};
+    }
+    merge(this.fixture.data.AssetsController.assetsBalance, assetsBalance);
+    merge(this.fixture.data.AssetsController.assetsPrice, assetsPrice);
+    merge(this.fixture.data.AssetsController.assetsInfo, assetsInfo);
     return this;
   }
 
@@ -1744,15 +1752,13 @@ class FixtureBuilder {
   }
 
   withTrezorAccount() {
-    return this.withAccountTracker({
-      accountsByChainId: {
-        '0x539': {
-          '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
-            balance: '0x15af1d78b58c40000',
-          },
-          '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
-            balance: '0x100000000000000000000',
-          },
+    return this.withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1337/slip44:60': { amount: '25' },
+        },
+        '221ecb67-0d29-4c04-83b2-dff07c263634': {
+          'eip155:1337/slip44:60': { amount: '100' },
         },
       },
     })

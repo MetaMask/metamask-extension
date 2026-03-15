@@ -4,71 +4,6 @@
       "hiddenAccountList": [],
       "pinnedAccountList": []
     },
-    "AccountTracker": {
-      "accountsByChainId": {
-        "0x1": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x15af1d78b58c40000",
-            "stakedBalance": "0x0"
-          }
-        },
-        "0x18c7": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0x2105": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0x279f": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0x38": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0x539": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x15af1d78b58c40000"
-          }
-        },
-        "0x89": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0xa": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0xa4b1": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x15af1d78b58c40000"
-          }
-        },
-        "0xaa36a7": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0xe705": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
-          }
-        },
-        "0xe708": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x15af1d78b58c40000"
-          }
-        }
-      }
-    },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
@@ -1000,28 +935,78 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "0x1": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000",
-            "0x4FEF9D741011476750A243aC70b9789a63dd47Df": "0x0"
-          },
-          "0x2105": {},
-          "0x38": {},
-          "0x539": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000"
-          },
-          "0x89": {},
-          "0xa": {},
-          "0xa4b1": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000"
-          },
-          "0xe708": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000"
-          }
+    "AssetsController": {
+      "assetsBalance": {
+        "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
+          "eip155:1/slip44:60": { "amount": "25" },
+          "eip155:1337/slip44:60": { "amount": "25" },
+          "eip155:42161/slip44:60": { "amount": "25" },
+          "eip155:59144/slip44:60": { "amount": "25" }
         }
-      }
+      },
+      "assetsInfo": {
+        "eip155:1/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:1337/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:42161/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/slip44/60.png",
+          "name": "Ether",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:59144/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
+          "name": "Ether",
+          "symbol": "ETH",
+          "type": "native"
+        }
+      },
+      "assetsPrice": {
+        "eip155:1/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:1337/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:42161/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:59144/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        }
+      },
+      "assetPreferences": {},
+      "customAssets": {},
+      "selectedCurrency": "usd"
     },
     "TokenRatesController": {
       "marketData": {

@@ -107,6 +107,12 @@
     "appActiveTab": "undefined",
     "approvalFlows": "object",
     "assetExchangeRates": "object",
+    "assetsBalance": "object",
+    "assetsInfo": "object",
+    "assetsPrice": "object",
+    "assetPreferences": "object",
+    "customAssets": "object",
+    "selectedCurrency": "string",
     "assetsMetadata": "object",
     "balances": "object",
     "browserEnvironment": { "browser": "string", "os": "string" },
@@ -257,7 +263,8 @@
       "4": "object",
       "5": "object",
       "6": "object",
-      "7": "object"
+      "7": "object",
+      "8": "object"
     },
     "orderedTransactionHistory": "object",
     "outdatedBrowserWarningLastShown": "object",
