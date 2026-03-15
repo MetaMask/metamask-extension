@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import TokenSearch from './token-search.component';
 
 const MOCK_TOKEN_LIST = {
@@ -65,14 +66,12 @@ describe('TokenSearch', () => {
 
   it('clears search when clear callback is invoked', () => {
     renderWithProvider(<TokenSearch {...defaultProps} />);
-    const input = screen.getByRole('searchbox');
-
-    // Type something first
+    const input = screen.getByRole('searchbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 'AAA' } });
     expect(input.value).toBe('AAA');
 
     // Click clear button
-    const clearButton = screen.getByLabelText('Clear');
+    const clearButton = screen.getByLabelText(messages.clear.message);
     fireEvent.click(clearButton);
 
     expect(input.value).toBe('');
@@ -81,7 +80,7 @@ describe('TokenSearch', () => {
 
   it('calls clear when network filter changes', () => {
     const { rerender } = renderWithProvider(<TokenSearch {...defaultProps} />);
-    const input = screen.getByRole('searchbox');
+    const input = screen.getByRole('searchbox') as HTMLInputElement;
 
     // Type something
     fireEvent.change(input, { target: { value: 'AAA' } });
