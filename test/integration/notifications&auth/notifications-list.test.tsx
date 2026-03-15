@@ -63,7 +63,7 @@ describe('Notifications List', () => {
   });
 
   afterEach(() => {
-    window.history.pushState({}, '', '/'); // return to homescreen
+    window.location.hash = '#/'; // return to homescreen
   });
 
   it('should show the correct number of unread notifications on the badge', async () => {
