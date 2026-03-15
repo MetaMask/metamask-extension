@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { computeTotalExposure, TotalExposure } from './total-exposure';
 
 describe('TotalExposure', () => {
@@ -183,7 +184,7 @@ describe('TotalExposure', () => {
         <TotalExposure {...defaultErc20Props} />,
         getMockStore(),
       );
-      expect(getByText('Total exposure')).toBeInTheDocument();
+      expect(getByText(messages.confirmFieldTotalExposure.message)).toBeInTheDocument();
     });
 
     it('renders unlimited when totalExposure is null (no max nor expiry)', () => {
@@ -195,7 +196,7 @@ describe('TotalExposure', () => {
         />,
         getMockStore(),
       );
-      expect(getByText('Unlimited')).toBeInTheDocument();
+      expect(getByText(messages.unlimited.message)).toBeInTheDocument();
     });
 
     it('renders unlimited when maxAmount is max uint256', () => {
@@ -209,7 +210,7 @@ describe('TotalExposure', () => {
         />,
         getMockStore(),
       );
-      expect(getByText('Unlimited')).toBeInTheDocument();
+      expect(getByText(messages.unlimited.message)).toBeInTheDocument();
     });
 
     it('renders token amount row when totalExposure is computed', () => {
@@ -218,8 +219,8 @@ describe('TotalExposure', () => {
         getMockStore(),
       );
       expect(container).toBeInTheDocument();
-      expect(container.textContent).toContain('Total exposure');
-      expect(container.textContent).not.toContain('Unlimited');
+      expect(container.textContent).toContain(messages.confirmFieldTotalExposure.message);
+      expect(container.textContent).not.toContain(messages.unlimited.message);
     });
   });
 
@@ -229,7 +230,7 @@ describe('TotalExposure', () => {
         <TotalExposure {...defaultNativeProps} />,
         getMockStore(),
       );
-      expect(getByText('Total exposure')).toBeInTheDocument();
+      expect(getByText(messages.confirmFieldTotalExposure.message)).toBeInTheDocument();
     });
 
     it('renders symbol when totalExposure is computed', () => {
@@ -238,7 +239,7 @@ describe('TotalExposure', () => {
         getMockStore(),
       );
       expect(getByText('ETH')).toBeInTheDocument();
-      expect(getByText('Total exposure')).toBeInTheDocument();
+      expect(getByText(messages.confirmFieldTotalExposure.message)).toBeInTheDocument();
     });
 
     it('renders unlimited with symbol when totalExposure is null', () => {
@@ -250,7 +251,7 @@ describe('TotalExposure', () => {
         />,
         getMockStore(),
       );
-      expect(getByText('Unlimited')).toBeInTheDocument();
+      expect(getByText(messages.unlimited.message)).toBeInTheDocument();
       expect(getByText('ETH')).toBeInTheDocument();
     });
 
@@ -260,7 +261,7 @@ describe('TotalExposure', () => {
         getMockStore(),
       );
       expect(container).toBeInTheDocument();
-      expect(container.textContent).toContain('Total exposure');
+      expect(container.textContent).toContain(messages.confirmFieldTotalExposure.message);
     });
   });
 });
