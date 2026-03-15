@@ -43,7 +43,7 @@ function toAmountBn(value: Hex | undefined | null): BigNumber | null {
  * - When expiry is set: exposureAtExpiry = (initialAmount ?? 0) + amountPerSecond * max(0, expiry - startTime)
  * - When both maxAmount and exposureAtExpiry exist: total = min(maxAmount, exposureAtExpiry)
  * - Otherwise: total = maxAmount ?? exposureAtExpiry ?? null
- * - Special case: maxAmount === MAX_UINT256 is treated as unlimited (returns null).
+ * - Special case: maxAmount equal to MAX_UINT256 is treated as unlimited (returns null).
  *
  * @param params - Parameters required to compute total exposure (amounts as Hex strings)
  * @param params.initialAmount
@@ -78,7 +78,7 @@ export function computeTotalExposure(params: {
   }
 
   // max amount is unlimited
-  if (maxAmount === MAX_UINT256) {
+  if (maxAmount?.toLowerCase() === MAX_UINT256) {
     return null;
   }
 

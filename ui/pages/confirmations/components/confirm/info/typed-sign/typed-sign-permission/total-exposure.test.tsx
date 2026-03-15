@@ -153,6 +153,19 @@ describe('TotalExposure', () => {
       expect(result).toBeNull();
     });
 
+    it('returns null (unlimited) when maxAmount is max uint256 in uppercase hex', () => {
+      const maxUint256Upper =
+        '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+      const result = computeTotalExposure({
+        initialAmount: '0x0',
+        maxAmount: maxUint256Upper,
+        amountPerSecond: '0x1',
+        startTime: 1000,
+        expiry: 2000,
+      });
+      expect(result).toBeNull();
+    });
+
     it('treats undefined initialAmount as zero for exposure at expiry', () => {
       const result = computeTotalExposure({
         initialAmount: undefined,
