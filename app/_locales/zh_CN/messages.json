@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "前往主页"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "基本功能已关闭"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "基本功能"
+  },
   "bestQuote": {
     "message": "最佳报价"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "若要$1交易，燃料费用必须增加至少10%才能被网络认可。",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "取消交易"
   },
   "cancelled": {
     "message": "已取消"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "已复制。"
   },
+  "copiedToClipboard": {
+    "message": "已复制到剪贴板"
+  },
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
@@ -1782,10 +1797,6 @@
   },
   "createPasswordDetails": {
     "message": "仅在此设备上解锁 MetaMask。"
-  },
-  "createPasswordDetailsSocial": {
-    "message": "丢失此密码将导致您在所有设备上失去对钱包的访问权限， ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask 无法重设该密码。"
@@ -3728,6 +3739,9 @@
   "makeAnotherSwap": {
     "message": "创建新的交换"
   },
+  "manage": {
+    "message": "管理"
+  },
   "manageDefaultSettings": {
     "message": "管理默认隐私设置"
   },
@@ -3966,17 +3980,30 @@
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "购买 mUSD"
+  },
   "musdClaimClaimingTo": {
     "message": "领取并存入",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "将 $1 兑换为 mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "mUSD 兑换失败"
   },
-  "musdConversionTitle": {
-    "message": "已兑换为 mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "您的 mUSD 已到账！"
+  },
+  "musdEducationGetStarted": {
+    "message": "开始使用"
+  },
+  "musdEducationNotNow": {
+    "message": "暂时不"
+  },
+  "musdGetMusd": {
+    "message": "获取 mUSD"
+  },
+  "musdTermsApply": {
+    "message": "具体条款适用。"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
@@ -4557,11 +4584,8 @@
   "notificationsSettingsBoxError": {
     "message": "出错了。请重试。"
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "通过通知随时了解您的钱包动态。为了使用通知，我们使用配置文件在您的不同设备上同步某些设置。$1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "了解我们如何在使用此功能时保护您的隐私。"
+    "message": "了解操作方法"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "在此账户中发现 $1 新代币",
@@ -5169,8 +5193,8 @@
   "perpsAddFundsDescription": {
     "message": "添加资金以开始使用杠杆交易永续合约"
   },
-  "perpsAddMargin": {
-    "message": "追加保证金"
+  "perpsAddMarginDescription": {
+    "message": "追加保证金以降低清算风险"
   },
   "perpsAddToFavorites": {
     "message": "添加到收藏夹"
@@ -5196,6 +5220,9 @@
   },
   "perpsCloseLong": {
     "message": "平仓多头仓位"
+  },
+  "perpsClosePosition": {
+    "message": "平仓"
   },
   "perpsCloseShort": {
     "message": "平仓空头仓位"
@@ -5241,6 +5268,9 @@
   },
   "perpsEntryPrice": {
     "message": "入场价格"
+  },
+  "perpsExploreMarkets": {
+    "message": "探索市场"
   },
   "perpsFees": {
     "message": "费用"
@@ -5374,11 +5404,17 @@
   "perpsRecentActivity": {
     "message": "最近活动"
   },
-  "perpsRemoveMargin": {
-    "message": "移除保证金"
+  "perpsReduceExposure": {
+    "message": "减少风险敞口"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "从仓位提取多余保证金"
   },
   "perpsReturn": {
     "message": "回报率"
+  },
+  "perpsReversePosition": {
+    "message": "反转仓位"
   },
   "perpsSearchMarkets": {
     "message": "搜索市场"
@@ -5500,8 +5536,14 @@
   "perpsUnrealizedPnl": {
     "message": "未实现盈亏"
   },
+  "perpsWatchlist": {
+    "message": "关注列表"
+  },
   "perpsWithdraw": {
     "message": "提取"
+  },
+  "perpsYouWillReceive": {
+    "message": "您将收到"
   },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
@@ -5610,6 +5652,9 @@
   },
   "privateNetwork": {
     "message": "私有网络"
+  },
+  "proceed": {
+    "message": "继续"
   },
   "proceedWithTransaction": {
     "message": "我仍然想继续"
@@ -5772,6 +5817,9 @@
   },
   "queued": {
     "message": "队列中"
+  },
+  "quizIntroduction": {
+    "message": "要查看私钥助记词，您需要答对两个问题."
   },
   "rank": {
     "message": "排名"
@@ -5996,25 +6044,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "备份私钥助记词"
   },
-  "revealSeedWords": {
+  "revealSecretRecoveryPhraseSettings": {
     "message": "显示私钥助记词"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 提供 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
+  "revealSeedWords": {
+    "message": "显示私钥助记词"
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "（SRP）"
+    "message": "私钥助记词，"
   },
   "revealSeedWordsText": {
     "message": "文本"
   },
   "revealSeedWordsWarning": {
-    "message": "确保没有人在看您的屏幕。$1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "确保没人窥视您的屏幕。MetaMask 支持团队绝不会索要此类信息。"
   },
   "revealSensitiveContent": {
     "message": "显示敏感内容"
@@ -7539,6 +7585,9 @@
   "speedUpTooltipText": {
     "message": "新燃料费用"
   },
+  "speedUpTransactionTitle": {
+    "message": "加快交易速度"
+  },
   "spender": {
     "message": "支出者"
   },
@@ -8499,6 +8548,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask 启动时出现问题。"
+  },
+  "trustSignalBlockDescription": {
+    "message": "如果您访问此网站，您可能会损失所有资产。"
+  },
+  "trustSignalBlockTitle": {
+    "message": "检测到恶意网站"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "仍然连接"
   },
   "tryAgain": {
     "message": "重试"

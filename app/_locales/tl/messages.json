@@ -861,6 +861,15 @@
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
   },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Pumunta sa home page"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "Naka-off ang batayang kapakinabangan"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Batayang kapakinabangan"
+  },
   "bestQuote": {
     "message": "Pinakamagandang quote"
   },
@@ -1236,6 +1245,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Para $1 ang transaksyon, dapat itaas ang bayad sa gas nang kahit 10% man lang para matukoy ito ng network.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionTitle": {
+    "message": "Kanselahin ang transaksyon"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -1745,6 +1757,9 @@
   "copiedExclamation": {
     "message": "Nakopya na."
   },
+  "copiedToClipboard": {
+    "message": "Nakopya sa clipboard"
+  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
@@ -1759,6 +1774,9 @@
   },
   "copyTransactionId": {
     "message": "Kopyahin ang ID ng transaksyon"
+  },
+  "correct": {
+    "message": "Tama"
   },
   "create": {
     "message": "Gumawa"
@@ -1782,10 +1800,6 @@
   },
   "createPasswordDetails": {
     "message": "I-unlock ang MetaMask sa device lang na ito."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Nangangahulugan ang pagkawala ng password ng pagkawala ng access sa lahat ng device, ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Hindi ito maire-reset ng MetaMask."
@@ -3308,6 +3322,9 @@
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
   },
+  "incorrect": {
+    "message": "Mali"
+  },
   "infuraBlockedNotification": {
     "message": "Hindi makakonekta ang MetaMask sa blockchain host. I-review ang posibleng mga dahilan $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3728,6 +3745,9 @@
   "makeAnotherSwap": {
     "message": "Gumawa ng bagong pag-swap"
   },
+  "manage": {
+    "message": "Pamahalaan"
+  },
   "manageDefaultSettings": {
     "message": "Pamahalaan ang mga default na setting sa pagkapribado"
   },
@@ -3966,17 +3986,30 @@
     "message": "Si $1 ay gustong gumamit ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBuyMusd": {
+    "message": "Bumili ng mUSD"
+  },
   "musdClaimClaimingTo": {
     "message": "Ikini-claim sa",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdConversionActivityTitle": {
-    "message": "I-convert ang $1 sa mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+  "musdConversionToastFailed": {
+    "message": "Nabigong palitan ang mUSD"
   },
-  "musdConversionTitle": {
-    "message": "Na-convert sa mUSD",
-    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  "musdConversionToastSuccess": {
+    "message": "Ang mUSD mo ay narito na!"
+  },
+  "musdEducationGetStarted": {
+    "message": "Magsimula"
+  },
+  "musdEducationNotNow": {
+    "message": "Hindi sa ngayon"
+  },
+  "musdGetMusd": {
+    "message": "Kumuha ng mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Nalalapat ang mga tuntunin."
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
@@ -4557,11 +4590,8 @@
   "notificationsSettingsBoxError": {
     "message": "Nagkaproblema. Subukang muli."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet gamit ang mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang mga setting sa lahat ng iyong mga device. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Matuto kung paano namin pinoprotektahan ang iyong privacy habang ginagamit ang feature na ito."
+    "message": "Alamin kung paano"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 bagong token ang nakita sa account na ito",
@@ -5169,8 +5199,8 @@
   "perpsAddFundsDescription": {
     "message": "Magdagdag ng mga pondo para simulan ang pagti-trade ng perpetual na mga kontrata na may leverage"
   },
-  "perpsAddMargin": {
-    "message": "Magdagdag ng Margin"
+  "perpsAddMarginDescription": {
+    "message": "Dagdagan ang margin para mabawasan ang panganib ng liquidation"
   },
   "perpsAddToFavorites": {
     "message": "Idagdag sa mga paborito"
@@ -5196,6 +5226,9 @@
   },
   "perpsCloseLong": {
     "message": "Isara ang Long"
+  },
+  "perpsClosePosition": {
+    "message": "Isara ang posisyon"
   },
   "perpsCloseShort": {
     "message": "Isara ang Short"
@@ -5241,6 +5274,9 @@
   },
   "perpsEntryPrice": {
     "message": "Entry price"
+  },
+  "perpsExploreMarkets": {
+    "message": "Suriin ang mga market"
   },
   "perpsFees": {
     "message": "Mga Bayarin"
@@ -5380,11 +5416,17 @@
   "perpsRecentActivity": {
     "message": "Kamakailang Aktibidad"
   },
-  "perpsRemoveMargin": {
-    "message": "Alisin ang Margin"
+  "perpsReduceExposure": {
+    "message": "Bawasan ang exposure"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "I-withdraw ang sobrang margin sa posisyon"
   },
   "perpsReturn": {
     "message": "Tutubuin"
+  },
+  "perpsReversePosition": {
+    "message": "Ibalik ang posisyon"
   },
   "perpsSearchMarkets": {
     "message": "Maghanap ng mga market"
@@ -5506,8 +5548,14 @@
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
+  "perpsWatchlist": {
+    "message": "Watchlist"
+  },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
+  },
+  "perpsYouWillReceive": {
+    "message": "Makakatanggap ka ng"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -5616,6 +5664,9 @@
   },
   "privateNetwork": {
     "message": "Pribadong Network"
+  },
+  "proceed": {
+    "message": "Magpatuloy"
   },
   "proceedWithTransaction": {
     "message": "Gusto ko pa ring magpatuloy"
@@ -5778,6 +5829,9 @@
   },
   "queued": {
     "message": "Naka-queue"
+  },
+  "quizIntroduction": {
+    "message": "Upang ibunyag ang iyong Lihim na Parirala sa Pagbawi, kailangan mong sagutin nang tama ang dalawang tanong."
   },
   "rank": {
     "message": "Rank"
@@ -6002,25 +6056,23 @@
   "revealSecretRecoveryPhrase": {
     "message": "I-back up ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
   },
-  "revealSeedWords": {
+  "revealSecretRecoveryPhraseSettings": {
     "message": "Ihayag ang Lihim na Parirala sa Pagbawi"
   },
-  "revealSeedWordsDescription1": {
-    "message": "Ang $1 ay nagbibigay ng $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
+  "revealSeedWords": {
+    "message": "Ihayag ang Lihim na Parirala sa Pagbawi"
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Lihim na Parirala sa Pagbawi (Secret Recovery Phrase o SRP)"
+    "message": "Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
   },
   "revealSeedWordsText": {
     "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "Tiyaking walang tumitingin sa iyong screen. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Siguraduhing walang nakatingin sa screen mo. Hindi ito kailanman hihingin ng Suporta ng MetaMask."
   },
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong nilalaman"
@@ -7545,6 +7597,9 @@
   "speedUpTooltipText": {
     "message": "Bagong bayad sa gas"
   },
+  "speedUpTransactionTitle": {
+    "message": "Pabilisin ang transaksyon"
+  },
   "spender": {
     "message": "Gumagastos"
   },
@@ -8505,6 +8560,15 @@
   },
   "troubleStartingTitle": {
     "message": "Nagkakaproblema ang MetaMask sa pagsisimula."
+  },
+  "trustSignalBlockDescription": {
+    "message": "Kapag kumonekta ka sa site na ito, maaaring mawala sa iyo ang lahat ng asset mo."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Natukoy ang mapanganib na site"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Kumonekta Pa Rin"
   },
   "tryAgain": {
     "message": "Subukang muli"
