@@ -233,8 +233,6 @@ export const ReviewPermissions = () => {
           )}
           {showDisconnectAllModal ? (
             <DisconnectAllModal
-              type={DisconnectType.Account}
-              hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 trace({ name: TraceName.DisconnectAllModal });

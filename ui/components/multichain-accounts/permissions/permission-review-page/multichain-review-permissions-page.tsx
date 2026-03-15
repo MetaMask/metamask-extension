@@ -382,8 +382,6 @@ export const MultichainReviewPermissions = () => {
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
-              type={DisconnectType.Account}
-              hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 setShowDisconnectAllModal(false);
