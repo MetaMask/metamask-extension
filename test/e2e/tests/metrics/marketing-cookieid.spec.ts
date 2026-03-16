@@ -139,7 +139,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
-        fixtures: new FixtureBuilderV2().withMetaMetricsController().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

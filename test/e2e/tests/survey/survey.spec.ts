@@ -54,7 +54,6 @@ describe('Test Survey', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withPreferencesController()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,

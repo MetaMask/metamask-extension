@@ -97,6 +97,7 @@ const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
+  'AppStateController.appActiveTab',
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
