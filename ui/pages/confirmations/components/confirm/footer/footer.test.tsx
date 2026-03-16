@@ -65,21 +65,6 @@ const mockGetEnvironmentType = jest.fn();
 const mockNavigateNext = jest.fn();
 const mockNavigateToId = jest.fn();
 
-const mockOnTransactionConfirm = jest.fn();
-const ensureDeviceReadyMock = jest.fn();
-const showHardwareWalletErrorModalMock = jest.fn();
-const dismissHardwareWalletErrorModalMock = jest.fn();
-const mockUseHardwareWalletState = jest.fn();
-const mockUseHardwareWalletConfig = jest.fn();
-const mockUseHardwareWalletActions = jest.fn();
-const mockUseHardwareWalletError = jest.fn();
-const mockIsHardwareWalletError = jest.fn();
-const mockIsUserRejectedHardwareWalletError = jest.fn();
-const mockIsRetryableHardwareWalletError = jest.fn();
-const mockGetEnvironmentType = jest.fn();
-const mockNavigateNext = jest.fn();
-const mockNavigateToId = jest.fn();
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
 
