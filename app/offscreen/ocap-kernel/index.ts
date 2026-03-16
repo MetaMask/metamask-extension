@@ -88,7 +88,12 @@ export async function runKernel(): Promise<never> {
 
     const result = await E(kernelP).launchSubcluster({
       bootstrap: 'vendor',
-      services: ['hostApiProxy', 'methodCatalog', 'llmService'],
+      services: [
+        'hostApiProxy',
+        'methodCatalog',
+        'llmService',
+        'ocapURLIssuerService',
+      ],
       vats: {
         vendor: {
           bundleSpec: bundleUrl,
@@ -98,16 +103,32 @@ export async function runKernel(): Promise<never> {
 
     console.log('~~~ Vendor subcluster launched ~~~', result);
 
+    // Extract and log the OCAP URL from the bootstrap result
+    const { bootstrapResult } = result;
+    if (bootstrapResult) {
+      const bodyJson = (bootstrapResult as { body: string }).body.replace(
+        /^#/u,
+        '',
+      );
+      const parsed = JSON.parse(bodyJson);
+      if (parsed.ocapURL) {
+        console.log('='.repeat(60));
+        console.log('OCAP URL for remote kernel connection:');
+        console.log(parsed.ocapURL);
+        console.log('='.repeat(60));
+      }
+    }
+
     // --- Smoke test: exercise the full vendor pipeline ---
     const { rootKref } = result;
 
-    // 1. Vend a capability via the admin facet (delegates to public facet)
+    // 1. Request a capability via the admin facet (delegates to public facet)
     const capRecord = await E(kernelP).queueMessage(
       rootKref,
-      'vendCapability',
+      'requestCapability',
       ['list accounts'],
     );
-    console.log('~~~ Vended capability ~~~', capRecord);
+    console.log('~~~ Requested capability ~~~', capRecord);
 
     // 2. List capabilities via admin facet
     const capabilities = await E(kernelP).queueMessage(
@@ -151,10 +172,19 @@ export async function runKernel(): Promise<never> {
 async function makeKernelWorker(): Promise<
   DuplexStream<JsonRpcMessage, JsonRpcMessage>
 > {
-  const worker = new Worker(
-    'ocap-kernel/kernel-worker/index.js?reset-storage=true',
-    { type: 'module' },
+  const workerUrl = new URL(
+    'ocap-kernel/kernel-worker/index.js',
+    globalThis.location.href,
   );
+  workerUrl.searchParams.set('reset-storage', 'true');
+
+  const relayMultiaddr = process.env.OCAP_RELAY_MULTIADDR;
+  if (relayMultiaddr) {
+    const relays = (relayMultiaddr as string).split(',').filter(Boolean);
+    workerUrl.searchParams.set('relays', JSON.stringify(relays));
+  }
+
+  const worker = new Worker(workerUrl, { type: 'module' });
 
   const port = await initializeMessageChannel((message, transfer) =>
     worker.postMessage(message, transfer),

@@ -7,12 +7,14 @@ import type {
   HostApiProxy,
   LlmResponse,
   LlmService,
+  OcapURLIssuerService,
 } from '../../types';
 
 type Services = {
   hostApiProxy: HostApiProxy;
   llmService: LlmService;
   methodCatalog: unknown;
+  ocapURLIssuerService: OcapURLIssuerService;
 };
 
 export function buildRootObject(
@@ -28,7 +30,7 @@ export function buildRootObject(
   const capabilities = new Map<string, CapabilityRecord>();
 
   const publicFacet = makeDefaultExo('vendorPublicFacet', {
-    async vendCapability(request: string): Promise<CapabilityRecord> {
+    async requestCapability(request: string): Promise<CapabilityRecord> {
       const llmResponse: LlmResponse = await E(llmService).prompt(request);
 
       // Evaluate the LLM-produced source in a Compartment with limited endowments
@@ -56,20 +58,24 @@ export function buildRootObject(
   });
 
   return makeDefaultExo('vendorAdmin', {
-    async bootstrap(
-      _vats: Record<string, unknown>,
-      services: Services,
-    ): Promise<void> {
+    async bootstrap(_vats: Record<string, unknown>, services: Services) {
       hostApiProxy = services.hostApiProxy;
       llmService = services.llmService;
+
+      if (!services.ocapURLIssuerService) {
+        throw new Error('ocapURLIssuerService is required');
+      }
+
+      const ocapURL = await E(services.ocapURLIssuerService).issue(publicFacet);
+      return harden({ ocapURL });
     },
 
     getPublicFacet() {
       return publicFacet;
     },
 
-    async vendCapability(request: string): Promise<CapabilityRecord> {
-      return publicFacet.vendCapability(request);
+    async requestCapability(request: string): Promise<CapabilityRecord> {
+      return publicFacet.requestCapability(request);
     },
 
     getCapabilities(): CapabilityRecord[] {

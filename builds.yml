@@ -381,6 +381,9 @@ env:
   # Perps geoblock fallback (comma-separated region codes when remote flag unavailable)
   - MM_PERPS_BLOCKED_REGIONS: null
 
+  # Relay multiaddr(s) for ocap kernel remote comms (comma-separated)
+  - OCAP_RELAY_MULTIADDR: null
+
   ###
   # Meta variables
   ###

@@ -35,3 +35,7 @@ export type HostApiProxy = {
 export type LlmService = {
   prompt: (request: string) => Promise<LlmResponse>;
 };
+
+export type OcapURLIssuerService = {
+  issue: (obj: unknown) => Promise<string>;
+};

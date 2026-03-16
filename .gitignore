@@ -2,6 +2,7 @@
 yalc.lock
 
 /ocap-kernel
+*.env
 
 npm-debug.log
 yarn-error.log
