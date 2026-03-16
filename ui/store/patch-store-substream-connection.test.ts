@@ -211,7 +211,7 @@ describe('patch-store substream connection', () => {
       });
       // Responses aren't supposed to contain methods
       const message = {
-        id: 9999,
+        id: 42,
         jsonrpc: '2.0',
         method: 'unknown',
         result: [],
@@ -256,7 +256,7 @@ describe('patch-store substream connection', () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const sentMessages: unknown[] = [];
       backgroundStream.on('data', (msg) => sentMessages.push(msg));
-      mockGetNextId.mockReturnValue(10);
+      mockGetNextId.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -266,21 +266,21 @@ describe('patch-store substream connection', () => {
 
       expect(sentMessages).toContainEqual(
         expect.objectContaining({
-          id: 10,
+          id: 42,
           jsonrpc: '2.0',
           method: GET_STATE_PATCHES,
         }),
       );
 
       // Resolve so the test does not hang
-      backgroundStream.write({ jsonrpc: '2.0', id: 10, result: [] });
+      backgroundStream.write({ jsonrpc: '2.0', id: 42, result: [] });
       await patchesPromise;
     });
 
     it('resolves with the patches from the background response', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const expectedPatches = [{ op: 'replace', path: ['foo'], value: 'bar' }];
-      mockGetNextId.mockReturnValue(20);
+      mockGetNextId.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -288,7 +288,7 @@ describe('patch-store substream connection', () => {
       const patchesPromise = getStatePatches();
       backgroundStream.write({
         jsonrpc: '2.0',
-        id: 20,
+        id: 42,
         result: expectedPatches,
       });
 
@@ -299,13 +299,13 @@ describe('patch-store substream connection', () => {
     it('rejects when the background responds with an error', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const rpcError = { code: -32000, message: 'Internal error' };
-      mockGetNextId.mockReturnValue(30);
+      mockGetNextId.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
 
       const patchesPromise = getStatePatches();
-      backgroundStream.write({ jsonrpc: '2.0', id: 30, error: rpcError });
+      backgroundStream.write({ jsonrpc: '2.0', id: 42, error: rpcError });
 
       await expect(patchesPromise).rejects.toStrictEqual(rpcError);
     });
@@ -315,7 +315,7 @@ describe('patch-store substream connection', () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
-      mockGetNextId.mockReturnValue(40);
+      mockGetNextId.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -323,7 +323,7 @@ describe('patch-store substream connection', () => {
       const patchesPromise = getStatePatches();
       backgroundStream.write({
         jsonrpc: '2.0',
-        id: 40,
+        id: 42,
         result: [{ op: 'replace', path: ['foo'], value: undefined }],
       });
 
@@ -334,13 +334,13 @@ describe('patch-store substream connection', () => {
 
     it('rejects when a getStatePatches response result is not a valid patch array', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
-      mockGetNextId.mockReturnValue(50);
+      mockGetNextId.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
       const message = {
         jsonrpc: '2.0',
-        id: 50,
+        id: 42,
         result: 'not-an-array',
       };
 
@@ -353,14 +353,14 @@ describe('patch-store substream connection', () => {
       await expect(patchesPromise).rejects.toStrictEqual(
         expect.objectContaining({
           message:
-            'Invalid response for patch-store stream request ID \'50\': Expected an array value, but received: "not-an-array"',
+            'Invalid response for patch-store stream request ID \'42\': Expected an array value, but received: "not-an-array"',
         }),
       );
     });
 
     it('rejects pending requests when the stream is destroyed', async () => {
       const { uiMux, uiStream } = createPatchStreamPair();
-      mockGetNextId.mockReturnValue(60);
+      mockGetNextId.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -377,7 +377,7 @@ describe('patch-store substream connection', () => {
 
     it('rejects pending requests when the stream finishes', async () => {
       const { uiStream } = createPatchStreamPair();
-      mockGetNextId.mockReturnValue(70);
+      mockGetNextId.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
