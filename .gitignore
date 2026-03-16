@@ -105,3 +105,6 @@ development/.webpack
 
 # llm workflow playwright temp files
 temp-llm-workflow-*
+
+.aider.input.history
+.aider.chat.history.md
