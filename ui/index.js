@@ -116,7 +116,7 @@ export async function launchMetamaskUi(opts) {
 
   const store = await startApp(initialState, opts);
 
-  await patchSubstream.write({
+  patchSubstream.write({
     jsonrpc: '2.0',
     method: START_SENDING_PATCHES,
   });
