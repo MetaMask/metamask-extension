@@ -389,9 +389,6 @@
     "message": "অ্যাকাউন্ট $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "নতুন পরিচিতি"
-  },
   "newContract": {
     "message": "নতুন কন্ট্র্যাক্ট"
   },
@@ -649,12 +646,6 @@
   },
   "usedByClients": {
     "message": "বিভিন্ন ধরণের গ্রাহকদের দ্বারা ব্যবহৃত হয়"
-  },
-  "userName": {
-    "message": "ইউজারনেম"
-  },
-  "viewContact": {
-    "message": "পরিচিতি দেখুন"
   },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"

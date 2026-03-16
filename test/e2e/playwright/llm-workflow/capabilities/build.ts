@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { spawn, type ChildProcess } from 'child_process';
 import path from 'path';
 import { existsSync } from 'fs';
 import type {
@@ -6,6 +6,17 @@ import type {
   BuildOptions,
   BuildResult,
 } from '@metamask/client-mcp-core';
+
+/**
+ * Allowlist of valid build types that can be passed to `yarn`.
+ * This prevents shell injection when constructing the build command.
+ */
+const ALLOWED_BUILD_TYPES: ReadonlySet<string> = new Set([
+  'build:test',
+  'build:test:flask',
+  'build:test:mv2',
+  'build:test:mmi',
+]);
 
 export type MetaMaskBuildCapabilityOptions = {
   command?: string;
@@ -40,11 +51,8 @@ export class MetaMaskBuildCapability implements BuildCapability {
         };
       }
 
-      const buildCommand = options?.buildType
-        ? `yarn ${options.buildType}`
-        : this.command;
-
-      await this.runBuildCommand(buildCommand);
+      const buildArgs = this.resolveBuildArgs(options?.buildType);
+      await this.runBuildCommand(buildArgs);
 
       return {
         success: true,
@@ -70,16 +78,52 @@ export class MetaMaskBuildCapability implements BuildCapability {
     return existsSync(manifestPath);
   }
 
-  private async runBuildCommand(buildCommand: string): Promise<void> {
+  private resolveBuildArgs(buildType?: string): string[] {
+    if (buildType) {
+      if (!ALLOWED_BUILD_TYPES.has(buildType)) {
+        throw new Error(
+          `Invalid buildType: "${buildType}". ` +
+            `Allowed values: ${[...ALLOWED_BUILD_TYPES].join(', ')}`,
+        );
+      }
+      return [buildType];
+    }
+
+    const parts = this.command.split(/\s+/u);
+    const commandParts = parts[0] === 'yarn' ? parts.slice(1) : parts;
+
+    for (const part of commandParts) {
+      if (!ALLOWED_BUILD_TYPES.has(part)) {
+        throw new Error(
+          `Invalid build command part: "${part}" in "${this.command}". ` +
+            `Allowed values: ${[...ALLOWED_BUILD_TYPES].join(', ')}`,
+        );
+      }
+    }
+
+    return commandParts;
+  }
+
+  private async runBuildCommand(buildArgs: string[]): Promise<void> {
     await new Promise<void>((resolve, reject) => {
-      const child = spawn(buildCommand, {
+      const child = spawn('yarn', buildArgs, {
         cwd: process.cwd(),
-        stdio: 'inherit',
-        shell: true,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        shell: false,
+      });
+
+      // Forward child stdout/stderr to process.stderr to avoid
+      // corrupting the MCP stdio protocol on process.stdout.
+      child.stdout?.on('data', (data: Buffer) => {
+        process.stderr.write(data);
+      });
+      child.stderr?.on('data', (data: Buffer) => {
+        process.stderr.write(data);
       });
 
       let settled = false;
       let timeoutId: NodeJS.Timeout | undefined;
+      let forceKillTimer: NodeJS.Timeout | undefined;
 
       const settle = (callback: () => void) => {
         if (settled) {
@@ -90,24 +134,21 @@ export class MetaMaskBuildCapability implements BuildCapability {
         if (timeoutId) {
           clearTimeout(timeoutId);
         }
+        if (forceKillTimer) {
+          clearTimeout(forceKillTimer);
+        }
         callback();
       };
 
       if (this.timeout > 0) {
         timeoutId = setTimeout(() => {
           const timeoutError = new Error(
-            `Build command timed out after ${this.timeout}ms: ${buildCommand}`,
+            `Build command timed out after ${this.timeout}ms: yarn ${buildArgs.join(' ')}`,
           );
 
           child.kill('SIGTERM');
 
-          const forceKillTimer = setTimeout(() => {
-            if (!child.killed) {
-              child.kill('SIGKILL');
-            }
-          }, 5000);
-
-          forceKillTimer.unref?.();
+          forceKillTimer = this.scheduleForceKill(child);
 
           settle(() => reject(timeoutError));
         }, this.timeout);
@@ -133,5 +174,16 @@ export class MetaMaskBuildCapability implements BuildCapability {
         );
       });
     });
+  }
+
+  private scheduleForceKill(child: ChildProcess): NodeJS.Timeout {
+    const timer = setTimeout(() => {
+      if (!child.killed) {
+        child.kill('SIGKILL');
+      }
+    }, 5000);
+
+    timer.unref?.();
+    return timer;
   }
 }

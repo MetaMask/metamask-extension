@@ -392,9 +392,6 @@
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "איש קשר חדש"
-  },
   "newContract": {
     "message": "חוזה חדש"
   },
@@ -652,12 +649,6 @@
   },
   "usedByClients": {
     "message": "בשימוש על ידי מגוון לקוחות שונים"
-  },
-  "userName": {
-    "message": "שם משתמש"
-  },
-  "viewContact": {
-    "message": "הצג איש קשר"
   },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"

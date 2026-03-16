@@ -7,6 +7,9 @@ import {
   BadgeWrapper,
   Box,
   BoxBackgroundColor,
+  ButtonIcon,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -16,6 +19,7 @@ import {
   PolymorphicRef,
   Tag,
 } from '../../../../../components/component-library';
+import { StockBadge } from '../../../../../components/app/assets/stock-badge/stock-badge';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
@@ -29,10 +33,12 @@ import {
   BlockSize,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import { useBridgeNavigation } from '../../../../../hooks/bridge/useBridgeNavigation';
 import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column, Row } from '../../../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
+import { useRWAToken } from '../../../hooks/useRWAToken';
 
 export const BridgeAsset = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(
@@ -53,6 +59,9 @@ export const BridgeAsset = React.forwardRef(
     const currency = useSelector(getCurrentCurrency);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
+    const { navigateToAssetPage } = useBridgeNavigation();
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
+    const tokenIsStock = isStockToken(asset);
 
     return (
       <Row
@@ -62,7 +71,7 @@ export const BridgeAsset = React.forwardRef(
         {...buttonProps}
         padding={4}
         borderRadius={BorderRadius.none}
-        gap={4}
+        gap={2}
         backgroundColor={
           selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
         }
@@ -110,7 +119,10 @@ export const BridgeAsset = React.forwardRef(
           />
         </BadgeWrapper>
 
-        <Column width={BlockSize.Full} style={{ overflow: 'hidden' }}>
+        <Column
+          width={BlockSize.Full}
+          style={{ overflow: 'hidden', marginLeft: 8 }}
+        >
           <Row alignItems={AlignItems.flexStart} gap={4}>
             <Row gap={2}>
               <Text ellipsis data-testid="bridge-asset-symbol">
@@ -118,6 +130,9 @@ export const BridgeAsset = React.forwardRef(
               </Text>
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
+              )}
+              {tokenIsStock && (
+                <StockBadge isMarketClosed={!isTokenTradingOpen(asset)} />
               )}
               {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
                 <Tag label={t('bridgeNoMMFee')} />
@@ -154,6 +169,20 @@ export const BridgeAsset = React.forwardRef(
             </Text>
           </Row>
         </Column>
+
+        <ButtonIcon
+          className="bridge-asset-info-icon"
+          iconName={IconName.Info}
+          onClick={(e: React.MouseEvent) => {
+            e.stopPropagation();
+            e.preventDefault();
+            navigateToAssetPage(asset);
+          }}
+          ariaLabel={t('viewTokenDetails')}
+          iconProps={{
+            size: IconSize.Sm,
+          }}
+        />
       </Row>
     );
   },

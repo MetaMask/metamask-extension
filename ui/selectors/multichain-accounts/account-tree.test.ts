@@ -11,7 +11,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import mockState from '../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 
-import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/lib/selectors/networks';
 import {
   getAccountTree,
   getAllAccountGroups,

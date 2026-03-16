@@ -8,7 +8,7 @@ import { compose } from 'redux';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import * as actions from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,

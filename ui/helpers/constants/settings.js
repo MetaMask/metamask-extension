@@ -1,7 +1,7 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { isExperimental, isFlask } from '../../../shared/lib/build-types';
-import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
@@ -9,7 +9,6 @@ import {
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
   NETWORKS_ROUTE,
-  CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
@@ -200,13 +199,6 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('notifications'),
     route: NOTIFICATIONS_SETTINGS_ROUTE,
     iconName: IconName.Notification,
-  },
-  {
-    tabMessage: (t) => t('contacts'),
-    sectionMessage: (t) => t('contacts'),
-    descriptionMessage: (t) => t('contacts'),
-    route: CONTACT_LIST_ROUTE,
-    iconName: IconName.Book,
   },
   // securityAndPrivacy settingsRefs[0]
   {

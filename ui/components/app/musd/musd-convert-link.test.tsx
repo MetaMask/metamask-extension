@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { MusdConvertLink } from './musd-convert-link';
@@ -103,7 +103,7 @@ describe('MusdConvertLink', () => {
     expect(screen.getByText('Get 3% bonus')).toBeInTheDocument();
   });
 
-  it('calls startConversionFlow on click', () => {
+  it('calls startConversionFlow on click', async () => {
     renderWithProvider(
       <MusdConvertLink
         tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -114,7 +114,9 @@ describe('MusdConvertLink', () => {
     );
 
     const ctaButton = screen.getByTestId('musd-convert-link-0x1');
-    fireEvent.click(ctaButton);
+    await act(async () => {
+      fireEvent.click(ctaButton);
+    });
 
     expect(mockStartConversionFlow).toHaveBeenCalledWith({
       preferredToken: {
@@ -125,7 +127,7 @@ describe('MusdConvertLink', () => {
     });
   });
 
-  it('stops event propagation on click', () => {
+  it('stops event propagation on click', async () => {
     const parentClickHandler = jest.fn();
 
     renderWithProvider(
@@ -140,13 +142,15 @@ describe('MusdConvertLink', () => {
     );
 
     const ctaButton = screen.getByTestId('musd-convert-link-0x1');
-    fireEvent.click(ctaButton);
+    await act(async () => {
+      fireEvent.click(ctaButton);
+    });
 
     // Parent should not receive the click event
     expect(parentClickHandler).not.toHaveBeenCalled();
   });
 
-  it('tracks analytics event on click', () => {
+  it('tracks analytics event on click', async () => {
     renderWithProvider(
       <MusdConvertLink
         tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -157,7 +161,9 @@ describe('MusdConvertLink', () => {
     );
 
     const ctaButton = screen.getByTestId('musd-convert-link-0x1');
-    fireEvent.click(ctaButton);
+    await act(async () => {
+      fireEvent.click(ctaButton);
+    });
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -173,7 +179,7 @@ describe('MusdConvertLink', () => {
     );
   });
 
-  it('uses custom entry point when provided', () => {
+  it('uses custom entry point when provided', async () => {
     renderWithProvider(
       <MusdConvertLink
         tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -185,7 +191,9 @@ describe('MusdConvertLink', () => {
     );
 
     const ctaButton = screen.getByTestId('musd-convert-link-0x1');
-    fireEvent.click(ctaButton);
+    await act(async () => {
+      fireEvent.click(ctaButton);
+    });
 
     expect(mockStartConversionFlow).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -221,5 +229,37 @@ describe('MusdConvertLink', () => {
     const ctaButton = screen.getByTestId('musd-convert-link-0x1');
     expect(ctaButton.tagName).toBe('BUTTON');
     expect(ctaButton).toHaveAttribute('type', 'button');
+  });
+
+  it('disables the button while conversion flow is in progress', async () => {
+    let resolveFlow!: () => void;
+    mockStartConversionFlow.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveFlow = resolve;
+      }),
+    );
+
+    renderWithProvider(
+      <MusdConvertLink
+        tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        chainId="0x1"
+        tokenSymbol="USDC"
+      />,
+      mockStore,
+    );
+
+    const ctaButton = screen.getByTestId('musd-convert-link-0x1');
+    expect(ctaButton).not.toBeDisabled();
+
+    await act(async () => {
+      fireEvent.click(ctaButton);
+    });
+    expect(ctaButton).toBeDisabled();
+
+    await act(async () => {
+      resolveFlow();
+    });
+
+    expect(ctaButton).not.toBeDisabled();
   });
 });

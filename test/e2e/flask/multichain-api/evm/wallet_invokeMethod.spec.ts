@@ -8,7 +8,7 @@ import {
 } from '../../../constants';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -43,7 +43,7 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -93,7 +93,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -146,7 +146,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -251,7 +251,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -396,8 +396,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -444,8 +444,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -517,8 +517,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {

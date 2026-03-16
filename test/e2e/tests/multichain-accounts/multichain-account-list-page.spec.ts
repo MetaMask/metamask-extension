@@ -23,7 +23,16 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
 
         // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Ledger',
+          account: 'Ledger 1',
+          balance: '$0.00',
+        });
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
       },
@@ -64,7 +73,16 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         );
 
         // Ensure that an SSK account within the wallet is displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'MetaMask Simple Snap Keyring',
+          account: 'Snap Account 1',
+          balance: '$0.00',
+        });
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed(
           'Snap Account 1',

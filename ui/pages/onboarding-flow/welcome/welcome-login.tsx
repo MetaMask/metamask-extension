@@ -13,7 +13,7 @@ import {
   BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';

@@ -23,7 +23,7 @@ import {
   getCurrencyRateControllerCurrencyRates,
   getTokenBalancesControllerTokenBalances,
   getTokenRatesControllerMarketData,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import { getMultichainBalances } from '../../selectors/multichain';
 import {
   getAccountAssets,

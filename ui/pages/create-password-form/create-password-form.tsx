@@ -1,27 +1,21 @@
 import React, { useState, useContext } from 'react';
 import {
-  IconColor,
-  JustifyContent,
-  AlignItems,
-  TextVariant,
-  TextColor,
-  BlockSize,
-  FlexDirection,
-  Display,
-  BackgroundColor,
-  BorderRadius,
-} from '../../helpers/constants/design-system';
-import {
   Button,
   Box,
+  Text,
+  TextVariant,
+  TextColor,
   ButtonIcon,
   ButtonIconSize,
   IconName,
   ButtonVariant,
   ButtonSize,
-  Text,
   Checkbox,
-} from '../../components/component-library';
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+  IconColor,
+} from '@metamask/design-system-react';
 import PasswordForm from '../../components/app/password-form/password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -55,7 +49,9 @@ const CreatePasswordForm = ({
     await onSubmit(password, termsChecked);
   };
 
-  const handleLearnMoreClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLearnMoreClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+  ): void => {
     event.stopPropagation();
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -88,117 +84,109 @@ const CreatePasswordForm = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
+      asChild
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
       gap={4}
-      as="form"
-      className="create-password"
+      className="create-password h-full w-full"
       data-testid="create-password"
-      onSubmit={handleCreatePassword}
     >
-      <Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            color={loading ? IconColor.iconMuted : IconColor.iconDefault}
-            size={ButtonIconSize.Md}
-            data-testid="create-password-back-button"
-            type="button"
-            onClick={onBack}
-            ariaLabel={t('back')}
+      <form onSubmit={handleCreatePassword}>
+        <Box>
+          <Box className="mb-4 w-full">
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={loading ? IconColor.IconMuted : IconColor.IconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="create-password-back-button"
+              type="button"
+              onClick={onBack}
+              ariaLabel={t('back')}
+              disabled={loading}
+            />
+          </Box>
+          <Box className="mb-4 w-full">
+            <Text variant={TextVariant.HeadingLg}>{t('createPassword')}</Text>
+            {isSocialLoginFlow ? (
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('createPasswordDetailsSocial', [
+                  <Text
+                    key="create-password-details-social-reset"
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.WarningDefault}
+                    asChild
+                  >
+                    <span>{t('createPasswordDetailsSocialReset')}</span>
+                  </Text>,
+                ])}
+              </Text>
+            ) : (
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('createPasswordDetails')}
+              </Text>
+            )}
+          </Box>
+          <PasswordForm
+            onChange={(newPassword) => setPassword(newPassword)}
             disabled={loading}
           />
+          <Box
+            className="create-password__terms-container rounded-lg"
+            marginTop={6}
+            backgroundColor={BoxBackgroundColor.BackgroundMuted}
+            padding={3}
+          >
+            <Checkbox
+              id="create-password-terms"
+              data-testid="create-password-terms"
+              className="items-start"
+              isSelected={termsChecked}
+              isDisabled={loading}
+              onChange={() => {
+                setTermsChecked(!termsChecked);
+              }}
+              label={
+                <Text
+                  asChild
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextDefault}
+                >
+                  <span>
+                    {checkboxLabel}
+                    {!isSocialLoginFlow && (
+                      <>
+                        <br />
+                        {createPasswordLink}
+                      </>
+                    )}
+                  </span>
+                </Text>
+              }
+            />
+          </Box>
         </Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <Text variant={TextVariant.headingLg} as="h2">
-            {t('createPassword')}
-          </Text>
-          {isSocialLoginFlow ? (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
-            >
-              {t('createPasswordDetailsSocial')}
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.warningDefault}
-                as="span"
-              >
-                {t('createPasswordDetailsSocialReset')}
-              </Text>
-            </Text>
-          ) : (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
-            >
-              {t('createPasswordDetails')}
-            </Text>
-          )}
-        </Box>
-        <PasswordForm
-          onChange={(newPassword) => setPassword(newPassword)}
-          disabled={loading}
-        />
-        <Box
-          className="create-password__terms-container"
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={6}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          padding={3}
-          borderRadius={BorderRadius.LG}
-        >
-          <Checkbox
-            inputProps={{ 'data-testid': 'create-password-terms' }}
-            alignItems={AlignItems.flexStart}
-            isChecked={termsChecked}
-            isDisabled={loading}
-            onChange={() => {
-              setTermsChecked(!termsChecked);
-            }}
-            label={
-              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                {checkboxLabel}
-                {!isSocialLoginFlow && (
-                  <>
-                    <br />
-                    {createPasswordLink}
-                  </>
-                )}
-              </Text>
+        <Box>
+          <Button
+            type="submit"
+            data-testid="create-password-submit"
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            className="create-password__form--submit-button w-full"
+            disabled={
+              !password || (!isSocialLoginFlow && !termsChecked) || loading
             }
-          />
+            isLoading={loading}
+          >
+            {t('createPasswordCreate')}
+          </Button>
         </Box>
-      </Box>
-      <Box>
-        <Button
-          data-testid="create-password-submit"
-          variant={ButtonVariant.Primary}
-          width={BlockSize.Full}
-          size={ButtonSize.Lg}
-          className="create-password__form--submit-button"
-          disabled={
-            !password || (!isSocialLoginFlow && !termsChecked) || loading
-          }
-          loading={loading}
-        >
-          {t('createPasswordCreate')}
-        </Button>
-      </Box>
+      </form>
     </Box>
   );
 };

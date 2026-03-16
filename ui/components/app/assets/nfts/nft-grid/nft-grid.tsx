@@ -8,7 +8,7 @@ import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-mod
 import { getIpfsGateway } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

@@ -2,7 +2,7 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
 const { mergeWith, cloneDeep } = require('lodash');
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')

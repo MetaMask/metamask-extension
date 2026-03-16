@@ -39,15 +39,15 @@ import {
   getProviderConfig,
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
-} from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/selectors/networks';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
   getMultiChainBalancesControllerBalances,
-} from '../../shared/modules/selectors/assets-migration';
-import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
+} from '../../shared/lib/selectors/assets-migration';
+import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -148,23 +148,23 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import {
   getValueFromWeiHex,
   hexToDecimal,
-} from '../../shared/modules/conversion.utils';
+} from '../../shared/lib/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/networks';
-import { hasTransactionData } from '../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
+import { hasTransactionData } from '../../shared/lib/transaction.utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createParameterizedShallowEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
-} from '../../shared/modules/feature-flags';
+} from '../../shared/lib/feature-flags';
 // eslint-disable-next-line import/order
 import {
   getSelectedInternalAccount,
