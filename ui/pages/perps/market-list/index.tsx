@@ -16,6 +16,7 @@ import {
   TextColor,
   ButtonBase,
 } from '@metamask/design-system-react';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
 import {
@@ -46,7 +47,6 @@ import {
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect, type MarketFilter } from './components/filter-select';
-import type { PerpsMarketData } from '@metamask/perps-controller';
 
 /**
  * Get the resolved market type for a market.

@@ -9,7 +9,7 @@ import {
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
 import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
-import { FALLBACK_LOCALE } from '../../../../shared/modules/i18n';
+import { FALLBACK_LOCALE } from '../../../../shared/lib/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,

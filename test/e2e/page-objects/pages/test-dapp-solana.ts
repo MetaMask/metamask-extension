@@ -81,6 +81,7 @@ export class TestDappSolana {
    * Focus on the Solana test dapp window.
    */
   async switchTo() {
+    console.log('Switching to Solana Test Dapp window');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
     await this.checkPageIsLoaded();
   }
@@ -190,20 +191,33 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.sendSol.id);
 
     return {
-      setAddress: (address: string) =>
-        this.setInputValue(dataTestIds.testPage.sendSol.address, address),
-      signTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendSol.signTransaction),
-      sendTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendSol.sendTransaction),
-      getSignedTransaction: async () =>
-        await this.getSignedMessages(
+      setAddress: (address: string) => {
+        console.log('Setting address');
+        return this.setInputValue(
+          dataTestIds.testPage.sendSol.address,
+          address,
+        );
+      },
+      signTransaction: async () => {
+        console.log('Clicking sign transaction button');
+        await this.clickElement(dataTestIds.testPage.sendSol.signTransaction);
+      },
+      sendTransaction: async () => {
+        console.log('Clicking send transaction button');
+        await this.clickElement(dataTestIds.testPage.sendSol.sendTransaction);
+      },
+      getSignedTransaction: async () => {
+        console.log('Getting signed transaction');
+        return await this.getSignedMessages(
           dataTestIds.testPage.sendSol.signedTransaction,
-        ),
-      getTransactionHash: async () =>
-        await this.getSolscanShortContent(
+        );
+      },
+      getTransactionHash: async () => {
+        console.log('Getting transaction hash');
+        return await this.getSolscanShortContent(
           dataTestIds.testPage.sendSol.transactionHash,
-        ),
+        );
+      },
     };
   }
 

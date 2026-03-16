@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Добавить токен"
   },
-  "addTokenByContractAddress": {
-    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Добавить URL-адрес"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ссылка обозревателя блоков скопирована"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Расчет..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Вам нужно будет подтвердить 2 транзакции в Вашем аппаратном кошельке:"
   },
@@ -1022,9 +1015,6 @@
   },
   "bridgeGasFeesSplit": {
     "message": "Любая комиссия сети, указанная на предыдущем экране, включает обе транзакции и будет разделена."
-  },
-  "bridgeNetCost": {
-    "message": "Чистая стоимость"
   },
   "bridgeNoMMFee": {
     "message": "Без комиссии MM"
@@ -1129,10 +1119,6 @@
     "message": "Обменивается $1 на $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 мин.",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "bridgeTo": {
     "message": "Мост к"
   },
@@ -1206,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
-  },
-  "buildContactList": {
-    "message": "Создайте список контактов"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
@@ -1801,7 +1784,8 @@
     "message": "Разблокирует MetaMask только на этом устройстве."
   },
   "createPasswordDetailsSocial": {
-    "message": "Потеря этого пароля означает потерю доступа к кошельку на всех устройствах, "
+    "message": "Потеря этого пароля означает потерю доступа к кошельку на всех устройствах, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask не может ее сбросить."
@@ -2131,9 +2115,6 @@
   "delete": {
     "message": "Удалить"
   },
-  "deleteContact": {
-    "message": "Удалить контакт"
-  },
   "deleteMetaMetricsData": {
     "message": "Удалить данные MetaMetrics"
   },
@@ -2364,9 +2345,6 @@
   },
   "editANickname": {
     "message": "Редактировать псевдоним"
-  },
-  "editAccountName": {
-    "message": "Изменить имя счета"
   },
   "editAccounts": {
     "message": "Изменить счета"
@@ -3128,9 +3106,6 @@
   },
   "hidden": {
     "message": "Скрыто"
-  },
-  "hiddenAccounts": {
-    "message": "Скрыть счета"
   },
   "hide": {
     "message": "Скрыть"
@@ -3996,10 +3971,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировать $1 в mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Обмен mUSD"
+    "message": "Конвертировано в mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
@@ -4267,9 +4244,6 @@
   "newAccountNumberName": {
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Новый контакт"
   },
   "newContract": {
     "message": "Новый контракт"
@@ -5805,12 +5779,6 @@
   "queued": {
     "message": "В очереди"
   },
-  "quotedReceiveAmount": {
-    "message": "Сумма к получению $1"
-  },
-  "quotedTotalCost": {
-    "message": "Общая стоимость: $1"
-  },
   "rank": {
     "message": "Рейтинг"
   },
@@ -6257,9 +6225,6 @@
   },
   "search": {
     "message": "Поиск"
-  },
-  "searchAccounts": {
-    "message": "Поиск счетов"
   },
   "searchAnAcccountOrContact": {
     "message": "Поиск по аккаунту или контакту"
@@ -8073,10 +8038,6 @@
     "message": "Котировок: $1.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Нет доступных токенов, соответствующих $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Ваш $1 будет зачислен на ваш счет после обработки этой транзакции.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8761,9 +8722,6 @@
   "usedByClients": {
     "message": "Используется множеством разных клиентов"
   },
-  "userName": {
-    "message": "Имя пользователя"
-  },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"
   },
@@ -8782,9 +8740,6 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Смотреть контакт"
   },
   "viewDetails": {
     "message": "Просмотр сведений"

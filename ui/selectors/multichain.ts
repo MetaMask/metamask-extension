@@ -23,11 +23,11 @@ import {
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
-import { Numeric } from '../../shared/modules/Numeric';
+import { Numeric } from '../../shared/lib/Numeric';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
-} from '../../shared/modules/selectors/assets-migration';
+} from '../../shared/lib/selectors/assets-migration';
 import {
   getConversionRate,
   getCurrentCurrency,
@@ -45,16 +45,15 @@ import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
   NetworkState,
-} from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/selectors/networks';
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import {
   AccountsState,
   getInternalAccounts,
   getSelectedInternalAccount,
   isSolanaAccount,
-  isTronAccount,
 } from './accounts';
 import {
   getIsMainnet,
@@ -552,13 +551,3 @@ export const getLastSelectedSolanaAccount = createSelector(
       : undefined;
   },
 );
-
-export function getLastSelectedTronAccount(state: MultichainState) {
-  const nonEvmAccounts = getInternalAccounts(state);
-  const sortedNonEvmAccounts = nonEvmAccounts
-    .filter((account) => isTronAccount(account))
-    .sort(
-      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
-    );
-  return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
-}

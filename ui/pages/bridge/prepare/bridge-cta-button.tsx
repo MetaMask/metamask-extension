@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
   ButtonLink,
@@ -40,11 +40,13 @@ export const BridgeCTAButton = ({
   needsDestinationAddress = false,
   onOpenRecipientModal,
   onOpenPriceImpactWarningModal,
+  onOpenMarketClosedModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal?: () => void;
   onOpenPriceImpactWarningModal: () => void;
+  onOpenMarketClosedModal?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -68,8 +70,12 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     isTxAlertPresent,
     isTxAlertLoading,
+    isStockMarketClosed: isMarketClosed,
     isPriceImpactError,
-  } = useSelector(getValidationErrors);
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
@@ -110,6 +116,10 @@ export const BridgeCTAButton = ({
           ? 'bridgeSelectDestinationAccount'
           : 'bridgeEnterAmount',
       };
+    }
+
+    if (isMarketClosed) {
+      return { key: 'bridgeMarketClosedAction' };
     }
 
     if (needsDestinationAddress) {
@@ -154,6 +164,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
+    isMarketClosed,
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
@@ -170,7 +181,8 @@ export const BridgeCTAButton = ({
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
 
-  return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
+  return (activeQuote || needsDestinationAddress || isMarketClosed) &&
+    !secondaryButtonLabel ? (
     <Button
       width={BlockSize.Full}
       size={ButtonSize.Lg}
@@ -180,14 +192,17 @@ export const BridgeCTAButton = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
+        if (isMarketClosed) {
+          onOpenMarketClosedModal?.();
+          return;
+        }
+
         if (needsDestinationAddress && onOpenRecipientModal) {
           onOpenRecipientModal();
           return;
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
-          // If price impact is too high, open the price impact warning modal and submit
-          // the transaction through the modal.
           if (isPriceImpactError) {
             onOpenPriceImpactWarningModal();
           } else {
@@ -197,7 +212,9 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
+        (!needsDestinationAddress &&
+          !isMarketClosed &&
+          (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }
     >

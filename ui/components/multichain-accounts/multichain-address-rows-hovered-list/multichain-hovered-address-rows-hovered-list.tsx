@@ -322,7 +322,7 @@ export const MultichainHoveredAddressRowsList = ({
       e.stopPropagation();
       onViewAllClick?.();
       navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(groupId)}`,
       );
     },
     [groupId, navigate, onViewAllClick],

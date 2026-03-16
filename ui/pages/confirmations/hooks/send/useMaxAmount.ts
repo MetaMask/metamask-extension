@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import { useCallback } from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import { getGasFeeEstimatesByChainId } from '../../../../ducks/metamask/metamask';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { Asset } from '../../types/send';

@@ -13,6 +13,13 @@ class SnapTransactionConfirmation {
     text: 'Confirm',
   };
 
+  private getNetworkDisplayLocator(networkName: string) {
+    return {
+      text: networkName,
+      tag: 'p',
+    };
+  }
+
   private header = {
     text: 'Transaction request',
     tag: 'h2',
@@ -53,6 +60,15 @@ class SnapTransactionConfirmation {
     console.log('Snap transaction confirmation page is loaded');
   }
 
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Checking network ${networkName} is displayed on snap transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(
+      this.getNetworkDisplayLocator(networkName),
+    );
+  }
+
   async checkSecurityAlertsErrorIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.securityAlertsError);
   }
@@ -62,11 +78,22 @@ class SnapTransactionConfirmation {
   }
 
   async clickFooterConfirmButton() {
+    console.log('Clicking footer confirm button');
     await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
   }
 
   async clickFooterConfirmButtonAndWaitForWindowToClose() {
+    console.log(
+      'Clicking footer confirm button and waiting for window to close',
+    );
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  }
+
+  async clickFooterCancelButtonAndWaitForWindowToClose() {
+    console.log(
+      'Clicking footer cancel button and waiting for window to close',
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 }
 export default SnapTransactionConfirmation;

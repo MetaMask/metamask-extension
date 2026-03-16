@@ -1,12 +1,12 @@
+import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
-import { largeDelayMs, veryLargeDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   account1,
   assertSignedMessageIsValid,
-  clickConfirmButton,
   connectSolanaTestDapp,
 } from './testHelpers';
 
@@ -34,13 +34,13 @@ describe('Solana Wallet Standard - Sign Message', function () {
 
           await signMessageTest.signMessage();
 
-          await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickConfirmButton(driver);
+          const signMsgConfirmation = new SnapSignMessageConfirmation(driver);
+          await signMsgConfirmation.checkPageIsLoaded();
+          await signMsgConfirmation.clickFooterConfirmButton();
 
           await testDapp.switchTo();
 
-          await driver.delay(largeDelayMs);
           const signedMessage = await signMessageTest.getSignedMessage();
 
           assertSignedMessageIsValid({

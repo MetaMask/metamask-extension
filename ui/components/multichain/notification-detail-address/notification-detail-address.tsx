@@ -9,7 +9,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { PreferredAvatar } from '../../app/preferred-avatar';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 
 export type NotificationDetailAddressProps = {
   side: string;

@@ -8,6 +8,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -37,7 +38,7 @@ describe('Permissions Page', function () {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        await homepage.headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
 
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
@@ -71,7 +72,7 @@ describe('Permissions Page', function () {
 
         // go to homepage and check site permissions
         await new Homepage(driver).checkPageIsLoaded();
-        await headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);

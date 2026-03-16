@@ -36,6 +36,7 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/hooks';
+import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -132,7 +133,9 @@ export const AccountOverviewTabs = ({
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      transitionForward(() =>
+        navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      ),
     [navigate],
   );
   const onClickDeFi = useCallback(

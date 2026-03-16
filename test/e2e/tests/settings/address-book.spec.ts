@@ -6,7 +6,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
@@ -132,11 +131,7 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.addContact(
@@ -160,11 +155,7 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.addContactNewChain(
@@ -203,18 +194,13 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.editContact({
           existingContactName: 'Test Name 1',
           newContactName: 'Test Name Edit',
           newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
-          newNetwork: 'Sepolia',
         });
         await contactsPage.checkContactDisplayed({
           contactName: 'Test Name Edit',
@@ -246,11 +232,7 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.deleteContact('Test Name 1');
@@ -274,11 +256,7 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.addContact(
@@ -290,7 +268,6 @@ describe('Address Book', function (this: Suite) {
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
 
-        await contactsPage.checkPageIsLoaded();
         await contactsPage.addContactNewChain(
           'Test User 2',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
