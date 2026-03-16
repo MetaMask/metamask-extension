@@ -29,32 +29,21 @@ describe('TransactionsTab', () => {
   });
 
   describe('setting items', () => {
-    it('renders createToggleItem toggles with expected test ids', () => {
+    it('renders all toggle items with expected test ids', () => {
       renderWithProvider(<TransactionsTab />, mockStore);
 
-      expect(screen.getByTestId('showHexData-toggle')).toBeInTheDocument();
-      expect(
-        screen.getByTestId('useExternalNameSources-toggle'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId(
-          'settings-page-smart-account-requests-from-dapps-toggle',
-        ),
-      ).toBeInTheDocument();
-    });
+      const expectedTestIds = [
+        'transactions-simulations-toggle',
+        'transactions-security-alerts-toggle',
+        'transactions-smart-transactions-toggle',
+        'transactions-smart-account-requests-toggle',
+        'transactions-proposed-nicknames-toggle',
+        'transactions-show-hex-data-toggle',
+      ];
 
-    it('renders transaction simulations, security alerts, and smart transactions toggles', () => {
-      renderWithProvider(<TransactionsTab />, mockStore);
-
-      expect(
-        screen.getByTestId('useTransactionSimulations-toggle'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('securityAlert-toggle'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('settings-page-stx-opt-in-toggle'),
-      ).toBeInTheDocument();
+      for (const testId of expectedTestIds) {
+        expect(screen.getByTestId(testId)).toBeInTheDocument();
+      }
     });
   });
 });
