@@ -90,7 +90,18 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <Box
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                position: 'relative',
+                backgroundImage: 'url(/images/default_nft.png)',
+                backgroundSize: 'cover',
+              }}
+            />
+          )}
         </BadgeWrapper>
       </Box>
       <Box
