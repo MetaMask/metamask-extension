@@ -1,5 +1,10 @@
 const path = require('path');
-const { promises: fs, writeFileSync, readFileSync } = require('fs');
+const {
+  promises: fs,
+  writeFileSync,
+  readFileSync,
+  mkdirSync,
+} = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
@@ -511,6 +516,34 @@ async function withFixtures(options, testSuite) {
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
+      // Capture extension setup-hooks debug state for CI (remove before merge)
+      if (
+        webDriver &&
+        extensionId &&
+        (process.env.CI === 'true' ||
+          process.env.E2E_CAPTURE_EXTENSION_DEBUG === 'true')
+      ) {
+        try {
+          await driver.navigate(PAGES.HOME);
+          const debug = await webDriver.executeScript(
+            'return globalThis.__e2eSetupHooksDebug;',
+          );
+          if (debug) {
+            const artifactsDir = path.join(process.cwd(), 'test-artifacts');
+            mkdirSync(artifactsDir, { recursive: true });
+            writeFileSync(
+              path.join(artifactsDir, 'extension-setup-hooks-debug.json'),
+              `${JSON.stringify(debug, null, 2)}\n`,
+            );
+          }
+        } catch (captureErr) {
+          console.warn(
+            'Could not capture extension setup-hooks debug:',
+            captureErr.message,
+          );
+        }
+      }
+
       const shutdownTasks = [fixtureServer.stop()];
 
       for (const server of localNodes) {

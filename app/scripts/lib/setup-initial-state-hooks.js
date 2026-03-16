@@ -8,8 +8,6 @@ import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
-const DEBUG_PREFIX = '[===> DEBUG LOGS TO BE REMOVED BEFORE PR GETS MERGED]';
-
 /**
  * Returns environment type for the current context, or null when URL is empty.
  * We use globalThis.self (not window) so this works in both the service worker
@@ -23,31 +21,30 @@ const DEBUG_PREFIX = '[===> DEBUG LOGS TO BE REMOVED BEFORE PR GETS MERGED]';
 function getEnvironmentTypeForHooks(
   url = globalThis.self?.location?.href ?? '',
 ) {
-  if (url) {
-    // eslint-disable-next-line no-console -- temporary debug, remove before merge
-    console.log(DEBUG_PREFIX, 'url is defined:', url);
-  } else {
-    const safeGlobalThisKeys =
-      typeof Object.getOwnPropertyNames === 'function'
-        ? Object.getOwnPropertyNames(globalThis).slice(0, 30)
-        : [];
-    const safeWindowKeys =
-      typeof window !== 'undefined' &&
-      typeof Object.getOwnPropertyNames === 'function'
-        ? Object.getOwnPropertyNames(window).slice(0, 30)
-        : ['(window undefined)'];
-    // eslint-disable-next-line no-console -- temporary debug, remove before merge
-    console.log(DEBUG_PREFIX, 'url is NOT defined. context:', {
-      hasWindow: typeof window !== 'undefined',
-      hasSelf: typeof globalThis.self !== 'undefined',
-      selfLocationHref: globalThis.self?.location?.href,
-      globalThisConstructor: globalThis.constructor?.name,
-      globalThisKeysSample: safeGlobalThisKeys,
-      windowKeysSample: safeWindowKeys,
-    });
-  }
-  if (!url) {
-    return null;
+  // Expose state for E2E to read in CI (see test-artifacts/extension-setup-hooks-debug.json). Remove before merge.
+  if (getManifestFlags().testing) {
+    if (url) {
+      globalThis.__e2eSetupHooksDebug = { url };
+    } else {
+      const safeGlobalThisKeys =
+        typeof Object.getOwnPropertyNames === 'function'
+          ? Object.getOwnPropertyNames(globalThis).slice(0, 30)
+          : [];
+      const safeWindowKeys =
+        typeof window !== 'undefined' &&
+        typeof Object.getOwnPropertyNames === 'function'
+          ? Object.getOwnPropertyNames(window).slice(0, 30)
+          : ['(window undefined)'];
+      globalThis.__e2eSetupHooksDebug = {
+        urlEmpty: true,
+        hasWindow: typeof window !== 'undefined',
+        hasSelf: typeof globalThis.self !== 'undefined',
+        selfLocationHref: globalThis.self?.location?.href,
+        globalThisConstructor: globalThis.constructor?.name,
+        globalThisKeysSample: safeGlobalThisKeys,
+        windowKeysSample: safeWindowKeys,
+      };
+    }
   }
   return getEnvironmentType(url);
 }
