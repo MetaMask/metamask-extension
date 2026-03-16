@@ -147,12 +147,10 @@ describe('Smart Transactions', function () {
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('2');
         await swapPage.selectDestinationToken('DAI');
-
-        await swapPage.dismissManualTokenWarning();
-        await driver.delay(1500);
+        await swapPage.checkQuoteIsGasIncluded();
         await swapPage.submitSwap();
 
-        await swapPage.waitForSmartTransactionToComplete('DAI');
+        await swapPage.waitForSmartTransactionToComplete();
         await swapPage.clickViewActivity();
 
         await homePage.checkPageIsLoaded();
@@ -168,7 +166,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it.skip('should Swap with gas included fee', async function () {
+  it('should Swap with gas included fee', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -183,12 +181,9 @@ describe('Smart Transactions', function () {
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('20');
         await swapPage.checkQuoteIsGasIncluded();
-
-        await swapPage.dismissManualTokenWarning();
-        await driver.delay(1500);
         await swapPage.submitSwap();
 
-        await swapPage.waitForSmartTransactionToComplete('USDC');
+        await swapPage.waitForSmartTransactionToComplete();
         await swapPage.clickViewActivity();
 
         await homePage.checkPageIsLoaded();

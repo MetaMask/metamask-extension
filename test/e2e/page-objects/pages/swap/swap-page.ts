@@ -59,8 +59,8 @@ class SwapPage {
   };
 
   private readonly gasIncludedLabel = {
-    text: 'included',
-    tag: 'h6',
+    text: 'Included',
+    tag: 'p',
   };
 
   private readonly rateMessage = {
@@ -253,7 +253,7 @@ class SwapPage {
     });
   }
 
-  async waitForSmartTransactionToComplete(_tokenName: string): Promise<void> {
+  async waitForSmartTransactionToComplete(): Promise<void> {
     console.log('Wait for Smart Transaction to complete');
 
     await this.driver.waitForSelector(
