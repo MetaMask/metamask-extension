@@ -48,38 +48,28 @@ describe('transaction-pay-controller actions', () => {
   });
 
   describe('setIsMaxAmount', () => {
-    it('calls submitRequestToBackground with transactionId and callback that sets isMaxAmount to true', async () => {
+    it('calls submitRequestToBackground with transactionId and true', async () => {
       const transactionId = 'tx-456';
 
       await setIsMaxAmount(transactionId, true);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setTransactionPayConfig',
-        [transactionId, expect.any(Function)],
+        'setTransactionPayIsMaxAmount',
+        [transactionId, true],
       );
-
-      const callback = mockSubmitRequestToBackground.mock.calls[0][1][1];
-      const config: { isMaxAmount?: boolean } = {};
-      callback(config);
-      expect(config.isMaxAmount).toBe(true);
     });
 
-    it('calls submitRequestToBackground with transactionId and callback that sets isMaxAmount to false', async () => {
+    it('calls submitRequestToBackground with transactionId and false', async () => {
       const transactionId = 'tx-789';
 
       await setIsMaxAmount(transactionId, false);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setTransactionPayConfig',
-        [transactionId, expect.any(Function)],
+        'setTransactionPayIsMaxAmount',
+        [transactionId, false],
       );
-
-      const callback = mockSubmitRequestToBackground.mock.calls[0][1][1];
-      const config: { isMaxAmount?: boolean } = {};
-      callback(config);
-      expect(config.isMaxAmount).toBe(false);
     });
 
     it('returns the result from submitRequestToBackground', async () => {
