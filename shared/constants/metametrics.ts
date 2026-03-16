@@ -770,6 +770,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
+  ExperimentViewed = 'Experiment Viewed',
   AppInstalled = 'App Installed',
   AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
@@ -1119,6 +1120,7 @@ export enum MetaMetricsEventAccountImportType {
 
 export enum MetaMetricsEventCategory {
   Accounts = 'Accounts',
+  Analytics = 'Analytics',
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
@@ -1260,6 +1262,12 @@ export enum DeleteRegulationStatus {
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
 }
+
+export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
+  DeleteRegulationStatus.Initialized,
+  DeleteRegulationStatus.Running,
+  DeleteRegulationStatus.Finished,
+];
 
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
