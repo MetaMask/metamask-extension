@@ -1,7 +1,13 @@
 import { merge, cloneDeep } from 'lodash';
+import { toHex } from '@metamask/controller-utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
-import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type {
+  CurrencyRateState,
+  TokenBalancesControllerState,
+  TokenListState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
@@ -47,6 +53,7 @@ import {
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
+import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
@@ -174,6 +181,27 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
+    return this;
+  }
+
+  withTokenBalancesController(
+    data: Partial<TokenBalancesControllerState>,
+  ): this {
+    merge(this.fixture.data.TokenBalancesController, data);
+    return this;
+  }
+
+  withTokenListController(data: Partial<TokenListState>): this {
+    (this.fixture.data as Record<string, unknown>).TokenListController ??= {};
+    merge(
+      (this.fixture.data as Record<string, unknown>).TokenListController,
+      data,
+    );
+    return this;
+  }
+
+  withTokensController(data: Partial<TokensControllerState>): this {
+    merge(this.fixture.data.TokensController, data);
     return this;
   }
 
@@ -439,6 +467,17 @@ class FixtureBuilderV2 {
     return this.withPermissionController({ subjects });
   }
 
+  withPetnamesDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        petnamesEnabled: false,
+      },
+    });
+  }
+
+  // NOTE: This method should only be used with EVM networks. Non-EVM networks (Bitcoin, Tron...) rely on Snaps that may not be ready at startup;
+  // Selecting one of them via fixtures may cause the extension to switch back to default network.
+  // For non-EVM networks, switch manually in the test after the Snap is ready.
   withSelectedNetwork(
     networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
   ): this {
@@ -568,6 +607,94 @@ class FixtureBuilderV2 {
     });
   }
 
+  withTokensControllerERC20({ chainId = 1337 } = {}): this {
+    return this.withTokensController({
+      allTokens: {
+        [toHex(chainId)]: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
+              symbol: 'TST',
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              isERC721: false,
+              decimals: 4,
+              aggregators: ['Metamask', 'Aave'],
+              name: 'test',
+            },
+          ],
+        },
+      },
+      allIgnoredTokens: {},
+      allDetectedTokens: {},
+    });
+  }
+
+  withTrezorAccount(): this {
+    return this.withAccountsController({
+      internalAccounts: {
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01KGHAX3WXGMX9H76THHSSV553',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHAX3WXGMX9H76THHSSV553',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          [HARDWARE_WALLET_ACCOUNT_ID]: {
+            id: HARDWARE_WALLET_ACCOUNT_ID,
+            address: TREZOR_ADDRESS,
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Trezor 1',
+              importTime: 1724486729079,
+              keyring: {
+                type: 'Trezor Hardware',
+              },
+              lastSelected: 1724486729083,
+            },
+          },
+        },
+        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+      },
+    }).withKeyringController({ vault: TREZOR_VAULT });
+  }
+
   withTransactionControllerApprovedTransaction(): this {
     const txId = '13a01e77-a368-4bb9-aba9-e7435580e3b9';
     const approvedTx: TransactionMeta = {
@@ -647,72 +774,6 @@ class FixtureBuilderV2 {
       type: TransactionType.incoming,
     };
     return this.withTransactionController({ transactions: [incomingTx] });
-  }
-
-  withTrezorAccount(): this {
-    return this.withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            options: {
-              entropySource: '01KGHAX3WXGMX9H76THHSSV553',
-              derivationPath: "m/44'/60'/0'/0/0",
-              groupIndex: 0,
-              entropy: {
-                type: 'mnemonic',
-                id: '01KGHAX3WXGMX9H76THHSSV553',
-                derivationPath: "m/44'/60'/0'/0/0",
-                groupIndex: 0,
-              },
-            },
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Account 1',
-              importTime: 1724486724986,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-          },
-          [HARDWARE_WALLET_ACCOUNT_ID]: {
-            id: HARDWARE_WALLET_ACCOUNT_ID,
-            address: TREZOR_ADDRESS,
-            options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Trezor 1',
-              importTime: 1724486729079,
-              keyring: {
-                type: 'Trezor Hardware',
-              },
-              lastSelected: 1724486729083,
-            },
-          },
-        },
-        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
-      },
-    }).withKeyringController({ vault: TREZOR_VAULT });
   }
 
   build() {

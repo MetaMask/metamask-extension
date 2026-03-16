@@ -1,4 +1,6 @@
+import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as merklClient from '../merkl-client';
 import {
   AGLAMERKL_ADDRESS_MAINNET,
@@ -46,6 +48,13 @@ const setupSelectorMock = (overrides: { account?: unknown } = {}) => {
   const account = overrides.account ?? { address: MOCK_ADDRESS };
   useSelector.mockReturnValue(account);
 };
+
+let queryClient: QueryClient;
+
+function createWrapper() {
+  return ({ children }: { children: React.ReactNode }) =>
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
+}
 
 describe('isEligibleForMerklRewards', () => {
   it('returns true for mUSD on mainnet', () => {
@@ -113,6 +122,11 @@ describe('useMerklRewards', () => {
     jest.clearAllMocks();
     setupSelectorMock();
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
     useMusdGeoBlocking.mockReturnValue({
       isBlocked: false,
       userCountry: 'US',
@@ -121,12 +135,14 @@ describe('useMerklRewards', () => {
   });
 
   it('returns false for ineligible token', () => {
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: '0xunknown',
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: false,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: '0xunknown',
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: false,
+        }),
+      { wrapper: createWrapper() },
     );
 
     expect(result.current.hasClaimableReward).toBe(false);
@@ -151,12 +167,14 @@ describe('useMerklRewards', () => {
     // On-chain read returns null → fallback to API claimed value (0)
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result, waitForNextUpdate } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
@@ -184,12 +202,14 @@ describe('useMerklRewards', () => {
     // On-chain read says 5.5 MUSD already claimed
     mockGetClaimedAmountFromContract.mockResolvedValueOnce('5500000');
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result, waitForNextUpdate } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
@@ -222,12 +242,14 @@ describe('useMerklRewards', () => {
     // On-chain says all claimed
     mockGetClaimedAmountFromContract.mockResolvedValueOnce('1000000');
 
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
@@ -240,15 +262,17 @@ describe('useMerklRewards', () => {
   it('returns false when API returns no matching reward', async () => {
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
 
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
-    // Allow the effect to execute and resolve
+    // Allow the query to execute and resolve
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
@@ -273,12 +297,14 @@ describe('useMerklRewards', () => {
       recipient: MOCK_ADDRESS,
     });
 
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
@@ -289,24 +315,24 @@ describe('useMerklRewards', () => {
   });
 
   it('handles API errors gracefully', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
     mockFetchMerklRewardsForAsset.mockRejectedValueOnce(
       new Error('Network error'),
     );
 
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    expect(consoleSpy).toHaveBeenCalled();
     expect(result.current.hasClaimableReward).toBe(false);
   });
 
@@ -314,12 +340,14 @@ describe('useMerklRewards', () => {
     const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
 
-    const { unmount } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { unmount } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     unmount();
@@ -344,12 +372,14 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
@@ -376,16 +406,18 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
-      await waitForNextUpdate();
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(result.current.hasClaimableReward).toBe(true);
@@ -398,12 +430,14 @@ describe('useMerklRewards', () => {
       isLoading: false,
     });
 
-    const { result } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
@@ -432,12 +466,14 @@ describe('useMerklRewards', () => {
       recipient: MOCK_ADDRESS,
     });
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMerklRewards({
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: '0x1' as `0x${string}`,
-        showMerklBadge: true,
-      }),
+    const { result, waitForNextUpdate } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
     );
 
     await act(async () => {
@@ -446,5 +482,58 @@ describe('useMerklRewards', () => {
 
     // Falls back to API value (claimed=0), so full amount is claimable
     expect(result.current.hasClaimableReward).toBe(true);
+  });
+
+  it('returns cached data on remount without refetching', async () => {
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10500000',
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const hookArgs = {
+      tokenAddress: MUSD_TOKEN_ADDRESS,
+      chainId: '0x1' as `0x${string}`,
+      showMerklBadge: true,
+    };
+
+    const wrapper = createWrapper();
+
+    // First mount — fetches from API
+    const {
+      result: firstResult,
+      waitForNextUpdate,
+      unmount,
+    } = renderHook(() => useMerklRewards(hookArgs), { wrapper });
+
+    await act(async () => {
+      await waitForNextUpdate();
+    });
+
+    expect(firstResult.current.hasClaimableReward).toBe(true);
+    expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
+
+    // Unmount (simulates switching to another tab)
+    unmount();
+
+    // Remount with the same QueryClient (simulates switching back)
+    const { result: secondResult } = renderHook(
+      () => useMerklRewards(hookArgs),
+      { wrapper },
+    );
+
+    // Should immediately have the cached value, no additional fetch
+    expect(secondResult.current.hasClaimableReward).toBe(true);
+    expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
   });
 });
