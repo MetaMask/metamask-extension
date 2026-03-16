@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TermsOfUseUpdateModal from '../../page-objects/pages/dialog/terms-of-use-update-modal';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -9,7 +9,7 @@ describe('Terms of use', function (this: Suite) {
     const firstOfJan = 1672574400;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAppStateController({
             termsOfUseLastAgreed: firstOfJan,
           })

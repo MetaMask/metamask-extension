@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { PAGES } from '../../webdriver/driver';
@@ -51,7 +51,7 @@ describe('Port Stream Chunking', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTransactions(largeTransactions)
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,

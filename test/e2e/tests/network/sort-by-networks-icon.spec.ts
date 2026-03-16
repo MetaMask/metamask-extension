@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -10,7 +10,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
   it('should display the correct network icon when only Ethereum Mainnet is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
             eip155: { '0x1': true },
@@ -63,7 +63,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
   it('should display the correct network icon when only Linea Mainnet is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
             eip155: { [CHAIN_IDS.LINEA_MAINNET]: true },
@@ -112,7 +112,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
   it('should display the correct network icon when only Polygon is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnPolygon()
           .withEnabledNetworks({
             eip155: { [CHAIN_IDS.POLYGON]: true },

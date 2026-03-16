@@ -7,7 +7,7 @@ import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
@@ -291,7 +291,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: null,
                 participateInMetaMetrics: false,
@@ -363,7 +363,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -439,7 +439,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -523,7 +523,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -624,7 +624,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -713,7 +713,7 @@ describe('Sentry errors', function () {
     it('should send error events in UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -796,7 +796,7 @@ describe('Sentry errors', function () {
     it('should capture UI application state', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -902,7 +902,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -975,7 +975,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -1048,7 +1048,7 @@ describe('Sentry errors', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1135,7 +1135,7 @@ describe('Sentry errors', function () {
     it('should capture background application state', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1236,7 +1236,7 @@ describe('Sentry errors', function () {
     it('should send error events in UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1317,7 +1317,7 @@ describe('Sentry errors', function () {
     it('should capture UI application state', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1470,7 +1470,7 @@ describe('Sentry errors', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },
