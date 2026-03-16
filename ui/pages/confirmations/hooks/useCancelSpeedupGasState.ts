@@ -18,7 +18,7 @@ import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
   hexToDecimal,
   hexWEIToDecGWEI,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
 export type UseCancelSpeedupGasStateReturn = {
