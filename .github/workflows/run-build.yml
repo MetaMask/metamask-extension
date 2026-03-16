@@ -106,13 +106,13 @@ jobs:
       - name: Run build
         run: ${{ inputs.build-command }}
 
-      - name: Zip builds
+      - name: Zip build
         run: |
           mkdir -p builds
           for browser in chrome firefox; do
             if [ -d "dist/${browser}" ]; then
               version_name=$(jq -r '.version_name' "dist/${browser}/manifest.json")
-              (cd "dist/${browser}" && zip -r "../../builds/metamask-${browser}-${version_name}.zip" .)
+              (cd "dist/${browser}" && zip -9 -r "../../builds/metamask-${browser}-${version_name}.zip" .)
             fi
           done
 
