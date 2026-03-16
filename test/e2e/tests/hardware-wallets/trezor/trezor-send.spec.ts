@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -19,7 +19,7 @@ describe('Trezor Hardware', function (this: Suite) {
     it(`send ETH with ${testCase.type} transaction`, async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().withTrezorAccount().build(),
+          fixtures: new FixtureBuilderV2().withTrezorAccount().build(),
           localNodeOptions: {
             hardfork: testCase.hardfork,
           },

@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Thêm token"
   },
-  "addTokenByContractAddress": {
-    "message": "Bạn không tìm thấy token? Bạn có thể dán địa chỉ của bất kỳ token nào để thêm token đó theo cách thủ công. Bạn có thể tìm thấy địa chỉ hợp đồng token trên $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Thêm URL"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Đã sao chép liên kết trình khám phá khối"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Đang tính toán..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Bạn sẽ cần xác nhận 2 giao dịch trên ví cứng của mình:"
   },
@@ -1023,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "Bất kỳ khoản phí mạng nào được báo trên màn hình trước đó đều bao gồm cả hai giao dịch và sẽ được chia nhỏ."
   },
-  "bridgeNetCost": {
-    "message": "Chi phí ròng"
-  },
   "bridgeNoMMFee": {
     "message": "Không có phí MM"
   },
@@ -1059,9 +1049,6 @@
   },
   "bridgePriceImpact": {
     "message": "Tác động giá"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Tác động giá phản ánh giao dịch hoán đổi của bạn ảnh hưởng đến giá thị trường như thế nào. Nếu bạn không có đủ phí gas, một phần token của bạn sẽ được dùng để trả phí, điều này làm tăng tác động giá. MetaMask không thiết lập hoặc kiểm soát điều này."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tác động giá"
@@ -1131,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 phút",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Cầu nối đến"
@@ -1209,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
-  },
-  "buildContactList": {
-    "message": "Xây dựng danh sách liên hệ của bạn"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask được thiết kế và xây dựng trên khắp thế giới."
@@ -1804,7 +1784,8 @@
     "message": "Chỉ mở khóa MetaMask trên thiết bị này."
   },
   "createPasswordDetailsSocial": {
-    "message": "Mất mật khẩu này đồng nghĩa với việc mất quyền truy cập ví trên tất cả các thiết bị, "
+    "message": "Mất mật khẩu này đồng nghĩa với việc mất quyền truy cập ví trên tất cả các thiết bị, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask không thể đặt lại mật khẩu này."
@@ -2134,9 +2115,6 @@
   "delete": {
     "message": "Xóa"
   },
-  "deleteContact": {
-    "message": "Xóa người liên hệ"
-  },
   "deleteMetaMetricsData": {
     "message": "Xóa dữ liệu MetaMetrics"
   },
@@ -2367,9 +2345,6 @@
   },
   "editANickname": {
     "message": "Chỉnh sửa biệt danh"
-  },
-  "editAccountName": {
-    "message": "Chỉnh sửa tên tài khoản"
   },
   "editAccounts": {
     "message": "Chỉnh sửa tài khoản"
@@ -3131,9 +3106,6 @@
   },
   "hidden": {
     "message": "Đã ẩn"
-  },
-  "hiddenAccounts": {
-    "message": "Tài khoản ẩn"
   },
   "hide": {
     "message": "Ẩn"
@@ -3999,10 +3971,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Chuyển đổi mUSD"
+    "message": "Chuyển đổi $1 sang mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Chuyển đổi mUSD"
+    "message": "Đã chuyển đổi sang mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."
@@ -4270,9 +4244,6 @@
   "newAccountNumberName": {
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Liên hệ mới"
   },
   "newContract": {
     "message": "Hợp đồng mới"
@@ -5271,12 +5242,6 @@
   "perpsEntryPrice": {
     "message": "Giá vào lệnh"
   },
-  "perpsExploreCrypto": {
-    "message": "Khám phá tiền mã hóa"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Khám phá cổ phiếu và hàng hóa"
-  },
   "perpsFees": {
     "message": "Phí"
   },
@@ -5396,9 +5361,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Giá trung vị từ các nguồn bên ngoài do người xác thực báo cáo, được dùng để tính tỷ lệ tài trợ"
-  },
-  "perpsOrderAmount": {
-    "message": "Số lượng lệnh"
   },
   "perpsOrders": {
     "message": "Lệnh"
@@ -5546,12 +5508,6 @@
   },
   "perpsWithdraw": {
     "message": "Rút tiền"
-  },
-  "perpsYourOrders": {
-    "message": "Lệnh của bạn"
-  },
-  "perpsYourPositions": {
-    "message": "Vị thế của bạn"
   },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
@@ -5823,12 +5779,6 @@
   "queued": {
     "message": "Đã đưa vào hàng đợi"
   },
-  "quotedReceiveAmount": {
-    "message": "Số tiền nhận $1"
-  },
-  "quotedTotalCost": {
-    "message": "Tổng chi phí $1"
-  },
   "rank": {
     "message": "Xếp hạng"
   },
@@ -5895,9 +5845,6 @@
   },
   "removeAccount": {
     "message": "Xóa tài khoản"
-  },
-  "removeAccountDescription": {
-    "message": "Tài khoản này sẽ bị xóa khỏi ví của bạn. Hãy chắc chắn rằng bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư gốc cho tài khoản đã nhập này trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn thả xuống tài khoản. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Đảm bảo bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư cho tài khoản này trước khi xóa.",
@@ -6278,9 +6225,6 @@
   },
   "search": {
     "message": "Tìm kiếm"
-  },
-  "searchAccounts": {
-    "message": "Tìm kiếm tài khoản"
   },
   "searchAnAcccountOrContact": {
     "message": "Tìm kiếm tài khoản hoặc liên hệ"
@@ -8094,10 +8038,6 @@
     "message": "$1 báo giá.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Không có token nào khớp với $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "$1 của bạn sẽ được thêm vào tài khoản sau khi xử lý xong giao dịch.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8782,9 +8722,6 @@
   "usedByClients": {
     "message": "Được nhiều ví khác nhau sử dụng"
   },
-  "userName": {
-    "message": "Tên người dùng"
-  },
   "userOpContractDeployError": {
     "message": "Không hỗ trợ triển khai hợp đồng từ tài khoản thông minh"
   },
@@ -8803,9 +8740,6 @@
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Xem địa chỉ liên hệ"
   },
   "viewDetails": {
     "message": "Xem chi tiết"

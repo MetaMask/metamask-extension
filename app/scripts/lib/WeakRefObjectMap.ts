@@ -130,16 +130,11 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * Returns a new iterator object that contains an array of `[key, value]` for each element in the map.
    * The values are dereferenced before being returned.
    */
-  entries(): IterableIterator<[string, RecordType]> {
+  entries(): MapIterator<[string, RecordType]> {
     const it = this.map[Symbol.iterator]();
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
 
-    return {
-      [Symbol.iterator]() {
-        return this;
-      },
-      next(): IteratorResult<[string, RecordType]> {
+    return this.createMapIterator(
+      (): IteratorResult<[string, RecordType]> => {
         // eslint-disable-next-line no-constant-condition
         while (true) {
           const n = it.next();
@@ -148,29 +143,25 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
           }
 
           const [key, entry] = n.value;
-          const value = self.derefEntryOrDelete(key, entry);
+          const value = this.derefEntryOrDelete(key, entry);
           if (value !== undefined) {
             return { done: false, value: [key, value] };
           }
           // dead entry got pruned; continue
         }
       },
-    };
+      () => it.return?.(),
+    );
   }
 
   /**
    * Returns a new iterator object that contains the keys for each element in the map.
    */
-  keys(): IterableIterator<string> {
+  keys(): MapIterator<string> {
     const it = this.map[Symbol.iterator]();
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
 
-    return {
-      [Symbol.iterator]() {
-        return this;
-      },
-      next(): IteratorResult<string> {
+    return this.createMapIterator(
+      (): IteratorResult<string> => {
         // eslint-disable-next-line no-constant-condition
         while (true) {
           const n = it.next();
@@ -179,29 +170,25 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
           }
 
           const [key, entry] = n.value;
-          if (self.isLiveOrDelete(key, entry)) {
+          if (this.isLiveOrDelete(key, entry)) {
             return { done: false, value: key };
           }
           // dead entry got pruned; continue
         }
       },
-    };
+      () => it.return?.(),
+    );
   }
 
   /**
    * Returns a new iterator object that contains the values for each element in
    * the map. The values are dereferenced before being returned.
    */
-  values(): IterableIterator<RecordType> {
+  values(): MapIterator<RecordType> {
     const it = this.map[Symbol.iterator]();
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
 
-    return {
-      [Symbol.iterator]() {
-        return this;
-      },
-      next(): IteratorResult<RecordType> {
+    return this.createMapIterator(
+      (): IteratorResult<RecordType> => {
         // eslint-disable-next-line no-constant-condition
         while (true) {
           const n = it.next();
@@ -210,21 +197,22 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
           }
 
           const [key, entry] = n.value;
-          const value = self.derefEntryOrDelete(key, entry);
+          const value = this.derefEntryOrDelete(key, entry);
           if (value !== undefined) {
             return { done: false, value };
           }
           // dead entry got pruned; continue
         }
       },
-    };
+      () => it.return?.(),
+    );
   }
 
   /**
    * Returns a new iterator object that contains an array of `[key, value]` for each element in the map,
    * making the map itself iterable.
    */
-  [Symbol.iterator](): IterableIterator<[string, RecordType]> {
+  [Symbol.iterator](): MapIterator<[string, RecordType]> {
     return this.entries();
   }
 
@@ -333,5 +321,26 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
     for (const [key, entry] of this.map) {
       this.isLiveOrDelete(key, entry);
     }
+  }
+
+  /**
+   * Creates a `MapIterator`.
+   *
+   * @param next - The `next` method for the iterator, which should return the next value in the iteration sequence.
+   * @param onDispose - A callback function that is called when the iterator is disposed, allowing for any necessary cleanup.
+   */
+  private createMapIterator<IteratorValueType>(
+    next: () => IteratorResult<IteratorValueType>,
+    onDispose: () => void,
+  ): MapIterator<IteratorValueType> {
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next,
+      [Symbol.dispose]() {
+        onDispose();
+      },
+    };
   }
 }

@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { KnownCaipNamespace } from '@metamask/utils';
-import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
+import { getEnabledNetworks } from '../../../shared/lib/selectors/multichain';
 
 export type MusdNetworkFilterResult = {
   /** True if multiple networks are selected (popular networks view) */

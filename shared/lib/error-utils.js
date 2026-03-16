@@ -3,7 +3,7 @@ import {
   fetchLocale,
   getMessage,
   loadRelativeTimeFormatLocaleData,
-} from '../modules/i18n';
+} from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
 

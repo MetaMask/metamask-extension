@@ -9,6 +9,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
+  HardwareWalletProvider,
 } from '../../contexts/hardware-wallets';
 import CrossChainSwap from '.';
 
@@ -23,6 +24,20 @@ jest.mock('../../contexts/hardware-wallets', () => ({
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
+jest.mock('../../hooks/bridge/usePopularTokens', () => ({
+  usePopularTokens: jest.fn().mockReturnValue({
+    popularTokensList: [],
+    isLoading: false,
+  }),
+}));
+
+jest.mock('../../hooks/bridge/useTokenSearchResults', () => ({
+  useTokenSearchResults: jest.fn().mockReturnValue({
+    searchResults: [],
+    isSearchResultsLoading: false,
+  }),
 }));
 
 setBackgroundConnection({
@@ -102,7 +117,9 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <CrossChainSwap />,
+      <HardwareWalletProvider>
+        <CrossChainSwap />
+      </HardwareWalletProvider>,
       store,
       PREPARE_SWAP_ROUTE,
     );

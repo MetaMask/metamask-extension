@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import IconWithFallback from '../../ui/icon-with-fallback';
-import Identicon from '../../ui/identicon';
 import {
   Display,
   FlexDirection,
@@ -16,6 +16,7 @@ import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { Text } from '../../component-library';
+import { PreferredAvatar } from '../preferred-avatar';
 
 export default function NetworkAccountBalanceHeader({
   networkName,
@@ -51,7 +52,10 @@ export default function NetworkAccountBalanceHeader({
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
-          <Identicon address={accountAddress} diameter={32} />
+          <PreferredAvatar
+            address={accountAddress}
+            size={AvatarAccountSize.Md}
+          />
           <IconWithFallback
             name={networkName}
             size={16}

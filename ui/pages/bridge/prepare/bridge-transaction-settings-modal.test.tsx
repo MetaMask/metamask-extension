@@ -15,6 +15,7 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
+  HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
 
 const mockUseHardwareWalletConfig = jest.fn();
@@ -56,7 +57,9 @@ const renderModal = (initialSlippage?: number) => {
   const mockStore = createBridgeMockStore();
   const store = configureStore(mockStore);
   const renderResult = renderWithProvider(
-    <CrossChainSwap />,
+    <HardwareWalletProvider>
+      <CrossChainSwap />
+    </HardwareWalletProvider>,
     store,
     PREPARE_SWAP_ROUTE,
   );

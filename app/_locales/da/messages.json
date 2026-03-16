@@ -383,9 +383,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Ny kontakt"
-  },
   "newContract": {
     "message": "Ny Kontrakt"
   },
@@ -474,9 +471,6 @@
   },
   "removeAccount": {
     "message": "Fjern konto"
-  },
-  "removeAccountDescription": {
-    "message": "Denne konto fjernes fra din pung. Sikr dig venligst, at du har den originale seedfrase eller private nøgle til denne importerede konto, inden du fortsætter. Du kan importere eller skabe konti igen via kontomenuen."
   },
   "required": {
     "message": "Nødvendig"
@@ -631,12 +625,6 @@
   },
   "usedByClients": {
     "message": "Brugt af forskellige kunder"
-  },
-  "userName": {
-    "message": "Brugernavn"
-  },
-  "viewContact": {
-    "message": "Vis kontakt"
   },
   "visitWebSite": {
     "message": "Besøg vores webside"

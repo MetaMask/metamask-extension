@@ -31,6 +31,13 @@ export const PERPS_CONSTANTS = {
 } as const;
 
 /**
+ * HyperLiquid taker fee rate for market orders.
+ * Used to estimate fees in close/reverse position flows.
+ * TODO: Replace with dynamic fee from the API when available.
+ */
+export const PERPS_MARKET_ORDER_FEE_RATE = 0.0001;
+
+/**
  * Market sorting configuration
  * Controls sorting behavior for the markets view
  */

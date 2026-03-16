@@ -8,6 +8,13 @@ import React, {
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'clsx';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import Unlock from '../unlock-page';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -49,16 +56,6 @@ import {
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-import { Box } from '../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
@@ -66,14 +63,14 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
-import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -92,14 +89,10 @@ import OnboardingDownloadApp from './download-app/download-app';
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
 // to import Flask-only code and fail.
-// TODO: Fix type casting once `mmLazy` is updated to handle component props.
 const ExperimentalArea = mmLazy(
-  (() =>
-    import(
-      // eslint-disable-next-line import/extensions, import/no-useless-path-segments -- these are needed for mmLazy
-      '../../components/app/flask/experimental-area/index.js'
-    )) as unknown as DynamicImportType,
-) as unknown as React.ComponentType<{ redirectTo?: string }>;
+  // eslint-disable-next-line import/extensions, import/no-useless-path-segments -- these are needed for mmLazy
+  () => import('../../components/app/flask/experimental-area/index.js'),
+) as React.LazyExoticComponent<React.ComponentType<{ redirectTo: string }>>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>
@@ -296,18 +289,15 @@ export default function OnboardingFlow() {
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      flexDirection={BoxFlexDirection.Column}
       alignItems={
         pathname === ONBOARDING_WELCOME_ROUTE
-          ? AlignItems.flexStart
-          : AlignItems.center
+          ? BoxAlignItems.Start
+          : BoxAlignItems.Center
       }
-      justifyContent={JustifyContent.flexStart}
-      className="onboarding-flow"
+      justifyContent={BoxJustifyContent.Start}
+      className="onboarding-flow h-full w-full"
       style={{
         backgroundColor: backgroundColorForWelcomePage,
       }}
@@ -319,20 +309,20 @@ export default function OnboardingFlow() {
         />
       )}
       <Box
-        className={classnames('onboarding-flow__container', {
-          'onboarding-flow__container--full': isFullPage,
-          'onboarding-flow__container--popup': isPopup,
-          'onboarding-flow__container--sidepanel': isSidepanel,
-        })}
-        width={BlockSize.Full}
-        borderRadius={BorderRadius.LG}
+        className={classnames(
+          'onboarding-flow__container w-full rounded-lg mx-auto',
+          {
+            'onboarding-flow__container--full': isFullPage,
+            'onboarding-flow__container--popup': isPopup,
+            'onboarding-flow__container--sidepanel': isSidepanel,
+          },
+        )}
         marginTop={
           pathname === ONBOARDING_WELCOME_ROUTE || isPopup || isSidepanel
             ? 0
             : 3
         }
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
-        marginInline="auto"
         style={{
           backgroundColor:
             [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(

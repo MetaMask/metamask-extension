@@ -395,9 +395,6 @@
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Uusi yhteys"
-  },
   "newContract": {
     "message": "Uusi sopimus"
   },
@@ -486,9 +483,6 @@
   },
   "removeAccount": {
     "message": "Poista tili"
-  },
-  "removeAccountDescription": {
-    "message": "Tämä tili poistetaan kukkarostasi. Varmistathan ennen kuin jatkat, että sinulla on alkuperäinen salausteksti tai yksityinen avain tätä tuotua tiliä varten. Voit tuoda tai luoda tilejä uudestaan tilin pudotusvalikosta."
   },
   "required": {
     "message": "Pakollinen"
@@ -655,12 +649,6 @@
   },
   "usedByClients": {
     "message": "Lukuisien eri asiakkaiden käyttämä"
-  },
-  "userName": {
-    "message": "Käyttäjätunnus"
-  },
-  "viewContact": {
-    "message": "Näytä yhteyshenkilö"
   },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"

@@ -2486,7 +2486,7 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should throw AuthorizationFailedError when subscription token is missing', async () => {
+    it('should attempt reauth and throw when subscription token is missing and no signable account exists', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsSeasons: {
           [MOCK_SEASON_ID]: {
@@ -2505,11 +2505,8 @@ describe('RewardsController', () => {
           await expect(
             controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
           ).rejects.toThrow(
-            `No subscription token found for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
+            `No signable account found for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
           );
-          await expect(
-            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
-          ).rejects.toBeInstanceOf(AuthorizationFailedError);
         },
       );
     });
@@ -3120,8 +3117,12 @@ describe('RewardsController', () => {
     });
   });
 
-  describe('invalidateAccountsAndSubscriptions', () => {
-    it('should invalidate accounts and subscriptions', async () => {
+  describe('invalidateSubscriptionAndAccounts', () => {
+    it('should invalidate the specified subscription and its linked accounts', async () => {
+      const OTHER_SUBSCRIPTION_ID = 'other-sub-id';
+      const OTHER_CAIP_ACCOUNT =
+        `eip155:1:${MOCK_ACCOUNT_ADDRESS_ALT}` as CaipAccountId;
+
       const state: Partial<RewardsControllerState> = {
         rewardsActiveAccount: {
           account: MOCK_CAIP_ACCOUNT,
@@ -3138,21 +3139,93 @@ describe('RewardsController', () => {
             perpsFeeDiscount: null,
             lastPerpsDiscountRateFetched: null,
           },
+          [OTHER_CAIP_ACCOUNT]: {
+            account: OTHER_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: OTHER_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
         },
         rewardsSubscriptions: {
           [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+          [OTHER_SUBSCRIPTION_ID]: {
+            ...MOCK_SUBSCRIPTION,
+            id: OTHER_SUBSCRIPTION_ID,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+          [OTHER_SUBSCRIPTION_ID]: 'other-token',
         },
       };
 
       await withController({ state, isDisabled: false }, ({ controller }) => {
-        controller.invalidateAccountsAndSubscriptions();
+        controller.invalidateSubscriptionAndAccounts(MOCK_SUBSCRIPTION_ID);
 
         expect(controller.state.rewardsActiveAccount).toMatchObject({
           hasOptedIn: false,
           subscriptionId: null,
         });
-        expect(controller.state.rewardsAccounts).toEqual({});
-        expect(controller.state.rewardsSubscriptions).toEqual({});
+
+        expect(
+          controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT],
+        ).toMatchObject({
+          hasOptedIn: false,
+          subscriptionId: null,
+        });
+
+        // Other subscription's account should be untouched
+        expect(
+          controller.state.rewardsAccounts[OTHER_CAIP_ACCOUNT],
+        ).toMatchObject({
+          hasOptedIn: true,
+          subscriptionId: OTHER_SUBSCRIPTION_ID,
+        });
+
+        // Targeted subscription removed, other subscription preserved
+        expect(
+          controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID],
+        ).toBeUndefined();
+        expect(
+          controller.state.rewardsSubscriptions[OTHER_SUBSCRIPTION_ID],
+        ).toBeDefined();
+
+        // Targeted token removed, other token preserved
+        expect(
+          controller.state.rewardsSubscriptionTokens[MOCK_SUBSCRIPTION_ID],
+        ).toBeUndefined();
+        expect(
+          controller.state.rewardsSubscriptionTokens[OTHER_SUBSCRIPTION_ID],
+        ).toBe('other-token');
+      });
+    });
+
+    it('should not modify activeAccount when it belongs to a different subscription', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: 'different-sub',
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsAccounts: {},
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        controller.invalidateSubscriptionAndAccounts(MOCK_SUBSCRIPTION_ID);
+
+        expect(controller.state.rewardsActiveAccount).toMatchObject({
+          hasOptedIn: true,
+          subscriptionId: 'different-sub',
+        });
       });
     });
   });
@@ -4194,10 +4267,8 @@ describe('Additional RewardsController edge cases', () => {
               }
               return Promise.resolve(MOCK_SEASON_STATE);
             }
-            if (
-              actionType === 'AccountsController:getSelectedMultichainAccount'
-            ) {
-              return MOCK_INTERNAL_ACCOUNT;
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
             }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
@@ -4264,10 +4335,8 @@ describe('Additional RewardsController edge cases', () => {
             if (actionType === 'RewardsDataService:getSeasonStatus') {
               throw new AuthorizationFailedError('Auth failed');
             }
-            if (
-              actionType === 'AccountsController:getSelectedMultichainAccount'
-            ) {
-              return MOCK_INTERNAL_ACCOUNT;
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
             }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.reject(new Error('Reauth failed'));
@@ -4277,10 +4346,24 @@ describe('Additional RewardsController edge cases', () => {
 
           await expect(
             controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
-          ).rejects.toThrow();
+          ).rejects.toThrow(
+            `Reauth failed for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
+          );
 
-          expect(controller.state.rewardsAccounts).toEqual({});
-          expect(controller.state.rewardsSubscriptions).toEqual({});
+          expect(
+            controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT],
+          ).toMatchObject({
+            subscriptionId: null,
+          });
+          expect(
+            controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT].hasOptedIn,
+          ).toBeFalsy();
+          expect(
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID],
+          ).toBeUndefined();
+          expect(
+            controller.state.rewardsSubscriptionTokens[MOCK_SUBSCRIPTION_ID],
+          ).toBeUndefined();
         },
       );
     });
@@ -4289,8 +4372,10 @@ describe('Additional RewardsController edge cases', () => {
       const otherAccount: InternalAccount = {
         ...MOCK_INTERNAL_ACCOUNT,
         id: 'other-account',
-        address: '0xotheraddress',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
       };
+      const MOCK_CAIP_ACCOUNT_ALT: CaipAccountId =
+        `eip155:1:${MOCK_ACCOUNT_ADDRESS_ALT}` as CaipAccountId;
 
       const state: Partial<RewardsControllerState> = {
         rewardsSeasons: {
@@ -4313,8 +4398,8 @@ describe('Additional RewardsController edge cases', () => {
           [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
         },
         rewardsAccounts: {
-          ['eip155:1:0xotheraddress' as CaipAccountId]: {
-            account: 'eip155:1:0xotheraddress' as CaipAccountId,
+          [MOCK_CAIP_ACCOUNT_ALT]: {
+            account: MOCK_CAIP_ACCOUNT_ALT,
             hasOptedIn: true,
             subscriptionId: MOCK_SUBSCRIPTION_ID,
             perpsFeeDiscount: null,
@@ -4360,6 +4445,101 @@ describe('Additional RewardsController edge cases', () => {
           );
 
           expect(result).toBeDefined();
+        },
+      );
+    });
+
+    it('should reauth using the rewards active account even when a different wallet account is currently selected', async () => {
+      // Regression test: if the user switches the wallet-UI to a different
+      // account, #performReauthForSubscription must still authenticate the
+      // account tied to the subscription in rewards state, not whichever
+      // account happens to be selected in the AccountsController.
+      const differentlySelectedAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'different-selected-account',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
+      };
+
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT, // rewards active = MOCK_INTERNAL_ACCOUNT
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let callCount = 0;
+          let reauthAccountAddress: string | undefined;
+
+          mockMessengerCall.mockImplementation((actionType, ...args) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              callCount += 1;
+              if (callCount === 1) {
+                throw new AuthorizationFailedError('Auth failed');
+              }
+              return Promise.resolve(MOCK_SEASON_STATE);
+            }
+            // The wallet UI currently has differentlySelectedAccount selected,
+            // but reauth must NOT use it.
+            if (
+              actionType === 'AccountsController:getSelectedMultichainAccount'
+            ) {
+              return differentlySelectedAccount;
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              // Both accounts are available; MOCK_INTERNAL_ACCOUNT owns the subscription.
+              return [MOCK_INTERNAL_ACCOUNT, differentlySelectedAccount];
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              // Capture which account address was used to sign.
+              reauthAccountAddress = args[0]?.from;
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(callCount).toBe(2);
+          // Reauth must have signed with the rewards-active account, not the
+          // differently-selected wallet account.
+          expect(reauthAccountAddress).toBe(MOCK_ACCOUNT_ADDRESS);
         },
       );
     });
@@ -6290,10 +6470,8 @@ describe('Hardware Wallet Support for Rewards', () => {
               }
               return Promise.resolve(MOCK_SEASON_STATE);
             }
-            if (
-              actionType === 'AccountsController:getSelectedMultichainAccount'
-            ) {
-              return MOCK_INTERNAL_ACCOUNT; // Return software wallet for reauth
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
             }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');

@@ -8,7 +8,7 @@ import {
   AuthenticationControllerInitMessenger,
   AuthenticationControllerMessenger,
 } from '../messengers/identity';
-import { loadAuthenticationConfig } from '../../../../shared/modules/authentication';
+import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
 
 /**
  * Initialize the Authentication controller.

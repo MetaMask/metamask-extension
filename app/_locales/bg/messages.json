@@ -395,9 +395,6 @@
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Нов контакт"
-  },
   "newContract": {
     "message": "Нов договор"
   },
@@ -489,9 +486,6 @@
   },
   "removeAccount": {
     "message": "Премахване на профила"
-  },
-  "removeAccountDescription": {
-    "message": "Този акаунт ще бъде премахнат от портфейла ви. Моля, уверете се, че имате оригиналната фраза или частен ключ за този импортиран акаунт, преди да продължите. Можете да импортирате или създавате отново акаунти от падащото меню."
   },
   "required": {
     "message": "Задължително"
@@ -658,12 +652,6 @@
   },
   "usedByClients": {
     "message": "Използва се от различни клиенти"
-  },
-  "userName": {
-    "message": "Потребителско име"
-  },
-  "viewContact": {
-    "message": "Преглед на контакта"
   },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"

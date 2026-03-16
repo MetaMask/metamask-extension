@@ -1,7 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import {
   isSolanaChainId,
   isBitcoinChainId,
@@ -35,21 +39,22 @@ import type {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { getNativeAssetForChainIdSafe } from '../../ducks/bridge/utils';
+import { getBearerToken } from '../../store/actions';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import {
-  isTronEnergyOrBandwidthResource,
-  getNativeAssetForChainIdSafe,
-} from '../../ducks/bridge/utils';
-import { getBearerToken } from '../../store/actions';
+  getAssetImageUrl,
+  isTronSpecialAsset,
+  toAssetId,
+} from '../../../shared/lib/asset-utils';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
   chainId: ChainId | Hex | CaipChainId,
   token?: BridgeAsset | TokenListToken,
 ):
-  | AssetWithDisplayData<NativeAsset>
-  | AssetWithDisplayData<ERC20Asset>
+  | (AssetWithDisplayData<NativeAsset> & { assetId: CaipAssetType | string })
+  | (AssetWithDisplayData<ERC20Asset> & { assetId: CaipAssetType | string })
   | undefined => {
   if (!chainId || !token) {
     return undefined;
@@ -86,7 +91,9 @@ const buildTokenData = (
       // Only unimported native assets are processed here so hardcode balance to 0
       balance: '0',
       string: '0',
-    } as AssetWithDisplayData<NativeAsset>;
+    } as AssetWithDisplayData<NativeAsset> & {
+      assetId: CaipAssetType | string;
+    };
   }
 
   return {
@@ -96,7 +103,7 @@ const buildTokenData = (
     // Only tokens with 0 balance are processed here so hardcode empty string
     balance: '',
     string: undefined,
-  };
+  } as AssetWithDisplayData<ERC20Asset> & { assetId: CaipAssetType | string };
 };
 
 type FilterPredicate = (
@@ -265,9 +272,8 @@ export const useTokensWithFiltering = (
 
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
-          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
-          // as they are not tradeable assets
-          if (isTronEnergyOrBandwidthResource(token.chainId, token.symbol)) {
+          // Filter out Tron special assets (resources, staking state, etc.)
+          if (isTronSpecialAsset(token.assetId)) {
             continue;
           }
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
@@ -338,11 +344,10 @@ export const useTokensWithFiltering = (
             tokenList?.[token_.address] ??
             tokenList?.[token_.address.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
-          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
-          // as they are not tradeable assets
+          // Filter out Tron special assets (resources, staking state, etc.)
           if (
             token &&
-            !isTronEnergyOrBandwidthResource(chainId, token.symbol) &&
+            !isTronSpecialAsset(token.assetId) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;
@@ -354,12 +359,11 @@ export const useTokensWithFiltering = (
         // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of Object.values(tokenList)) {
           const token = buildTokenData(chainId, token_);
-          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
-          // as they are not tradeable assets
+          // Filter out Tron special assets (resources, staking state, etc.)
           if (
             token &&
             token.symbol.indexOf('$') === -1 &&
-            !isTronEnergyOrBandwidthResource(chainId, token.symbol) &&
+            !isTronSpecialAsset(token.assetId) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;

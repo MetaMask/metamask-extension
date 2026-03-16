@@ -5,6 +5,10 @@ import {
   NetworkControllerNetworkAddedEvent,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
+import {
+  NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerListPopularEvmNetworksAction,
+} from '@metamask/network-enablement-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
@@ -32,6 +36,8 @@ type AllowedActions =
   | AccountsControllerListAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
+  | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerListPopularEvmNetworksAction
   | PreferencesControllerGetStateAction
   | KeyringControllerGetStateAction;
 
@@ -69,6 +75,8 @@ export function getAccountTrackerControllerMessenger(
       'AccountsController:listAccounts',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
+      'NetworkEnablementController:getState',
+      'NetworkEnablementController:listPopularEvmNetworks',
       'PreferencesController:getState',
       'KeyringController:getState',
     ],

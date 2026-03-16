@@ -1,72 +1,56 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
-import { withFixtures } from '../../../helpers';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import {
-  assertChangedSpendingCap,
-  editSpendingCap,
-  mocked4BytesApprove,
-  TestSuiteArguments,
-} from './shared';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { mocked4BytesApprove, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an revoke transaction', function () {
-    it('submits an ERC20 revoke allowance transaction', async function () {
-      await withFixtures(
-        {
-          dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
-        async ({
-          driver,
-          contractRegistry,
-          localNodes,
-        }: TestSuiteArguments) => {
-          const contractAddress =
-            await contractRegistry?.getContractAddress(smartContract);
+  it('submits an ERC20 revoke allowance transaction', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        smartContract,
+        testSpecificMock: mocked4BytesApprove,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        const contractAddress =
+          await contractRegistry?.getContractAddress(smartContract);
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ contractAddress });
+        await testDapp.checkPageIsLoaded();
 
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
-          const testDapp = new TestDapp(driver);
-          await testDapp.openTestDappPage({ contractAddress });
-          await testDapp.checkPageIsLoaded();
+        await testDapp.clickApproveTokens();
 
-          await createERC20ApproveTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const txConfirmation = new ERC20ApproveTransactionConfirmation(driver);
+        await txConfirmation.editSpendingCap('0');
+        await txConfirmation.checkRevokeTitle();
 
-          const NEW_SPENDING_CAP = '0';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
+        await txConfirmation.clickScrollToBottomButton();
+        await txConfirmation.clickFooterConfirmButton();
 
-          await driver.waitForSelector({
-            css: 'h2',
-            text: 'Remove permission',
-          });
-
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
-        },
-      );
-    });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.clickConfirmedTransaction();
+        await activityList.checkSpendingCapValueInDetails('0 TST');
+      },
+    );
   });
 });
-
-async function mocks(server: MockttpServer) {
-  return [await mocked4BytesApprove(server)];
-}
-
-async function createERC20ApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveTokens');
-}

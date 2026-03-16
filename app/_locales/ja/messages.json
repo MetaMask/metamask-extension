@@ -333,10 +333,6 @@
   "addToken": {
     "message": "トークンを追加"
   },
-  "addTokenByContractAddress": {
-    "message": "トークンが見つからない場合、アドレスを貼り付けて手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URLを追加"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました"
   },
-  "bridgeCalculatingAmount": {
-    "message": "計算中..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
   },
@@ -1023,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "前の画面のクォートのネットワーク手数料には両方のトランザクションが含まれていて、分割されます。"
   },
-  "bridgeNetCost": {
-    "message": "純コスト"
-  },
   "bridgeNoMMFee": {
     "message": "MM手数料なし"
   },
@@ -1059,9 +1049,6 @@
   },
   "bridgePriceImpact": {
     "message": "プライスインパクト"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "価格への影響には、スワップが市場価格に与える影響が反映されています。ガス代が不足している場合、一部のトークンが手数料の支払いに充てられるため、価格への影響が大きくなります。MetaMaskはこの影響に対して設定や管理を行っていません。"
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "プライスインパクト"
@@ -1131,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1を$2にスワップしています",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "ブリッジ先:"
@@ -1209,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
-  },
-  "buildContactList": {
-    "message": "連絡先リストを作成する"
   },
   "builtAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
@@ -1804,7 +1784,8 @@
     "message": "このデバイスでのみMetaMaskのロックが解除されます。"
   },
   "createPasswordDetailsSocial": {
-    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。"
+    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask側でリセットすることはできません。"
@@ -2134,9 +2115,6 @@
   "delete": {
     "message": "削除"
   },
-  "deleteContact": {
-    "message": "連絡先を削除"
-  },
   "deleteMetaMetricsData": {
     "message": "MetaMetricsデータを削除"
   },
@@ -2367,9 +2345,6 @@
   },
   "editANickname": {
     "message": "ニックネームを編集"
-  },
-  "editAccountName": {
-    "message": "アカウント名を編集"
   },
   "editAccounts": {
     "message": "アカウントを編集"
@@ -3131,9 +3106,6 @@
   },
   "hidden": {
     "message": "非表示"
-  },
-  "hiddenAccounts": {
-    "message": "非表示のアカウント"
   },
   "hide": {
     "message": "非表示"
@@ -3999,10 +3971,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSDへの変換"
+    "message": "$1をmUSDに変換",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSDへの変換"
+    "message": "mUSDに変換済み",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
@@ -4270,9 +4244,6 @@
   "newAccountNumberName": {
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新しい連絡先"
   },
   "newContract": {
     "message": "新しいコントラクト"
@@ -5271,12 +5242,6 @@
   "perpsEntryPrice": {
     "message": "エントリー価格"
   },
-  "perpsExploreCrypto": {
-    "message": "仮想通貨を探す"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "株式や商品先物を探す"
-  },
   "perpsFees": {
     "message": "手数料"
   },
@@ -5390,9 +5355,6 @@
   },
   "perpsOpenedLong": {
     "message": "ロングをオープンしました"
-  },
-  "perpsOrderAmount": {
-    "message": "注文金額"
   },
   "perpsOrders": {
     "message": "注文"
@@ -5540,12 +5502,6 @@
   },
   "perpsWithdraw": {
     "message": "出金"
-  },
-  "perpsYourOrders": {
-    "message": "注文一覧"
-  },
-  "perpsYourPositions": {
-    "message": "保有ポジション"
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
@@ -5817,12 +5773,6 @@
   "queued": {
     "message": "キュー待ち"
   },
-  "quotedReceiveAmount": {
-    "message": "$1の受取額"
-  },
-  "quotedTotalCost": {
-    "message": "$1の合計コスト"
-  },
   "rank": {
     "message": "ランキング"
   },
@@ -5889,9 +5839,6 @@
   },
   "removeAccount": {
     "message": "アカウントを削除"
-  },
-  "removeAccountDescription": {
-    "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレットリカバリーフレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウントドロップダウンから再度インポートまたは作成できます。"
   },
   "removeAccountModalBannerDescription": {
     "message": "削除する前に、このアカウントのシークレットリカバリーフレーズまたは秘密鍵をお持ちであることを確認してください。",
@@ -6272,9 +6219,6 @@
   },
   "search": {
     "message": "検索"
-  },
-  "searchAccounts": {
-    "message": "アカウントを検索"
   },
   "searchAnAcccountOrContact": {
     "message": "アカウントまたは連絡先を検索"
@@ -8088,10 +8032,6 @@
     "message": "$1 の見積もり.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "$1と一致するトークンがありません",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "このトランザクションの処理が完了すると、$1がアカウントに追加されます。",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8776,9 +8716,6 @@
   "usedByClients": {
     "message": "さまざまな異なるクライアントによって使用されています"
   },
-  "userName": {
-    "message": "ユーザー名"
-  },
   "userOpContractDeployError": {
     "message": "スマートコントラクトアカウントからのコントラクトの展開はサポートされていません"
   },
@@ -8797,9 +8734,6 @@
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "連絡先を表示"
   },
   "viewDetails": {
     "message": "詳細を表示"

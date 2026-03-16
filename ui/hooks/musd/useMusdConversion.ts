@@ -14,7 +14,7 @@
 
 import { useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -125,6 +125,7 @@ function findExistingPendingMusdConversion(params: {
 export function useMusdConversion(): UseMusdConversionResult {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [error, setError] = useState<string | null>(null);
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -176,11 +177,6 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       if (!isFeatureEnabled) {
         console.warn('[MUSD] Conversion flow not enabled');
-        return;
-      }
-
-      if (isGeoLoading) {
-        console.warn('[MUSD] Geo-blocking check still in progress');
         return;
       }
 
@@ -258,27 +254,26 @@ export function useMusdConversion(): UseMusdConversionResult {
           }
         }
 
-        if (preferredToken?.address) {
-          try {
-            await updateTransactionPaymentToken({
-              transactionId: txId,
-              tokenAddress: preferredToken.address as `0x${string}`,
-              chainId,
-            });
-          } catch (payTokenError) {
-            console.warn(
-              '[MUSD] Failed to pre-select payment token, proceeding to confirmation:',
-              payTokenError,
-            );
-          }
-        }
-
         navigate({
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
           search: new URLSearchParams({
             loader: ConfirmationLoader.CustomAmount,
+            returnTo: location.pathname + location.search,
           }).toString(),
         });
+
+        if (preferredToken?.address) {
+          updateTransactionPaymentToken({
+            transactionId: txId,
+            tokenAddress: preferredToken.address as `0x${string}`,
+            chainId,
+          }).catch((payTokenError) => {
+            console.warn(
+              '[MUSD] Failed to pre-select payment token:',
+              payTokenError,
+            );
+          });
+        }
       } catch (flowError) {
         const errorMessage =
           flowError instanceof Error
@@ -290,13 +285,14 @@ export function useMusdConversion(): UseMusdConversionResult {
     },
     [
       isFeatureEnabled,
-      isGeoLoading,
       isUserGeoBlocked,
       educationSeen,
       selectedAddress,
       unapprovedTransactions,
       createConversionTransaction,
       navigate,
+      location.pathname,
+      location.search,
     ],
   );
 

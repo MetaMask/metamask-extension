@@ -333,10 +333,6 @@
   "addToken": {
     "message": "टोकन जोड़ें"
   },
-  "addTokenByContractAddress": {
-    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का एड्रेस पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन कॉन्ट्रैक्ट एड्रेस $1 पर मिल सकते हैं।",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URL जोड़ें"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "ब्लॉक एक्सप्लोरर लिंक कॉपी किया गया"
   },
-  "bridgeCalculatingAmount": {
-    "message": "गणना की जा रही है..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "आपको अपने हार्डवेयर वॉलेट पर 2 ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
@@ -1023,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "पिछली स्क्रीन पर कोट किए गए किसी भी नेटवर्क शुल्क में दोनों ट्रांसेक्शन शामिल हैं और इसे विभाजित किया जाएगा।"
   },
-  "bridgeNetCost": {
-    "message": "नेट लागत"
-  },
   "bridgeNoMMFee": {
     "message": "कोई MM फीस नहीं"
   },
@@ -1059,9 +1049,6 @@
   },
   "bridgePriceImpact": {
     "message": "कीमत का प्रभाव"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "प्राइस इम्पैक्ट यह दर्शाता है कि आपका स्वैप मार्केट प्राइस को कैसे प्रभावित करता है। यदि आपके पास गैस के लिए पर्याप्त राशि नहीं है, तो आपकी कुछ टोकन फीस को कवर करने के लिए इस्तेमाल होती हैं, जिससे प्राइस इम्पैक्ट बढ़ जाता है। MetaMask इसे सेट या नियंत्रित नहीं करता।"
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "कीमत का प्रभाव"
@@ -1131,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 को $2 से स्वैप किया जा रहा है",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 न्यूनतम",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
@@ -1209,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
-  },
-  "buildContactList": {
-    "message": "अपनी कॉन्टेक्ट लिस्ट बनाएं"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask दुनिया भर में डिज़ाइन किया और बनाया गया है।"
@@ -1804,7 +1784,8 @@
     "message": "केवल इस डिवाइस पर MetaMask को अनलॉक करता है।"
   },
   "createPasswordDetailsSocial": {
-    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, "
+    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask इसे रीसेट नहीं कर सकता।"
@@ -2134,9 +2115,6 @@
   "delete": {
     "message": "मिटाएं"
   },
-  "deleteContact": {
-    "message": "कॉन्टेक्ट मिटाएं"
-  },
   "deleteMetaMetricsData": {
     "message": "मेटामेट्रिक्स डेटा हटाएं"
   },
@@ -2367,9 +2345,6 @@
   },
   "editANickname": {
     "message": "उपनाम बदलें"
-  },
-  "editAccountName": {
-    "message": "अकाउंट नाम बदलें"
   },
   "editAccounts": {
     "message": "एकाउंट्स बदलें"
@@ -3131,9 +3106,6 @@
   },
   "hidden": {
     "message": "छिपा हुआ"
-  },
-  "hiddenAccounts": {
-    "message": "छिपाए गए अकाउंट"
   },
   "hide": {
     "message": "छुपाएं"
@@ -3999,10 +3971,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD कन्वर्शन"
+    "message": "$1 को mUSD में बदलें",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSD कन्वर्शन"
+    "message": "mUSD में बदला गया",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन को चुनना होगा।"
@@ -4270,9 +4244,6 @@
   "newAccountNumberName": {
     "message": "अकाउंट $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "नया कॉन्टेक्ट"
   },
   "newContract": {
     "message": "नया कॉन्ट्रैक्ट"
@@ -5271,12 +5242,6 @@
   "perpsEntryPrice": {
     "message": "एंट्री प्राइस"
   },
-  "perpsExploreCrypto": {
-    "message": "क्रिप्टो एक्सप्लोर करें"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "स्टॉक्स और कमोडिटीज़ एक्सप्लोर करें"
-  },
   "perpsFees": {
     "message": "फीस"
   },
@@ -5390,9 +5355,6 @@
   },
   "perpsOpenedLong": {
     "message": "खुला लॉन्ग"
-  },
-  "perpsOrderAmount": {
-    "message": "ऑर्डर अमाउंट"
   },
   "perpsOrders": {
     "message": "ऑर्डर"
@@ -5540,12 +5502,6 @@
   },
   "perpsWithdraw": {
     "message": "निकालें"
-  },
-  "perpsYourOrders": {
-    "message": "आपके ऑर्डर"
-  },
-  "perpsYourPositions": {
-    "message": "आपकी पोज़िशन्स"
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"
@@ -5817,12 +5773,6 @@
   "queued": {
     "message": "कतारबद्ध"
   },
-  "quotedReceiveAmount": {
-    "message": "$1 राशि प्राप्त करें"
-  },
-  "quotedTotalCost": {
-    "message": "$1 कुल लागत"
-  },
   "rank": {
     "message": "रैंक"
   },
@@ -5889,9 +5839,6 @@
   },
   "removeAccount": {
     "message": "अकाउंट हटाएं"
-  },
-  "removeAccountDescription": {
-    "message": "यह अकाउंट आपके वॉलेट से निकाल दिया जाएगा। कृपया पक्का करें कि जारी रखने से पहले आपके पास इस इम्पोर्टित अकाउंट के लिए ओरिजिनल सीक्रेट रिकवरी फ्रेज या प्राइवेट की (key) है। आप अकाउंट ड्रॉप-डाउन से फिर से अकाउंट इम्पोर्ट कर सकते हैं या बना सकते हैं। "
   },
   "removeAccountModalBannerDescription": {
     "message": "इस अकाउंट को हटाने से पहले सुनिश्चित करें कि आपके पास इसके लिए सीक्रेट रिकवरी फ्रेज़ या प्राइवेट की (key) है।",
@@ -6272,9 +6219,6 @@
   },
   "search": {
     "message": "ढूंढें"
-  },
-  "searchAccounts": {
-    "message": "अकाउंट्स खोजें"
   },
   "searchAnAcccountOrContact": {
     "message": "किसी अकाउंट या कॉन्टेक्ट को ढूंढें"
@@ -8088,10 +8032,6 @@
     "message": "$1 उद्धरण.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "यह ट्रांसेक्शन संसाधित होने के बाद आपका $1 आपके अकाउंट में जोड़ दिया जाएगा।",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8776,9 +8716,6 @@
   "usedByClients": {
     "message": "विभिन्न क्लाइंट द्वारा इस्तेमाल किया जाता है"
   },
-  "userName": {
-    "message": "यूज़र"
-  },
   "userOpContractDeployError": {
     "message": "स्मार्ट कॉन्ट्रैक्ट अकाउंट से कॉन्ट्रैक्ट डीप्लॉयमेंट को सपोर्ट नहीं करता"
   },
@@ -8797,9 +8734,6 @@
   "viewAddressOnExplorer": {
     "message": "$1 पर देखें",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "कॉन्टेक्ट देखें"
   },
   "viewDetails": {
     "message": "विवरण देखें"

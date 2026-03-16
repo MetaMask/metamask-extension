@@ -5,10 +5,10 @@ import HeaderNavbar from '../pages/header-navbar';
 import AccountListPage from '../pages/account-list-page';
 import AccountAddressModal from '../pages/multichain/account-address-modal';
 import AddressListModal from '../pages/multichain/address-list-modal';
-import LoginPage from '../pages/login-page';
 import CriticalErrorPage from '../pages/critical-error-page';
 import VaultRecoveryPage from '../pages/vault-recovery-page';
 import { completeCreateNewWalletOnboardingFlow } from './onboarding.flow';
+import { lockAndWaitForLoginPage } from './login.flow';
 
 /**
  * Returns the first (truncated) address from the account list in UI.
@@ -102,9 +102,7 @@ export async function onboardThenExecuteScript(
 
   const headerNavbar = new HeaderNavbar(driver);
   const firstAddress = await getFirstAddress(driver, headerNavbar);
-  await headerNavbar.lockMetaMask();
-  const loginPage = new LoginPage(driver);
-  await loginPage.checkPageIsLoaded();
+  await lockAndWaitForLoginPage(driver);
 
   // use the home page to destroy the vault
   await driver.executeAsyncScript(script);

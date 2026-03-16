@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -19,7 +19,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({
             eip155: {
               '0x53a': true,

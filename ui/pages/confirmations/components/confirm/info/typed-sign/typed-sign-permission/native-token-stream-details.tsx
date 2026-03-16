@@ -15,6 +15,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../share
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NativeAmountRow } from './native-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
+import { Expiry } from './expiry';
 
 /**
  * Component for displaying native token stream permission details.
@@ -78,12 +79,7 @@ export const NativeTokenStreamDetails: React.FC<{
           timestamp={startTime}
           label={t('confirmFieldStartDate')}
         />
-        {expiry && (
-          <DateAndTimeRow
-            timestamp={expiry}
-            label={t('confirmFieldExpiration')}
-          />
-        )}
+        <Expiry expiry={expiry} />
       </ConfirmInfoSection>
 
       <ConfirmInfoSection data-testid="native-token-stream-stream-rate-section">

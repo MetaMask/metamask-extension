@@ -392,9 +392,6 @@
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Novi kontakt"
-  },
   "newContract": {
     "message": "Novi ugovor"
   },
@@ -486,9 +483,6 @@
   },
   "removeAccount": {
     "message": "Uklanjanje računa"
-  },
-  "removeAccountDescription": {
-    "message": "Ovaj se račun uklanja iz vašeg novčanika. Provjerite imate li izvornu početnu rečenicu ili privatni ključ za ovaj uvezeni račun prije nastavka. Ponovno možete uvoziti ili stvarati račune uporabom padajućeg izbornika za račun."
   },
   "required": {
     "message": "Zahtijeva se"
@@ -652,12 +646,6 @@
   },
   "usedByClients": {
     "message": "Upotrebljavaju brojni klijenti"
-  },
-  "userName": {
-    "message": "Korisničko ime"
-  },
-  "viewContact": {
-    "message": "Prikaži kontakt"
   },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"

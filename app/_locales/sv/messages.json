@@ -383,9 +383,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Ny kontakt"
-  },
   "newContract": {
     "message": "Nytt kontrakt"
   },
@@ -477,9 +474,6 @@
   },
   "removeAccount": {
     "message": "Ta bort konto"
-  },
-  "removeAccountDescription": {
-    "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
   },
   "required": {
     "message": "Krävs"
@@ -637,12 +631,6 @@
   },
   "usedByClients": {
     "message": "Används av många olika klienter"
-  },
-  "userName": {
-    "message": "Användarnamn"
-  },
-  "viewContact": {
-    "message": "Visa kontakt"
   },
   "visitWebSite": {
     "message": "Besök vår hemsida"

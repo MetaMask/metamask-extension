@@ -40,7 +40,7 @@ export type MultichainAccountsFeatureFlag = Infer<
  * @param flagName - The name of the remote flag to use
  * @returns MultichainAccountsFeatureFlag - The feature flags for multichain accounts.
  */
-export const getMultichainAccountsRemoteFeatureFlags = (
+const getMultichainAccountsRemoteFeatureFlags = (
   state: RemoteFeatureFlagsState,
   flagName: typeof STATE_2_FLAG,
 ) => {
@@ -59,6 +59,8 @@ export const getMultichainAccountsRemoteFeatureFlags = (
 /**
  * Selector to check if the multichain accounts feature is enabled for state 2.
  *
+ * @deprecated This selector is no longer used and will be removed in the future.
+ * All multichain accounts features are now enabled by default.
  * @param state - The MetaMask state object
  * @returns boolean - True if the feature is enabled for state 2, false otherwise.
  */
