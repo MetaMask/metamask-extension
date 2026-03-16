@@ -40,7 +40,10 @@ export default function DeletionInProgressModal({
   const metaMetricsDataDeletionTimestamp = useSelector(
     getMetaMetricsDataDeletionTimestamp,
   );
-  const formatedDate = formatDate(metaMetricsDataDeletionTimestamp, 'd/MM/y');
+  const formatedDate = formatDate(
+    metaMetricsDataDeletionTimestamp,
+    'MMM d, yyyy',
+  );
 
   return (
     <Modal isOpen onClose={onClose} data-testid="deletion-in-progress-modal">

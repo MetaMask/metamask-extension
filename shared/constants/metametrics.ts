@@ -1259,7 +1259,7 @@ export enum DeleteRegulationStatus {
   Unknown = 'UNKNOWN',
 }
 
-export const DATA_DELETION_IN_PROGRESS_STATUSES: DeleteRegulationStatus[] = [
+export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
   DeleteRegulationStatus.Initialized,
   DeleteRegulationStatus.Running,
   DeleteRegulationStatus.Finished,

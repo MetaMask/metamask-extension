@@ -8,7 +8,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   DeleteRegulationStatus,
-  DATA_DELETION_IN_PROGRESS_STATUSES,
+  DATA_DELETION_REQUESTED_STATUSES,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -52,9 +52,7 @@ export const DeleteMetametricsDataItem = () => {
 
   const isDataDeletionInProgress =
     Boolean(metaMetricsId) &&
-    DATA_DELETION_IN_PROGRESS_STATUSES.includes(
-      metaMetricsDataDeletionStatus,
-    ) &&
+    DATA_DELETION_REQUESTED_STATUSES.includes(metaMetricsDataDeletionStatus) &&
     hasNoPendingDataToDelete;
 
   return (

@@ -2283,7 +2283,7 @@
     "message": "Delete MetaMetrics data?"
   },
   "deleteMetaMetricsDataRequestedDescription": {
-    "message": "You initiated this action on $1. This process can take up to 30 days. View the $2.",
+    "message": "You initiated deletion on $1. This process can take up to 30 days. View the $2.",
     "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataToast": {
