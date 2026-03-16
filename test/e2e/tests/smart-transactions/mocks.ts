@@ -1061,18 +1061,3 @@ const MOCK_ACCOUNTS_API_SWAP_TX = {
   transactionCategory: 'SWAP',
   readable: 'Swap ETH to DAI',
 };
-
-export async function mockAccountsApiSwapTransaction(
-  mockServer: MockttpServer,
-): Promise<void> {
-  await mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        data: [MOCK_ACCOUNTS_API_SWAP_TX],
-        pageInfo: { hasNextPage: false, count: 1 },
-      },
-    }));
-}
