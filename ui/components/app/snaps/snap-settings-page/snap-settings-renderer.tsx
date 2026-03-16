@@ -38,7 +38,7 @@ export const SnapSettingsRenderer = () => {
     return () => {
       interfaceId && dispatch(deleteInterface(interfaceId));
     };
-  }, [interfaceId]);
+  }, [interfaceId, dispatch]);
 
   if (!snapId) {
     return null;

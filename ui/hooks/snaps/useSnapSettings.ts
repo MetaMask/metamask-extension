@@ -49,7 +49,7 @@ export function useSnapSettings({ snapId }: { snapId?: string | null }) {
     return () => {
       cancelled = true;
     };
-  }, [snapId]);
+  }, [snapId, dispatch]);
 
   return { data, error, loading };
 }
