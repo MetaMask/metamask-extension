@@ -1,8 +1,8 @@
 /**
- * Metamask selectors that do not depend on metamask duck or the rest of selectors.
+ * Metamask account/wallet selectors that do not depend on metamask duck or the rest of selectors.
  * Used to break the metamask → actions → index → selectors → metamask cycle.
  *
- * Imports only from: shared, metamask-state-basic, send-ether-selectors.
+ * Imports only from: shared, metamask-state-minimal, send-ether-selectors.
  */
 
 import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
@@ -11,7 +11,7 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import { getCurrencyRateControllerCurrencyRates } from '../../shared/lib/selectors/assets-migration';
 import type { MetaMaskReduxState } from '../store/store';
-import { getCompletedOnboarding } from './metamask-state-basic';
+import { getCompletedOnboarding } from './metamask-state-minimal';
 import { isNotEIP1559Network } from './send-ether-selectors';
 
 export { getCompletedOnboarding, isNotEIP1559Network };

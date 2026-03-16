@@ -142,7 +142,7 @@ import {
   isAddressLedger,
   getIsUnlocked,
   getCompletedOnboarding,
-} from './metamask-selectors-standalone';
+} from './metamask-account-selectors';
 import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
@@ -184,7 +184,7 @@ import {
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import { accountsWithSendEtherInfoSelector } from './send-ether-selectors';
-import { getIsMainnet } from './metamask-state-basic';
+import { getIsMainnet } from './metamask-state-minimal';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -1412,7 +1412,7 @@ export function getSuggestedNfts(state) {
   );
 }
 
-export { getIsMainnet } from './metamask-state-basic';
+export { getIsMainnet } from './metamask-state-minimal';
 
 export function getIsLineaMainnet(state) {
   const chainId = getCurrentChainId(state);

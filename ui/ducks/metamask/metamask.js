@@ -35,7 +35,7 @@ import {
   getAlertEnabledness,
   getUnconnectedAccountAlertEnabledness,
   getCompletedOnboarding,
-} from '../../selectors/metamask-state-basic';
+} from '../../selectors/metamask-state-minimal';
 
 export { getAlertEnabledness, getUnconnectedAccountAlertEnabledness, getCompletedOnboarding };
 

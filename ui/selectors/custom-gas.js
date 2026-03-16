@@ -14,7 +14,7 @@ import { isEIP1559Network } from './send-ether-selectors';
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
-import { getIsMainnet } from './metamask-state-basic';
+import { getIsMainnet } from './metamask-state-minimal';
 
 export function getCustomGasLimit(state) {
   return state.gas.customData.limit;
