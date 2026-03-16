@@ -31,6 +31,10 @@ on:
         type: boolean
         default: true
         description: Whether the build is running in a high-risk environment (e.g. production) or not.
+      zip:
+        type: boolean
+        default: false
+        description: Whether to zip the build output
 
 jobs:
   run-build:
@@ -107,6 +111,7 @@ jobs:
         run: ${{ inputs.build-command }}
 
       - name: Zip build
+        if: ${{ inputs.zip }}
         run: |
           mkdir -p builds
           for browser in chrome firefox; do
