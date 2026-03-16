@@ -7,6 +7,7 @@ import {
   fetchAllErc20Decimals,
   fetchAllTokenDetails,
   fetchErc20Decimals,
+  fetchErc20DecimalsOrThrow,
   getTokenValueFromRecord,
   memoizedGetTokenStandardAndDetailsByChain,
 } from './token';
@@ -54,6 +55,57 @@ describe('fetchErc20Decimals', () => {
 
     await fetchErc20Decimals('0xDifferentAddress');
     expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('fetchErc20DecimalsOrThrow', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should throw an error if no decimals were found from details', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({});
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow(
+      `Unable to resolve token decimals for address ${MOCK_ADDRESS} on chain ${MOCK_CHAIN_ID}`,
+    );
+  });
+
+  it('should throw an error when token details result is undefined', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue(
+      undefined,
+    );
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow(
+      `Unable to resolve token decimals for address ${MOCK_ADDRESS} on chain ${MOCK_CHAIN_ID}`,
+    );
+  });
+
+  it('should return the decimals for a given token address', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({
+      decimals: MOCK_DECIMALS,
+    });
+    const decimals = await fetchErc20DecimalsOrThrow(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+    );
+
+    expect(decimals).toBe(MOCK_DECIMALS);
+  });
+
+  it('should throw an error if the network request fails', async () => {
+    const networkError = new Error('Network error');
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockRejectedValue(
+      networkError,
+    );
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow('Network error');
   });
 });
 
