@@ -200,7 +200,7 @@ describe('DappConnectionControlBar', () => {
         getByTestId('dapp-connection-control-bar__permissions-button'),
       );
       expect(mockNavigate).toHaveBeenCalledWith(
-        '/review-permissions/https%3A%2F%2Fmetamask.github.io',
+        '/review-permissions?origin=https%3A%2F%2Fmetamask.github.io',
       );
     });
 

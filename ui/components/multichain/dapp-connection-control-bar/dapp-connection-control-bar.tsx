@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray, parseCaipAccountId } from '@metamask/utils';
@@ -75,7 +75,26 @@ export const DappConnectionControlBar: React.FC = () => {
     ),
   );
 
-  const lastConnectedAddressRef = useRef<string | undefined>(undefined);
+  const allPermittedAddresses = useMemo(() => {
+    return permittedAccounts
+      .map((caipId) => {
+        try {
+          return parseCaipAccountId(caipId).address;
+        } catch {
+          return undefined;
+        }
+      })
+      .filter((addr): addr is string => Boolean(addr));
+  }, [permittedAccounts]);
+
+  const allPermittedAccountGroups = useSelector((state) =>
+    allPermittedAddresses.length > 0
+      ? getAccountGroupsByAddress(
+          state as Parameters<typeof getAccountGroupsByAddress>[0],
+          allPermittedAddresses,
+        )
+      : [],
+  );
 
   const activePermittedAddress = useMemo(() => {
     if (permittedAccounts.length === 0) {
@@ -86,28 +105,44 @@ export const DappConnectionControlBar: React.FC = () => {
         isInternalAccountInPermittedAccountIds(account, permittedAccounts),
       );
       if (matchingAccount) {
-        lastConnectedAddressRef.current = matchingAccount.address;
         return matchingAccount.address;
       }
     }
-    if (lastConnectedAddressRef.current) {
-      return lastConnectedAddressRef.current;
+    // Current account group is not connected — find the most recently
+    // selected permitted account across all connected account groups.
+    let mostRecent: { address: string; lastSelected: number } | undefined;
+    for (const group of allPermittedAccountGroups) {
+      for (const account of group.accounts) {
+        if (
+          isInternalAccountInPermittedAccountIds(account, permittedAccounts)
+        ) {
+          const ts = account.metadata.lastSelected ?? 0;
+          if (!mostRecent || ts > mostRecent.lastSelected) {
+            mostRecent = { address: account.address, lastSelected: ts };
+          }
+        }
+      }
     }
-    try {
-      return parseCaipAccountId(permittedAccounts[0]).address;
-    } catch {
-      return undefined;
-    }
-  }, [permittedAccounts, accountGroupInternalAccounts]);
+    return mostRecent?.address ?? allPermittedAddresses[0];
+  }, [
+    permittedAccounts,
+    accountGroupInternalAccounts,
+    allPermittedAccountGroups,
+    allPermittedAddresses,
+  ]);
 
-  const connectedAccountGroups = useSelector((state) =>
-    activePermittedAddress
-      ? getAccountGroupsByAddress(
-          state as Parameters<typeof getAccountGroupsByAddress>[0],
-          [activePermittedAddress],
-        )
-      : [],
-  );
+  const connectedAccountGroups = useMemo(() => {
+    if (!activePermittedAddress) {
+      return [];
+    }
+    return allPermittedAccountGroups.filter((group) =>
+      group.accounts.some(
+        (account) =>
+          account.address.toLowerCase() ===
+          activePermittedAddress.toLowerCase(),
+      ),
+    );
+  }, [activePermittedAddress, allPermittedAccountGroups]);
 
   const isConnected = permittedAccounts.length > 0;
 
@@ -160,7 +195,9 @@ export const DappConnectionControlBar: React.FC = () => {
 
   const handlePermissionsClick = useCallback(() => {
     if (activeTabOrigin) {
-      navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(activeTabOrigin)}`);
+      navigate(
+        `${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(activeTabOrigin)}`,
+      );
     }
   }, [navigate, activeTabOrigin]);
 
