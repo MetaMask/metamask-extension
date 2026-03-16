@@ -81,12 +81,11 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
         >
           Third-party APIs
         </p>
-        <button
-          aria-label="Select Third-party APIs"
-          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
+        <a
+          href="/settings-v2/privacy/third-party-apis"
         >
           <svg
-            class="inline-block w-5 h-5 text-inherit"
+            class="inline-block w-4 h-4 text-icon-alternative"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +94,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
               d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
             />
           </svg>
-        </button>
+        </a>
       </div>
       <p
         class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
