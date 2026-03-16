@@ -27,6 +27,10 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
+      is-high-risk-environment:
+        type: boolean
+        default: true
+        description: Whether the build is running in a high-risk environment (e.g. production) or not.
 
 jobs:
   run-build:
@@ -96,7 +100,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: ${{ inputs.is-high-risk-environment }}
           skip-allow-scripts: true
 
       - name: Run build

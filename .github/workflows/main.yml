@@ -272,6 +272,7 @@ jobs:
       build-name: build-dist-webpack
       build-command: yarn build:dist:webpack
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-dist-mv2-webpack:
@@ -284,6 +285,7 @@ jobs:
       build-command: yarn build:dist:webpack:mv2
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-beta-webpack:
@@ -295,6 +297,7 @@ jobs:
       build-name: build-beta-webpack
       build-command: yarn build:beta:webpack
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-beta-mv2-webpack:
@@ -307,6 +310,7 @@ jobs:
       build-command: yarn build:beta:webpack:mv2
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-flask-webpack:
@@ -318,6 +322,7 @@ jobs:
       build-name: build-flask-webpack
       build-command: yarn build:flask:webpack
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-flask-mv2-webpack:
@@ -330,6 +335,7 @@ jobs:
       build-command: yarn build:flask:webpack:mv2
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-test-webpack:
@@ -341,6 +347,7 @@ jobs:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-test-mv2-webpack:
@@ -353,6 +360,7 @@ jobs:
       build-command: yarn build:test:webpack:mv2
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-test-flask-webpack:
@@ -364,6 +372,7 @@ jobs:
       build-name: build-test-flask-webpack
       build-command: yarn build:test:flask:webpack
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   build-test-flask-mv2-webpack:
@@ -376,6 +385,7 @@ jobs:
       build-command: yarn build:test:flask:webpack:mv2
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      is-high-risk-environment: false
     secrets: inherit
 
   run-benchmarks:
