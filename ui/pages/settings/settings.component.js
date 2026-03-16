@@ -109,6 +109,7 @@ class SettingsPage extends PureComponent {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
+    petnamesEnabled: PropTypes.bool,
     settingsPageSnaps: PropTypes.array,
     shouldShowShieldEntryModal: PropTypes.bool,
     snapSettingsTitle: PropTypes.string,
@@ -296,6 +297,7 @@ class SettingsPage extends PureComponent {
       isRevealSrpListPage,
       isPasswordChangePage,
       isTransactionShieldPage,
+      petnamesEnabled,
     } = this.props;
 
     if (
@@ -305,6 +307,17 @@ class SettingsPage extends PureComponent {
     ) {
       return null;
     }
+
+    const filteredRoutes = getSettingsRoutes().filter((route) => {
+      // Filter out 'Proposed nicknames' if petnamesEnabled is false
+      if (
+        !petnamesEnabled &&
+        route.route === `${SECURITY_ROUTE}#proposed-nicknames`
+      ) {
+        return false;
+      }
+      return true;
+    });
 
     return (
       <Box
@@ -319,7 +332,7 @@ class SettingsPage extends PureComponent {
               searchText: searchQuery,
             });
           }}
-          settingsRoutesList={getSettingsRoutes()}
+          settingsRoutesList={filteredRoutes}
         />
         {isSearchList && searchText.length >= 3 && (
           <SettingsSearchList

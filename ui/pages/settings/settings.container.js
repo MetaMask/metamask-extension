@@ -211,6 +211,7 @@ const mapStateToProps = (state, ownProps) => {
     isTransactionShieldPage,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
+    petnamesEnabled: Boolean(state.metamask.petnamesEnabled),
     settingsPageSnaps,
     shouldShowShieldEntryModal,
     snapSettingsTitle,
