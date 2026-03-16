@@ -9,21 +9,18 @@ import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
-import {
-  accountSupportsSmartTx,
-  getPreferences,
-} from './metamask-keyring';
-import {
-  getCurrentChainId,
-  selectDefaultRpcEndpointByChainId,
-  type NetworkState,
-} from './networks';
+import { isProduction } from '../environment';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/remote-feature-flags';
-import { isProduction } from '../environment';
+import { accountSupportsSmartTx, getPreferences } from './metamask-keyring';
+import {
+  getCurrentChainId,
+  selectDefaultRpcEndpointByChainId,
+  type NetworkState,
+} from './networks';
 import { createDeepEqualSelector } from './util';
 
 export type SmartTransactionsMetaMaskState = {
@@ -127,7 +124,6 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
@@ -140,7 +136,6 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => {

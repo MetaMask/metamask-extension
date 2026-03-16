@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/routes';
 import * as sharedSelectors from '../../../../shared/lib/selectors';
 import * as sentry from '../../../../shared/lib/sentry';
+import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
@@ -191,6 +192,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       } as never);
     });
 
+    // Default mock store does not set metamask.preferences.smartTransactionsOptInStatus
+    // (or full STX state), so getIsStxEnabled returns false and the 3rd argument to
+    // submitBridgeTx (smartTransactionsEnabled) is false. See "executes EVM bridge
+    // transaction with STX enabled" for the STX-enabled path.
     it('executes EVM bridge transaction', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
@@ -240,6 +245,31 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
       expect(result.current.isSubmitting).toBe(false);
+    });
+
+    it('executes EVM bridge transaction with STX enabled', async () => {
+      // Mock store's default smartTransactionsState overwrites metamaskStateOverrides,
+      // so we mock the selector to simulate STX-enabled state.
+      const getIsStxEnabledSpy = jest
+        .spyOn(bridgeSelectors, 'getIsStxEnabled')
+        .mockReturnValue(true);
+      const store = makeMockStore();
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      expect(submitTxSpy).toHaveBeenCalled();
+      expect(submitTxSpy.mock.calls[0][2]).toBe(true);
+      expect(result.current.isSubmitting).toBe(false);
+      getIsStxEnabledSpy.mockRestore();
     });
 
     it('routes to activity tab after EVM bridge transaction', async () => {

@@ -42,17 +42,19 @@ function getPropComponents(components) {
   }, {});
 }
 
-const MetaMaskTemplateRenderer = ({ sections }) => {
-  const content =
-    !sections ? null : typeof sections === 'string' ? (
-      sections
-    ) : sections &&
-      typeof sections === 'object' &&
-      !Array.isArray(sections) ? (
-      renderElement(sections)
-    ) : (
-      <>
-        {sections.reduce((allChildren, child) => {
+function getContent(sections) {
+  if (!sections) {
+    return null;
+  }
+  if (typeof sections === 'string') {
+    return sections;
+  }
+  if (sections && typeof sections === 'object' && !Array.isArray(sections)) {
+    return renderElement(sections);
+  }
+  return (
+    <>
+      {sections.reduce((allChildren, child) => {
         if (child === undefined || child?.hide === true) {
           return allChildren;
         }
@@ -89,8 +91,12 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
         }
         return allChildren;
       }, [])}
-      </>
-    );
+    </>
+  );
+}
+
+const MetaMaskTemplateRenderer = ({ sections }) => {
+  const content = getContent(sections);
 
   return (
     <TemplateRendererContext.Provider value={MetaMaskTemplateRenderer}>

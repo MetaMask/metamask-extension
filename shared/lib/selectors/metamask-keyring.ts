@@ -36,14 +36,22 @@ export function getCurrentKeyringFromState(
 
 /**
  * Returns metamask preferences. Used by smart-transactions to avoid ui import.
+ *
+ * @param state - Redux state with metamask.preferences
+ * @returns The preferences object
  */
-export function getPreferences(state: InternalAccountsState): Record<string, unknown> {
+export function getPreferences(
+  state: InternalAccountsState,
+): Record<string, unknown> {
   return state.metamask?.preferences ?? {};
 }
 
 /**
  * Returns true if the current account supports smart transactions (not a snap account).
  * Used by smart-transactions to avoid ui import.
+ *
+ * @param state - Redux state with metamask.internalAccounts
+ * @returns true if account supports smart transactions
  */
 export function accountSupportsSmartTx(state: InternalAccountsState): boolean {
   const keyring = getCurrentKeyringFromState(state);
