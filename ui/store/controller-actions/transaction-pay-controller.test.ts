@@ -55,7 +55,7 @@ describe('transaction-pay-controller actions', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setTransactionPayIsMaxAmount',
+        'setTransactionPayConfig',
         [transactionId, true],
       );
     });
@@ -67,7 +67,7 @@ describe('transaction-pay-controller actions', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setTransactionPayIsMaxAmount',
+        'setTransactionPayConfig',
         [transactionId, false],
       );
     });
