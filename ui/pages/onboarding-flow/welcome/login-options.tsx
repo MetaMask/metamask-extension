@@ -18,6 +18,8 @@ import {
   BoxJustifyContent,
   BoxFlexDirection,
   TextTransform,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { PolymorphicRef } from '../../../components/component-library';
@@ -168,10 +170,8 @@ export default function LoginOptions({
         className="w-full mx-auto pt-8"
       >
         {t('onboardingLoginFooter', [
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.PrimaryDefault}
+          <TextButton
+            size={TextButtonSize.BodySm}
             key="onboardingLoginFooterTermsOfUse"
             asChild
           >
@@ -182,11 +182,9 @@ export default function LoginOptions({
             >
               {t('onboardingLoginFooterTermsOfUse')}
             </a>
-          </Text>,
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.PrimaryDefault}
+          </TextButton>,
+          <TextButton
+            size={TextButtonSize.BodySm}
             key="onboardingLoginFooterPrivacyNotice"
             asChild
           >
@@ -197,7 +195,7 @@ export default function LoginOptions({
             >
               {t('onboardingLoginFooterPrivacyNotice')}
             </a>
-          </Text>,
+          </TextButton>,
         ])}
       </Text>
     </Box>
