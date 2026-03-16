@@ -5,7 +5,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
@@ -53,7 +53,7 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 1: Initial setup and account creation with sync enabled
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -131,7 +131,7 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 3: Fresh app instance to verify sync persistence
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
