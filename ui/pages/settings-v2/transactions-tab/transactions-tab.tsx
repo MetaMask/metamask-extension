@@ -111,12 +111,10 @@ const SmartAccountRequestsFromDappsItem = createToggleItem({
 const ProposedNicknamesItem = createToggleItem({
   name: 'ProposedNicknamesItem',
   titleKey: 'externalNameSourcesSetting',
-  descriptionKey: 'externalNameSourcesSettingDescriptionV3',
+  descriptionKey: 'externalNameSourcesSettingDescriptionV2',
   selector: (state: MetaMaskReduxState) =>
     Boolean(getUseExternalNameSources(state)),
-  action: (value: boolean) => () => {
-    setUseExternalNameSources(value);
-  },
+  action: setUseExternalNameSources,
   dataTestId: 'transactions-proposed-nicknames-toggle',
 });
 
