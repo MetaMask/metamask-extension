@@ -27,7 +27,7 @@ const IN_FLIGHT_STATUSES: string[] = [
  * @param tx - The transaction metadata
  * @returns Whether the transaction is a Merkl claim
  */
-const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
+export const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
   tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
 
 export type MerklClaimToastState = 'in-progress' | 'success' | 'failed' | null;

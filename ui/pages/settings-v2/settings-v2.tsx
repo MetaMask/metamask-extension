@@ -17,6 +17,7 @@ import {
   LANGUAGE_ROUTE,
   SETTINGS_V2_ROUTE,
   THEME_ROUTE,
+  THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   Box as LegacyBox,
@@ -63,6 +64,10 @@ const LanguageSubPage = mmLazy(
 
 const AccountIdenticonSubPage = mmLazy(
   () => import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
+);
+
+const ThirdPartyApisSubPage = mmLazy(
+  () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
 );
 
 // Get the first tab's component for rendering at the settings root (like Settings V1)
@@ -258,6 +263,17 @@ const SettingsV2 = () => {
           <SettingsV2Layout>
             <Suspense fallback={null}>
               <AccountIdenticonSubPage />
+            </Suspense>
+          </SettingsV2Layout>
+        }
+      />
+      {/* Third-party APIs sub-page */}
+      <Route
+        path={toRelativeRoutePath(THIRD_PARTY_APIS_ROUTE, SETTINGS_V2_ROUTE)}
+        element={
+          <SettingsV2Layout>
+            <Suspense fallback={null}>
+              <ThirdPartyApisSubPage />
             </Suspense>
           </SettingsV2Layout>
         }

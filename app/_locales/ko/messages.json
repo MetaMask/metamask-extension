@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "블록 탐색기 링크 복사 완료"
   },
-  "bridgeCalculatingAmount": {
-    "message": "계산 중..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "하드웨어 지갑에서 2건의 트랜잭션을 컨펌해야 합니다."
   },

@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import type { CaipChainId } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
   Token,
@@ -17,7 +18,10 @@ import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multicha
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { apiClient } from '../../../helpers/api-client';
-import { calculateFiatFromMarketRates } from './helpers';
+import {
+  calculateFiatFromMarketRates,
+  resolveTransactionType,
+} from './helpers';
 import type { ActivityListFilter } from './helpers';
 
 function useTransactionParams(caipChainId?: CaipChainId) {
@@ -163,6 +167,11 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
     transaction,
   });
+
+  const resolvedType = resolveTransactionType(transaction);
+  if (resolvedType === TransactionType.musdClaim) {
+    return t('musdClaimTitle');
+  }
 
   const { transactionCategory, transactionType, transactionProtocol } =
     transaction;
