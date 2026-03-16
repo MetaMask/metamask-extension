@@ -14,15 +14,6 @@
  * @see {@link https://github.com/MetaMask/metamask-extension} for more info
  */
 
-/** Base route for Perps market detail. Append encoded symbol, e.g. PERPS_MARKET_DETAIL_ROUTE + '/AVAX' */
-export const PERPS_MARKET_DETAIL_ROUTE = '#/perps/market';
-
-/** Perps Activity page (full history). */
-export const PERPS_ACTIVITY_ROUTE = '#/perps/activity';
-
-/** Perps Market List (search / explore). */
-export const PERPS_MARKET_LIST_ROUTE = '#/perps/market-list';
-
 /**
  * Default withFixtures config for Perps tests (feature flag enabled).
  * Implemented in perps-fixture-config.ts in this directory; re-exported here for convenience.

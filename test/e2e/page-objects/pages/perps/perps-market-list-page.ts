@@ -67,7 +67,6 @@ export class PerpsMarketListPage {
   async navigateToMarketList(): Promise<void> {
     await this.driver.waitForSelector(this.exploreMarketsRow);
     await this.driver.clickElementSafe(this.toastCloseButton, 1500);
-    await this.driver.delay(300);
     await this.driver.clickElementUsingMouseMove(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
   }

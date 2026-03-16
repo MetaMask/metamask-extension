@@ -8,6 +8,10 @@ import { PerpsPositionsBase } from './perps-positions-base';
  * @see ui/components/app/perps/perps-tab-view.tsx
  */
 export class PerpsHomePage extends PerpsPositionsBase {
+  private readonly accountOverviewPerpsTab = {
+    testId: 'account-overview__perps-tab',
+  };
+
   private readonly addFundsButton = {
     testId: 'perps-balance-dropdown-add-funds',
   };
@@ -16,8 +20,16 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-dropdown-balance',
   };
 
-  private readonly balanceSection = {
+  private readonly balanceDropdownWithdraw = {
+    testId: 'perps-balance-dropdown-withdraw',
+  };
+
+  private readonly perpsBalanceDropdown = {
     testId: 'perps-balance-dropdown',
+  };
+
+  private readonly perpsExploreMarketsRow = {
+    testId: 'perps-explore-markets-row',
   };
 
   private readonly perpsLearnBasics = { testId: 'perps-learn-basics' };
@@ -28,16 +40,8 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-recent-activity-see-all',
   };
 
-  private readonly perpsExploreMarketsRow = {
-    testId: 'perps-explore-markets-row',
-  };
-
   private readonly perpsTabView = {
     testId: 'perps-tab-view',
-  };
-
-  private readonly perpsBalanceDropdown = {
-    testId: 'perps-balance-dropdown',
   };
 
   private readonly perpsTutorialContinueButton = {
@@ -50,15 +54,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
-  private readonly balanceDropdownWithdraw = {
-    testId: 'perps-balance-dropdown-withdraw',
-  };
-
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
-
-  private readonly accountOverviewPerpsTab = {
-    testId: 'account-overview__perps-tab',
-  };
 
   /**
    * Waits for the Perps Home view to be loaded and visible.
@@ -81,6 +77,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
+   * Clicks the "Explore markets" row (navigates to Perps Market List).
+   */
+  async clickExploreMarketsRow(): Promise<void> {
+    await this.driver.clickElement(this.perpsExploreMarketsRow);
+  }
+
+  /**
    * Clicks the "Learn the basics of perps" row (opens the tutorial modal).
    */
   async clickLearnBasics(): Promise<void> {
@@ -93,13 +96,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
-  }
-
-  /**
-   * Clicks the "Explore markets" row (navigates to Perps Market List).
-   */
-  async clickExploreMarketsRow(): Promise<void> {
-    await this.driver.clickElement(this.perpsExploreMarketsRow);
   }
 
   /**
@@ -140,7 +136,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * Waits for the balance section to be visible (empty or with balance).
    */
   async waitForBalanceSection(): Promise<void> {
-    await this.driver.waitForSelector(this.balanceSection);
+    await this.driver.waitForSelector(this.perpsBalanceDropdown);
   }
 
   /**
