@@ -38,9 +38,8 @@ export const PermissionControllerInit: ControllerInitFunction<
 
   const controller = new PermissionController({
     state: persistedState.PermissionController,
-    // @ts-expect-error: `controllerMessenger` is not compatible with the
-    // expected type.
-    // TODO: Look into the type mismatch.
+    // @ts-expect-error: The permission controller needs certain actions that
+    // are not declared in the messenger's type.
     messenger: controllerMessenger,
     caveatSpecifications: getCaveatSpecifications({
       listAccounts: initMessenger.call.bind(
