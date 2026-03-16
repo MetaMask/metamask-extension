@@ -8141,7 +8141,7 @@
     "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
-    "message": "Error in retrieving state logs."
+    "message": "Error in retrieving state logs, please try again later."
   },
   "stateLogFileName": {
     "message": "MetaMask state logs"
@@ -8985,6 +8985,9 @@
   "unableToConnectTo": {
     "message": "Unable to connect to $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
+  },
+  "unableToDownload": {
+    "message": "Unable to download"
   },
   "unapproved": {
     "message": "Unapproved"
