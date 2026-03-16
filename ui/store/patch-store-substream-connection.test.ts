@@ -228,11 +228,11 @@ describe('patch-store substream connection', () => {
   });
 
   describe('getStatePatches', () => {
-    it('throws when the patch-store substream has not been initialized', async () => {
+    it('throws before registering a pending request when the patch-store substream has not been initialized', async () => {
       // We have to isolate the module here because there's no way to reset
       // `patchStoreSubstreamSingleton` once it's set
       await jest.isolateModulesAsync(async () => {
-        const originalInTest = process.env.IN_TEST;
+        const inTestWasSet = 'IN_TEST' in process.env;
         delete process.env.IN_TEST;
         try {
           const { getStatePatches: isolatedGetStatePatches } = await import(
@@ -242,7 +242,9 @@ describe('patch-store substream connection', () => {
             'Patch-store substream has not been initialized, not sending message',
           );
         } finally {
-          process.env.IN_TEST = originalInTest;
+          if (inTestWasSet) {
+            process.env.IN_TEST = 'true';
+          }
         }
       });
     });

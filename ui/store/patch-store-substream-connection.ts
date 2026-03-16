@@ -77,19 +77,19 @@ function isValidJsonRpcResponse(
  * @returns The response from the request.
  */
 async function sendMessage(message: JsonRpcRequest & { id: number }) {
-  const { promise, resolve, reject } = createDeferredPromise<Patch[]>();
-  pendingGetStatePatchesRequests.set(message.id, { resolve, reject });
-
-  if (patchStoreSubstreamSingleton) {
-    patchStoreSubstreamSingleton.write(message);
-  } else if (process.env.IN_TEST) {
-    // The background side isn't always set up in tests, so just do nothing
-    return;
-  } else {
+  if (!patchStoreSubstreamSingleton) {
+    if (process.env.IN_TEST) {
+      // The background side isn't always set up in tests, so just do nothing
+      return;
+    }
     throw new Error(
       'Patch-store substream has not been initialized, not sending message',
     );
   }
+
+  const { promise, resolve, reject } = createDeferredPromise<Patch[]>();
+  pendingGetStatePatchesRequests.set(message.id, { resolve, reject });
+  patchStoreSubstreamSingleton.write(message);
 
   return await promise;
 }
