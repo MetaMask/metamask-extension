@@ -37,6 +37,7 @@ jest.mock('../../../selectors', () => ({
 jest.mock('react-redux', () => ({
   useSelector: (selector: (state: unknown) => unknown) =>
     selector?.({}) ?? undefined,
+  useDispatch: () => jest.fn(),
 }));
 
 function createMockTransaction(overrides: Partial<TransactionMeta> = {}) {

@@ -1517,9 +1517,6 @@
       "warn: No tokens found for chainId:": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/advanced-gas-controls/advanced-gas-controls.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-defaults/advanced-gas-fee-defaults.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1984,9 +1981,6 @@
     },
     "ui/pages/confirmations/components/confirm/title/title.test.tsx": {
       "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-display/edit-gas-display.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/edit-gas-fee-popover/edit-gas-item/edit-gas-item.test.js": {

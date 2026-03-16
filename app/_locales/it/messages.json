@@ -245,9 +245,6 @@
   "cancel": {
     "message": "Annulla"
   },
-  "cancelPopoverTitle": {
-    "message": "Annulla transazione"
-  },
   "cancelled": {
     "message": "Annullata"
   },
@@ -551,9 +548,6 @@
   "editGasLimitOutOfBoundsV2": {
     "message": "Il limite del gas deve essere maggiore di $1 e minore di $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Il limite del gas è l'unità massima di gas che sei disposto a utilizzare. Le unità di gas sono un moltiplicatore per “Commissione massima priorità“ e “Commissione massima“."
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "La tariffa base massima non può essere inferiore alla tariffa prioritaria"
