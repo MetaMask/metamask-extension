@@ -50,13 +50,7 @@ describe('Production E2E: Add Custom Network and Import Tokens', function (this:
         await driver.delay(PROD_DELAYS.API_RESPONSE); // Wait for network to stabilize
 
         // // Network details for Sepolia testnet
-        // const chainId = 11155111;
-        const networkName = 'Monad';
-
-        // // console.log('[PROD TEST] Waiting for home page to load...');
-        // const homePage = new HomePage(driver);
-        // await homePage.checkPageIsLoaded();
-        // await driver.delay(PROD_DELAYS.API_RESPONSE); // Wait for network to stabilize
+        const networkName = 'Monad';e
 
         const symbol = 'MON';
         const chainIdHex = '0x8f';
@@ -66,64 +60,9 @@ describe('Production E2E: Add Custom Network and Import Tokens', function (this:
         await networkManager.openNetworkManager();
         await networkManager.selectTab("Popular");
         await networkManager.selectNetworkByNameWithWait("Monad");
-        // const symbol = 'ETH';
-        // const rpcUrl = process.env.INFURA_PROJECT_ID
-        //   ? `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-        //   : 'https://rpc.sepolia.org'; // Fallback to public RPC
 
-        // console.log('[PROD TEST] Opening network selection dialog...');
-        // await switchToEditRPCViaGlobalMenuNetworks(driver);
-
-        // const selectNetworkDialog = new SelectNetwork(driver);
-        // await selectNetworkDialog.checkPageIsLoaded();
-
-        // console.log('[PROD TEST] Opening Add Custom Network modal...');
-        // await selectNetworkDialog.openAddCustomNetworkModal();
-
-        // console.log('[PROD TEST] Filling network details...');
-        // const addEditNetworkModal = new AddEditNetworkModal(driver);
-        // await addEditNetworkModal.checkPageIsLoaded();
-        // await addEditNetworkModal.fillNetworkNameInputField(networkName);
-        // await addEditNetworkModal.fillNetworkChainIdInputField(
-        //   chainId.toString(),
-        // );
-        // await addEditNetworkModal.fillCurrencySymbolInputField(symbol);
-        // await addEditNetworkModal.openAddRpcUrlModal();
-
-        // console.log('[PROD TEST] Adding RPC URL:', rpcUrl);
-        // const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        // await addRpcUrlModal.checkPageIsLoaded();
-        // await addRpcUrlModal.fillAddRpcUrlInput(rpcUrl);
-        // await addRpcUrlModal.fillAddRpcNameInput('Sepolia RPC');
-        // await addRpcUrlModal.saveAddRpcUrl();
-
-        // console.log('[PROD TEST] Saving network...');
-        // await addEditNetworkModal.saveEditedNetwork();
-
-        // // Wait for network to be added
-        // console.log('[PROD TEST] Waiting for network to be added...');
-        // await driver.delay(PROD_DELAYS.API_RESPONSE);
-
-                // Check what network is currently active by reading the button text
+        // Check what network is currently active by reading the button text
         await driver.delay(2000);
-        // const networkButtonText = await driver.executeScript(`
-        //   const networkButton = document.querySelector('[data-testid="sort-by-networks"]');
-        //   return networkButton ? networkButton.textContent.trim() : 'Button not found';
-        // `);
-        // console.log(`🔍 Current network button text: "${networkButtonText}"`);
-
-        // // Now check the network manager state
-        // const networkManager = new NetworkManager(driver);
-        // await networkManager.openNetworkManager();
-
-        // // Switch to Popular tab and verify Ethereum is deselected
-        // await networkManager.selectTab('Popular');
-        // await networkManager.checkNetworkIsDeselected(NetworkId.BASE);
-
-        // Validate the network was added
-        // const homepage = new HomePage(driver);
-        // await homepage.checkPageIsLoaded();
-        // await homepage.checkAddNetworkMessageIsDisplayed(networkName);
 
         // console.log('[PROD TEST] Custom network added successfully!');
         console.log('[PROD TEST] Importing tokens on Monad...');
