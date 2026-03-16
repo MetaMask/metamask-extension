@@ -133,7 +133,6 @@ export default function NftFullImage() {
                 src={isImageHosted ? image || imageFromTokenURI : nftImageURL}
                 alt={nftImageAlt}
                 name={name ?? ''}
-                tokenId={tokenId}
                 networkName={nftChainNetwork?.name ?? ''}
                 networkSrc={nftChainImage}
                 isIpfsURL={isIpfsURL}
