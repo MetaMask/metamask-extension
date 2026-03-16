@@ -3,9 +3,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import log from 'loglevel';
-// TODO: Remove restricted import
+import {
+  Box,
+  Text,
+  IconName,
+  AvatarNetwork,
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  TextColor,
+  TextVariant,
+  IconColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  FontWeight,
+  TextButton,
+} from '@metamask/design-system-react';
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import { TextField } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -18,29 +35,7 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-import {
-  Box,
-  Text,
-  TextField,
-  IconName,
-  ButtonLink,
-  AvatarNetwork,
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-} from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Display,
-  TextAlign,
-  TextColor,
-  TextVariant,
-  IconColor,
-  AlignItems,
-  JustifyContent,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -49,7 +44,7 @@ import {
   getIsSocialLoginFlow,
   getDataCollectionForMarketing,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
@@ -244,27 +239,25 @@ export default function PrivacySettings() {
 
   return (
     <>
-      <div className="privacy-settings" data-testid="privacy-settings">
-        <div
+      <Box className="privacy-settings" data-testid="privacy-settings">
+        <Box
           className={classnames('container', {
             'show-detail': showDetail,
             'show-list': !showDetail,
           })}
         >
-          <div className="list-view">
+          <Box className="list-view">
             <Box
               className="privacy-settings__header"
               marginTop={6}
               marginBottom={6}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              justifyContent={JustifyContent.flexStart}
+              flexDirection={BoxFlexDirection.Column}
+              justifyContent={BoxJustifyContent.Start}
             >
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                flexDirection={FlexDirection.Row}
-                justifyContent={JustifyContent.spaceBetween}
+                alignItems={BoxAlignItems.Center}
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
               >
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
@@ -274,18 +267,22 @@ export default function PrivacySettings() {
                   onClick={handleSubmit}
                 />
                 <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.center}
-                  width={BlockSize.Full}
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  justifyContent={BoxJustifyContent.Center}
+                  className="w-full"
                 >
-                  <Text variant={TextVariant.headingMd} as="h3">
+                  <Text variant={TextVariant.HeadingMd}>
                     {t('defaultSettingsTitle')}
                   </Text>
                 </Box>
                 <Box className="privacy-settings__empty-space" />
               </Box>
-              <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
+              <Text
+                variant={TextVariant.BodyLg}
+                fontWeight={FontWeight.Medium}
+                className="mt-5"
+              >
                 {t('defaultSettingsSubTitle')}
               </Text>
               <a
@@ -302,51 +299,55 @@ export default function PrivacySettings() {
             </Box>
             <Box>
               <Box
-                as="ul"
                 marginTop={4}
                 marginBottom={4}
-                style={{ listStyleType: 'none' }}
-                className="privacy-settings__categories-list"
+                className="privacy-settings__categories-list list-none"
+                asChild
               >
-                {items.map((item) => (
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    key={item.id}
-                    className="categories-item"
-                    onClick={() => handleItemSelected(item)}
-                  >
+                <ul>
+                  {items.map((item) => (
                     <Box
-                      display={Display.Flex}
-                      alignItems={AlignItems.flexStart}
-                      justifyContent={JustifyContent.spaceBetween}
-                      data-testid={`category-item-${item.title}`}
+                      marginTop={5}
+                      marginBottom={5}
+                      key={item.id}
+                      className="categories-item"
+                      onClick={() => handleItemSelected(item)}
                     >
-                      <Text variant={TextVariant.bodyLgMedium}>
-                        {item.title}
+                      <Box
+                        flexDirection={BoxFlexDirection.Row}
+                        alignItems={BoxAlignItems.Start}
+                        justifyContent={BoxJustifyContent.Between}
+                        data-testid={`category-item-${item.title}`}
+                      >
+                        <Text
+                          variant={TextVariant.BodyLg}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          {item.title}
+                        </Text>
+                        <ButtonIcon
+                          iconName={IconName.ArrowRight}
+                          ariaLabel="Next"
+                          size={ButtonIconSize.Lg}
+                          color={IconColor.IconDefault}
+                          onClick={() => handleItemSelected(item)}
+                        />
+                      </Box>
+                      <Text
+                        className="description"
+                        variant={TextVariant.BodyMd}
+                        color={TextColor.TextAlternative}
+                      >
+                        {item.subtitle}
                       </Text>
-                      <ButtonIcon
-                        iconName={IconName.ArrowRight}
-                        ariaLabel="Next"
-                        size={ButtonIconSize.Lg}
-                        color={IconColor.iconDefault}
-                        onClick={() => handleItemSelected(item)}
-                      />
                     </Box>
-                    <Text
-                      className="description"
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textAlternative}
-                    >
-                      {item.subtitle}
-                    </Text>
-                  </Box>
-                ))}
+                  ))}
+                </ul>
               </Box>
             </Box>
-          </div>
+          </Box>
 
-          <div
+          <Box
             className={classnames('detail-view', {
               hidden: !showDetail && hiddenClass,
             })}
@@ -355,9 +356,8 @@ export default function PrivacySettings() {
               className="privacy-settings__header"
               marginTop={6}
               marginBottom={5}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
             >
               <ButtonIcon
                 data-testid="category-back-button"
@@ -367,19 +367,19 @@ export default function PrivacySettings() {
                 onClick={handleBack}
               />
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
-                width={BlockSize.Full}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Center}
+                className="w-full"
               >
-                <Text variant={TextVariant.headingLg} as="h2">
+                <Text variant={TextVariant.HeadingLg}>
                   {selectedItem?.title}
                 </Text>
               </Box>
               <Box className="privacy-settings__empty-space" />
             </Box>
 
-            <div
+            <Box
               className="privacy-settings__settings"
               data-testid="privacy-settings-settings"
             >
@@ -454,11 +454,7 @@ export default function PrivacySettings() {
                         ])}
 
                         <Box paddingTop={4}>
-                          <Box
-                            display={Display.Flex}
-                            flexDirection={FlexDirection.Column}
-                            gap={5}
-                          >
+                          <Box flexDirection={BoxFlexDirection.Column} gap={5}>
                             {Object.values(networkConfigurations)
                               .filter(
                                 ({ chainId }) => !TEST_CHAINS.includes(chainId),
@@ -475,13 +471,13 @@ export default function PrivacySettings() {
                                     );
                                     dispatch(toggleNetworkMenu());
                                   }}
-                                  display={Display.Flex}
-                                  alignItems={AlignItems.center}
-                                  justifyContent={JustifyContent.spaceBetween}
+                                  flexDirection={BoxFlexDirection.Row}
+                                  alignItems={BoxAlignItems.Center}
+                                  justifyContent={BoxJustifyContent.Between}
                                 >
                                   <Box
-                                    display={Display.Flex}
-                                    alignItems={AlignItems.center}
+                                    flexDirection={BoxFlexDirection.Row}
+                                    alignItems={BoxAlignItems.Center}
                                   >
                                     <AvatarNetwork
                                       src={
@@ -491,16 +487,16 @@ export default function PrivacySettings() {
                                       }
                                       name={network.name}
                                     />
-                                    <Box
-                                      textAlign={TextAlign.Left}
-                                      marginLeft={3}
-                                    >
-                                      <Text variant={TextVariant.bodySmMedium}>
+                                    <Box className="text-left" marginLeft={3}>
+                                      <Text
+                                        variant={TextVariant.BodySm}
+                                        fontWeight={FontWeight.Medium}
+                                      >
                                         {network.name}
                                       </Text>
                                       <Text
-                                        variant={TextVariant.bodyXs}
-                                        color={TextColor.textAlternative}
+                                        variant={TextVariant.BodyXs}
+                                        color={TextColor.TextAlternative}
                                       >
                                         {
                                           // Get just the protocol + domain, not the infura key in path
@@ -520,7 +516,7 @@ export default function PrivacySettings() {
                                   />
                                 </Box>
                               ))}
-                            <ButtonLink
+                            <TextButton
                               onClick={() => {
                                 dispatch(
                                   toggleNetworkMenu({
@@ -528,18 +524,18 @@ export default function PrivacySettings() {
                                   }),
                                 );
                               }}
-                              justifyContent={JustifyContent.flexStart}
+                              className="justify-start flex"
                             >
                               <Box
-                                display={Display.Flex}
-                                alignItems={AlignItems.center}
+                                flexDirection={BoxFlexDirection.Row}
+                                alignItems={BoxAlignItems.Center}
                               >
-                                <Icon name={IconName.Add} marginRight={3} />
-                                <Text color={TextColor.primaryDefault}>
+                                <Icon name={IconName.Add} className="mr-3" />
+                                <Text color={TextColor.PrimaryDefault}>
                                   {t('addANetwork')}
                                 </Text>
                               </Box>
-                            </ButtonLink>
+                            </TextButton>
                           </Box>
                         </Box>
                       </>
@@ -587,11 +583,11 @@ export default function PrivacySettings() {
                           />
                           {ipfsURL ? (
                             <Text
-                              variant={TextVariant.bodySm}
+                              variant={TextVariant.BodySm}
                               color={
                                 ipfsError
-                                  ? TextColor.errorDefault
-                                  : TextColor.successDefault
+                                  ? TextColor.ErrorDefault
+                                  : TextColor.SuccessDefault
                               }
                             >
                               {ipfsError ||
@@ -640,24 +636,40 @@ export default function PrivacySettings() {
                     title={t('ensDomainsSettingTitle')}
                     description={
                       <>
-                        <Text variant={TextVariant.inherit}>
+                        <Text
+                          variant={TextVariant.BodySm}
+                          color={TextColor.TextAlternative}
+                        >
                           {t('ensDomainsSettingDescriptionIntroduction')}
                         </Text>
                         <Box
-                          as="ul"
                           marginTop={4}
                           marginBottom={4}
-                          paddingInlineStart={4}
+                          className="pl-4"
                           style={{ listStyleType: 'circle' }}
+                          asChild
                         >
-                          <Text variant={TextVariant.inherit} as="li">
-                            {t('ensDomainsSettingDescriptionPart1')}
-                          </Text>
-                          <Text variant={TextVariant.inherit} as="li">
-                            {t('ensDomainsSettingDescriptionPart2')}
-                          </Text>
+                          <ul>
+                            <Text
+                              variant={TextVariant.BodySm}
+                              asChild
+                              color={TextColor.TextAlternative}
+                            >
+                              <li>{t('ensDomainsSettingDescriptionPart1')}</li>
+                            </Text>
+                            <Text
+                              variant={TextVariant.BodySm}
+                              asChild
+                              color={TextColor.TextAlternative}
+                            >
+                              <li>{t('ensDomainsSettingDescriptionPart2')}</li>
+                            </Text>
+                          </ul>
                         </Box>
-                        <Text variant={TextVariant.inherit}>
+                        <Text
+                          variant={TextVariant.BodySm}
+                          color={TextColor.TextAlternative}
+                        >
                           {t('ensDomainsSettingDescriptionOutroduction')}
                         </Text>
                       </>
@@ -701,10 +713,10 @@ export default function PrivacySettings() {
                   )}
                 </>
               ) : null}
-            </div>
-          </div>
-        </div>
-      </div>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 }

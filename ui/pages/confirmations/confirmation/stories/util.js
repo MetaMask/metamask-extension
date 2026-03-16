@@ -12,7 +12,7 @@ import {
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokenBalancesControllerTokenBalances,
-} from '../../../../../shared/modules/selectors/assets-migration';
+} from '../../../../../shared/lib/selectors/assets-migration';
 
 const STORE_MOCK = {
   ...testData,

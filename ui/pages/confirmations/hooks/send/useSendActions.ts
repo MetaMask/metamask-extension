@@ -13,8 +13,13 @@ import {
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SendPages } from '../../constants/send';
+import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
-import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
+import {
+  addLeadingZeroIfNeeded,
+  normalizeAmount,
+  submitEvmTransaction,
+} from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
@@ -59,12 +64,15 @@ export const useSendActions = () => {
           from: from as Hex,
           hexData: hexData as Hex,
           to: toAddress as Hex,
-          value: value as string,
+          value: normalizeAmount(value),
         }),
       );
-      const route = maxValueMode
-        ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
-        : CONFIRM_TRANSACTION_ROUTE;
+      const params = new URLSearchParams();
+      if (maxValueMode) {
+        params.set('maxValueMode', String(maxValueMode));
+      }
+      params.set('loader', ConfirmationLoader.Send);
+      const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
     } else {
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
@@ -75,7 +83,7 @@ export const useSendActions = () => {
             fromAccountId: fromAccount?.id as string,
             toAddress: toAddress as string,
             assetId: asset.assetId as CaipAssetType,
-            amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
+            amount: addLeadingZeroIfNeeded(normalizeAmount(value)) as string,
           },
         )) as SnapConfirmSendResult;
 

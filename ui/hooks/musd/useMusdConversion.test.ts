@@ -15,6 +15,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
+  useLocation: () => ({ pathname: '/asset/0x1/0xtest', search: '' }),
 }));
 
 jest.mock('../../selectors/musd', () => ({
@@ -168,7 +169,7 @@ describe('useMusdConversion', () => {
       expect(mockAddTransaction).not.toHaveBeenCalled();
     });
 
-    it('returns early when geo-blocking check is still loading', async () => {
+    it('proceeds with conversion flow even while geo-blocking check is loading', async () => {
       useMusdGeoBlocking.mockReturnValue({
         isBlocked: false,
         userCountry: null,
@@ -181,8 +182,12 @@ describe('useMusdConversion', () => {
         await result.current.startConversionFlow();
       });
 
-      expect(mockNavigate).not.toHaveBeenCalled();
-      expect(mockAddTransaction).not.toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pathname: `/confirm-transaction/${MOCK_TX_ID}`,
+        }),
+      );
 
       useMusdGeoBlocking.mockReturnValue({
         isBlocked: false,
@@ -299,7 +304,7 @@ describe('useMusdConversion', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
           pathname: `/confirm-transaction/${MOCK_TX_ID}`,
-          search: 'loader=customAmount',
+          search: 'loader=customAmount&returnTo=%2Fasset%2F0x1%2F0xtest',
         }),
       );
     });

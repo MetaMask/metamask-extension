@@ -3,7 +3,7 @@ import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../shared/constants/signatures';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';

@@ -31,7 +31,6 @@ import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 
 const mockGetEnvironmentType = jest.fn();
 
-jest.mock('../../../../../shared/modules/selectors');
 jest.mock('../../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
 }));
@@ -41,6 +40,9 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../../contexts/hardware-wallets'),
   useHardwareWalletError: jest.fn(() => ({
     showErrorModal: jest.fn(),
+    dismissErrorModal: jest.fn(),
+    isErrorModalVisible: false,
+    setErrorModalSuppressed: jest.fn(),
   })),
   isHardwareWalletError: (...args: unknown[]) =>
     mockIsHardwareWalletError(...args),
@@ -51,6 +53,7 @@ jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
+jest.mock('../../../../../shared/lib/selectors');
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
@@ -159,6 +162,7 @@ describe('useTransactionConfirm', () => {
       showErrorModal: jest.fn(),
       dismissErrorModal: jest.fn(),
       isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
     });
   });
 
@@ -572,6 +576,7 @@ describe('useTransactionConfirm', () => {
       showErrorModal: showErrorModalMock,
       dismissErrorModal: jest.fn(),
       isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
     });
 
     const { onTransactionConfirm } = runHook();
@@ -593,6 +598,7 @@ describe('useTransactionConfirm', () => {
       showErrorModal: showErrorModalMock,
       dismissErrorModal: jest.fn(),
       isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
     });
 
     const { onTransactionConfirm } = runHook();

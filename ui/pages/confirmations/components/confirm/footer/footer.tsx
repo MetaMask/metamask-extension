@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
@@ -42,11 +42,16 @@ import {
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
-import { useHardwareWalletError } from '../../../../../contexts/hardware-wallets';
-import { useHardwareFooter } from './useHardwareFooter';
+import {
+  useHardwareFooter,
+  useHardwareWalletError,
+} from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
+import { SingleActionFooter } from './single-action-footer';
+
+const SINGLE_ACTION_FOOTER_TYPES = [TransactionType.musdConversion];
 
 export type OnCancelHandler = ({
   location,
@@ -105,15 +110,18 @@ const ConfirmButton = ({
 
   const {
     alerts,
-    hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
     hasUnconfirmedFieldDangerAlerts,
+    setAlertConfirmed,
+    unconfirmedDangerAlerts,
     unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
 
   const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
+  const shouldShowDangerConfirmButton =
+    hasUnconfirmedDangerAlerts || hasDangerBlockingAlerts;
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -122,6 +130,23 @@ const ConfirmButton = ({
   const handleOpenConfirmModal = useCallback(() => {
     setConfirmModalVisible(true);
   }, []);
+
+  const handleSubmitConfirmModal = useCallback(async () => {
+    if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
+      const [selectedUnconfirmedDangerAlert] = unconfirmedDangerAlerts;
+
+      if (selectedUnconfirmedDangerAlert) {
+        setAlertConfirmed(selectedUnconfirmedDangerAlert.key, true);
+      }
+    }
+
+    setConfirmModalVisible(false);
+  }, [
+    alertOwnerId,
+    currentConfirmation?.id,
+    setAlertConfirmed,
+    unconfirmedDangerAlerts,
+  ]);
 
   const { trialedProducts } = useUserSubscriptions();
   const isShieldTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
@@ -133,10 +158,10 @@ const ConfirmButton = ({
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmitConfirmModal}
         />
       )}
-      {hasDangerAlerts ? (
+      {shouldShowDangerConfirmButton ? (
         <Button
           block
           danger
@@ -221,8 +246,18 @@ const Footer = () => {
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
+  const { hasUnconfirmedDangerAlerts } = useAlerts(
+    currentConfirmation?.id ?? '',
+  );
 
-  const { dismissErrorModal } = useHardwareWalletError();
+  const { dismissErrorModal, setErrorModalSuppressed } =
+    useHardwareWalletError();
+
+  useEffect(() => {
+    return () => {
+      setErrorModalSuppressed(false);
+    };
+  }, [setErrorModalSuppressed]);
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
@@ -235,10 +270,11 @@ const Footer = () => {
     await onCancel({
       location: MetaMetricsEventLocation.Confirmation,
     });
+    dismissErrorModal();
     if (currentConfirmationId) {
       navigateNext(currentConfirmationId);
     }
-  }, [currentConfirmationId, navigateNext, onCancel]);
+  }, [currentConfirmationId, navigateNext, onCancel, dismissErrorModal]);
 
   const {
     walletType,
@@ -252,8 +288,24 @@ const Footer = () => {
     onUserRejectedHardwareWalletError,
   });
 
+  useEffect(() => {
+    const shouldSuppressHardwareWalletErrors =
+      hasUnconfirmedDangerAlerts && shouldRunHardwareWalletPreflight;
+
+    setErrorModalSuppressed(shouldSuppressHardwareWalletErrors);
+  }, [
+    hasUnconfirmedDangerAlerts,
+    setErrorModalSuppressed,
+    shouldRunHardwareWalletPreflight,
+  ]);
+
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
+
+  const shouldShowReconnectButton =
+    shouldRunHardwareWalletPreflight &&
+    !isHardwareWalletReady &&
+    !hasUnconfirmedDangerAlerts;
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
@@ -271,37 +323,41 @@ const Footer = () => {
       if (isAddEthereumChain) {
         await onAddEthereumChain();
         navigate(DEFAULT_ROUTE);
-      } else if (isTransactionConfirmation) {
+        return;
+      }
+
+      if (isTransactionConfirmation) {
         const didConfirm = await onTransactionConfirm();
         if (didConfirm && currentConfirmationId) {
           navigateNext(currentConfirmationId);
         }
-      } else {
-        const resolveApprovalWithHardwareWalletHandling =
-          withHardwareWalletModalHandling(async () => {
-            const resolveApprovalOptions = walletType
-              ? {
-                  fromAddress,
-                  waitForResult: true,
-                  walletType,
-                }
-              : {
-                  fromAddress,
-                };
-
-            await dispatch(
-              resolvePendingApproval(currentConfirmation.id, undefined, {
-                ...resolveApprovalOptions,
-              }),
-            );
-
-            if (currentConfirmationId) {
-              navigateNext(currentConfirmationId);
-            }
-          });
-
-        await resolveApprovalWithHardwareWalletHandling();
+        return;
       }
+
+      const resolveApprovalWithHardwareWalletHandling =
+        withHardwareWalletModalHandling(async () => {
+          const resolveApprovalOptions = walletType
+            ? {
+                fromAddress,
+                waitForResult: true,
+                walletType,
+              }
+            : {
+                fromAddress,
+              };
+
+          await dispatch(
+            resolvePendingApproval(currentConfirmation.id, undefined, {
+              ...resolveApprovalOptions,
+            }),
+          );
+
+          if (currentConfirmationId) {
+            navigateNext(currentConfirmationId);
+          }
+        });
+
+      await resolveApprovalWithHardwareWalletHandling();
     } finally {
       resetTransactionState();
     }
@@ -314,13 +370,13 @@ const Footer = () => {
     isTransactionConfirmation,
     onAddEthereumChain,
     navigate,
-    resetTransactionState,
     onTransactionConfirm,
     navigateNext,
     dispatch,
     fromAddress,
     walletType,
     withHardwareWalletModalHandling,
+    resetTransactionState,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
@@ -358,6 +414,18 @@ const Footer = () => {
     return null;
   }
 
+  if (
+    currentConfirmation.type &&
+    SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)
+  ) {
+    return (
+      <SingleActionFooter
+        onSubmit={onSubmit}
+        isGaslessLoading={isGaslessLoading}
+      />
+    );
+  }
+
   return (
     <>
       <ShieldFooterCoverageIndicator />
@@ -379,7 +447,7 @@ const Footer = () => {
         />
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
           <CancelButton handleFooterCancel={handleFooterCancel} />
-          {shouldRunHardwareWalletPreflight && !isHardwareWalletReady ? (
+          {shouldShowReconnectButton ? (
             <Button
               block
               data-testid="reconnect-hardware-wallet-button"

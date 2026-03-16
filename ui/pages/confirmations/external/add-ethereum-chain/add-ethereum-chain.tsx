@@ -16,7 +16,7 @@ import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/
 import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row';
 import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { getSubjectMetadata } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';

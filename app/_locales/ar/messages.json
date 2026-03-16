@@ -396,9 +396,6 @@
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "جهة اتصال جديدة"
-  },
   "newContract": {
     "message": "عقد جديد"
   },
@@ -490,9 +487,6 @@
   },
   "removeAccount": {
     "message": "إزالة الحساب"
-  },
-  "removeAccountDescription": {
-    "message": "ستتم إزالة هذا الحساب من محفظتك. يرجى التأكد من وجود عبارة الأمان الأصلية أو المفتاح الخاص لهذا الحساب الذي تم استيراده قبل المتابعة. يمكنك استيراد أو إنشاء حسابات مرة أخرى من القائمة المنسدلة للحساب."
   },
   "required": {
     "message": "مطلوب"
@@ -659,12 +653,6 @@
   },
   "usedByClients": {
     "message": "مستخدمة من قبل مجموعة متنوعة من العملاء المختلفة"
-  },
-  "userName": {
-    "message": "اسم المستخدم"
-  },
-  "viewContact": {
-    "message": "عرض جهة الاتصال"
   },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"

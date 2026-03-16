@@ -386,9 +386,6 @@
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Novi kontakt"
-  },
   "newContract": {
     "message": "Novi ugovor"
   },
@@ -480,9 +477,6 @@
   },
   "removeAccount": {
     "message": "Уклањање налога"
-  },
-  "removeAccountDescription": {
-    "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
   },
   "required": {
     "message": "Obavezno"
@@ -646,12 +640,6 @@
   },
   "usedByClients": {
     "message": "Koristi ga veliki broj različitih klijenata"
-  },
-  "userName": {
-    "message": "Корисничко име"
-  },
-  "viewContact": {
-    "message": "Pogledaj kontakt"
   },
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"

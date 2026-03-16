@@ -33,7 +33,7 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 | `userJourneyAssets`            | Asset detail page loads         | `asset-details.ts`, `solana-asset-details.ts`                    |
 | `userJourneyAccountManagement` | Login from home (import SRP)    | `import-srp-home.ts`                                             |
 | `userJourneyTransactions`      | Send and swap transaction flows | `send-transactions.ts`, `swap.ts`                                |
-| `pageLoadBenchmark`            | Playwright dapp page load       | `page-load-benchmark.spec.ts`                                    |
+| `pageLoadBenchmark`            | Playwright dapp page load       | `dapp-page-load-benchmark.spec.ts`                               |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
 ### User journey benchmarks: browserify vs webpack

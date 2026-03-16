@@ -14,7 +14,7 @@ import {
   showModal,
   setManageInstitutionalWallets,
 } from '../../../store/actions';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors';
 import {
   displayErrorInSettings,
   hideErrorInSettings,

@@ -12,16 +12,16 @@ import {
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../shared/lib/conversion.utils';
 import {
   getProviderConfig,
   getCurrentChainId,
-} from '../../shared/modules/selectors/networks';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+} from '../../shared/lib/selectors/networks';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import {
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
-} from '../../shared/modules/selectors/selector-creators';
+} from '../../shared/lib/selectors/selector-creators';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';

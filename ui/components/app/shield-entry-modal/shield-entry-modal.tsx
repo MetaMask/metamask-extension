@@ -57,7 +57,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
-} from '../../../../shared/modules/shield';
+} from '../../../../shared/lib/shield';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';

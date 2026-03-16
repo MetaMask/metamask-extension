@@ -2,8 +2,8 @@
 import { Mockttp } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -103,7 +103,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withTrezorAccount()
             .withPermissionControllerConnectedToTestDapp({
               account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,

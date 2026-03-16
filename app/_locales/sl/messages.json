@@ -383,9 +383,6 @@
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Nov stik"
-  },
   "newContract": {
     "message": "Nova pogodba"
   },
@@ -477,9 +474,6 @@
   },
   "removeAccount": {
     "message": "Izbriši račun"
-  },
-  "removeAccountDescription": {
-    "message": "Ta račun bo izbrisan. Prepričajte se, da imate seed phase ali zasebni ključ tega računa, da ga boste lahko kasneje obnovili. "
   },
   "required": {
     "message": "Zahtevano"
@@ -646,12 +640,6 @@
   },
   "usedByClients": {
     "message": "Uporabljen s strani večih različnih odjemalcev"
-  },
-  "userName": {
-    "message": "Uporabniško ime"
-  },
-  "viewContact": {
-    "message": "Ogled stika"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"

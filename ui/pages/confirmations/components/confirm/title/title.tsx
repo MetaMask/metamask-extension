@@ -343,7 +343,7 @@ const ConfirmTitle: React.FC = memo(() => {
   );
 
   if (!currentConfirmation) {
-    if (loader && loader !== ConfirmationLoader.Default) {
+    if (loader !== ConfirmationLoader.Default) {
       return null;
     }
 

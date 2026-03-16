@@ -3,7 +3,6 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import FixtureBuilder from '../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES } from '../constants';
@@ -374,12 +373,11 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -453,12 +451,11 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -524,8 +521,8 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -587,9 +584,9 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: [
             {

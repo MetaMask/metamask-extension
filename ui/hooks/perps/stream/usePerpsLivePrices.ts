@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { usePerpsController } from '../../../providers/perps';
 import type { PriceUpdate } from '@metamask/perps-controller';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLivePrices hook

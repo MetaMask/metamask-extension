@@ -129,6 +129,31 @@ describe('./utils/config.ts', () => {
       assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
     });
 
+    it('includes null values and omits undefined values in safeVariables', () => {
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(['--mode', 'production'], buildTypes);
+
+      mockRc({
+        TESTING_NULL: 'null',
+        TESTING_EMPTY_STRING: '',
+      });
+
+      const { variables, safeVariables } = config.getVariables(
+        args,
+        buildTypes,
+      );
+
+      assert.strictEqual(variables.get('TESTING_NULL'), null);
+      assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
+      assert.strictEqual(variables.get('DEBUG'), undefined);
+      assert.strictEqual(safeVariables.TESTING_NULL, 'null');
+      assert.strictEqual(safeVariables.TESTING_EMPTY_STRING, 'null');
+      assert.strictEqual(
+        Object.prototype.hasOwnProperty.call(safeVariables, 'DEBUG'),
+        false,
+      );
+    });
+
     it('should return buildEnvVarDeclarations with keys from activeBuild.env and buildConfig.env', () => {
       mockRc();
       const buildTypes = loadBuildTypesConfig();

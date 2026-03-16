@@ -21,7 +21,7 @@ export type DelegationFilter = {
   tags?: string[];
 };
 
-export type ListDelegationEntriesOptions = {
+type ListDelegationEntriesOptions = {
   filter?: DelegationFilter;
 };
 

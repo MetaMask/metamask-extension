@@ -380,9 +380,6 @@
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "አዲስ ዕውቂያ"
-  },
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
@@ -474,9 +471,6 @@
   },
   "removeAccount": {
     "message": "መለያ ያስወግዱ"
-  },
-  "removeAccountDescription": {
-    "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
   },
   "required": {
     "message": "የሚያስፈልግ"
@@ -643,12 +637,6 @@
   },
   "usedByClients": {
     "message": "በተለያዩ ደንበኞች ጥቅም ላይ የዋለ ነው"
-  },
-  "userName": {
-    "message": "የተጣቃሚ ስም"
-  },
-  "viewContact": {
-    "message": "ዕውቂያን ይመልከቱ"
   },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"

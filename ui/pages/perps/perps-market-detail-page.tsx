@@ -26,6 +26,7 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
+import type { PriceUpdate } from '@metamask/perps-controller';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -71,7 +72,6 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
-import type { PriceUpdate } from '@metamask/perps-controller';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).

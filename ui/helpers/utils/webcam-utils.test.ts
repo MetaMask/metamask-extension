@@ -7,14 +7,14 @@ import {
   PLATFORM_FIREFOX,
   PLATFORM_CHROME,
 } from '../../../shared/constants/app';
-import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 import WebcamUtils from './webcam-utils';
 
 jest.mock('../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-jest.mock('../../../shared/modules/browser-runtime.utils', () => ({
+jest.mock('../../../shared/lib/browser-runtime.utils', () => ({
   getBrowserName: jest.fn(),
 }));
 

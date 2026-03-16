@@ -13,12 +13,8 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  getTokenBalancesEvm,
-  getAssetsBySelectedAccountGroup,
-} from '../../selectors/assets';
+import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import { getSelectedAccount } from '../../selectors';
-import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts/feature-flags';
 import {
   isMusdToken,
   isMusdSupportedChain,
@@ -53,17 +49,6 @@ export type UseMusdBalanceResult = {
  */
 export function useMusdBalance(): UseMusdBalanceResult {
   const selectedAccount = useSelector(getSelectedAccount);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
-  // Get token balances based on multichain state
-  const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(
-      state as Parameters<typeof getTokenBalancesEvm>[0],
-      selectedAccount?.address,
-    ),
-  );
   const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
 
   // Compute mUSD balances
@@ -84,37 +69,17 @@ export function useMusdBalance(): UseMusdBalanceResult {
         };
       }
 
-      if (isMultichainAccountsState2Enabled) {
-        // Use new multichain asset structure
-        for (const [rawChainId, assets] of Object.entries(accountGroupAssets)) {
-          const chainId = rawChainId.toLowerCase() as Hex;
-          if (!isMusdSupportedChain(chainId)) {
-            continue;
-          }
-
-          for (const asset of assets) {
-            const address = 'address' in asset ? asset.address : null;
-            if (address && isMusdToken(address)) {
-              const balance = asset.balance || '0';
-              if (balance !== '0') {
-                hasBalance = true;
-                balancesByChain[chainId] = balance;
-                total = new BigNumber(total).plus(balance).toString();
-              }
-            }
-          }
+      // Use new multichain asset structure
+      for (const [rawChainId, assets] of Object.entries(accountGroupAssets)) {
+        const chainId = rawChainId.toLowerCase() as Hex;
+        if (!isMusdSupportedChain(chainId)) {
+          continue;
         }
-      } else if (evmBalances && Array.isArray(evmBalances)) {
-        // Use legacy EVM balances structure
-        for (const token of evmBalances) {
-          const chainId = (token.chainId as string)?.toLowerCase() as Hex;
-          if (
-            token.address &&
-            isMusdToken(token.address) &&
-            chainId &&
-            isMusdSupportedChain(chainId)
-          ) {
-            const balance = token.balance || '0';
+
+        for (const asset of assets) {
+          const address = 'address' in asset ? asset.address : null;
+          if (address && isMusdToken(address)) {
+            const balance = asset.balance || '0';
             if (balance !== '0') {
               hasBalance = true;
               balancesByChain[chainId] = balance;
@@ -130,12 +95,7 @@ export function useMusdBalance(): UseMusdBalanceResult {
         musdBalancesByChain: balancesByChain,
         isLoading: loading,
       };
-    }, [
-      selectedAccount?.address,
-      isMultichainAccountsState2Enabled,
-      accountGroupAssets,
-      evmBalances,
-    ]);
+    }, [selectedAccount?.address, accountGroupAssets]);
 
   return {
     hasMusdBalance,

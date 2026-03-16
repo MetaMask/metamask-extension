@@ -370,9 +370,6 @@
     "message": "Účet $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Nový kontakt"
-  },
   "newContract": {
     "message": "Nový kontrakt"
   },
@@ -461,9 +458,6 @@
   },
   "removeAccount": {
     "message": "Odstrániť účet"
-  },
-  "removeAccountDescription": {
-    "message": "Tento účet bude odstránený z vašej peňaženky. Skôr ako budete pokračovať, skontrolujte, či máte pre tento importovaný účet pôvodnú seed frázu alebo súkromný kľúč. Z rozbaľovacieho menu účtu môžete znova importovať alebo vytvoriť účty."
   },
   "required": {
     "message": "Povinné"
@@ -624,12 +618,6 @@
   },
   "usedByClients": {
     "message": "Používána různými klienty"
-  },
-  "userName": {
-    "message": "Meno používateľa"
-  },
-  "viewContact": {
-    "message": "Zobraziť kontakt"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

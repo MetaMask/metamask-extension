@@ -3,7 +3,7 @@ import SETTINGS_CONSTANTS from '../constants/settings';
 import {
   getIsMetaMaskShieldFeatureEnabled,
   getIsSettingsPageDevOptionsEnabled,
-} from '../../../shared/modules/environment';
+} from '../../../shared/lib/environment';
 
 let settingsRoutes;
 
