@@ -106,6 +106,16 @@ jobs:
       - name: Run build
         run: ${{ inputs.build-command }}
 
+      - name: Zip builds
+        run: |
+          mkdir -p builds
+          for browser in chrome firefox; do
+            if [ -d "dist/${browser}" ]; then
+              version_name=$(jq -r '.version_name' "dist/${browser}/manifest.json")
+              (cd "dist/${browser}" && zip -r "../../builds/metamask-${browser}-${version_name}.zip" .)
+            fi
+          done
+
       - name: Validate source maps
         if: ${{ inputs.validate-source-maps }}
         run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
