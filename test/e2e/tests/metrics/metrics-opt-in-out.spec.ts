@@ -31,6 +31,8 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt In',
             properties: {
               category: 'Onboarding',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: 'metamask',
             },
           },
         ],
@@ -49,6 +51,8 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt Out',
             properties: {
               category: 'Onboarding',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: 'metamask',
             },
           },
         ],
@@ -107,6 +111,7 @@ describe('Metrics Opt In/Out events', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.equal(events[0].event, 'Metrics Opt In');
+        assert.equal(events[0].properties.account_type, 'metamask');
       },
     );
   });
@@ -168,6 +173,7 @@ describe('Metrics Opt In/Out events', function () {
           const events = await getEventPayloads(driver, mockedEndpoints);
           assert.equal(events.length, 1);
           assert.equal(events[0].event, 'Metrics Opt Out');
+          assert.equal(events[0].properties.account_type, 'metamask');
         }
       },
     );

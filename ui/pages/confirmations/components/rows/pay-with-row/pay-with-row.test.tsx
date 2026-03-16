@@ -76,6 +76,9 @@ const getMockState = () => ({
       },
       selectedAccount: 'account-1',
     },
+    accountIdByAddress: {
+      [FROM_ADDRESS_MOCK]: 'account-1',
+    },
     accounts: {
       [FROM_ADDRESS_MOCK]: {
         address: FROM_ADDRESS_MOCK,

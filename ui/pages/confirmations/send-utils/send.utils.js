@@ -4,8 +4,8 @@ import { isHexString } from '@metamask/utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { BURN_ADDRESS } from '../../../../shared/modules/hexstring-utils';
+import { Numeric } from '../../../../shared/lib/Numeric';
+import { BURN_ADDRESS } from '../../../../shared/lib/hexstring-utils';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,

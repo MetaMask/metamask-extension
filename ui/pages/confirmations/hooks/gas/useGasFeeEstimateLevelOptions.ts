@@ -16,8 +16,8 @@ import { updateTransactionGasFees } from '../../../../store/actions';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
-import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 
 const HEX_ZERO = '0x0';
 

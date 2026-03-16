@@ -11,7 +11,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../shared/lib/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import {
   createCancelTransaction,

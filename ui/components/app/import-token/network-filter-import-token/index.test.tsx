@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors/selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { NetworkFilterImportToken } from '.';

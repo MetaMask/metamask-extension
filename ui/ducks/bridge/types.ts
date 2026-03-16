@@ -44,6 +44,8 @@ export type BridgeState = {
   slippage?: number;
   txAlert: TxAlert | null;
   txAlertStatus: RequestStatus;
+  isSrcAssetPickerOpen: boolean;
+  isDestAssetPickerOpen: boolean;
 };
 
 export type TokenPayload = MinimalAsset & // Require minimal asset fields

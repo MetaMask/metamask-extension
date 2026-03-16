@@ -27,7 +27,7 @@ import {
   Box,
   Text,
 } from '../../components/component-library';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import {
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
@@ -59,7 +59,7 @@ import { PRIMARY } from '../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
 

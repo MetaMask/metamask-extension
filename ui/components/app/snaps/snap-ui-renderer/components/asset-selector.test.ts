@@ -88,6 +88,10 @@ describe('SnapUIAssetSelector', () => {
   const mockState = {
     metamask: {
       internalAccounts: mockInternalAccount,
+      accountIdByAddress: {
+        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv':
+          '8c33fc18-6c52-44b1-b8fa-550b934a05ef',
+      },
       balances: mockBalances,
       accountsAssets: mockAccountsAssets,
       assetsMetadata: mockAssetsMetadata,

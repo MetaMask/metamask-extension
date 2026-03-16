@@ -122,13 +122,13 @@ import {
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
-} from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/selectors/networks';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account-slice';
 import {
   getUnconnectedAccountAlertEnabledness,
   getCompletedOnboarding,
 } from '../ducks/metamask/metamask';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
@@ -148,20 +148,20 @@ import {
   MetaMetricsUserTraits,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
-} from '../../shared/modules/i18n';
-import { decimalToHex } from '../../shared/modules/conversion.utils';
+} from '../../shared/lib/i18n';
+import { decimalToHex } from '../../shared/lib/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
   createSentryError,
-} from '../../shared/modules/error';
+} from '../../shared/lib/error';
 import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -4930,7 +4930,7 @@ export function toggleExternalServices(
 }
 
 export function setIsIpfsGatewayEnabled(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setIsIpfsGatewayEnabled`);

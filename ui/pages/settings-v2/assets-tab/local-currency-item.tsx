@@ -20,7 +20,6 @@ export const LocalCurrencyItem = () => {
       label={t('localCurrency')}
       value={currentCurrency.toUpperCase()}
       onPress={handleCurrencyPress}
-      ariaLabel={t('localCurrency')}
     />
   );
 };

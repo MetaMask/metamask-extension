@@ -7,7 +7,7 @@ import {
   hideLoadingIndication,
   showLoadingIndication,
 } from '../../../store/actions';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { selectNftsByChainId } from '../../../selectors';

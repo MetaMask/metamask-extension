@@ -3,7 +3,7 @@ import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';

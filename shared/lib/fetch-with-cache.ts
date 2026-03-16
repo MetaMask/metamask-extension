@@ -1,5 +1,5 @@
 import { MINUTE, SECOND } from '../constants/time';
-import getFetchWithTimeout from '../modules/fetch-with-timeout';
+import getFetchWithTimeout from './fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
 const fetchWithCache = async ({

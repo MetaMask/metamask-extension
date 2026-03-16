@@ -26,7 +26,7 @@ import {
   SNAPS_ROUTE,
   PERMISSIONS,
   GATOR_PERMISSIONS,
-  // CONTACTS_ROUTE,
+  CONTACTS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -35,7 +35,7 @@ import {
   toggleNetworkMenu,
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
@@ -53,7 +53,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -397,13 +397,12 @@ export function useGlobalMenuSections(
       id: 'global-menu-section-manage',
       title: t('manage'),
       items: [
-        // TODO: Uncomment when we remove the Contacts tab from Settings
-        // {
-        //   id: 'global-menu-contacts',
-        //   iconName: IconName.Book,
-        //   label: t('contacts'),
-        //   to: `${CONTACTS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
-        // },
+        {
+          id: 'global-menu-contacts',
+          iconName: IconName.Book,
+          label: t('contacts'),
+          to: `${CONTACTS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+        },
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,

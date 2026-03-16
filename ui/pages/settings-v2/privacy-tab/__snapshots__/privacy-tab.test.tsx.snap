@@ -1,0 +1,319 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PrivacyTab snapshot matches snapshot 1`] = `
+<div>
+  <div
+    class="pb-4 px-4"
+  >
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Basic functionality
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                data-testid="basic-functionality-toggle"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <div
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        <span>
+           
+          Includes basic features like token details and gas settings. Keep this feature on for the best experience.  Read our 
+          <a
+            class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed"
+            href="https://consensys.io/privacy-policy"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Privacy Policy
+          </a>
+           to learn more.
+           
+        </span>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Third-party APIs
+        </p>
+        <button
+          aria-label="Select Third-party APIs"
+          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+            />
+          </svg>
+        </button>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Choose how you share your IP address or Ethereum address with third-party APIs. Changes will impact your MetaMask experience.
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Batch account balance requests
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                data-testid="batch-account-balance-requests-toggle"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Sends balance updates for all your accounts at once. Allows for a faster and overall better experience managing multiple accounts.
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Skip link confirmation screens
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                data-testid="skip-link-confirmation-toggle"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        When you open a link from MetaMask, we show a confirmation screen to protect you from accidentally viewing sensitive info like your accounts, balances, or transaction history. Turn this on to skip that screen for links originating from MetaMask.
+      </p>
+    </div>
+    <div
+      class="bg-muted my-2 h-px w-full"
+    />
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Participate in MetaMetrics
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--off toggle-button--disabled"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                data-testid="participate-in-meta-metrics-toggle"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Participate in MetaMetrics to help us make MetaMask better
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+    >
+      <div
+        class="flex flex-row items-center justify-between"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Data collection for marketing
+        </p>
+        <div>
+          <label
+            class="toggle-button toggle-button--off toggle-button--disabled"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 40px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                data-testid="data-collection-for-marketing-toggle"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+          </label>
+        </div>
+      </div>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
+      </p>
+    </div>
+  </div>
+</div>
+`;

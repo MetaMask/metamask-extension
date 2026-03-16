@@ -392,9 +392,6 @@
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Új kapcsolat"
-  },
   "newContract": {
     "message": "Új szerződés"
   },
@@ -649,12 +646,6 @@
   },
   "usedByClients": {
     "message": "Számos különböző ügyfél használja"
-  },
-  "userName": {
-    "message": "Felhasználónév"
-  },
-  "viewContact": {
-    "message": "Névjegy megtekintése"
   },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"

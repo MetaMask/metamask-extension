@@ -24,7 +24,7 @@ import {
 import {
   decGWEIToHexWEI,
   decimalToHex,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 
 /**
  * @typedef {object} TransactionFunctionsReturnType

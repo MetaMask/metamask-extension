@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { isCaipChainId, Hex, CaipChainId } from '@metamask/utils';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors';
 import { fetchSmartTransactionsLiveness } from '../../../store/actions';
 import { isNonEvmChain } from '../../../ducks/bridge/utils';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 
 /**
  * Hook that fetches smart transactions liveness for a given chain.

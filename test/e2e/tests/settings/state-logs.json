@@ -104,6 +104,8 @@
     "fromTokenBalance": "null",
     "fromTokenExchangeRate": "null",
     "fromTokenInputValue": "null",
+    "isDestAssetPickerOpen": "boolean",
+    "isSrcAssetPickerOpen": "boolean",
     "selectedQuote": "null",
     "slippage": "number",
     "sortOrder": "string",
@@ -164,6 +166,9 @@
           "lastUpdatedAt": "number"
         }
       }
+    },
+    "accountIdByAddress": {
+      "*": "string"
     },
     "accountsAssets": {
       "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": ["string"]

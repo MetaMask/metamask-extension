@@ -1,13 +1,13 @@
 import { act } from 'react-dom/test-utils';
 import { Hex } from '@metamask/utils';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../../shared/lib/selectors';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isSendBundleSupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
-jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../../shared/lib/selectors');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   isSendBundleSupported: jest.fn(),

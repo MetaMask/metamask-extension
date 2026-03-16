@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../shared/lib/conversion.utils';
 
 type TransactionGroup = {
   nonce?: string;

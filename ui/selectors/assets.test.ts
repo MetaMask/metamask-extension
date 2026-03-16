@@ -947,6 +947,8 @@ describe('Aggregated balance adapters/selectors', () => {
     expect(args[6]).toHaveProperty('accountsAssets');
     expect(args[7]).toHaveProperty('allTokens');
     expect(args[8]).toEqual({ currentCurrency: 'usd', currencyRates: {} });
+    // args[9] = enabledNetworkMap, args[10] = networkConfigurationsByChainId
+    expect(args[10]).toBeDefined();
   });
 
   it('memoizes aggregate output for identical state', () => {
@@ -1026,6 +1028,7 @@ describe('Aggregated balance recomputation behavior', () => {
     const accountsAssets = {};
     const assetsMetadata = {};
     const allIgnoredAssets = {};
+    const networkConfigurationsByChainId = {};
 
     const baseState: BalanceCalculationState = {
       metamask: {
@@ -1043,6 +1046,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
+        networkConfigurationsByChainId,
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -1065,6 +1069,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
+        networkConfigurationsByChainId,
         // unrelated field
         remoteFeatureFlags: { foo: true },
       } as unknown as BalanceCalculationState['metamask'],
@@ -1098,6 +1103,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets: {},
         assetsMetadata: {},
         allIgnoredAssets: {},
+        networkConfigurationsByChainId: {},
       } as unknown as BalanceCalculationState['metamask'],
     };
 

@@ -1,6 +1,6 @@
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
@@ -17,7 +17,7 @@ describe('Petnames - Transactions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
@@ -59,7 +59,7 @@ describe('Petnames - Transactions', function () {
   it('can save petnames for addresses in wallet send transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             featureFlags: {
               sendHexData: true,

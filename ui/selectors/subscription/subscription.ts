@@ -9,8 +9,8 @@ import {
 import {
   getIsShieldSubscriptionActive,
   getShieldSubscription,
+  ShieldSubscriptionError,
 } from '../../../shared/lib/shield';
-import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 
 type SubscriptionState = {
   metamask: SubscriptionControllerState & {

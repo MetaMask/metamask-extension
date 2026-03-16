@@ -6,7 +6,7 @@ import type {
   TokenRatesControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
-import type { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -24,7 +24,7 @@ type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerToken;
+  | AuthenticationControllerGetBearerTokenAction;
 
 export type BridgeControllerMessenger = ReturnType<
   typeof getBridgeControllerMessenger
