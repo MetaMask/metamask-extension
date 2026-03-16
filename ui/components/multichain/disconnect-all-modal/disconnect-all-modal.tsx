@@ -12,12 +12,6 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-// Maps to localizations for title and text
-export enum DisconnectType {
-  Account = 'disconnectAllAccountsText',
-  Snap = 'disconnectAllSnapsText',
-}
-
 export const DisconnectAllModal = ({
   onClick,
   onClose,
