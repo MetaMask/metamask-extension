@@ -2755,6 +2755,9 @@ describe('MetaMaskController', () => {
             _name: 'controller',
             _parent: expect.any(ObjectMultiplex),
           }),
+          expect.objectContaining({
+            onBeforeStartUISyncSent: expect.any(Function),
+          }),
         );
       });
 
@@ -3224,6 +3227,39 @@ describe('MetaMaskController', () => {
         expect(consoleSpy).toHaveBeenCalledWith(
           'Unrecognized patch-store substream notification method: unknownMethod',
         );
+      });
+
+      it("does not double-initialize a connection's patch store when multiple connections are open and the startUISync event is fired", async () => {
+        const {
+          patchStream: firstConnectionPatchStream,
+          messages: firstConnectionMessages,
+        } = setupPatchStoreConnection({ startUISync: false });
+        setupPatchStoreConnection({ startUISync: false });
+
+        // Emit startUISync, which fires both connections' once('startUISync')
+        // listeners.
+        metamaskController.emit('startUISync');
+        await flushBufferedWrites();
+
+        // Cause a state change after both patch stores are initialized.
+        metamaskController.preferencesController.setCurrentLocale('en');
+        await flushBufferedWrites();
+
+        // Connection 1's patch store was initialized exactly once, so the
+        // locale change patch appears exactly once (not twice).
+        firstConnectionPatchStream.write({
+          jsonrpc: '2.0',
+          id: 1,
+          method: GET_STATE_PATCHES,
+        });
+        await flushBufferedWrites();
+        const firstConnectionResponse = firstConnectionMessages.find(
+          (message) => message.id === 1,
+        );
+        const currentLocalePatches = firstConnectionResponse?.result.filter(
+          (patch) => patch.path[0] === 'currentLocale',
+        );
+        expect(currentLocalePatches).toHaveLength(1);
       });
     });
 

@@ -6457,8 +6457,12 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    this.setupPatchStoreConnection(mux.createStream('patch-store'));
-    this.setupControllerConnection(mux.createStream('controller'));
+    const { onBeforeStartUISyncSent } = this.setupPatchStoreConnection(
+      mux.createStream('patch-store'),
+    );
+    this.setupControllerConnection(mux.createStream('controller'), {
+      onBeforeStartUISyncSent,
+    });
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -6591,7 +6595,7 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    const handleBeforeStartUISyncSent = () => {
+    const onBeforeStartUISyncSent = () => {
       // Start tracking patches immediately after retrieving initial state for
       // this UI connection (to include with the `startUISync` notification) to
       // ensure we don't miss any patches or include extra patches.
@@ -6638,7 +6642,11 @@ export default class MetamaskController extends EventEmitter {
         handleStartSendingPatches();
       } else if (method === GET_STATE_PATCHES) {
         handleGetStatePatches(message);
-      } else if (message.id !== undefined) {
+      } else if (message.id === undefined) {
+        console.error(
+          `Unrecognized patch-store substream notification method: ${method}`,
+        );
+      } else {
         outStream.write({
           id: message.id,
           jsonrpc: '2.0',
@@ -6646,29 +6654,28 @@ export default class MetamaskController extends EventEmitter {
             message: `${method} not found`,
           }),
         });
-      } else {
-        console.error(
-          `Unrecognized patch-store substream notification method: ${method}`,
-        );
       }
     });
 
     this.on('update', handleUpdate);
-    this.on('beforeStartUISyncSent', handleBeforeStartUISyncSent);
 
     onStreamClosed(outStream, () => {
       this.removeListener('update', handleUpdate);
-      this.removeListener('beforeStartUISyncSent', handleBeforeStartUISyncSent);
       patchStore.destroy();
     });
+
+    return { onBeforeStartUISyncSent };
   }
 
   /**
    * A method for providing our API over a stream using JSON-RPC.
    *
-   * @param {*} outStream - The stream to provide our API over.
+   * @param {Substream} outStream - The stream to provide our API over.
+   * @param {object} args - Additional arguments.
+   * @param {() => void} args.onBeforeStartUISyncSent - Function to call before
+   * emitting the `startUISync` event.
    */
-  setupControllerConnection(outStream) {
+  setupControllerConnection(outStream, { onBeforeStartUISyncSent }) {
     const messengerSubscriptions = new MessengerSubscriptions(
       this.controllerMessenger,
       outStream,
@@ -6700,7 +6707,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const initialState = this.getState();
-      this.emit('beforeStartUISyncSent');
+      onBeforeStartUISyncSent();
 
       outStream.write({
         jsonrpc: '2.0',
