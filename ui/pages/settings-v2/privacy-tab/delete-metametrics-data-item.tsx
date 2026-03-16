@@ -10,7 +10,6 @@ import {
   DeleteRegulationStatus,
   DATA_DELETION_IN_PROGRESS_STATUSES,
 } from '../../../../shared/constants/metametrics';
-import DataDeletionErrorModal from '../../../components/app/data-deletion-error-modal';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionTimestamp,
@@ -28,8 +27,9 @@ export const DeleteMetametricsDataItem = () => {
   const t = useI18nContext();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [showDeletionInProgressModal, setShowDeletionInProgressModal] =
+    useState(false);
+  const [showDataDeletionErrorToast, setshowDataDeletionErrorToast] =
     useState(false);
   const [showDataDeletionSuccessToast, setShowDataDeletionSuccessToast] =
     useState(false);
@@ -75,7 +75,7 @@ export const DeleteMetametricsDataItem = () => {
         <DeleteMetametricsModal
           onClose={() => setShowDeleteModal(false)}
           onSuccess={() => setShowDataDeletionSuccessToast(true)}
-          onError={() => setShowErrorModal(true)}
+          onError={() => setshowDataDeletionErrorToast(true)}
         />
       )}
       {showDeletionInProgressModal && (
@@ -83,8 +83,20 @@ export const DeleteMetametricsDataItem = () => {
           onClose={() => setShowDeletionInProgressModal(false)}
         />
       )}
-      {showErrorModal && (
-        <DataDeletionErrorModal onClose={() => setShowErrorModal(false)} />
+      {showDataDeletionErrorToast && (
+        <ToastContainer>
+          <Toast
+            startAdornment={
+              <Icon name={IconName.Warning} color={IconColor.WarningDefault} />
+            }
+            text={t('deleteMetaMetricsDataErrorToast')}
+            description={t('deleteMetaMetricsDataErrorDesc')}
+            onClose={() => setshowDataDeletionErrorToast(false)}
+            borderRadius={BorderRadius.LG}
+            textClassName="text-base"
+            data-testid="delete-metametrics-data-error-toast"
+          />
+        </ToastContainer>
       )}
       {showDataDeletionSuccessToast && (
         <ToastContainer>

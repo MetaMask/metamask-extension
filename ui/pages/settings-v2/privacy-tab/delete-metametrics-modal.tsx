@@ -78,7 +78,7 @@ export default function DeleteMetametricsModal({
   };
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} data-testid="delete-metametrics-modal">
       <ModalOverlay />
       <ModalContent
         alignItems={AlignItems.center}

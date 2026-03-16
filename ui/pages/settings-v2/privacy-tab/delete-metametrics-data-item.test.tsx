@@ -3,7 +3,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
 import {
   getMetaMetricsDataDeletionTimestamp,
@@ -52,9 +51,7 @@ describe('DeleteMetametricsDataItem', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    expect(
-      screen.getByTestId('delete-metametrics-button'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('delete-metametrics-button')).toBeInTheDocument();
   });
 
   it('button is disabled when metametrics is not enabled', () => {
@@ -106,7 +103,7 @@ describe('DeleteMetametricsDataItem', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(messages.deleteMetaMetricsDataModalTitle.message),
+        screen.getByTestId('delete-metametrics-modal'),
       ).toBeInTheDocument();
     });
   });
@@ -138,12 +135,8 @@ describe('DeleteMetametricsDataItem', () => {
     fireEvent.click(screen.getByTestId('delete-metametrics-button'));
 
     await waitFor(() => {
-      const messageStart =
-        messages.deleteMetaMetricsDataRequestedDescription.message.split(
-          '$1',
-        )[0];
       expect(
-        screen.getByText(new RegExp(messageStart)),
+        screen.getByTestId('deletion-in-progress-modal'),
       ).toBeInTheDocument();
     });
   });
@@ -175,12 +168,8 @@ describe('DeleteMetametricsDataItem', () => {
     fireEvent.click(screen.getByTestId('delete-metametrics-button'));
 
     await waitFor(() => {
-      const messageStart =
-        messages.deleteMetaMetricsDataRequestedDescription.message.split(
-          '$1',
-        )[0];
       expect(
-        screen.getByText(new RegExp(messageStart)),
+        screen.getByTestId('deletion-in-progress-modal'),
       ).toBeInTheDocument();
     });
   });
@@ -213,7 +202,7 @@ describe('DeleteMetametricsDataItem', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(messages.deleteMetaMetricsDataModalTitle.message),
+        screen.getByTestId('delete-metametrics-modal'),
       ).toBeInTheDocument();
     });
   });

@@ -11,6 +11,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   Modal,
   ModalContent,
@@ -24,7 +25,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useSelector } from 'react-redux';
 import { getMetaMetricsDataDeletionTimestamp } from '../../../selectors';
 import { formatDate } from '../../../helpers/utils/util';
 import { PrivacyPolicyLink } from '../shared';
@@ -43,7 +43,7 @@ export default function DeletionInProgressModal({
   const formatedDate = formatDate(metaMetricsDataDeletionTimestamp, 'd/MM/y');
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} data-testid="deletion-in-progress-modal">
       <ModalOverlay />
       <ModalContent
         alignItems={AlignItems.center}
@@ -74,9 +74,9 @@ export default function DeletionInProgressModal({
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('deleteMetaMetricsDataRequestedDescription', [
-                  formatedDate,
-                  <PrivacyPolicyLink key="deletion-in-progress-modal-privacy-link" />,
-                ])}
+              formatedDate,
+              <PrivacyPolicyLink key="deletion-in-progress-modal-privacy-link" />,
+            ])}
           </Text>
         </Box>
         <ModalFooter>
