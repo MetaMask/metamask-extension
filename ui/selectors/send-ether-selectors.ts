@@ -174,9 +174,9 @@ const getMetaMaskAccounts = createChainIdSelector(
               balance:
                 multichainBalances?.[internalAccount.id]?.[
                   multichainNetwork
-                    ? MULTICHAIN_NETWORK_TO_ASSET_TYPES[
+                    ? (MULTICHAIN_NETWORK_TO_ASSET_TYPES[
                         multichainNetwork.chainId as keyof typeof MULTICHAIN_NETWORK_TO_ASSET_TYPES
-                      ]?.[0] ?? ''
+                      ]?.[0] ?? '')
                     : ''
                 ]?.amount ?? '0',
             };

@@ -136,14 +136,6 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
 import {
-  getConversionRate,
-  isNotEIP1559Network,
-  getLedgerTransportType,
-  isAddressLedger,
-  getIsUnlocked,
-  getCompletedOnboarding,
-} from './metamask-account-selectors';
-import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
@@ -171,6 +163,14 @@ import {
   getInternalAccountByAddress,
 } from './accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
+import {
+  getConversionRate,
+  isNotEIP1559Network,
+  getLedgerTransportType,
+  isAddressLedger,
+  getIsUnlocked,
+  getCompletedOnboarding,
+} from './metamask-account-selectors';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getApprovalRequestsByType } from './approvals';
 import {
@@ -404,9 +404,7 @@ export function getCurrentKeyring(state) {
  * @param state
  * @param [networkClientId] - The optional network client ID to check network and account for EIP-1559 support
  */
-export {
-  checkNetworkAndAccountSupports1559,
-} from './send-ether-selectors';
+export { checkNetworkAndAccountSupports1559 } from './send-ether-selectors';
 
 /**
  * The function returns true if network and account details are fetched and

@@ -10,11 +10,7 @@ import {
   getCurrencyRateControllerCurrencyRates,
   getCurrencyRateControllerCurrentCurrency,
 } from '../../shared/lib/selectors/assets-migration';
-import {
-  getGasEstimateType,
-  getGasFeeEstimates,
-  getNativeCurrency,
-} from './metamask-gas-selectors';
+import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import {
   GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
@@ -28,7 +24,11 @@ import {
   getValueFromWeiHex,
   sumHexes,
 } from '../../shared/lib/conversion.utils';
-import { getProviderConfig } from '../../shared/lib/selectors/networks';
+import {
+  getGasEstimateType,
+  getGasFeeEstimates,
+  getNativeCurrency,
+} from './metamask-gas-selectors';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,

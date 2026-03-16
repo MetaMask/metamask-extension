@@ -37,7 +37,11 @@ import {
   getCompletedOnboarding,
 } from '../../selectors/metamask-state-minimal';
 
-export { getAlertEnabledness, getUnconnectedAccountAlertEnabledness, getCompletedOnboarding };
+export {
+  getAlertEnabledness,
+  getUnconnectedAccountAlertEnabledness,
+  getCompletedOnboarding,
+};
 
 const initialState = {
   isInitialized: false,
@@ -361,7 +365,6 @@ export function isNotEIP1559Network(state) {
  * Function returns true if network details are fetched and it is found to support EIP-1559
  *
  * @param state
- * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
  */
 function getGasFeeControllerEstimateType(state) {
   return state.metamask.gasEstimateType;

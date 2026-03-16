@@ -6,14 +6,14 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatETHFee } from '../helpers/utils/formatters';
 
 import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
+import { EtherDenomination } from '../../shared/constants/common';
+import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../shared/lib/Numeric';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
 } from './metamask-gas-selectors';
 import { isEIP1559Network } from './send-ether-selectors';
-import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../shared/lib/Numeric';
-import { EtherDenomination } from '../../shared/constants/common';
 import { getIsMainnet } from './metamask-state-minimal';
 
 export function getCustomGasLimit(state) {
