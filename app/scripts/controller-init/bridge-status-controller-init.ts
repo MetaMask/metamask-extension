@@ -3,6 +3,7 @@ import { handleFetch } from '@metamask/controller-utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
 import { trace } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../shared/constants/keyring';
 import { ControllerInitFunction } from './types';
 import { BridgeStatusControllerMessenger } from './messengers';
 
@@ -13,12 +14,13 @@ import { BridgeStatusControllerMessenger } from './messengers';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.getController - Function to get other initialized controllers.
  * @param request.persistedState - The persisted state for the controller.
+ * @param request.getFlatState
  * @returns The initialized controller.
  */
 export const BridgeStatusControllerInit: ControllerInitFunction<
   BridgeStatusController,
   BridgeStatusControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
+> = ({ controllerMessenger, persistedState, getController, getFlatState }) => {
   const transactionController = getController('TransactionController');
 
   const controller = new BridgeStatusController({
@@ -33,8 +35,29 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
     },
     addTransactionFn: (...args) =>
       transactionController.addTransaction(...args),
-    addTransactionBatchFn: (...args) =>
-      transactionController.addTransactionBatch(...args),
+    addTransactionBatchFn: (request, ...rest) => {
+      const fromAddr = request.from?.toLowerCase();
+      const flatState = getFlatState();
+      const keyring = flatState?.keyrings?.find((kr: { accounts: string[] }) =>
+        kr.accounts.some((a: string) => a.toLowerCase() === fromAddr),
+      );
+      const supports7702 = keyring
+        ? KEYRING_TYPES_SUPPORTING_7702.includes(keyring.type as never)
+        : true;
+
+      if (!supports7702) {
+        return transactionController.addTransactionBatch(
+          {
+            ...request,
+            isGasFeeSponsored: false,
+            isGasFeeIncluded: false,
+            disable7702: true,
+          },
+          ...rest,
+        );
+      }
+      return transactionController.addTransactionBatch(request, ...rest);
+    },
     estimateGasFeeFn: (...args) =>
       transactionController.estimateGasFee(...args),
     updateTransactionFn: (...args) =>
