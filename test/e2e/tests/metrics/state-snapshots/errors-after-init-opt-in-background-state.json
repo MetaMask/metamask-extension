@@ -378,7 +378,9 @@
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": { "tokensChainsCache": { "0x539": "object" } },
+  "TokenListController": {
+    "tokensChainsCache": { "0x539": "object" }
+  },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},
