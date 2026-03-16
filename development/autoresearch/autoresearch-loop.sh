@@ -1,26 +1,33 @@
 #!/bin/bash
 # autoresearch-loop.sh — Main orchestration loop for autoresearch experiments
 #
-# This script drives the autoresearch loop by calling Aider in non-interactive
-# mode. Each iteration:
-#   1. Aider reads autoresearch.md + ideas.md + results.tsv
-#   2. Aider proposes and makes ONE code change
-#   3. autoresearch.sh runs the benchmark
+# Runs ON THE HOST. Aider (the untrusted AI agent) is isolated in a Docker
+# Sandbox microVM. Everything else — git, builds, benchmarks — runs natively
+# on the host with full RAM and CPU.
+#
+# Each iteration:
+#   1. Aider runs in the sandbox, reads context, proposes ONE code change
+#   2. Changes sync to host via Docker Sandbox bidirectional workspace sync
+#   3. Correctness checks + yarn dist run on the host (needs >4GB RAM)
 #   4. If improved → commit. If not → revert.
 #   5. Repeat.
 #
-# Usage:
-#   ./development/autoresearch/autoresearch-loop.sh [OPTIONS]
+# Usage (ON THE HOST, not inside the sandbox):
+#   ./development/autoresearch/autoresearch-loop.sh --sandbox <name> [OPTIONS]
 #
 # Options:
+#   --sandbox NAME         Docker Sandbox name (required — run `docker sandbox ls`)
 #   --max-experiments N    Maximum experiments to run (default: 100)
 #   --model MODEL          Model name for Aider (default: openai/qwen3.5-27b)
-#   --api-base URL         OpenAI-compatible API base (default: http://host.docker.internal:8080/v1)
-#   --dry-run              Print the prompt without running Aider
+#   --api-base URL         OpenAI-compatible API base for Aider inside sandbox
+#                          (default: http://host.docker.internal:8080/v1)
+#   --dry-run              Print the Aider prompt without executing
 #
 # Prerequisites:
-#   - Aider installed and accessible in PATH
-#   - llama-server running on host (accessible at API base URL)
+#   - Docker Sandbox created and running (`docker sandbox ls`)
+#   - Aider installed inside the sandbox (use custom template or install manually)
+#   - llama-server running on host at :8080
+#   - yarn install completed on the host
 #   - Git repo in clean state on the autoresearch branch
 
 set -euo pipefail
@@ -29,6 +36,7 @@ set -euo pipefail
 # Configuration
 # ============================================================================
 
+SANDBOX_NAME=""
 MAX_EXPERIMENTS=100
 MODEL="openai/qwen3.5-27b"
 API_BASE="http://host.docker.internal:8080/v1"
@@ -36,6 +44,7 @@ DRY_RUN=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --sandbox) SANDBOX_NAME="$2"; shift 2 ;;
         --max-experiments) MAX_EXPERIMENTS="$2"; shift 2 ;;
         --model) MODEL="$2"; shift 2 ;;
         --api-base) API_BASE="$2"; shift 2 ;;
@@ -44,6 +53,11 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+if [ -z "$SANDBOX_NAME" ]; then
+    echo "ERROR: --sandbox <name> is required. Run 'docker sandbox ls' to find your sandbox."
+    exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 cd "$REPO_ROOT"
@@ -51,8 +65,8 @@ cd "$REPO_ROOT"
 RESULTS_FILE="$SCRIPT_DIR/results.tsv"
 AUTORESEARCH_MD="$SCRIPT_DIR/autoresearch.md"
 IDEAS_MD="$SCRIPT_DIR/autoresearch.ideas.md"
+IDEAS_SNAPSHOT_PATH="/tmp/autoresearch-ideas-snapshot.md"
 
-# Files the agent is allowed to edit
 EDITABLE_FILES=(
     "babel.config.js"
     "development/build/scripts.js"
@@ -70,10 +84,25 @@ EDITABLE_FILES=(
 # ============================================================================
 
 echo "=== Autoresearch Loop ==="
+echo "Sandbox: $SANDBOX_NAME"
 echo "Model: $MODEL"
 echo "API Base: $API_BASE"
 echo "Max experiments: $MAX_EXPERIMENTS"
 echo ""
+
+# Verify sandbox is running
+if ! docker sandbox ls 2>/dev/null | grep -q "$SANDBOX_NAME"; then
+    echo "ERROR: Sandbox '$SANDBOX_NAME' not found. Run 'docker sandbox ls' to check."
+    exit 1
+fi
+
+# Verify Aider is available inside the sandbox
+# Use login shell (-l) so PATH includes /usr/local/bin where pip installs aider
+if ! docker sandbox exec "$SANDBOX_NAME" bash -lc "command -v aider" &>/dev/null; then
+    echo "ERROR: Aider not found in sandbox '$SANDBOX_NAME'."
+    echo "Use the custom template or install manually: docker sandbox exec $SANDBOX_NAME pip install aider-chat"
+    exit 1
+fi
 
 # Check git is clean (except results.tsv and ideas.md)
 DIRTY_FILES=$(git diff --name-only HEAD -- ':!development/autoresearch/results.tsv' ':!development/autoresearch/autoresearch.ideas.md' 2>/dev/null || true)
@@ -81,12 +110,6 @@ if [ -n "$DIRTY_FILES" ]; then
     echo "ERROR: Git working tree has uncommitted changes outside autoresearch tracking files:"
     echo "$DIRTY_FILES"
     echo "Please commit or stash changes before running the loop."
-    exit 1
-fi
-
-# Check Aider is available
-if ! command -v aider &> /dev/null; then
-    echo "ERROR: aider not found in PATH. Install it: pip install aider-chat"
     exit 1
 fi
 
@@ -108,7 +131,6 @@ build_prompt() {
     local experiment_num=$1
     local current_best=$2
 
-    # Include recent results history (last 10 experiments)
     local results_context=""
     if [ -f "$RESULTS_FILE" ] && [ "$(wc -l < "$RESULTS_FILE")" -gt 1 ]; then
         results_context="## Recent Experiment Results (last 10)
@@ -136,6 +158,11 @@ Your goal: beat ${current_best}s while passing all correctness checks.
 3. Make a SINGLE, focused code change to implement it
 4. IMPORTANT: Only modify files listed in the "Files In Scope" section of autoresearch.md
 5. After making the change, I will run the benchmark separately
+6. REQUIRED: Update \`development/autoresearch/autoresearch.ideas.md\` to record what you tried:
+   - Move the idea you picked from "Untried Ideas" to the appropriate "Tried" section
+   - If the idea was your own (not from the backlog), add it directly to the "Tried" section
+   - Include a one-line summary: what you changed and your hypothesis for why it would help
+   - This is MANDATORY — every experiment must leave a trace in the ideas backlog
 
 DO NOT run autoresearch.sh yourself — just make the code change and explain what you changed and why.
 DO NOT modify multiple things at once — one change per experiment.
@@ -155,7 +182,6 @@ for ((i=1; i<=MAX_EXPERIMENTS; i++)); do
     echo "========================================================"
     echo ""
 
-    # Build the prompt for this iteration
     PROMPT=$(build_prompt "$i" "$CURRENT_BEST")
 
     if [ "$DRY_RUN" = true ]; then
@@ -165,28 +191,55 @@ for ((i=1; i<=MAX_EXPERIMENTS; i++)); do
         exit 0
     fi
 
-    # Run Aider to make the code change
-    # --yes: auto-accept file edits
-    # --no-git: we handle git ourselves
-    # --message: non-interactive single prompt
-    echo "--- Calling Aider to propose change ---"
-    aider \
-        --openai-api-base "$API_BASE" \
-        --model "$MODEL" \
-        --no-git \
-        --yes \
-        --no-auto-commits \
-        --read "$AUTORESEARCH_MD" \
-        --read "$IDEAS_MD" \
-        --file "${EDITABLE_FILES[@]}" \
-        --message "$PROMPT" \
+    # ---- SANDBOX: Run Aider (isolated, untrusted) ----
+    echo "--- Calling Aider in sandbox '$SANDBOX_NAME' ---"
+
+    AIDER_ARGS=(
+        --openai-api-base "$API_BASE"
+        --model "$MODEL"
+        --edit-format diff
+        --no-git
+        --yes
+        --no-auto-commits
+        --no-auto-lint
+        --no-detect-urls
+        --map-tokens 0
+        --max-chat-history-tokens 0
+        --read "$AUTORESEARCH_MD"
+        --read "$IDEAS_MD"
+    )
+    for f in "${EDITABLE_FILES[@]}"; do
+        AIDER_ARGS+=(--file "$f")
+    done
+    AIDER_ARGS+=(--message "$PROMPT")
+
+    docker sandbox exec "$SANDBOX_NAME" \
+        bash -lc 'cd "'"$REPO_ROOT"'" && aider "$@"' _ "${AIDER_ARGS[@]}" \
         2>&1 | tee "/tmp/autoresearch-aider-$i.log" || true
 
-    # Check if any files were actually changed
+    # ---- HOST: Everything below runs natively ----
+
+    # Wait briefly for workspace sync
+    sleep 2
+
+    # Snapshot ideas.md BEFORE any benchmark or revert — preserve knowledge
+    # regardless of whether the experiment succeeds, fails, or shows no improvement.
+    IDEAS_UPDATED=false
+    if ! git diff --quiet -- "$IDEAS_MD" 2>/dev/null; then
+        IDEAS_UPDATED=true
+        cp "$IDEAS_MD" "$IDEAS_SNAPSHOT_PATH"
+    fi
+
     CHANGED=$(git diff --name-only 2>/dev/null || true)
     if [ -z "$CHANGED" ]; then
         echo "--- No files changed by Aider. Skipping benchmark. ---"
         continue
+    fi
+
+    # Warn if ideas.md was not updated — knowledge about this experiment will be lost
+    if [ "$IDEAS_UPDATED" = false ]; then
+        echo "--- WARNING: autoresearch.ideas.md was not updated by Aider. ---"
+        echo "--- The idea tried in this experiment may not be tracked. ---"
     fi
 
     echo ""
@@ -194,51 +247,58 @@ for ((i=1; i<=MAX_EXPERIMENTS; i++)); do
     echo "$CHANGED"
     echo ""
 
-    # Run the benchmark
-    echo "--- Running benchmark ---"
+    echo "--- Running benchmark (host) ---"
     BENCHMARK_OUTPUT=$(bash "$SCRIPT_DIR/autoresearch.sh" 2>&1) || {
         echo "$BENCHMARK_OUTPUT"
         echo ""
         echo "--- EXPERIMENT $i: FAILED (checks or build failed) ---"
-        echo "--- Reverting changes ---"
+        echo "--- Reverting code changes ---"
         git checkout -- .
+        if [ "$IDEAS_UPDATED" = true ]; then
+            cp "$IDEAS_SNAPSHOT_PATH" "$IDEAS_MD"
+            echo "--- Preserved ideas.md updates ---"
+        fi
         continue
     }
 
     echo "$BENCHMARK_OUTPUT"
 
-    # Parse build time from output
     BUILD_TIME=$(echo "$BENCHMARK_OUTPUT" | grep '^build_time_seconds=' | cut -d= -f2)
 
     if [ -z "$BUILD_TIME" ]; then
-        echo "--- Could not parse build time. Reverting. ---"
+        echo "--- Could not parse build time. Reverting code changes. ---"
         git checkout -- .
+        if [ "$IDEAS_UPDATED" = true ]; then
+            cp "$IDEAS_SNAPSHOT_PATH" "$IDEAS_MD"
+            echo "--- Preserved ideas.md updates ---"
+        fi
         continue
     fi
 
     echo ""
     echo "--- Build time: ${BUILD_TIME}s (best: ${CURRENT_BEST}s) ---"
 
-    # Compare with current best
     if [ "$BUILD_TIME" -lt "$CURRENT_BEST" ]; then
         IMPROVEMENT=$((CURRENT_BEST - BUILD_TIME))
         echo ""
         echo "*** IMPROVEMENT: -${IMPROVEMENT}s! Keeping changes. ***"
         echo ""
 
-        # Commit the successful experiment
         DESCRIPTION=$(echo "$CHANGED" | head -1)
         git add -A
         git commit -m "autoresearch: experiment $i — ${BUILD_TIME}s (-${IMPROVEMENT}s) — $DESCRIPTION" --no-verify
 
-        # Update current best
         CURRENT_BEST="$BUILD_TIME"
 
         echo "--- Committed. New best: ${CURRENT_BEST}s ---"
     else
         echo ""
-        echo "--- EXPERIMENT $i: No improvement (${BUILD_TIME}s >= ${CURRENT_BEST}s). Reverting. ---"
+        echo "--- EXPERIMENT $i: No improvement (${BUILD_TIME}s >= ${CURRENT_BEST}s). Reverting code changes. ---"
         git checkout -- .
+        if [ "$IDEAS_UPDATED" = true ]; then
+            cp "$IDEAS_SNAPSHOT_PATH" "$IDEAS_MD"
+            echo "--- Preserved ideas.md updates ---"
+        fi
     fi
 
     echo ""

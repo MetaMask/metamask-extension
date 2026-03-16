@@ -5,38 +5,37 @@ Automated build performance optimization for MetaMask Extension using an AI agen
 ## Architecture Overview
 
 ```
-┌─── macOS Host (M4 Max, 128GB RAM) ───────────────────────┐
-│                                                          │
-│  llama-server :8080                                      │
-│  ├─ Qwen 3.5 27B (Q8_K_XL, Unsloth)                      │
-│  ├─ Metal GPU acceleration (40 cores)                    │
-│  └─ OpenAI-compatible API                                │
-│                                                          │
-│  ~/metamask-extension/   ← bidirectional sync →    ┐     │
-│                                                    │     │
-│  ┌─── Docker Sandbox (microVM) ──────────────────  │  ─┐ │
-│  │                                                 ↓   │ │
-│  │  ~/metamask-extension/  (same absolute path)        │ │
-│  │  ├─ autoresearch-loop.sh (orchestrator)             │ │
-│  │  │   ├─ Aider (coding agent → calls host:8080)      │ │
-│  │  │   ├─ autoresearch.sh (benchmark)                 │ │
-│  │  │   └─ autoresearch.checks.sh (correctness)        │ │
-│  │  ├─ Node.js v24 + Yarn (build toolchain)            │ │
-│  │  └─ Git (experiment tracking)                       │ │
-│  │                                                     │ │
-│  └─────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────┘
+┌─── macOS Host (M4 Max, 128GB RAM) ──────────────────────────┐
+│                                                              │
+│  llama-server :8080                                          │
+│  ├─ Qwen 3.5 27B (Q8_K_XL, Unsloth)                        │
+│  ├─ Metal GPU acceleration (40 cores)                        │
+│  └─ OpenAI-compatible API                                    │
+│                                                              │
+│  autoresearch-loop.sh (orchestrator, runs on host)           │
+│  ├─ docker sandbox exec → Aider (isolated code changes)     │
+│  ├─ autoresearch.checks.sh (correctness gate)                │
+│  ├─ yarn dist (benchmark, full 128GB RAM)                    │
+│  └─ git commit/revert (experiment tracking)                  │
+│                                                              │
+│  ~/metamask-autoresearch/ ← bidirectional sync →             │
+│                                                              │
+│  ┌─── Docker Sandbox (microVM, 4GB) ───────────────────────┐ │
+│  │  ~/metamask-autoresearch/ (same absolute path)           │ │
+│  │  └─ Aider (the ONLY thing that runs here)                │ │
+│  └──────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-This uses [Docker Sandboxes](https://docs.docker.com/ai/sandboxes/) (microVMs, not plain containers) for hypervisor-level isolation.
+This uses [Docker Sandboxes](https://docs.docker.com/ai/sandboxes/) (microVMs, not plain containers) for hypervisor-level isolation of the AI agent.
 
 **Key design decisions:**
 
 - **Model on host**: Full access to 128GB unified memory + Metal GPU. Zero VRAM sharing with the sandbox.
-- **Build in sandbox**: The agent runs inside a microVM with its own kernel — it cannot access host processes, host Docker daemon, or files outside the workspace.
-- **Bidirectional workspace sync**: The MetaMask repo lives on the host and syncs into the sandbox at the **same absolute path**. Agent edits appear on the host in real-time. No cloning needed.
+- **Agent in sandbox, build on host**: Aider (untrusted AI) runs inside a microVM with its own kernel. Builds and benchmarks run on the host where they have full RAM (the microVM is capped at 4GB, insufficient for `yarn dist`).
+- **Bidirectional workspace sync**: The MetaMask repo lives on the host and syncs into the sandbox at the **same absolute path**. Agent edits appear on the host in real-time.
 - **Credential injection**: Docker's proxy injects API keys into outbound requests transparently. Keys never stored inside the sandbox.
-- **Persistence**: Installed packages (node_modules, Aider, etc.) survive between sandbox restarts. Only `docker sandbox rm` destroys them.
+- **Persistence**: Aider and its dependencies survive between sandbox restarts. Only `docker sandbox rm` destroys them.
 
 ## Prerequisites
 
@@ -67,7 +66,8 @@ llama-server \
   --model ~/models/Qwen3.5-27B-Q8_K_XL.gguf \
   --host 0.0.0.0 \
   --port 8080 \
-  --ctx-size 32768 \
+  --ctx-size 65536 \
+  --parallel 1 \
   --n-gpu-layers 99 \
   --threads 8 \
   --flash-attn on
@@ -75,7 +75,8 @@ llama-server \
 
 **Configuration notes:**
 
-- `--ctx-size 32768`: 32K context. Fits autoresearch.md + full `scripts.js` (1327 lines, ~15K tokens) + ideas backlog + results history with room to grow. 64K (`65536`) also works on 128GB hardware with negligible speed cost — use it if results.tsv grows large over many experiments.
+- `--ctx-size 65536`: 64K context. The input prompt (all in-scope files + strategy + ideas + results history) uses ~30K tokens, so 32K is too tight — the model runs out of output tokens and Aider hangs retrying malformed edits. 64K gives ample headroom on 128GB hardware with negligible speed cost.
+- `--parallel 1`: **Critical.** llama-server defaults to `--parallel 4` with a shared (unified) KV cache. When Aider's reflection retries fire concurrent requests, multiple 30K+ token prompts compete for the same 65K pool, causing `Context size has been exceeded` (HTTP 500) errors and infinite retry loops. Single-slot mode eliminates this — requests queue instead of crashing.
 - `--n-gpu-layers 99`: All layers on Metal GPU. With 128GB unified memory this fits easily.
 - `--threads 8`: CPU threads for prompt processing. Good default for M4 Max.
 - `--flash-attn`: Flash Attention for faster inference.
@@ -95,26 +96,29 @@ curl http://localhost:8080/v1/chat/completions \
 
 ## Step 2: Docker Sandbox Setup
 
-> **Important**: Use a regular git clone, NOT a git worktree. Docker Sandboxes
-> only sync the workspace directory — a worktree's `.git` file points to the
-> parent repo's `.git/worktrees/` directory, which won't exist inside the sandbox.
+A clone or a git worktree both work. With the split architecture, only Aider runs
+inside the sandbox (with `--no-git`), so the `.git` reference is never used there.
+Git operations and builds all run on the host.
 
 ```bash
-# Clone the repo (on the host)
+# Option 1: Clone
 git clone https://github.com/MetaMask/metamask-extension.git ~/metamask-autoresearch
+
+# Option 2: Worktree (if you already have the repo)
+cd ~/metamask-extension
+git worktree add ~/metamask-autoresearch
 ```
 
 ### Option A: Custom Template (Recommended)
 
-Build a custom template with Aider and Node.js 24 pre-installed:
+Build a custom template with Aider pre-installed:
 
 ```bash
-# From the repo root
 docker build -t metamask-autoresearch-template \
   -f development/autoresearch/Dockerfile ~/metamask-autoresearch
 ```
 
-Create and enter the sandbox:
+Create the sandbox:
 
 ```bash
 docker sandbox run \
@@ -122,182 +126,124 @@ docker sandbox run \
   shell ~/metamask-autoresearch
 ```
 
-This creates a microVM, syncs your workspace, and drops you into a bash shell. Aider, Node.js 24, Yarn, and Git are all ready.
-
-### Configure Sandbox Network Policies
-
-Docker Sandboxes route all HTTP/HTTPS through a MITM proxy that re-signs TLS certificates. This corrupts Yarn package checksums and zip archives. Apply bypass rules so npm traffic is tunneled without interception, and allow the local LLM server:
+### Option B: Shell Sandbox (No Custom Template)
 
 ```bash
-# On the HOST — find your sandbox name first
-docker sandbox ls
+docker sandbox run shell ~/metamask-autoresearch
 
-# Apply network policies
+# Inside the sandbox — install Aider (persists between restarts)
+pip install aider-chat
+```
+
+### Configure Sandbox Network Policy
+
+Allow the sandbox to reach the LLM server running on the host:
+
+```bash
+# On the HOST
+docker sandbox ls  # get sandbox name
+
 docker sandbox network proxy <sandbox-name> \
-  --bypass-host "*.npmjs.org" \
-  --bypass-host "*.yarnpkg.com" \
-  --bypass-host "github.com" \
-  --bypass-host "*.githubusercontent.com" \
   --allow-host "localhost:8080"
 ```
 
-The `--bypass-host` rules tunnel traffic without MITM interception (preserving original TLS certificates and package integrity). The `--allow-host` rule permits the sandbox to reach the llama-server running on the host.
+This persists across sandbox restarts. You only need to set it once per sandbox.
 
-These policies persist across sandbox restarts. You only need to set them once per sandbox.
-
-### Option B: Shell Sandbox (No Custom Template)
-
-If you prefer not to build a template, use the default shell sandbox and install tools on first run:
+### Verify Sandbox
 
 ```bash
-# Create sandbox with your workspace
-docker sandbox run shell ~/metamask-autoresearch
-
-# Inside the sandbox — install tools (persists between runs)
-sudo pip3 install aider-chat
-sudo corepack enable
-yarn install
-```
-
-### Verify Setup Inside Sandbox
-
-```bash
-# Check tools
-node --version     # Should be v24.x
-aider --version    # Should print version
-yarn --version     # Should print version
-
-# Check model connectivity
-# Docker Sandbox proxy handles host access. Try:
+# Inside the sandbox
+aider --version
 curl http://host.docker.internal:8080/v1/models
-
-# If that doesn't work, the sandbox may route differently.
-# Check the sandbox networking docs for your Docker Desktop version.
-
-# Configure Aider for the local model
-export OPENAI_API_BASE=http://host.docker.internal:8080/v1
-export OPENAI_API_KEY=not-needed
-
-# Quick Aider test
-aider --openai-api-base $OPENAI_API_BASE \
-      --model openai/qwen3.5-27b \
-      --message "Say hello" \
-      --no-git --yes
 ```
 
-### Install Dependencies (First Run Only)
+### Install Dependencies and Configure Git (on the Host)
 
-Docker Sandboxes route all traffic through a MITM proxy that breaks Node.js TLS,
-Yarn checksums, and any package that downloads binaries directly (like `@metamask/foundryup`).
-The setup script handles all of these automatically:
+Builds and benchmarks run on the host. Install dependencies there:
 
 ```bash
-# Inside the sandbox, in the workspace directory
-bash development/autoresearch/sandbox-setup.sh
-
-# This persists — you won't need to reinstall unless you remove the sandbox
-```
-
-If the setup script isn't available (e.g., using Option B without the custom template),
-you can also run it directly from the workspace since it's synced from the host.
-
-<details>
-<summary>What the setup script does</summary>
-
-1. Sets `NODE_EXTRA_CA_CERTS` to trust the sandbox proxy's CA certificate
-2. Configures Yarn Berry's `httpProxy`/`httpsProxy` (Yarn ignores standard `HTTP_PROXY` env vars)
-3. Pre-downloads the Foundry binary via `curl` (which respects the proxy) and places it in
-   `@metamask/foundryup`'s cache directory — foundryup's own downloader uses raw `node:https`
-   with zero proxy support
-4. Runs `yarn install` with `YARN_CHECKSUM_BEHAVIOR=ignore` (the MITM proxy corrupts checksums)
-
-</details>
-
-### Configure Git for Experiments
-
-```bash
-git config user.email "autoresearch@metamask.local"
-git config user.name "Autoresearch Agent"
+# On the HOST
+cd ~/metamask-autoresearch
+corepack enable
+yarn install
 git checkout -b autoresearch/browserify-build-perf
 ```
 
 ## Step 3: Running the Autoresearch Loop
 
+The loop script runs **on the host**. It uses `docker sandbox exec` to invoke Aider
+inside the sandbox, then runs builds and benchmarks locally with full RAM.
+
 ### Establish Baseline
 
-Before running experiments, record the sandbox-specific baseline:
-
 ```bash
-# Make scripts executable
+# On the HOST — make scripts executable and record the baseline
 chmod +x development/autoresearch/*.sh
-
-# Run the full benchmark — this records the baseline in results.tsv
 bash development/autoresearch/autoresearch.sh
 ```
-
-**Note**: Build times in the sandbox may differ from native macOS. This is fine — all experiments run in the same environment, so relative improvements are valid and transferable.
 
 ### Start the Loop
 
 ```bash
+# Find your sandbox name
+docker sandbox ls
+
 # Run with defaults (100 experiments, Qwen 3.5 27B)
-bash development/autoresearch/autoresearch-loop.sh
+bash development/autoresearch/autoresearch-loop.sh --sandbox <name>
 
 # Or customize
 bash development/autoresearch/autoresearch-loop.sh \
+  --sandbox <name> \
   --max-experiments 50 \
-  --model openai/qwen3.5-27b \
-  --api-base http://host.docker.internal:8080/v1
+  --model openai/qwen3.5-27b
 
 # Dry run (print the prompt without executing)
-bash development/autoresearch/autoresearch-loop.sh --dry-run
+bash development/autoresearch/autoresearch-loop.sh --sandbox <name> --dry-run
 ```
 
 ### What Happens Per Experiment
 
 ```
 Experiment N:
-  1. Loop builds a prompt with:
+  1. Loop (on host) builds a prompt with:
      - autoresearch.md (objective, metrics, constraints)
      - autoresearch.ideas.md (idea backlog)
      - Recent results from results.tsv
      - Current best build time
-  2. Aider reads the prompt + in-scope files
+  2. Aider runs INSIDE THE SANDBOX, reads the prompt + in-scope files
   3. Aider proposes and applies ONE code change
   4. autoresearch.checks.sh validates:
      - Modified files are within allowed scope
      - No syntax errors
      - Dependencies unchanged
      - Frozen files untouched
-  5. yarn dist runs (full build with LavaMoat)
-  6. autoresearch.sh captures metrics:
+  5. Changes sync to host via bidirectional workspace sync
+  6. Correctness checks run ON HOST (autoresearch.checks.sh)
+  7. yarn dist runs ON HOST (full build with LavaMoat, full RAM)
+  8. autoresearch.sh captures metrics:
      - build_time_seconds
      - bundle_size_total_kb
      - standard_entry_points_seconds
-  7. If build_time < current_best:
+  9. If build_time < current_best:
      -> git commit (keep the improvement)
      -> Update current best
-  8. If build_time >= current_best:
+  10. If build_time >= current_best:
      -> git checkout -- . (revert)
-  9. Results appended to results.tsv
-  10. Repeat
+  11. Results appended to results.tsv
+  12. Repeat
 ```
 
 ### Overnight Run
 
 ```bash
-# Start the loop in the background with logging
+# Start the loop on the HOST in the background with logging
 nohup bash development/autoresearch/autoresearch-loop.sh \
+  --sandbox <name> \
   --max-experiments 150 \
   > /tmp/autoresearch-run-$(date +%Y%m%d).log 2>&1 &
 
-# Monitor from host (changes sync back in real-time)
-# On host terminal:
-tail -f ~/path/to/metamask-extension/development/autoresearch/results.tsv
-
-# Or from another sandbox shell:
-docker sandbox exec -it <sandbox-name> bash
-tail -f development/autoresearch/results.tsv
+# Monitor progress
+tail -f ~/metamask-autoresearch/development/autoresearch/results.tsv
 ```
 
 At ~3 minutes per experiment, 150 experiments = ~7.5 hours.
@@ -402,17 +348,10 @@ Sandboxes persist until explicitly removed. `yarn install`, Aider, node_modules 
 
 ### yarn install fails with ECONNREFUSED
 
-The sandbox MITM proxy is likely not configured. Run the setup script:
-
-```bash
-bash development/autoresearch/sandbox-setup.sh
-```
-
-If you've already run it and still see errors, verify the proxy is reachable:
-
-```bash
-curl -v -x http://host.docker.internal:3128 https://registry.npmjs.org
-```
+With the split architecture, `yarn install` runs on the host — not inside the sandbox.
+If it fails on the host, check your network connection. If you're running it inside
+the sandbox by mistake, note that the sandbox MITM proxy and 4GB RAM limit make
+`yarn install` and `yarn dist` unreliable there.
 
 ### Sandbox can't reach llama-server
 

@@ -36,7 +36,6 @@ This file is maintained by the autoresearch agent. It tracks ideas to try, what 
 
 ### Source Maps
 
-- [ ] Skip source map generation entirely for the benchmark (if it doesn't affect bundle content)
 - [ ] Use cheaper source map init options in `gulp-sourcemaps`
 - [ ] Defer source map writing — generate maps but write them in a separate pass
 
