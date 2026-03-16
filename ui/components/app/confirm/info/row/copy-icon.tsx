@@ -30,7 +30,7 @@ export const CopyIcon: React.FC<{
       style={{
         cursor: 'pointer',
         position: 'absolute',
-        right: 0,
+        right: 8,
         top: 2,
         ...style,
       }}

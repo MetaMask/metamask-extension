@@ -139,7 +139,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         {copyEnabled && (
           <CopyIcon
             copyText={copyText ?? ''}
-            style={{ right: isCollapsible ? 32 : 4 }}
+            style={{ right: isCollapsible ? 36 : 8 }}
             color={IconColor.iconAlternative}
           />
         )}
