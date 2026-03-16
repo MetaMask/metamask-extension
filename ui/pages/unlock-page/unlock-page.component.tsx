@@ -58,6 +58,7 @@ import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
+import BiometricUnlockButton from './biometric-unlock-button';
 
 type UnlockPageProps = {
   navigate: NavigateFunction;
@@ -343,8 +344,36 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           isNewVisit: true,
         },
       );
+
     } catch (error) {
       await this.handleLoginError(error as LoginError, isRehydrationFlow);
+    } finally {
+      this.setState({ isSubmitting: false });
+    }
+  };
+
+  handleBiometricUnlock = async (password: string) => {
+    const { onSubmit } = this.props;
+
+    this.setState({ error: null, isSubmitting: true });
+
+    try {
+      await onSubmit(password);
+
+      this.context.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.AppUnlocked,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failed_attempts: this.failed_attempts,
+            biometrics: true,
+          },
+        },
+        { isNewVisit: true },
+      );
+    } catch (error) {
+      await this.handleLoginError(error as LoginError);
     } finally {
       this.setState({ isSubmitting: false });
     }
@@ -705,10 +734,17 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
               type="submit"
               data-testid="unlock-submit"
               disabled={!password || isLocked}
-              marginBottom={6}
+              marginBottom={4}
             >
               {this.context.t('unlock')}
             </Button>
+
+            <BiometricUnlockButton
+              onPasswordRetrieved={this.handleBiometricUnlock}
+              onSubmitPassword={this.props.onSubmit}
+              currentPassword={password}
+              disabled={isLocked}
+            />
 
             <Button
               variant={ButtonVariant.Link}
