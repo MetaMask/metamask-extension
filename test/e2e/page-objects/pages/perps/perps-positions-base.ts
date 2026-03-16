@@ -7,6 +7,10 @@ import { Driver } from '../../../webdriver/driver';
 export class PerpsPositionsBase {
   protected readonly driver: Driver;
 
+  protected readonly accountOverviewPerpsTab = {
+    testId: 'account-overview__perps-tab',
+  };
+
   private readonly perpsPositionsSection = {
     testId: 'perps-positions-section',
   };

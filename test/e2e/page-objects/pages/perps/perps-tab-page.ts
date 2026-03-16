@@ -11,10 +11,6 @@ export class PerpsTabPage extends PerpsPositionsBase {
     testId: 'account-overview__asset-tab',
   };
 
-  private readonly accountOverviewPerpsTab = {
-    testId: 'account-overview__perps-tab',
-  };
-
   /**
    * Opens the Perps tab by clicking the Perps tab on the account overview.
    * Requires the account overview to be loaded (e.g. after login or driver.navigate()).

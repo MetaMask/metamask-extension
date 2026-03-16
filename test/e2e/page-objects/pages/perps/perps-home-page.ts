@@ -8,10 +8,6 @@ import { PerpsPositionsBase } from './perps-positions-base';
  * @see ui/components/app/perps/perps-tab-view.tsx
  */
 export class PerpsHomePage extends PerpsPositionsBase {
-  private readonly accountOverviewPerpsTab = {
-    testId: 'account-overview__perps-tab',
-  };
-
   private readonly addFundsButton = {
     testId: 'perps-balance-dropdown-add-funds',
   };
