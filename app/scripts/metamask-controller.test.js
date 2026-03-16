@@ -3192,7 +3192,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('responds with a methodNotFound error for an unknown method', async () => {
+      it('responds with a methodNotFound error for an unknown method in a request', async () => {
         const { patchStream, messages } = setupPatchStoreConnection();
 
         patchStream.write({ jsonrpc: '2.0', id: 1, method: 'unknownMethod' });
@@ -3206,6 +3206,23 @@ describe('MetaMaskController', () => {
               code: errorCodes.rpc.methodNotFound,
             }),
           }),
+        );
+      });
+
+      it('logs an error and does not respond for an unknown method in a notification', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        patchStream.write({ jsonrpc: '2.0', method: 'unknownMethod' });
+        await flushBufferedWrites();
+
+        expect(messages).not.toContainEqual(
+          expect.objectContaining({ method: 'unknownMethod' }),
+        );
+        expect(consoleSpy).toHaveBeenCalledWith(
+          'Unrecognized patch-store substream notification method: unknownMethod',
         );
       });
     });

@@ -6638,7 +6638,7 @@ export default class MetamaskController extends EventEmitter {
         handleStartSendingPatches();
       } else if (method === GET_STATE_PATCHES) {
         handleGetStatePatches(message);
-      } else {
+      } else if (message.id !== undefined) {
         outStream.write({
           id: message.id,
           jsonrpc: '2.0',
@@ -6646,6 +6646,10 @@ export default class MetamaskController extends EventEmitter {
             message: `${method} not found`,
           }),
         });
+      } else {
+        console.error(
+          `Unrecognized patch-store substream notification method: ${method}`,
+        );
       }
     });
 
