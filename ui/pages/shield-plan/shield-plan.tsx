@@ -557,14 +557,12 @@ const ShieldPlan = () => {
                                     selectedToken.chainId
                                   ]
                                 }
-                                className="border border-muted rounded-md"
                               />
                             }
                           >
                             <AvatarToken
                               name={selectedToken?.symbol || ''}
                               src={selectedToken?.image || ''}
-                              className="border border-muted"
                             />
                           </BadgeWrapper>
                         </Box>

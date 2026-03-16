@@ -190,14 +190,13 @@ export const ShieldPaymentModal = ({
                               selectedToken.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                             ]
                           }
-                          className="border border-muted rounded-md"
                         />
                       }
                     >
                       <AvatarToken
                         name={selectedToken.symbol}
                         src={selectedToken.image}
-                        className="mt-1 border border-muted"
+                        className="mt-1"
                       />
                     </BadgeWrapper>
                   ) : (
