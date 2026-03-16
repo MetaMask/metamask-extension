@@ -236,7 +236,7 @@ describe('patch-store substream connection', () => {
         delete process.env.IN_TEST;
         try {
           const { getStatePatches: isolatedGetStatePatches } = await import(
-            './patch-store-substream-connection.js'
+            './patch-store-substream-connection'
           );
           await expect(isolatedGetStatePatches()).rejects.toThrow(
             'Patch-store substream has not been initialized, not sending message',
