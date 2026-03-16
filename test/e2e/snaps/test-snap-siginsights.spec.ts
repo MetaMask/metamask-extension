@@ -1,5 +1,5 @@
 import { Driver } from '../webdriver/driver';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
+import { TestSnaps, spanLocator } from '../page-objects/pages/test-snaps';
 import TestDapp from '../page-objects/pages/test-dapp';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
@@ -63,7 +63,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.waitForSignatureInsightPanelText('Hi, Alice!');
         await snapInstall.clickScrollDown();
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.snapUiRendererPanel,
+        );
         await snapInstall.waitForSignatureInsightPanelText('1');
         await snapInstall.clickConfirmFooterAndWaitForClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -74,10 +76,14 @@ describe('Test Snap Signature Insights', function () {
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickScrollDown();
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.snapUiRendererPanel,
+        );
         await snapInstall.waitForSignatureInsightPanelText('Hello, Bob!');
         await snapInstall.clickScrollDown();
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.snapUiRendererPanel,
+        );
         await snapInstall.waitForSignatureInsightPanelText(
           '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
         );
@@ -90,10 +96,14 @@ describe('Test Snap Signature Insights', function () {
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickScrollDown();
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.snapUiRendererPanel,
+        );
         await snapInstall.waitForSignatureInsightPanelText('Hello, Bob!');
         await snapInstall.clickScrollDown();
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.snapUiRendererPanel,
+        );
         await snapInstall.waitForSignatureInsightPanelText(
           '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
         );

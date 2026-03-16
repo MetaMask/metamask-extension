@@ -1,5 +1,5 @@
 import { Driver } from '../webdriver/driver';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
+import { TestSnaps, spanLocator } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -65,9 +65,10 @@ describe('Test Snap UI Links', function () {
         );
 
         await testSnaps.clickButton('confirmationButton');
-        await driver.delay(500);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.snapUiRendererPanel,
+        );
         await snapInstall.waitForConfirmationDialogLinkText();
         await snapInstall.clickConfirmationDialogLinkText();
         await snapInstall.waitForVisitSiteLinkContent();

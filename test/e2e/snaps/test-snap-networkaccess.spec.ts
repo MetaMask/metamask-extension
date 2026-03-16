@@ -4,7 +4,7 @@ import { Driver } from '../webdriver/driver';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { mockNetworkSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
+import { TestSnaps, spanLocator } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockTestSnapsSite } from '../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
@@ -54,14 +54,18 @@ describe('Test Snap networkAccess', function () {
           'https://metamask.github.io/snaps/test-snaps/2.28.1/test-data.json',
         );
         await testSnaps.clickButton('sendNetworkAccessTestButton');
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.networkAccessResultSpan,
+        );
         await testSnaps.checkMessageResultSpan(
           'networkAccessResultSpan',
           '"hello": "world"',
         );
 
         await testSnaps.clickButton('startWebSocket');
-        await driver.delay(500);
+        await driver.waitForElementToStopMoving(
+          spanLocator.networkAccessResultSpan,
+        );
 
         await testSnaps.waitForWebSocketUpdate({
           open: true,

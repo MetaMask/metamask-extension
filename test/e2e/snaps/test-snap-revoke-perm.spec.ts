@@ -53,7 +53,6 @@ describe('Test Snap revoke permission', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.delay(1000);
         await homePage.headerNavbar.openSnapListPage();
 
         const snapListPage = new SnapListPage(driver);

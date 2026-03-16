@@ -131,7 +131,7 @@ export const buttonLocator = {
   getWebSocketState: '#getWebSocketState',
 } satisfies Record<string, string>;
 
-const spanLocator = {
+export const spanLocator = {
   addressResultSpan: '#ethproviderResult',
   bip32MessageResultEd25519Span: '#bip32MessageResult-ed25519',
   bip32MessageResultSecp256k1Span: '#bip32MessageResult-secp256k1',
@@ -159,6 +159,7 @@ const spanLocator = {
   multichainProviderResultSpan: '#multichainProviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
   snapUIRenderer: '.snap-ui-renderer__content',
+  snapUiRendererPanel: '.snap-ui-renderer__panel',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   signMessageMultichainResultSpan: '#signMessageMultichainResult',
   signTypedDataMultichainResultSpan: '#signTypedDataMultichainResult',
