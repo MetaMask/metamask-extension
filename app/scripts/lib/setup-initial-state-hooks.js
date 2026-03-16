@@ -8,10 +8,14 @@ import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
+const DEBUG_PREFIX = '[===> DEBUG LOGS TO BE REMOVED BEFORE PR GETS MERGED]';
+
 /**
- * Returns environment type for the current context, or null when URL is not yet
- * available (e.g. Webpack UI chunk before location is set). Used so we never
- * treat UI as background (initialize: true) when we're unsure.
+ * Returns environment type for the current context, or null when URL is empty.
+ * We use globalThis.self (not window) so this works in both the service worker
+ * (where window is undefined) and the UI. When url is empty we return null so
+ * we never treat the context as background (initialize: true) and block on
+ * storage in a UI context.
  *
  * @param url - Optional URL (defaults to globalThis.self?.location?.href ?? '')
  * @returns The environment type, or null when url is empty
@@ -19,6 +23,29 @@ import { PersistenceManager } from './stores/persistence-manager';
 function getEnvironmentTypeForHooks(
   url = globalThis.self?.location?.href ?? '',
 ) {
+  if (url) {
+    // eslint-disable-next-line no-console -- temporary debug, remove before merge
+    console.log(DEBUG_PREFIX, 'url is defined:', url);
+  } else {
+    const safeGlobalThisKeys =
+      typeof Object.getOwnPropertyNames === 'function'
+        ? Object.getOwnPropertyNames(globalThis).slice(0, 30)
+        : [];
+    const safeWindowKeys =
+      typeof window !== 'undefined' &&
+      typeof Object.getOwnPropertyNames === 'function'
+        ? Object.getOwnPropertyNames(window).slice(0, 30)
+        : ['(window undefined)'];
+    // eslint-disable-next-line no-console -- temporary debug, remove before merge
+    console.log(DEBUG_PREFIX, 'url is NOT defined. context:', {
+      hasWindow: typeof window !== 'undefined',
+      hasSelf: typeof globalThis.self !== 'undefined',
+      selfLocationHref: globalThis.self?.location?.href,
+      globalThisConstructor: globalThis.constructor?.name,
+      globalThisKeysSample: safeGlobalThisKeys,
+      windowKeysSample: safeWindowKeys,
+    });
+  }
   if (!url) {
     return null;
   }
