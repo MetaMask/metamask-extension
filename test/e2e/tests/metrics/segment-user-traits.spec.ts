@@ -170,6 +170,7 @@ describe('Segment User Traits', function () {
         await driver.wait(async () => {
           try {
             events = await getEventPayloads(driver, mockedEndpoints, false);
+            console.log(events);
           } catch {
             return false;
           }
