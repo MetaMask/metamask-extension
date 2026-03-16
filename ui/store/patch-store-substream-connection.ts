@@ -22,9 +22,9 @@ import {
   unknown,
   validate,
 } from '@metamask/superstruct';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import getNextId from '../../shared/lib/random-id';
-import { rpcErrors } from '@metamask/rpc-errors';
 
 let patchStoreSubstreamSingleton: Substream | undefined;
 
