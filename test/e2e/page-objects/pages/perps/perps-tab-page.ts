@@ -1,4 +1,3 @@
-import { PERPS_TAB_HASH } from '../../../tests/perps/helpers';
 import { PerpsPositionsBase } from './perps-positions-base';
 
 /**
@@ -12,15 +11,17 @@ export class PerpsTabPage extends PerpsPositionsBase {
     testId: 'account-overview__asset-tab',
   };
 
+  private readonly accountOverviewPerpsTab = {
+    testId: 'account-overview__perps-tab',
+  };
+
   /**
-   * Opens the Perps tab by setting the window hash to the perps tab query.
-   * Uses window.location.hash so the SPA router switches tab without a full page reload,
-   * which keeps the extension context and avoids re-injecting the extension.
+   * Opens the Perps tab by clicking the Perps tab on the account overview.
+   * Requires the account overview to be loaded (e.g. after login or driver.navigate()).
    */
   async openPerpsTab(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = '${PERPS_TAB_HASH}';`,
-    );
+    await this.waitForAccountOverviewLoaded();
+    await this.driver.clickElement(this.accountOverviewPerpsTab);
   }
 
   /**

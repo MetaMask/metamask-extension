@@ -1,4 +1,3 @@
-import { PERPS_HOME_ROUTE } from '../../../tests/perps/helpers';
 import { PerpsPositionsBase } from './perps-positions-base';
 
 /**
@@ -10,10 +9,14 @@ import { PerpsPositionsBase } from './perps-positions-base';
  */
 export class PerpsHomePage extends PerpsPositionsBase {
   private readonly addFundsButton =
-    '[data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]';
+    '[data-testid="perps-balance-dropdown-add-funds"], [data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]';
+
+  private readonly balanceDropdownBalanceRow = {
+    testId: 'perps-balance-dropdown-balance',
+  };
 
   private readonly balanceSection =
-    '[data-testid="perps-balance-actions"], [data-testid="perps-balance-actions-empty"]';
+    '[data-testid="perps-balance-dropdown"], [data-testid="perps-balance-actions"], [data-testid="perps-balance-actions-empty"]';
 
   private readonly perpsHomeBackButton = {
     testId: 'perps-home-back-button',
@@ -35,6 +38,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-tab-view',
   };
 
+  private readonly perpsBalanceDropdown = {
+    testId: 'perps-balance-dropdown',
+  };
+
   private readonly perpsTutorialContinueButton = {
     testId: 'perps-tutorial-continue-button',
   };
@@ -49,7 +56,15 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-actions-withdraw',
   };
 
+  private readonly balanceDropdownWithdraw = {
+    testId: 'perps-balance-dropdown-withdraw',
+  };
+
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
+
+  private readonly accountOverviewPerpsTab = {
+    testId: 'account-overview__perps-tab',
+  };
 
   /**
    * Checks that the Perps Home page back button is visible.
@@ -59,14 +74,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
-   * Waits for the Perps tab view to be loaded and visible.
-   * Uses multiple selectors for robustness (convention).
+   * Waits for the Perps Home view to be loaded and visible.
+   * The main Perps tab shows PerpsTabView (balance dropdown, positions, explore) with no back/search header.
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      this.perpsHomeBackButton,
-      this.perpsHomeSearchButton,
       this.perpsTabView,
+      this.perpsBalanceDropdown,
     ]);
   }
 
@@ -78,9 +92,11 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
-   * Clicks the Add funds button (visible in empty state or when balance exists).
+   * Clicks the Add funds button. On Perps Home the balance is in a dropdown:
+   * opens the dropdown first, then clicks Add funds.
    */
   async clickAddFunds(): Promise<void> {
+    await this.driver.clickElement(this.balanceDropdownBalanceRow);
     await this.driver.clickElement(this.addFundsButton);
   }
 
@@ -107,10 +123,12 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
-   * Clicks the Withdraw button (visible when account has balance).
+   * Clicks the Withdraw button. On Perps Home the balance is in a dropdown:
+   * opens the dropdown first, then clicks Withdraw.
    */
   async clickWithdraw(): Promise<void> {
-    await this.driver.clickElement(this.perpsWithdrawButton);
+    await this.driver.clickElement(this.balanceDropdownBalanceRow);
+    await this.driver.clickElement(this.balanceDropdownWithdraw);
   }
 
   /**
@@ -128,16 +146,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
-   * Navigates to the Perps Home route and waits for the page to load.
-   * Uses window.location.hash so the SPA router switches view without a full page reload,
-   * which keeps the extension context and avoids re-injecting the extension.
-   * In the UI, users reach this screen by opening the Perps tab from the account overview;
-   * this method is a test shortcut to land directly on Perps Home.
+   * Navigates to Perps Home by clicking the Perps tab on the account overview.
+   * Requires the account overview to be visible (e.g. after login or driver.navigate()).
+   * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
    */
   async navigateToPerpsHome(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = '${PERPS_HOME_ROUTE}';`,
-    );
+    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
+    await this.driver.clickElement(this.accountOverviewPerpsTab);
     await this.checkPageIsLoaded();
   }
 
