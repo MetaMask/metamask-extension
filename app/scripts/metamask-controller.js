@@ -1594,7 +1594,9 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
-    this.controllerApi.perpsStopEligibilityMonitoring?.();
+    this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+      console.error(error);
+    });
   }
 
   resetStates(resetMethods) {
@@ -1771,7 +1773,11 @@ export default class MetamaskController extends EventEmitter {
                 console.error(error);
               });
           } else {
-            this.controllerApi.perpsStopEligibilityMonitoring?.();
+            this.controllerApi
+              .perpsStopEligibilityMonitoring?.()
+              ?.catch((error) => {
+                console.error(error);
+              });
           }
         }
         return true;
