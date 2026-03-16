@@ -286,6 +286,7 @@ jobs:
       build-name: build-dist-mv2-webpack
       build-command: yarn build:dist:webpack:mv2
       zip: true
+      mozilla-lint: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -312,6 +313,7 @@ jobs:
       build-name: build-beta-mv2-webpack
       build-command: yarn build:beta:webpack:mv2
       zip: true
+      mozilla-lint: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -338,6 +340,7 @@ jobs:
       build-name: build-flask-mv2-webpack
       build-command: yarn build:flask:webpack:mv2
       zip: true
+      mozilla-lint: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -364,6 +367,7 @@ jobs:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
       zip: true
+      mozilla-lint: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -390,6 +394,7 @@ jobs:
       build-name: build-test-flask-mv2-webpack
       build-command: yarn build:test:flask:webpack:mv2
       zip: true
+      mozilla-lint: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
