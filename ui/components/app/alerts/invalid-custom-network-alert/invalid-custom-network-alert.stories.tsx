@@ -16,7 +16,6 @@ const store = mockStore({
 const meta: Meta<typeof InvalidCustomNetworkAlert> = {
   title: 'Components/App/Alerts/InvalidCustomNetworkAlert',
   component: InvalidCustomNetworkAlert,
-  parameters: {},
   decorators: [
     (Story) => (
       <Provider store={store}>

@@ -9,6 +9,7 @@ import { MAX_GAS_LIMIT_DEC } from '../../send-utils/send.constants';
 import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import AdvancedGasFeePopover from './advanced-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
@@ -77,7 +78,9 @@ const render = async () => {
 describe('AdvancedGasFeePopover', () => {
   it('should renders save button enabled by default', async () => {
     await render();
-    expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
+    expect(
+      screen.queryByRole('button', { name: messages.save.message }),
+    ).not.toBeDisabled();
   });
 
   it('should enable save button if priority fee 0 is entered', async () => {
@@ -85,7 +88,9 @@ describe('AdvancedGasFeePopover', () => {
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 0 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeEnabled();
+    expect(
+      screen.queryByRole('button', { name: messages.save.message }),
+    ).toBeEnabled();
   });
 
   it('should disable save button if priority fee entered is greater than base fee', async () => {
@@ -93,23 +98,31 @@ describe('AdvancedGasFeePopover', () => {
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 100000 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(
+      screen.queryByRole('button', { name: messages.save.message }),
+    ).toBeDisabled();
   });
 
   it('should disable save button if gas limit beyond range is entered', async () => {
     await render();
-    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.click(screen.queryByText(messages.edit.message));
     fireEvent.change(document.getElementsByTagName('input')[3], {
       target: { value: 0 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(
+      screen.queryByRole('button', { name: messages.save.message }),
+    ).toBeDisabled();
     fireEvent.change(document.getElementsByTagName('input')[3], {
       target: { value: 30000 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
+    expect(
+      screen.queryByRole('button', { name: messages.save.message }),
+    ).not.toBeDisabled();
     fireEvent.change(document.getElementsByTagName('input')[3], {
       target: { value: MAX_GAS_LIMIT_DEC + 1 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(
+      screen.queryByRole('button', { name: messages.save.message }),
+    ).toBeDisabled();
   });
 });

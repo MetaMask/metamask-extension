@@ -41,6 +41,18 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+
+        // Wait until the PreferencesController state has the expected ipfsGateway value
+        await driver.wait(async () => {
+          const persistedState = await driver.executeScript(
+            'return window.stateHooks.getPersistedState()',
+          );
+          return (
+            persistedState?.data?.PreferencesController?.ipfsGateway ===
+            'dweb.link'
+          );
+        }, 10000);
+
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
 

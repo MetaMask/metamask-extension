@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFI_REFERRAL_PARTNERS } from '../../../../shared/constants/defi-referrals';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { DefiReferralConsent } from './defi-referral-consent';
 
 const mockStore = configureMockStore([]);
@@ -46,7 +47,9 @@ describe('DefiReferralConsent', () => {
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
         expect(
-          screen.getByText(`MetaMask x ${partnerName}`),
+          screen.getByText(
+            messages.defiReferralTitle.message.replace('$1', partnerName),
+          ),
         ).toBeInTheDocument();
         expect(
           screen.getByText('MetaMask referral code', { exact: false }),
@@ -99,7 +102,9 @@ describe('DefiReferralConsent', () => {
           store,
         );
 
-        const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+        const confirmButton = screen.getByRole('button', {
+          name: messages.confirm.message,
+        });
         fireEvent.click(confirmButton);
 
         expect(mockOnActionComplete).toHaveBeenCalledWith({
@@ -124,7 +129,9 @@ describe('DefiReferralConsent', () => {
         const checkbox = screen.getByRole('checkbox');
         fireEvent.click(checkbox);
 
-        const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+        const confirmButton = screen.getByRole('button', {
+          name: messages.confirm.message,
+        });
         fireEvent.click(confirmButton);
 
         expect(mockOnActionComplete).toHaveBeenCalledWith({
@@ -139,9 +146,7 @@ describe('DefiReferralConsent', () => {
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
         expect(
-          screen.getByText(
-            'Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.',
-          ),
+          screen.getByText(messages.defiReferralCheckboxLabel.message),
         ).toBeInTheDocument();
       });
     },

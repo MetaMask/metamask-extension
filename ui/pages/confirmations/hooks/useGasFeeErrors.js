@@ -9,7 +9,7 @@ import {
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { bnGreaterThan, bnLessThan } from '../../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;

@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { createSwapsMockStore } from '../../../../test/jest';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import NotificationPage from './notification-page';
 
 const middleware = [thunk];
@@ -16,14 +17,16 @@ describe('NotificationPage', () => {
       <NotificationPage notificationKey={QUOTES_EXPIRED_ERROR} />,
       store,
     );
-    expect(getByText('Are you still there?')).toBeInTheDocument();
     expect(
-      getByText(
-        'We’re ready to show you the latest quotes when you want to continue',
-      ),
+      getByText(messages.swapAreYouStillThere.message),
     ).toBeInTheDocument();
-    expect(getByText('Show latest quotes')).toBeInTheDocument();
-    expect(getByText('Terms of service')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapAreYouStillThereDescription.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.swapShowLatestQuotes.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.termsOfService.message)).toBeInTheDocument();
   });
 
   it('renders the component with an unsupported error key', () => {
@@ -33,13 +36,15 @@ describe('NotificationPage', () => {
       <NotificationPage notificationKey="unsupportedNotificationKey" />,
       store,
     );
-    expect(queryByText('Are you still there?')).not.toBeInTheDocument();
     expect(
-      queryByText(
-        'We’re ready to show you the latest quotes when you want to continue',
-      ),
+      queryByText(messages.swapAreYouStillThere.message),
     ).not.toBeInTheDocument();
-    expect(queryByText('Show latest quotes')).not.toBeInTheDocument();
-    expect(getByText('Terms of service')).toBeInTheDocument();
+    expect(
+      queryByText(messages.swapAreYouStillThereDescription.message),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.swapShowLatestQuotes.message),
+    ).not.toBeInTheDocument();
+    expect(getByText(messages.termsOfService.message)).toBeInTheDocument();
   });
 });

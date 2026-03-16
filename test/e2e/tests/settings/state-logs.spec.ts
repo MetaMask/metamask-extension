@@ -110,12 +110,6 @@ describe('State logs', function () {
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
 
         assert.equal(
-          stateLogs.metamask.identities[
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
-          ].address,
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
-        assert.equal(
           stateLogs.metamask.internalAccounts.accounts[
             stateLogs.metamask.internalAccounts.selectedAccount
           ].address,

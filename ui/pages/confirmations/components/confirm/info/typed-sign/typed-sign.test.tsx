@@ -18,6 +18,7 @@ import {
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import TypedSignInfo from './typed-sign';
@@ -111,7 +112,7 @@ describe('TypedSignInfo', () => {
       <TypedSignInfo />,
       mockStore,
     );
-    expect(getByText('Estimated changes')).toBeDefined();
+    expect(getByText(messages.estimatedChanges.message)).toBeDefined();
   });
 
   it('correctly renders permit sign type', () => {
@@ -159,14 +160,12 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
 
-    const requestFromLabel = queryByText('Request from');
+    const requestFromLabel = queryByText(messages.requestFrom.message);
 
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
-    expect(
-      queryByText('This is the Snap asking for your signature.'),
-    ).toBeDefined();
+    expect(queryByText(messages.requestFromInfoSnap.message)).toBeDefined();
   });
 
   it('displays "requestFromInfo" tooltip when origin is not a snap', async () => {
@@ -183,14 +182,12 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
 
-    const requestFromLabel = queryByText('Request from');
+    const requestFromLabel = queryByText(messages.requestFrom.message);
 
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
-    expect(
-      queryByText('This is the site asking for your signature.'),
-    ).toBeDefined();
+    expect(queryByText(messages.requestFromInfo.message)).toBeDefined();
   });
 
   it('display network info if there is an alert on that field', () => {
@@ -216,7 +213,7 @@ describe('TypedSignInfo', () => {
       <TypedSignInfo />,
       mockStore,
     );
-    expect(getByText('Network')).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.network.message)).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 });

@@ -12,17 +12,24 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMerklClaim } from './hooks/useMerklClaim';
+import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
 
 export const ClaimBonusBadge = ({
   label,
   tokenAddress,
   chainId,
+  refetchRewards,
 }: {
   label: string;
   tokenAddress: string;
   chainId: Hex;
+  refetchRewards: () => void;
 }) => {
   const t = useI18nContext();
+
+  // Refetch rewards when a pending claim is confirmed
+  useOnMerklClaimConfirmed(refetchRewards);
+
   const { claimRewards, isClaiming, error } = useMerklClaim({
     tokenAddress,
     chainId,
@@ -54,6 +61,7 @@ export const ClaimBonusBadge = ({
         variant={TextVariant.BodySm}
         color={TextColor.ErrorDefault}
         data-testid="claim-bonus-error"
+        style={{ textAlign: 'end' }}
       >
         {t('merklRewardsUnexpectedError')}
       </Text>

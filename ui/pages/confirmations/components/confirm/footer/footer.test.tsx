@@ -1,4 +1,6 @@
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -19,7 +21,7 @@ import {
 } from '../../../../../../test/data/confirmations/personal_sign';
 import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { fireEvent, waitFor } from '../../../../../../test/jest';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -38,6 +40,10 @@ import Footer from './footer';
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
+  useIsTransactionPayLoading: jest.fn(() => false),
+  useTransactionPayRequiredTokens: jest.fn(() => []),
+}));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
@@ -60,6 +66,10 @@ jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
     navigateNext: jest.fn(),
     navigateToId: jest.fn(),
+  })),
+  useConfirmationNavigationOptions: jest.fn(() => ({
+    loader: 'default',
+    returnTo: undefined,
   })),
 }));
 jest.mock(
@@ -177,8 +187,8 @@ describe('ConfirmFooter', () => {
     const { getAllByRole, getByText } = render();
     const buttons = getAllByRole('button');
     expect(buttons).toHaveLength(2);
-    expect(getByText('Confirm')).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
+    expect(getByText(messages.confirm.message)).toBeInTheDocument();
+    expect(getByText(messages.cancel.message)).toBeInTheDocument();
   });
 
   describe('renders enabled "Confirm" Button', () => {
@@ -186,7 +196,7 @@ describe('ConfirmFooter', () => {
       const mockStateTypedSign = getMockTypedSignConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).not.toBeDisabled();
     });
 
@@ -200,7 +210,7 @@ describe('ConfirmFooter', () => {
         getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
       const { getByText } = render(mockStateSIWE);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).not.toBeDisabled();
     });
 
@@ -209,7 +219,7 @@ describe('ConfirmFooter', () => {
         getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
       const { getByText } = render(mockStatePermit);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).not.toBeDisabled();
     });
 
@@ -249,7 +259,7 @@ describe('ConfirmFooter', () => {
       };
 
       const { getByText } = render(mockState2);
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).not.toBeDisabled();
     });
   });
@@ -264,7 +274,7 @@ describe('ConfirmFooter', () => {
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).toBeDisabled();
     });
 
@@ -291,7 +301,7 @@ describe('ConfirmFooter', () => {
       };
 
       const { getByText } = render(mockState2);
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).toBeDisabled();
     });
   });
@@ -483,7 +493,7 @@ describe('ConfirmFooter', () => {
         { [KEY_ALERT_KEY_MOCK]: false },
       );
       const { getByText } = render(stateWithMultipleDangerAlerts);
-      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText(messages.reviewAlerts.message)).toBeInTheDocument();
     });
 
     it('renders the "review alerts" button disabled when there are blocking alerts', () => {
@@ -499,13 +509,13 @@ describe('ConfirmFooter', () => {
         { [KEY_ALERT_KEY_MOCK]: false },
       );
       const { getByText } = render(stateWithMultipleDangerAlerts);
-      expect(getByText('Review alerts')).toBeInTheDocument();
-      expect(getByText('Review alerts')).toBeDisabled();
+      expect(getByText(messages.reviewAlerts.message)).toBeInTheDocument();
+      expect(getByText(messages.reviewAlerts.message)).toBeDisabled();
     });
 
     it('renders the "review alert" button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
-      expect(getByText('Review alert')).toBeInTheDocument();
+      expect(getByText(messages.reviewAlert.message)).toBeInTheDocument();
     });
 
     it('renders the "confirm" button when there are confirmed danger alerts', () => {
@@ -516,7 +526,7 @@ describe('ConfirmFooter', () => {
         },
       );
       const { getByText } = render(stateWithConfirmedDangerAlertMock);
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText(messages.confirm.message)).toBeInTheDocument();
     });
 
     it('renders the "confirm" button disabled when there are blocking dangerous banner alerts', () => {
@@ -533,13 +543,13 @@ describe('ConfirmFooter', () => {
         },
       );
       const { getByText } = render(stateWithBannerDangerAlertMock);
-      expect(getByText('Confirm')).toBeInTheDocument();
-      expect(getByText('Confirm')).toBeDisabled();
+      expect(getByText(messages.confirm.message)).toBeInTheDocument();
+      expect(getByText(messages.confirm.message)).toBeDisabled();
     });
 
     it('renders the "confirm" button when there are no alerts', () => {
       const { getByText } = render();
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText(messages.confirm.message)).toBeInTheDocument();
     });
 
     it('sets the alert modal visible when the review alerts button is clicked', () => {
@@ -598,5 +608,23 @@ describe('ConfirmFooter', () => {
         },
       );
     });
+  });
+
+  it('renders SingleActionFooter for musdConversion transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.musdConversion,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 });

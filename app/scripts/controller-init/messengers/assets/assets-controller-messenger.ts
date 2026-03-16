@@ -8,6 +8,7 @@ import {
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerEvents,
 } from '@metamask/network-enablement-controller';
+import type { ClientControllerStateChangeEvent } from '@metamask/client-controller';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
@@ -26,7 +27,7 @@ import type {
   GetRunnableSnaps,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
@@ -49,6 +50,7 @@ type CoreAssetsControllerActions =
  */
 type CoreAssetsControllerEvents =
   | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | ClientControllerStateChangeEvent
   | NetworkEnablementControllerEvents
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent;
@@ -233,6 +235,7 @@ export function getAssetsControllerMessenger(
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
+      'ClientController:stateChange',
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
@@ -259,7 +262,7 @@ type PreferencesControllerGetStateAction = {
  * Actions needed during AssetsController initialization.
  */
 type AllowedInitializationActions =
-  | AuthenticationControllerGetBearerToken
+  | AuthenticationControllerGetBearerTokenAction
   | HandleSnapRequest
   | MetaMetricsControllerTrackEventAction
   | PreferencesControllerGetStateAction;

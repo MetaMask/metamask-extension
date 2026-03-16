@@ -115,9 +115,6 @@ const getTitle = (
     case TransactionType.contractInteraction:
       title = t('confirmTitleTransaction');
       break;
-    case TransactionType.musdClaim:
-      title = t('musdClaimTitle');
-      break;
     case TransactionType.batch:
       title = isUpgradeOnly
         ? t('confirmTitleAccountTypeSwitch')
@@ -194,8 +191,6 @@ const getDescription = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
-    case TransactionType.musdClaim:
-      return t('musdClaimDescription');
     case TransactionType.batch:
       if (isUpgradeOnly) {
         return t('confirmTitleDescDelegationUpgrade');
@@ -348,7 +343,7 @@ const ConfirmTitle: React.FC = memo(() => {
   );
 
   if (!currentConfirmation) {
-    if (loader && loader !== ConfirmationLoader.Default) {
+    if (loader !== ConfirmationLoader.Default) {
       return null;
     }
 

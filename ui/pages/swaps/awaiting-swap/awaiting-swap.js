@@ -12,7 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getRpcPrefsForCurrentProvider,
@@ -25,7 +25,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/modules/selectors';
+} from '../../../../shared/lib/selectors';
 
 import {
   getUsedQuote,
@@ -50,9 +50,9 @@ import {
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../shared/constants/swaps';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
-import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
+import { isSwapsDefaultTokenSymbol } from '../../../../shared/lib/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { stopPollingForQuotes } from '../../../store/actions';

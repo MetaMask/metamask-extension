@@ -45,6 +45,28 @@
   stroke: var(--color-error-default);
 }
 
+.asset-page__back-button {
+  margin-right: 4px;
+}
+
+.asset-page__balance-heading {
+  padding: 4px 0 4px 16px;
+}
+
+.asset-page__divider {
+  height: 1px;
+  border-bottom-width: 0;
+  margin-inline: 16px;
+}
+
+.asset-page__details-heading {
+  padding-bottom: 8px;
+}
+
+.asset-page__activity-heading {
+  padding-inline: 16px;
+}
+
 .asset-page__spending-caps {
   text-decoration: none;
 

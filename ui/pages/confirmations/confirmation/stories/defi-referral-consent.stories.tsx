@@ -2,6 +2,7 @@ import React from 'react';
 import {
   HYPERLIQUID_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
+  ASTERDEX_APPROVAL_TYPE,
 } from '../../../../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
@@ -10,8 +11,10 @@ import {
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 
-const HYPERLIQUID_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
+const HYPERLIQUID_CONFIG =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 const GMX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
+const ASTERDEX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX];
 
 const STATE_MOCK_DEFAULT = {
   metamask: {
@@ -19,6 +22,7 @@ const STATE_MOCK_DEFAULT = {
       referrals: {
         [DefiReferralPartner.Hyperliquid]: {},
         [DefiReferralPartner.GMX]: {},
+        [DefiReferralPartner.AsterDEX]: {},
       },
     },
   },
@@ -80,3 +84,22 @@ export const GMXStory = (args: { selectedAddress: string }) => {
 };
 
 GMXStory.storyName = 'GMX';
+
+export const AsterdexStory = (args: { selectedAddress: string }) => {
+  return (
+    <PendingApproval
+      type={ASTERDEX_APPROVAL_TYPE}
+      requestData={{
+        selectedAddress: args.selectedAddress,
+        partnerId: ASTERDEX_CONFIG.id,
+        partnerName: ASTERDEX_CONFIG.name,
+        learnMoreUrl: ASTERDEX_CONFIG.learnMoreUrl,
+      }}
+      state={STATE_MOCK_DEFAULT}
+    >
+      <ConfirmationPage />
+    </PendingApproval>
+  );
+};
+
+AsterdexStory.storyName = 'Asterdex';

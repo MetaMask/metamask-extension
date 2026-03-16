@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React, { createRef, Component } from 'react';
 import MetaMaskLogo from '@metamask/logo';
 import { debounce } from 'lodash';
-
-import { getFoxMeshJson } from '../../../helpers/utils/build-types';
+import { getFoxMeshJson } from '../../../../shared/lib/build-types';
 
 const directionTargetGenerator = ({ top, left, height, width }) => {
   const horizontalMiddle = left + width / 2;

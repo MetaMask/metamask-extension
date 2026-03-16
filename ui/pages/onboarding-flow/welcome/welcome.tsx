@@ -41,13 +41,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
   isUserCancelledLoginError,
   OAuthErrorMessages,
-} from '../../../../shared/modules/error';
+} from '../../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   AlignItems,

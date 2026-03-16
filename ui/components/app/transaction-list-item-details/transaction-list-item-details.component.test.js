@@ -7,6 +7,7 @@ import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import mockSwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import TransactionListItemDetails from '.';
 
 jest.mock('../../../store/actions.ts', () => ({
@@ -140,7 +141,9 @@ describe('TransactionListItemDetails for swaps', () => {
       transactionGroup: mockSwapTxGroup,
     });
 
-    expect(queryByText('View on block explorer')).toBeInTheDocument();
+    expect(
+      queryByText(messages.viewOnBlockExplorer.message),
+    ).toBeInTheDocument();
     // Sender shows account name ("Test Account") since it matches an internal account
     expect(queryByTestId('sender-to-recipient')).toHaveTextContent(
       'Test Account0x00000...00000',

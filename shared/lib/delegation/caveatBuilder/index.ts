@@ -11,6 +11,10 @@ import {
   erc1155BalanceChangeBuilder,
 } from './erc1155BalanceChangeBuilder';
 import {
+  exactExecutionBatch,
+  exactExecutionBatchBuilder,
+} from './exactExecutionBatchBuilder';
+import {
   erc20BalanceChange,
   erc20BalanceChangeBuilder,
 } from './erc20BalanceChangeBuilder';
@@ -45,6 +49,7 @@ export const createCaveatBuilder = (
     .extend(erc20BalanceChange, erc20BalanceChangeBuilder)
     .extend(erc721BalanceChange, erc721BalanceChangeBuilder)
     .extend(exactExecution, exactExecutionBuilder)
+    .extend(exactExecutionBatch, exactExecutionBatchBuilder)
     .extend(limitedCalls, limitedCallsBuilder)
     .extend(nativeBalanceChange, nativeBalanceChangeBuilder)
     .extend(

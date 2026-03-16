@@ -5,6 +5,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import FeeDetailsComponent from './fee-details-component';
 
 jest.mock('../../../../store/actions', () => ({
@@ -42,7 +43,7 @@ describe('FeeDetailsComponent', () => {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
     });
-    expect(screen.queryByText('Fee details')).toBeInTheDocument();
+    expect(screen.queryByText(messages.feeDetails.message)).toBeInTheDocument();
   });
 
   it('should expand when button is clicked', async () => {
@@ -74,7 +75,7 @@ describe('FeeDetailsComponent', () => {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
     });
-    expect(screen.queryByText('Fee details')).toBeInTheDocument();
+    expect(screen.queryByText(messages.feeDetails.message)).toBeInTheDocument();
   });
 
   it('should not display total in details section for layer 2 network', async () => {

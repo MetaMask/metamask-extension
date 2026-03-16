@@ -18,6 +18,7 @@ import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
 import { setName, updateProposedNames } from '../../../../store/actions';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -118,7 +119,7 @@ async function saveNameUsingDropdown(
 ) {
   const { getByPlaceholderText, getByText } = component;
   const nameInput = getByPlaceholderText(placeholder);
-  const saveButton = getByText('Save');
+  const saveButton = getByText(messages.save.message);
 
   await act(async () => {
     fireEvent.click(nameInput);
@@ -142,7 +143,7 @@ async function saveNameUsingTextField(
 ) {
   const { getByPlaceholderText, getByText } = component;
   const nameInput = getByPlaceholderText(placeholder);
-  const saveButton = getByText('Save');
+  const saveButton = getByText(messages.save.message);
 
   await act(async () => {
     fireEvent.click(nameInput);
@@ -363,7 +364,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Choose a nickname...');
+    const nameInput = getByPlaceholderText(messages.nameSetPlaceholder.message);
 
     await act(async () => {
       fireEvent.click(nameInput);
@@ -980,7 +981,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Malicious address')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameModalTitleMalicious.message),
+      ).toBeInTheDocument();
     });
 
     it('renders warning state correctly', () => {
@@ -1001,7 +1004,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Address needs review')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameModalTitleWarning.message),
+      ).toBeInTheDocument();
     });
 
     it('renders verified state correctly', () => {
@@ -1022,7 +1027,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Verified address')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameModalTitleVerified.message),
+      ).toBeInTheDocument();
     });
 
     it('shows footer warning for malicious state', () => {
@@ -1043,7 +1050,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameFooterTrustWarning.message),
+      ).toBeInTheDocument();
     });
 
     it('shows footer warning for warning state', () => {
@@ -1064,7 +1073,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameFooterTrustWarning.message),
+      ).toBeInTheDocument();
     });
   });
 });

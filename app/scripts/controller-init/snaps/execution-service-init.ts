@@ -7,7 +7,7 @@ import { assert } from '@metamask/utils';
 import { SubjectType } from '@metamask/permission-controller';
 import { Duplex } from 'readable-stream';
 import { ControllerInitFunction } from '../types';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import { ExecutionServiceMessenger } from '../messengers/snaps';
 import { setupMultiplex } from '../../lib/stream-utils';
 import {

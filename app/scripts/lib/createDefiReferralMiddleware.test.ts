@@ -1,25 +1,25 @@
 import { PendingJsonRpcResponse } from '@metamask/utils';
 import { ValidPermission, type Caveat } from '@metamask/permission-controller';
 import type { Json } from '@metamask/utils';
-import log from 'loglevel';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../../shared/constants/defi-referrals';
-import {
-  createDefiReferralMiddleware,
-  ReferralTriggerType,
-  type ExtendedJSONRPCRequest,
-} from './createDefiReferralMiddleware';
+import { SECOND } from '../../../shared/constants/time';
+import type { ExtendedJSONRPCRequest } from './createDefiReferralMiddleware';
 
-jest.mock('loglevel', () => ({
-  error: jest.fn(),
-}));
+const mockLogError = jest.fn();
+jest.mock('loglevel', () => ({ error: mockLogError }));
 
-// Use any partner for tests - the specific partner doesn't matter
+let createDefiReferralMiddleware: typeof import('./createDefiReferralMiddleware').createDefiReferralMiddleware;
+let ReferralTriggerType: typeof import('./createDefiReferralMiddleware').ReferralTriggerType;
+
 const TEST_PARTNER = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 const TEST_PARTNER_ORIGIN = TEST_PARTNER.origin;
 const NON_PARTNER_ORIGIN = 'https://example.com';
+const TEST_PARTNER_2_STEP =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX];
+const TEST_PARTNER_2_STEP_ORIGIN = TEST_PARTNER_2_STEP.origin;
 
 const createMockRequest = (
   origin: string,
@@ -58,14 +58,29 @@ const createEthRequestAccountsResponse = (
   result: accounts,
 });
 
+const signTypedDataV4Response: PendingJsonRpcResponse<string> = {
+  id: 1,
+  jsonrpc: '2.0',
+  result: '0xabcd1234',
+};
+
 describe('createDefiReferralMiddleware', () => {
   let mockHandleReferral: jest.Mock;
   let mockNext: jest.Mock;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // Dynamic import so each test gets a fresh map (pending reset in afterEach)
+    // eslint-disable-next-line import/extensions
+    const module = await import('./createDefiReferralMiddleware.ts');
+    createDefiReferralMiddleware = module.createDefiReferralMiddleware;
+    ReferralTriggerType = module.ReferralTriggerType;
     jest.clearAllMocks();
     mockHandleReferral = jest.fn().mockResolvedValue(undefined);
     mockNext = jest.fn((cb) => cb?.());
+  });
+
+  afterEach(() => {
+    jest.resetModules(); // Reset the ./createDefiReferralMiddleware.ts import
   });
 
   const runMiddleware = (
@@ -85,60 +100,62 @@ describe('createDefiReferralMiddleware', () => {
     });
   };
 
-  describe('wallet_requestPermissions requests', () => {
-    it('triggers referral when eth_accounts permission is granted', async () => {
-      await runMiddleware(
-        createMockRequest(TEST_PARTNER_ORIGIN),
-        createWalletRequestPermissionsResponse(TEST_PARTNER_ORIGIN),
-      );
+  describe('Partners with single-step `permissions` connection flow', () => {
+    describe('wallet_requestPermissions requests', () => {
+      it('triggers referral when eth_accounts permission is granted', async () => {
+        await runMiddleware(
+          createMockRequest(TEST_PARTNER_ORIGIN),
+          createWalletRequestPermissionsResponse(TEST_PARTNER_ORIGIN),
+        );
 
-      expect(mockNext).toHaveBeenCalledTimes(1);
-      expect(mockHandleReferral).toHaveBeenCalledTimes(1);
-      expect(mockHandleReferral).toHaveBeenCalledWith(
-        TEST_PARTNER,
-        123,
-        ReferralTriggerType.NewConnection,
-      );
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockHandleReferral).toHaveBeenCalledTimes(1);
+        expect(mockHandleReferral).toHaveBeenCalledWith(
+          TEST_PARTNER,
+          123,
+          ReferralTriggerType.NewConnection,
+        );
+      });
+
+      it('does not trigger referral when eth_accounts permission is not in result', async () => {
+        await runMiddleware(
+          createMockRequest(TEST_PARTNER_ORIGIN),
+          createWalletRequestPermissionsResponse(
+            TEST_PARTNER_ORIGIN,
+            'other_permission',
+          ),
+        );
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockHandleReferral).not.toHaveBeenCalled();
+      });
     });
 
-    it('does not trigger referral when eth_accounts permission is not in result', async () => {
-      await runMiddleware(
-        createMockRequest(TEST_PARTNER_ORIGIN),
-        createWalletRequestPermissionsResponse(
-          TEST_PARTNER_ORIGIN,
-          'other_permission',
-        ),
-      );
+    describe('eth_requestAccounts requests', () => {
+      it('triggers referral when accounts are returned', async () => {
+        await runMiddleware(
+          createMockRequest(TEST_PARTNER_ORIGIN, 'eth_requestAccounts'),
+          createEthRequestAccountsResponse(),
+        );
 
-      expect(mockNext).toHaveBeenCalledTimes(1);
-      expect(mockHandleReferral).not.toHaveBeenCalled();
-    });
-  });
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockHandleReferral).toHaveBeenCalledTimes(1);
+        expect(mockHandleReferral).toHaveBeenCalledWith(
+          TEST_PARTNER,
+          123,
+          ReferralTriggerType.NewConnection,
+        );
+      });
 
-  describe('eth_requestAccounts requests', () => {
-    it('triggers referral when accounts are returned', async () => {
-      await runMiddleware(
-        createMockRequest(TEST_PARTNER_ORIGIN, 'eth_requestAccounts'),
-        createEthRequestAccountsResponse(),
-      );
+      it('does not trigger referral when result is empty', async () => {
+        await runMiddleware(
+          createMockRequest(TEST_PARTNER_ORIGIN, 'eth_requestAccounts'),
+          createEthRequestAccountsResponse([]),
+        );
 
-      expect(mockNext).toHaveBeenCalledTimes(1);
-      expect(mockHandleReferral).toHaveBeenCalledTimes(1);
-      expect(mockHandleReferral).toHaveBeenCalledWith(
-        TEST_PARTNER,
-        123,
-        ReferralTriggerType.NewConnection,
-      );
-    });
-
-    it('does not trigger referral when result is empty', async () => {
-      await runMiddleware(
-        createMockRequest(TEST_PARTNER_ORIGIN, 'eth_requestAccounts'),
-        createEthRequestAccountsResponse([]),
-      );
-
-      expect(mockNext).toHaveBeenCalledTimes(1);
-      expect(mockHandleReferral).not.toHaveBeenCalled();
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockHandleReferral).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -212,11 +229,107 @@ describe('createDefiReferralMiddleware', () => {
 
       expect(mockNext).toHaveBeenCalledTimes(1);
       expect(mockHandleReferral).toHaveBeenCalledTimes(1);
-      expect(log.error).toHaveBeenCalledTimes(1);
-      expect(log.error).toHaveBeenCalledWith(
+      expect(mockLogError).toHaveBeenCalledTimes(1);
+      expect(mockLogError).toHaveBeenCalledWith(
         `Failed to handle ${TEST_PARTNER.name} referral after permissions grant: `,
         error,
       );
+    });
+  });
+
+  describe('Partners with two-step `permissions_then_signature` connection flow', () => {
+    it('does not trigger on permissions alone', async () => {
+      await runMiddleware(
+        createMockRequest(
+          TEST_PARTNER_2_STEP_ORIGIN,
+          'wallet_requestPermissions',
+        ),
+        createWalletRequestPermissionsResponse(TEST_PARTNER_2_STEP_ORIGIN),
+      );
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+    });
+
+    it('triggers after permissions then eth_signTypedData_v4 success', async () => {
+      await runMiddleware(
+        createMockRequest(
+          TEST_PARTNER_2_STEP_ORIGIN,
+          'wallet_requestPermissions',
+        ),
+        createWalletRequestPermissionsResponse(TEST_PARTNER_2_STEP_ORIGIN),
+      );
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+
+      await runMiddleware(
+        createMockRequest(TEST_PARTNER_2_STEP_ORIGIN, 'eth_signTypedData_v4'),
+        signTypedDataV4Response,
+      );
+
+      expect(mockHandleReferral).toHaveBeenCalledTimes(1);
+      expect(mockHandleReferral).toHaveBeenCalledWith(
+        TEST_PARTNER_2_STEP,
+        123,
+        ReferralTriggerType.NewConnection,
+      );
+    });
+
+    it('does not trigger when eth_signTypedData_v4 has no prior permissions', async () => {
+      await runMiddleware(
+        createMockRequest(
+          TEST_PARTNER_2_STEP_ORIGIN,
+          'eth_signTypedData_v4',
+          123,
+        ),
+        signTypedDataV4Response,
+      );
+
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+    });
+
+    it('does not trigger when eth_signTypedData_v4 result is not a string', async () => {
+      await runMiddleware(
+        createMockRequest(
+          TEST_PARTNER_2_STEP_ORIGIN,
+          'wallet_requestPermissions',
+        ),
+        createWalletRequestPermissionsResponse(TEST_PARTNER_2_STEP_ORIGIN),
+      );
+      await runMiddleware(
+        createMockRequest(
+          TEST_PARTNER_2_STEP_ORIGIN,
+          'eth_signTypedData_v4',
+          123,
+        ),
+        { id: 1, jsonrpc: '2.0', result: null },
+      );
+
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+    });
+
+    it('does not trigger when eth_signTypedData_v4 is after the wait window', async () => {
+      jest.useFakeTimers();
+
+      await runMiddleware(
+        createMockRequest(
+          TEST_PARTNER_2_STEP_ORIGIN,
+          'wallet_requestPermissions',
+        ),
+        createWalletRequestPermissionsResponse(TEST_PARTNER_2_STEP_ORIGIN),
+      );
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+
+      // Advance past WAIT_AFTER_FIRST_REQUEST_MS so the interval prunes the entry
+      jest.advanceTimersByTime(SECOND * 10 + 1);
+
+      await runMiddleware(
+        createMockRequest(TEST_PARTNER_2_STEP_ORIGIN, 'eth_signTypedData_v4'),
+        signTypedDataV4Response,
+      );
+
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+
+      jest.useRealTimers();
     });
   });
 });

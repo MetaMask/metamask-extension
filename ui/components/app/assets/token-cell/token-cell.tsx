@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { useTokenDisplayInfo } from '../hooks';
@@ -23,8 +23,8 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { ClaimBonusBadge, isEligibleForMerklRewards } from '../../musd';
-import { getMerklRewardsEnabled } from '../../musd/selectors';
+import { ClaimBonusBadge, useMerklRewards, MusdConvertLink } from '../../musd';
+import { useMusdCtaVisibility, useMusdBalance } from '../../../../hooks/musd';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -40,6 +40,8 @@ export type TokenCellProps = {
   safeChains?: SafeChain[];
   /** When true, shows the Merkl "Claim bonus" badge (e.g. on asset detail page). */
   showMerklBadge?: boolean;
+  /** When true, shows the mUSD convert CTA in the footer (e.g. on the home token list). */
+  showMusdConvertCta?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -51,6 +53,7 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   showMerklBadge = false,
+  showMusdConvertCta = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -62,15 +65,36 @@ export default function TokenCell({
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
+  // Check whether there are rewards available for the user
+  const { hasClaimableReward, refetch: refetchMerklRewards } = useMerklRewards({
+    tokenAddress: token.address,
+    chainId: token.chainId as Hex,
+    showMerklBadge,
+  });
 
-  const showClaimBonusBadge = useMemo(
-    () =>
-      showMerklBadge &&
-      merklRewardsEnabled &&
-      isEligibleForMerklRewards(token.chainId, token.address),
-    [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
-  );
+  const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
+  const { hasMusdBalance } = useMusdBalance();
+
+  const showMusdCta = useMemo(() => {
+    if (!showMusdConvertCta || !token.address || !token.chainId) {
+      return false;
+    }
+    return shouldShowTokenListItemCta(
+      {
+        address: token.address as Hex,
+        chainId: token.chainId as Hex,
+        symbol: token.symbol,
+      },
+      { hasMusdBalance },
+    );
+  }, [
+    showMusdConvertCta,
+    token.address,
+    token.chainId,
+    token.symbol,
+    shouldShowTokenListItemCta,
+    hasMusdBalance,
+  ]);
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -87,6 +111,30 @@ export default function TokenCell({
 
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
+  };
+
+  const renderFooterLeft = () => {
+    if (showMusdCta) {
+      return (
+        <MusdConvertLink
+          tokenAddress={token.address as Hex}
+          chainId={token.chainId as Hex}
+          tokenSymbol={token.symbol}
+          entryPoint="token_list"
+        />
+      );
+    }
+    if (hasClaimableReward) {
+      return (
+        <ClaimBonusBadge
+          tokenAddress={token.address as string}
+          chainId={token.chainId as Hex}
+          label={t('merklRewardsClaimBonus')}
+          refetchRewards={refetchMerklRewards}
+        />
+      );
+    }
+    return <TokenCellPercentChange token={displayToken} />;
   };
 
   if (!token.chainId) {
@@ -114,17 +162,7 @@ export default function TokenCell({
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={
-          showClaimBonusBadge ? (
-            <ClaimBonusBadge
-              tokenAddress={token.address as string}
-              chainId={token.chainId as Hex}
-              label={t('merklRewardsClaimBonus')}
-            />
-          ) : (
-            <TokenCellPercentChange token={displayToken} />
-          )
-        }
+        footerLeftDisplay={renderFooterLeft()}
         footerRightDisplay={
           <TokenCellPrimaryDisplay
             token={displayToken}

@@ -1,7 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { remove0x } from '@metamask/utils';
-import { BN } from 'bn.js';
 import { TransactionDescription } from '@ethersproject/abi';
 import {
   BackgroundColor,
@@ -9,6 +7,8 @@ import {
 } from '../../../../../helpers/constants/design-system';
 
 const VALUE_COMPARISON_PERCENT_THRESHOLD = 5;
+
+const abs = (value: bigint) => (value < 0n ? -value : value);
 
 export function getIsRevokeSetApprovalForAll(
   value: TransactionDescription | undefined,
@@ -41,48 +41,44 @@ export const getAmountColors = (credit?: boolean, debit?: boolean) => {
  * If the original value is zero and the new value is not, returns 100.
  */
 export function getPercentageChange(
-  originalValue: InstanceType<typeof BN>,
-  newValue: InstanceType<typeof BN>,
+  originalValue: bigint,
+  newValue: bigint,
 ): number {
-  const precisionFactor = new BN(10).pow(new BN(18));
-  const originalValuePrecision = originalValue.mul(precisionFactor);
-  const newValuePrecision = newValue.mul(precisionFactor);
+  const difference = newValue - originalValue;
 
-  const difference = newValuePrecision.sub(originalValuePrecision);
-
-  if (difference.isZero()) {
+  if (difference === 0n) {
     return 0;
   }
 
-  if (originalValuePrecision.isZero() && !newValuePrecision.isZero()) {
+  if (originalValue === 0n && newValue !== 0n) {
     return 100;
   }
 
-  return difference.muln(100).div(originalValuePrecision).abs().toNumber();
+  return Number((abs(difference) * 100n) / abs(originalValue));
 }
 
 /**
  * Determine if the percentage change between two values is within a threshold.
  *
- * @param originalValue - The original value.
- * @param newValue - The new value.
+ * @param originalValueHex - The original value.
+ * @param newValueHex - The new value.
  * @param newNegative - Whether the new value is negative.
  * @returns Whether the percentage change between the two values is within a threshold.
  */
 function percentageChangeWithinThreshold(
-  originalValue: Hex,
-  newValue: Hex,
+  originalValueHex: Hex,
+  newValueHex: Hex,
   newNegative?: boolean,
 ): boolean {
-  const originalValueBN = new BN(remove0x(originalValue), 'hex');
-  let newValueBN = new BN(remove0x(newValue), 'hex');
+  const originalValue = BigInt(originalValueHex);
+  let newValue = BigInt(newValueHex);
 
   if (newNegative) {
-    newValueBN = newValueBN.neg();
+    newValue = -newValue;
   }
 
   return (
-    getPercentageChange(originalValueBN, newValueBN) <=
+    getPercentageChange(originalValue, newValue) <=
     VALUE_COMPARISON_PERCENT_THRESHOLD
   );
 }

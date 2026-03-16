@@ -11,7 +11,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../shared/constants/subscriptions';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';

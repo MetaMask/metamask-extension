@@ -22,6 +22,29 @@ const FLASK_ONLY_TESTS: string[] = [];
 // This test should only be run manually or via specific workflow update-onboarding-fixture.yml
 const DIST_EXCLUDED_TESTS: string[] = ['wallet-fixture-export.spec.ts'];
 
+// These tests are excluded on RC branches
+const RC_EXCLUDED_TESTS: string[] = ['wallet-fixture-validation.spec.ts'];
+
+// These tests are excluded on the stable branch
+const STABLE_EXCLUDED_TESTS: string[] = ['wallet-fixture-validation.spec.ts'];
+
+function getBranchName(): string {
+  return (
+    process.env.BRANCH ||
+    process.env.GITHUB_HEAD_REF ||
+    process.env.GITHUB_REF_NAME ||
+    ''
+  );
+}
+
+function isReleaseCandidateBranch(): boolean {
+  return /^release\/(\d+)[.](\d+)[.](\d+)$/u.test(getBranchName());
+}
+
+function isStableBranch(): boolean {
+  return getBranchName() === 'stable';
+}
+
 const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
   const testFilenames = await fs.promises.readdir(testDir, {
     withFileTypes: true,
@@ -266,6 +289,27 @@ async function main(): Promise<void> {
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
     ];
+  }
+
+  if (isReleaseCandidateBranch()) {
+    console.log('RC branch detected — excluding tests:', RC_EXCLUDED_TESTS);
+    testPaths = testPaths.filter((p) =>
+      RC_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
+    );
+  }
+
+  if (isStableBranch()) {
+    console.log(
+      'Stable branch detected — excluding tests:',
+      STABLE_EXCLUDED_TESTS,
+    );
+    testPaths = testPaths.filter((p) =>
+      STABLE_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
+    );
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');

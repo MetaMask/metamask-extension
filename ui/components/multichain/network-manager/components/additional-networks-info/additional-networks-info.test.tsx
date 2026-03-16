@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { AdditionalNetworksInfo } from './additional-networks-info';
@@ -31,7 +32,9 @@ describe('AdditionalNetworksInfo', () => {
   it('renders the component with "Additional networks" text', () => {
     renderComponent();
     // Using the actual text that's rendered with the real i18n context
-    expect(screen.getByText('Additional networks')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.additionalNetworks.message),
+    ).toBeInTheDocument();
   });
 
   it('shows info icon', () => {
@@ -69,11 +72,13 @@ describe('AdditionalNetworksInfo', () => {
         content.startsWith('Some of these networks rely on third partie'),
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText('Learn more')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.learnMoreUpperCase.message),
+    ).toBeInTheDocument();
 
     // Trigger mouse leave on the containing box to close the popover
     const containerBox = screen
-      .getByText('Additional networks')
+      .getByText(messages.additionalNetworks.message)
       .closest('div[role="presentation"]');
     await act(async () => {
       if (containerBox) {
@@ -101,7 +106,9 @@ describe('AdditionalNetworksInfo', () => {
 
     // Find and click the learn more button
     await act(async () => {
-      const learnMoreButton = screen.getByText('Learn more');
+      const learnMoreButton = screen.getByText(
+        messages.learnMoreUpperCase.message,
+      );
       fireEvent.click(learnMoreButton);
       // Small delay to allow the state update to complete
       await new Promise((r) => setTimeout(r, 0));

@@ -4,7 +4,7 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
-import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../../shared/lib/selectors/util';
 import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
@@ -31,26 +31,6 @@ export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   firstPendingConfirmationSelector,
   (firstPendingConfirmation) => firstPendingConfirmation,
 );
-
-export function selectEnableEnforcedSimulations(
-  state: ConfirmMetamaskState,
-  transactionId: string,
-): boolean {
-  return (
-    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
-    state.metamask.enableEnforcedSimulations
-  );
-}
-
-export function selectEnforcedSimulationsSlippage(
-  state: ConfirmMetamaskState,
-  transactionId: string,
-): number {
-  return (
-    state.metamask.enforcedSimulationsSlippageForTransactions[transactionId] ??
-    state.metamask.enforcedSimulationsSlippage
-  );
-}
 
 export function selectDappSwapComparisonData(
   state: ConfirmMetamaskState,

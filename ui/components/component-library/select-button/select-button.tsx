@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { SelectContext } from '../select-wrapper';
 import { Box, type PolymorphicRef } from '../box';
 import { Text } from '../text';

@@ -1,12 +1,12 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
+import README from './README.mdx';
 import { Box } from '../box';
 import {
   Display,
   FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 
 import { ContainerMaxWidth } from './container.types';
 import { Container } from './container';
@@ -14,6 +14,7 @@ import { Container } from './container';
 export default {
   title: 'Components/ComponentLibrary/Container',
   component: Container,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,
@@ -42,7 +43,7 @@ export const MaxWidth: StoryFn<typeof Container> = (args) => {
         backgroundColor={BackgroundColor.primaryMuted}
         padding={4}
       >
-        Size "sm" container
+        Size &quot;sm&quot; container
       </Container>
       <Container
         {...args}
@@ -50,7 +51,7 @@ export const MaxWidth: StoryFn<typeof Container> = (args) => {
         backgroundColor={BackgroundColor.successMuted}
         padding={4}
       >
-        Size "md" container
+        Size &quot;md&quot; container
       </Container>
       <Container
         {...args}
@@ -58,7 +59,7 @@ export const MaxWidth: StoryFn<typeof Container> = (args) => {
         backgroundColor={BackgroundColor.warningMuted}
         padding={4}
       >
-        Size "lg" container
+        Size &quot;lg&quot; container
       </Container>
       <Container
         {...args}

@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import { TagUrl } from './tag-url';
 
@@ -18,11 +19,13 @@ describe('TagUrl', () => {
       <TagUrl
         data-testid="tag-url"
         label="https://app.uniswap.org"
-        actionButtonLabel="Permissions"
+        actionButtonLabel={messages.permissions.message}
       />,
     );
 
-    expect(screen.getByText('Permissions').closest('a')).toBeDefined();
+    expect(
+      screen.getByText(messages.permissions.message).closest('a'),
+    ).toBeDefined();
   });
 
   it('should render correct Avatar in TagUrl', () => {

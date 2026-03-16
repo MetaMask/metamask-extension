@@ -12,7 +12,7 @@ import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { NetworkFilterDropdown } from './network-filter-dropdown';
 

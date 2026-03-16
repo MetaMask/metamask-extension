@@ -6,10 +6,6 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
-import { runKernel } from './ocap-kernel';
-///: END:ONLY_INCLUDE_IF(ocap-kernel)
-
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
@@ -38,11 +34,6 @@ async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
-  ///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
-  runKernel().catch((error) => {
-    console.error('Ocap Kernel fatal error:', error);
-  });
-  ///: END:ONLY_INCLUDE_IF(ocap-kernel)
 
   try {
     const ledgerInitTimeout = new Promise((_, reject) => {

@@ -11,7 +11,7 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 /**
  * PerpsControlBarSkeleton component displays a loading skeleton for the control bar
- * Matches the layout of PerpsTabControlBar
+ * Matches the layout of PerpsBalanceDropdown
  */
 export const PerpsControlBarSkeleton: React.FC = () => {
   return (

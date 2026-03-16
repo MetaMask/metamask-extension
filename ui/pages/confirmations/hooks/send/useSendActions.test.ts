@@ -79,9 +79,35 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/confirm-transaction?maxValueMode=true',
+        '/confirm-transaction?maxValueMode=true&loader=send',
       );
     });
+  });
+
+  it('normalizes trailing dot values before submitting evm transaction', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_ASSET,
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      to: MOCK_ADDRESS_2,
+      value: '0.',
+      updateNonEVMSubmitError: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
+    const mockSubmitEvmTransaction = jest
+      .spyOn(SendUtils, 'submitEvmTransaction')
+      .mockImplementation(() =>
+        Promise.resolve(() =>
+          Promise.resolve({} as unknown as TransactionMeta),
+        ),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_2);
+
+    expect(mockSubmitEvmTransaction).toHaveBeenCalledWith(
+      expect.objectContaining({ value: '0' }),
+    );
   });
 
   it('handleSubmit is able to submit non-evm send', async () => {
@@ -105,6 +131,32 @@ describe('useSendQueryParams', () => {
     await waitFor(() => {
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
+    });
+  });
+
+  it('normalizes trailing dot values before submitting non-evm transaction', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: SOLANA_ASSET,
+      from: MOCK_ADDRESS_3,
+      to: MOCK_ADDRESS_4,
+      value: '0.',
+      updateNonEVMSubmitError: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
+    const mockSubmitNonEvmTransaction = jest
+      .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+      .mockImplementation(() =>
+        Promise.resolve({ transactionId: 'tx123', status: 'submitted' }),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_4);
+
+    await waitFor(() => {
+      expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
+      expect(mockSubmitNonEvmTransaction.mock.calls[0][1]).toEqual(
+        expect.objectContaining({ amount: '0' }),
+      );
     });
   });
 

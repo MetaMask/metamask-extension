@@ -25,7 +25,9 @@ export const MusdClaimInfo = () => {
     <>
       <MusdClaimHeading />
       <ConfirmInfoSection data-testid="musd-claim-details-section">
-        <AccountRow label={t('musdClaimClaimingTo')} />
+        <AccountRow label={t('musdClaimClaimingTo')} showChevron />
+      </ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="musd-claim-network-section">
         <NetworkRow />
       </ConfirmInfoSection>
       <GasFeesSection />

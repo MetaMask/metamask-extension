@@ -119,6 +119,28 @@ describe('RemoteFeatureFlagControllerInit', () => {
       getMetaMetricsId: expect.any(Function),
       clientConfigApiService: expect.any(ClientConfigApiService),
       clientVersion: expect.any(String),
+      prevClientVersion: undefined,
+    });
+  });
+
+  it('initializes with prevClientVersion', () => {
+    const initRequest = getInitRequestMock();
+    initRequest.persistedState.AppMetadataController = {
+      ...initRequest.persistedState.AppMetadataController,
+      currentAppVersion: '1.0.0',
+    };
+    RemoteFeatureFlagControllerInit(initRequest);
+
+    const controllerMock = jest.mocked(RemoteFeatureFlagController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: undefined,
+      disabled: false,
+      fetchInterval: expect.any(Number),
+      getMetaMetricsId: expect.any(Function),
+      clientConfigApiService: expect.any(ClientConfigApiService),
+      clientVersion: expect.any(String),
+      prevClientVersion: '1.0.0',
     });
   });
 });

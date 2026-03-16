@@ -15,6 +15,7 @@ import {
   SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SwapsBannerAlert from './swaps-banner-alert';
 
 const middleware = [thunk];
@@ -30,13 +31,13 @@ describe('SwapsBannerAlert', () => {
       />,
       store,
     );
-    expect(getByText('Very high slippage')).toBeInTheDocument();
     expect(
-      getByText(
-        'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
-      ),
+      getByText(messages.swapSlippageOverLimitTitle.message),
     ).toBeInTheDocument();
-    expect(getByText('Adjust slippage')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageOverLimitDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.swapAdjustSlippage.message)).toBeInTheDocument();
   });
 
   it('renders the component with the SLIPPAGE_HIGH_ERROR', () => {
@@ -49,10 +50,12 @@ describe('SwapsBannerAlert', () => {
       />,
       store,
     );
-    expect(getByText('High slippage')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageHighTitle.message),
+    ).toBeInTheDocument();
     expect(
       getByText(
-        'The slippage entered (5%) is considered very high and may result in a bad rate',
+        messages.swapSlippageHighDescription.message.replace('$1', '5'),
       ),
     ).toBeInTheDocument();
   });
@@ -68,13 +71,15 @@ describe('SwapsBannerAlert', () => {
       />,
       store,
     );
-    expect(getByText('High slippage')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageHighTitle.message),
+    ).toBeInTheDocument();
     expect(
       getByText(
-        'The slippage entered (10%) is considered very high and may result in a bad rate',
+        messages.swapSlippageHighDescription.message.replace('$1', '10'),
       ),
     ).toBeInTheDocument();
-    expect(getByText('Adjust slippage')).toBeInTheDocument();
+    expect(getByText(messages.swapAdjustSlippage.message)).toBeInTheDocument();
   });
 
   it('renders the component with the SLIPPAGE_LOW_ERROR', () => {
@@ -87,9 +92,11 @@ describe('SwapsBannerAlert', () => {
       />,
       store,
     );
-    expect(getByText('Low slippage')).toBeInTheDocument();
     expect(
-      getByText('A value this low (1%) may result in a failed swap'),
+      getByText(messages.swapSlippageLowTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageLowDescription.message.replace('$1', '1')),
     ).toBeInTheDocument();
   });
 
@@ -104,11 +111,13 @@ describe('SwapsBannerAlert', () => {
       />,
       store,
     );
-    expect(getByText('Low slippage')).toBeInTheDocument();
     expect(
-      getByText('A value this low (1%) may result in a failed swap'),
+      getByText(messages.swapSlippageLowTitle.message),
     ).toBeInTheDocument();
-    expect(getByText('Adjust slippage')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageLowDescription.message.replace('$1', '1')),
+    ).toBeInTheDocument();
+    expect(getByText(messages.swapAdjustSlippage.message)).toBeInTheDocument();
   });
 
   it('renders the component with the SLIPPAGE_NEGATIVE_ERROR', () => {
@@ -118,11 +127,13 @@ describe('SwapsBannerAlert', () => {
       <SwapsBannerAlert swapsErrorKey={SLIPPAGE_NEGATIVE_ERROR} />,
       store,
     );
-    expect(getByText('Increase slippage to continue')).toBeInTheDocument();
     expect(
-      getByText('Slippage must be greater or equal to zero'),
+      getByText(messages.swapSlippageNegativeTitle.message),
     ).toBeInTheDocument();
-    expect(getByText('Adjust slippage')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageNegativeDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.swapAdjustSlippage.message)).toBeInTheDocument();
   });
 
   it('renders the component with the QUOTES_NOT_AVAILABLE_ERROR', () => {
@@ -132,13 +143,13 @@ describe('SwapsBannerAlert', () => {
       <SwapsBannerAlert swapsErrorKey={QUOTES_NOT_AVAILABLE_ERROR} />,
       store,
     );
-    expect(getByText('No quotes available')).toBeInTheDocument();
     expect(
-      getByText(
-        "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.",
-      ),
+      getByText(messages.swapQuotesNotAvailableErrorTitle.message),
     ).toBeInTheDocument();
-    expect(getByText('Learn more about Swaps')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapQuotesNotAvailableDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.swapLearnMore.message)).toBeInTheDocument();
   });
 
   it('renders the component with the ERROR_FETCHING_QUOTES', () => {
@@ -148,11 +159,11 @@ describe('SwapsBannerAlert', () => {
       <SwapsBannerAlert swapsErrorKey={ERROR_FETCHING_QUOTES} />,
       store,
     );
-    expect(getByText('Error fetching quotes')).toBeInTheDocument();
     expect(
-      getByText(
-        'Hmmm... something went wrong. Try again, or if errors persist, contact customer support.',
-      ),
+      getByText(messages.swapFetchingQuotesErrorTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.swapFetchingQuotesErrorDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -164,12 +175,10 @@ describe('SwapsBannerAlert', () => {
       store,
     );
     expect(
-      getByText('Contract data is not enabled on your Ledger'),
+      getByText(messages.swapContractDataDisabledErrorTitle.message),
     ).toBeInTheDocument();
     expect(
-      getByText(
-        'In the Ethereum app on your Ledger, go to "Settings" and allow contract data. Then, try your swap again.',
-      ),
+      getByText(messages.swapContractDataDisabledErrorDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -180,9 +189,11 @@ describe('SwapsBannerAlert', () => {
       <SwapsBannerAlert swapsErrorKey={QUOTES_EXPIRED_ERROR} />,
       store,
     );
-    expect(getByText('Quotes timeout')).toBeInTheDocument();
     expect(
-      getByText('Please request new quotes to get the latest rates.'),
+      getByText(messages.swapQuotesExpiredErrorTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.swapQuotesExpiredErrorDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -193,11 +204,11 @@ describe('SwapsBannerAlert', () => {
       <SwapsBannerAlert swapsErrorKey={OFFLINE_FOR_MAINTENANCE} />,
       store,
     );
-    expect(getByText('Offline for maintenance')).toBeInTheDocument();
     expect(
-      getByText(
-        'MetaMask Swaps is undergoing maintenance. Please check back later.',
-      ),
+      getByText(messages.offlineForMaintenance.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.metamaskSwapsOfflineDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -208,6 +219,8 @@ describe('SwapsBannerAlert', () => {
       <SwapsBannerAlert swapsErrorKey={SWAP_FAILED_ERROR} />,
       store,
     );
-    expect(getByText('Swap failed')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapFailedErrorTitle.message),
+    ).toBeInTheDocument();
   });
 });

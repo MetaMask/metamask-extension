@@ -1,6 +1,7 @@
 // This file is used only for manifest version 3
 
 import './scripts/load/bootstrap';
+import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 const { chrome } = globalThis;
@@ -42,6 +43,31 @@ async function runImportScripts() {
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
 self.addEventListener('install', runImportScripts);
+
+// listen for connection events from other contexts, and respond to liveness
+// checks, and ping them to let them know we're listening.
+chrome.runtime.onConnect.addListener((port) => {
+  console.log(
+    'MetaMask service worker: Received connection from port',
+    port.name,
+  );
+  try {
+    // `handleOnConnect` can be called asynchronously, well after the `onConnect`
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
+    // might not be able to send this message if the window has already closed.
+    port.postMessage({
+      data: {
+        method: APP_INIT_LIVENESS_METHOD,
+      },
+      name: 'app-init-liveness',
+    });
+  } catch (e) {
+    console.error(
+      'MetaMask - app-init-liveness check: Failed to message to port',
+      e,
+    );
+  }
+});
 
 /*
  * If the service worker is stopped and restarted, then the 'install' event will not occur

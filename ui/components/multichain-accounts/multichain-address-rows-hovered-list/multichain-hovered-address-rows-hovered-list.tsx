@@ -5,13 +5,12 @@ import React, {
   useState,
   useEffect,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
-  BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
@@ -19,39 +18,25 @@ import {
   ButtonVariant,
   FontWeight,
   Text,
-  TextButton,
-  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
-import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
   getAllAccountGroups,
   getInternalAccountListSpreadByScopesByGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  GENERAL_ROUTE,
-  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
-  DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE,
-  DefaultAddressScope,
-} from '../../../../shared/constants/default-address';
-import {
-  getDefaultAddressScope,
-  getShowDefaultAddress,
-} from '../../../selectors';
-import { setShowDefaultAddress } from '../../../store/actions';
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
+import { DefaultAddress } from './default-address';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
@@ -101,6 +86,39 @@ const Divider = () => (
   <div className="my-3 mx-4 border-t border-border-muted" />
 );
 
+const ViewAllButton = ({
+  handleViewAllClick,
+  showDefaultAddressStyles,
+  text,
+}: {
+  handleViewAllClick: React.MouseEventHandler<HTMLButtonElement>;
+  showDefaultAddressStyles: boolean;
+  text: string;
+}) =>
+  showDefaultAddressStyles ? (
+    <Button
+      size={ButtonSize.Sm}
+      variant={ButtonVariant.Secondary}
+      onClick={handleViewAllClick}
+      className="mt-2 ml-3 mr-3"
+      data-testid="multichain-address-rows-view-all-button"
+    >
+      {text}
+    </Button>
+  ) : (
+    <>
+      <div className="my-1 -mx-1 border-t border-border-muted" />
+      <Button
+        size={ButtonSize.Sm}
+        variant={ButtonVariant.Tertiary}
+        onClick={handleViewAllClick}
+        data-testid="multichain-address-rows-view-all-button"
+      >
+        {text}
+      </Button>
+    </>
+  );
+
 export const MultichainHoveredAddressRowsList = ({
   children,
   groupId,
@@ -111,18 +129,10 @@ export const MultichainHoveredAddressRowsList = ({
   showDefaultAddressSection = true,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
-  const defaultAddressScope = useSelector(
-    getDefaultAddressScope,
-  ) as DefaultAddressScope;
-  const defaultScopeDisplayLabel = t(
-    DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope],
-  );
   const [isHoverOpen, setIsHoverOpen] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -157,7 +167,7 @@ export const MultichainHoveredAddressRowsList = ({
 
     const rect = referenceElement.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    const popoverEstimatedHeight = 400; // Based on the maxHeight set on the popover
+    const popoverEstimatedHeight = 275; // Based on the maxHeight set on the popover
     const spaceBelow = viewportHeight - rect.bottom;
 
     // If there's not enough space below, use TopStart
@@ -312,7 +322,7 @@ export const MultichainHoveredAddressRowsList = ({
       e.stopPropagation();
       onViewAllClick?.();
       navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(groupId)}`,
       );
     },
     [groupId, navigate, onViewAllClick],
@@ -352,7 +362,7 @@ export const MultichainHoveredAddressRowsList = ({
         paddingTop={1}
         style={{
           zIndex: 99999,
-          maxHeight: '400px',
+          maxHeight: '275px',
           minWidth: '340px',
         }}
       >
@@ -380,61 +390,16 @@ export const MultichainHoveredAddressRowsList = ({
           )}
           <Box>{renderedRows}</Box>
           {showViewAllButton && (
-            <Button
-              size={ButtonSize.Sm}
-              variant={ButtonVariant.Secondary}
-              onClick={handleViewAllClick}
-              className="mt-2 ml-3 mr-3"
-              data-testid="multichain-address-rows-view-all-button"
-            >
-              {t('multichainAddressViewAll')}
-            </Button>
+            <ViewAllButton
+              handleViewAllClick={handleViewAllClick}
+              text={t('multichainAddressViewAll')}
+              showDefaultAddressStyles={showDefaultAddressSection}
+            />
           )}
           {showDefaultAddressSection && (
             <>
               <Divider />
-              <Box paddingLeft={4} paddingBottom={2}>
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
-                >
-                  <Box flexDirection={BoxFlexDirection.Column}>
-                    <Text
-                      variant={TextVariant.BodySm}
-                      fontWeight={FontWeight.Medium}
-                      color={TextColor.TextDefault}
-                    >
-                      {t('showDefaultAddress')}
-                    </Text>
-                    <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-                      <Text
-                        variant={TextVariant.BodyXs}
-                        color={TextColor.TextAlternative}
-                      >
-                        {t('default')}: {defaultScopeDisplayLabel}
-                      </Text>
-                      <TextButton
-                        size={TextButtonSize.BodyXs}
-                        onClick={(e: React.MouseEvent) => {
-                          e.stopPropagation();
-                          navigate(`${GENERAL_ROUTE}#show-default-address`);
-                        }}
-                        data-testid="change-in-settings-link"
-                      >
-                        {t('changeInSettings')}
-                      </TextButton>
-                    </Box>
-                  </Box>
-                  <ToggleButton
-                    value={showDefaultAddress}
-                    onToggle={(value: boolean) =>
-                      dispatch(setShowDefaultAddress(!value))
-                    }
-                    dataTestId="show-default-address-toggle"
-                  />
-                </Box>
-              </Box>
+              <DefaultAddress />
             </>
           )}
         </Box>

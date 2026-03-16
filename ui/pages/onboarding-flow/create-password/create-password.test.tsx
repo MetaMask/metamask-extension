@@ -3,6 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
   ONBOARDING_METAMETRICS,
@@ -217,7 +218,9 @@ describe('Onboarding Create Password', () => {
         confirmPasswordEvent,
       );
 
-      const passwordMismatchError = queryByText("Passwords don't match");
+      const passwordMismatchError = queryByText(
+        messages.passwordsDontMatch.message,
+      );
 
       expect(passwordMismatchError).toBeInTheDocument();
 

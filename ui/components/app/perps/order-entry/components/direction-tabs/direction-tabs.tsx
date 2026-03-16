@@ -5,6 +5,7 @@ import {
   Text,
   TextVariant,
   FontWeight,
+  BoxAlignItems,
   BoxFlexDirection,
   ButtonBase,
 } from '@metamask/design-system-react';
@@ -33,42 +34,39 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
     }
   };
 
-  // Base styles for both tabs
-  const tabBaseStyles = 'flex-1 py-3 rounded-lg transition-colors';
+  const tabBaseStyles = 'flex-1 py-0 rounded-lg transition-colors text-center';
 
-  // Long tab styles
   const longTabStyles = twMerge(
     tabBaseStyles,
     direction === 'long'
-      ? 'bg-success-muted'
-      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed',
+      ? 'bg-success-muted h-8'
+      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed h-8',
   );
 
-  // Short tab styles
   const shortTabStyles = twMerge(
     tabBaseStyles,
     direction === 'short'
-      ? 'bg-error-muted'
-      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed',
+      ? 'bg-error-muted h-8'
+      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed h-8',
   );
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
-      className="w-full bg-muted rounded-xl p-1 gap-1"
+      alignItems={BoxAlignItems.Center}
+      className="flex-1 min-w-0 h-10 bg-transparent border border-border-muted rounded-lg py-0 px-1 gap-1"
       data-testid="direction-tabs"
     >
-      {/* Long Tab */}
       <ButtonBase
         className={longTabStyles}
         onClick={() => handleDirectionClick('long')}
         data-testid="direction-tab-long"
       >
         <Text
-          variant={TextVariant.BodyMd}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           className={twMerge(
-            'text-center w-full',
+            'w-full',
             direction === 'long' ? 'text-success-default' : 'text-muted',
           )}
         >
@@ -76,17 +74,16 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
         </Text>
       </ButtonBase>
 
-      {/* Short Tab */}
       <ButtonBase
         className={shortTabStyles}
         onClick={() => handleDirectionClick('short')}
         data-testid="direction-tab-short"
       >
         <Text
-          variant={TextVariant.BodyMd}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           className={twMerge(
-            'text-center w-full',
+            'w-full',
             direction === 'short' ? 'text-error-default' : 'text-muted',
           )}
         >

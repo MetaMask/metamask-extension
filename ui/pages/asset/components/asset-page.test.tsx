@@ -20,6 +20,19 @@ import {
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
 
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
@@ -46,6 +59,19 @@ jest.mock('../../../../shared/constants/network', () => ({
       network: 'polygon',
     },
   },
+}));
+
+jest.mock('../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+  }),
+}));
+jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -217,11 +243,18 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
+      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
     } as never);
   });
 
   beforeEach(() => {
     openTabSpy.mockClear();
+
+    nock('https://price.api.cx.metamask.io')
+      .get(/\/v1\/chains\/\d+\/historical-prices/u)
+      .query(true)
+      .reply(200, {})
+      .persist();
 
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
@@ -256,6 +289,7 @@ describe('AssetPage', () => {
   afterEach(() => {
     store.clearActions();
     jest.restoreAllMocks();
+    nock.cleanAll();
   });
 
   const native = {
@@ -418,7 +452,7 @@ describe('AssetPage', () => {
 
     // Mock no price history
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .get(`/v1/chains/1/historical-prices/${address}`)
       .query(true)
       .reply(200, {});
 
@@ -439,9 +473,9 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify we show the loading state
+    // Verify loading finishes and we show the empty state (API returned no prices)
     await waitFor(() => {
-      const chart = queryByTestId('asset-chart-loading');
+      const chart = queryByTestId('asset-chart-empty-state');
       expect(chart).toBeInTheDocument();
     });
 
@@ -463,7 +497,7 @@ describe('AssetPage', () => {
 
     // Mock price history
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .get(`/v1/chains/1/historical-prices/${address}`)
       .query(true)
       .reply(200, { prices: [[1, 1]] });
 

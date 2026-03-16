@@ -7,6 +7,7 @@ import {
   AccountGroupId,
 } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import {
@@ -318,7 +319,7 @@ describe('MultichainEditAccountsPage', () => {
 
   it('renders modal with correct title', () => {
     const { getByText } = render();
-    expect(getByText('Edit accounts')).toBeInTheDocument();
+    expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
   });
 
   it('renders connect button', () => {
@@ -416,7 +417,7 @@ describe('MultichainEditAccountsPage', () => {
       defaultSelectedAccountGroups: [],
     });
 
-    expect(getByText('Edit accounts')).toBeInTheDocument();
+    expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
   });
 
   it('updates selected accounts when defaultSelectedAccountGroups prop changes', async () => {
