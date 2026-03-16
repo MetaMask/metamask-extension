@@ -15,6 +15,9 @@ import {
   getPopularNetworksForTesting,
   NetworkTestConfig,
 } from './fixtures/network-config';
+import { SendTransactionReporter } from './send-transaction-reporter';
+import { generateSendConsolidatedReport } from './generate-send-report';
+import { SendTransactionResult } from './send-transaction-types';
 
 /**
  * Production E2E Test: Popular Networks, Import Account, and Send
@@ -34,6 +37,7 @@ describe(
   function (this: Suite) {
     // Get all popular networks to test from configuration
     const networks = getPopularNetworksForTesting();
+    const allNetworkResults: SendTransactionResult[] = [];
 
     // Run test for each network
     networks.forEach((networkConfig: NetworkTestConfig) => {
@@ -57,11 +61,32 @@ describe(
               extendedTimeoutMultiplier: 2,
             },
             async ({ driver }: { driver: Driver }) => {
-              await runNetworkSendTest(driver, networkConfig);
+              const result = await runNetworkSendTest(driver, networkConfig);
+              if (result) {
+                allNetworkResults.push(result);
+              }
             },
           );
         });
       });
+    });
+
+    // Generate consolidated report after all tests complete
+    after(function () {
+      if (allNetworkResults.length > 0) {
+        const reportPath =
+          'test/e2e/prod/tests/send/popular-networks-send-report.md';
+        try {
+          generateSendConsolidatedReport(allNetworkResults, reportPath);
+          console.log(
+            `[PROD TEST] 📄 Consolidated send report generated: ${reportPath}`,
+          );
+        } catch (error) {
+          console.warn(
+            `[PROD TEST] ⚠️  Failed to generate consolidated report: ${error}`,
+          );
+        }
+      }
     });
   },
 );
@@ -71,62 +96,105 @@ describe(
  * Covers: Import 2 accounts, send bidirectional, verify balances on both accounts
  * @param driver - WebDriver instance
  * @param networkConfig - Network configuration from JSON
+ * @returns SendTransactionResult for report generation
  */
 async function runNetworkSendTest(
   driver: Driver,
   networkConfig: NetworkTestConfig,
-): Promise<void> {
-  const { symbol, chainIdHex, networkName, sendAmount, tab = 'Popular' } =
-    networkConfig;
+): Promise<SendTransactionResult> {
+  const {
+    symbol,
+    chainIdHex,
+    networkName,
+    sendAmount,
+    rpcUrl = '',
+    tab = 'Popular',
+  } = networkConfig;
 
-  console.log(
-    `[PROD TEST] Starting test for ${networkName} - checking if wallet is already set up...`,
+  // Convert chainIdHex to decimal for reporting
+  const chainId = parseInt(chainIdHex, 16);
+
+  // Initialize reporter for this network
+  const reporter = new SendTransactionReporter(
+    {
+      name: networkName,
+      chainId,
+      nativeSymbol: symbol,
+      rpcUrl,
+    },
+    '', // Will be set after import
+    '', // Will be set after import
   );
 
-  // Debug: Check what page we're on
-  const currentUrl = await driver.getCurrentUrl();
-  console.log(`[PROD TEST] Current URL for ${networkName}:`, currentUrl);
-
-  // Check if we're on the onboarding page
-  const isOnboardingPage = currentUrl.includes('#onboarding');
-  if (isOnboardingPage) {
-    console.error(
-      `[PROD TEST] ❌ ERROR: Wallet is on onboarding page for ${networkName}!`,
+  try {
+    console.log(
+      `[PROD TEST] Starting test for ${networkName} - checking if wallet is already set up...`,
     );
-    throw new Error(
-      `Fixture did not load for ${networkName} - wallet is on onboarding page`,
+
+    // Debug: Check what page we're on
+    const currentUrl = await driver.getCurrentUrl();
+    console.log(`[PROD TEST] Current URL for ${networkName}:`, currentUrl);
+
+    // Check if we're on the onboarding page
+    const isOnboardingPage = currentUrl.includes('#onboarding');
+    if (isOnboardingPage) {
+      console.error(
+        `[PROD TEST] ❌ ERROR: Wallet is on onboarding page for ${networkName}!`,
+      );
+      throw new Error(
+        `Fixture did not load for ${networkName} - wallet is on onboarding page`,
+      );
+    }
+
+    // Load credentials from environment
+    console.log(
+      `[PROD TEST] Loading test credentials for ${networkName} from .env.e2e...`,
     );
-  }
+    const privateKeyFrom = getRequiredE2EEnv('PRIVATE_KEY_FROM');
+    const privateKeyTo = getRequiredE2EEnv('PRIVATE_KEY_TO');
+    const recipientAddress = getRequiredE2EEnv('RECIPIENT_ADDRESS');
+    const senderAddress = getRequiredE2EEnv('SENDER_ADDRESS');
 
-  console.log(`[PROD TEST] Logging in to wallet...`);
-  await loginWithoutBalanceValidation(driver);
+    // ============================================
+    // Step: Login to wallet
+    // ============================================
+    reporter.startStep('Login to wallet', 'Wallet login successful and home page loaded');
+    console.log(`[PROD TEST] Logging in to wallet...`);
+    await loginWithoutBalanceValidation(driver);
 
-  // Verify home page is loaded
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  await driver.delay(PROD_DELAYS.API_RESPONSE);
+    // Verify home page is loaded
+    const homePage = new HomePage(driver);
+    await homePage.checkPageIsLoaded();
+    await driver.delay(PROD_DELAYS.API_RESPONSE);
+    reporter.captureStep('Home page loaded and verified', undefined, 'success');
 
-  // Load credentials from environment
-  console.log(
-    `[PROD TEST] Loading test credentials for ${networkName} from .env.e2e...`,
-  );
-  const privateKeyFrom = getRequiredE2EEnv('PRIVATE_KEY_FROM');
-  const privateKeyTo = getRequiredE2EEnv('PRIVATE_KEY_TO');
-  const recipientAddress = getRequiredE2EEnv('RECIPIENT_ADDRESS');
-  const senderAddress = getRequiredE2EEnv('SENDER_ADDRESS');
-
-  // Select network
-  console.log(`[PROD TEST] Selecting ${networkName} network...`);
-  const networkManager = new NetworkManager(driver);
-  await networkManager.openNetworkManager();
-  if (tab) {
-    await networkManager.selectTab(tab);
-  }
-  await networkManager.selectNetworkByNameWithWait(networkName);
+    // ============================================
+    // Step: Select Network
+    // ============================================
+    reporter.startStep(
+      `Select ${networkName} network`,
+      `Switched to ${networkName} network`,
+    );
+    console.log(`[PROD TEST] Selecting ${networkName} network...`);
+    const networkManager = new NetworkManager(driver);
+    await networkManager.openNetworkManager();
+    if (tab) {
+      await networkManager.selectTab(tab);
+    }
+    await networkManager.selectNetworkByNameWithWait(networkName);
+    reporter.captureStep(
+      `Network ${networkName} selected and ready`,
+      undefined,
+      'success',
+    );
 
   // ============================================
   // STEP 1: Import Account 1 (To account) and check balance
   // ============================================
+  reporter.startStep(
+    'Import Account 1 and check balance',
+    'Account 1 imported and initial balance retrieved',
+  );
   console.log(
     `[PROD TEST] Opening account list to import Account 1 on ${networkName}...`,
   );
@@ -581,10 +649,21 @@ async function runNetworkSendTest(
     );
   }
 
-  console.log(
-    `[PROD TEST] ✅ All verifications passed for ${networkName}!`,
-  );
-  console.log(
-    `[PROD TEST] ✅ Full bidirectional send/receive cycle completed on ${networkName}`,
-  );
+    console.log(
+      `[PROD TEST] ✅ All verifications passed for ${networkName}!`,
+    );
+    console.log(
+      `[PROD TEST] ✅ Full bidirectional send/receive cycle completed on ${networkName}`,
+    );
+
+    reporter.markAsPassed();
+    return reporter.getCurrentResult();
+  } catch (error) {
+    console.error(
+      `[PROD TEST] ❌ FAILURE in ${networkName} test:`,
+      error,
+    );
+    reporter.markAsFailed(String(error));
+    return reporter.getCurrentResult();
+  }
 }
