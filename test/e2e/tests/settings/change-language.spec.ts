@@ -37,7 +37,7 @@ const selectors = {
   headerTextAr: { text: ar.settings.message, tag: 'h3' },
 };
 
-describe('Settings - general tab', function (this: Suite) {
+describe('TEST Settings - general tab', function (this: Suite) {
   it('validate the change language functionality', async function () {
     await withFixtures(
       {
