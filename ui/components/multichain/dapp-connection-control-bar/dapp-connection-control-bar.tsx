@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray, parseCaipAccountId } from '@metamask/utils';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
@@ -136,10 +137,11 @@ export const DappConnectionControlBar: React.FC = () => {
       return [];
     }
     return allPermittedAccountGroups.filter((group) =>
-      group.accounts.some(
-        (account) =>
-          account.address.toLowerCase() ===
-          activePermittedAddress.toLowerCase(),
+      group.accounts.some((account) =>
+        isEvmAccountType(account.type)
+          ? account.address.toLowerCase() ===
+            activePermittedAddress.toLowerCase()
+          : account.address === activePermittedAddress,
       ),
     );
   }, [activePermittedAddress, allPermittedAccountGroups]);
