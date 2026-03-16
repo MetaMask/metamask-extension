@@ -25,6 +25,8 @@ export async function setIsMaxAmount(
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayConfig', [
     transactionId,
-    isMaxAmount,
+    (config: { isMaxAmount?: boolean }) => {
+      config.isMaxAmount = isMaxAmount;
+    },
   ]);
 }
