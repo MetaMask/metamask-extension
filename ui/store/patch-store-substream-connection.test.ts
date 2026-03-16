@@ -15,13 +15,8 @@ jest.mock('../../shared/lib/random-id');
 const randomIdMock = jest.mocked(randomId);
 
 /**
- * Creates a pair of connected patch-store substreams using real ObjectMultiplex
- * instances piped together, matching the background ↔ UI stream topology.
- *
- * Returns:
- * - `uiStream`: the stream to pass to `setupPatchStoreSubstreamConnection`
- * - `backgroundStream`: the stream tests write to, simulating messages from
- * the background process
+ * Creates a pair of connected substreams to match how streams are wired between
+ * the background and UI.
  */
 function createPatchStreamPair() {
   const uiMux = new ObjectMultiplex();
@@ -35,9 +30,10 @@ function createPatchStreamPair() {
 }
 
 /**
- * Wraps a microtask flush to reframe why we are using it: stream writes through
- * ObjectMultiplex are buffered and delivered asynchronously, so tests must
- * await this after writing to a stream before asserting on the outcome.
+ * A wrapper for `flushPromises`, which really flushes microtasks, but in our
+ * case is useful to flush buffered writes that occur through ObjectMultiplex.
+ * Tests must await this function after writing to a stream before asserting on
+ * the outcome.
  */
 async function flushBufferedWrites() {
   await flushPromises();
