@@ -300,9 +300,6 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/cancel-speedup-popover/cancel-speedup-popover.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/clear-metametrics-data/clear-metametrics-data.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1531,9 +1528,6 @@
     "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/priority-fee-input.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-popover.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/confirm/blockaid-loading-indicator/blockaid-loading-indicator.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1975,15 +1969,6 @@
     "ui/pages/confirmations/components/edit-gas-display/edit-gas-display.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/edit-gas-fee-button/edit-gas-fee-button.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-fee-icon/edit-gas-fee-icon.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-fee-popover/edit-gas-fee-popover.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/edit-gas-fee-popover/edit-gas-item/edit-gas-item.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1994,12 +1979,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/edit-gas-fee-popover/network-statistics/status-slider/status-slider.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/fee-details-component/fee-details-component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/gas-details-item/gas-details-item.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/gas-estimate-list-item/gas-estimate-list-item.test.tsx": {
