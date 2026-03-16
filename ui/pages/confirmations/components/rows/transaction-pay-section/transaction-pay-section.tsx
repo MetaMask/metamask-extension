@@ -1,10 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
-import {
-  useIsTransactionPayLoading,
-  useTransactionPayRequiredTokens,
-} from '../../../hooks/pay/useTransactionPayData';
+import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { PayWithRow } from '../pay-with-row/pay-with-row';
 import { BridgeFeeRow } from '../bridge-fee-row/bridge-fee-row';
@@ -14,7 +11,6 @@ import { selectIsMetaMaskPayDappsEnabled } from '../../../selectors/feature-flag
 
 export const TransactionPaySection = () => {
   const requiredTokens = useTransactionPayRequiredTokens();
-  const isLoading = useIsTransactionPayLoading();
   const { payToken } = useTransactionPayToken();
 
   const isPayDappsEnabled = useSelector(selectIsMetaMaskPayDappsEnabled);
@@ -25,7 +21,7 @@ export const TransactionPaySection = () => {
 
   const hasRequiredTokens = Boolean(requiredTokens?.length);
   const hasPaymentToken = Boolean(payToken);
-  const showPayWithRow = isLoading || hasRequiredTokens;
+  const showPayWithRow = hasRequiredTokens;
 
   if (!showPayWithRow) {
     return null;

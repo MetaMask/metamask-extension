@@ -84,14 +84,13 @@ describe('TransactionPaySection', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders section when loading', () => {
+  it('returns null when loading but no required tokens', () => {
     useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
 
-    const { getByTestId } = render();
+    const { container } = render();
 
-    expect(getByTestId('transaction-pay-section')).toBeInTheDocument();
-    expect(getByTestId('required-tokens-row')).toBeInTheDocument();
-    expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('renders section when has required tokens', () => {
