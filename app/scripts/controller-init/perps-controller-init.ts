@@ -26,6 +26,8 @@ export const PerpsControllerInit: ControllerInitFunction<
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const completedOnboarding =
     persistedState.OnboardingController?.completedOnboarding ?? false;
+  const useExternalServices =
+    persistedState.PreferencesController?.useExternalServices ?? true;
 
   const controller = new PerpsController({
     messenger: controllerMessenger,
@@ -36,7 +38,7 @@ export const PerpsControllerInit: ControllerInitFunction<
       fallbackHip3AllowlistMarkets: [],
       fallbackBlockedRegions,
     },
-    deferEligibilityCheck: !completedOnboarding,
+    deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });
 
   const api = getApi(controller);

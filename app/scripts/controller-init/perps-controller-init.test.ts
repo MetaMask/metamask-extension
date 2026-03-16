@@ -189,6 +189,49 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.deferEligibilityCheck).toBe(false);
     });
 
+    it('passes deferEligibilityCheck true when basic functionality is off', () => {
+      const request = getInitRequestMock();
+      request.persistedState.OnboardingController = {
+        completedOnboarding: true,
+      } as never;
+      request.persistedState.PreferencesController = {
+        useExternalServices: false,
+      } as never;
+
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(constructorCall.deferEligibilityCheck).toBe(true);
+    });
+
+    it('passes deferEligibilityCheck false when basic functionality is on and onboarding complete', () => {
+      const request = getInitRequestMock();
+      request.persistedState.OnboardingController = {
+        completedOnboarding: true,
+      } as never;
+      request.persistedState.PreferencesController = {
+        useExternalServices: true,
+      } as never;
+
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(constructorCall.deferEligibilityCheck).toBe(false);
+    });
+
+    it('uses only completedOnboarding for deferEligibilityCheck when PreferencesController is undefined', () => {
+      const request = getInitRequestMock();
+      request.persistedState.OnboardingController = {
+        completedOnboarding: true,
+      } as never;
+      expect(request.persistedState.PreferencesController).toBeUndefined();
+
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(constructorCall.deferEligibilityCheck).toBe(false);
+    });
+
     it('passes persisted state directly to the controller', () => {
       const request = getInitRequestMock();
       const persistedState: Partial<PerpsControllerState> = {
