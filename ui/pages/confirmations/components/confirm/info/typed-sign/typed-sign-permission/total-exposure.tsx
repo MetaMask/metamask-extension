@@ -52,8 +52,8 @@ function toAmountBn(value: Hex | undefined | null): BigNumber | null {
  * @returns BigNumber for the total exposure, or null if unlimited
  */
 export function computeTotalExposure(params: {
-  initialAmount?: Hex | null | undefined;
-  maxAmount?: Hex | null | undefined;
+  initialAmount?: Hex | null;
+  maxAmount?: Hex | null;
   amountPerSecond: Hex;
   startTime: number;
   expiry: number | null;
@@ -91,9 +91,9 @@ export function computeTotalExposure(params: {
 /** Base stream params required to compute total exposure. Amounts are hex or decimal strings. */
 export type TotalExposureStreamParams = {
   /** Initial amount (hex or decimal string). */
-  initialAmount?: Hex | null | undefined;
+  initialAmount?: Hex | null;
   /** Max amount cap (hex or decimal string). */
-  maxAmount?: Hex | null | undefined;
+  maxAmount?: Hex | null;
   /** Stream rate per second (hex or decimal string). */
   amountPerSecond: Hex;
   /** Stream start time (Unix seconds). */
