@@ -3229,7 +3229,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it("does not double-initialize a connection's patch store when multiple connections are open and the startUISync event is fired", async () => {
+      it('does not re-initialize existing patch stores when a patch store connection from another UI process is opened', async () => {
         const {
           patchStream: firstConnectionPatchStream,
           messages: firstConnectionMessages,
