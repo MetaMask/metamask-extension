@@ -244,7 +244,12 @@ export function setupPatchStoreSubstreamConnection(
 ) {
   patchStoreSubstreamSingleton = patchStoreSubstream;
   patchStoreSubstreamSingleton.on('data', (message) => {
-    receiveMessage(message, handleSendUpdate);
+    receiveMessage(message, handleSendUpdate).catch((error) => {
+      console.error(
+        'Error receiving message through patch-store stream',
+        error,
+      );
+    });
   });
   patchStoreSubstreamSingleton.on('finish', failPendingRequests);
   patchStoreSubstreamSingleton.on('close', failPendingRequests);
