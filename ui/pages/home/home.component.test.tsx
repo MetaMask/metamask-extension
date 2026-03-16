@@ -36,7 +36,7 @@ jest.mock('../connected-sites', () => () => null);
 jest.mock('../connected-accounts', () => () => null);
 jest.mock('./beta-and-flask-home-footer.component', () => () => null);
 jest.mock('./HomeDeepLinkActions', () => ({ HomeDeepLinkActions: () => null }));
-jest.mock('../../../shared/modules/mv3.utils', () => ({
+jest.mock('../../../shared/lib/mv3.utils', () => ({
   isMv3ButOffscreenDocIsMissing: jest.fn().mockReturnValue(false),
 }));
 jest.mock('../../../shared/lib/build-types', () => ({

@@ -17,8 +17,8 @@ import Box from '../../../../../../components/ui/box';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { decGWEIToHexWEI } from '../../../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
 
 const validatePriorityFee = (value, gasFeeEstimates, chainId) => {

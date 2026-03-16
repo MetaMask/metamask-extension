@@ -105,7 +105,7 @@ import {
   getRpcDataByChainId,
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
-} from '../../../../shared/modules/network.utils';
+} from '../../../../shared/lib/network.utils';
 import {
   getCompletedOnboarding,
   getIsUnlocked,

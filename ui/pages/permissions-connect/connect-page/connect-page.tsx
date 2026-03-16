@@ -29,7 +29,7 @@ import {
   getPermissions,
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -111,7 +111,6 @@ export type ConnectPageProps = {
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: ConnectPageRequest) => void;
-  activeTabOrigin: string;
   targetSubjectMetadata: {
     extensionId: string | null;
     iconUrl: string | null;

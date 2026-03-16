@@ -3,7 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useMemo } from 'react';
 import { DecodedTransactionDataResponse } from '../../shared/types';
-import { hasTransactionData } from '../../shared/modules/transaction.utils';
+import { hasTransactionData } from '../../shared/lib/transaction.utils';
 import { decodeTransactionData } from '../store/actions';
 import { AsyncResult, useAsyncResult } from './useAsync';
 

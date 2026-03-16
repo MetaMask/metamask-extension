@@ -18,7 +18,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as sharedSelectors from '../../../../shared/modules/selectors';
+import * as sharedSelectors from '../../../../shared/lib/selectors';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
@@ -65,9 +65,9 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('../../../../shared/modules/selectors/networks', () => {
+jest.mock('../../../../shared/lib/selectors/networks', () => {
   const original = jest.requireActual(
-    '../../../../shared/modules/selectors/networks',
+    '../../../../shared/lib/selectors/networks',
   );
   return {
     ...original,
@@ -107,9 +107,9 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
   };
 });
 
-jest.mock('../../../../shared/modules/selectors', () => {
+jest.mock('../../../../shared/lib/selectors', () => {
   const smartTransactions = jest.requireActual(
-    '../../../../shared/modules/selectors/smart-transactions',
+    '../../../../shared/lib/selectors/smart-transactions',
   );
   return {
     ...smartTransactions,
@@ -213,6 +213,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
                 "token": null,
               },
@@ -255,16 +256,23 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-            token: null,
-          },
-        },
-      );
+      // Assert
+      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "/?tab=activity",
+            {
+              "replace": true,
+              "state": {
+                "bridgeState": null,
+                "stayOnHomePage": true,
+                "token": null,
+              },
+            },
+          ],
+        ]
+      `);
+
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalled();
     });
@@ -307,6 +315,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
                 "token": null,
               },
@@ -383,6 +392,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         {
           replace: true,
           state: {
+            bridgeState: null,
             stayOnHomePage: true,
             token: null,
           },
@@ -429,6 +439,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           {
             replace: true,
             state: {
+              bridgeState: null,
               stayOnHomePage: true,
               token: null,
             },
@@ -476,6 +487,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         {
           replace: true,
           state: {
+            bridgeState: null,
             stayOnHomePage: true,
             token: null,
           },

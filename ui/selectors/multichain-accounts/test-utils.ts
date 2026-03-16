@@ -1,7 +1,7 @@
 import { AccountGroupId } from '@metamask/account-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/lib/selectors/networks';
 import {
   AccountTreeState,
   InternalAccountsState,
@@ -23,6 +23,12 @@ export const createMockMultichainAccountsState = (
   metamask: {
     accountTree,
     internalAccounts,
+    accountIdByAddress: Object.fromEntries(
+      Object.values(internalAccounts.accounts).map((account) => [
+        account.address,
+        account.id,
+      ]),
+    ),
     networkConfigurationsByChainId:
       networkConfigurations?.networkConfigurationsByChainId || {},
     multichainNetworkConfigurationsByChainId:

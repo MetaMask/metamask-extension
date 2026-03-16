@@ -21,7 +21,7 @@ import {
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
-import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
@@ -137,11 +137,12 @@ export const ConfirmInfoRowAddressDisplay = memo(
             onClose={handleModalClose}
           />
         )}
-        <TrustIcon displayState={displayState} image={image} />
+        {name && <TrustIcon displayState={displayState} image={image} />}
         {name && isClickable && (
           <TextButton
             size={TextButtonSize.BodyMd}
             onClick={handleClick}
+            className="hover:bg-transparent active:bg-transparent"
             data-testid="confirm-info-row-display-name"
           >
             {name}
@@ -158,13 +159,16 @@ export const ConfirmInfoRowAddressDisplay = memo(
           </Text>
         )}
         {!name && isClickable && (
-          <TextButton
-            size={TextButtonSize.BodyMd}
-            onClick={handleClick}
-            data-testid="confirm-info-row-display-name"
-          >
-            {display}
-          </TextButton>
+          <span className="address-display-no-name">
+            <TextButton
+              size={TextButtonSize.BodyMd}
+              onClick={handleClick}
+              className="hover:bg-transparent active:bg-transparent whitespace-nowrap"
+              data-testid="confirm-info-row-display-name"
+            >
+              {display}
+            </TextButton>
+          </span>
         )}
         {!name && !isClickable && (
           <Text

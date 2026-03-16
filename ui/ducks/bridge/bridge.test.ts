@@ -252,6 +252,8 @@ describe('Ducks - Bridge', () => {
         fromTokenInputValue: null,
         selectedQuote: null,
         slippage: SlippageValue.BridgeDefault,
+        isDestAssetPickerOpen: false,
+        isSrcAssetPickerOpen: false,
         sortOrder: 'cost_ascending',
         toToken: null,
         txAlert: null,

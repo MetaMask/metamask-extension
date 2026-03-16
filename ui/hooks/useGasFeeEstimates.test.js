@@ -36,7 +36,7 @@ jest.mock('../ducks/metamask/metamask', () => ({
     .mockReturnValue('getIsNetworkBusyByChainId'),
 }));
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
+jest.mock('../../shared/lib/selectors/networks', () => ({
   getSelectedNetworkClientId: jest
     .fn()
     .mockReturnValue('getSelectedNetworkClientId'),

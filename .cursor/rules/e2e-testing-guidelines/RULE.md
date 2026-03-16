@@ -82,29 +82,43 @@ For new test code, use `FixtureBuilderV2` by default.
 
 `FixtureBuilderV2` currently supports:
 
+**General controller methods**:
+
 - `withAccountsController`
 - `withAddressBookController`
 - `withAppStateController`
 - `withCurrencyController`
 - `withKeyringController`
 - `withMetaMetricsController`
+- `withNameController`
 - `withNetworkController`
+- `withNetworkEnablementController`
 - `withOnboardingController`
 - `withPermissionController`
 - `withPreferencesController`
 - `withSelectedNetworkController`
+- `withTokenBalancesController`
+- `withTokenListController`
+- `withTokensController`
 - `withTransactionController`
+
+**Custom convenience methods**:
+
 - `withConversionRateDisabled`
 - `withEnabledNetworks`
 - `withLedgerAccount`
 - `withNetworkControllerDoubleNode`
 - `withNetworkControllerTripleNode`
+- `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
+- `withPetnamesDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withTokensControllerERC20`
+- `withTrezorAccount`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`
 - `withTransactionControllerCompletedTransaction`
