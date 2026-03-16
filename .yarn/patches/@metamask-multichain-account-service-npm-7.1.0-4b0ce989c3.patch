@@ -1,5 +1,5 @@
 diff --git a/dist/providers/SnapAccountProvider.cjs b/dist/providers/SnapAccountProvider.cjs
-index 796cff7ff4a15d2a685c896509d9b1af891123d2..c99cede4e1b5e1836c670fe3fb900628df2c8968 100644
+index 796cff7ff4a15d2a685c896509d9b1af891123d2..8846eaef0e761235e63d40b4dabff7f9485472ca 100644
 --- a/dist/providers/SnapAccountProvider.cjs
 +++ b/dist/providers/SnapAccountProvider.cjs
 @@ -80,24 +80,8 @@ class SnapAccountProvider extends BaseBip44AccountProvider_1.BaseBip44AccountPro

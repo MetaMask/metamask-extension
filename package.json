@@ -260,8 +260,9 @@
     "fast-xml-parser": "^5.3.6",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
-    "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
-    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267"
+    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
+    "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
+    "@metamask/multichain-account-service@npm:^7.1.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -350,7 +351,7 @@
     "@metamask/message-signing-snap": "1.1.4",
     "@metamask/messenger": "^0.3.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain-account-service": "patch:@metamask/multichain-account-service@npm%3A7.0.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.0.0-52b2fa1b5d.patch",
+    "@metamask/multichain-account-service": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
     "@metamask/multichain-api-client": "^0.10.1",
     "@metamask/multichain-api-middleware": "^1.2.5",
     "@metamask/multichain-network-controller": "^3.0.5",
