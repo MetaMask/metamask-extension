@@ -10,7 +10,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 VATS_DIR="$ROOT_DIR/app/offscreen/ocap-kernel/vats"
 
 # Path to the ocap-kernel CLI bundler
-OCAP_CLI="${OCAP_CLI:-ocap-kernel/packages/cli/dist/app.mjs}"
+OCAP_CLI="${OCAP_CLI:-ocap-kernel/packages/kernel-cli/dist/app.mjs}"
 
 if [ ! -f "$OCAP_CLI" ]; then
   echo "Error: ocap-kernel CLI not found at $OCAP_CLI"

@@ -388,6 +388,9 @@ env:
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
 
+  # Relay multiaddr(s) for ocap kernel remote comms (comma-separated)
+  - OCAP_RELAY_MULTIADDR: null
+
   ###
   # Meta variables
   ###
