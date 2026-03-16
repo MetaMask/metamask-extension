@@ -448,6 +448,61 @@ describe('useMerklRewards', () => {
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
+  it('returns false when geoblocking resolves after query returns claimable reward', async () => {
+    // Simulate: geo check still loading, so isBlocked starts as false
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: false,
+      userCountry: null,
+      isLoading: true,
+    });
+
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10500000',
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const hookArgs = {
+      tokenAddress: MUSD_TOKEN_ADDRESS,
+      chainId: '0x1' as `0x${string}`,
+      showMerklBadge: true,
+    };
+
+    const { result, rerender, waitForNextUpdate } = renderHook(
+      () => useMerklRewards(hookArgs),
+      { wrapper: createWrapper() },
+    );
+
+    await act(async () => {
+      await waitForNextUpdate();
+    });
+
+    // Query resolved with claimable reward, but geo still loading
+    // isEligible gates the return value so it should still be false
+    // because showMerklBadge && merklRewardsEnabled && !isGeoBlocked && isEligibleToken
+    // During loading isGeoBlocked=false, so query runs and caches true.
+    // Now simulate geo check completing with blocked result:
+    useMusdGeoBlocking.mockReturnValue({
+      isBlocked: true,
+      userCountry: 'GB',
+      isLoading: false,
+    });
+
+    rerender();
+
+    expect(result.current.hasClaimableReward).toBe(false);
+  });
+
   it('falls back to API claimed value when getClaimedAmountFromContract returns null', async () => {
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 

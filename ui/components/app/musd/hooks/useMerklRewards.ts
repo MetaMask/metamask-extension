@@ -132,7 +132,7 @@ export const useMerklRewards = ({
   }, [refetchQuery]);
 
   return {
-    hasClaimableReward,
+    hasClaimableReward: isEligible && hasClaimableReward,
     refetch,
   };
 };
