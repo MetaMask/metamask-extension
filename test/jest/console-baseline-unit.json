@@ -674,7 +674,20 @@
       "Reselect: Identity function warnings": 2
     },
     "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
-      "MetaMask: Background connection not initialized": 1
+      "MetaMask: Background connection not initialized": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/hooks/useExternalAccountResolution.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/hooks/useGasIncluded7702.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/hooks/useRWAToken.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/hooks/useNavigateOnQrScanComplete.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 1,
