@@ -396,8 +396,12 @@ export class ManifestPlugin<Z extends boolean> {
         ...buildTypeBaseManifest,
         description,
         version,
-        version_name: this.options.versionName,
       }) as Manifest;
+
+      if (browser !== 'firefox') {
+        // version_name isn't used by FireFox, but is by Chrome, et al.
+        manifest.version_name = this.options.versionName;
+      }
 
       manifest = {
         ...manifest,
