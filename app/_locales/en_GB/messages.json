@@ -2848,6 +2848,9 @@
     "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see those addresses and your IP address. Your account address won’t be exposed to third parties."
   },
   "externalNameSourcesSettingDescriptionV2": {
+    "message": "Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol."
+  },
+  "externalNameSourcesSettingDescriptionV3": {
     "message": "We'll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol."
   },
   "failed": {
