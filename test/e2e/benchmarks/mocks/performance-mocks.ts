@@ -571,7 +571,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/token\.api\.cx\.metamask\.io\/tokens/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(250, { statusCode: 200, json: [] })),
+      .thenCallback(delayedResponse(1500, { statusCode: 200, json: [] })),
   );
 
   endpoints.push(
@@ -972,7 +972,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(103)
       .always()
       .thenCallback(
-        delayedCallback(4000, (req) =>
+        delayedCallback(2500, (req) =>
           buildSpotPricesResponse(req.url, POWER_USER_PRICES),
         ),
       ),
@@ -1035,7 +1035,7 @@ export async function mockBenchmarkEndpoints(
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(500, ACCOUNTS_TRANSACTIONS)),
+      .thenCallback(delayedResponse(2000, ACCOUNTS_TRANSACTIONS)),
   );
 
   endpoints.push(
@@ -1043,7 +1043,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/.*\/balances/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(550, ACCOUNTS_BALANCES)),
+      .thenCallback(delayedResponse(3000, ACCOUNTS_BALANCES)),
   );
 
   endpoints.push(
@@ -1176,7 +1176,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedCallback(700, (req) => {
+        delayedCallback(12000, (req) => {
           const isSolana = req.url.includes('srcChainId=1151111081099710');
           const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
           return {
@@ -1194,7 +1194,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedCallback(2000, (req) => {
+        delayedCallback(12000, (req) => {
           const isSolana = req.url.includes('srcChainId=1151111081099710');
           const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
           return { statusCode: 200, json: [quote] };
@@ -1231,7 +1231,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/https:\/\/security-alerts\.api\.cx\.metamask\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(400, SECURITY_ALERTS)),
+      .thenCallback(delayedResponse(1200, SECURITY_ALERTS)),
   );
 
   endpoints.push(

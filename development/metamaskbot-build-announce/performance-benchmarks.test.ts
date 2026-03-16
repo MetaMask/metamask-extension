@@ -168,11 +168,11 @@ describe('buildTableRows', () => {
     expect(row).not.toContain('Load New Account');
     // No separate Result column
     expect(row).not.toContain('>Result<');
-    // Mean, Std Dev, P75, P95 all show 'value ms' (no indicator when no baseline)
-    expect(row).toContain('523 ms');
-    expect(row).toContain('45 ms');
-    expect(row).toContain('550 ms');
-    expect(row).toContain('612 ms');
+    // Mean, Std Dev, P75, P95 all show plain value (no indicator when no baseline)
+    expect(row).toContain('523');
+    expect(row).toContain('45');
+    expect(row).toContain('550');
+    expect(row).toContain('612');
     // Min and Max are raw numbers
     expect(row).toContain('>480<');
     expect(row).toContain('>620<');
@@ -186,11 +186,11 @@ describe('buildTableRows', () => {
 
     expect(row).toContain('confirmTx');
     expect(row).not.toContain('Confirm Tx');
-    // Mean, Std Dev, P75, P95 show 'value ms'
-    expect(row).toContain('3457 ms');
-    expect(row).toContain('210 ms');
-    expect(row).toContain('3600 ms');
-    expect(row).toContain('3812 ms');
+    // Mean, Std Dev, P75, P95 show plain value
+    expect(row).toContain('3457');
+    expect(row).toContain('210');
+    expect(row).toContain('3600');
+    expect(row).toContain('3812');
     // Min and Max are raw numbers
     expect(row).toContain('>3100<');
     expect(row).toContain('>3900<');
@@ -204,18 +204,18 @@ describe('buildTableRows', () => {
 
     expect(rows).toHaveLength(2);
     expect(rows[0]).toContain('bridgePageLoad');
-    // Mean, P75, P95 show 'value ms'
-    expect(rows[0]).toContain('200 ms');
-    expect(rows[0]).toContain('215 ms');
-    expect(rows[0]).toContain('245 ms');
+    // Mean, P75, P95 show plain value
+    expect(rows[0]).toContain('200');
+    expect(rows[0]).toContain('215');
+    expect(rows[0]).toContain('245');
     expect(rows[0]).toContain('>180<');
     expect(rows[0]).toContain('>260<');
 
     expect(rows[1]).toContain('bridgeTokenSwitch');
-    // Mean, P75, P95 show 'value ms'
-    expect(rows[1]).toContain('151 ms');
-    expect(rows[1]).toContain('160 ms');
-    expect(rows[1]).toContain('178 ms');
+    // Mean, P75, P95 show plain value
+    expect(rows[1]).toContain('151');
+    expect(rows[1]).toContain('160');
+    expect(rows[1]).toContain('178');
     expect(rows[1]).toContain('>130<');
     expect(rows[1]).toContain('>190<');
   });
@@ -227,19 +227,19 @@ describe('buildTableRows', () => {
     expect(rows).toHaveLength(4);
     expect(rows[0]).not.toContain('rowspan');
     expect(rows[0]).toContain('importWalletToSocialScreen');
-    // Mean, P75, P95 show 'value ms'
-    expect(rows[0]).toContain('209 ms');
-    expect(rows[0]).toContain('230 ms');
-    expect(rows[0]).toContain('280 ms');
+    // Mean, P75, P95 show plain value
+    expect(rows[0]).toContain('209');
+    expect(rows[0]).toContain('230');
+    expect(rows[0]).toContain('280');
     expect(rows[0]).toContain('>170<');
     expect(rows[0]).toContain('>310<');
-    expect(rows[0]).toContain('32 ms');
+    expect(rows[0]).toContain('32');
 
     expect(rows[1]).toContain('srpButtonToSrpForm');
-    // Mean, P75, P95 show 'value ms'
-    expect(rows[1]).toContain('53 ms');
-    expect(rows[1]).toContain('58 ms');
-    expect(rows[1]).toContain('70 ms');
+    // Mean, P75, P95 show plain value
+    expect(rows[1]).toContain('53');
+    expect(rows[1]).toContain('58');
+    expect(rows[1]).toContain('70');
     expect(rows[1]).toContain('>40<');
     expect(rows[1]).toContain('>80<');
   });
@@ -278,7 +278,7 @@ describe('buildTableRows', () => {
 
     expect(rows).toHaveLength(1);
     // Mean cell shows value
-    expect(rows[0]).toContain('100 ms');
+    expect(rows[0]).toContain('100');
     // P75 and P95 cells show '-'
     expect(rows[0]).toContain('>-<');
   });
@@ -443,10 +443,10 @@ describe('buildTableRows with baseline', () => {
   it('renders no indicator when baseline is absent', () => {
     const rows = buildTableRows(makeEntry());
 
-    // Mean, P75, P95 show plain 'value ms' with no indicator
-    expect(rows[0]).toContain('523 ms');
-    expect(rows[0]).toContain('550 ms');
-    expect(rows[0]).toContain('612 ms');
+    // Mean, P75, P95 show plain value with no indicator
+    expect(rows[0]).toContain('523');
+    expect(rows[0]).toContain('550');
+    expect(rows[0]).toContain('612');
     expect(rows[0]).not.toContain('🔺');
     expect(rows[0]).not.toContain('🟡');
     expect(rows[0]).not.toContain('🟢');
@@ -459,10 +459,10 @@ describe('buildTableRows with baseline', () => {
     // p95=612 vs baseline_p95=600  → +2%   → neutral
     const rows = buildTableRows(makeEntry(), makeBaseline(540, 45, 540, 600));
 
-    expect(rows[0]).toContain('➡️ · 523 ms');
-    expect(rows[0]).toContain('➡️ · 45 ms');
-    expect(rows[0]).toContain('➡️ · 550 ms');
-    expect(rows[0]).toContain('➡️ · 612 ms');
+    expect(rows[0]).toContain('➡️ · 523');
+    expect(rows[0]).toContain('➡️ · 45');
+    expect(rows[0]).toContain('➡️ · 550');
+    expect(rows[0]).toContain('➡️ · 612');
   });
 
   it('renders warn indicator (🟡⬆️) on P95 cell when p95 is 5–10% above baseline p95', () => {
@@ -473,8 +473,8 @@ describe('buildTableRows with baseline', () => {
       makeBaseline(540, 45, 540, 600),
     );
 
-    expect(rows[0]).toContain('🟡⬆️ +6% · 636 ms');
-    expect(rows[0]).toContain('➡️ · 523 ms');
+    expect(rows[0]).toContain('🟡⬆️ +6% · 636');
+    expect(rows[0]).toContain('➡️ · 523');
   });
 
   it('renders warn indicator (🟡⬆️) when p95 is >10% above baseline p95 (regression downgraded)', () => {
@@ -495,7 +495,7 @@ describe('buildTableRows with baseline', () => {
       makeBaseline(540, 45, 540, 600),
     );
 
-    expect(rows[0]).toContain('🟢⬇️ -10% · 540 ms');
+    expect(rows[0]).toContain('🟢⬇️ -10% · 540');
   });
 
   it('renders no indicator when baseline exists but metric key is absent', () => {
@@ -508,14 +508,14 @@ describe('buildTableRows with baseline', () => {
     expect(rows[0]).not.toContain('➡️');
   });
 
-  it('p95 cell format is "indicator · value ms" when indicator exists', () => {
+  it('p95 cell format is "indicator · value" when indicator exists', () => {
     // p95=636 vs baseline_p95=600 → +6% → 🟡⬆️ +6%
     const rows = buildTableRows(
       makeEntry({ p95: { loadNewAccount: 636 } }),
       makeBaseline(540, 45, 540, 600),
     );
 
-    expect(rows[0]).toContain('🟡⬆️ +6% · 636 ms');
+    expect(rows[0]).toContain('🟡⬆️ +6% · 636');
   });
 });
 
@@ -533,7 +533,7 @@ describe('buildBenchmarkSection with baseline', () => {
     );
     const baseline = {
       'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, p75: 540, p95: 600 },
+        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
       },
     };
 
@@ -562,7 +562,7 @@ describe('buildBenchmarkSection with baseline', () => {
     ];
     const baseline = {
       'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, p75: 540, p95: 600 },
+        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
       },
     };
 
@@ -591,7 +591,7 @@ describe('buildBenchmarkSection with baseline', () => {
     ];
     const baseline = {
       'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, p75: 540, p95: 600 },
+        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
       },
     };
 
@@ -621,7 +621,7 @@ describe('buildBenchmarkSection with baseline', () => {
     ];
     const baseline = {
       'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, p75: 540, p95: 600 },
+        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
       },
     };
 
@@ -654,7 +654,7 @@ describe('buildBenchmarkSection with baseline', () => {
     // uiStartup mean=1400 vs baseline mean=1450 → ~3.4% faster → neutral ➡️
     const baseline = {
       'pageLoad/chrome-browserify-startupStandardHome': {
-        uiStartup: { mean: 1450, p75: 1490, p95: 1650 },
+        uiStartup: { mean: 1450, stdDev: 80, p75: 1490, p95: 1650 },
       },
     };
 
@@ -804,7 +804,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       .mockResolvedValue({
         'interactionUserActions/confirmTx': {
           // mean=1000 baseline vs payload mean=1000 → 0% → neutral ➡️
-          confirmTx: { mean: 800, p75: 900, p95: 980 },
+          confirmTx: { mean: 800, stdDev: 40, p75: 900, p95: 980 },
         },
       });
 

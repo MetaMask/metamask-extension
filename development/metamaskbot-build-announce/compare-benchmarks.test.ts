@@ -106,7 +106,7 @@ describe('compare-benchmarks', () => {
 
       const baseline = {
         'onboarding-import-wallet': {
-          importWalletToSocialScreen: { mean: 1100, p75: 1400, p95: 1900 },
+          importWalletToSocialScreen: { mean: 1100, stdDev: 50, p75: 1400, p95: 1900 },
         },
       };
 
@@ -141,7 +141,7 @@ describe('compare-benchmarks', () => {
 
       const baseline = {
         'pageLoad/chrome-browserify-startupStandardHome': {
-          uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+          uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
         },
       };
 
@@ -241,7 +241,7 @@ describe('compare-benchmarks', () => {
 
     it('returns baseline data when fetch succeeds', async () => {
       const mockBaseline = {
-        'test/metric': { uiStartup: { mean: 100, p75: 110, p95: 130 } },
+        'test/metric': { uiStartup: { mean: 100, stdDev: 10, p75: 110, p95: 130 } },
       };
       jest
         .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')

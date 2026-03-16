@@ -394,11 +394,13 @@ jobs:
   store-benchmark-stats:
     name: Store benchmark stats (main/release only)
     needs:
+      - get-requirements
       - run-benchmarks
       - dapp-page-load-benchmark
     if: >-
       ${{
         !cancelled() &&
+        needs.get-requirements.outputs.needs-benchmarks == 'true' &&
         github.event_name == 'push' &&
         (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
         !(github.event.pull_request.head.repo.fork || github.event.repository.fork)

@@ -259,7 +259,7 @@ function percentileCellIndicator(
 
 /**
  * Formats a stat cell by combining a value with a traffic-light indicator.
- * e.g. '🟢⬇️ -90% · 648 ms', '➡️ · 218 ms', or '218 ms' when no baseline.
+ * e.g. '🟢⬇️ -90% · 648', '➡️ · 218', or '218' when no baseline.
  *
  * @param value - Rounded value string (e.g. '648') or '-'.
  * @param indicator - Indicator from percentileCellIndicator, or ''.
@@ -270,9 +270,9 @@ function statCellContent(value: string, indicator: string): string {
     return '-';
   }
   if (!indicator) {
-    return `${value} ms`;
+    return value;
   }
-  return `${indicator} · ${value} ms`;
+  return `${indicator} · ${value}`;
 }
 
 /**
