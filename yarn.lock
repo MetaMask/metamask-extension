@@ -7259,7 +7259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:7.1.0, @metamask/multichain-account-service@npm:^7.0.0":
+"@metamask/multichain-account-service@npm:7.1.0":
   version: 7.1.0
   resolution: "@metamask/multichain-account-service@npm:7.1.0"
   dependencies:
