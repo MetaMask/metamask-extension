@@ -408,9 +408,6 @@
     "message": "Enregistrer ces valeurs comme valeurs par défaut pour le réseau $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Frais de carburant avancés"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Frais de réseau avancés"
   },
@@ -1229,14 +1226,6 @@
   "cancelPopoverTitle": {
     "message": "Annuler la transaction"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Ces gas fees vont $1 les frais initiaux.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Pour $1 une transaction, les frais de gaz doivent être augmentés de 10 % minimum pour qu’elle soit reconnue par le réseau.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelled": {
     "message": "Annulé"
   },
@@ -1914,10 +1903,6 @@
   "dappSuggestedShortLabel": {
     "message": "Site"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 a recommandé ce prix.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Économisez et gagnez avec MetaMask Swaps"
   },
@@ -2352,9 +2337,6 @@
   "editAddressNickname": {
     "message": "Modifier le pseudo de l’adresse"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Modifier l’annulation des frais de gaz"
-  },
   "editContact": {
     "message": "Modifier le contact"
   },
@@ -2413,9 +2395,6 @@
   "editGasPriceTooltip": {
     "message": "Ce réseau exige un champ « Prix du carburant » lors de la soumission d’une transaction. Le prix du carburant correspond au montant que vous paierez par unité de carburant."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Frais maximums:"
-  },
   "editGasTitle": {
     "message": "Modifier la priorité"
   },
@@ -2442,9 +2421,6 @@
   },
   "editPermissions": {
     "message": "Modifier les autorisations"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Modifier l’accélération des frais de gaz"
   },
   "editSpendingCap": {
     "message": "Modifier le plafond des dépenses"
@@ -2715,9 +2691,6 @@
   "fast": {
     "message": "Rapide"
   },
-  "feeDetails": {
-    "message": "Détails des frais"
-  },
   "fieldRequired": {
     "message": "Le champ $1 est obligatoire"
   },
@@ -2849,9 +2822,6 @@
   },
   "gasLimitV2": {
     "message": "Montant maximal des frais de transaction"
-  },
-  "gasOption": {
-    "message": "Option de carburant"
   },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"
@@ -3508,9 +3478,6 @@
   "layer1Fees": {
     "message": "Frais de couche 1 (L1)"
   },
-  "layer2Fees": {
-    "message": "Frais de couche 2 (L1)"
-  },
   "learnHow": {
     "message": "Découvrir comment"
   },
@@ -3772,9 +3739,6 @@
   },
   "maxFeeTooltip": {
     "message": "Frais maximums prévus pour le traitement de la transaction."
-  },
-  "maxPriorityFee": {
-    "message": "Frais de priorité maximums"
   },
   "medium": {
     "message": "Marché"
@@ -4140,9 +4104,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Frais de réseau"
-  },
-  "networkIsBusy": {
-    "message": "Le réseau est occupé. Les gas fees sont élevés et les estimations sont moins précises."
   },
   "networkMenu": {
     "message": "Menu du réseau"

@@ -408,9 +408,6 @@
     "message": "이 수치를 $1 네트워크의 기본값으로 저장합니다.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "고급 가스비"
-  },
   "advancedGasPriceModalTitle": {
     "message": "고급 네트워크 수수료"
   },
@@ -1229,14 +1226,6 @@
   "cancelPopoverTitle": {
     "message": "트랜잭션 취소"
   },
-  "cancelSpeedUpLabel": {
-    "message": "이 가스비는 원금을 $1합니다.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "거래를 $1하려면 반드시 가스 요금을 최소 10% 인상해야 네트워크에서 인식될 수 있습니다.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelled": {
     "message": "취소됨"
   },
@@ -1914,10 +1903,6 @@
   "dappSuggestedShortLabel": {
     "message": "사이트"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1에서 이 가격을 추천했습니다.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "MetaMask 스왑으로 비용을 절감하고 수익을 창출하세요"
   },
@@ -2352,9 +2337,6 @@
   "editAddressNickname": {
     "message": "주소 닉네임 편집"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "가스비 취소 편집"
-  },
   "editContact": {
     "message": "연락처 편집"
   },
@@ -2413,9 +2395,6 @@
   "editGasPriceTooltip": {
     "message": "이 네트워크에서는 트랜잭션을 제출할 때 \"가스 가격\"을 필수 입력해야 합니다. 가스 가격은 가스 단위당 지급할 금액입니다."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "최대 수수료:"
-  },
   "editGasTitle": {
     "message": "우선 순위 편집"
   },
@@ -2442,9 +2421,6 @@
   },
   "editPermissions": {
     "message": "권한 수정"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "가스비 가속 편집"
   },
   "editSpendingCap": {
     "message": "지출 한도 편집"
@@ -2715,9 +2691,6 @@
   "fast": {
     "message": "빠름"
   },
-  "feeDetails": {
-    "message": "수수료 세부 정보"
-  },
   "fieldRequired": {
     "message": "$1은(는) 필수입니다"
   },
@@ -2849,9 +2822,6 @@
   },
   "gasLimitV2": {
     "message": "가스 한도"
-  },
-  "gasOption": {
-    "message": "가스 옵션"
   },
   "gasPrice": {
     "message": "가스 가격(GWEI)"
@@ -3508,9 +3478,6 @@
   "layer1Fees": {
     "message": "레이어 1 요금"
   },
-  "layer2Fees": {
-    "message": "레이어 2 요금"
-  },
   "learnHow": {
     "message": "방법 확인하기"
   },
@@ -3772,9 +3739,6 @@
   },
   "maxFeeTooltip": {
     "message": "트랜잭션에 지불하기 위해 제공되는 최대 수수료입니다."
-  },
-  "maxPriorityFee": {
-    "message": "최대 우선 수수료"
   },
   "medium": {
     "message": "시장"
@@ -4140,9 +4104,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "네트워크 수수료"
-  },
-  "networkIsBusy": {
-    "message": "네트워크 사용량이 많습니다. 가스비가 높고 견적의 정확도도 떨어집니다."
   },
   "networkMenu": {
     "message": "네트워크 메뉴"

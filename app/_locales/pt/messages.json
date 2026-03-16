@@ -408,9 +408,6 @@
     "message": "Salvar esses valores como padrão para a rede $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Taxa de gás avançada"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Taxa de rede avançada"
   },
@@ -1229,14 +1226,6 @@
   "cancelPopoverTitle": {
     "message": "Cancelar transação"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Essa taxa de gás vai $1 a original.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Para $1 uma transação, a taxa de gás deve ser aumentada em pelo menos 10% para que seja reconhecida pela rede.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelled": {
     "message": "Cancelado"
   },
@@ -1914,10 +1903,6 @@
   "dappSuggestedShortLabel": {
     "message": "Site"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 recomendou esse preço.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Economize e ganhe com swaps da MetaMask"
   },
@@ -2352,9 +2337,6 @@
   "editAddressNickname": {
     "message": "Editar apelido do endereço"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Editar taxa de gás por cancelamento"
-  },
   "editContact": {
     "message": "Editar contato"
   },
@@ -2413,9 +2395,6 @@
   "editGasPriceTooltip": {
     "message": "Essa rede requer um campo de \"preço do gás\" ao enviar uma transação. O preço do gás é o valor pago por unidade de gás."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Taxa máxima:"
-  },
   "editGasTitle": {
     "message": "Editar prioridade"
   },
@@ -2442,9 +2421,6 @@
   },
   "editPermissions": {
     "message": "Editar permissões"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Editar taxa de gás para aceleração"
   },
   "editSpendingCap": {
     "message": "Editar limite de gastos"
@@ -2715,9 +2691,6 @@
   "fast": {
     "message": "Rápido"
   },
-  "feeDetails": {
-    "message": "Detalhes da taxa"
-  },
   "fieldRequired": {
     "message": "$1 é obrigatório"
   },
@@ -2849,9 +2822,6 @@
   },
   "gasLimitV2": {
     "message": "Limite de gás"
-  },
-  "gasOption": {
-    "message": "Opção de gás"
   },
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
@@ -3508,9 +3478,6 @@
   "layer1Fees": {
     "message": "Taxas de camada 1"
   },
-  "layer2Fees": {
-    "message": "Taxas da Layer 2"
-  },
   "learnHow": {
     "message": "Saiba como"
   },
@@ -3772,9 +3739,6 @@
   },
   "maxFeeTooltip": {
     "message": "Uma taxa máxima fornecida para pagar pela transação."
-  },
-  "maxPriorityFee": {
-    "message": "Taxa de prioridade máxima"
   },
   "medium": {
     "message": "Mercado"
@@ -4140,9 +4104,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Taxa de rede"
-  },
-  "networkIsBusy": {
-    "message": "A rede está ocupada. Os preços de gás estão altos e as estimativas estão menos exatas."
   },
   "networkMenu": {
     "message": "Menu da rede"

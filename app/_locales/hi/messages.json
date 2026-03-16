@@ -408,9 +408,6 @@
     "message": "$1 नेटवर्क के लिए इन मूल्यों को मेरे डिफॉल्ट के रूप में सहेजें।",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "एडवांस्ड गैस फ़ीस"
-  },
   "advancedGasPriceModalTitle": {
     "message": "एडवांस्ड नेटवर्क फीस"
   },
@@ -1229,14 +1226,6 @@
   "cancelPopoverTitle": {
     "message": "ट्रांसेक्शन कैंसिल करें"
   },
-  "cancelSpeedUpLabel": {
-    "message": "यह गैस शुल्क मूल को $1 करेगा।",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "लेनदेन को $1 करने के लिए गैस शुल्क में कम से कम 10% की वृद्धि होनी चाहिए ताकि नेटवर्क द्वारा इसे मान्यता प्राप्त हो सके।",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelled": {
     "message": "कैंसिल किया गया"
   },
@@ -1914,10 +1903,6 @@
   "dappSuggestedShortLabel": {
     "message": "साइट"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 ने इस प्राइस की सलाह दी है।",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "MetaMask स्वैप के साथ बचत करें और कमाएँ"
   },
@@ -2352,9 +2337,6 @@
   "editAddressNickname": {
     "message": "एड्रेस उपनाम बदलें"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "रद्दीकरण गैस शुल्क संपादित करें"
-  },
   "editContact": {
     "message": "कॉन्टेक्ट बदलें"
   },
@@ -2413,9 +2395,6 @@
   "editGasPriceTooltip": {
     "message": "ट्रांसेक्शन सबमिट करते समय इस नेटवर्क को \"गैस प्राइस\" फील्ड की आवश्यकता होती है। गैस प्राइस वह अमाउंट है जो आप प्रति यूनिट गैस के लिए पेमेंट करेंगे।"
   },
-  "editGasSubTextFeeLabel": {
-    "message": "अधिकतम फ़ीस:"
-  },
   "editGasTitle": {
     "message": "प्राथमिकता बदलें"
   },
@@ -2442,9 +2421,6 @@
   },
   "editPermissions": {
     "message": "अनुमतियाँ बदलें"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "स्पीड अप गैस फी संपादित करें"
   },
   "editSpendingCap": {
     "message": "खर्च करने की लिमिट बदलें"
@@ -2715,9 +2691,6 @@
   "fast": {
     "message": "तेज़"
   },
-  "feeDetails": {
-    "message": "फ़ीस का ब्यौरा"
-  },
   "fieldRequired": {
     "message": "$1 ज़रूरी है"
   },
@@ -2849,9 +2822,6 @@
   },
   "gasLimitV2": {
     "message": "गैस लिमिट"
-  },
-  "gasOption": {
-    "message": "गैस विकल्प"
   },
   "gasPrice": {
     "message": "गैस प्राइस"
@@ -3508,9 +3478,6 @@
   "layer1Fees": {
     "message": "लेयर 1 शुल्क"
   },
-  "layer2Fees": {
-    "message": "परत 2 फ़ीस"
-  },
   "learnHow": {
     "message": "अधिक जानें"
   },
@@ -3772,9 +3739,6 @@
   },
   "maxFeeTooltip": {
     "message": "ट्रांसेक्शन के भुगतान के लिए अधिकतम शुल्क प्रदान किया गया।"
-  },
-  "maxPriorityFee": {
-    "message": "अधिकतम प्रायोरिटी फी"
   },
   "medium": {
     "message": "मार्केट"
@@ -4140,9 +4104,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "नेटवर्क फीस"
-  },
-  "networkIsBusy": {
-    "message": "नेटवर्क व्यस्त है। गैस कीमतें अधिक हैं और आकलन सटीक नहीं है।"
   },
   "networkMenu": {
     "message": "नेटवर्क मेन्यू"

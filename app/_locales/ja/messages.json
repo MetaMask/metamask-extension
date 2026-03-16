@@ -408,9 +408,6 @@
     "message": "これらの値を$1ネットワークのデフォルトとして保存する",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "ガス代の高度な設定"
-  },
   "advancedGasPriceModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
@@ -1229,14 +1226,6 @@
   "cancelPopoverTitle": {
     "message": "トランザクションのキャンセル"
   },
-  "cancelSpeedUpLabel": {
-    "message": "このガス代が元のガス代に$1されます。",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "トランザクションを$1するには、ネットワークに認識されるようガス代を10%以上増やす必要があります。",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelled": {
     "message": "キャンセル済み"
   },
@@ -1914,10 +1903,6 @@
   "dappSuggestedShortLabel": {
     "message": "サイト"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1はこの価格を推奨しています。",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "MetaMaskスワップで貯めて収益化"
   },
@@ -2352,9 +2337,6 @@
   "editAddressNickname": {
     "message": "アドレスのニックネームを編集"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "キャンセル用のガス代を変更"
-  },
   "editContact": {
     "message": "連絡先を編集"
   },
@@ -2413,9 +2395,6 @@
   "editGasPriceTooltip": {
     "message": "このネットワークは、トランザクションの送信時に「ガス価格」フィールドが必要です。ガス価格は、ガス1単位あたりに支払う金額です。"
   },
-  "editGasSubTextFeeLabel": {
-    "message": "最大手数料:"
-  },
   "editGasTitle": {
     "message": "優先度を編集"
   },
@@ -2442,9 +2421,6 @@
   },
   "editPermissions": {
     "message": "アクセス許可を編集"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "スピードアップ用のガス代を変更"
   },
   "editSpendingCap": {
     "message": "使用上限の編集"
@@ -2715,9 +2691,6 @@
   "fast": {
     "message": "高速"
   },
-  "feeDetails": {
-    "message": "手数料の詳細"
-  },
   "fieldRequired": {
     "message": "$1は必須項目です"
   },
@@ -2849,9 +2822,6 @@
   },
   "gasLimitV2": {
     "message": "ガスリミット"
-  },
-  "gasOption": {
-    "message": "ガスのオプション"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
@@ -3508,9 +3478,6 @@
   "layer1Fees": {
     "message": "レイヤー1手数料"
   },
-  "layer2Fees": {
-    "message": "レイヤー 2 手数料"
-  },
   "learnHow": {
     "message": "方法"
   },
@@ -3772,9 +3739,6 @@
   },
   "maxFeeTooltip": {
     "message": "トランザクションの支払いに提供される最大手数料"
-  },
-  "maxPriorityFee": {
-    "message": "最大優先手数料"
   },
   "medium": {
     "message": "マーケット"
@@ -4140,9 +4104,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "ネットワーク手数料"
-  },
-  "networkIsBusy": {
-    "message": "ネットワークが混雑しています。ガス代が高く、見積もりはあまり正確ではありません。"
   },
   "networkMenu": {
     "message": "ネットワークメニュー"
