@@ -33,12 +33,16 @@ async function mockSegment(mockServer: Mockttp) {
 describe('Port Stream Chunking', function () {
   it('can load the wallet UI with a huge background state (~128MB)', async function () {
     // add MOCK_TRANSACTION_BY_TYPE.HUGE to an array a bunch of times
-    const hugeTx: TransactionMeta = {
+    const hugeTx: TransactionMeta & {
+      loadingDefaults: boolean;
+      testingNoise: string;
+    } = {
       id: '4243712234858512',
       time: 1589314601567,
       status: TransactionStatus.confirmed,
       chainId: '0x5' as const,
       networkClientId: 'goerli',
+      loadingDefaults: false,
       txParams: {
         from: '0xabca64466f257793eaa52fcfff5066894b76a149' as `0x${string}`,
         to: '0xefg5bc4e8f1f969934d773fa67da095d2e491a97' as `0x${string}`,
@@ -50,6 +54,7 @@ describe('Port Stream Chunking', function () {
       },
       origin: 'metamask',
       type: TransactionType.simpleSend,
+      testingNoise: '😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀',
     };
     const largeTransactions = Array.from({ length: 40 }, () => hugeTx);
 
