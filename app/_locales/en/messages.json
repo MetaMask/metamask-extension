@@ -2416,6 +2416,9 @@
   "downArrow": {
     "message": "down arrow"
   },
+  "download": {
+    "message": "Download"
+  },
   "downloadAppDescription": {
     "message": "Bring MetaMask with you everywhere you go. Turn on Face ID so you always have access, even if you forget your password."
   },
@@ -4155,9 +4158,6 @@
   },
   "musdBuyMusd": {
     "message": "Buy mUSD"
-  },
-  "musdClaimActivityTitle": {
-    "message": "Claim mUSD bonus"
   },
   "musdClaimClaimingTo": {
     "message": "Claiming to",
@@ -8141,7 +8141,7 @@
     "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
-    "message": "Error in retrieving state logs."
+    "message": "Error in retrieving state logs, please try again later."
   },
   "stateLogFileName": {
     "message": "MetaMask state logs"
@@ -8151,6 +8151,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "stateLogsModalDescription": {
+    "message": "State logs can help us debug issues you might encounter. Only send it to MetaMask for support, because state logs contain your public account address and transactions."
   },
   "status": {
     "message": "Status"
@@ -8982,6 +8985,9 @@
   "unableToConnectTo": {
     "message": "Unable to connect to $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
+  },
+  "unableToDownload": {
+    "message": "Unable to download"
   },
   "unapproved": {
     "message": "Unapproved"
