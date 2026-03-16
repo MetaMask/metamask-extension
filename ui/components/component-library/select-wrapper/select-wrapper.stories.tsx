@@ -1,5 +1,5 @@
 import React from 'react';
-import README from "./README.mdx";
+import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
@@ -17,7 +17,7 @@ export default {
     docs: {
       page: README,
     },
-    },
+  },
   argTypes: {
     placeholder: {
       control: {

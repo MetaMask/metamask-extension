@@ -1,6 +1,6 @@
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/modules/selectors';
+import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
@@ -12,7 +12,7 @@ jest.mock('../../../store/controller-actions/transaction-controller', () => ({
   isAtomicBatchSupported: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/selectors');
+jest.mock('../../../../shared/lib/selectors');
 
 jest.mock('../../../ducks/bridge/selectors', () => ({
   ...jest.requireActual('../../../ducks/bridge/selectors'),

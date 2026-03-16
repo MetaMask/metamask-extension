@@ -26,7 +26,7 @@ import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
+} from '../../../../../../shared/lib/selectors/networks';
 import {
   getCurrentNetwork,
   getIpfsGateway,
@@ -72,7 +72,7 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../../../../../ducks/metamask/metamask';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 // TODO: Remove restricted import
 import {
   addUrlProtocolPrefix,

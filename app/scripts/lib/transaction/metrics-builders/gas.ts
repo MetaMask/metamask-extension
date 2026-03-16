@@ -5,8 +5,8 @@ import {
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import { MetaMetricsEventTransactionEstimateType } from '../../../../../shared/constants/metametrics';
-import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
-import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
+import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
+import { isEIP1559Transaction } from '../../../../../shared/lib/transaction.utils';
 import type { TransactionMetricsBuilder } from './types';
 
 export const getGasMetricsProperties: TransactionMetricsBuilder = async ({

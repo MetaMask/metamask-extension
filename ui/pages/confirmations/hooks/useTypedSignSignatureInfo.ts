@@ -6,7 +6,7 @@ import {
   isSignatureTransactionType,
 } from '../utils';
 import { SignatureRequestType } from '../types/confirm';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { TypedSignSignaturePrimaryTypes } from '../constants';

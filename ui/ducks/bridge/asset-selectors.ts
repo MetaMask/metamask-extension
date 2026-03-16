@@ -17,13 +17,13 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { toAssetId } from '../../../shared/lib/asset-utils';
+import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getCurrencyRateControllerCurrencyRates,
   getTokenBalancesControllerTokenBalances,
   getTokenRatesControllerMarketData,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import { getMultichainBalances } from '../../selectors/multichain';
 import {
   getAccountAssets,
@@ -33,7 +33,7 @@ import {
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
-import { getMaybeHexChainId, isTronEnergyOrBandwidthResource } from './utils';
+import { getMaybeHexChainId } from './utils';
 
 const createSelector = untypedCreateSelector.withTypes<BridgeAppState>();
 
@@ -336,11 +336,8 @@ const getBridgeAssetsForAccountGroupId = createSelector(
     }));
 
     const nonEvmAssetsWithFiatBalances = nonEvmAssetsWithBalance
-      // Filter out Tron Energy and Bandwidth resources
-      .filter(
-        ({ chainId, symbol }: BridgeToken) =>
-          !isTronEnergyOrBandwidthResource(chainId, symbol),
-      )
+      // Filter out Tron special assets (resources, staking state, etc.)
+      .filter((token: BridgeToken) => !isTronSpecialAsset(token.assetId))
       .map((asset) => ({
         ...asset,
         tokenFiatAmount: new BigNumber(asset.balance ?? '0')

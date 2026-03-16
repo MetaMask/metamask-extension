@@ -15,7 +15,11 @@ import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  loginWithBalanceValidation,
+} from '../../page-objects/flows/login.flow';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 
 async function mockNotificationsEndpoint(
   mockServer: Mockttp,
@@ -128,7 +132,7 @@ describe('Dapp interactions', function () {
         await homepage.checkPageIsLoaded();
 
         // Assert Connection
-        await homepage.headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
@@ -162,11 +166,8 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homepage = new Homepage(driver);
-        await homepage.headerNavbar.lockMetaMask();
-
+        await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
 
         // Attempt interaction with DApp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

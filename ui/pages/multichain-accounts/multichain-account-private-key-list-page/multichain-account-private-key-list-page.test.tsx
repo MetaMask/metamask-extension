@@ -7,7 +7,7 @@ import configureStore from '../../../store/store';
 import { MultichainAccountPrivateKeyListPage } from './multichain-account-private-key-list-page';
 
 const mockNavigate = jest.fn();
-const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
 const backButtonTestId = 'multichain-account-address-list-page-back-button';
 
 // Use actual group IDs from mock-state.json
@@ -16,7 +16,7 @@ const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  useParams: () => mockUseParams(),
+  useLocation: () => mockUseLocation(),
 }));
 
 describe('MultichainAccountAddressListPage', () => {
@@ -25,8 +25,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('handles back button click', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
 
     const store = configureStore({
@@ -44,8 +44,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('displays the proper account group name', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
     const store = configureStore({
       metamask: {
@@ -57,8 +57,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('renders fallback account name when no account is found', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: 'invalid-group-id',
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent('invalid-group-id')}`,
     });
     const store = configureStore({
       metamask: {
@@ -71,8 +71,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('renders warning banner', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
     const store = configureStore({
       metamask: {

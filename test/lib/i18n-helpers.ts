@@ -1,4 +1,4 @@
-import { getMessage } from '../../shared/modules/i18n';
+import { getMessage } from '../../shared/lib/i18n';
 import en from '../../app/_locales/en/messages.json';
 
 const enMessages = en;

@@ -27,17 +27,20 @@ function hasInternalEntry(map: WeakRefObjectMap<TestRecord>, key: string) {
   ).map.has(key);
 }
 
-async function collectWithRetries(
+async function collectWithinTimeout(
   weakRef: WeakRef<object>,
-  retries = 100,
+  timeoutMs = 15_000,
 ): Promise<boolean> {
-  for (let i = 0; i < retries; i++) {
+  const deadline = Date.now() + timeoutMs;
+
+  do {
     global.gc?.();
     await new Promise((resolve) => setImmediate(resolve));
     if (weakRef.deref() === undefined) {
       return true;
     }
-  }
+  } while (Date.now() < deadline);
+
   return false;
 }
 
@@ -113,7 +116,7 @@ describe('WeakRefObjectMap', () => {
       const weakRef = new WeakRef(staleTarget);
       staleTarget = null;
 
-      const collected = await collectWithRetries(weakRef);
+      const collected = await collectWithinTimeout(weakRef);
       if (!collected) {
         // Keep this test resilient in runtimes where collection is delayed.
         expect(map.has('stale')).toBe(true);
@@ -211,6 +214,20 @@ describe('WeakRefObjectMap', () => {
     it('[Symbol.iterator] behaves like entries', () => {
       const iterator = map[Symbol.iterator]();
       expect(Array.from(iterator)).toEqual(Array.from(map.entries()));
+    });
+
+    it('iterators expose Symbol.dispose and calling it does not throw', () => {
+      const entriesIterator = map.entries();
+      const keysIterator = map.keys();
+      const valuesIterator = map.values();
+
+      expect(typeof entriesIterator[Symbol.dispose]).toBe('function');
+      expect(typeof keysIterator[Symbol.dispose]).toBe('function');
+      expect(typeof valuesIterator[Symbol.dispose]).toBe('function');
+
+      expect(() => entriesIterator[Symbol.dispose]()).not.toThrow();
+      expect(() => keysIterator[Symbol.dispose]()).not.toThrow();
+      expect(() => valuesIterator[Symbol.dispose]()).not.toThrow();
     });
 
     it('uses thisArg in forEach callback', () => {
@@ -338,7 +355,7 @@ describe('WeakRefObjectMap with garbage collection', () => {
       const weakRef = new WeakRef(staleTarget);
       staleTarget = null;
 
-      const collected = await collectWithRetries(weakRef);
+      const collected = await collectWithinTimeout(weakRef);
       if (!collected) {
         expect(gcMap.size).toBe(2);
         return;

@@ -16,10 +16,6 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  CONTACT_LIST_ROUTE,
-  CONTACT_ADD_ROUTE,
-  CONTACT_EDIT_ROUTE,
-  CONTACT_VIEW_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
@@ -70,7 +66,6 @@ import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
-import ContactListTab from './contact-list-tab';
 import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
@@ -102,6 +97,7 @@ class SettingsPage extends PureComponent {
     backRoute: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
+    currentSnapId: PropTypes.string,
     hasSubscribedToShield: PropTypes.bool,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
@@ -395,6 +391,7 @@ class SettingsPage extends PureComponent {
     const {
       navigate,
       currentPath,
+      currentSnapId,
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
@@ -412,7 +409,7 @@ class SettingsPage extends PureComponent {
             style={{ '--size': '20px' }}
           />
         ),
-        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(id)}`,
+        key: `${SNAP_SETTINGS_ROUTE}?snapId=${encodeURIComponent(id)}`,
       };
     });
 
@@ -432,11 +429,6 @@ class SettingsPage extends PureComponent {
         content: t('backupAndSync'),
         icon: <Icon name={IconName.SecurityTime} />,
         key: BACKUPANDSYNC_ROUTE,
-      },
-      {
-        content: t('contacts'),
-        icon: <Icon name={IconName.Book} />,
-        key: CONTACT_LIST_ROUTE,
       },
       {
         content: t('securityAndPrivacy'),
@@ -486,12 +478,17 @@ class SettingsPage extends PureComponent {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;
           }
+
           if (
-            key === CONTACT_LIST_ROUTE &&
-            currentPath.includes(CONTACT_LIST_ROUTE)
+            currentPath === SNAP_SETTINGS_ROUTE &&
+            key.startsWith(`${SNAP_SETTINGS_ROUTE}?`)
           ) {
-            return true;
+            const keySnapId = new URLSearchParams(key.split('?')[1]).get(
+              'snapId',
+            );
+            return keySnapId === currentSnapId;
           }
+
           return matchPath(key, currentPath);
         }}
         onSelect={(key) => {
@@ -523,7 +520,7 @@ class SettingsPage extends PureComponent {
           element={<InfoTab />}
         />
         <Route
-          path={`${toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}/:snapId`}
+          path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
           element={<SnapSettingsRenderer />}
         />
         <Route
@@ -591,22 +588,6 @@ class SettingsPage extends PureComponent {
             element={<DeveloperOptionsTab />}
           />
         )}
-        <Route
-          path={toRelativeRoutePath(CONTACT_LIST_ROUTE, SETTINGS_ROUTE)}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={toRelativeRoutePath(CONTACT_ADD_ROUTE, SETTINGS_ROUTE)}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={`${toRelativeRoutePath(CONTACT_EDIT_ROUTE, SETTINGS_ROUTE)}/:id`}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={`${toRelativeRoutePath(CONTACT_VIEW_ROUTE, SETTINGS_ROUTE)}/:id`}
-          element={<ContactListTab />}
-        />
         <Route
           path={toRelativeRoutePath(
             NOTIFICATIONS_SETTINGS_ROUTE,

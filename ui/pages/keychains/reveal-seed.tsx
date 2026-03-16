@@ -9,7 +9,7 @@ import {
   TextVariant,
   TextColor,
 } from '@metamask/design-system-react';
-import { getErrorMessage } from '../../../shared/modules/error';
+import { getErrorMessage } from '../../../shared/lib/error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,

@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
@@ -16,25 +16,25 @@ describe('Send Tron', function () {
   it('it should be possible to send TRX', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        // Switch to Tron network
+        // Switch to Tron via the UI. Enabling it through fixtures causes a redirect
+        // back to the default network because the snap is not yet initialized
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
         const nonEvmHomepage = new NonEvmHomepage(driver);
+        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed(
+          '6.072',
+          'TRX',
+        );
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

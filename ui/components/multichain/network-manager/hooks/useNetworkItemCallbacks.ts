@@ -8,7 +8,7 @@ import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/c
 import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
-} from '../../../../../shared/modules/network.utils';
+} from '../../../../../shared/lib/network.utils';
 import { openWindow } from '../../../../helpers/utils/window';
 import { setEditedNetwork, showModal } from '../../../../store/actions';
 import {

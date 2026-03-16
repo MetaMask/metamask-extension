@@ -1,7 +1,7 @@
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { maskObject } from '../../../shared/modules/object.utils';
+import { maskObject } from '../../../shared/lib/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
 import { FixtureExtensionStore } from './stores/fixture-extension-store';

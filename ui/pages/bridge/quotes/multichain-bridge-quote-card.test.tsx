@@ -7,6 +7,7 @@ import {
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
+import { act, fireEvent, render } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
@@ -15,19 +16,23 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
-import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
+import {
+  MultichainBridgeQuoteCard,
+  MultichainBridgeQuoteCardSkeleton,
+} from './multichain-bridge-quote-card';
 
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),
 }));
 
 const mockUseRewards = useRewards as jest.MockedFunction<typeof useRewards>;
+const mockOnOpenPriceImpactWarningModal = jest.fn();
 
 describe('MultichainBridgeQuoteCard', () => {
   const defaultUseRewardsReturn = {
@@ -42,6 +47,19 @@ describe('MultichainBridgeQuoteCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseRewards.mockReturnValue(defaultUseRewardsReturn);
+  });
+
+  it('renders a four-row skeleton while the quote card is loading', () => {
+    const { getByTestId, getAllByTestId } = render(
+      <MultichainBridgeQuoteCardSkeleton />,
+    );
+
+    expect(
+      getByTestId('multichain-bridge-quote-card-loading'),
+    ).toBeInTheDocument();
+    expect(
+      getAllByTestId('multichain-bridge-quote-card-loading-row'),
+    ).toHaveLength(4);
   });
 
   it('should render the recommended quote (no MM fee)', async () => {
@@ -114,6 +132,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />
         <BridgeCTAInfoText />
@@ -210,6 +229,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />
         <BridgeCTAInfoText />
@@ -292,6 +312,7 @@ describe('MultichainBridgeQuoteCard', () => {
       <MultichainBridgeQuoteCard
         onOpenSlippageModal={() => {}}
         onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
         selectedDestinationAccount={null}
       />,
       configureStore(mockStore),
@@ -322,6 +343,7 @@ describe('MultichainBridgeQuoteCard', () => {
       <MultichainBridgeQuoteCard
         onOpenSlippageModal={() => {}}
         onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
         selectedDestinationAccount={null}
       />,
       configureStore(mockStore),
@@ -351,6 +373,7 @@ describe('MultichainBridgeQuoteCard', () => {
       <MultichainBridgeQuoteCard
         onOpenSlippageModal={() => {}}
         onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
         selectedDestinationAccount={null}
       />,
       configureStore(mockStore),
@@ -358,6 +381,60 @@ describe('MultichainBridgeQuoteCard', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  // @ts-expect-error: each is a valid test function in jest
+  it.each(['.26', '.06'])(
+    'should render price impact warnings: %s',
+    async (priceImpact: string) => {
+      const mockStore = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+            ],
+          },
+        },
+        bridgeStateOverrides: {
+          quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              priceData: {
+                ...quote.quote.priceData,
+                priceImpact,
+              },
+            },
+          })) as unknown as QuoteResponse[],
+          quotesLastFetched: Date.now() - 5000,
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      });
+
+      const { getByText, getByTestId } = renderWithProvider(
+        <>
+          <MultichainBridgeQuoteCard
+            onOpenSlippageModal={() => {}}
+            onOpenRecipientModal={() => {}}
+            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            selectedDestinationAccount={null}
+          />
+        </>,
+        configureStore(mockStore),
+      );
+
+      const priceImpactText = getByText(messages.bridgePriceImpact.message);
+      expect(priceImpactText).toBeInTheDocument();
+      expect(priceImpactText.parentNode?.nextSibling).toMatchSnapshot();
+      expect(getByTestId('price-impact-warning-button')).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(getByTestId('price-impact-warning-button'));
+      });
+      expect(mockOnOpenPriceImpactWarningModal).toHaveBeenCalledTimes(1);
+    },
+  );
 
   describe('rewards functionality', () => {
     const createMockStoreWithQuote = () =>
@@ -433,6 +510,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -453,6 +531,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -474,6 +553,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -504,6 +584,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -527,6 +608,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -552,6 +634,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -584,6 +667,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -670,6 +754,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />
         <BridgeCTAInfoText />

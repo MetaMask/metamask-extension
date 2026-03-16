@@ -1,5 +1,6 @@
 import LoginPage from '../pages/login-page';
 import HomePage from '../pages/home/homepage';
+import HeaderNavbar from '../pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
@@ -47,4 +48,20 @@ export const loginWithBalanceValidation = async (
   } else {
     await homePage.checkExpectedBalanceIsDisplayed(value);
   }
+};
+
+/**
+ * Locks MetaMask and waits for the login (unlock) page to be loaded.
+ * Use this flow when you need to lock the wallet and then interact with the login screen.
+ *
+ * @param driver - The webdriver instance.
+ */
+export const lockAndWaitForLoginPage = async (
+  driver: Driver,
+): Promise<void> => {
+  console.log('Lock MetaMask and wait for login page');
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.lockMetaMask();
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
 };

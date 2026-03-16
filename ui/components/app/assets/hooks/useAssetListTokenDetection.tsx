@@ -14,7 +14,7 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
-} from '../../../../../shared/modules/selectors/networks';
+} from '../../../../../shared/lib/selectors/networks';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

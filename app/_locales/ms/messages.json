@@ -382,9 +382,6 @@
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Kenalan Baru"
-  },
   "newContract": {
     "message": "Kontrak Baru"
   },
@@ -473,9 +470,6 @@
   },
   "removeAccount": {
     "message": "Alih keluar akaun"
-  },
-  "removeAccountDescription": {
-    "message": "Akaun ini akan dibuang daripada dompet anda. Sila pastikan anda mempunyai ungkapan benih asal atau kunci persendirian untuk akaun yang diimport ini sebelum meneruskan. Anda boleh import atau cipta akaun semula daripada juntai bawah akaun."
   },
   "required": {
     "message": "Diwajibkan"
@@ -639,12 +633,6 @@
   },
   "usedByClients": {
     "message": "Digunakan oleh pelbagai klien berbeza"
-  },
-  "userName": {
-    "message": "Nama pengguna"
-  },
-  "viewContact": {
-    "message": "Lihat Kenalan"
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"

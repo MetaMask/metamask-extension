@@ -19,7 +19,12 @@ describe('Swap tests', function (this: Suite) {
         ),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$225,730.11',
+        );
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -98,7 +103,12 @@ describe('Swap tests', function (this: Suite) {
         true,
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$225,730.11',
+        );
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
