@@ -78,6 +78,7 @@ type PerpsActionName =
   | 'perpsGetAvailableDexs'
   | 'perpsRefreshEligibility'
   | 'perpsStartEligibilityMonitoring'
+  | 'perpsStopEligibilityMonitoring'
   | 'perpsToggleTestnet'
   | 'perpsSaveTradeConfiguration'
   | 'perpsGetTradeConfiguration'
@@ -179,6 +180,8 @@ function getApi(controller: PerpsController): PerpsBackgroundApi {
     perpsRefreshEligibility: controller.refreshEligibility.bind(controller),
     perpsStartEligibilityMonitoring:
       controller.startEligibilityMonitoring.bind(controller),
+    perpsStopEligibilityMonitoring:
+      controller.stopEligibilityMonitoring.bind(controller),
 
     // -- Toggle --
     perpsToggleTestnet: controller.toggleTestnet.bind(controller),
