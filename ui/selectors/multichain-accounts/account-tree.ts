@@ -187,7 +187,9 @@ export const getNormalizedGroupsMetadata = createSelector(
  * @param address - The address of the account to find.
  * @returns The wallet ID and name for the account, or null if not found.
  */
-export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(50)(
+export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(
+  50,
+)(
   getWalletsWithAccounts,
   (_, address: string) => address,
   (walletsWithAccounts: ConsolidatedWallets, address: string) => {
@@ -373,7 +375,9 @@ export const getMultichainAccountsToScopesMap = createSelector(
  * @param scope - The CAIP chain ID scope to find.
  * @returns The CAIP-25 account ID, or undefined if not found.
  */
-export const getCaip25IdByAccountGroupAndScope = createParameterizedSelector(30)(
+export const getCaip25IdByAccountGroupAndScope = createParameterizedSelector(
+  30,
+)(
   getMultichainAccountsToScopesMap,
   (_state, accountGroup: AccountGroupObject, _scope: CaipChainId) =>
     accountGroup,
@@ -600,7 +604,7 @@ export const getMultichainAccountsByWalletId = createSelector(
  * @param groupId - The ID of the account group.
  * @returns Array of internal accounts in the specified group, or empty array if not found.
  */
-export const getInternalAccountsFromGroupById = createSelector(
+export const getInternalAccountsFromGroupById = createParameterizedSelector(20)(
   getAccountTree,
   getInternalAccountsObject,
   (_, groupId: AccountGroupId) => groupId,
@@ -758,24 +762,23 @@ export const getNetworkAddressCount = createParameterizedSelector(20)(
  * @returns The address to be used as seed for the icon generation.
  * @throws If no accounts are found in the specified group.
  */
-export const getIconSeedAddressByAccountGroupId = createParameterizedSelector(20)(
-  [getInternalAccountsFromGroupById],
-  (accounts: InternalAccount[]): string => {
-    if (!accounts || accounts.length === 0) {
-      return '';
-    }
+export const getIconSeedAddressByAccountGroupId = createParameterizedSelector(
+  20,
+)([getInternalAccountsFromGroupById], (accounts: InternalAccount[]): string => {
+  if (!accounts || accounts.length === 0) {
+    return '';
+  }
 
-    for (const account of accounts) {
-      if (isEvmAccountType(account.type)) {
-        // Prefer an EVM account if available
-        return account.address;
-      }
+  for (const account of accounts) {
+    if (isEvmAccountType(account.type)) {
+      // Prefer an EVM account if available
+      return account.address;
     }
+  }
 
-    // In case there are no EVM accounts in the group. We return the first account's address.
-    return accounts[0].address;
-  },
-);
+  // In case there are no EVM accounts in the group. We return the first account's address.
+  return accounts[0].address;
+});
 
 /**
  * Get the address and scopes for the account group that matches the user's default address scope
