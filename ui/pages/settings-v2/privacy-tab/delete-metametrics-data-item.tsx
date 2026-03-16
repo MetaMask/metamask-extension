@@ -29,7 +29,7 @@ export const DeleteMetametricsDataItem = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeletionInProgressModal, setShowDeletionInProgressModal] =
     useState(false);
-  const [showDataDeletionErrorToast, setshowDataDeletionErrorToast] =
+  const [showDataDeletionErrorToast, setShowDataDeletionErrorToast] =
     useState(false);
   const [showDataDeletionSuccessToast, setShowDataDeletionSuccessToast] =
     useState(false);
@@ -73,7 +73,7 @@ export const DeleteMetametricsDataItem = () => {
         <DeleteMetametricsModal
           onClose={() => setShowDeleteModal(false)}
           onSuccess={() => setShowDataDeletionSuccessToast(true)}
-          onError={() => setshowDataDeletionErrorToast(true)}
+          onError={() => setShowDataDeletionErrorToast(true)}
         />
       )}
       {showDeletionInProgressModal && (
@@ -89,7 +89,7 @@ export const DeleteMetametricsDataItem = () => {
             }
             text={t('deleteMetaMetricsDataErrorToast')}
             description={t('deleteMetaMetricsDataErrorDesc')}
-            onClose={() => setshowDataDeletionErrorToast(false)}
+            onClose={() => setShowDataDeletionErrorToast(false)}
             borderRadius={BorderRadius.LG}
             textClassName="text-base"
             data-testid="delete-metametrics-data-error-toast"
