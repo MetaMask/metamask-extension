@@ -2554,52 +2554,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setSmartAccountRequestsFromDapps', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setPreference with smartAccountRequestsFromDapps and updates state', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        setPreference: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setSmartAccountRequestsFromDapps(true));
-
-      const setPreferenceCall = background.getApi().setPreference;
-      expect(setPreferenceCall.callCount).toStrictEqual(1);
-      expect(setPreferenceCall.getCall(0).args).toStrictEqual([
-        'smartAccountRequestsFromDapps',
-        true,
-      ]);
-    });
-
-    it('calls setPreference with false', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        setPreference: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setSmartAccountRequestsFromDapps(false));
-
-      const setPreferenceCall = background.getApi().setPreference;
-      expect(setPreferenceCall.callCount).toStrictEqual(1);
-      expect(setPreferenceCall.getCall(0).args).toStrictEqual([
-        'smartAccountRequestsFromDapps',
-        false,
-      ]);
-    });
-  });
-
   describe('#setCompletedOnboarding', () => {
     afterEach(() => {
       sinon.restore();

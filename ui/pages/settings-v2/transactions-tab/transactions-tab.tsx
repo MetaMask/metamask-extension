@@ -19,9 +19,9 @@ import {
 } from '../../../selectors';
 import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
 import {
+  setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
   setSecurityAlertsEnabled,
-  setSmartAccountRequestsFromDapps,
   setSmartTransactionsPreferenceEnabled,
   setUseExternalNameSources,
   setUseTransactionSimulations,
@@ -103,8 +103,8 @@ const SmartAccountRequestsFromDappsItem = createToggleItem({
   titleKey: 'smartAccountRequestsFromDapps',
   descriptionKey: 'smartAccountRequestsFromDappsDescription',
   selector: (state: MetaMaskReduxState) =>
-    Boolean(getPreferences(state)?.smartAccountRequestsFromDapps),
-  action: setSmartAccountRequestsFromDapps,
+    !getPreferences(state)?.dismissSmartAccountSuggestionEnabled,
+  action: (value: boolean) => setDismissSmartAccountSuggestionEnabled(!value),
   dataTestId: 'transactions-smart-account-requests-toggle',
 });
 
