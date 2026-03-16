@@ -17,6 +17,7 @@ export const SETTINGS_ROUTE = '/settings';
 export const SETTINGS_V2_ROUTE = '/settings-v2';
 export const ASSETS_ROUTE = '/settings-v2/assets';
 export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
+export const TRANSACTIONS_ROUTE = '/settings-v2/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings-v2/preferences-and-display';
 export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
@@ -317,17 +318,17 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACTS_VIEW_ROUTE}/:address`,
+    path: `${CONTACTS_VIEW_ROUTE}/:chainId/:address`,
     label: 'Contact Details Page',
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACTS_EDIT_ROUTE}/:address`,
+    path: `${CONTACTS_EDIT_ROUTE}/:chainId/:address`,
     label: 'Edit Contact Page',
     trackInAnalytics: true,
   },
   {
-    path: `${SNAP_SETTINGS_ROUTE}/:snapId`,
+    path: SNAP_SETTINGS_ROUTE,
     label: 'Snap Settings Page',
     trackInAnalytics: true,
   },
@@ -446,7 +447,7 @@ export const ROUTES = [
   },
   { path: SNAPS_ROUTE, label: 'Snaps List Page', trackInAnalytics: true },
   {
-    path: `${SNAPS_VIEW_ROUTE}/:snapId`,
+    path: SNAPS_VIEW_ROUTE,
     label: 'Snap View Page',
     trackInAnalytics: true,
   },
