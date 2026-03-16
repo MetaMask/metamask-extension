@@ -109,7 +109,8 @@ jest.mock('../../providers/perps', () => ({
     account: { getCachedData: () => null, pushData: jest.fn() },
     markets: { getCachedData: () => [], pushData: jest.fn() },
     prices: {
-      subscribe: (...args: unknown[]) => mockPriceSubscribe(...args),
+      subscribe: (...args: [Parameters<typeof mockPriceSubscribe>[0]]) =>
+        mockPriceSubscribe(...args),
       getCachedData: () => [],
     },
     setOptimisticTPSL: jest.fn(),
