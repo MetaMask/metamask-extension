@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "区块浏览器链接已复制"
   },
-  "bridgeCalculatingAmount": {
-    "message": "正在计算……"
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "您需要在您的硬件钱包上确认 2 笔交易："
   },

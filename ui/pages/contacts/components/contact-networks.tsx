@@ -82,7 +82,7 @@ export const ContactNetworks = ({
           size={AvatarNetworkSize.Sm}
           name={displayName}
           src={iconSrc}
-          className="rounded-xl"
+          className="rounded-md"
         />
         <Text
           variant={TextVariant.BodyMd}

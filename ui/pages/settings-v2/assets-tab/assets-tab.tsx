@@ -12,9 +12,9 @@ import {
   setShowNativeTokenAsMainBalancePreference,
 } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
+import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import { LocalCurrencyItem } from './local-currency-item';
-import { DisplayNftMediaToggleItem } from './display-nft-media-item';
-import { AutodetectNftsToggleItem } from './autodetect-nfts-item';
 
 const ShowNetworkTokenToggleItem = createToggleItem({
   name: 'ShowNetworkTokenToggleItem',

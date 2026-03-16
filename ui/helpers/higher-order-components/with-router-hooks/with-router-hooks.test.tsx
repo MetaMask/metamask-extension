@@ -25,13 +25,9 @@ jest.mock('react-router-dom', () => ({
   useParams: () => getMockUseParams(),
 }));
 
-type BaseTestComponentProps = {
-  testProp?: string;
-};
+type TestComponentProps = RouterHooksProps;
 
-type TestComponentProps = BaseTestComponentProps & RouterHooksProps;
-
-const TestComponent: React.FC<TestComponentProps> = ({
+const TestComponent: React.FC<TestComponentProps & { testProp?: string }> = ({
   navigate,
   location,
   params,
@@ -83,7 +79,7 @@ describe('withRouterHooks HOC', () => {
   it('sets correct displayName for debugging', () => {
     const testComponentWithDisplayName: React.FC<TestComponentProps> = (
       props,
-    ) => <div>{props.testProp}</div>;
+    ) => <div>{props.navigate?.toString()}</div>;
     testComponentWithDisplayName.displayName = 'TestComponentWithDisplayName';
     const WrappedComponent = withRouterHooks(testComponentWithDisplayName);
     expect(WrappedComponent.displayName).toBe(
@@ -134,9 +130,9 @@ describe('withRouterHooks HOC', () => {
       // verifies that useShallowEqualityCheck stabilizes references when values match
       const paramsReferences: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<
-        TestComponentProps & { renderCount?: number }
-      > = ({ params }) => {
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        params,
+      }) => {
         paramsReferences.push(params);
         return <div>Memoization test</div>;
       };
@@ -144,14 +140,14 @@ describe('withRouterHooks HOC', () => {
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
       const { rerender } = render(
         <MemoryRouter>
-          <WrappedComponent renderCount={1} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
       // Force re-render with different prop - getMockUseParams() returns new object
       rerender(
         <MemoryRouter>
-          <WrappedComponent renderCount={2} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
@@ -164,9 +160,9 @@ describe('withRouterHooks HOC', () => {
       // Complementary test: verify memoization correctly detects value changes
       const paramsReferences: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<
-        TestComponentProps & { renderCount?: number }
-      > = ({ params }) => {
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        params,
+      }) => {
         paramsReferences.push(params);
         return <div>Memoization test</div>;
       };
@@ -174,7 +170,7 @@ describe('withRouterHooks HOC', () => {
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
       const { rerender } = render(
         <MemoryRouter>
-          <WrappedComponent renderCount={1} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
@@ -183,7 +179,7 @@ describe('withRouterHooks HOC', () => {
 
       rerender(
         <MemoryRouter>
-          <WrappedComponent renderCount={2} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
@@ -197,9 +193,9 @@ describe('withRouterHooks HOC', () => {
     it('maintains stable location reference when values are unchanged', () => {
       const locationReferences: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo: React.FC<
-        TestComponentProps & { renderCount?: number }
-      > = ({ location }) => {
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        location,
+      }) => {
         locationReferences.push(location);
         return <div>Memoization test</div>;
       };
@@ -207,14 +203,14 @@ describe('withRouterHooks HOC', () => {
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
       const { rerender } = render(
         <MemoryRouter>
-          <WrappedComponent renderCount={1} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
       // Force re-render with different prop
       rerender(
         <MemoryRouter>
-          <WrappedComponent renderCount={2} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
@@ -278,9 +274,9 @@ describe('withRouterHooks HOC', () => {
       // We change the mock values (not props) to exercise useShallowEqualityCheck.
       const paramsReceived: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<
-        TestComponentProps & { renderCount?: number }
-      > = ({ params }) => {
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        params,
+      }) => {
         paramsReceived.push(params);
         return <div>Comma collision test</div>;
       };
@@ -291,7 +287,7 @@ describe('withRouterHooks HOC', () => {
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
       const { rerender } = render(
         <MemoryRouter>
-          <WrappedComponent renderCount={1} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
@@ -300,7 +296,7 @@ describe('withRouterHooks HOC', () => {
 
       rerender(
         <MemoryRouter>
-          <WrappedComponent renderCount={2} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
@@ -316,9 +312,9 @@ describe('withRouterHooks HOC', () => {
       // React Router changes key on every navigation, even to the same path.
       const locationsReceived: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo: React.FC<
-        TestComponentProps & { renderCount?: number }
-      > = ({ location }) => {
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        location,
+      }) => {
         locationsReceived.push(location);
         return <div>Location key test</div>;
       };
@@ -329,7 +325,7 @@ describe('withRouterHooks HOC', () => {
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
       const { rerender } = render(
         <MemoryRouter>
-          <WrappedComponent renderCount={1} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
@@ -338,7 +334,7 @@ describe('withRouterHooks HOC', () => {
 
       rerender(
         <MemoryRouter>
-          <WrappedComponent renderCount={2} />
+          <WrappedComponent />
         </MemoryRouter>,
       );
 
