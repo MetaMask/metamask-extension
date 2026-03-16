@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray, parseCaipAccountId } from '@metamask/utils';
-
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
@@ -24,7 +23,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllPermittedAccountsForCurrentTab,
-  getInternalAccountByAddress,
   getOriginOfCurrentTab,
   getPermissionSubjects,
   getSubjectMetadata,
@@ -77,46 +75,30 @@ export const DappConnectionControlBar: React.FC = () => {
     ),
   );
 
-  const allPermittedAddresses = useMemo(() => {
-    return permittedAccounts
-      .map((caipId) => {
-        try {
-          return parseCaipAccountId(caipId).address;
-        } catch {
-          return undefined;
-        }
-      })
-      .filter((addr): addr is string => Boolean(addr));
-  }, [permittedAccounts]);
+  const lastConnectedAddressRef = useRef<string | undefined>(undefined);
 
   const activePermittedAddress = useMemo(() => {
-    if (allPermittedAddresses.length === 0) {
+    if (permittedAccounts.length === 0) {
       return undefined;
     }
     if (accountGroupInternalAccounts?.length) {
-      for (const account of accountGroupInternalAccounts) {
-        const isEvm = isEvmAccountType(account.type);
-        const match = allPermittedAddresses.find((addr) =>
-          isEvm
-            ? addr.toLowerCase() === account.address.toLowerCase()
-            : addr === account.address,
-        );
-        if (match) {
-          return match;
-        }
+      const matchingAccount = accountGroupInternalAccounts.find((account) =>
+        isInternalAccountInPermittedAccountIds(account, permittedAccounts),
+      );
+      if (matchingAccount) {
+        lastConnectedAddressRef.current = matchingAccount.address;
+        return matchingAccount.address;
       }
     }
-    return allPermittedAddresses[0];
-  }, [allPermittedAddresses, accountGroupInternalAccounts]);
-
-  const connectedAccountByAddress = useSelector((state) =>
-    activePermittedAddress
-      ? getInternalAccountByAddress(
-          state as Parameters<typeof getInternalAccountByAddress>[0],
-          activePermittedAddress,
-        )
-      : undefined,
-  );
+    if (lastConnectedAddressRef.current) {
+      return lastConnectedAddressRef.current;
+    }
+    try {
+      return parseCaipAccountId(permittedAccounts[0]).address;
+    } catch {
+      return undefined;
+    }
+  }, [permittedAccounts, accountGroupInternalAccounts]);
 
   const connectedAccountGroups = useSelector((state) =>
     activePermittedAddress
@@ -129,14 +111,11 @@ export const DappConnectionControlBar: React.FC = () => {
 
   const isConnected = permittedAccounts.length > 0;
 
-  const selectedConnectedAccount = connectedAccountByAddress;
-  const selectedAccountAddress = selectedConnectedAccount?.address ?? '';
-  const selectedAccountName = useMemo(() => {
-    if (connectedAccountGroups.length > 0) {
-      return connectedAccountGroups[0].metadata.name;
-    }
-    return selectedConnectedAccount?.metadata?.name ?? '';
-  }, [connectedAccountGroups, selectedConnectedAccount]);
+  const selectedAccountAddress = activePermittedAddress ?? '';
+  const selectedAccountName =
+    connectedAccountGroups.length > 0
+      ? connectedAccountGroups[0].metadata.name
+      : '';
   const selectedAccountLabel = useMemo(() => {
     if (!selectedAccountName) {
       return '';
