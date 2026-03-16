@@ -32,8 +32,6 @@ export {
   mockPriceData,
   mockMaxLeverage,
   mockAvailableBalance,
-  BALANCE_PERCENT_PRESETS,
-  LEVERAGE_PRESETS,
   calculatePositionSize,
   calculateMarginRequired,
   calculateMaxAmount,

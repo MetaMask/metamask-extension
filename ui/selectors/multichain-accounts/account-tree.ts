@@ -19,12 +19,13 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration } from '@metamask/network-controller';
 
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getPreferences,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
@@ -33,8 +34,10 @@ import {
   getSelectedInternalAccount,
 } from '../accounts';
 
+import type { MetaMaskReduxState } from '../../store/store';
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
 import { isTestNetwork } from '../../helpers/utils/network-helper';
+import { DefaultAddressScope } from '../../../shared/constants/default-address';
 import {
   AccountGroupWithInternalAccounts,
   AccountListStats,
@@ -781,6 +784,44 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
 );
 
 /**
+ * Get the address and scopes for the account group that matches the user's default address scope
+ * (e.g. eip155, bip122). Used when showing the "default address" in the UI.
+ *
+ * @param state
+ * @returns Object with address (or null if none) and scopes (list of matching scope IDs).
+ */
+export const getDefaultScopeAndAddressByAccountGroupId =
+  createDeepEqualSelector(
+    [
+      getInternalAccountListSpreadByScopesByGroupId,
+      (state: MetaMaskReduxState) => getPreferences(state).defaultAddressScope,
+    ],
+    (
+      spreadList: {
+        account: InternalAccount;
+        scope: CaipChainId;
+        networkName: string;
+      }[],
+      defaultScope: DefaultAddressScope,
+    ): { defaultAddress: string | null; defaultScopes: CaipChainId[] } => {
+      let defaultAddress: string | null = null;
+      const defaultScopes: CaipChainId[] = [];
+      for (const x of spreadList) {
+        if (!String(x.scope).startsWith(defaultScope)) {
+          continue;
+        }
+        if (defaultAddress === null) {
+          defaultAddress = x.account.address;
+        }
+        if (x.account.address === defaultAddress) {
+          defaultScopes.push(x.scope);
+        }
+      }
+      return { defaultAddress, defaultScopes };
+    },
+  );
+
+/**
  * Get the seed addresses for multiple account groups at once.
  * This is more efficient than calling getIconSeedAddressByAccountGroupId multiple times.
  *
@@ -841,6 +882,42 @@ export const getWalletIdsByType = createSelector(
       .map(([walletId]) => walletId) as AccountWalletId[];
   },
 );
+
+/**
+ * Get the account group display name for a given address.
+ * Returns the account group name (e.g., "Account 3") rather than
+ * the internal account name (e.g., "Snap Account 11").
+ *
+ * @param state - Redux state.
+ * @param address - The address to look up.
+ * @returns The account group name, internal account name, or undefined.
+ */
+export function selectAccountGroupNameByAddress(
+  state: unknown,
+  address?: string,
+) {
+  if (!address) {
+    return undefined;
+  }
+
+  const typedState = state as MultichainAccountsState;
+  const internalAccounts = getInternalAccounts(typedState);
+  const accountGroups = getAllAccountGroups(typedState);
+
+  const internalAccount = internalAccounts.find(
+    (acc) => acc.address.toLowerCase() === address.toLowerCase(),
+  );
+
+  if (!internalAccount) {
+    return undefined;
+  }
+
+  const accountGroup = accountGroups.find((group) =>
+    group.accounts.includes(internalAccount.id),
+  );
+
+  return accountGroup?.metadata.name ?? internalAccount.metadata.name;
+}
 
 /**
  * Get account list statistics (pinned count, hidden count, total accounts).

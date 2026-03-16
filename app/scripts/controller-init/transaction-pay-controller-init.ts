@@ -3,7 +3,14 @@ import {
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import type {
+  TransactionController,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
+  type DelegationMessenger,
+  getDelegationTransaction,
+} from '../lib/transaction/delegation';
 import type { ControllerInitFunction, ControllerInitResult } from './types';
 import type { TransactionPayControllerInitMessenger } from './messengers';
 
@@ -12,12 +19,27 @@ export const TransactionPayControllerInit: ControllerInitFunction<
   TransactionPayControllerMessenger,
   TransactionPayControllerInitMessenger
 > = (request) => {
-  const { controllerMessenger, persistedState } = request;
+  const { controllerMessenger, initMessenger, persistedState } = request;
+
+  const getTransactionController = () =>
+    request.getController('TransactionController') as TransactionController;
+
+  const getDelegationTransactionCallback: (request: {
+    transaction: TransactionMeta;
+  }) => ReturnType<typeof getDelegationTransaction> = ({ transaction }) =>
+    getDelegationTransaction(
+      {
+        isAtomicBatchSupported:
+          getTransactionController().isAtomicBatchSupported.bind(
+            getTransactionController(),
+          ),
+        messenger: initMessenger as DelegationMessenger,
+      },
+      transaction,
+    );
 
   const controller = new TransactionPayController({
-    getDelegationTransaction: async () => {
-      throw new Error('Delegation transaction not supported');
-    },
+    getDelegationTransaction: getDelegationTransactionCallback,
     getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,

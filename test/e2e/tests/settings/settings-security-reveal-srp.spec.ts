@@ -63,7 +63,7 @@ describe('Reveal SRP through settings', function () {
         await privacySettings.checkDisplayedSrpCanBeCopied();
 
         // check that closing the reveal SRP dialog navigates user back to srp list page
-        await privacySettings.closeRevealSrpDialog();
+        await privacySettings.backToSrpList();
         await privacySettings.checkSrpListIsLoaded();
       },
     );
@@ -95,7 +95,7 @@ describe('Reveal SRP through settings', function () {
         await privacySettings.checkSrpQrCodeIsDisplayed();
 
         // check that closing the reveal SRP dialog navigates user back to srp list page
-        await privacySettings.closeRevealSrpDialog();
+        await privacySettings.backToSrpList();
         await privacySettings.checkSrpListIsLoaded();
       },
     );

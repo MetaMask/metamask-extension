@@ -1,12 +1,18 @@
 import React from 'react';
-import InfoIcon from '../icon/info-icon.component';
 
 import SiteOrigin from '.';
 
 export default {
-  title: 'Components/UI/SiteOrigin',
-
+  title: 'Components/UI/SiteOrigin (deprecated)',
   component: SiteOrigin,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release.',
+      },
+    },
+  },
   argTypes: {
     siteOrigin: {
       control: 'text',
@@ -36,13 +42,4 @@ DefaultStory.args = {
   iconName: 'MetaMask',
   iconSrc: './metamark.svg',
   chip: true,
-};
-
-export const RightIcon = (args) => <SiteOrigin {...args} />;
-
-RightIcon.args = {
-  siteOrigin: 'https://metamask.io',
-  iconName: 'MetaMask',
-  iconSrc: './metamark.svg',
-  rightIcon: <InfoIcon />,
 };

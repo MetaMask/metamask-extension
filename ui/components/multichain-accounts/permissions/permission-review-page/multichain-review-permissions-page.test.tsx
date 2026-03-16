@@ -3,12 +3,13 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { AccountGroupType } from '@metamask/account-api';
 import { CaipAccountId } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
@@ -21,10 +22,12 @@ jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => ({ origin: 'https%3A//test.dapp' }),
+    useSearchParams: () => [
+      new URLSearchParams('origin=https%3A%2F%2Ftest.dapp'),
+    ],
     useLocation: () => ({
       pathname: '/test',
-      search: '',
+      search: '?origin=https%3A%2F%2Ftest.dapp',
       hash: '',
       state: null,
     }),
@@ -53,7 +56,7 @@ jest.mock('../../../../store/actions', () => ({
   setPermittedChains: jest.fn(() => ({ type: 'SET_PERMITTED_CHAINS' })),
 }));
 
-jest.mock('../../../../../shared/modules/environment');
+jest.mock('../../../../../shared/lib/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
@@ -154,7 +157,8 @@ const render = (state = {}) => {
       origin: 'https://test.dapp',
     },
   });
-  return renderWithProvider(<MultichainReviewPermissions />, store);
+  const pathname = `/test?origin=${encodeURIComponent('https://test.dapp')}`;
+  return renderWithProvider(<MultichainReviewPermissions />, store, pathname);
 };
 
 describe('MultichainReviewPermissions', () => {
@@ -225,7 +229,7 @@ describe('MultichainReviewPermissions', () => {
       const { getByText, getAllByTestId } = render();
 
       expect(
-        getByText('See your accounts and suggest transactions'),
+        getByText(messages.accountsPermissionsTitle.message),
       ).toBeInTheDocument();
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
@@ -336,7 +340,7 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      expect(getByText('Edit accounts')).toBeInTheDocument();
+      expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
     });
 
     it('returns to connections page and triggers disconnect flow when deselecting all accounts', async () => {
@@ -422,7 +426,7 @@ describe('MultichainReviewPermissions', () => {
       });
 
       expect(
-        getByText('See your accounts and suggest transactions'),
+        getByText(messages.accountsPermissionsTitle.message),
       ).toBeInTheDocument();
     });
   });

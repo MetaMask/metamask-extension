@@ -23,7 +23,10 @@ import { getSnapName, shortenAddress } from '../../helpers/utils/util';
 import { selectAccountGroupNameByInternalAccount } from '../confirmations/selectors/accounts';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
-import { selectBalanceByAccountGroup } from '../../selectors/assets';
+import {
+  BalanceCalculationState,
+  selectBalanceByAccountGroup,
+} from '../../selectors/assets';
 import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
@@ -66,7 +69,7 @@ export const SnapAccountCard = ({
     getAccountGroupsByAddress(state, [address]),
   );
   const accountGroupId = accountGroups[0]?.id;
-  const accountGroupBalance = useSelector((state) =>
+  const accountGroupBalance = useSelector((state: BalanceCalculationState) =>
     accountGroupId ? selectBalanceByAccountGroup(accountGroupId)(state) : null,
   );
 

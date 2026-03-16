@@ -14,6 +14,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import configureStore from '../../../../../store/store';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import HeaderInfo from './header-info';
 
 const mockStore = getMockTypedSignConfirmState();
@@ -69,13 +70,13 @@ describe('Header', () => {
   });
   it('shows account info icon', async () => {
     const { getByLabelText } = render();
-    expect(getByLabelText('Account details')).toBeInTheDocument();
+    expect(getByLabelText(messages.accountDetails.message)).toBeInTheDocument();
   });
 
   describe('when account info icon is clicked', () => {
     it('shows account info modal with address', async () => {
       const { getByLabelText, getByText, queryByTestId } = render();
-      const accountInfoIcon = getByLabelText('Account details');
+      const accountInfoIcon = getByLabelText(messages.accountDetails.message);
       fireEvent.click(accountInfoIcon);
       await waitFor(() => {
         expect(queryByTestId('account-details-modal')).toBeInTheDocument();
@@ -98,7 +99,7 @@ describe('Header', () => {
           </MetaMetricsContext.Provider>,
           configureStore(store),
         );
-        const accountInfoIcon = getByLabelText('Account details');
+        const accountInfoIcon = getByLabelText(messages.accountDetails.message);
         fireEvent.click(accountInfoIcon);
 
         expect(mockTrackEvent).toHaveBeenNthCalledWith(1, expectedEvent);

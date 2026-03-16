@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import { DAPP_URL, NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
-
-const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixtures/fixture-builder');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -21,7 +20,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           testSpecificMock: mocked4BytesResponse,
@@ -59,7 +58,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockedSourcifyResponse,
@@ -92,7 +91,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -126,14 +125,14 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
             },
           })
-          .withPermissionControllerConnectedToTestDapp()
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
         testSpecificMock: mockTokensAndInfura,
         title: this.test?.fullTitle(),

@@ -1,6 +1,6 @@
 import React, { forwardRef, Ref } from 'react';
 import ReactDOM from 'react-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { ModalProps } from './modal.types';
 import { ModalContext } from './modal.context';

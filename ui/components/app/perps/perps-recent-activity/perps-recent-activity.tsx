@@ -95,6 +95,7 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
         <ButtonBase
           onClick={handleSeeAll}
           className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
+          data-testid="perps-recent-activity-see-all"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsSeeAll')}

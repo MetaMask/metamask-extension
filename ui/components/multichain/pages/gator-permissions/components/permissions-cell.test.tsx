@@ -4,6 +4,7 @@ import { CaipChainId, Hex } from '@metamask/utils';
 import { BoxSpacing } from '@metamask/design-system-react';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../../selectors/selectors.types';
@@ -119,7 +120,7 @@ describe('PermissionsCell', () => {
       store,
     );
 
-    expect(getByText('Token transfer')).toBeInTheDocument();
+    expect(getByText(messages.tokenTransfer.message)).toBeInTheDocument();
     expect(getByText('5 tokens')).toBeInTheDocument();
   });
 

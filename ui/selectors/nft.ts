@@ -1,10 +1,10 @@
 import { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
-import { NetworkState } from '../../shared/modules/selectors/networks';
+import { NetworkState } from '../../shared/lib/selectors/networks';
 import { getMemoizedCurrentChainId } from './selectors';
 import { EMPTY_OBJECT } from './shared';
 
-export type NftState = {
+type NftState = {
   metamask: {
     allNftContracts: {
       [account: string]: {

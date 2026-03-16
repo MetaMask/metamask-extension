@@ -45,6 +45,8 @@ import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selecto
 import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
 import { toBridgeToken } from '../../../../../ducks/bridge/utils';
+import { MarketClosedModal } from '../../../../../components/app/assets/market-closed-modal';
+import { useRWAToken } from '../../../hooks/useRWAToken';
 import { NetworkPicker } from './network-picker';
 import { BridgeAssetList } from './lazy-asset-list';
 
@@ -80,6 +82,9 @@ export const BridgeAssetPicker = ({
   );
 
   const t = useI18nContext();
+  const { isStockToken, isTokenTradingOpen } = useRWAToken();
+  const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
+  const closeFromMarketCloseRef = useRef(false);
 
   const networkPickerButtonRef = useRef<HTMLButtonElement>(null);
   const [isNetworkPickerOpen, setIsNetworkPickerOpen] = useState(false);
@@ -104,7 +109,7 @@ export const BridgeAssetPicker = ({
   const assetsToInclude = useMemo(
     () =>
       uniqBy(
-        [selectedAsset, ...assetsWithBalance].filter((token) => {
+        assetsWithBalance.filter((token) => {
           const matchesChainIdFilter = chainIdsSet.has(token.chainId);
 
           return matchesChainIdFilter;
@@ -112,7 +117,7 @@ export const BridgeAssetPicker = ({
         (a) => a.assetId?.toLowerCase(),
       ).map((token) => toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, selectedAsset.assetId, accountGroup.id, accountAddress],
+    [chainIdsSet, accountGroup.id, accountAddress],
   );
 
   const { popularTokensList, isLoading: isPopularTokensLoading } =
@@ -148,146 +153,164 @@ export const BridgeAssetPicker = ({
   }, [isOpen]);
 
   const handleClose = useCallback(() => {
+    if (closeFromMarketCloseRef.current) {
+      closeFromMarketCloseRef.current = false;
+      return;
+    }
     setSearchQuery('');
     setIsNetworkPickerOpen(false);
     onClose();
   }, [onClose]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      data-testid="bridge-asset-picker-modal"
-      onClose={handleClose}
-    >
-      <ModalOverlay onClick={handleClose} />
-      <ModalContent
-        paddingTop={4}
-        paddingBottom={4}
-        gap={3}
-        size={ModalContentSize.Md}
-        height={BlockSize.Full}
-        width={BlockSize.Full}
-        modalDialogProps={{
-          height: BlockSize.Full,
-          minWidth: 400,
-        }}
+    <>
+      <Modal
+        isOpen={isOpen}
+        data-testid="bridge-asset-picker-modal"
+        onClose={handleClose}
       >
-        <ModalHeader
-          closeButtonProps={{ size: ButtonIconSize.Sm }}
-          onClose={handleClose}
-        >
-          {header}
-        </ModalHeader>
-        <ModalBody
+        <ModalOverlay onClick={handleClose} />
+        <ModalContent
+          paddingTop={4}
+          paddingBottom={4}
+          gap={3}
+          size={ModalContentSize.Md}
           height={BlockSize.Full}
-          paddingLeft={0}
-          paddingRight={0}
-          data-testid="bridge-asset-picker-modal__body"
-          gap={4}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
+          modalDialogProps={{
+            height: BlockSize.Full,
+            minWidth: 400,
+          }}
         >
-          <PickerNetwork
-            label={selectedNetworkName}
-            labelProps={{
-              variant: TextVariant.bodyMd,
-            }}
-            avatarNetworkProps={{
-              src: selectedChainId
-                ? BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[selectedChainId]
-                : undefined,
-              name: selectedNetworkName,
-              style: {
-                display: selectedChainId ? undefined : Display.None,
-                width: 16,
-                height: 16,
-                borderWidth: 0,
-              },
-              borderRadius: BorderRadius.SM,
-            }}
-            ref={networkPickerButtonRef}
-            onClick={() =>
-              isNetworkPickerOpen
-                ? setIsNetworkPickerOpen(false)
-                : setIsNetworkPickerOpen(true)
-            }
-            data-testid="multichain-asset-picker__network"
-            marginInline={4}
-            paddingLeft={4}
-            paddingRight={4}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            borderRadius={BorderRadius.XL}
-            width={BlockSize.Max}
-            style={{ minHeight: 32 }}
-          />
-          <NetworkPicker
-            buttonElement={networkPickerButtonRef.current}
-            isOpen={isNetworkPickerOpen}
-            chains={chains}
-            selectedChainId={selectedChainId}
-            disabledChainId={disabledChainId}
-            onNetworkChange={(chainId) => {
-              setSelectedChainId(chainId);
-              setIsNetworkPickerOpen(false);
-            }}
-            onClose={() => setIsNetworkPickerOpen(false)}
-            testId="bridge-network-picker-popover"
-          />
-          <TextField
-            autoFocus
-            testId={'bridge-asset-picker-search-input'}
-            placeholder={t('enterTokenNameOrAddress')}
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-            }}
-            borderRadius={BorderRadius.XL}
-            borderWidth={1}
-            borderColor={BorderColor.borderMuted}
-            inputProps={{
-              disableStateStyles: true,
-              textVariant: TextVariant.bodyMd,
-              paddingRight: 2,
-              borderColor: BorderColor.borderMuted,
-            }}
-            style={{
-              minHeight: 48,
-              paddingRight: 8,
-              outline: 'none',
-              borderColor: BorderColor.borderMuted,
-            }}
-            marginInline={4}
-            startAccessory={
-              <Icon
-                color={IconColor.IconAlternative}
-                name={IconName.Search}
-                size={IconSize.Md}
-              />
-            }
-          />
-
-          {!isNetworkPickerOpen && (
-            <BridgeAssetList
-              assetsToInclude={assetsToInclude}
-              chainIds={chainIdsSet}
-              accountAddress={accountAddress}
-              searchQuery={searchQuery.trim()}
-              selectedAssetId={selectedAsset.assetId}
-              popularTokensList={popularTokensList}
-              isPopularTokensLoading={isPopularTokensLoading}
-              onAssetChange={(asset: BridgeToken) => {
-                handleClose();
-                onAssetChange(asset);
-                // If asset selection follows a chain selection, persist the selected chain id
-                if (selectedChainId === asset.chainId) {
-                  setPersistedChainId(selectedChainId);
-                }
+          <ModalHeader
+            closeButtonProps={{ size: ButtonIconSize.Sm }}
+            onClose={handleClose}
+          >
+            {header}
+          </ModalHeader>
+          <ModalBody
+            height={BlockSize.Full}
+            paddingLeft={0}
+            paddingRight={0}
+            data-testid="bridge-asset-picker-modal__body"
+            gap={4}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+          >
+            <PickerNetwork
+              label={selectedNetworkName}
+              labelProps={{
+                variant: TextVariant.bodyMd,
               }}
-              {...assetListProps}
+              avatarNetworkProps={{
+                src: selectedChainId
+                  ? BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[selectedChainId]
+                  : undefined,
+                name: selectedNetworkName,
+                style: {
+                  display: selectedChainId ? undefined : Display.None,
+                  width: 16,
+                  height: 16,
+                  borderWidth: 0,
+                },
+                borderRadius: BorderRadius.SM,
+              }}
+              ref={networkPickerButtonRef}
+              onClick={() =>
+                isNetworkPickerOpen
+                  ? setIsNetworkPickerOpen(false)
+                  : setIsNetworkPickerOpen(true)
+              }
+              data-testid="multichain-asset-picker__network"
+              marginInline={4}
+              paddingLeft={4}
+              paddingRight={4}
+              backgroundColor={BackgroundColor.backgroundMuted}
+              borderRadius={BorderRadius.XL}
+              width={BlockSize.Max}
+              style={{ minHeight: 32 }}
             />
-          )}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+            <NetworkPicker
+              buttonElement={networkPickerButtonRef.current}
+              isOpen={isNetworkPickerOpen}
+              chains={chains}
+              selectedChainId={selectedChainId}
+              disabledChainId={disabledChainId}
+              onNetworkChange={(chainId) => {
+                setSelectedChainId(chainId);
+                setIsNetworkPickerOpen(false);
+              }}
+              onClose={() => setIsNetworkPickerOpen(false)}
+              testId="bridge-network-picker-popover"
+            />
+            <TextField
+              autoFocus
+              testId={'bridge-asset-picker-search-input'}
+              placeholder={t('enterTokenNameOrAddress')}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
+              borderRadius={BorderRadius.XL}
+              borderWidth={1}
+              borderColor={BorderColor.borderMuted}
+              inputProps={{
+                disableStateStyles: true,
+                textVariant: TextVariant.bodyMd,
+                paddingRight: 2,
+                borderColor: BorderColor.borderMuted,
+              }}
+              style={{
+                minHeight: 48,
+                paddingRight: 8,
+                outline: 'none',
+                borderColor: BorderColor.borderMuted,
+              }}
+              marginInline={4}
+              startAccessory={
+                <Icon
+                  color={IconColor.IconAlternative}
+                  name={IconName.Search}
+                  size={IconSize.Md}
+                />
+              }
+            />
+
+            {!isNetworkPickerOpen && (
+              <BridgeAssetList
+                assetsToInclude={assetsToInclude}
+                chainIds={chainIdsSet}
+                accountAddress={accountAddress}
+                searchQuery={searchQuery.trim()}
+                selectedAssetId={selectedAsset.assetId}
+                popularTokensList={popularTokensList}
+                isPopularTokensLoading={isPopularTokensLoading}
+                onAssetChange={(asset: BridgeToken) => {
+                  if (isStockToken(asset) && !isTokenTradingOpen(asset)) {
+                    closeFromMarketCloseRef.current = true;
+                    setShowMarketClosedModal(true);
+                    return;
+                  }
+                  closeFromMarketCloseRef.current = false;
+                  handleClose();
+                  onAssetChange(asset);
+                  if (selectedChainId === asset.chainId) {
+                    setPersistedChainId(selectedChainId);
+                  }
+                }}
+                {...assetListProps}
+              />
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <MarketClosedModal
+        isOpen={showMarketClosedModal}
+        onClose={() => {
+          closeFromMarketCloseRef.current = false;
+          setShowMarketClosedModal(false);
+        }}
+      />
+    </>
   );
 };

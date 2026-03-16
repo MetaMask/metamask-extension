@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
@@ -77,7 +77,7 @@ describe('State logs', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
@@ -110,12 +110,6 @@ describe('State logs', function () {
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
 
         assert.equal(
-          stateLogs.metamask.identities[
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
-          ].address,
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
-        assert.equal(
           stateLogs.metamask.internalAccounts.accounts[
             stateLogs.metamask.internalAccounts.selectedAccount
           ].address,
@@ -132,7 +126,7 @@ describe('State logs', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,

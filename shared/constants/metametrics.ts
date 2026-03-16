@@ -1,5 +1,11 @@
 import { Json } from '@metamask/utils';
-import type { EnvironmentType, InstallType, Platform } from './app';
+import type {
+  DeviceType,
+  EnvironmentType,
+  InstallType,
+  Os,
+  Platform,
+} from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
 type JsonWithUndefined =
@@ -575,6 +581,16 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   install_type?: InstallType;
+  /**
+   * Whether the device is mobile or desktop.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  device_type?: DeviceType;
+  /**
+   * The operating system (normalized).
+   */
+  os?: Os;
 };
 
 export enum MetaMetricsUserTrait {
@@ -699,6 +715,16 @@ export enum MetaMetricsUserTrait {
    * The installation type of the extension.
    */
   InstallType = 'install_type',
+  /**
+   * Whether the device is mobile or desktop.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  DeviceType = 'device_type',
+  /**
+   * The operating system (normalized).
+   */
+  Os = 'os',
 }
 
 /**
@@ -744,6 +770,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
+  ExperimentViewed = 'Experiment Viewed',
   AppInstalled = 'App Installed',
   AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
@@ -768,6 +795,7 @@ export enum MetaMetricsEventName {
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
+  EnabledDisabledOpenSea = 'Enabled/Disable OpenSea',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -791,6 +819,17 @@ export enum MetaMetricsEventName {
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
+  MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
+  MusdConversionCompleted = 'MUSD Conversion Completed',
+  MusdConversionCtaClicked = 'MUSD Conversion CTA Clicked',
+  MusdConversionFailed = 'MUSD Conversion Failed',
+  MusdConversionQuoteError = 'MUSD Conversion Quote Error',
+  MusdConversionQuoteReceived = 'MUSD Conversion Quote Received',
+  MusdConversionQuoteRequested = 'MUSD Conversion Quote Requested',
+  MusdConversionStarted = 'MUSD Conversion Started',
+  MusdConversionStatusUpdated = 'MUSD Conversion Status Updated',
+  MusdFullscreenAnnouncementButtonClicked = 'MUSD Fullscreen Announcement Button Clicked',
+  MusdFullscreenAnnouncementDisplayed = 'MUSD Fullscreen Announcement Displayed',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
@@ -820,6 +859,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
@@ -886,12 +926,14 @@ export enum MetaMetricsEventName {
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
+  ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
   TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
+  AssetsFirstInitFetchCompleted = 'Assets First Init Fetch Completed',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
@@ -913,9 +955,7 @@ export enum MetaMetricsEventName {
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
-  // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
-  // END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -958,7 +998,6 @@ export enum MetaMetricsEventName {
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   InsightSnapViewed = 'Insight Snap Viewed',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   AddSnapAccountViewed = 'Add Snap Account Viewed',
   AddSnapAccountConfirmed = 'Add Snap Account Confirmed',
@@ -975,7 +1014,6 @@ export enum MetaMetricsEventName {
   SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
   SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
   SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
-  ///: END:ONLY_INCLUDE_IF
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
@@ -1048,15 +1086,23 @@ export enum MetaMetricsEventName {
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
   ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
   ShieldOptInRewards = 'Shield Opt In Rewards',
+  // Contacts (address book)
+  ContactsPageViewed = 'Contacts Page Viewed',
+  ContactDetailsViewed = 'Contact Details Viewed',
+  AddContactClicked = 'Add Contact Clicked',
+  ContactAddQrScannerClicked = 'Contact Add QR Scanner Clicked',
+  ContactAdded = 'Contact Added',
+  EditContactClicked = 'Edit Contact Clicked',
+  ContactUpdated = 'Contact Updated',
+  DeleteContactClicked = 'Delete Contact Clicked',
+  ContactDeleted = 'Contact Deleted',
 }
 
 export enum MetaMetricsEventAccountType {
   Default = 'metamask',
   Hardware = 'hardware',
   Imported = 'imported',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Snap = 'snap',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum QueueType {
@@ -1072,6 +1118,7 @@ export enum MetaMetricsEventAccountImportType {
 
 export enum MetaMetricsEventCategory {
   Accounts = 'Accounts',
+  Analytics = 'Analytics',
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
@@ -1088,6 +1135,7 @@ export enum MetaMetricsEventCategory {
   MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
+  MusdConversion = 'MUSD Conversion',
   Navigation = 'Navigation',
   Network = 'Network',
   Onboarding = 'Onboarding',
@@ -1111,6 +1159,7 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
+  Contacts = 'Contacts',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
   Rewards = 'Rewards',
@@ -1211,6 +1260,12 @@ export enum DeleteRegulationStatus {
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
 }
+
+export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
+  DeleteRegulationStatus.Initialized,
+  DeleteRegulationStatus.Running,
+  DeleteRegulationStatus.Finished,
+];
 
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',

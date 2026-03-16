@@ -1,19 +1,20 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  twMerge,
   Box,
   Text,
   TextVariant,
-  FontWeight,
+  TextColor,
   BoxFlexDirection,
-  BoxJustifyContent,
   BoxAlignItems,
-  ButtonBase,
 } from '@metamask/design-system-react';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../../../helpers/constants/design-system';
 import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
-import { LEVERAGE_PRESETS } from '../../order-entry.mocks';
 
 /**
  * LeverageSlider - Slider for selecting leverage multiplier
@@ -31,84 +32,92 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   minLeverage = 1,
 }) => {
   const t = useI18nContext();
+  const [inputValue, setInputValue] = useState<string>(String(leverage));
 
-  // Filter presets to only show values within the allowed range
-  const availablePresets = useMemo(
-    () =>
-      LEVERAGE_PRESETS.filter(
-        (preset) => preset >= minLeverage && preset <= maxLeverage,
-      ),
-    [minLeverage, maxLeverage],
-  );
+  useEffect(() => {
+    setInputValue(String(leverage));
+  }, [leverage]);
 
-  // Handle slider change
   const handleSliderChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       onLeverageChange(newValue);
+      setInputValue(String(newValue));
     },
     [onLeverageChange],
   );
 
-  // Handle preset button click
-  const handlePresetClick = useCallback(
-    (preset: number) => {
-      onLeverageChange(preset);
+  const handleInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (value === '' || /^\d*$/u.test(value)) {
+        setInputValue(value);
+        const num = parseInt(value, 10);
+        if (!isNaN(num) && num >= minLeverage && num <= maxLeverage) {
+          onLeverageChange(num);
+        }
+      }
     },
-    [onLeverageChange],
+    [onLeverageChange, minLeverage, maxLeverage],
   );
+
+  const handleInputBlur = useCallback(() => {
+    const num = parseInt(inputValue, 10);
+    if (isNaN(num) || num < minLeverage) {
+      onLeverageChange(minLeverage);
+      setInputValue(String(minLeverage));
+    } else if (num > maxLeverage) {
+      onLeverageChange(maxLeverage);
+      setInputValue(String(maxLeverage));
+    } else {
+      onLeverageChange(num);
+      setInputValue(String(num));
+    }
+  }, [inputValue, onLeverageChange, minLeverage, maxLeverage]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-      {/* Label and Value Row */}
+      <Text variant={TextVariant.BodySm}>{t('perpsLeverage')}</Text>
+
       <Box
         flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
+        gap={2}
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {t('perpsLeverage')}
-        </Text>
-        <Box className="bg-muted px-3 py-1 rounded-lg">
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {leverage}x
-          </Text>
+        <Box className="flex-1 px-3" data-testid="leverage-slider">
+          <PerpsSlider
+            min={minLeverage}
+            max={maxLeverage}
+            step={1}
+            value={leverage}
+            onChange={handleSliderChange}
+          />
         </Box>
-      </Box>
-
-      {/* Material UI Slider */}
-      <Box className="px-3" data-testid="leverage-slider">
-        <PerpsSlider
-          min={minLeverage}
-          max={maxLeverage}
-          step={1}
-          value={leverage}
-          onChange={handleSliderChange}
-        />
-      </Box>
-
-      {/* Leverage Preset Buttons */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        className="w-full"
-      >
-        {availablePresets.map((preset) => (
-          <ButtonBase
-            key={preset}
-            onClick={() => handlePresetClick(preset)}
-            className={twMerge(
-              'px-3 py-1 rounded-md text-sm',
-              leverage === preset
-                ? 'bg-muted text-primary-inverse'
-                : 'bg-transparent text-muted hover:bg-hover',
-            )}
-            data-testid={`leverage-preset-${preset}`}
-          >
-            {preset}x
-          </ButtonBase>
-        ))}
+        <Box className="shrink-0 w-20">
+          <TextField
+            size={TextFieldSize.Sm}
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleInputBlur}
+            borderRadius={BorderRadius.MD}
+            borderWidth={0}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            className="w-full"
+            data-testid="leverage-input"
+            inputProps={{
+              inputMode: 'numeric',
+              style: { textAlign: 'center' },
+            }}
+            endAccessory={
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                x
+              </Text>
+            }
+          />
+        </Box>
       </Box>
     </Box>
   );

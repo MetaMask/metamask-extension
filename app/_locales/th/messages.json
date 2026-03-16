@@ -328,12 +328,6 @@
   "total": {
     "message": "รวม"
   },
-  "transactionCancelSuccess": {
-    "message": "ยกเลิกธุรกรรมเรียบร้อยแล้วเมื่อ $2"
-  },
-  "transactionDropped": {
-    "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
-  },
   "unknown": {
     "message": "ไม่รู้จัก"
   },

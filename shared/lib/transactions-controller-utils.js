@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 
 import { EtherDenomination } from '../constants/common';
-import { Numeric } from '../modules/Numeric';
-import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
+import { Numeric } from './Numeric';
+import { isSwapsDefaultTokenSymbol } from './swaps.utils';
 
 export const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';

@@ -3,15 +3,9 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import {
-  AvatarAccountSize,
-  Icon as DsIcon,
-  IconColor as DsIconColor,
-  IconName as DsIconName,
-  IconSize as DsIconSize,
-} from '@metamask/design-system-react';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
@@ -36,11 +30,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getIsMultichainAccountsState2Enabled,
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getPermissions,
-  getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
@@ -62,7 +54,7 @@ import {
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
-import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
+import { MerklClaimToast, MusdConversionToast } from '../musd';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -98,7 +90,6 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectNftDetectionEnablementToast,
-  selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
@@ -128,9 +119,6 @@ import {
 
 export function ToastMaster() {
   const location = useLocation();
-  const isMultichainAccountsFeatureState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   // Check if storage error toast should be shown (needed for conditional rendering on other screens)
   // The selector includes all conditions: flag is true, onboarding complete, and unlocked
@@ -149,11 +137,7 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        {isMultichainAccountsFeatureState2Enabled ? (
-          <ConnectAccountGroupToast />
-        ) : (
-          <ConnectAccountToast />
-        )}
+        <ConnectAccountGroupToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <NftEnablementToast />
@@ -162,6 +146,7 @@ export function ToastMaster() {
         <InfuraSwitchToast />
         <CopyAddressToast />
         <MerklClaimToast />
+        <MusdConversionToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
       </ToastContainer>
@@ -185,59 +170,6 @@ export function ToastMaster() {
   }
 
   return null;
-}
-
-function ConnectAccountToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
-  const account = useSelector(getSelectedAccount);
-
-  // If the account has changed, allow the connect account toast again
-  const prevAccountAddress = usePrevious(account?.address);
-  if (account?.address !== prevAccountAddress && hideConnectAccountToast) {
-    setHideConnectAccountToast(false);
-  }
-
-  const showConnectAccountToast = useSelector((state) =>
-    selectShowConnectAccountToast(state, account),
-  );
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
-  return (
-    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
-      <Toast
-        dataTestId="connect-account-toast"
-        key="connect-account-toast"
-        startAdornment={
-          <PreferredAvatar address={account.address} className="self-center" />
-        }
-        text={t('accountIsntConnectedToastText', [
-          account?.metadata?.name,
-          getURLHost(activeTabOrigin),
-        ])}
-        actionText={t('connectAccount')}
-        onActionClick={() => {
-          // Connect this account
-          dispatch(addPermittedAccount(activeTabOrigin, account.address));
-          // Use setTimeout to prevent React re-render from
-          // hiding the tooltip
-          setTimeout(() => {
-            // Trigger a mouseenter on the header's connection icon
-            // to display the informative connection tooltip
-            document
-              .querySelector(
-                '[data-testid="connection-menu"] [data-tooltipped]',
-              )
-              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-          }, 250 * MILLISECOND);
-        }}
-        onClose={() => setHideConnectAccountToast(true)}
-      />
-    )
-  );
 }
 
 function ConnectAccountGroupToast() {
@@ -476,7 +408,7 @@ function PermittedNetworkToast() {
         actionText={t('editPermissions')}
         onActionClick={() => {
           dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
       />
@@ -752,77 +684,6 @@ const ClaimSubmitToast = () => {
   );
 };
 
-function MerklClaimToast() {
-  const t = useI18nContext();
-  const { toastState, dismissToast } = useMerklClaimStatus();
-
-  const autoHideDelay = 5 * SECOND;
-
-  if (!toastState) {
-    return null;
-  }
-
-  const isInProgress = toastState === 'in-progress';
-  const isSuccess = toastState === 'success';
-
-  const toastText = (() => {
-    switch (toastState) {
-      case 'in-progress':
-        return t('merklRewardsToastInProgress');
-      case 'success':
-        return t('merklRewardsToastSuccess');
-      case 'failed':
-        return t('merklRewardsToastFailed');
-      default:
-        return '';
-    }
-  })();
-
-  const startAdornment = (() => {
-    if (isInProgress) {
-      return (
-        <DsIcon
-          name={DsIconName.Loading}
-          color={DsIconColor.IconDefault}
-          size={DsIconSize.Lg}
-          style={{ animation: 'spin 1.2s linear infinite' }}
-        />
-      );
-    }
-    if (isSuccess) {
-      return (
-        <DsIcon
-          name={DsIconName.Confirmation}
-          color={DsIconColor.SuccessDefault}
-          size={DsIconSize.Lg}
-        />
-      );
-    }
-    return (
-      <DsIcon
-        name={DsIconName.CircleX}
-        color={DsIconColor.ErrorDefault}
-        size={DsIconSize.Lg}
-      />
-    );
-  })();
-
-  return (
-    <Toast
-      key="merkl-claim-toast"
-      dataTestId="merkl-claim-toast"
-      text={toastText}
-      startAdornment={startAdornment}
-      onClose={dismissToast}
-      // In-progress toast stays until transaction completes; success/failed auto-hide
-      {...(!isInProgress && {
-        autoHideTime: autoHideDelay,
-        onAutoHideToast: dismissToast,
-      })}
-    />
-  );
-}
-
 function ShieldPausedToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -993,7 +854,7 @@ function StorageErrorToast() {
       category: MetaMetricsEventCategory.Error,
     });
     setIsDismissed(true);
-    navigate(REVEAL_SEED_ROUTE);
+    navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
   };
 
   const handleClose = () => {

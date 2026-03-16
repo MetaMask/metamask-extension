@@ -1455,11 +1455,6 @@ describe('Sentry errors', function () {
         userOptIn: true, // Initialized as undefined
         userOptInV2: true, // Initialized as undefined
       },
-      swapsState: {
-        // This can get wiped out during initialization due to a bug in
-        // the "resetState" method
-        swapsFeatureFlags: true,
-      },
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
       srpSessionData: {},
@@ -1469,6 +1464,8 @@ describe('Sentry errors', function () {
       lastInteractedConfirmationInfo: undefined,
       connectivityStatus: true,
       rewardsPointsEstimateHistory: false,
+      // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
+      rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
     };
     await withFixtures(

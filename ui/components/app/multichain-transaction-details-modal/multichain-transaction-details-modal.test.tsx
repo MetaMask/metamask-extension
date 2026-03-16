@@ -20,6 +20,7 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -186,8 +187,8 @@ describe('MultichainTransactionDetailsModal', () => {
   it('renders the modal with transaction details', () => {
     renderComponent();
 
-    expect(screen.getByText('Send')).toBeInTheDocument();
-    expect(screen.getByText('Confirmed')).toBeInTheDocument();
+    expect(screen.getByText(messages.send.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.confirmed.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '1.2 BTC',
     );
@@ -195,7 +196,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
   it('displays the correct transaction status with appropriate color', () => {
     renderComponent();
-    const statusElement = screen.getByText('Confirmed');
+    const statusElement = screen.getByText(messages.confirmed.message);
     expect(statusElement).toHaveClass('mm-box--color-success-default');
   });
 
@@ -340,7 +341,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
     renderComponent(swapProps);
 
-    expect(screen.getByText('Swap')).toBeInTheDocument();
+    expect(screen.getByText(messages.swap.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '-2.5 SOL',
     );

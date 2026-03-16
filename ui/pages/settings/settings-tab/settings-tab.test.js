@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -98,5 +98,39 @@ describe('Settings Tab', () => {
     fireEvent.click(showNativeTokenAsMainBalance);
 
     expect(mockSetShowNativeTokenAsMainBalance).toHaveBeenCalled();
+  });
+
+  it('does not render show default address section when isDefaultAddressEnabled is false', async () => {
+    const stateWithFlagOff = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: { extensionUxDefaultAddress: false },
+      },
+    };
+    const store = configureMockStore([thunk])(stateWithFlagOff);
+    const { queryByTestId } = renderWithProvider(<SettingsTab />, store);
+
+    await waitFor(() => {
+      expect(
+        queryByTestId('show-default-address-toggle'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders show default address section when isDefaultAddressEnabled is true', async () => {
+    const stateWithFlagOn = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: { extensionUxDefaultAddress: true },
+      },
+    };
+    const store = configureMockStore([thunk])(stateWithFlagOn);
+    const { findByTestId } = renderWithProvider(<SettingsTab />, store);
+
+    expect(
+      await findByTestId('show-default-address-toggle'),
+    ).toBeInTheDocument();
   });
 });

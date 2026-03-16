@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Text, Box } from '../../../../../components/component-library';
 import {
@@ -11,7 +10,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
-import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
+import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TokenIcon } from '../../token-icon';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -22,15 +21,9 @@ export function TransactionDetailsPaidWithRow() {
   const { metamaskPay } = transactionMeta;
   const { chainId, tokenAddress } = metamaskPay || {};
 
-  const token = useSelector((state) =>
-    tokenAddress && chainId
-      ? getTokenByAccountAndAddressAndChainId(
-          state,
-          undefined,
-          tokenAddress as Hex,
-          chainId as Hex,
-        )
-      : null,
+  const token = useTokenWithBalance(
+    (tokenAddress ?? '0x0') as Hex,
+    (chainId ?? '0x0') as Hex,
   );
 
   if (!chainId || !tokenAddress || !token) {

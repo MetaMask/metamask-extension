@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PerpsRecentActivity } from './perps-recent-activity';
 
 const mockNavigate = jest.fn();
@@ -105,13 +106,15 @@ describe('PerpsRecentActivity', () => {
   it('shows "Recent Activity" header', () => {
     renderWithProvider(<PerpsRecentActivity />, mockStore);
 
-    expect(screen.getByText('Recent Activity')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsRecentActivity.message),
+    ).toBeInTheDocument();
   });
 
   it('shows "See All" button', () => {
     renderWithProvider(<PerpsRecentActivity />, mockStore);
 
-    expect(screen.getByText('See All')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsSeeAll.message)).toBeInTheDocument();
   });
 
   it('limits displayed transactions to maxTransactions', () => {
@@ -157,7 +160,7 @@ describe('PerpsRecentActivity', () => {
   it('"See All" navigates to PERPS_ACTIVITY_ROUTE', () => {
     renderWithProvider(<PerpsRecentActivity />, mockStore);
 
-    const seeAllButton = screen.getByText('See All');
+    const seeAllButton = screen.getByText(messages.perpsSeeAll.message);
     fireEvent.click(seeAllButton);
 
     expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);

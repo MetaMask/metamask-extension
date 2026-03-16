@@ -15,10 +15,6 @@ import { Hex, remove0x } from '@metamask/utils';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { toHex } from '@metamask/controller-utils';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
-import {
-  AppStateControllerGetStateAction,
-  AppStateControllerState,
-} from '../../../controllers/app-state-controller';
 import { enforceSimulations } from './enforced-simulations';
 
 const TOKEN_MOCK = '0x4567890abcdef1234567890abcdef1234567890a' as Hex;
@@ -55,10 +51,6 @@ describe('Enforced Simulations Utils', () => {
   let options: Parameters<typeof enforceSimulations>[0];
   let simulationData: SimulationData;
 
-  const getAppStateMock: jest.MockedFn<
-    AppStateControllerGetStateAction['handler']
-  > = jest.fn();
-
   const signDelegationMock: jest.MockedFn<
     DelegationControllerSignDelegationAction['handler']
   > = jest.fn();
@@ -68,17 +60,11 @@ describe('Enforced Simulations Utils', () => {
 
     const baseMessenger = new Messenger<
       MockAnyNamespace,
-      | AppStateControllerGetStateAction
-      | DelegationControllerSignDelegationAction,
+      DelegationControllerSignDelegationAction,
       never
     >({
       namespace: MOCK_ANY_NAMESPACE,
     });
-
-    baseMessenger.registerActionHandler(
-      'AppStateController:getState',
-      getAppStateMock,
-    );
 
     baseMessenger.registerActionHandler(
       'DelegationController:signDelegation',
@@ -87,8 +73,7 @@ describe('Enforced Simulations Utils', () => {
 
     messenger = new Messenger<
       'TransactionControllerInitMessenger',
-      | AppStateControllerGetStateAction
-      | DelegationControllerSignDelegationAction,
+      DelegationControllerSignDelegationAction,
       never,
       typeof baseMessenger
     >({
@@ -97,16 +82,8 @@ describe('Enforced Simulations Utils', () => {
     });
     baseMessenger.delegate({
       messenger,
-      actions: [
-        'AppStateController:getState',
-        'DelegationController:signDelegation',
-      ],
+      actions: ['DelegationController:signDelegation'],
     });
-
-    getAppStateMock.mockReturnValue({
-      enforcedSimulationsSlippage: 10,
-      enforcedSimulationsSlippageForTransactions: {},
-    } as AppStateControllerState);
 
     signDelegationMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
 
@@ -265,18 +242,13 @@ describe('Enforced Simulations Utils', () => {
           },
         ];
 
-        getAppStateMock.mockReturnValue({
-          enforcedSimulationsSlippage: 23,
-          enforcedSimulationsSlippageForTransactions: {},
-        } as AppStateControllerState);
-
         const { updateTransaction } = await enforceSimulations(options);
 
         const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
         updateTransaction?.(newTransaction);
 
         expect(newTransaction.txParams.data).toStrictEqual(
-          expect.stringContaining(remove0x(toHex(123000)).toLowerCase()),
+          expect.stringContaining(remove0x(toHex(110000)).toLowerCase()),
         );
       });
 
@@ -291,46 +263,13 @@ describe('Enforced Simulations Utils', () => {
           },
         ];
 
-        getAppStateMock.mockReturnValue({
-          enforcedSimulationsSlippage: 23,
-          enforcedSimulationsSlippageForTransactions: {},
-        } as AppStateControllerState);
-
         const { updateTransaction } = await enforceSimulations(options);
 
         const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
         updateTransaction?.(newTransaction);
 
         expect(newTransaction.txParams.data).toStrictEqual(
-          expect.stringContaining(remove0x(toHex(77000)).toLowerCase()),
-        );
-      });
-
-      it('if overridden', async () => {
-        simulationData.tokenBalanceChanges = [
-          {
-            ...BALANCE_CHANGE_MOCK,
-            isDecrease: false,
-            difference: toHex(100000),
-            address: TOKEN_MOCK,
-            standard: SimulationTokenStandard.erc20,
-          },
-        ];
-
-        getAppStateMock.mockReturnValue({
-          enforcedSimulationsSlippage: 10,
-          enforcedSimulationsSlippageForTransactions: {
-            [TRANSACTION_META_MOCK.id]: 15,
-          },
-        } as AppStateControllerState);
-
-        const { updateTransaction } = await enforceSimulations(options);
-
-        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
-        updateTransaction?.(newTransaction);
-
-        expect(newTransaction.txParams.data).toStrictEqual(
-          expect.stringContaining(remove0x(toHex(85000)).toLowerCase()),
+          expect.stringContaining(remove0x(toHex(90000)).toLowerCase()),
         );
       });
 

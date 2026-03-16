@@ -10,10 +10,9 @@ import {
 } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { InternalAccount } from '@metamask/keyring-internal-api';
-///: END:ONLY_INCLUDE_IF
 import { ChainId } from '../../../../shared/constants/network';
+import { transitionForward } from '../../ui/transition';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -53,14 +52,12 @@ import {
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
-///: END:ONLY_INCLUDE_IF
 
 const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
   const t = useContext(I18nContext);
@@ -131,9 +128,7 @@ const CoinButtons = ({
     throw new Error('defaultSwapsToken is required');
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
-  ///: END:ONLY_INCLUDE_IF
 
   const location = useLocation();
 
@@ -272,20 +267,10 @@ const CoinButtons = ({
 
     // Native Send flow
     await setCorrectChain();
-    let params;
-    if (trackingLocation !== 'home') {
-      params = { chainId: chainId.toString() };
-    }
-    navigateToSendRoute(navigate, params);
-  }, [
-    chainId,
-    account,
-    setCorrectChain,
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    handleSendNonEvm,
-    ///: END:ONLY_INCLUDE_IF
-    trackingLocation,
-  ]);
+    const params =
+      trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
+    transitionForward(() => navigateToSendRoute(navigate, params));
+  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     setShowTabOpenedToast(true);
@@ -321,11 +306,13 @@ const CoinButtons = ({
       : hexChainOrAssetId;
 
     // Handle clicking from the wallet or native asset overview page
-    openBridgeExperience(
-      MetaMetricsSwapsEventSource.MainView,
-      chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-        ? getNativeAssetForChainId(chainIdToUse)
-        : undefined,
+    transitionForward(() =>
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+          ? getNativeAssetForChainId(chainIdToUse)
+          : undefined,
+      ),
     );
   }, [location, openBridgeExperience]);
 
@@ -345,8 +332,10 @@ const CoinButtons = ({
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+      transitionForward(() =>
+        navigate(
+          `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(selectedAccountGroup)}&${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+        ),
       );
     } else {
       // Show the traditional receive modal

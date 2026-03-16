@@ -35,14 +35,27 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
-        await accountListPage.checkAccountNameIsDisplayed('Account 1');
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
-        await accountListPage.checkAccountNameIsDisplayed('Account 2');
-
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          '$85,025.00',
+        await accountListPage.checkAccountNameIsDisplayedUnderWallet(
+          'Account 1',
+          'Wallet 1',
         );
+
+        await accountListPage.checkAccountNameIsDisplayedUnderWallet(
+          'Account 1',
+          'Wallet 2',
+        );
+
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+          balance: '$85,025.00',
+        });
+
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 2',
+          account: 'Account 1',
+          balance: '$0.00',
+        });
       },
     );
   });

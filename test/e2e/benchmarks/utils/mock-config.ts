@@ -20,10 +20,12 @@ export function shouldUseMockedRequests(): boolean {
 /**
  * Returns the appropriate mock function based on the current branch.
  *
- * - For PRs and feature branches: returns mockBenchmarkEndpoints function
- * - For main/release/* branches: returns a no-op function (no mocking, use real servers)
+ * PRs and local dev: full mock suite (mockBenchmarkEndpoints).
+ * main/release branches: no default mocks (pass-through). Individual tests
+ * that need specific mocks (e.g. onboarding-import-wallet) should provide
+ * their own testSpecificMock.
  *
- * Always returns a callable function so callers never receive undefined.
+ * @returns A function that accepts a mockttp server and returns mocked endpoints.
  */
 export function getTestSpecificMock(): (
   server: Mockttp,

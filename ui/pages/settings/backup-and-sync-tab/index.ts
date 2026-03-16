@@ -1,1 +1,1 @@
-export { default } from './backup-and-sync-tab.container';
+export { default } from './backup-and-sync-tab';

@@ -522,7 +522,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Home,
     weight: PermissionWeight.endowment_pageHome,
   }),
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t, subjectName }) => ({
     label: t('permission_manageAccounts'),
     description: t('permission_manageAccountsDescription', [
@@ -541,7 +540,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: PermissionWeight.endowment_keyring,
   }),
-  ///: END:ONLY_INCLUDE_IF
   [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
     label: t('permission_nameLookup'),
     description: t('permission_nameLookupDescription'),

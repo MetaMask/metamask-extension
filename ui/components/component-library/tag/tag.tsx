@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Text, Icon, IconSize, TextColor } from '@metamask/design-system-react';
 import { Icon as IconLegacy, IconSize as IconSizeLegacy } from '../icon';
 import { Text as TextLegacy } from '../text';

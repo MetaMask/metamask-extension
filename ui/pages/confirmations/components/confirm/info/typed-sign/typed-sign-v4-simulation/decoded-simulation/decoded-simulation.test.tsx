@@ -11,6 +11,7 @@ import {
   permitSignatureMsg,
   signatureMsgPermitRevokeDAI,
 } from '../../../../../../../../../test/data/confirmations/typed_sign';
+import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
 import PermitSimulation, {
   getStateChangeType,
   getStateChangeToolip,
@@ -146,8 +147,12 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findByText('Estimated changes')).toBeInTheDocument();
-    expect(await findByText('Spending cap')).toBeInTheDocument();
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_approve.message),
+    ).toBeInTheDocument();
     expect(await findByText('12,345')).toBeInTheDocument();
   });
 
@@ -164,9 +169,13 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findByText('Estimated changes')).toBeInTheDocument();
-    expect(await findByText('Spending cap')).toBeInTheDocument();
-    expect(await findByText('Unlimited')).toBeInTheDocument();
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_approve.message),
+    ).toBeInTheDocument();
+    expect(await findByText(messages.unlimited.message)).toBeInTheDocument();
   });
 
   it('renders "Unlimited" for backwards compatibility approve DAI', () => {
@@ -184,8 +193,10 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(queryByText('Spending cap')).toBeTruthy();
-    expect(queryByText('Unlimited')).toBeTruthy();
+    expect(
+      queryByText(messages.permitSimulationChange_approve.message),
+    ).toBeTruthy();
+    expect(queryByText(messages.unlimited.message)).toBeTruthy();
   });
 
   it('renders backwards compatibility revoke DAI', () => {
@@ -203,8 +214,8 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(queryByText('Revoke')).toBeTruthy();
-    expect(queryByText('Unlimited')).toBeNull();
+    expect(queryByText(messages.gatorPermissionsRevoke.message)).toBeTruthy();
+    expect(queryByText(messages.unlimited.message)).toBeNull();
   });
 
   it('render correctly for ERC712 token', async () => {
@@ -220,9 +231,15 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findByText('Estimated changes')).toBeInTheDocument();
-    expect(await findByText('Listing price')).toBeInTheDocument();
-    expect(await findByText('You list')).toBeInTheDocument();
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_nft_listing.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_listing.message),
+    ).toBeInTheDocument();
     expect(await findByText('#2101')).toBeInTheDocument();
   });
 
@@ -239,9 +256,15 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findByText('Estimated changes')).toBeInTheDocument();
-    expect(await findByText('You receive')).toBeInTheDocument();
-    expect(await findByText('You list')).toBeInTheDocument();
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_receive.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_listing.message),
+    ).toBeInTheDocument();
     expect(await findByText('#2233')).toBeInTheDocument();
   });
 
@@ -254,8 +277,12 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findByText('Estimated changes')).toBeInTheDocument();
-    expect(await findByText('Unavailable')).toBeInTheDocument();
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.simulationDetailsUnavailable.message),
+    ).toBeInTheDocument();
   });
 
   it('renders label only once if there are multiple state changes of same changeType', async () => {
@@ -277,7 +304,9 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findAllByText('Spending cap')).toHaveLength(1);
+    expect(
+      await findAllByText(messages.permitSimulationChange_approve.message),
+    ).toHaveLength(1);
   });
 
   it('for NFT permit label for receive should be "Listing price"', async () => {
@@ -295,7 +324,9 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findAllByText('Listing price')).toHaveLength(1);
+    expect(
+      await findAllByText(messages.permitSimulationChange_nft_listing.message),
+    ).toHaveLength(1);
   });
 
   describe('getStateChangeToolip', () => {
@@ -347,6 +378,8 @@ describe('DecodedSimulation', () => {
       mockStore,
     );
 
-    expect(await findAllByText('Spending cap')).toHaveLength(1);
+    expect(
+      await findAllByText(messages.permitSimulationChange_approve.message),
+    ).toHaveLength(1);
   });
 });

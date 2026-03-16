@@ -19,7 +19,7 @@ import {
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/modules/selectors';
+} from '../../../../shared/lib/selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';
@@ -34,7 +34,7 @@ import {
   JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({

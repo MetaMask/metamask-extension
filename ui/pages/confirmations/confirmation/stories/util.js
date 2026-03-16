@@ -2,12 +2,17 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { NetworkStatus } from '@metamask/network-controller';
 import configureStore from '../../../../store/store';
+import { HardwareWalletErrorProvider } from '../../../../contexts/hardware-wallets';
 import testData from '../../../../../.storybook/test-data';
 import { Box } from '../../../../components/component-library';
 import {
   mockMultichainNetworkState,
   mockNetworkState,
 } from '../../../../../test/stub/networks';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokenBalancesControllerTokenBalances,
+} from '../../../../../shared/lib/selectors/assets-migration';
 
 const STORE_MOCK = {
   ...testData,
@@ -63,9 +68,9 @@ const STORE_MOCK = {
       },
     },
     tokenList: {},
-    tokenBalances: testData.metamask.tokenBalances,
+    tokenBalances: getTokenBalancesControllerTokenBalances(testData),
     internalAccounts: testData.metamask.internalAccounts,
-    accountsByChainId: testData.metamask.accountsByChainId,
+    accountsByChainId: getAccountTrackerControllerAccountsByChainId(testData),
     accountTree: testData.metamask.accountTree,
     snaps: {
       'npm:@test/test-snap': {
@@ -92,32 +97,34 @@ export function PendingApproval({ children, requestData, state, type }) {
 
   return (
     <Provider store={configureStore(mockState)}>
-      <Box
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '592px',
-          width: '360px',
-          margin: '0 auto',
-        }}
-      >
+      <HardwareWalletErrorProvider>
         <Box
           style={{
             display: 'flex',
-            height: '100%',
             flexDirection: 'column',
+            height: '592px',
+            width: '360px',
+            margin: '0 auto',
           }}
         >
           <Box
             style={{
-              flex: '1 1 auto',
               display: 'flex',
+              height: '100%',
+              flexDirection: 'column',
             }}
           >
-            {children}
+            <Box
+              style={{
+                flex: '1 1 auto',
+                display: 'flex',
+              }}
+            >
+              {children}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </HardwareWalletErrorProvider>
     </Provider>
   );
 }

@@ -16,10 +16,10 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
   sumHexes,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`;

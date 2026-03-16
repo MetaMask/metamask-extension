@@ -47,7 +47,8 @@ jobs:
       # Environment variables used in production builds
       # Keep this list synchronized with:
       # * The environment variables exported by `.github/scripts/bundle.sh`
-      # * The environment variables used by the `publish-release` step in `.github/workflows/publish-release.yml`.
+      # * The environment variables used by the publish workflow in
+      #   `.github/workflows/publish-release-from-release-head.yml`.
       APPLE_BETA_CLIENT_ID: ${{ secrets.APPLE_BETA_CLIENT_ID }}
       APPLE_EXPERIMENTAL_CLIENT_ID: ${{ secrets.APPLE_EXPERIMENTAL_CLIENT_ID }}
       APPLE_FLASK_CLIENT_ID: ${{ secrets.APPLE_FLASK_CLIENT_ID }}
@@ -79,6 +80,7 @@ jobs:
       QUICKNODE_POLYGON_URL: ${{ secrets.QUICKNODE_POLYGON_URL }}
       QUICKNODE_SEI_URL: ${{ secrets.QUICKNODE_SEI_URL }}
       QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
+      QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -92,18 +94,17 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Run build
         run: ${{ inputs.build-command }}
 
       - name: Validate source maps
         if: ${{ inputs.validate-source-maps }}
-        run: yarn validate-source-maps
+        run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
 
       - name: Run mozilla-lint
         if: ${{ inputs.mozilla-lint }}

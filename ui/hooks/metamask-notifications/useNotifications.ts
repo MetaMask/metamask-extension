@@ -1,4 +1,11 @@
-import { useState, useCallback } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
@@ -17,6 +24,34 @@ import {
   setUserHasTurnedOffNotificationsOnce,
   updateNotificationSubscriptionExpiration,
 } from '../../contexts/metamask-notifications/notification-storage-keys';
+
+/**
+ * Internal: useState that only applies updates while mounted. Prevents
+ * "state updates on unmounted components" when async work completes after unmount.
+ *
+ * @param initialValue - The initial value of the state.
+ */
+function useSafeState<TValue>(
+  initialValue: TValue,
+): [TValue, Dispatch<SetStateAction<TValue>>] {
+  const [state, setState] = useState<TValue>(initialValue);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const setSafeState = useCallback((value: SetStateAction<TValue>) => {
+    if (isMountedRef.current) {
+      setState(value);
+    }
+  }, []);
+
+  return [state, setSafeState];
+}
 
 // Define KeyringType interface
 type KeyringType = {
@@ -44,9 +79,9 @@ export function useListNotifications(): {
 } {
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<unknown>(null);
-  const [notificationsData, setNotificationsData] = useState<
+  const [loading, setLoading] = useSafeState<boolean>(false);
+  const [error, setError] = useSafeState<unknown>(null);
+  const [notificationsData, setNotificationsData] = useSafeState<
     INotification[] | undefined
   >(undefined);
 
@@ -72,7 +107,7 @@ export function useListNotifications(): {
     } finally {
       setLoading(false);
     }
-  }, [dispatch]);
+  }, [dispatch, setLoading, setError, setNotificationsData]);
 
   return {
     listNotifications,
@@ -93,7 +128,7 @@ export function useCreateNotifications(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useSafeState<string | null>(null);
 
   const createNotifications = useCallback(async () => {
     setError(null);
@@ -106,7 +141,7 @@ export function useCreateNotifications(): {
       log.error(e);
       throw e;
     }
-  }, [dispatch]);
+  }, [dispatch, setError]);
 
   return {
     createNotifications,
@@ -130,7 +165,7 @@ export function useEnableNotifications(): {
 } {
   const dispatch = useDispatch();
 
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useSafeState<string | null>(null);
 
   const enableNotifications = useCallback(async () => {
     setError(null);
@@ -143,7 +178,7 @@ export function useEnableNotifications(): {
       log.error(e);
       throw e;
     }
-  }, [dispatch]);
+  }, [dispatch, setError]);
 
   return {
     enableNotifications,
@@ -162,8 +197,7 @@ export function useDisableNotifications(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useSafeState<string | null>(null);
 
   const disableNotifications = useCallback(async () => {
     setError(null);
@@ -176,7 +210,7 @@ export function useDisableNotifications(): {
       log.error(e);
       throw e;
     }
-  }, [dispatch]);
+  }, [dispatch, setError]);
 
   return {
     disableNotifications,

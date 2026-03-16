@@ -14,6 +14,7 @@ import {
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { SignatureRequestType } from '../../../types/confirm';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import LedgerInfo from './ledger-info';
 
 describe('LedgerInfo', () => {
@@ -68,9 +69,7 @@ describe('LedgerInfo', () => {
       mockStore,
     );
     expect(
-      getByText(
-        'Close any other software connected to your device and then click here to refresh.',
-      ),
+      getByText(messages.ledgerConnectionInstructionCloseOtherApps.message),
     ).toBeInTheDocument();
   });
 
@@ -100,7 +99,7 @@ describe('LedgerInfo', () => {
       mockStore,
     );
     expect(
-      getByText('Go to full screen to connect your Ledger.'),
+      getByText(messages.openFullScreenForLedgerWebHid.message),
     ).toBeInTheDocument();
   });
 });

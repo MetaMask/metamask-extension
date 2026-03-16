@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { AccountWalletType } from '@metamask/account-api';
 
 import { getWalletIdsByType } from '../../../../selectors/multichain-accounts/account-tree';

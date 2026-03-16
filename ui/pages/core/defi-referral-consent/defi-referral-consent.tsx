@@ -82,6 +82,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   // This is here to stop yarn verify-locales from removing these strings
   t('hyperliquidReferralSubtitle');
   t('gmxReferralSubtitle');
+  t('asterdexReferralSubtitle');
 
   return (
     <Box

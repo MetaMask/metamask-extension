@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { I18nContext } from '../../../contexts/i18n';
 
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';

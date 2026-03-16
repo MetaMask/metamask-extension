@@ -15,6 +15,7 @@ export const Tab = <TKey extends string = string>({
   isActive = false,
   name,
   onClick,
+  onMouseEnter,
   tabIndex = 0,
   tabKey,
   // Declared, but we are not rendering it explicitly (it's mainly to make JSX
@@ -53,6 +54,7 @@ export const Tab = <TKey extends string = string>({
         aria-selected={isActive}
         aria-disabled={disabled}
         onClick={handleClick}
+        onMouseEnter={onMouseEnter}
         disabled={disabled}
       >
         {name}

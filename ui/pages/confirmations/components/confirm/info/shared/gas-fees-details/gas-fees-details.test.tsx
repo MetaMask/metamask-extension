@@ -3,6 +3,7 @@ import React from 'react';
 
 import {
   SimulationError,
+  TransactionType,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
@@ -11,6 +12,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { GasFeesDetails } from './gas-fees-details';
 
 jest.mock('../../../../../../../store/actions', () => ({
@@ -115,7 +117,7 @@ describe('<GasFeesDetails />', () => {
       // Intentionally empty
     });
 
-    expect(queryByText('Speed')).not.toBeInTheDocument();
+    expect(queryByText(messages.speed.message)).not.toBeInTheDocument();
   });
 
   describe('when estimation failed', () => {
@@ -168,5 +170,33 @@ describe('<GasFeesDetails />', () => {
 
       expect(getByTestId('gas-fee-details-speed')).toBeInTheDocument();
     });
+  });
+
+  it('does not render speed row for musdClaim transactions', async () => {
+    const confirmation = {
+      ...genUnapprovedContractInteractionConfirmation({}),
+      type: TransactionType.musdClaim,
+    };
+    const store = configureStore(
+      getMockConfirmStateForTransaction(confirmation, {
+        metamask: {
+          preferences: {
+            showFiatInTestnets: true,
+            showConfirmationAdvancedDetails: false,
+          },
+        },
+      }),
+    );
+
+    const { queryByTestId } = renderWithConfirmContextProvider(
+      <GasFeesDetails />,
+      store,
+    );
+
+    await act(async () => {
+      // Intentionally empty
+    });
+
+    expect(queryByTestId('gas-fee-details-speed')).toBeNull();
   });
 });

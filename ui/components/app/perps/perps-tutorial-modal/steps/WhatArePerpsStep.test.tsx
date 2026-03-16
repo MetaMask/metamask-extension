@@ -1,23 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { PerpsTutorialStep } from '../../../../../ducks/perps';
 import WhatArePerpsStep from './WhatArePerpsStep';
-
-const mockDispatch = jest.fn();
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
-}));
-
-jest.mock('../../../../../hooks/useTheme', () => ({
-  useTheme: () => 'light',
 }));
 
 const mockStore = configureStore([]);
@@ -81,73 +69,17 @@ describe('WhatArePerpsStep', () => {
       );
     });
 
-    it('renders the continue button', () => {
+    it('renders decorative image with empty alt text for accessibility', () => {
       render(
         <Provider store={store}>
           <WhatArePerpsStep />
         </Provider>,
       );
 
-      expect(
-        screen.getByTestId('perps-tutorial-continue-button'),
-      ).toBeInTheDocument();
-    });
-
-    it('renders the skip button', () => {
-      render(
-        <Provider store={store}>
-          <WhatArePerpsStep />
-        </Provider>,
-      );
-
-      expect(
-        screen.getByTestId('perps-tutorial-skip-button'),
-      ).toBeInTheDocument();
-    });
-
-    it('renders the progress indicator', () => {
-      render(
-        <Provider store={store}>
-          <WhatArePerpsStep />
-        </Provider>,
-      );
-
-      // Progress indicator should be rendered
-      expect(
-        screen.getByTestId('perps-tutorial-progress-indicator'),
-      ).toBeInTheDocument();
-    });
-  });
-
-  describe('navigation', () => {
-    it('dispatches setTutorialActiveStep when continue is clicked', () => {
-      render(
-        <Provider store={store}>
-          <WhatArePerpsStep />
-        </Provider>,
-      );
-
-      fireEvent.click(screen.getByTestId('perps-tutorial-continue-button'));
-
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'perpsTutorial/setTutorialActiveStep',
-        payload: PerpsTutorialStep.GoLongOrShort,
-      });
-    });
-
-    it('dispatches setTutorialModalOpen(false) when skip is clicked', () => {
-      render(
-        <Provider store={store}>
-          <WhatArePerpsStep />
-        </Provider>,
-      );
-
-      fireEvent.click(screen.getByTestId('perps-tutorial-skip-button'));
-
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'perpsTutorial/setTutorialModalOpen',
-        payload: false,
-      });
+      const image = screen
+        .getByTestId('perps-tutorial-step-image')
+        .querySelector('img');
+      expect(image).toHaveAttribute('alt', '');
     });
   });
 

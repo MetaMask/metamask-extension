@@ -33,4 +33,3 @@ type Story = StoryObj<typeof Pna25Modal>;
 export const DefaultStory: Story = {};
 
 DefaultStory.storyName = 'Default';
-

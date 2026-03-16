@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { Anvil } from '../../../seeder/anvil';
 import { Driver } from '../../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
@@ -19,7 +19,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
@@ -99,7 +99,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [

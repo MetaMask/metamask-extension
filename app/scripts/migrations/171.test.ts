@@ -74,6 +74,44 @@ describe(`migration #${newVersion}`, () => {
       ).toStrictEqual({
         eip155: {
           '0x1': true,
+          '0x89': false,
+          '0xa': true,
+        },
+      });
+    });
+
+    it('preserves EVM token filter entries and adds selected custom EVM chain', async () => {
+      const oldState = {
+        meta: {
+          version: oldVersion,
+        },
+        data: {
+          NetworkOrderController: {},
+          PreferencesController: {
+            preferences: {
+              tokenNetworkFilter: {
+                '0x1': true,
+                '0x89': false,
+              },
+            },
+          },
+          MultichainNetworkController: {
+            selectedMultichainNetworkChainId: '0x483',
+            isEvmSelected: true,
+          },
+        },
+      };
+
+      const newState = await migrate(oldState);
+
+      expect(
+        (newState.data.NetworkOrderController as Record<string, unknown>)
+          .enabledNetworkMap,
+      ).toStrictEqual({
+        eip155: {
+          '0x1': true,
+          '0x89': false,
+          '0x483': true,
         },
       });
     });
@@ -560,6 +598,7 @@ describe(`migration #${newVersion}`, () => {
       ).toStrictEqual({
         eip155: {
           '0x1': true,
+          '0x89': false,
         },
       });
 
@@ -622,6 +661,9 @@ describe(`migration #${newVersion}`, () => {
       ).toStrictEqual({
         eip155: {
           '0x1': true,
+          '0x89': false,
+          '0xa': true,
+          '0xa4b1': true,
         },
       });
     });

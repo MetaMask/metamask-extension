@@ -6,7 +6,10 @@ import {
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
-import { tEn } from '../../../../../test/lib/i18n-helpers';
+import {
+  tEn,
+  enLocale as messages,
+} from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -253,7 +256,7 @@ describe('AlertModal', () => {
       mockStore,
     );
 
-    fireEvent.click(getByLabelText('Close'));
+    fireEvent.click(getByLabelText(messages.close.message));
     expect(onCloseMock).toHaveBeenCalledTimes(1);
   });
 
@@ -447,7 +450,7 @@ describe('AlertModal', () => {
           blockaidMockStore,
         );
 
-        expect(getByText(tEn(expectedKey) as string)).toBeInTheDocument();
+        expect(getByText(tEn(expectedKey))).toBeInTheDocument();
       });
     });
 
@@ -467,7 +470,7 @@ describe('AlertModal', () => {
       );
 
       expect(
-        getByText(tEn('blockaidAlertDescriptionOthers') as string),
+        getByText(tEn('blockaidAlertDescriptionOthers')),
       ).toBeInTheDocument();
     });
   });

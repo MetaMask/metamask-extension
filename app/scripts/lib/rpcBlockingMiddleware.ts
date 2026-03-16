@@ -1,8 +1,18 @@
 import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { InternalError, type SnapId } from '@metamask/snaps-sdk';
+import { type SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+
+/**
+ * State of the RPC blocking middleware.
+ * Uses a Set of symbols: when non-empty, requests are blocked.
+ * Use createRpcBlockingCallbacks to obtain onBeforeRequest/onAfterRequest for each operation.
+ * The middleware stays blocked until all blocking operations complete.
+ */
+export type RpcBlockingMiddlewareState = {
+  blockingSymbols: Set<symbol>;
+};
 
 type CreateRpcBlockingMiddlewareOptions = {
   /**
@@ -16,19 +26,39 @@ type CreateRpcBlockingMiddlewareOptions = {
   allowedOrigins: string[];
   /**
    * State of the middleware.
-   * Note: `isBlocked` is not concurrent safe - an operation may set `isBlocked` to `false` while a prior operation is still in progress, prematurely unblocking the middleware.
+   * Uses a Set of symbols: when non-empty, requests are blocked.
+   * Use createRpcBlockingCallbacks to obtain onBeforeRequest/onAfterRequest for each operation.
+   * The middleware stays blocked until all blocking operations complete.
    */
-  state: { isBlocked: boolean };
+  state: RpcBlockingMiddlewareState;
 };
 
 /**
- * Creates a JsonRpcMiddleware function that blocks requests to snaps when the state isBlocked is true.
+ * Creates a pair of callbacks for a single blocking operation.
+ * The callbacks must not be shared between operations.
+ *
+ * @param state - The RPC blocking middleware state.
+ * @returns Callbacks to pass to onBeforeRequest and onAfterRequest.
+ */
+export function createRpcBlockingCallbacks(state: RpcBlockingMiddlewareState): {
+  onBeforeRequest: () => void;
+  onAfterRequest: () => void;
+} {
+  const symbol = Symbol('rpc-blocking');
+  return {
+    onBeforeRequest: () => state.blockingSymbols.add(symbol),
+    onAfterRequest: () => state.blockingSymbols.delete(symbol),
+  };
+}
+
+/**
+ * Creates a JsonRpcMiddleware function that blocks requests to snaps when blockingSymbols is non-empty.
  *
  * @param options - The options for the middleware.
  * @param options.allowedOrigins - The list of origins that are allowed to bypass the blocking middleware.
  * @param options.errorMessage - The error message to return when requests are blocked.
- * @param options.state - The state of the middleware. Note: `isBlocked` is not concurrent safe - an operation may set `isBlocked` to `false` while a prior operation is still in progress, prematurely unblocking the middleware.
- * @returns A JsonRpcMiddleware function that blocks requests to snaps when the state isBlocked is true.
+ * @param options.state - The state of the middleware. Use createRpcBlockingCallbacks to obtain per-request callbacks.
+ * @returns A JsonRpcMiddleware function that blocks requests to snaps when blockingSymbols is non-empty.
  */
 export default function createRpcBlockingMiddleware({
   allowedOrigins,
@@ -36,7 +66,7 @@ export default function createRpcBlockingMiddleware({
   state,
 }: CreateRpcBlockingMiddlewareOptions): JsonRpcMiddleware<JsonRpcParams, Json> {
   return function rpcBlockingMiddleware(req, _res, next, end) {
-    if (!state.isBlocked) {
+    if (state.blockingSymbols.size === 0) {
       return next();
     }
 
@@ -44,7 +74,7 @@ export default function createRpcBlockingMiddleware({
 
     if (!origin) {
       return end(
-        new InternalError(
+        rpcErrors.internal(
           `No origin specified for request with method ${req.method}`,
         ),
       );

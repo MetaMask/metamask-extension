@@ -63,17 +63,19 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.PhishingController.c2DomainBlocklistLastFetched',
   'data.PhishingController.hotlistLastFetched',
   'data.PhishingController.stalelistLastFetched',
-  'data.PreferencesController.identities.0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastSelected',
-  'data.PreferencesController.identities.4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastSelected',
-  'data.PreferencesController.lostIdentities.0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastSelected',
   'data.ProfileMetricsController.initialDelayEndTimestamp',
   'data.RemoteFeatureFlagController.cacheTimestamp',
   'data.RemoteFeatureFlagController.remoteFeatureFlags',
+  'data.RemoteFeatureFlagController.thresholdCache',
+  'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountsController.internalAccounts.accounts',
   'data.AuthenticationController',
   'data.MetaMetricsController',
   'data.MultichainAssetsController',
+  // Token balances are fetched dynamically after unlock; pre-seeding them in the
+  // fixture prevents the "Fund your wallet" empty-state banner from appearing.
+  'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // Version that changes on every release

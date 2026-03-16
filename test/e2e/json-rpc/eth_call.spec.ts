@@ -3,7 +3,7 @@ import { keccak256 } from 'ethereum-cryptography/keccak';
 import { bytesToHex } from '@metamask/utils';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -16,7 +16,7 @@ describe('eth_call', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: {

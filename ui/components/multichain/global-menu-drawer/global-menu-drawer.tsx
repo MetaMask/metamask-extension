@@ -61,6 +61,8 @@ export const GlobalMenuDrawer = ({
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const enterFrameRef = useRef<number | null>(null);
   const wasOpenRef = useRef(false);
+  /** Tracks previous isOpen so we can run enter transition only when opening from closed (hamburger), not when mounting/restoring with open (back from page). */
+  const prevIsOpenRef = useRef<boolean | undefined>(undefined);
   const rootLayoutRef = useRef<HTMLElement | null>(null);
   const appContainerRef = useRef<HTMLElement | null>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -69,7 +71,7 @@ export const GlobalMenuDrawer = ({
   const hasPosition = Object.keys(drawerStyle).length > 0;
   const readyToShow = isOpen && (!usePortal || hasPosition);
 
-  // Custom transition: only start when we can show (have position in portal mode).
+  // Open drawer: use entering transition only when going from closed to open (hamburger click). When mounting or returning from a page with drawerOpen in URL, show immediately.
   useEffect(() => {
     if (readyToShow) {
       wasOpenRef.current = true;
@@ -77,22 +79,27 @@ export const GlobalMenuDrawer = ({
         clearTimeout(exitTimeoutRef.current);
         exitTimeoutRef.current = null;
       }
-      setDrawerPhase('entering');
-      enterFrameRef.current = requestAnimationFrame(() => {
+      const wasClosed = prevIsOpenRef.current === false;
+      if (wasClosed) {
+        setDrawerPhase('entering');
         enterFrameRef.current = requestAnimationFrame(() => {
-          enterFrameRef.current = null;
-          setDrawerPhase('open');
+          enterFrameRef.current = requestAnimationFrame(() => {
+            enterFrameRef.current = null;
+            setDrawerPhase('open');
+          });
         });
-      });
-      return () => {
-        if (enterFrameRef.current !== null) {
-          cancelAnimationFrame(enterFrameRef.current);
-          enterFrameRef.current = null;
-        }
-      };
+      } else {
+        setDrawerPhase('open');
+      }
+      prevIsOpenRef.current = true;
     }
     if (wasOpenRef.current && !isOpen) {
       wasOpenRef.current = false;
+      prevIsOpenRef.current = false;
+      if (enterFrameRef.current !== null) {
+        cancelAnimationFrame(enterFrameRef.current);
+        enterFrameRef.current = null;
+      }
       setDrawerPhase('exiting');
       exitTimeoutRef.current = setTimeout(() => {
         exitTimeoutRef.current = null;
@@ -105,12 +112,20 @@ export const GlobalMenuDrawer = ({
         }
       };
     }
-    return undefined;
+    if (!isOpen) {
+      prevIsOpenRef.current = false;
+    }
+    return () => {
+      if (enterFrameRef.current !== null) {
+        cancelAnimationFrame(enterFrameRef.current);
+        enterFrameRef.current = null;
+      }
+    };
   }, [isOpen, readyToShow]);
 
   const isDrawerMounted = drawerPhase !== null;
-  const isExiting = drawerPhase === 'exiting';
   const isEntering = drawerPhase === 'entering';
+  const isExiting = drawerPhase === 'exiting';
   const isDrawerOpen = drawerPhase === 'open';
 
   useLayoutEffect(() => {
@@ -193,17 +208,17 @@ export const GlobalMenuDrawer = ({
         height: `${rootLayoutRect.height}px`,
       });
 
-      // Fullscreen: 90px logo above content; sidepanel: no logo, overlay fills container
-      const logoHeight = isFullscreen ? 90 : 0;
-      if (logoHeight > 0) {
+      // Fullscreen: offset 90px so drawer sits below logo; sidepanel: no offset
+      const fullscreenLogoOffsetPx = 90;
+      if (isFullscreen) {
         setBackdropStyle({
           position: 'absolute',
-          top: `${logoHeight}px`,
+          top: `${fullscreenLogoOffsetPx}px`,
           left: 0,
           right: 0,
           bottom: 0,
         });
-        setContentTopOffset(logoHeight);
+        setContentTopOffset(fullscreenLogoOffsetPx);
       } else {
         setBackdropStyle({});
         setContentTopOffset(0);
@@ -286,7 +301,16 @@ export const GlobalMenuDrawer = ({
 
   const backdropOpacity = isDrawerOpen ? 1 : 0;
   const panelTransform =
-    isEntering || isExiting ? 'translateX(100%)' : 'translateX(0)';
+    isExiting || isEntering ? 'translateX(100%)' : 'translateX(0)';
+
+  const drawerPanelBaseClass =
+    'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
+  let drawerPanelClass = `${drawerPanelBaseClass} absolute inset-y-0 right-0 pl-10`;
+  if (isFullscreen) {
+    drawerPanelClass = `${drawerPanelBaseClass} absolute right-0`;
+  } else if (isSidepanel) {
+    drawerPanelClass = `${drawerPanelBaseClass} absolute inset-0`;
+  }
 
   const dialogContent = isDrawerMounted ? (
     <div
@@ -297,44 +321,47 @@ export const GlobalMenuDrawer = ({
       role="dialog"
       style={dialogPositionStyle}
     >
-      <div
-        className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
-        style={{
-          ...(isFullscreen && Object.keys(backdropStyle).length > 0
-            ? { ...backdropStyle, zIndex: 0 }
-            : { zIndex: 0 }),
-          opacity: backdropOpacity,
-          transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
-        }}
-        aria-hidden="true"
-        onClick={onClickOutside ? onClose : undefined}
-      />
+      {!isSidepanel && (
+        <div
+          className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
+          style={{
+            ...(isFullscreen && Object.keys(backdropStyle).length > 0
+              ? { ...backdropStyle, zIndex: 0 }
+              : { zIndex: 0 }),
+            opacity: backdropOpacity,
+            transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
+          }}
+          aria-hidden="true"
+          onClick={onClickOutside ? onClose : undefined}
+        />
+      )}
 
       {/* Drawer panel */}
       <div
-        className={
-          isFullscreen
-            ? 'overflow-hidden pointer-events-none absolute right-0 top-0 bottom-0 flex h-full transition-[transform] ease-in-out motion-reduce:transition-none'
-            : 'overflow-hidden pointer-events-none absolute inset-y-0 right-0 flex pl-10 h-full transition-[transform] ease-in-out motion-reduce:transition-none'
-        }
+        className={drawerPanelClass}
         style={{
+          zIndex: 1,
           ...(contentTopOffset
-            ? { zIndex: 1, top: `${contentTopOffset}px` }
-            : { zIndex: 1 }),
+            ? { top: `${contentTopOffset}px`, bottom: 0 }
+            : { top: 0, bottom: 0 }),
           transform: panelTransform,
           transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
         }}
       >
         <div
-          className="w-screen max-w-full pointer-events-auto h-full"
-          style={{ maxWidth: width }}
+          className="w-screen max-w-full pointer-events-auto h-full min-h-0"
+          style={
+            isSidepanel
+              ? { width: '100%', maxWidth: '100%' }
+              : { maxWidth: width }
+          }
         >
           <Box
-            className="h-full flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
+            className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
             backgroundColor={BoxBackgroundColor.BackgroundDefault}
           >
             {showCloseButton && (
-              <Box className="flex flex-row items-center justify-start p-4 w-full overflow-hidden">
+              <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
                   size={ButtonIconSize.Sm}
@@ -354,7 +381,7 @@ export const GlobalMenuDrawer = ({
 
             <Box
               flexDirection={BoxFlexDirection.Column}
-              className="flex-1 overflow-y-auto overflow-x-hidden"
+              className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
             >
               {children}
             </Box>

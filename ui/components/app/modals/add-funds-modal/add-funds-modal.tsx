@@ -29,7 +29,7 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 

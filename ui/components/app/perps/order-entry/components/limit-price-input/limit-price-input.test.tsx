@@ -3,9 +3,9 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { LimitPriceInput } from './limit-price-input';
 
-// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
     userHistory: [],
@@ -35,10 +35,7 @@ describe('LimitPriceInput', () => {
     limitPrice: '',
     onLimitPriceChange: jest.fn(),
     currentPrice: 45250.0,
-    direction: 'long' as const,
     midPrice: 45050.0,
-    bidPrice: 45000.0,
-    askPrice: 45100.0,
   };
 
   beforeEach(() => {
@@ -55,31 +52,16 @@ describe('LimitPriceInput', () => {
     it('displays the Limit Price label', () => {
       renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
     });
 
-    it('displays long presets (Mid, Bid, -1%, -2%)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="long" />,
-        mockStore,
-      );
+    it('displays Mid button as end accessory', () => {
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Bid')).toBeInTheDocument();
-      expect(screen.getByText('-1%')).toBeInTheDocument();
-      expect(screen.getByText('-2%')).toBeInTheDocument();
-    });
-
-    it('displays short presets (Mid, Ask, +1%, +2%)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="short" />,
-        mockStore,
-      );
-
-      expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Ask')).toBeInTheDocument();
-      expect(screen.getByText('+1%')).toBeInTheDocument();
-      expect(screen.getByText('+2%')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
     });
   });
 
@@ -130,46 +112,14 @@ describe('LimitPriceInput', () => {
     });
   });
 
-  describe('preset buttons', () => {
-    it('sets mid price when Mid preset is clicked (long)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="long" />,
-        mockStore,
-      );
+  describe('Mid button', () => {
+    it('sets mid price when Mid button is clicked', () => {
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('limit-price-preset-Mid'));
+      fireEvent.click(screen.getByTestId('limit-price-mid-button'));
 
-      // Mid price from mock is 45050.00
       expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
         expect.stringContaining('45,050'),
-      );
-    });
-
-    it('sets bid price when Bid preset is clicked (long)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="long" />,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('limit-price-preset-Bid'));
-
-      // Bid price from mock is 45000.00
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
-        expect.stringContaining('45,000'),
-      );
-    });
-
-    it('sets ask price when Ask preset is clicked (short)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="short" />,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('limit-price-preset-Ask'));
-
-      // Ask price from mock is 45100.00
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
-        expect.stringContaining('45,100'),
       );
     });
   });

@@ -32,10 +32,8 @@ class ActivityListPage {
     css: '.transaction-status-label--confirmed',
   };
 
-  private readonly confirmTransactionReplacementButton = {
-    text: 'Submit',
-    tag: 'button',
-  };
+  private readonly confirmTransactionReplacementButton =
+    '[data-testid="cancel-speedup-confirm-button"]';
 
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
@@ -63,6 +61,13 @@ class ActivityListPage {
 
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
+
+  private readonly transactionBreakdownAmount =
+    '[data-testid="transaction-breakdown-value-amount"]';
+
+  private readonly transactionStatusLabel = '.transaction-status-label';
+
+  private readonly popoverClose = '[data-testid="popover-close"]';
 
   private readonly viewTransactionOnExplorerButton = {
     text: 'View on block explorer',
@@ -232,6 +237,22 @@ class ActivityListPage {
 
   async checkSpeedUpInlineButtonIsPresent(): Promise<void> {
     await this.driver.waitForSelector(this.speedupInlineButton);
+  }
+
+  /**
+   * Checks that the spending cap value is displayed in the transaction details view.
+   * Must be called after clicking on a transaction to open its details.
+   *
+   * @param expectedValue - The expected spending cap text (e.g. '3 TST').
+   */
+  async checkSpendingCapValueInDetails(expectedValue: string): Promise<void> {
+    console.log(
+      `Check spending cap value ${expectedValue} in transaction details`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionBreakdownAmount,
+      text: expectedValue,
+    });
   }
 
   /**
@@ -494,6 +515,37 @@ class ActivityListPage {
   async clickCopyTransactionHashButton(): Promise<void> {
     console.log('Clicking copy transaction hash button');
     await this.driver.clickElement(this.copyTransactionHashButton);
+  }
+
+  async checkSwapActivityTransaction(options: {
+    swapFrom: string;
+    swapTo: string;
+    amount: string;
+  }): Promise<void> {
+    await this.openActivityTab();
+    await this.driver.waitForSelector(this.completedTransactionItems);
+
+    const swapLabel = `Swap ${options.swapFrom} to ${options.swapTo}`;
+    await this.driver.waitForSelector({ tag: 'p', text: swapLabel });
+
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: `-${options.amount} ${options.swapFrom}`,
+    });
+
+    await this.driver.clickElement({ tag: 'p', text: swapLabel });
+
+    await this.driver.waitForSelector({
+      css: this.transactionStatusLabel,
+      text: 'Confirmed',
+    });
+
+    await this.driver.waitForSelector({
+      css: this.transactionBreakdownAmount,
+      text: `-${options.amount} ${options.swapFrom}`,
+    });
+
+    await this.driver.clickElement(this.popoverClose);
   }
 }
 

@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, regularDelayMs } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -17,7 +17,7 @@ describe('Request Queueing chainId proxy sync', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),

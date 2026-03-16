@@ -144,8 +144,8 @@ jobs:
       # This is very simple right now, but is built to have future complexity
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
-        # Do not run benchmarks on a fork
-        if: ${{ env.IS_FORK == 'false' && (env.IS_RUN_EVERYTHING_BRANCH == 'true' || env.EVENT_NAME == 'pull_request') && steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        # Do not run benchmarks on a fork or in the merge queue
+        if: ${{ env.IS_FORK == 'false' && env.EVENT_NAME != 'merge_group' && steps.set-skip-everything.outputs.skip-everything != 'true' }}
         run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
 
       - name: Compute needs-e2e flag

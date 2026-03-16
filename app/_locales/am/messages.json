@@ -20,9 +20,6 @@
   "accountSelectionRequired": {
     "message": "መለያ መምረጥ ይኖርብዎታል!"
   },
-  "activityLog": {
-    "message": "የእንቅስቃሴ ምዝግብ ማስታወሻ"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask በመጠቀም የገዟቸውን ተለዋጭ ስሞች ያክሉ"
   },
@@ -293,9 +290,6 @@
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
-  },
   "insufficientBalance": {
     "message": "በቂ ያልሆነ ቀሪ ሂሳብ"
   },
@@ -386,9 +380,6 @@
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "አዲስ ዕውቂያ"
-  },
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
@@ -472,12 +463,6 @@
   "rejectAll": {
     "message": "ሁሉንም አትቀበል"
   },
-  "rejectTxsDescription": {
-    "message": "$1ግብይቶችን በጅምላ ውድቅ ሊያደርጉ ነው።"
-  },
-  "rejectTxsN": {
-    "message": "$1ግብይቶችን አትቀበል"
-  },
   "rejected": {
     "message": "ውድቅ የተደረገ"
   },
@@ -486,9 +471,6 @@
   },
   "removeAccount": {
     "message": "መለያ ያስወግዱ"
-  },
-  "removeAccountDescription": {
-    "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
   },
   "required": {
     "message": "የሚያስፈልግ"
@@ -575,9 +557,6 @@
   "speedUpCancellation": {
     "message": "ይህን ስረዛ ያፋጥኑ"
   },
-  "speedUpTransaction": {
-    "message": "ይህን ግብይት አፋጥን"
-  },
   "stateLogError": {
     "message": "የስቴት መዛግብትን መልሶ በማግኘት ሒደት የተፈጠረ ስህተት።"
   },
@@ -623,38 +602,11 @@
   "transaction": {
     "message": "ግብይት"
   },
-  "transactionCancelAttempted": {
-    "message": "ግብይት የመሰረዝ ሙከራ በነዳጅ ዋጋ $1በ $2ተደርጓል"
-  },
-  "transactionCancelSuccess": {
-    "message": "ግብይቱ በ$2ላይ በሚገባ ተሰርዟል"
-  },
-  "transactionConfirmed": {
-    "message": "ግብይት በ$2ተረጋግጧል።"
-  },
-  "transactionCreated": {
-    "message": "ግብይቱ በ$1ዋጋ በ$2የተፈጠረ ነው።"
-  },
-  "transactionDropped": {
-    "message": "ግብይት ወደ $2ዝቅ ብሏል።"
-  },
   "transactionError": {
     "message": "የግብይት ስህተት። በኮንትራት ኮድ የሚላኩ ልዩ ሁኔታዎች አሉ።"
   },
   "transactionErrorNoContract": {
     "message": "ከኮንትራት ውጭ ያለ አድራሻ ተግባር ለመደወል መሞከር።"
-  },
-  "transactionErrored": {
-    "message": "ግብይቱ እንከን አጋጥሞታል።"
-  },
-  "transactionResubmitted": {
-    "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"
-  },
-  "transactionSubmitted": {
-    "message": "ግብይቱ የቀረበው በነዳጅ ዋጋ $1በ$2ነው።"
-  },
-  "transactionUpdated": {
-    "message": "ግብይት የዘመነው በ $2ነው።"
   },
   "transfer": {
     "message": "ያስተላልፉ"
@@ -686,12 +638,6 @@
   "usedByClients": {
     "message": "በተለያዩ ደንበኞች ጥቅም ላይ የዋለ ነው"
   },
-  "userName": {
-    "message": "የተጣቃሚ ስም"
-  },
-  "viewContact": {
-    "message": "ዕውቂያን ይመልከቱ"
-  },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
   },
@@ -700,8 +646,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "የግል ዘር ሐረግዎ"
   }
 }

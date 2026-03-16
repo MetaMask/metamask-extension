@@ -23,9 +23,9 @@ import {
   Erc20TokenStreamPermission,
   NativeTokenPeriodicPermission,
   NativeTokenStreamPermission,
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
+  PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
+import { Hex } from '@metamask/utils';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
@@ -35,7 +35,7 @@ import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
   convertAmountPerSecondToAmountPerPeriod,
-  getDecimalizedHexValue,
+  formatDecimalShiftedValue,
   extractExpiryToReadableDate,
   GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
@@ -118,7 +118,7 @@ type ReviewGatorPermissionItemProps = {
   /**
    * The gator permission to display
    */
-  gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>;
+  gatorPermission: PermissionInfoWithMetadata;
 
   /**
    * The function to call when the revoke is clicked
@@ -220,6 +220,42 @@ export const ReviewGatorPermissionItem = ({
     [t],
   );
 
+  const formatValueAsRatePerSecond = useCallback(
+    (value: Hex | null | undefined) => {
+      if (!value) {
+        return 'Unknown';
+      }
+
+      const { symbol, decimals } = tokenMetadata;
+
+      const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
+      if (typeof decimals === 'number') {
+        return `${formattedValueWithSymbol}/sec`;
+      }
+
+      return `${formattedValueWithSymbol}/sec (raw units)`;
+    },
+    [tokenMetadata],
+  );
+
+  const formatValue = useCallback(
+    (value: Hex | null | undefined, placeholder: string = 'Unknown') => {
+      if (!value) {
+        return placeholder;
+      }
+
+      const { symbol, decimals } = tokenMetadata;
+
+      const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
+      if (typeof decimals === 'number') {
+        return formattedValueWithSymbol;
+      }
+
+      return `${formattedValueWithSymbol} (raw units)`;
+    },
+    [tokenMetadata],
+  );
+
   /**
    * Returns the token stream permission details
    *
@@ -230,7 +266,6 @@ export const ReviewGatorPermissionItem = ({
     (
       permission: NativeTokenStreamPermission | Erc20TokenStreamPermission,
     ): PermissionDetails => {
-      const { symbol, decimals } = tokenMetadata;
       const amountPerPeriod = convertAmountPerSecondToAmountPerPeriod(
         permission.data.amountPerSecond,
         'weekly',
@@ -239,7 +274,7 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value: `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
+          value: formatValue(amountPerPeriod),
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -250,20 +285,15 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
-            value: `${getDecimalizedHexValue(
-              permission.data.initialAmount || '0x0',
-              decimals,
-            )} ${symbol}`,
+            value: formatValue(
+              permission.data.initialAmount,
+              `0 ${tokenMetadata?.symbol}`,
+            ),
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value: permission.data.maxAmount
-              ? `${getDecimalizedHexValue(
-                  permission.data.maxAmount,
-                  decimals,
-                )} ${symbol}`
-              : t('unlimited'),
+            value: formatValue(permission.data.maxAmount, t('unlimited')),
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -273,7 +303,6 @@ export const ReviewGatorPermissionItem = ({
             ),
             testId: 'review-gator-permission-start-date',
           },
-
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
             value: getExpirationDate(permissionResponse.rules),
@@ -281,16 +310,20 @@ export const ReviewGatorPermissionItem = ({
           },
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
-            value: `${getDecimalizedHexValue(
-              permission.data.amountPerSecond,
-              decimals,
-            )} ${symbol}/sec`,
+            value: formatValueAsRatePerSecond(permission.data.amountPerSecond),
             testId: 'review-gator-permission-stream-rate',
           },
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate, permissionResponse.rules],
+    [
+      t,
+      formatValue,
+      formatValueAsRatePerSecond,
+      getExpirationDate,
+      permissionResponse.rules,
+      tokenMetadata,
+    ],
   );
 
   /**
@@ -303,14 +336,10 @@ export const ReviewGatorPermissionItem = ({
     (
       permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
     ): PermissionDetails => {
-      const { symbol, decimals } = tokenMetadata;
       return {
         amountLabel: {
           translationKey: 'amount',
-          value: `${getDecimalizedHexValue(
-            permission.data.periodAmount,
-            decimals,
-          )} ${symbol}`,
+          value: formatValue(permission.data.periodAmount),
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -337,7 +366,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, getExpirationDate, permissionResponse.rules],
+    [formatValue, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -388,7 +417,9 @@ export const ReviewGatorPermissionItem = ({
       case 'erc20-token-revocation':
         return getTokenRevocationPermissionDetails();
       default:
-        throw new Error(`Invalid permission type: ${permissionType}`);
+        throw new Error(
+          `Invalid permission type: ${permissionType as unknown as string}`,
+        );
     }
   }, [
     permissionType,
