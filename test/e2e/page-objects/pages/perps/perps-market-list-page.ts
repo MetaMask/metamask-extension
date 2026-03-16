@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { PERPS_MARKET_LIST_ROUTE } from '../../../tests/perps/helpers';
 
 /**
  * Page object for the Perps Market List (search / explore crypto).
@@ -8,6 +7,14 @@ import { PERPS_MARKET_LIST_ROUTE } from '../../../tests/perps/helpers';
  */
 export class PerpsMarketListPage {
   private readonly driver: Driver;
+
+  private readonly exploreMarketsRow = {
+    testId: 'perps-explore-markets-row',
+  };
+
+  /** Toast close button; dismissing it avoids ElementClickInterceptedError when it overlaps the explore row. */
+  private readonly toastCloseButton =
+    '.toasts-container__banner-base button[aria-label="Close"]';
 
   private readonly filterSelectButton = { testId: 'filter-select-button' };
 
@@ -52,14 +59,16 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Navigates to the Perps Market List route and waits for the page to load.
-   * Uses window.location.hash so the SPA router switches view without a full page reload,
-   * which keeps the extension context and avoids re-injecting the extension.
+   * Navigates to the Perps Market List by clicking the "Explore markets" row.
+   * Requires the Perps Home view to be visible (e.g. after navigateToPerpsHome()).
+   * Dismisses any visible toast first so it does not intercept the click; then uses
+   * clickElementUsingMouseMove for the row to avoid ElementClickInterceptedError.
    */
   async navigateToMarketList(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = '${PERPS_MARKET_LIST_ROUTE}';`,
-    );
+    await this.driver.waitForSelector(this.exploreMarketsRow);
+    await this.driver.clickElementSafe(this.toastCloseButton, 1500);
+    await this.driver.delay(300);
+    await this.driver.clickElementUsingMouseMove(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
   }
 

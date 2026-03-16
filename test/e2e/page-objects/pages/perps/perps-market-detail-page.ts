@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../tests/perps/helpers';
 
 /**
  * Page object for the Perps Market Detail page (single market, order entry).
@@ -120,18 +119,16 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Navigates to the market detail page for the given symbol.
-   * Uses window.location.hash so the SPA router switches view without a full page reload,
-   * which keeps the extension context and avoids re-injecting the extension.
+   * Navigates to the market detail page by clicking the market row in the Market List.
+   * Requires the Perps Market List to be visible (e.g. after navigateToMarketList()).
    * Use a symbol with no existing position (e.g. AVAX) to see Long/Short buttons.
    *
-   * @param symbol - Market symbol (e.g. 'AVAX', 'ETH').
+   * @param symbol - Market symbol (e.g. 'AVAX', 'ETH'). Colons are replaced with dashes to match the UI testid.
    */
   async navigateToMarket(symbol: string): Promise<void> {
-    const encoded = encodeURIComponent(symbol);
-    await this.driver.executeScript(
-      `window.location.hash = '${PERPS_MARKET_DETAIL_ROUTE}/${encoded}';`,
-    );
+    const marketRowTestId = `market-row-${symbol.replaceAll(':', '-')}`;
+    await this.driver.waitForSelector({ testId: marketRowTestId });
+    await this.driver.clickElement({ testId: marketRowTestId });
     await this.checkPageIsLoaded();
   }
 

@@ -8,22 +8,16 @@ import { PerpsPositionsBase } from './perps-positions-base';
  * @see ui/components/app/perps/perps-tab-view.tsx
  */
 export class PerpsHomePage extends PerpsPositionsBase {
-  private readonly addFundsButton =
-    '[data-testid="perps-balance-dropdown-add-funds"], [data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]';
+  private readonly addFundsButton = {
+    testId: 'perps-balance-dropdown-add-funds',
+  };
 
   private readonly balanceDropdownBalanceRow = {
     testId: 'perps-balance-dropdown-balance',
   };
 
-  private readonly balanceSection =
-    '[data-testid="perps-balance-dropdown"], [data-testid="perps-balance-actions"], [data-testid="perps-balance-actions-empty"]';
-
-  private readonly perpsHomeBackButton = {
-    testId: 'perps-home-back-button',
-  };
-
-  private readonly perpsHomeSearchButton = {
-    testId: 'perps-home-search-button',
+  private readonly balanceSection = {
+    testId: 'perps-balance-dropdown',
   };
 
   private readonly perpsLearnBasics = { testId: 'perps-learn-basics' };
@@ -32,6 +26,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsRecentActivitySeeAll = {
     testId: 'perps-recent-activity-see-all',
+  };
+
+  private readonly perpsExploreMarketsRow = {
+    testId: 'perps-explore-markets-row',
   };
 
   private readonly perpsTabView = {
@@ -52,10 +50,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
-  private readonly perpsWithdrawButton = {
-    testId: 'perps-balance-actions-withdraw',
-  };
-
   private readonly balanceDropdownWithdraw = {
     testId: 'perps-balance-dropdown-withdraw',
   };
@@ -67,28 +61,14 @@ export class PerpsHomePage extends PerpsPositionsBase {
   };
 
   /**
-   * Checks that the Perps Home page back button is visible.
-   */
-  async checkBackButtonIsVisible(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsHomeBackButton);
-  }
-
-  /**
    * Waits for the Perps Home view to be loaded and visible.
-   * The main Perps tab shows PerpsTabView (balance dropdown, positions, explore) with no back/search header.
+   * The main Perps tab shows PerpsTabView (balance dropdown, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.perpsTabView,
       this.perpsBalanceDropdown,
     ]);
-  }
-
-  /**
-   * Checks that the Perps Home page search button is visible.
-   */
-  async checkSearchButtonIsVisible(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsHomeSearchButton);
   }
 
   /**
@@ -116,10 +96,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
-   * Clicks the search button in the header (navigates to Market List).
+   * Clicks the "Explore markets" row (navigates to Perps Market List).
    */
-  async clickSearchButton(): Promise<void> {
-    await this.driver.clickElement(this.perpsHomeSearchButton);
+  async clickExploreMarketsRow(): Promise<void> {
+    await this.driver.clickElement(this.perpsExploreMarketsRow);
   }
 
   /**
