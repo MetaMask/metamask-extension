@@ -31,7 +31,7 @@ function createPatchStreamPair() {
   const uiStream = uiMux.createStream('patch-store');
   const backgroundStream = backgroundMux.createStream('patch-store');
 
-  return { uiStream, backgroundStream };
+  return { uiMux, uiStream, backgroundStream };
 }
 
 /**
@@ -355,6 +355,38 @@ describe('patch-store substream connection', () => {
           message:
             'Invalid response for patch-store stream request ID \'50\': Expected an array value, but received: "not-an-array"',
         }),
+      );
+    });
+
+    it('rejects pending requests when the stream is destroyed', async () => {
+      const { uiMux, uiStream } = createPatchStreamPair();
+      mockGetNextId.mockReturnValue(60);
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+      // Suppress the 'error' event that fires alongside 'close' on destroy
+      uiStream.on('error', () => undefined);
+
+      const patchesPromise = getStatePatches();
+      uiMux.destroy();
+
+      await expect(patchesPromise).rejects.toThrow(
+        'Patch-store substream closed, aborting request',
+      );
+    });
+
+    it('rejects pending requests when the stream finishes', async () => {
+      const { uiStream } = createPatchStreamPair();
+      mockGetNextId.mockReturnValue(70);
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+
+      const patchesPromise = getStatePatches();
+      uiStream.end();
+
+      await expect(patchesPromise).rejects.toThrow(
+        'Patch-store substream closed, aborting request',
       );
     });
   });

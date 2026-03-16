@@ -212,6 +212,18 @@ async function receiveMessage(
 }
 
 /**
+ * Fails all pending `getStatePatches` requests with a disconnect error. Called
+ * when the patch-store substream closes or finishes, so that callers do not
+ * hang indefinitely.
+ */
+function failPendingRequests() {
+  pendingGetStatePatchesRequests.forEach(({ reject }) => {
+    reject(new Error('Patch-store substream closed, aborting request'));
+  });
+  pendingGetStatePatchesRequests.clear();
+}
+
+/**
  * Listens and acts on for responses from previous `getStatePatches` requests
  * and `sendUpdate` notifications.
  *
@@ -234,6 +246,8 @@ export function setupPatchStoreSubstreamConnection(
   patchStoreSubstreamSingleton.on('data', (message) => {
     receiveMessage(message, handleSendUpdate);
   });
+  patchStoreSubstreamSingleton.on('finish', failPendingRequests);
+  patchStoreSubstreamSingleton.on('close', failPendingRequests);
 }
 
 /**
