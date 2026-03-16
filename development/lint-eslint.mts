@@ -33,6 +33,8 @@ const TYPE_SCRIPT_PROJECTS = [
 ];
 
 const MAX_BUFFER_BYTES = 1024 * 1024 * 250;
+const DEFAULT_MAX_FILES_PER_CHUNK = 1000;
+const DEFAULT_MAX_FILES_PER_CHUNK_IN_CI = 500;
 const JS_AND_SNAP_FILE_REGEX = /\.(?:js|snap)$/u;
 const PROJECT_FILE_REGEX = /\.[cm]?[jt]sx?$/u;
 
@@ -109,6 +111,29 @@ export function parseJobCount(value: string | undefined): number | null {
   if (!Number.isFinite(parsedValue) || parsedValue < 1) {
     throw new Error(
       `Invalid LINT_ESLINT_JOBS value "${value}". Expected an integer >= 1.`,
+    );
+  }
+
+  return parsedValue;
+}
+
+export function getDefaultMaxFilesPerChunk(): number {
+  return process.env.CI === 'true'
+    ? DEFAULT_MAX_FILES_PER_CHUNK_IN_CI
+    : DEFAULT_MAX_FILES_PER_CHUNK;
+}
+
+export function parseMaxFilesPerChunk(
+  value: string | undefined,
+): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const parsedValue = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsedValue) || parsedValue < 1) {
+    throw new Error(
+      `Invalid LINT_ESLINT_MAX_FILES_PER_CHUNK value "${value}". Expected an integer >= 1.`,
     );
   }
 
@@ -296,6 +321,7 @@ function getProjectLintFileNames(configPath: string): string[] {
 export function chunkByApproxCommandLength(
   items: string[],
   baseLength: number,
+  maxItemsPerChunk = Number.POSITIVE_INFINITY,
 ): string[][] {
   const maxLen = process.platform === 'win32' ? 7500 : 100000;
 
@@ -312,7 +338,10 @@ export function chunkByApproxCommandLength(
       continue;
     }
 
-    if (currentLength + itemLength > maxLen) {
+    if (
+      currentLength + itemLength > maxLen ||
+      currentChunk.length >= maxItemsPerChunk
+    ) {
       chunks.push(currentChunk);
       currentChunk = [item];
       currentLength = baseLength + itemLength;
@@ -384,6 +413,7 @@ export async function runChunkPool(
 export async function lintEslint({
   fix,
   jobCount,
+  maxFilesPerChunk = getDefaultMaxFilesPerChunk(),
   eslintClass = eslint.ESLint,
   runEslintFn = runEslint,
   getProjectLintFileNamesFn = getProjectLintFileNames,
@@ -391,6 +421,7 @@ export async function lintEslint({
 }: {
   fix: boolean;
   jobCount: number;
+  maxFilesPerChunk?: number;
   eslintClass?: typeof eslint.ESLint;
   runEslintFn?: RunEslintFn;
   getProjectLintFileNamesFn?: (configPath: string) => string[];
@@ -433,7 +464,11 @@ export async function lintEslint({
     ESLINT_BIN.length +
     eslintArgsWithDelimiter.join(' ').length +
     3;
-  const fileChunks = chunkByApproxCommandLength(filesToLint, baseCommandLength);
+  const fileChunks = chunkByApproxCommandLength(
+    filesToLint,
+    baseCommandLength,
+    maxFilesPerChunk,
+  );
 
   const combinedResults: eslint.ESLint.LintResult[] = [];
   let worstEslintExitCode = 0;
@@ -471,10 +506,16 @@ export async function lintEslint({
 async function main(): Promise<void> {
   const fix = process.argv.includes('--fix');
   const configuredJobCount = parseJobCount(process.env.LINT_ESLINT_JOBS);
+  const configuredMaxFilesPerChunk = parseMaxFilesPerChunk(
+    process.env.LINT_ESLINT_MAX_FILES_PER_CHUNK,
+  );
   const jobCount = configuredJobCount ?? getDefaultJobCount();
+  const maxFilesPerChunk =
+    configuredMaxFilesPerChunk ?? getDefaultMaxFilesPerChunk();
   const result = await lintEslint({
     fix,
     jobCount,
+    maxFilesPerChunk,
   });
 
   if (result.stderr) {
