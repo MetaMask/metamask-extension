@@ -7,7 +7,7 @@ import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
 import type { MetaMaskReduxState } from '../../../store/store';
 import {
   createToggleItem,
-  type ToggleItemDescriptionRenderer,
+  type ToggleItemConfig,
 } from '../shared/create-toggle-item';
 
 const selectIsDisabledByShieldSubscription = (state: MetaMaskReduxState) =>
@@ -15,7 +15,7 @@ const selectIsDisabledByShieldSubscription = (state: MetaMaskReduxState) =>
     state as unknown as Parameters<typeof getIsActiveShieldSubscription>[0],
   );
 
-const description: ToggleItemDescriptionRenderer = (t) =>
+const description: ToggleItemConfig['description'] = (t) =>
   t('securityAlertsDescription', [
     <a
       key="learn_more_link"
@@ -35,7 +35,6 @@ export const SecurityAlertsItem = createToggleItem({
   selector: getIsSecurityAlertsEnabled,
   action: setSecurityAlertsEnabled,
   dataTestId: 'securityAlert-toggle',
-  containerDataTestId: 'securityAlert',
   disabledSelector: selectIsDisabledByShieldSubscription,
   trackEvent: {
     event: MetaMetricsEventName.SettingsUpdated,

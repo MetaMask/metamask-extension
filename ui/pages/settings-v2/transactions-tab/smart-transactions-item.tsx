@@ -1,13 +1,13 @@
 import React from 'react';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import { setSmartTransactionsPreferenceEnabled } from '../../../store/actions';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors/smart-transactions';
 import {
   createToggleItem,
-  type ToggleItemDescriptionRenderer,
+  type ToggleItemConfig,
 } from '../shared/create-toggle-item';
 
-const description: ToggleItemDescriptionRenderer = (t) =>
+const description: ToggleItemConfig['description'] = (t) =>
   t('stxOptInSupportedNetworksDescription', [
     <a
       key="learn_more"
@@ -27,5 +27,4 @@ export const SmartTransactionsItem = createToggleItem({
   selector: getSmartTransactionsPreferenceEnabled,
   action: setSmartTransactionsPreferenceEnabled,
   dataTestId: 'settings-page-stx-opt-in-toggle',
-  containerDataTestId: 'advanced-setting-enable-smart-transactions',
 });

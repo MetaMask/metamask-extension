@@ -43,15 +43,17 @@ describe('TransactionsTab', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders custom items (transaction simulations, security alerts, smart transactions)', () => {
+    it('renders transaction simulations, security alerts, and smart transactions toggles', () => {
       renderWithProvider(<TransactionsTab />, mockStore);
 
       expect(
-        screen.getByTestId('useTransactionSimulations'),
+        screen.getByTestId('useTransactionSimulations-toggle'),
       ).toBeInTheDocument();
-      expect(screen.getByTestId('securityAlert')).toBeInTheDocument();
       expect(
-        screen.getByTestId('advanced-setting-enable-smart-transactions'),
+        screen.getByTestId('securityAlert-toggle'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('settings-page-stx-opt-in-toggle'),
       ).toBeInTheDocument();
     });
   });
