@@ -73,10 +73,7 @@ export function computeTotalExposure(params: {
         ? rateBn.times(elapsedSeconds)
         : new BigNumber(0);
     exposureAtExpiry = initial.plus(streamed);
-  }
-
-  // max amount is unlimited
-  if (maxAmount?.toLowerCase() === MAX_UINT256) {
+  } else if (maxAmount?.toLowerCase() === MAX_UINT256) {
     return null;
   }
 

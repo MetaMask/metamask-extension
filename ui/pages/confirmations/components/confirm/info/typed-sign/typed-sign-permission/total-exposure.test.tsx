@@ -57,52 +57,64 @@ describe('TotalExposure', () => {
   } as const;
 
   describe('computeTotalExposure', () => {
-    it('returns min of maxAmount and exposure at expiry when both are set', () => {
-      const result = computeTotalExposure({
-        initialAmount: '0x0',
-        maxAmount: '0x64', // 100
-        amountPerSecond: '0x1', // 1 per second
-        startTime: 1000,
-        expiry: 1050, // 50 seconds
-      });
-      expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(50); // 0 + 50*1 = 50, min(100, 50) = 50
-    });
-
-    it('returns maxAmount when exposure at expiry exceeds it', () => {
+    it('returns maxAmount when less than accrued exposure', () => {
       const result = computeTotalExposure({
         initialAmount: '0x0',
         maxAmount: '0x32', // 50
         amountPerSecond: '0x1',
         startTime: 1000,
-        expiry: 1100, // 100 seconds -> 100 exposure
+        expiry: 1100, // 100 seconds -> 100 accrued exposure
       });
       expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(50);
+      expect(result?.toNumber()).toBe(0x32);
     });
 
-    it('returns exposure at expiry when only expiry is set', () => {
+    it('returns maxAmount when less than initialAmount + accrued exposure', () => {
+      const result = computeTotalExposure({
+        initialAmount: '0x32', // 50
+        maxAmount: '0x64', // 100
+        amountPerSecond: '0x1',
+        startTime: 1000,
+        expiry: 1100, // 100 seconds -> 100 accrued exposure
+      });
+      expect(result).not.toBeNull();
+      expect(result?.toNumber()).toBe(0x64);
+    });
+
+    it('returns initialAmount + accrued exposure when it is less than maxAmount', () => {
+      const result = computeTotalExposure({
+        initialAmount: '0x14', // 20
+        maxAmount: '0x100', // 256
+        amountPerSecond: '0x1',
+        startTime: 1000,
+        expiry: 1100, // 100 seconds -> 100 accrued exposure
+      });
+      expect(result).not.toBeNull();
+      expect(result?.toNumber()).toBe(0x14 + 100);
+    });
+
+    it('returns initialAmount + accrued exposure when no maxAmount is set', () => {
       const result = computeTotalExposure({
         initialAmount: '0x64', // 100
         maxAmount: undefined,
         amountPerSecond: '0x1',
         startTime: 1000,
-        expiry: 1020, // 20 seconds
+        expiry: 1100, // 100 seconds -> 100 accrued exposure
       });
       expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(120); // 100 + 20*1
+      expect(result?.toNumber()).toBe(0x64 + 100);
     });
 
-    it('returns maxAmount when only maxAmount is set', () => {
+    it('returns maxAmount when no expiry is set', () => {
       const result = computeTotalExposure({
         initialAmount: '0x0',
-        maxAmount: '0x64',
+        maxAmount: '0x64', // 100
         amountPerSecond: '0x1',
         startTime: 1000,
         expiry: null,
       });
       expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(100);
+      expect(result?.toNumber()).toBe(0x64);
     });
 
     it('returns null (unlimited) when neither maxAmount nor expiry is set', () => {
@@ -116,7 +128,7 @@ describe('TotalExposure', () => {
       expect(result).toBeNull();
     });
 
-    it('returns initial amount only when elapsed seconds is zero or negative', () => {
+    it('returns initial amount only when elapsed seconds is zero', () => {
       const result = computeTotalExposure({
         initialAmount: '0x64', // 100
         maxAmount: undefined,
@@ -125,7 +137,7 @@ describe('TotalExposure', () => {
         expiry: 1000, // 0 seconds elapsed
       });
       expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(100);
+      expect(result?.toNumber()).toBe(0x64);
     });
 
     it('parses hex amounts correctly', () => {
@@ -137,10 +149,10 @@ describe('TotalExposure', () => {
         expiry: 10,
       });
       expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(20); // 0 + 10*2
+      expect(result?.toNumber()).toBe(0x2 * 10);
     });
 
-    it('returns null (unlimited) when maxAmount is max uint256', () => {
+    it('returns null (unlimited) only when maxAmount is max uint256 and expiry is null', () => {
       const maxUint256 =
         '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       const result = computeTotalExposure({
@@ -148,12 +160,26 @@ describe('TotalExposure', () => {
         maxAmount: maxUint256,
         amountPerSecond: '0x1',
         startTime: 1000,
-        expiry: 2000,
+        expiry: null,
       });
       expect(result).toBeNull();
     });
 
-    it('returns null (unlimited) when maxAmount is max uint256 in uppercase hex', () => {
+    it('returns exposure at expiry (not null) when expiry is set even if maxAmount is max uint256', () => {
+      const maxUint256 =
+        '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+      const result = computeTotalExposure({
+        initialAmount: '0x0',
+        maxAmount: maxUint256,
+        amountPerSecond: '0x1',
+        startTime: 1000,
+        expiry: 1050, // 50 seconds
+      });
+      expect(result).not.toBeNull();
+      expect(result?.toNumber()).toBe(50);
+    });
+
+    it('returns null (unlimited) when maxAmount is max uint256 in uppercase hex and expiry is null', () => {
       const maxUint256Upper =
         '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
       const result = computeTotalExposure({
@@ -161,7 +187,7 @@ describe('TotalExposure', () => {
         maxAmount: maxUint256Upper,
         amountPerSecond: '0x1',
         startTime: 1000,
-        expiry: 2000,
+        expiry: null,
       });
       expect(result).toBeNull();
     });
@@ -175,7 +201,7 @@ describe('TotalExposure', () => {
         expiry: 10, // 10 seconds
       });
       expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(10); // 0 + 10*1
+      expect(result?.toNumber()).toBe(10);
     });
 
     it('returns initial only when elapsed is negative (expiry before startTime)', () => {
@@ -187,7 +213,7 @@ describe('TotalExposure', () => {
         expiry: 500, // 500 seconds before start
       });
       expect(result).not.toBeNull();
-      expect(result?.toNumber()).toBe(100); // streamed = 0 when elapsed <= 0
+      expect(result?.toNumber()).toBe(0x64);
     });
   });
 
@@ -214,10 +240,24 @@ describe('TotalExposure', () => {
       expect(getByText(messages.unlimited.message)).toBeInTheDocument();
     });
 
-    it('renders unlimited when maxAmount is max uint256', () => {
+    it('renders unlimited when maxAmount is max uint256 and expiry is null', () => {
       const maxUint256 =
         '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       const { getByText } = renderWithConfirmContextProvider(
+        <TotalExposure
+          {...defaultErc20Props}
+          maxAmount={maxUint256}
+          expiry={null}
+        />,
+        getMockStore(),
+      );
+      expect(getByText(messages.unlimited.message)).toBeInTheDocument();
+    });
+
+    it('renders token amount (not unlimited) when maxAmount is max uint256 but expiry is set', () => {
+      const maxUint256 =
+        '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+      const { queryByText, container } = renderWithConfirmContextProvider(
         <TotalExposure
           {...defaultErc20Props}
           maxAmount={maxUint256}
@@ -225,7 +265,10 @@ describe('TotalExposure', () => {
         />,
         getMockStore(),
       );
-      expect(getByText(messages.unlimited.message)).toBeInTheDocument();
+      expect(queryByText(messages.unlimited.message)).not.toBeInTheDocument();
+      expect(container.textContent).toContain(
+        messages.confirmFieldTotalExposure.message,
+      );
     });
 
     it('renders token amount row when totalExposure is computed', () => {
