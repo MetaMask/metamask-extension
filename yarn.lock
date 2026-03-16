@@ -8014,9 +8014,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@8.0.0-preview-71413498f":
-  version: 8.0.0-preview-71413498f
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:8.0.0-preview-71413498f"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@8.1.0-preview-5d62ac60b":
+  version: 8.1.0-preview-5d62ac60b
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:8.1.0-preview-5d62ac60b"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -8029,8 +8029,13 @@ __metadata:
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/6c99f7fcfc621453e87eb37b224aa6be9ddca366004130b2641199aeb6dddeab669273a5e44999a5cac148649f49e16064cd27bcc3c7ce495fad9823f1557d22
+  checksum: 10/324def5b8b6e05974a0f2d61d4104a4d73dfa59012e62442b1b051703a3ce13768020a996b7d335da73fe64d21b8a3cda7fdca7f1dbfe0a5099cffa6c1169188
   languageName: node
+  linkType: hard
+
+"@metamask/selected-network-controller@npm:^25.0.0":
+  version: 25.0.0
+  resolution: "@metamask/selected-network-controller@npm:25.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/json-rpc-engine": "npm:^10.1.1"
@@ -33970,7 +33975,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@8.0.0-preview-71413498f"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@8.1.0-preview-5d62ac60b"
     "@metamask/selected-network-controller": "npm:^25.0.0"
     "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.0.5"
