@@ -228,6 +228,25 @@ describe('patch-store substream connection', () => {
   });
 
   describe('getStatePatches', () => {
+    it('throws when the patch-store substream has not been initialized', async () => {
+      // We have to isolate the module here because there's no way to reset
+      // `patchStoreSubstreamSingleton` once it's set
+      await jest.isolateModulesAsync(async () => {
+        const originalInTest = process.env.IN_TEST;
+        delete process.env.IN_TEST;
+        try {
+          const { getStatePatches: isolatedGetStatePatches } = await import(
+            './patch-store-substream-connection.js'
+          );
+          await expect(isolatedGetStatePatches()).rejects.toThrow(
+            'Patch-store substream has not been initialized, not sending message',
+          );
+        } finally {
+          process.env.IN_TEST = originalInTest;
+        }
+      });
+    });
+
     it('writes a getStatePatches JSON-RPC request to the substream', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const sentMessages: unknown[] = [];
@@ -308,11 +327,8 @@ describe('patch-store substream connection', () => {
       expect(patches).toStrictEqual([{ op: 'replace', path: ['foo'] }]);
     });
 
-    it('logs an error when a getStatePatches response result is not a valid patch array', async () => {
+    it('rejects when a getStatePatches response result is not a valid patch array', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
-      const consoleSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
       mockGetNextId.mockReturnValue(50);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
@@ -323,17 +339,17 @@ describe('patch-store substream connection', () => {
         result: 'not-an-array',
       };
 
-      // Do NOT await — the promise will never resolve because the result
-      // is invalid and the resolver is never called.
-      getStatePatches();
+      const patchesPromise = getStatePatches();
       backgroundStream.write(message);
-      await flushBufferedWrites();
+      // Note: We don't need to call flushBufferedWrites() because it will cause
+      // the rejection of the promise to happen out of band. Awaiting the next
+      // promise in the next step will accomplish the same goal.
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringMatching(
-          /^Invalid response for patch-store stream request ID '50': /u,
-        ),
-        message,
+      await expect(patchesPromise).rejects.toStrictEqual(
+        expect.objectContaining({
+          message:
+            'Invalid response for patch-store stream request ID \'50\': Expected an array value, but received: "not-an-array"',
+        }),
       );
     });
   });

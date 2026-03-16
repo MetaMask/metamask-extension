@@ -24,6 +24,7 @@ import {
 } from '@metamask/superstruct';
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import getNextId from '../../shared/lib/random-id';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 let patchStoreSubstreamSingleton: Substream | undefined;
 
@@ -85,7 +86,7 @@ async function sendMessage(message: JsonRpcRequest & { id: number }) {
     // The background side isn't always set up in tests, so just do nothing
     return;
   } else {
-    console.warn(
+    throw new Error(
       'Patch-store substream has not been initialized, not sending message',
     );
   }
@@ -123,9 +124,10 @@ function resolvePendingGetStatePatchesRequest(
 
     const [patchError, patches] = validate(result, PatchesStruct);
     if (patchError) {
-      console.error(
-        `Invalid response for patch-store stream request ID '${id}': ${patchError.message}`,
-        message,
+      request.reject(
+        rpcErrors.internal(
+          `Invalid response for patch-store stream request ID '${id}': ${patchError.message}`,
+        ),
       );
     } else {
       request.resolve(patches);
