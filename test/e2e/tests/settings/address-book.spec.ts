@@ -209,7 +209,7 @@ describe('Address Book', function (this: Suite) {
       },
     );
   });
-  it('TEST Deletes existing entry from address book', async function () {
+  it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()

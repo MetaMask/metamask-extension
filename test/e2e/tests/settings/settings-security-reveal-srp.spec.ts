@@ -6,7 +6,7 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('TEST Reveal SRP through settings', function () {
+describe('Reveal SRP through settings', function () {
   const testPassword = 'correct horse battery staple';
   const wrongTestPassword = 'test test test test';
 
