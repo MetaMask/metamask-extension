@@ -91,7 +91,6 @@ const blocklistedHosts = [
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
-const { mockNotificationServices } = require('./tests/notifications/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
@@ -1052,9 +1051,6 @@ async function setupMocking(
         statusCode: 200,
       };
     });
-
-  // Notification APIs
-  await mockNotificationServices(server);
 
   // Override notification list with empty response to prevent unread dot.
   // .always() ensures every fetch returns [] (not just the first one).
