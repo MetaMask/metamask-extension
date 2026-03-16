@@ -9,17 +9,22 @@ import {
   type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
+import { type DeflateOptions } from 'fflate';
 import {
-  type DeflateOptions,
-  Zip,
-  AsyncZipDeflate,
-  ZipPassThrough,
-} from 'fflate';
-import { noop, extensionToJs, type Manifest, Browser } from '../../helpers';
+  noop,
+  extensionToJs,
+  type Manifest,
+  type Browser,
+} from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
+import {
+  buildBrowserZipSource,
+  compressibleFileTypes,
+  getZipFilePath,
+} from './zip';
 
-const { RawSource, ConcatSource } = sources;
+const { RawSource } = sources;
 
 type Assets = Compilation['assets'];
 
@@ -29,46 +34,7 @@ export type EntryDescriptionNormalized = { import?: string[] } & Omit<
 >;
 
 const NAME = 'ManifestPlugin';
-const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
-
-/**
- * Adds the given asset to the zip file
- *
- * @param asset - The asset to add
- * @param assetName - The name of the asset
- * @param compress - Whether to compress the asset
- * @param compressionOptions - The options to use for compression
- * @param mtime - The modification time of the asset
- * @param zip - The zip file to add the asset to
- */
-function addAssetToZip(
-  asset: Buffer,
-  assetName: string,
-  compress: boolean,
-  compressionOptions: DeflateOptions | undefined,
-  mtime: number,
-  zip: Zip,
-): void {
-  const zipFile = compress
-    ? // AsyncZipDeflate uses workers
-      new AsyncZipDeflate(assetName, compressionOptions)
-    : // ZipPassThrough doesn't use workers
-      new ZipPassThrough(assetName);
-  zipFile.mtime = mtime;
-  zip.add(zipFile);
-  // Use a copy of the Buffer via `Buffer.from(asset)`, as Zip will *consume*
-  // it, which breaks things if we are compiling for multiple browsers at once.
-  // `Buffer.from` uses the internal pool, so it's superior to `new Uint8Array`
-  // if we don't need to pass it off to a worker thread.
-  //
-  // Additionally, in Node.js 22+ a Buffer marked as "Untransferable" (like
-  // ours) can't be passed to a worker, which `AsyncZipDeflate` uses.
-  // See: https://github.com/101arrowz/fflate/issues/227#issuecomment-2540024304
-  // this can probably be simplified to `zipFile.push(Buffer.from(asset), true);`
-  // if the above issue is resolved.
-  zipFile.push(compress ? new Uint8Array(asset) : Buffer.from(asset), true);
-}
 
 /**
  * A webpack plugin that generates extension manifests for browsers and organizes
@@ -80,26 +46,7 @@ export class ManifestPlugin<Z extends boolean> {
    * File types that can be compressed well using DEFLATE compression, used when
    * zipping assets.
    */
-  static compressibleFileTypes = new Set([
-    '.bmp',
-    '.cjs',
-    '.css',
-    '.csv',
-    '.eot',
-    '.html',
-    '.js',
-    '.json',
-    '.log',
-    '.map',
-    '.md',
-    '.mjs',
-    '.svg',
-    '.txt',
-    '.wasm',
-    '.vtt', // very slow to process?
-    '.wav',
-    '.xml',
-  ]);
+  static compressibleFileTypes = compressibleFileTypes;
 
   options: ManifestPluginOptions<Z>;
 
@@ -182,64 +129,23 @@ export class ManifestPlugin<Z extends boolean> {
     // process will run out of memory pretty quickly, and crash. Fun!
     for (const browser of browsers) {
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
-      const source = await new Promise<sources.Source>((resolve, reject) => {
-        // since Zipping is async, a past chunk could cause an error after we've
-        // started processing additional chunks. We'll use this errored flag to
-        // short-circuit the rest of the processing if that happens.
-        let errored = false;
-        const zipSource = new ConcatSource();
-        const zip = new Zip((error, data, final) => {
-          if (errored) return; // ignore additional errors
-          if (error) {
-            // set error flag to prevent additional processing
-            errored = true;
-            reject(error);
-          } else {
-            zipSource.add(new RawSource(Buffer.from(data)));
-            // we've received our final bit of data, return the zipSource
-            if (final) resolve(zipSource);
-          }
-        });
-
-        // add the browser's manifest.json file to the zip
-        addAssetToZip(
-          manifest.buffer(),
-          'manifest.json',
-          true,
-          compressionOptions,
-          mtime,
-          zip,
-        );
-
-        const message = `${++filesProcessed}/${totalWork} assets zipped for ${browser}`;
-        reportProgress(0, message, 'manifest.json');
-
-        for (const [assetName, asset] of assetsArray) {
-          if (errored) return;
-
-          const extName = path.extname(assetName);
-          if (excludeExtensions.includes(extName)) continue;
-
-          addAssetToZip(
-            asset.buffer(),
-            assetName,
-            ManifestPlugin.compressibleFileTypes.has(extName),
-            compressionOptions,
-            mtime,
-            zip,
-          );
+      const source = await buildBrowserZipSource({
+        assetEntries: assetsArray,
+        compressionOptions,
+        excludeExtensions,
+        manifest,
+        mtime,
+        onAssetAdded: (assetName) => {
           reportProgress(
             0,
             `${++filesProcessed}/${totalWork} assets zipped for ${browser}`,
             assetName,
           );
-        }
-
-        zip.end();
+        },
       });
 
       // add the zip file to webpack's assets.
-      const zipFilePath = outFilePath.replace(BROWSER_TEMPLATE_RE, browser);
+      const zipFilePath = getZipFilePath(outFilePath, browser);
       compilation.emitAsset(zipFilePath, source, {
         javascriptModule: false,
         compressed: true,
