@@ -234,7 +234,7 @@ describe('patch-store substream connection', () => {
       try {
         // We have to isolate the module here because there's no way to reset
         // `patchStoreSubstreamSingleton` once it's set.
-        jest.isolateModules(async () => {
+        await jest.isolateModulesAsync(async () => {
           // We have to use `require` rather than `import`: TypeScript requires
           // that we specify `.ts` as an extension, but Jest doesn't know how to
           // resolve it. Finally we have to prevent the line from getting broken
