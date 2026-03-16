@@ -278,7 +278,7 @@ class PrivacySettings {
     console.log(
       'Opt out data collection for marketing on privacy settings page',
     );
-    await this.toggleDataCollectionForMarketing();
+    await this.toggleDataCollectionForMarketing({ targetState: 'off' });
     await this.driver.waitForSelector(this.dataCollectionWarningMessage);
     await this.driver.clickElementAndWaitToDisappear(
       this.dataCollectionWarningAckButton,
@@ -360,18 +360,28 @@ class PrivacySettings {
     await this.driver.clickElement(this.autoDetectToken);
   }
 
-  async toggleParticipateInMetaMetrics(): Promise<void> {
+  async toggleParticipateInMetaMetrics({
+    targetState = 'on',
+  }: { targetState?: 'on' | 'off' } = {}): Promise<void> {
     console.log(
       'Toggle participate in meta metrics in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.participateInMetaMetricsToggle);
+    await this.driver.waitForSelector(
+      `${this.participateInMetaMetricsToggle}.toggle-button--${targetState}`,
+    );
   }
 
-  async toggleDataCollectionForMarketing(): Promise<void> {
+  async toggleDataCollectionForMarketing({
+    targetState = 'on',
+  }: { targetState?: 'on' | 'off' } = {}): Promise<void> {
     console.log(
       'Toggle data collection for marketing in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.dataCollectionForMarketingToggle);
+    await this.driver.waitForSelector(
+      `${this.dataCollectionForMarketingToggle}.toggle-button--${targetState}`,
+    );
   }
 }
 
