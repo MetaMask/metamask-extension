@@ -81,7 +81,7 @@ const mockSubmitRequestToBackground = jest
   .fn()
   .mockResolvedValue({ success: true });
 let latestPriceSubscriber:
-  | ((updates: Array<{ symbol: string; percentChange24h?: string }>) => void)
+  | ((updates: { symbol: string; percentChange24h?: string }[]) => void)
   | undefined;
 const mockPriceSubscribe = jest.fn((callback) => {
   latestPriceSubscriber = callback;
