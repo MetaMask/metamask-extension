@@ -316,8 +316,7 @@ describe('Transaction Controller Init', () => {
 
       TransactionControllerInit(requestMock);
 
-      const hooks =
-        transactionControllerClassMock.mock.calls[0][0].hooks;
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
 
       await hooks?.publish?.(mockTransactionMeta);
 
@@ -337,8 +336,7 @@ describe('Transaction Controller Init', () => {
 
       TransactionControllerInit(requestMock);
 
-      const hooks =
-        transactionControllerClassMock.mock.calls[0][0].hooks;
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
 
       await hooks?.publish?.({
         ...mockTransactionMeta,
