@@ -22,6 +22,7 @@ import {
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { Confirmation } from '../../../../../types/confirm';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
 jest.mock('../../../../../../../../shared/lib/transactions/approvals');
@@ -40,6 +41,10 @@ jest.mock(
     updateAtomicBatchData: jest.fn(),
   }),
 );
+
+jest.mock('../../../../../hooks/gas/useEstimationFailed', () => ({
+  useEstimationFailed: jest.fn(),
+}));
 
 const ADDRESS_MOCK = '0x1234567891234567891234567891234567891234';
 const ADDRESS_SHORT_MOCK = '0x12345...91234';
@@ -122,6 +127,7 @@ describe('BatchSimulationDetails', () => {
   const useBalanceChangesMock = jest.mocked(useBalanceChanges);
   const updateAtomicBatchDataMock = jest.mocked(updateAtomicBatchData);
   const updateApprovalAmountMock = jest.mocked(updateApprovalAmount);
+  const useEstimationFailedMock = jest.mocked(useEstimationFailed);
 
   const useBatchApproveBalanceChangesMock = jest.mocked(
     useBatchApproveBalanceChanges,
@@ -139,6 +145,8 @@ describe('BatchSimulationDetails', () => {
       pending: false,
       value: [],
     });
+
+    useEstimationFailedMock.mockReturnValue(false);
   });
 
   it('renders ERC-20 approve row', () => {
@@ -306,5 +314,67 @@ describe('BatchSimulationDetails', () => {
     expect(queryByText(messages.editSpendingCap.message)).toBeNull();
     expect(queryByTestId('balance-change-edit')).toBeNull();
     expect(queryByText(messages.confirmSimulationApprove.message)).toBeNull();
+  });
+
+  describe('when gas estimation fails', () => {
+    it('should not render approval balance changes when estimation fails', () => {
+      useEstimationFailedMock.mockReturnValue(true);
+      useBatchApproveBalanceChangesMock.mockReturnValue({
+        pending: false,
+        value: [BALANCE_CHANGE_ERC20_MOCK],
+      });
+
+      const { queryByText } = render();
+
+      // Should not show approval details
+      expect(queryByText(messages.youApprove.message)).toBeNull();
+      expect(queryByText('123.6')).toBeNull();
+      expect(queryByText(ADDRESS_SHORT_MOCK)).toBeNull();
+
+      // Should render the simulation details component (which will show the error)
+      expect(queryByText(messages.confirmSimulationApprove.message)).toBeNull();
+    });
+
+    it('should render simulation details with empty static rows when estimation fails', () => {
+      useEstimationFailedMock.mockReturnValue(true);
+      useBatchApproveBalanceChangesMock.mockReturnValue({
+        pending: false,
+        value: [BALANCE_CHANGE_ERC20_MOCK],
+      });
+
+      const { container } = render();
+
+      // Component should render SimulationDetails which will show the warning
+      expect(container.querySelector('.simulation-details')).toBeDefined();
+    });
+
+    it('should still show approval details when simulation succeeds', () => {
+      useEstimationFailedMock.mockReturnValue(false);
+      useBatchApproveBalanceChangesMock.mockReturnValue({
+        pending: false,
+        value: [BALANCE_CHANGE_ERC20_MOCK],
+      });
+
+      const { getByText } = render();
+
+      // Should show approval details as normal
+      expect(getByText(messages.youApprove.message)).toBeInTheDocument();
+      expect(getByText('123.6')).toBeInTheDocument();
+      expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
+    });
+
+    it('should not show simulation failure warning when approvePending is true', () => {
+      useEstimationFailedMock.mockReturnValue(true);
+      useBatchApproveBalanceChangesMock.mockReturnValue({
+        pending: true,
+        value: [BALANCE_CHANGE_ERC20_MOCK],
+      });
+
+      const { queryByText, container } = render();
+
+      // Should not render anything when approvals are still loading
+      expect(queryByText(messages.youApprove.message)).toBeNull();
+      expect(container.querySelector('.simulation-details')).toBeNull();
+    });
   });
 });

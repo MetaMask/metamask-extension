@@ -18,6 +18,7 @@ import { TokenStandard } from '../../../../../../../../shared/constants/transact
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -32,6 +33,8 @@ export function BatchSimulationDetails() {
 
   const { value: approveBalanceChanges, pending: approvePending } =
     useBatchApproveBalanceChanges() ?? {};
+
+  const estimationFailed = useEstimationFailed();
 
   const [isEditApproveModalOpen, setIsEditApproveModalOpen] = useState(false);
 
@@ -73,7 +76,7 @@ export function BatchSimulationDetails() {
         balanceChanges: finalBalanceChanges ?? [],
       },
     ];
-  }, [approveBalanceChanges, handleEdit]);
+  }, [approveBalanceChanges, handleEdit, t]);
 
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||
@@ -81,6 +84,19 @@ export function BatchSimulationDetails() {
     !transactionMeta?.txParams
   ) {
     return null;
+  }
+
+  // When gas estimation fails and approvals are not still loading,
+  // show the simulation failure warning instead of approval details
+  if (estimationFailed && !approvePending) {
+    return (
+      <SimulationDetails
+        transaction={transactionMeta}
+        staticRows={[]}
+        isTransactionsRedesign
+        enableMetrics
+      />
+    );
   }
 
   const nestedTransactionToEdit =
