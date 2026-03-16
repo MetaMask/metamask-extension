@@ -929,7 +929,7 @@ const MOCK_ETH_MUSD_QUOTE_STREAM = [
       priceData: {
         totalFromAmountUsd: '46957',
         totalToAmountUsd: '0.26697990944',
-        priceImpact: '0.9999943143746526',
+        priceImpact: '0.007135438233346954',
         totalFeeAmountUsd: '0',
       },
     },
