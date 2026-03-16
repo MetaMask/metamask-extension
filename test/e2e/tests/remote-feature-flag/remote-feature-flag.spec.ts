@@ -12,7 +12,7 @@ import {
   MOCK_META_METRICS_ID,
   MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
 } from '../../constants';
-import { Mockttp } from '../../mock-e2e';
+import { type MockedEndpoint, Mockttp } from '../../mock-e2e';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -85,12 +85,22 @@ describe('Remote feature flag', function (this: Suite) {
           .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockRemoteFeatureFlags,
       },
 
-      async ({ driver }: TestSuiteArguments) => {
+      async ({ driver, mockedEndpoint }: TestSuiteArguments) => {
         await loginWithBalanceValidation(driver);
-        const uiState = await getCleanAppState(driver);
-        assert.deepStrictEqual(uiState.metamask.remoteFeatureFlags, {});
+
+        // Intended delay to wait for any potential requests to be made
+        await driver.delay(5_000);
+        const requests = await (
+          mockedEndpoint as MockedEndpoint[]
+        )[0].getSeenRequests();
+        assert.equal(
+          requests.length,
+          0,
+          'Feature flags endpoint should not be called when basic functionality is off',
+        );
       },
     );
   });

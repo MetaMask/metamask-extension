@@ -674,6 +674,12 @@ class FixtureBuilderV2 {
     return this.withTransactionController({ transactions: [incomingTx] });
   }
 
+  withUseBasicFunctionalityDisabled(): this {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
+  }
+
   build() {
     return this.fixture;
   }
