@@ -36,7 +36,6 @@
   "AppStateController": {
     "activeQrCodeScanRequest": null,
     "addressSecurityAlertResponses": "object",
-    "appActiveTab": "undefined",
     "browserEnvironment": { "browser": "string", "os": "string" },
     "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
