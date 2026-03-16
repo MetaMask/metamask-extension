@@ -47,7 +47,10 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -96,6 +99,7 @@ export const MultichainBridgeQuoteCard = ({
     useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const gasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
@@ -118,6 +122,10 @@ export const MultichainBridgeQuoteCard = ({
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
   const shouldShowGasSponsored = useMemo(() => {
+    if (isHardwareWalletAccount) {
+      return false;
+    }
+
     if (gasSponsored) {
       return true;
     }
@@ -134,6 +142,7 @@ export const MultichainBridgeQuoteCard = ({
 
     return false;
   }, [
+    isHardwareWalletAccount,
     gasSponsored,
     insufficientBal,
     isCurrentNetworkGasSponsored,
@@ -287,7 +296,9 @@ export const MultichainBridgeQuoteCard = ({
                 <SuccessPill label={t('swapGasFeesSponsored')} />
               </Row>
             )}
-            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored &&
+              !isHardwareWalletAccount &&
+              activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
@@ -321,7 +332,8 @@ export const MultichainBridgeQuoteCard = ({
                 </Text>
               </Row>
             )}
-            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored &&
+              (isHardwareWalletAccount || !activeQuote.quote.gasIncluded) && (
               <Text
                 variant={TextVariant.bodySm}
                 color={

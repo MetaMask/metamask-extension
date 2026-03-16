@@ -230,29 +230,26 @@ describe('useTransactionCustomAmountAlerts', () => {
     });
   });
 
-  it('sets disableUpdate to true when PayHardwareAccount alert exists', () => {
+  it('does not block or hide results for PayHardwareAccount warning alert', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({
         alerts: [
           createMockAlert({
             key: AlertsName.PayHardwareAccount,
-            message: 'Hardware wallet not supported',
-            isBlocking: true,
-            severity: Severity.Danger,
+            message: 'Gas sponsorship unavailable for hardware wallets',
+            isBlocking: false,
+            severity: Severity.Warning,
           }),
         ],
-        hasDangerAlerts: true,
         hasAlerts: true,
-        hasUnconfirmedDangerAlerts: true,
       }),
     );
 
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
-      alertMessage: 'Hardware wallet not supported',
-      disableUpdate: true,
-      hideResults: true,
+      disableUpdate: false,
+      hideResults: false,
     });
   });
 });

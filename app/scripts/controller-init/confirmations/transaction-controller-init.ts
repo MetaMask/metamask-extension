@@ -41,6 +41,7 @@ import {
 } from '../../lib/transaction/metrics';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getTransactionById } from '../../lib/transaction/util';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
@@ -378,7 +379,18 @@ export async function publishHook({
 
   const { isExternalSign } = transactionMeta;
 
-  if (!isSmartTransaction || !sendBundleSupport || isExternalSign) {
+  const fromAddress = (transactionMeta.txParams.from as string)?.toLowerCase();
+  const fromKeyring = flatState?.keyrings?.find((kr: { accounts: string[] }) =>
+    kr.accounts.some((a: string) => a.toLowerCase() === fromAddress),
+  );
+  const keyringSupports7702 = fromKeyring
+    ? KEYRING_TYPES_SUPPORTING_7702.includes(fromKeyring.type as never)
+    : true;
+
+  if (
+    keyringSupports7702 &&
+    (!isSmartTransaction || !sendBundleSupport || isExternalSign)
+  ) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,

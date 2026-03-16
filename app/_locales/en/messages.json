@@ -548,10 +548,10 @@
     "message": "No quotes"
   },
   "alertPayHardwareAccountMessage": {
-    "message": "Hardware wallets aren't supported.\nSwitch wallets to continue."
+    "message": "Gas sponsorship isn't available for hardware wallets. You'll pay the network fee."
   },
   "alertPayHardwareAccountTitle": {
-    "message": "Wallet not supported"
+    "message": "Gas sponsorship unavailable"
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"

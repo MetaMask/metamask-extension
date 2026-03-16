@@ -8,14 +8,10 @@ import { AlertsName } from '../alerts/constants';
 
 const ALERTS_HIDE_RESULTS: string[] = [
   AlertsName.InsufficientPayTokenBalance,
-  AlertsName.PayHardwareAccount,
   AlertsName.SigningOrSubmitting,
 ];
 
-const ALERTS_DISABLE_UPDATE: string[] = [
-  AlertsName.PayHardwareAccount,
-  AlertsName.SigningOrSubmitting,
-];
+const ALERTS_DISABLE_UPDATE: string[] = [AlertsName.SigningOrSubmitting];
 
 export function useTransactionCustomAmountAlerts(): {
   alertMessage?: string;

@@ -302,5 +302,50 @@ describe('Transaction Controller Init', () => {
 
       expect(result).toStrictEqual({ transactionHash: '0xpayHash' });
     });
+
+    it('skips Delegation7702PublishHook for hardware wallet accounts', async () => {
+      const requestMock = buildInitRequestMock();
+      requestMock.getFlatState.mockReturnValue({
+        keyrings: [
+          {
+            type: 'Ledger Hardware',
+            accounts: ['0x0000000000000000000000000000000000000000'],
+          },
+        ],
+      });
+
+      TransactionControllerInit(requestMock);
+
+      const hooks =
+        transactionControllerClassMock.mock.calls[0][0].hooks;
+
+      await hooks?.publish?.(mockTransactionMeta);
+
+      expect(jest.mocked(Delegation7702PublishHook)).not.toHaveBeenCalled();
+    });
+
+    it('calls Delegation7702PublishHook for HD keyring accounts', async () => {
+      const requestMock = buildInitRequestMock();
+      requestMock.getFlatState.mockReturnValue({
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x0000000000000000000000000000000000000000'],
+          },
+        ],
+      });
+
+      TransactionControllerInit(requestMock);
+
+      const hooks =
+        transactionControllerClassMock.mock.calls[0][0].hooks;
+
+      await hooks?.publish?.({
+        ...mockTransactionMeta,
+        isExternalSign: true,
+      } as TransactionMeta);
+
+      expect(jest.mocked(Delegation7702PublishHook)).toHaveBeenCalled();
+    });
   });
 });
