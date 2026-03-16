@@ -1,0 +1,53 @@
+---
+description: Capture PR screenshots for UI changes using Playwright (already installed)
+alwaysApply: true
+---
+
+# PR Screenshots with Playwright
+
+When UI files are modified (under `ui/components/`, `ui/pages/`, `*.tsx`, `*.scss`), **always suggest capturing before/after screenshots** for the PR.
+
+## Screenshots folder
+
+```bash
+mkdir -p .pr-screenshots   # gitignored — safe to write here
+```
+
+## Capture a screenshot
+
+Playwright (`@playwright/test`) is already installed — no extra install needed:
+
+```bash
+# Full page
+npx playwright screenshot <url> .pr-screenshots/<slug>.png
+
+# Examples
+npx playwright screenshot http://localhost:9011 .pr-screenshots/storybook-component.png
+npx playwright screenshot http://localhost:8080 .pr-screenshots/dapp-before.png
+```
+
+## Available dev servers
+
+| Server | Port | Start command |
+|---|---|---|
+| Test dapp | `:8080` | `yarn dapp` |
+| Storybook | `:9011` | `yarn storybook` |
+| Extension popup | Load via `chrome://extensions` | `yarn start` |
+
+## Embed in PR description
+
+Place under `## **Screenshots/Recordings**` in the MetaMask PR template:
+
+```markdown
+### **Before**
+![description](.pr-screenshots/before.png)
+
+### **After**
+![description](.pr-screenshots/after.png)
+```
+
+## Rule
+
+- ALWAYS suggest screenshots when `ui/` files are changed
+- NEVER commit `.pr-screenshots/` (it is gitignored)
+- Prefer Storybook (`:9011`) for component-level shots; test dapp (`:8080`) for flow-level shots

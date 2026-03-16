@@ -1,0 +1,182 @@
+---
+description: Generate MetaMask PR description with optional Playwright screenshots
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# PR Automation
+
+## Trigger
+Activate when the developer types any of:
+- `/pr`
+- `/create-pr`
+- `Create PR Description`
+
+---
+
+## Step 1 — Analyze the changes
+
+```bash
+git diff main --name-only && echo "---STATS---" && git diff main --stat
+```
+
+- Categorize: `feat` / `fix` / `refactor` / `chore` / `bump` / `release`
+- Detect UI files: anything under `ui/components/`, `ui/pages/`, `ui/hooks/`, `ui/ducks/`, `ui/selectors/`, or matching `*.css`/`*.scss`/`*.tsx`/`*.jsx`
+
+---
+
+## Step 2 — Generate base PR description
+
+Use MetaMask's PR template structure:
+
+**Title** — Conventional Commits format (required for MetaMask PRs):
+- `feat(scope):` new feature
+- `fix(scope):` bug fix
+- `refactor(scope):` restructuring
+- `chore(scope):` maintenance
+
+**Description** — Fill the MetaMask PR template:
+
+```markdown
+## **Description**
+
+[What changed and why — answer: reason for change + improvement/solution]
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR?quickstart=1)
+
+## **Changelog**
+
+CHANGELOG entry: [user-facing description in past tense, or "null" if not end-user-facing]
+
+## **Related issues**
+
+Fixes:
+
+## **Manual testing steps**
+
+1. Go to this page...
+2.
+3.
+
+## **Screenshots/Recordings**
+
+### **Before**
+
+### **After**
+
+## **Pre-merge author checklist**
+
+- [ ] I've followed [MetaMask Contributor Docs](https://github.com/MetaMask/contributor-docs) and [MetaMask Extension Coding Standards](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/CODING_GUIDELINES.md).
+- [ ] I've completed the PR template to the best of my ability
+- [ ] I've included tests if applicable
+- [ ] I've documented my code using [JSDoc](https://jsdoc.app/) format if applicable
+- [ ] I've applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/LABELING_GUIDELINES.md)). Not required for external contributors.
+
+## **Pre-merge reviewer checklist**
+
+- [ ] I've manually tested the PR (e.g. pull and build branch, run the app, test code being changed).
+- [ ] I confirm that this PR addresses all acceptance criteria described in the ticket it closes and includes the necessary testing evidence such as recordings and or screenshots.
+```
+
+---
+
+## Step 3 — Ask for optional sections
+
+After showing the base description, ask:
+
+> "Would you like to add any of these optional sections?"
+> 1. 🐛 **Related Issue** — which GitHub issue this fixes
+> 2. 📝 **Changelog Entry** — confirm/edit the user-facing note
+> 3. 🧪 **Manual Testing Steps** — generate QA steps from changes
+> 4. 📸 **Screenshots** — capture UI with Playwright (already installed)
+
+Reply: `"none"`, `"all"`, or pick numbers like `"1, 3, 4"`
+
+---
+
+## Step 4 — Handle each optional section
+
+### 🐛 Related Issue
+Ask: "What issue number does this fix? (e.g. #1234)"
+Insert: `Fixes: #NNNN` under `## **Related issues**`
+
+### 📝 Changelog Entry
+Generate a user-facing, past-tense description from the diff.
+Ask the developer to confirm or edit.
+- End-user-facing: `CHANGELOG entry: Added/Fixed/Updated ...`
+- Not end-user-facing: `CHANGELOG entry: null`
+
+### 🧪 Manual Testing Steps
+Generate numbered steps based on detected changed files.
+Ask the developer to confirm or adjust.
+
+### 📸 Screenshots (uses Playwright — already in the project)
+
+Ask:
+1. "What's your dev server URL? (default: `http://localhost:8080` for MetaMask test dapp, or `http://localhost:9011` for storybook)"
+2. "Which pages/routes should I screenshot?" (suggest based on changed files — e.g. changed `ui/pages/onboarding-flow/` → suggest onboarding routes)
+
+For EACH route, run:
+
+```bash
+mkdir -p .pr-screenshots
+
+# Screenshot via Playwright CLI (already installed as @playwright/test)
+npx playwright screenshot <dev-url><route> .pr-screenshots/<route-slug>.png
+```
+
+Example for a dashboard route:
+```bash
+npx playwright screenshot http://localhost:8080/dashboard .pr-screenshots/dashboard.png
+```
+
+For capturing a specific state (after interaction):
+```bash
+# Use Playwright's codegen or write a quick inline script
+npx playwright screenshot http://localhost:8080/send .pr-screenshots/send-form.png
+```
+
+Reference screenshots in the PR under `## **Screenshots/Recordings**`:
+```markdown
+### **Before**
+<!-- [screenshots/recordings] -->
+
+### **After**
+![route description](.pr-screenshots/route-slug.png)
+```
+
+---
+
+## Step 5 — Create the PR (optional)
+
+If developer wants to open the PR directly, run:
+
+```bash
+# Lint and fix first
+yarn lint:changed:fix
+
+# Push branch
+git push -u origin HEAD
+
+# Create DRAFT PR (MetaMask requires draft initially)
+gh pr create --draft \
+  --title "feat(scope): your pr title" \
+  --body "$(cat <<'EOF'
+[assembled PR description here]
+EOF
+)"
+```
+
+Always open as **draft** — MetaMask policy requires draft until template is filled and CI passes.
+
+---
+
+## MetaMask-Specific Notes
+
+- **Always Conventional Commits** for PR title: `feat(scope):`, `fix(scope):`, etc.
+- **Always open as DRAFT** — never "Ready for review" unless explicitly asked
+- **UI files** in MetaMask: `ui/components/`, `ui/pages/`, `ui/hooks/`, `ui/ducks/`, `ui/selectors/`
+- **Playwright** is already installed (`@playwright/test` v1.55+) — no separate install needed
+- **Screenshots folder** `.pr-screenshots/` is gitignored
+- **Storybook** runs on port 9011 (`yarn storybook`) — good for component screenshots
+- **Test dapp** runs on port 8080 (`yarn dapp`) — good for flow screenshots

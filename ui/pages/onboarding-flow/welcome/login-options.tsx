@@ -146,6 +146,7 @@ export default function LoginOptions({
           {t('or')}
         </Text>
       </Box>
+      <Text>{'Hello World'}</Text>
       <Button
         data-theme={theme === ThemeType.dark ? ThemeType.light : ThemeType.dark}
         data-testid={
