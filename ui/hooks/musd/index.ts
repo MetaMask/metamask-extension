@@ -53,3 +53,5 @@ export {
 } from './useCustomAmount';
 
 export { useCanBuyMusd, type UseCanBuyMusdResult } from './useCanBuyMusd';
+
+export { isMerklClaimTransaction } from './useMerklClaimStatus';
