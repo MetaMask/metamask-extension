@@ -110,7 +110,7 @@ export const useMerklRewards = ({
         signal,
       );
 
-      if (!matchingReward || signal.aborted) {
+      if (!matchingReward || signal?.aborted) {
         return EMPTY_RESULT;
       }
 
@@ -124,7 +124,7 @@ export const useMerklRewards = ({
         rewardTokenAddress,
       );
 
-      if (signal.aborted) {
+      if (signal?.aborted) {
         return EMPTY_RESULT;
       }
 

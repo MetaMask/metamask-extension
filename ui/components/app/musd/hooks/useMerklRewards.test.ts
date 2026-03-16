@@ -1,10 +1,6 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
-import {
-  QueryClient,
-  QueryClientProvider,
-  notifyManager,
-} from '@tanstack/react-query';
+import { renderHook, act, cleanup } from '@testing-library/react-hooks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as merklClient from '../merkl-client';
 import {
   AGLAMERKL_ADDRESS_MAINNET,
@@ -118,7 +114,14 @@ describe('useMerklRewards', () => {
       typeof merklClient.getClaimedAmountFromContract
     >;
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Flush pending TanStack Query observer notification microtasks BEFORE
+    // the testing library unmounts hooks, preventing "state update on
+    // unmounted component" warnings from deferred scheduleMicrotask calls.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    cleanup();
     queryClient.clear();
     jest.restoreAllMocks();
   });
@@ -127,9 +130,6 @@ describe('useMerklRewards', () => {
     jest.clearAllMocks();
     setupSelectorMock();
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
-    // Synchronous scheduler prevents deferred microtask notifications from
-    // firing after @testing-library/react-hooks cleanup unmounts components.
-    notifyManager.setScheduler((cb) => cb());
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
