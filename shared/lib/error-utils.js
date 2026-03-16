@@ -168,7 +168,7 @@ export function getErrorHtml(
         footerSubstitutions,
       );
     footerContent =
-      withSubstitutions ??
+      withSubstitutions ||
       `${footerSubstitutions[0]} ${footerSubstitutions[1]} or ${footerSubstitutions[2]}`;
   } else {
     footerContent = (supportPart || restorePart || '').trim();
