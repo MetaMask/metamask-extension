@@ -154,22 +154,26 @@ export function getErrorHtml(
       supportLinkPart.trim(),
       restorePart.trim(),
     ];
-    const withSubstitutions =
-      getMessage(
-        preferredLocale,
-        localeMessages,
-        'criticalErrorFooter',
-        footerSubstitutions,
-      ) ||
-      getMessage(
-        'en',
-        enLocaleMessages,
-        'criticalErrorFooter',
-        footerSubstitutions,
-      );
-    footerContent =
-      withSubstitutions ||
-      `${footerSubstitutions[0]} ${footerSubstitutions[1]} or ${footerSubstitutions[2]}`;
+    const hardcodedFooter = `${footerSubstitutions[0]} ${footerSubstitutions[1]} or ${footerSubstitutions[2]}`;
+    let withSubstitutions;
+    try {
+      withSubstitutions =
+        getMessage(
+          preferredLocale,
+          localeMessages,
+          'criticalErrorFooter',
+          footerSubstitutions,
+        ) ||
+        getMessage(
+          'en',
+          enLocaleMessages,
+          'criticalErrorFooter',
+          footerSubstitutions,
+        );
+    } catch {
+      withSubstitutions = null;
+    }
+    footerContent = withSubstitutions || hardcodedFooter;
   } else {
     footerContent = (supportPart || restorePart || '').trim();
   }
