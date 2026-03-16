@@ -968,11 +968,6 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6,
-      "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 6
-    },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-periodic-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
       "Reselect: Identity function warnings": 4,
@@ -997,6 +992,12 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
       "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 6,
+      "Reselect: Identity function warnings": 4,
+      "Test errors: Uncaught Errors": 6,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.test.tsx": {
