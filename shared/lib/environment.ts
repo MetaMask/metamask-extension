@@ -1,6 +1,6 @@
 import { SupportedPermissionType } from '@metamask/gator-permissions-controller';
-import { getBooleanFlag } from '../lib/common-utils';
 import { ENVIRONMENT } from '../../development/build/constants';
+import { getBooleanFlag } from './common-utils';
 
 export const isProduction = (): boolean => {
   return (
