@@ -36,17 +36,17 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { maskObject } from '../../shared/modules/object.utils';
+import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { createCaipStream } from '../../shared/modules/caip-stream';
-import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import { createCaipStream } from '../../shared/lib/caip-stream';
+import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';

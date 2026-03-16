@@ -1,4 +1,4 @@
-import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
+import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 import {
   buildTableRows,
   buildBenchmarkSection,

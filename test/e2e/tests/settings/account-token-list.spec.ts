@@ -1,7 +1,7 @@
 import { MockttpServer, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -49,7 +49,7 @@ async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -65,6 +65,7 @@ async function mockPriceApi(mockServer: Mockttp) {
     }));
   const mockExchangeRates = await mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -89,8 +90,8 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
@@ -109,7 +110,7 @@ describe('Settings', function () {
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(
           driver,
-        ).checkMultichainAccountBalanceDisplayed('$42,500.00');
+        ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });
       },
     );
   });
@@ -117,13 +118,12 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .withShowFiatTestnetEnabled()
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withPreferencesController({
-            preferences: { showTestNetworks: true },
+            preferences: { showFiatInTestnets: true, showTestNetworks: true },
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -165,7 +165,11 @@ describe('Settings', function () {
   it('Should show crypto value when price checker setting is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withShowFiatTestnetEnabled().build(),
+        fixtures: new FixtureBuilderV2()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);

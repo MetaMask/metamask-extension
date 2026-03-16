@@ -13,7 +13,7 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -55,8 +55,8 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/modules/environment', () => ({
-  ...jest.requireActual('../../../../../../shared/modules/environment'),
+jest.mock('../../../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/environment'),
   getEnabledAdvancedPermissions: jest
     .fn()
     .mockReturnValue(['native-token-stream']),
@@ -236,6 +236,20 @@ describe('Info', () => {
 
       expect(
         screen.getByTestId('custom-amount-info-skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders send skeleton when loader is Send', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({
+        loader: ConfirmationLoader.Send,
+      });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('confirmation__send_info_skeleton'),
       ).toBeInTheDocument();
     });
   });

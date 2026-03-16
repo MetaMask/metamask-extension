@@ -163,6 +163,13 @@ async function setupMocking(
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: ({ headers: { host }, url }) => {
+      if (!host || !url) {
+        return {
+          response: {
+            statusCode: 200,
+          },
+        };
+      }
       if (blocklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
@@ -1165,6 +1172,19 @@ async function setupMocking(
         body: true,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
+        },
+      };
+    });
+
+  // On Ramp: Geolocation
+  await server
+    .forGet('https://on-ramp.api.cx.metamask.io/geolocation')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: 'US-TX',
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
         },
       };
     });

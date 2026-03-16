@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
@@ -50,6 +50,8 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
+export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
+
 const getTimerColor = (timeInSeconds: number) => {
   if (timeInSeconds <= 3) {
     return TextColor.errorDefault;
@@ -91,7 +93,7 @@ export const MultichainBridgeQuoteCard = ({
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
   const { isEstimatedReturnLow, isPriceImpactWarning, isPriceImpactError } =
-    useSelector(getValidationErrors);
+    useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
   const gasFeesSponsoredNetworkEnabled = useSelector(
@@ -295,6 +297,7 @@ export const MultichainBridgeQuoteCard = ({
                       : TextColor.textAlternative
                   }
                   style={{ textDecoration: 'line-through' }}
+                  data-testid="network-fees-included-original-amount"
                 >
                   {activeQuote.includedTxFees?.valueInCurrency
                     ? formatNetworkFee(

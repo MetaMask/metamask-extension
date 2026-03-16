@@ -240,6 +240,22 @@ class ActivityListPage {
   }
 
   /**
+   * Checks that the spending cap value is displayed in the transaction details view.
+   * Must be called after clicking on a transaction to open its details.
+   *
+   * @param expectedValue - The expected spending cap text (e.g. '3 TST').
+   */
+  async checkSpendingCapValueInDetails(expectedValue: string): Promise<void> {
+    console.log(
+      `Check spending cap value ${expectedValue} in transaction details`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionBreakdownAmount,
+      text: expectedValue,
+    });
+  }
+
+  /**
    * Check if a transaction at the specified index displays the expected action text in the activity list.
    *
    * @param params - The parameters object containing:

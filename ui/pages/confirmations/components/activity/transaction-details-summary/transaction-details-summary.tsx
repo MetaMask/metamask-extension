@@ -75,6 +75,7 @@ export function TransactionDetailsSummary() {
           <TransactionSummaryLine
             key={tx.id}
             transactionMeta={tx}
+            relatedTransactions={requiredTransactions}
             payTokenAddress={payTokenAddress}
             payTokenChainId={payTokenChainId}
             isLast={index === transactions.length - 1}
@@ -87,11 +88,13 @@ export function TransactionDetailsSummary() {
 
 function TransactionSummaryLine({
   transactionMeta,
+  relatedTransactions,
   payTokenAddress,
   payTokenChainId,
   isLast,
 }: {
   transactionMeta: TransactionMeta;
+  relatedTransactions: TransactionMeta[];
   payTokenAddress: Hex | undefined;
   payTokenChainId: Hex | undefined;
   isLast: boolean;
@@ -120,7 +123,11 @@ function TransactionSummaryLine({
     type === TransactionType.perpsDeposit
   ) {
     return (
-      <ReceiveSummaryLine transactionMeta={transactionMeta} isLast={isLast} />
+      <ReceiveSummaryLine
+        transactionMeta={transactionMeta}
+        relatedTransactions={relatedTransactions}
+        isLast={isLast}
+      />
     );
   }
 
@@ -206,14 +213,17 @@ const HYPERLIQUID_NETWORK_NAME = 'Hyperliquid';
 
 function ReceiveSummaryLine({
   transactionMeta,
+  relatedTransactions,
   isLast,
 }: {
   transactionMeta: TransactionMeta;
+  relatedTransactions: TransactionMeta[];
   isLast: boolean;
 }) {
   const t = useI18nContext() as TranslateFunction;
   const { type, chainId, txParams } = transactionMeta;
   const isPerpsDeposit = type === TransactionType.perpsDeposit;
+  const isMusdConversion = type === TransactionType.musdConversion;
 
   const targetTokenAddress = txParams?.to as Hex | undefined;
 
@@ -246,10 +256,26 @@ function ReceiveSummaryLine({
       ? t('bridgeReceive', [tokenSymbol, networkName])
       : t('bridgeReceiveLoading');
 
+  let hash: string | undefined =
+    transactionMeta?.hash === '0x0' ? undefined : transactionMeta?.hash;
+
+  if (isMusdConversion && !hash) {
+    // For same-chain aggregator routes (e.g. Linea USDT/DAI), the relay
+    // strategy skips polling and sets the musdConversion hash to '0x0'.
+    // Fall back to the relay deposit's on-chain hash, which represents
+    // the actual swap transaction where mUSD was received.
+    const relayDepositTx = relatedTransactions.find((tx) =>
+      hasTransactionType(tx, [TransactionType.relayDeposit]),
+    );
+    if (relayDepositTx?.hash && relayDepositTx.hash !== '0x0') {
+      hash = relayDepositTx.hash as Hex;
+    }
+  }
+
   return (
     <SummaryLine
       chainId={chainId}
-      hash={transactionMeta.hash}
+      hash={hash}
       isHyperliquid={isPerpsDeposit}
       status={transactionMeta.status}
       time={transactionMeta.submittedTime ?? transactionMeta.time}

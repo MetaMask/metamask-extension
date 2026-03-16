@@ -12,6 +12,7 @@
     "isAccountTreeSyncingInProgress": "boolean"
   },
   "AccountsController": {
+    "accountIdByAddress": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
   "AddressBookController": { "addressBook": "object" },

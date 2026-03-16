@@ -1,12 +1,17 @@
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import { type MetaMaskReduxState } from '../../../selectors';
-import { selectBridgeHistoryItemByHash } from '../../../ducks/bridge-status/selectors';
+import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import {
+  selectBridgeHistoryForApprovalTxId,
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+} from '../../../ducks/bridge-status/selectors';
 import { type TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import { type MetaMaskReduxState } from '../../../selectors';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
@@ -26,12 +31,25 @@ export function useBridgeTokenDisplayData({
   const initialTransaction =
     transactionGroup?.initialTransaction || transaction;
 
-  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+  const bridgeHistoryItemByHash = useSelector((state: MetaMaskReduxState) =>
     selectBridgeHistoryItemByHash(
       state,
       transactionGroup?.initialTransaction?.hash ?? transaction?.hash,
     ),
   );
+  const bridgeHistoryItemForOriginalTxId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForOriginalTxMetaId(state, initialTransaction?.id),
+  );
+  const bridgeHistoryItemWithApprovalTxId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForApprovalTxId(state, initialTransaction?.id),
+  );
+
+  const bridgeHistoryItem: BridgeHistoryItem | undefined =
+    bridgeHistoryItemByHash ??
+    bridgeHistoryItemForOriginalTxId ??
+    bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(

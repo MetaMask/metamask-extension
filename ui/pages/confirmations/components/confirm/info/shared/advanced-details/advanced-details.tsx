@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getIsSmartTransaction,
   type SmartTransactionsState,
-} from '../../../../../../../../shared/modules/selectors';
+} from '../../../../../../../../shared/lib/selectors';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,

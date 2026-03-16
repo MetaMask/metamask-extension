@@ -395,9 +395,6 @@
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Jauna kontaktpersona"
-  },
   "newContract": {
     "message": "Jauns līgums"
   },
@@ -489,9 +486,6 @@
   },
   "removeAccount": {
     "message": "Konta noņemšana"
-  },
-  "removeAccountDescription": {
-    "message": "Šis darījums tiks dzēsts no jūsu maka. Pirms turpiniet, lūdzu, pārliecinieties, ka jums ir šī importētā konta oriģinālā sēklas frāze vai privātā atslēga. Jūs varat importēt vai izveidot kontus vēlreiz, izmantojot konta nolaižamo izvēlni."
   },
   "required": {
     "message": "Nepieciešams"
@@ -658,12 +652,6 @@
   },
   "usedByClients": {
     "message": "Izmanto dažādi klienti"
-  },
-  "userName": {
-    "message": "Lietotājvārds"
-  },
-  "viewContact": {
-    "message": "Skatīt līgumu"
   },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"

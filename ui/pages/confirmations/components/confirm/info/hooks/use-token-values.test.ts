@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';

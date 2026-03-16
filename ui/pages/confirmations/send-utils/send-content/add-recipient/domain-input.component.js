@@ -11,7 +11,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../../../../shared/modules/hexstring-utils';
+} from '../../../../../../shared/lib/hexstring-utils';
 import {
   ButtonIcon,
   IconName,

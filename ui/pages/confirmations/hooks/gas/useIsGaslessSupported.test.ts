@@ -6,7 +6,7 @@ import { isRelaySupported } from '../../../../store/actions';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
-jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../../shared/lib/selectors');
 jest.mock('../../../../store/controller-actions/transaction-controller');
 
 jest.mock('../../../../store/actions', () => ({

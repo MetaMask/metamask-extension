@@ -87,31 +87,6 @@ describe('AccountDetailsRow', () => {
   });
 
   describe('End Accessory Variations', () => {
-    it('should render with edit button accessory', () => {
-      const editButton = (
-        <ButtonIcon
-          iconName={IconName.Edit}
-          color={IconColor.iconAlternative}
-          size={ButtonIconSize.Md}
-          ariaLabel={messages.editAccountName.message}
-          data-testid="edit-button"
-        />
-      );
-
-      render(
-        <AccountDetailsRow
-          label="Account Name"
-          value="My Account"
-          endAccessory={editButton}
-        />,
-      );
-
-      expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-      expect(
-        screen.getByLabelText(messages.editAccountName.message),
-      ).toBeInTheDocument();
-    });
-
     it('should render with arrow button accessory', () => {
       const arrowButton = (
         <ButtonIcon

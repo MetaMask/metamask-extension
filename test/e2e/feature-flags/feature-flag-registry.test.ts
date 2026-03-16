@@ -95,7 +95,6 @@ describe('Feature Flag Registry', () => {
       const defaults = getProductionRemoteFlagDefaults();
       expect(defaults.addBitcoinAccount).toBe(false);
       expect(defaults.addSolanaAccount).toBe(true);
-      expect(defaults.settingsRedesign).toBe(false);
     });
 
     it('only includes remote production flags', () => {

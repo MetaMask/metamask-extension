@@ -11,14 +11,7 @@ import {
   selectMusdConvertibleTokensBlocklist,
   selectMusdMinAssetBalanceRequired,
 } from '../../selectors/musd';
-import {
-  getTokenBalancesEvm,
-  getAssetsBySelectedAccountGroup,
-} from '../../selectors/assets';
-import {
-  getSelectedAccount,
-  getIsMultichainAccountsState2Enabled,
-} from '../../selectors';
+import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
@@ -37,13 +30,7 @@ jest.mock('../../selectors/musd', () => ({
 }));
 
 jest.mock('../../selectors/assets', () => ({
-  getTokenBalancesEvm: jest.fn(),
   getAssetsBySelectedAccountGroup: jest.fn(),
-}));
-
-jest.mock('../../selectors', () => ({
-  getSelectedAccount: jest.fn(),
-  getIsMultichainAccountsState2Enabled: jest.fn(),
 }));
 
 const mockSelectMusdConvertibleTokensAllowlist = jest.mocked(
@@ -55,13 +42,8 @@ const mockSelectMusdConvertibleTokensBlocklist = jest.mocked(
 const mockSelectMusdMinAssetBalanceRequired = jest.mocked(
   selectMusdMinAssetBalanceRequired,
 );
-const mockGetTokenBalancesEvm = jest.mocked(getTokenBalancesEvm);
 const mockGetAssetsBySelectedAccountGroup = jest.mocked(
   getAssetsBySelectedAccountGroup,
-);
-const mockGetSelectedAccount = jest.mocked(getSelectedAccount);
-const mockGetIsMultichainAccountsState2Enabled = jest.mocked(
-  getIsMultichainAccountsState2Enabled,
 );
 
 // Test data
@@ -117,6 +99,31 @@ const mockDaiMainnet: TokenWithFiatAmount = {
   image: 'https://example.com/dai.png',
 };
 
+/**
+ * Converts a flat array of tokens into the account-group-assets structure
+ * keyed by chainId, as returned by getAssetsBySelectedAccountGroup.
+ *
+ * @param tokens - Tokens to convert to account-group-assets.
+ */
+function toAccountGroupAssets(tokens: TokenWithFiatAmount[]) {
+  const assets: Record<string, Record<string, unknown>[]> = {};
+  for (const token of tokens) {
+    const chainId = token.chainId as string;
+    if (!assets[chainId]) {
+      assets[chainId] = [];
+    }
+    assets[chainId].push({
+      ...token,
+      fiat: { balance: token.tokenFiatAmount ?? null },
+    });
+  }
+
+  // Partial implementation.
+  return assets as unknown as ReturnType<
+    typeof getAssetsBySelectedAccountGroup
+  >;
+}
+
 // Helper to create a wrapper with Redux store
 const createWrapper = () => {
   const store = configureStore({
@@ -151,9 +158,6 @@ describe('useMusdConversionTokens', () => {
     mockSelectMusdConvertibleTokensAllowlist.mockReturnValue(mockAllowlist);
     mockSelectMusdConvertibleTokensBlocklist.mockReturnValue(mockBlocklist);
     mockSelectMusdMinAssetBalanceRequired.mockReturnValue(0.01);
-    mockGetSelectedAccount.mockReturnValue({ address: '0x123' });
-    mockGetIsMultichainAccountsState2Enabled.mockReturnValue(false);
-    mockGetTokenBalancesEvm.mockReturnValue([]);
     mockGetAssetsBySelectedAccountGroup.mockReturnValue({});
   });
 
@@ -205,11 +209,13 @@ describe('useMusdConversionTokens', () => {
 
   describe('token filtering', () => {
     it('filters tokens correctly based on allowlist', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([
-        mockUsdcMainnet,
-        mockUsdtMainnet,
-        mockDaiMainnet,
-      ]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([
+          mockUsdcMainnet,
+          mockUsdtMainnet,
+          mockDaiMainnet,
+        ]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -222,7 +228,9 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns empty array when no tokens match allowlist', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockDaiMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockDaiMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -232,11 +240,9 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('filters tokens from multiple chains correctly', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([
-        mockUsdcMainnet,
-        mockUsdcLinea,
-        mockDaiMainnet,
-      ]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet, mockUsdcLinea, mockDaiMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -261,7 +267,9 @@ describe('useMusdConversionTokens', () => {
         tokenFiatAmount: 0.009, // Below 0.01 threshold
       };
 
-      mockGetTokenBalancesEvm.mockReturnValue([usdcBelowMin]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([usdcBelowMin]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -278,7 +286,9 @@ describe('useMusdConversionTokens', () => {
         tokenFiatAmount: 0.049, // Below 0.05 threshold
       };
 
-      mockGetTokenBalancesEvm.mockReturnValue([usdcBelowSelectorMin]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([usdcBelowSelectorMin]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -296,7 +306,9 @@ describe('useMusdConversionTokens', () => {
         tokenFiatAmount: 0,
       };
 
-      mockGetTokenBalancesEvm.mockReturnValue([usdcFiatZero]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([usdcFiatZero]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -312,7 +324,9 @@ describe('useMusdConversionTokens', () => {
         tokenFiatAmount: null,
       };
 
-      mockGetTokenBalancesEvm.mockReturnValue([usdcNullFiat]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([usdcNullFiat]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -327,7 +341,9 @@ describe('useMusdConversionTokens', () => {
         tokenFiatAmount: undefined,
       };
 
-      mockGetTokenBalancesEvm.mockReturnValue([usdcUndefinedFiat]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([usdcUndefinedFiat]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -339,7 +355,9 @@ describe('useMusdConversionTokens', () => {
 
   describe('isConversionToken', () => {
     it('returns true for token in conversion tokens list with matching address and chainId', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -350,7 +368,9 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns false for token not in conversion tokens list', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -361,7 +381,9 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns false when token is undefined', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -376,7 +398,9 @@ describe('useMusdConversionTokens', () => {
         ...mockUsdcMainnet,
         chainId: '0x89' as Hex, // Polygon
       };
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -389,7 +413,9 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('performs case-insensitive address comparison', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -458,7 +484,9 @@ describe('useMusdConversionTokens', () => {
 
   describe('hasConvertibleTokensByChainId', () => {
     it('returns true when there are convertible tokens on the chain', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -470,7 +498,9 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns false when there are no convertible tokens on the chain', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -486,7 +516,9 @@ describe('useMusdConversionTokens', () => {
         ...mockUsdcMainnet,
         tokenFiatAmount: 0.001,
       };
-      mockGetTokenBalancesEvm.mockReturnValue([usdcBelowMin]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([usdcBelowMin]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -500,8 +532,6 @@ describe('useMusdConversionTokens', () => {
 
   describe('filterAllowedTokens callback', () => {
     it('filters array of tokens correctly', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([]);
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });
@@ -516,8 +546,6 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns empty array when given empty array', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([]);
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });
@@ -527,8 +555,6 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('filters by both allowlist and minimum balance', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([]);
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });
@@ -555,10 +581,9 @@ describe('useMusdConversionTokens', () => {
         '0x1': ['USDT'],
       });
 
-      mockGetTokenBalancesEvm.mockReturnValue([
-        mockUsdcMainnet,
-        mockUsdtMainnet,
-      ]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet, mockUsdtMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -573,7 +598,9 @@ describe('useMusdConversionTokens', () => {
     it('passes all tokens through when allowlist is empty (no restriction)', () => {
       mockSelectMusdConvertibleTokensAllowlist.mockReturnValue({});
 
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -591,7 +618,9 @@ describe('useMusdConversionTokens', () => {
         selectedChainId: null,
         enabledChainIds: ['0x1', '0xe708'],
       });
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet, mockUsdcLinea]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet, mockUsdcLinea]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -607,7 +636,9 @@ describe('useMusdConversionTokens', () => {
         selectedChainId: '0xe708',
         enabledChainIds: ['0xe708'],
       });
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet, mockUsdcLinea]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet, mockUsdcLinea]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -618,8 +649,6 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('returns null when no conversion tokens exist', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([]);
-
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
       });
@@ -633,7 +662,9 @@ describe('useMusdConversionTokens', () => {
         selectedChainId: '0x89',
         enabledChainIds: ['0x89'],
       });
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
@@ -643,7 +674,9 @@ describe('useMusdConversionTokens', () => {
     });
 
     it('checksums the token address', () => {
-      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue(
+        toAccountGroupAssets([mockUsdcMainnet]),
+      );
 
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),

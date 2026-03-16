@@ -7,7 +7,7 @@ import {
 import { CaipChainId, Hex, isStrictHexString } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { convertCaipToHexChainId } from '../../../../../shared/modules/network.utils';
+import { convertCaipToHexChainId } from '../../../../../shared/lib/network.utils';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
   FEATURED_NETWORK_CHAIN_IDS,

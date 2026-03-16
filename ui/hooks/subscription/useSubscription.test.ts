@@ -6,7 +6,7 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../shared/lib/conversion.utils';
 import * as actions from '../../store/actions';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import type { MetaMaskReduxState } from '../../store/store';

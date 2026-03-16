@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
-  type GenericQuoteRequest,
+  GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
@@ -20,31 +19,36 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
+  resetBridgeControllerAndCache,
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
+import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
-import {
-  type MinimalAsset,
-  validateMinimalAssetObject,
-} from '../../pages/bridge/utils/tokens';
-import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
+  BridgeNavigationOptions,
+  useBridgeNavigation,
+} from './useBridgeNavigation';
 
+/**
+ * This hook is the entrypoint for the bridge experience
+ *
+ * @returns a function to navigate to the bridge page
+ */
 const useBridging = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { navigateToBridgePage, bridgeState } = useBridgeNavigation();
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
   const bip44DefaultPairsConfig = useSelector(getBip44DefaultPairsConfig);
 
+  const isChainIdSupportedForBridging = (chainId: string | number) =>
+    ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
+
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
-      ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId) &&
+      isChainIdSupportedForBridging(chainId) &&
       fromChains.some(
         (chain) =>
           formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
@@ -52,10 +56,16 @@ const useBridging = () => {
     [fromChains],
   );
 
+  /**
+   * Navigates to the bridge page
+   *
+   * @param location - the entrypoint from which the bridge experience was triggered
+   * @param token - the token to set as the source token for the bridge experience
+   */
   const openBridgeExperience = useCallback(
     (
       location: MetaMetricsSwapsEventSource | 'Carousel',
-      srcToken?: {
+      token?: {
         symbol: string;
         address: string;
         decimals?: number;
@@ -63,8 +73,8 @@ const useBridging = () => {
         chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
-      clearAllBridgeCacheItems();
       dispatch(resetInputFields());
+      dispatch(resetBridgeControllerAndCache());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
@@ -74,32 +84,39 @@ const useBridging = () => {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: srcToken?.symbol ?? 'ETH',
+          token_symbol_source: token?.symbol ?? 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
         }),
       );
 
-      const queryParams = [];
-      const navigationState: Partial<Record<'srcToken', MinimalAsset>> = {};
+      let tokenToUse: BridgeNavigationOptions['state']['token'] = null;
+      const search = new URLSearchParams('');
 
+      /**
+       * Defined if the token is a valid src or dest token
+       */
       const assetId =
-        srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
-          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
+        token?.chainId && isChainIdSupportedForBridging(token.chainId)
+          ? toAssetId(token.address, formatChainIdToCaip(token.chainId))
           : undefined;
-      if (srcToken && assetId) {
-        // If srcToken is a bridge token, propagate it to the bridge experience
-        const tokenToUse = {
-          ...srcToken,
+
+      if (token && assetId) {
+        // If token is supported for bridging, propagate it to the bridge experience
+        const tokenWithAssetId = {
+          ...token,
           assetId,
-          name: srcToken.name ?? srcToken.symbol,
+          name: token.name ?? token.symbol,
+          chainId: formatChainIdToCaip(token.chainId),
         };
-        if (validateMinimalAssetObject(tokenToUse)) {
-          navigationState.srcToken = tokenToUse;
-        } else {
-          // Otherwise, set the from param to use the bridge page's deep linking logic
-          queryParams.push(`${BridgeQueryParams.FROM}=${assetId}`);
+        if (validateMinimalAssetObject(tokenWithAssetId)) {
+          tokenToUse = tokenWithAssetId;
+        } else if (!bridgeState && isChainIdEnabledForBridging(token.chainId)) {
+          // If bridgeState is defined, it means the user is returning to the bridge page
+          // If the token is not in an enabled chain then it can't be used as the source token
+          // Otherwise, set the `from` query param to use the bridge page's deep linking logic
+          search.set(BridgeQueryParams.From, assetId);
         }
       } else if (lastSelectedChainId !== fromChain.chainId) {
         // If an unsupported network is selected in the network filter, use bridge page's default fromChain
@@ -112,24 +129,27 @@ const useBridging = () => {
         // Otherwise, use the native assetId
         const defaultAssetId =
           bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
-        queryParams.push(`${BridgeQueryParams.FROM}=${defaultAssetId}`);
+        search.set(BridgeQueryParams.From, defaultAssetId);
       }
 
       if (location === MetaMetricsSwapsEventSource.TransactionShield) {
-        queryParams.push('isFromTransactionShield=true');
+        search.set(BridgeQueryParams.IsFromTransactionShield, 'true');
       }
 
-      const url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-      navigate([url, queryParams.join('&')].filter(Boolean).join('?'), {
-        state: navigationState,
+      navigateToBridgePage({
+        token: tokenToUse,
+        search,
+        isEntrypoint: true,
       });
     },
     [
-      navigate,
+      navigateToBridgePage,
       lastSelectedChainId,
       fromChain?.chainId,
       isChainIdEnabledForBridging,
       bip44DefaultPairsConfig,
+      bridgeState,
+      dispatch,
     ],
   );
 

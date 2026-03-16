@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import * as browserRuntime from '../../../../shared/modules/browser-runtime.utils';
+import * as browserRuntime from '../../../../shared/lib/browser-runtime.utils';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,

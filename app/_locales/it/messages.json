@@ -112,10 +112,6 @@
   "addToken": {
     "message": "Aggiungi Token"
   },
-  "addTokenByContractAddress": {
-    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "address": {
     "message": "Indirizzo"
   },
@@ -239,9 +235,6 @@
   },
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
-  },
-  "buildContactList": {
-    "message": "Costruisci la tua lista contatti"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask è progettato e costruito in tutto il mondo."
@@ -847,9 +840,6 @@
   "newAccount": {
     "message": "Nuovo Account"
   },
-  "newContact": {
-    "message": "Nuovo contatto"
-  },
   "newContract": {
     "message": "Nuovo Contratto"
   },
@@ -970,9 +960,6 @@
   "removeAccount": {
     "message": "Rimuovi account"
   },
-  "removeAccountDescription": {
-    "message": "Questo account sarà rimosso dal tuo portafoglio. Per favore assicurati che hai la frase seed originale o la chiave privata per questo account importato prima di continuare. Puoi nuovamente importare o creare un account dal menù a tendina. "
-  },
   "required": {
     "message": "Richiesto"
   },
@@ -1009,9 +996,6 @@
   },
   "search": {
     "message": "Cerca"
-  },
-  "searchAccounts": {
-    "message": "Cerca Account"
   },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
@@ -1304,12 +1288,6 @@
   },
   "usedByClients": {
     "message": "Usato da una varietà di clients diversi"
-  },
-  "userName": {
-    "message": "Nome utente"
-  },
-  "viewContact": {
-    "message": "Visualizza contatto"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"

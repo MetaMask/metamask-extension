@@ -43,7 +43,7 @@ import {
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import Callout from '../../../components/ui/callout';
 import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
