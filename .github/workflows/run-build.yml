@@ -98,6 +98,10 @@ jobs:
           is-high-risk-environment: ${{ inputs.is-high-risk-environment }}
           skip-allow-scripts: true
 
+      - name: Run tsc
+        if: ${{ contains(inputs.build-name, 'webpack') }}
+        run: yarn webpack:tsc
+
       - name: Run build
         run: ${{ inputs.build-command }}
 

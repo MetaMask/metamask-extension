@@ -261,7 +261,7 @@ jobs:
     with:
       is-high-risk-environment: false
       build-name: build-dist-webpack
-      build-command: yarn build:dist:webpack
+      build-command: yarn webpack:lavamoat:build
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       zip: true
     secrets: inherit
@@ -274,7 +274,7 @@ jobs:
     with:
       is-high-risk-environment: false
       build-name: build-dist-mv2-webpack
-      build-command: yarn build:dist:webpack:mv2
+      build-command: yarn webpack:lavamoat:build:mv2
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       zip: true
     secrets: inherit
@@ -287,7 +287,7 @@ jobs:
     with:
       is-high-risk-environment: false
       build-name: build-beta-webpack
-      build-command: yarn build:beta:webpack
+      build-command: yarn webpack:lavamoat:build --type beta
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       zip: true
     secrets: inherit
@@ -300,7 +300,7 @@ jobs:
     with:
       is-high-risk-environment: false
       build-name: build-beta-mv2-webpack
-      build-command: yarn build:beta:webpack:mv2
+      build-command: yarn webpack:lavamoat:build:mv2 --type beta
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       zip: true
     secrets: inherit
@@ -313,7 +313,7 @@ jobs:
     with:
       is-high-risk-environment: false
       build-name: build-flask-webpack
-      build-command: yarn build:flask:webpack
+      build-command: yarn webpack:lavamoat:build --type flask
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       zip: true
     secrets: inherit
@@ -326,7 +326,7 @@ jobs:
     with:
       is-high-risk-environment: false
       build-name: build-flask-mv2-webpack
-      build-command: yarn build:flask:webpack:mv2
+      build-command: yarn webpack:lavamoat:build:mv2 --type flask
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       zip: true
     secrets: inherit
