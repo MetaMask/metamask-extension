@@ -8,30 +8,23 @@ import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
-/**
- * Returns environment type for the current context, or null when URL is not yet
- * available (e.g. Webpack UI chunk before location is set). Used so we never
- * treat UI as background (initialize: true) when we're unsure.
- *
- * @param url - Optional URL (defaults to globalThis.self?.location?.href ?? '')
- * @returns The environment type, or null when url is empty
- */
-function getEnvironmentTypeForHooks(
-  url = globalThis.self?.location?.href ?? '',
-) {
-  if (!url) {
-    return null;
-  }
-  return getEnvironmentType(url);
-}
-
 const platform = new ExtensionPlatform();
 
 const useFixtureStore =
   process.env.IN_TEST &&
   getManifestFlags().testing?.forceExtensionStore !== true;
-const isBackground =
-  getEnvironmentTypeForHooks() === ENVIRONMENT_TYPE_BACKGROUND;
+let isBackground = false;
+if (useFixtureStore) {
+  // Use globalThis.self (not window) so this works in both the UI and the background/service worker, where window is undefined.
+  const locationHref = globalThis.self?.location?.href;
+  if (!locationHref) {
+    throw new Error(
+      'setup-initial-state-hooks: globalThis.self?.location?.href is not defined; expected to run in a document or service worker context.',
+    );
+  }
+  isBackground =
+    getEnvironmentType(locationHref) === ENVIRONMENT_TYPE_BACKGROUND;
+}
 const localStore = useFixtureStore
   ? new FixtureExtensionStore({ initialize: isBackground })
   : new ExtensionStore();

@@ -19,7 +19,7 @@ jest.mock('../constants/sentry-state', () => ({
   SENTRY_BACKGROUND_STATE: {},
 }));
 
-jest.mock('../../../shared/modules/object.utils', () => ({
+jest.mock('../../../shared/lib/object.utils', () => ({
   maskObject: jest.fn((obj) => obj),
 }));
 
@@ -146,34 +146,24 @@ describe('setup-initial-state-hooks', () => {
       });
     });
 
-    it('treats empty href as UI (avoids initialize:true in UI context)', async () => {
+    it('throws when href is empty (unexpected context)', async () => {
       setSelfHref('');
-      const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+
+      await expect(importFresh()).rejects.toThrow(
+        'globalThis.self?.location?.href is not defined',
       );
-
-      await importFresh();
-
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
-        initialize: false,
-      });
     });
 
-    it('treats undefined self as UI (avoids initialize:true in UI context)', async () => {
+    it('throws when self is undefined (unexpected context)', async () => {
       Object.defineProperty(globalThis, 'self', {
         value: undefined,
         writable: true,
         configurable: true,
       });
-      const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+
+      await expect(importFresh()).rejects.toThrow(
+        'globalThis.self?.location?.href is not defined',
       );
-
-      await importFresh();
-
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
-        initialize: false,
-      });
     });
   });
 
