@@ -2,7 +2,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { is } from '@metamask/superstruct';
 
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
-import * as randomId from '../../shared/lib/random-id';
+import randomId from '../../shared/lib/random-id';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import {
   getStatePatches,
@@ -12,7 +12,7 @@ import {
 
 jest.mock('../../shared/lib/random-id');
 
-const mockGetNextId = jest.mocked(randomId.default);
+const randomIdMock = jest.mocked(randomId);
 
 /**
  * Creates a pair of connected patch-store substreams using real ObjectMultiplex
@@ -256,7 +256,7 @@ describe('patch-store substream connection', () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const sentMessages: unknown[] = [];
       backgroundStream.on('data', (msg) => sentMessages.push(msg));
-      mockGetNextId.mockReturnValue(42);
+      randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -280,7 +280,7 @@ describe('patch-store substream connection', () => {
     it('resolves with the patches from the background response', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const expectedPatches = [{ op: 'replace', path: ['foo'], value: 'bar' }];
-      mockGetNextId.mockReturnValue(42);
+      randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -299,7 +299,7 @@ describe('patch-store substream connection', () => {
     it('rejects when the background responds with an error', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const rpcError = { code: -32000, message: 'Internal error' };
-      mockGetNextId.mockReturnValue(42);
+      randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -315,7 +315,7 @@ describe('patch-store substream connection', () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
-      mockGetNextId.mockReturnValue(42);
+      randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -334,7 +334,7 @@ describe('patch-store substream connection', () => {
 
     it('rejects when a getStatePatches response result is not a valid patch array', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
-      mockGetNextId.mockReturnValue(42);
+      randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -360,7 +360,7 @@ describe('patch-store substream connection', () => {
 
     it('rejects pending requests when the stream is destroyed', async () => {
       const { uiMux, uiStream } = createPatchStreamPair();
-      mockGetNextId.mockReturnValue(42);
+      randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
@@ -377,7 +377,7 @@ describe('patch-store substream connection', () => {
 
     it('rejects pending requests when the stream finishes', async () => {
       const { uiStream } = createPatchStreamPair();
-      mockGetNextId.mockReturnValue(42);
+      randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
