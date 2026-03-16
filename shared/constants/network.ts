@@ -731,7 +731,7 @@ export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 export const STABLE_IMAGE_URL = './images/stable.svg';
-export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.png';
+export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
