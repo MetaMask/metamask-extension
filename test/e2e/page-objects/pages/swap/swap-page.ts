@@ -246,27 +246,23 @@ class SwapPage {
     await this.driver.clickElement(this.closeButton);
   }
 
-  async waitForSmartTransactionToComplete(tokenName: string): Promise<void> {
-    console.log('Wait for Smart Transaction to complete');
-
-    await this.driver.waitForSelector({
-      css: this.transactionStatusHeader,
-      text: 'Privately submitting your Swap',
+  async clickViewActivity(): Promise<void> {
+    await this.driver.clickElement({
+      tag: 'button',
+      text: 'View activity',
     });
+  }
+
+  async waitForSmartTransactionToComplete(_tokenName: string): Promise<void> {
+    console.log('Wait for Smart Transaction to complete');
 
     await this.driver.waitForSelector(
       {
-        css: this.transactionStatusHeader,
-        text: 'Swap complete!',
+        tag: 'h4',
+        text: 'Your transaction is complete',
       },
       { timeout: 30000 },
     );
-
-    await this.driver.findElement({
-      css: this.transactionStatusDescription,
-      text: `${tokenName}`,
-    });
-    await this.driver.clickElement(this.closeButton);
   }
 
   async fillSwapAmount(amount: string): Promise<void> {
