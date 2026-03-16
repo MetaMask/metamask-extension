@@ -72,6 +72,7 @@ import {
 import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
+  getCashAccountServiceMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
   getSnapKeyringBuilderMessenger,
@@ -464,6 +465,10 @@ export const CONTROLLER_MESSENGERS = {
   BridgeController: {
     getMessenger: getBridgeControllerMessenger,
     getInitMessenger: getBridgeControllerInitMessenger,
+  },
+  CashAccountService: {
+    getMessenger: getCashAccountServiceMessenger,
+    getInitMessenger: noop,
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Button,
@@ -53,11 +53,14 @@ import {
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { ScrollContainer } from '../../../contexts/scroll-container';
+import { createCashAccount } from '../../../store/actions';
+import { stripWalletTypePrefixFromWalletId } from '../../../hooks/multichain-accounts/utils';
 import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
@@ -120,6 +123,16 @@ export const AccountList = () => {
   const handleCloseAddWalletModal = useCallback(() => {
     setIsAddWalletModalOpen(false);
   }, [setIsAddWalletModalOpen]);
+
+  const handleCreateCashAccount = useCallback(() => {
+    const firstWalletId = Object.keys(wallets)[0] as
+      | Parameters<typeof stripWalletTypePrefixFromWalletId>[0]
+      | undefined;
+    if (firstWalletId) {
+      const entropySource = stripWalletTypePrefixFromWalletId(firstWalletId);
+      dispatch(createCashAccount(entropySource));
+    }
+  }, [wallets, dispatch]);
 
   const handleBack = useCallback(() => {
     transitionBack(() => navigate(PREVIOUS_ROUTE));
@@ -192,28 +205,44 @@ export const AccountList = () => {
         </ScrollContainer>
       </div>
       <Footer className="shadow-sm">
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          onClick={handleOpenAddWalletModal}
-          isDisabled={isAccountTreeSyncingInProgress}
-          isFullWidth
-          data-testid="account-list-add-wallet-button"
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
+          width={BlockSize.Full}
         >
-          <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
-            {isAccountTreeSyncingInProgress && (
-              <Icon
-                className="add-multichain-account__icon-box__icon-loading"
-                name={IconName.Loading}
-                color={IconColor.IconMuted}
-                size={IconSize.Lg}
-              />
-            )}
-            <Text variant={TextVariant.bodyMdMedium}>
-              {addWalletButtonLabel}
-            </Text>
-          </Box>
-        </Button>
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            onClick={handleOpenAddWalletModal}
+            isDisabled={isAccountTreeSyncingInProgress}
+            isFullWidth
+            data-testid="account-list-add-wallet-button"
+          >
+            <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
+              {isAccountTreeSyncingInProgress && (
+                <Icon
+                  className="add-multichain-account__icon-box__icon-loading"
+                  name={IconName.Loading}
+                  color={IconColor.IconMuted}
+                  size={IconSize.Lg}
+                />
+              )}
+              <Text variant={TextVariant.bodyMdMedium}>
+                {addWalletButtonLabel}
+              </Text>
+            </Box>
+          </Button>
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={handleCreateCashAccount}
+            isFullWidth
+            data-testid="account-list-create-cash-account-button"
+          >
+            Create cash account
+          </Button>
+        </Box>
       </Footer>
       <AddWalletModal
         isOpen={isAddWalletModalOpen}

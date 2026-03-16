@@ -2589,6 +2589,25 @@ export function setSelectedMultichainAccount(
 }
 
 /**
+ * Create a cash account derived from the given entropy source.
+ *
+ * @param entropySource - The metadata id of the HD keyring to derive from.
+ */
+export function createCashAccount(
+  entropySource: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.createCashAccount`);
+    try {
+      await submitRequestToBackground('createCashAccount', [entropySource]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
  * Create a new multichain account.
  *
  * @param walletId - ID of a wallet.

@@ -1,3 +1,4 @@
+import { CashAccountService } from '@metamask-previews/cash-account-service';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
@@ -128,6 +129,7 @@ export type Controller =
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
+  | CashAccountService
   | ClaimsController
   | CronjobController
   | CurrencyRateController
