@@ -87,19 +87,19 @@ export const Popover: PopoverComponent = React.forwardRef(
     };
 
     useEffect(() => {
-      // Esc key press
+      if (!isOpen) {
+        return;
+      }
+
       const handleEscKey = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
-          // Close the popover when the "Esc" key is pressed
-          if (onPressEscKey) {
-            onPressEscKey();
-          }
+        if (event.key === 'Escape' && onPressEscKey) {
+          event.stopPropagation();
+          onPressEscKey();
         }
       };
 
       const handleClickOutside = (event: MouseEvent) => {
         if (
-          isOpen &&
           popoverRef.current &&
           !popoverRef.current.contains(event.target as Node) &&
           !referenceElement?.contains(event.target as Node)
@@ -110,20 +110,19 @@ export const Popover: PopoverComponent = React.forwardRef(
         }
       };
 
-      document.addEventListener('keydown', handleEscKey, { capture: true });
-      if (isOpen) {
-        document.addEventListener('click', handleClickOutside, {
-          capture: true,
-        });
-      } else {
-        document.removeEventListener('click', handleClickOutside);
-      }
+      // Use capture: false to avoid event bubbling issues
+      document.addEventListener('keydown', handleEscKey, false);
+      document.addEventListener('click', handleClickOutside, {
+        capture: true,
+      });
 
       return () => {
-        document.removeEventListener('keydown', handleEscKey);
-        document.removeEventListener('click', handleClickOutside);
+        document.removeEventListener('keydown', handleEscKey, false);
+        document.removeEventListener('click', handleClickOutside, {
+          capture: true,
+        });
       };
-    }, [onPressEscKey, isOpen, onClickOutside, referenceElement]);
+    }, [isOpen, onPressEscKey, onClickOutside, referenceElement]);
 
     const PopoverContent = (
       <Box

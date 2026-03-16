@@ -1,6 +1,14 @@
 
 .mm-popover {
   box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+  position: absolute;
+  pointer-events: auto;
+  will-change: transform; // Optimize for animations
+
+  // Prevent layout shifts
+  &[data-popper-placement] {
+    transition: none; // Disable transitions that might cause jumping
+  }
 
   /* Hide the popper when the reference is hidden */
   &--reference-hidden[data-popper-reference-hidden="true"] {

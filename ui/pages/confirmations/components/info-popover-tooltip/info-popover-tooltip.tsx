@@ -41,79 +41,83 @@ type InfoPopoverTooltipProps = {
   'data-testid'?: string;
 };
 
-export function InfoPopoverTooltip({
-  children,
-  position = PopoverPosition.BottomEnd,
-  iconName = IconName.Info,
-  iconSize = ButtonIconSize.Md,
-  iconColor,
-  iconMarginLeft,
-  plainIcon = false,
-  'data-testid': dataTestId,
-}: Readonly<InfoPopoverTooltipProps>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement & HTMLDivElement>(null);
+export const InfoPopoverTooltip = React.memo(
+  ({
+    children,
+    position = PopoverPosition.BottomEnd,
+    iconName = IconName.Info,
+    iconSize = ButtonIconSize.Md,
+    iconColor,
+    iconMarginLeft,
+    plainIcon = false,
+    'data-testid': dataTestId,
+  }: Readonly<InfoPopoverTooltipProps>) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const triggerRef = useRef<HTMLButtonElement & HTMLDivElement>(null);
 
-  const handleToggle = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
+    const handleToggle = useCallback(() => {
+      setIsOpen((prev) => !prev);
+    }, []);
 
-  const handleClose = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+    const handleClose = useCallback(() => {
+      setIsOpen(false);
+    }, []);
 
-  const marginStyle = iconMarginLeft
-    ? { marginLeft: `${iconMarginLeft * 4}px` }
-    : undefined;
+    const marginStyle = iconMarginLeft
+      ? { marginLeft: `${iconMarginLeft * 4}px` }
+      : undefined;
 
-  return (
-    <Box>
-      {plainIcon ? (
-        <button
-          ref={triggerRef as React.Ref<HTMLButtonElement>}
-          type="button"
-          onClick={handleToggle}
-          data-testid={dataTestId ? `${dataTestId}-button` : undefined}
-          style={{
-            ...marginStyle,
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            cursor: 'pointer',
-            display: 'flex',
-          }}
-        >
-          <Icon
-            name={iconName as unknown as LegacyIconName}
-            size={IconSize.Sm}
-            color={iconColor as LegacyIconColor}
+    return (
+      <Box>
+        {plainIcon ? (
+          <button
+            ref={triggerRef as React.Ref<HTMLButtonElement>}
+            type="button"
+            onClick={handleToggle}
+            data-testid={dataTestId ? `${dataTestId}-button` : undefined}
+            style={{
+              ...marginStyle,
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+            }}
+          >
+            <Icon
+              name={iconName as unknown as LegacyIconName}
+              size={IconSize.Sm}
+              color={iconColor as LegacyIconColor}
+            />
+          </button>
+        ) : (
+          <ButtonIcon
+            ref={triggerRef as React.Ref<HTMLButtonElement>}
+            ariaLabel="info"
+            iconName={iconName}
+            size={iconSize}
+            onClick={handleToggle}
+            data-testid={dataTestId ? `${dataTestId}-button` : undefined}
+            iconProps={
+              iconColor ? { color: iconColor as IconColor } : undefined
+            }
+            style={marginStyle}
           />
-        </button>
-      ) : (
-        <ButtonIcon
-          ref={triggerRef as React.Ref<HTMLButtonElement>}
-          ariaLabel="info"
-          iconName={iconName}
-          size={iconSize}
-          onClick={handleToggle}
-          data-testid={dataTestId ? `${dataTestId}-button` : undefined}
-          iconProps={iconColor ? { color: iconColor as IconColor } : undefined}
-          style={marginStyle}
-        />
-      )}
-      <Popover
-        isOpen={isOpen}
-        position={position}
-        referenceElement={triggerRef.current}
-        hasArrow
-        onPressEscKey={handleClose}
-        onClickOutside={handleClose}
-        isPortal
-        style={POPOVER_STYLE}
-        data-testid={dataTestId}
-      >
-        {children}
-      </Popover>
-    </Box>
-  );
-}
+        )}
+        <Popover
+          isOpen={isOpen}
+          position={position}
+          referenceElement={triggerRef.current}
+          hasArrow
+          onPressEscKey={handleClose}
+          onClickOutside={handleClose}
+          isPortal
+          style={POPOVER_STYLE}
+          data-testid={dataTestId}
+        >
+          {children}
+        </Popover>
+      </Box>
+    );
+  },
+);
