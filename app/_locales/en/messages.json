@@ -4622,6 +4622,12 @@
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
   },
+  "noTokensWithBalance": {
+    "message": "No tokens available to send"
+  },
+  "noTokensWithBalanceDescription": {
+    "message": "You need tokens with a balance to send. Get started by adding funds to your wallet."
+  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },

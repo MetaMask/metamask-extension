@@ -10,6 +10,26 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AssetList } from './asset-list';
 
 jest.mock('../../../../../hooks/useI18nContext');
+jest.mock(
+  '../../../../../components/multichain/funding-method-modal/funding-method-modal',
+  () => ({
+    FundingMethodModal: ({
+      isOpen,
+      onClose,
+      title,
+    }: {
+      isOpen: boolean;
+      onClose: () => void;
+      title: string;
+    }) =>
+      isOpen ? (
+        <div data-testid="funding-method-modal">
+          <span>{title}</span>
+          <button onClick={onClose}>Close</button>
+        </div>
+      ) : null,
+  }),
+);
 jest.mock('../../../../../components/component-library', () => ({
   Box: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="box">{children}</div>
@@ -201,18 +221,41 @@ describe('AssetList', () => {
     expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
   });
 
-  it('renders empty when no assets available', () => {
-    const { container } = render(
+  it('shows empty state with buy funds CTA when no tokens have balance', () => {
+    const { getByText, getByAltText } = render(
+      <AssetList tokens={[]} nfts={[]} allTokens={[]} allNfts={[]} />,
+    );
+
+    expect(getByText('noTokensWithBalance')).toBeInTheDocument();
+    expect(getByText('noTokensWithBalanceDescription')).toBeInTheDocument();
+    expect(getByText('addFunds')).toBeInTheDocument();
+    expect(getByAltText('noTokensWithBalance')).toBeInTheDocument();
+  });
+
+  it('opens funding modal when Add Funds button is clicked', () => {
+    const { getByText, getByTestId, queryByTestId } = render(
+      <AssetList tokens={[]} nfts={[]} allTokens={[]} allNfts={[]} />,
+    );
+
+    expect(queryByTestId('funding-method-modal')).not.toBeInTheDocument();
+
+    const addFundsButton = getByText('addFunds');
+    fireEvent.click(addFundsButton);
+
+    expect(getByTestId('funding-method-modal')).toBeInTheDocument();
+  });
+
+  it('does not show empty state when tokens exist', () => {
+    const { queryByText } = render(
       <AssetList
-        tokens={[]}
+        tokens={mockTokens}
         nfts={[]}
-        allTokens={[]}
+        allTokens={mockTokens}
         allNfts={[]}
-        onClearFilters={mockOnClearFilters}
       />,
     );
 
-    expect(container.firstChild).toBeNull();
+    expect(queryByText('noTokensWithBalance')).not.toBeInTheDocument();
   });
 
   describe('hideNfts', () => {
@@ -248,8 +291,8 @@ describe('AssetList', () => {
       expect(getByText(messages.nfts.message)).toBeInTheDocument();
     });
 
-    it('renders empty when hideNfts is true and only NFTs exist', () => {
-      const { container } = render(
+    it('shows empty state when hideNfts is true and only NFTs exist', () => {
+      const { getByText } = render(
         <AssetList
           tokens={[]}
           nfts={mockNfts}
@@ -259,23 +302,7 @@ describe('AssetList', () => {
         />,
       );
 
-      expect(container.firstChild).toBeNull();
-    });
-
-    it('does not show no results message when hideNfts excludes all assets', () => {
-      const { queryByText } = render(
-        <AssetList
-          tokens={[]}
-          nfts={mockNfts}
-          allTokens={[]}
-          allNfts={mockNfts}
-          hideNfts={true}
-        />,
-      );
-
-      expect(
-        queryByText('noTokensMatchingYourFilters'),
-      ).not.toBeInTheDocument();
+      expect(getByText('noTokensWithBalance')).toBeInTheDocument();
     });
   });
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import {
@@ -23,6 +23,7 @@ import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSe
 import { useSendContext } from '../../../context/send';
 import { Asset as AssetComponent } from '../../UI/asset';
 import { useScrollContainer } from '../../../../../contexts/scroll-container';
+import { FundingMethodModal } from '../../../../../components/multichain/funding-method-modal/funding-method-modal';
 
 type AssetListProps = {
   tokens: Asset[];
@@ -56,12 +57,15 @@ export const AssetList = ({
   const { goToAmountRecipientPage } = useNavigateSendPage();
   const { updateAsset } = useSendContext();
   const { captureAssetSelected } = useAssetSelectionMetrics();
+  const [isFundingModalOpen, setIsFundingModalOpen] = useState(false);
 
   const effectiveNfts = hideNfts ? [] : nfts;
   const effectiveAllNfts = hideNfts ? [] : allNfts;
 
   const hasFilteredResults = tokens.length > 0 || effectiveNfts.length > 0;
   const hasAnyAssets = allTokens.length > 0 || effectiveAllNfts.length > 0;
+  const hasNoTokensWithBalance =
+    allTokens.length === 0 && effectiveAllNfts.length === 0;
 
   const handleAssetClick = useCallback(
     (asset: Asset) => {
@@ -97,6 +101,65 @@ export const AssetList = ({
       items[index].type === 'nft-header' ? HEADER_HEIGHT : ITEM_HEIGHT,
     overscan: 10,
   });
+
+  // Show empty state for no tokens with balance
+  if (hasNoTokensWithBalance) {
+    return (
+      <>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          padding={6}
+          gap={3}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            gap={2}
+          >
+            <img
+              src="./images/bank-transfer.png"
+              alt={t('noTokensWithBalance')}
+              width="80"
+              height="80"
+            />
+            <Text
+              variant={TextVariant.headingMd}
+              color={TextColor.textDefault}
+              textAlign="center"
+            >
+              {t('noTokensWithBalance')}
+            </Text>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              textAlign="center"
+            >
+              {t('noTokensWithBalanceDescription')}
+            </Text>
+          </Box>
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Md}
+            onClick={() => setIsFundingModalOpen(true)}
+          >
+            {t('addFunds')}
+          </Button>
+        </Box>
+        <FundingMethodModal
+          isOpen={isFundingModalOpen}
+          onClose={() => setIsFundingModalOpen(false)}
+          title={t('addFunds')}
+          onClickReceive={() => {
+            setIsFundingModalOpen(false);
+          }}
+        />
+      </>
+    );
+  }
 
   // Show "no results" message only if there are assets available but none match the search
   if (!hasFilteredResults && hasAnyAssets) {
