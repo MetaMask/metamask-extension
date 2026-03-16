@@ -2416,6 +2416,9 @@
   "downArrow": {
     "message": "down arrow"
   },
+  "download": {
+    "message": "Download"
+  },
   "downloadAppDescription": {
     "message": "Bring MetaMask with you everywhere you go. Turn on Face ID so you always have access, even if you forget your password."
   },
@@ -6653,6 +6656,9 @@
     "message": "This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. $1",
     "description": "Link to learn more about security alerts"
   },
+  "securityAlertsDescriptionV2": {
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1"
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -7604,6 +7610,9 @@
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Estimates balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
@@ -7660,6 +7669,12 @@
   },
   "smartAccountLabel": {
     "message": "Smart Account"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Smart account requests from dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -8138,7 +8153,7 @@
     "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
-    "message": "Error in retrieving state logs."
+    "message": "Error in retrieving state logs, please try again later."
   },
   "stateLogFileName": {
     "message": "MetaMask state logs"
@@ -8148,6 +8163,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "stateLogsModalDescription": {
+    "message": "State logs can help us debug issues you might encounter. Only send it to MetaMask for support, because state logs contain your public account address and transactions."
   },
   "status": {
     "message": "Status"
@@ -8220,6 +8238,9 @@
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "Turn on Smart Transactions for more reliable and secure transactions on supported networks. $1"
@@ -8979,6 +9000,9 @@
   "unableToConnectTo": {
     "message": "Unable to connect to $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
+  },
+  "unableToDownload": {
+    "message": "Unable to download"
   },
   "unapproved": {
     "message": "Unapproved"
