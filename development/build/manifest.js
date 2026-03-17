@@ -98,21 +98,17 @@ function createManifestTasks({
 
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [
-      ...new Set([...manifest.permissions, 'webRequestBlocking']),
-    ];
+    manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
     loadManifestKey(manifest);
   });
 
   // testDev: add perms
   const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [
-      ...new Set([
-        ...manifest.permissions,
-        'webRequestBlocking',
-        'http://localhost/*',
-        'tabs', // test builds need tabs permission for switchToWindowWithTitle
-      ]),
+      ...manifest.permissions,
+      'webRequestBlocking',
+      'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
     loadManifestKey(manifest);
   });
@@ -120,12 +116,10 @@ function createManifestTasks({
   // test: add permissions
   const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [
-      ...new Set([
-        ...manifest.permissions,
-        'webRequestBlocking',
-        'http://localhost/*',
-        'tabs', // test builds need tabs permission for switchToWindowWithTitle
-      ]),
+      ...manifest.permissions,
+      'webRequestBlocking',
+      'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
     loadManifestKey(manifest);
   });
