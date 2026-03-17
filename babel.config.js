@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = function (api) {
-  api.cache(false);
+  api.cache(true);
   const slash = `\\${path.sep}`;
   const uiPath = path.join(__dirname, 'ui').replace(/\\/gu, '\\\\');
   return {

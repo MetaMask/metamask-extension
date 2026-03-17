@@ -1,0 +1,5 @@
+timestamp	git_sha	build_time_seconds	dist_task_seconds	standard_entry_points_seconds	bundle_size_total_kb	scripts_size_total_kb	bundle_count	dist_size_mb	notes
+2026-03-17T08:52:32Z	12c5ab123b	178	174.3	169.7	25536.7	3788.8	61	91	
+2026-03-17T08:59:43Z	12c5ab123b	179	174.4	169.9	25484.9	3781.0	61	91	
+2026-03-17T09:06:20Z	12c5ab123b	178	173.9	169.4	25484.9	3781.0	61	91	
+2026-03-17T09:12:12Z	12c5ab123b	136	131.7	127.1	25536.7	3788.8	61	91	
