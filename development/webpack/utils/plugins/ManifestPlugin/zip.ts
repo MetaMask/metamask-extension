@@ -3,6 +3,7 @@ import {
   type DeflateOptions,
   Zip,
   AsyncZipDeflate,
+  ZipDeflate,
   ZipPassThrough,
 } from 'fflate';
 import { sources } from 'webpack';
@@ -156,7 +157,10 @@ function addAssetToZip(
 ): void {
   const zipFile = compress
     ? // AsyncZipDeflate uses workers
-      new AsyncZipDeflate(assetName, compressionOptions)
+      // only use async deflate for "larger" files
+      asset.length > 1024 * 64
+      ? new AsyncZipDeflate(assetName, compressionOptions)
+      : new ZipDeflate(assetName, compressionOptions)
     : // ZipPassThrough doesn't use workers
       new ZipPassThrough(assetName);
   zipFile.mtime = mtime;
