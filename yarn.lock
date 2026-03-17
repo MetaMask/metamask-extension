@@ -7614,9 +7614,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:@metamask-previews/perps-controller@1.1.0-preview-efc1fb7":
-  version: 1.1.0-preview-efc1fb7
-  resolution: "@metamask-previews/perps-controller@npm:1.1.0-preview-efc1fb7"
+"@metamask/perps-controller@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/perps-controller@npm:1.2.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7628,7 +7628,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/1702e1813fb43bdd06b9098b90733e4933b3925209b2b9b929465830425c2938cdd1c1797dba83eefa1fd387bc73a6c2322145e357f66309ce4cc21836cf4413
+  checksum: 10/124aba93298d4784135ca09166e87544c37d1b52630268ff3e8e56c03d39862cb19cbe53be252651d6e6b635b187b69e1cbefc4eeaeb698f6019ce5a092eecff
   languageName: node
   linkType: hard
 
@@ -33929,7 +33929,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.1.0"
-    "@metamask/perps-controller": "npm:^1.1.0"
+    "@metamask/perps-controller": "npm:^1.2.0"
     "@metamask/phishing-controller": "npm:^16.3.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.2"
