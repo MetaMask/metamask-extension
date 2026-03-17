@@ -15,7 +15,7 @@ import {
   MUSD_TOKEN_ADDRESS,
 } from '../../../../components/app/musd/constants';
 import { getClaimedAmountFromContract } from '../../../../components/app/musd/merkl-client';
-import { decodeMerklClaimParams } from '../../../../hooks/musd/merkl-claim-amount-utils';
+import { decodeMerklClaimParams } from '../../../../hooks/musd/transaction-amount-utils';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 
 /** mUSD has 6 decimals */

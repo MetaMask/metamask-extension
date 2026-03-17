@@ -19,7 +19,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import type { MusdClaimBonusStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
-import { resolveClaimAmount } from './merkl-claim-amount-utils';
+import { resolveClaimAmount } from './transaction-amount-utils';
 import { IN_FLIGHT_STATUSES } from './transaction-status-constants';
 
 export const MERKL_DISTRIBUTOR_ADDRESS =

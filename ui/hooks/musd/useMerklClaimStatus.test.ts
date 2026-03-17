@@ -6,7 +6,7 @@ import {
 } from './useMerklClaimStatus';
 
 const mockResolveClaimAmount = jest.fn();
-jest.mock('./merkl-claim-amount-utils', () => ({
+jest.mock('./transaction-amount-utils', () => ({
   resolveClaimAmount: (...args: unknown[]) => mockResolveClaimAmount(...args),
 }));
 
