@@ -3560,7 +3560,7 @@ function getPermittedEVMChains(state, origin) {
 }
 
 export const getAllPermittedAccounts = createParameterizedSelector(20)(
-  (state, origin) => origin && state.metamask.subjects?.[origin],
+  subjectSelector,
   (_state, origin) => origin,
   (subject) => {
     const caip25Permission = getCaip25PermissionFromSubject(subject);
