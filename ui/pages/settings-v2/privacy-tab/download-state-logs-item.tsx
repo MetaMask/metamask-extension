@@ -34,9 +34,10 @@ export const DownloadStateLogsItem = () => {
         <ToastContainer>
           <Toast
             startAdornment={
-              <Icon name={IconName.Danger} color={IconColor.ErrorDefault} />
+              <Icon name={IconName.Warning} color={IconColor.WarningDefault} />
             }
-            text={t('stateLogError')}
+            text={t('unableToDownload')}
+            description={t('stateLogError')}
             onClose={() => setShowErrorToast(false)}
             borderRadius={BorderRadius.LG}
             textClassName="text-base"

@@ -383,6 +383,9 @@
     "ui/components/app/import-token/token-list/token-list.component.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/import-token/token-search/token-search.component.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/modal/modal-content/modal-content.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1880,7 +1883,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission.test.tsx": {
-      "MetaMask: Background connection not initialized": 6,
       "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 6,
@@ -1889,7 +1891,7 @@
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-periodic-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
       "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 1,
+      "Test errors: Uncaught Errors": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-revocation-details.test.tsx": {
@@ -1898,7 +1900,7 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-stream-details.test.tsx": {
       "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 1,
+      "Test errors: Uncaught Errors": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/expiry.test.tsx": {
@@ -1912,6 +1914,10 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/native-token-stream-details.test.tsx": {
       "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
+      "Reselect: Identity function warnings": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.test.tsx": {
@@ -2046,7 +2052,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
       "Reselect: Identity function warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2791,6 +2796,9 @@
     "ui/pages/onboarding-flow/recovery-phrase/recovery-phrase-chips.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/onboarding-flow/recovery-phrase/reveal-recovery-phrase.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/onboarding-flow/recovery-phrase/review-recovery-phrase.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2891,6 +2899,9 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/settings-v2/privacy-tab/delete-metametrics-data-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings-v2/privacy-tab/download-state-logs-item.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2929,6 +2940,11 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/shared/settings-tab.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/advanced-tab/advanced-tab.component.test.js": {

@@ -389,7 +389,7 @@ module.exports = {
       plugins: ['react', 'react-compiler'],
       rules: {
         'react-compiler/react-compiler': 'error',
-        'react/no-unused-prop-types': 'warn',
+        'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
         'react/jsx-curly-brace-presence': 'off',
@@ -397,10 +397,10 @@ module.exports = {
         'react/default-props-match-prop-types': 'warn',
         'react/jsx-no-duplicate-props': 'warn',
         'react/display-name': 'off',
-        'react/no-unescaped-entities': 'warn',
+        'react/no-unescaped-entities': 'error',
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
-        'react/jsx-key': 'warn', // TODO - increase this into 'error' level
+        'react/jsx-key': 'error',
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': [
           'warn',
@@ -623,6 +623,7 @@ module.exports = {
         ],
         // Static hex values are only discouraged in application code, using them in stories is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
+        'storybook/no-redundant-story-name': 'error',
       },
     },
     /**

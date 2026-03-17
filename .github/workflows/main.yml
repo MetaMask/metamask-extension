@@ -186,7 +186,7 @@ jobs:
     with:
       build-name: build-beta-mv2-browserify
       build-command: yarn build --build-type beta dist
-      mozilla-lint: false # Disabled as it is failing for some reason
+      mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -234,7 +234,7 @@ jobs:
     with:
       build-name: build-test-mv2-browserify
       build-command: yarn build:test:mv2
-      mozilla-lint: false # Disabled as it is failing for some reason
+      mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -258,7 +258,7 @@ jobs:
     with:
       build-name: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
-      mozilla-lint: false # Disabled as it is failing for some reason
+      mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
