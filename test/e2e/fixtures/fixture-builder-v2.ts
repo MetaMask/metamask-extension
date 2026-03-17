@@ -67,8 +67,24 @@ function onboardingFixture() {
 
 type FixtureType = typeof defaultFixtureJson | typeof onboardingFixtureJson;
 
+/** Storage service fixture shape: namespace -> key -> value. */
+type StorageServiceFixture = Record<
+  string,
+  Record<string, Record<string, unknown>>
+>;
+
 type NetworkClientIdValue =
   (typeof NETWORK_CLIENT_ID)[keyof typeof NETWORK_CLIENT_ID];
+
+/**
+ * Source code for the lifecycle hooks example snap. Stored in the storage
+ * service fixture rather than in SnapController state.
+ * Minified bundle contains literal backticks and "${...}".
+ */
+/* eslint-disable no-template-curly-in-string */
+const LIFECYCLE_HOOKS_SNAP_SOURCE_CODE =
+  '(()=>{var e={d:(n,t)=>{for(var a in t)e.o(t,a)&&!e.o(n,a)&&Object.defineProperty(n,a,{enumerable:!0,get:t[a]})},o:(e,n)=>Object.prototype.hasOwnProperty.call(e,n),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},n={};(()=>{"use strict";function t(e,n,t){if("string"==typeof e)throw new Error(`An HTML element ("${String(e)}") was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.`);if(!e)throw new Error("A JSX fragment was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.");return e({...n,key:t})}function a(e){return Object.fromEntries(Object.entries(e).filter((([,e])=>void 0!==e)))}function r(e){return n=>{const{key:t=null,...r}=n;return{type:e,props:a(r),key:t}}}e.r(n),e.d(n,{onInstall:()=>p,onStart:()=>l,onUpdate:()=>d});const o=r("Box"),s=r("Text"),l=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The client was started successfully, and the "onStart" handler was called.\'})})}}),p=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was installed successfully, and the "onInstall" handler was called.\'})})}}),d=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was updated successfully, and the "onUpdate" handler was called.\'})})}})})(),module.exports=n})();';
+/* eslint-enable no-template-curly-in-string */
 
 type TransactionControllerFixtureInput = Partial<
   Omit<TransactionControllerState, 'transactions'>
@@ -495,17 +511,23 @@ class FixtureBuilderV2 {
     });
   }
 
+  /**
+   * Adds the lifecycle hooks example snap in form: SnapController
+   * state without sourceCode and the snap source code in the
+   * storage service fixture so the extension can load.
+   */
   withSnapControllerOnStartLifecycleSnap(): this {
-    return this.withPermissionController({
+    const snapId = 'npm:@metamask/lifecycle-hooks-example-snap';
+    this.withPermissionController({
       subjects: {
-        'npm:@metamask/lifecycle-hooks-example-snap': {
-          origin: 'npm:@metamask/lifecycle-hooks-example-snap',
+        [snapId]: {
+          origin: snapId,
           permissions: {
             'endowment:lifecycle-hooks': {
               caveats: null,
               date: 1750244440562,
               id: '0eKn8SjGEH6o_6Mhcq3Lw',
-              invoker: 'npm:@metamask/lifecycle-hooks-example-snap',
+              invoker: snapId,
               parentCapability: 'endowment:lifecycle-hooks',
             },
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -513,7 +535,7 @@ class FixtureBuilderV2 {
               caveats: null,
               date: 1750244440562,
               id: 'Fbme_UWcuSK92JqfrT4G2',
-              invoker: 'npm:@metamask/lifecycle-hooks-example-snap',
+              invoker: snapId,
               parentCapability: 'snap_dialog',
             },
           },
@@ -521,11 +543,11 @@ class FixtureBuilderV2 {
       },
     }).withSnapController({
       snaps: {
-        'npm:@metamask/lifecycle-hooks-example-snap': {
+        [snapId]: {
           auxiliaryFiles: [],
           blocked: false,
           enabled: true,
-          id: 'npm:@metamask/lifecycle-hooks-example-snap',
+          id: snapId,
           initialPermissions: {
             'endowment:lifecycle-hooks': {},
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -559,10 +581,6 @@ class FixtureBuilderV2 {
             },
             version: '2.2.0',
           },
-          /* eslint-disable no-template-curly-in-string */
-          sourceCode:
-            '(()=>{var e={d:(n,t)=>{for(var a in t)e.o(t,a)&&!e.o(n,a)&&Object.defineProperty(n,a,{enumerable:!0,get:t[a]})},o:(e,n)=>Object.prototype.hasOwnProperty.call(e,n),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},n={};(()=>{"use strict";function t(e,n,t){if("string"==typeof e)throw new Error(`An HTML element ("${String(e)}") was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.`);if(!e)throw new Error("A JSX fragment was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.");return e({...n,key:t})}function a(e){return Object.fromEntries(Object.entries(e).filter((([,e])=>void 0!==e)))}function r(e){return n=>{const{key:t=null,...r}=n;return{type:e,props:a(r),key:t}}}e.r(n),e.d(n,{onInstall:()=>p,onStart:()=>l,onUpdate:()=>d});const o=r("Box"),s=r("Text"),l=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The client was started successfully, and the "onStart" handler was called.\'})})}}),p=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was installed successfully, and the "onInstall" handler was called.\'})})}}),d=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was updated successfully, and the "onUpdate" handler was called.\'})})}})})(),module.exports=n})();',
-          /* eslint-enable no-template-curly-in-string */
           status: 'stopped',
           version: '2.2.0',
           versionHistory: [
@@ -575,6 +593,16 @@ class FixtureBuilderV2 {
         },
       },
     } as Partial<PersistedSnapControllerState>);
+
+    this.fixture.meta.version = 193;
+    (
+      this.fixture as FixtureType & { _storageService?: StorageServiceFixture }
+    )._storageService = {
+      SnapController: {
+        [snapId]: { sourceCode: LIFECYCLE_HOOKS_SNAP_SOURCE_CODE },
+      },
+    };
+    return this;
   }
 
   withShowNativeTokenAsMainBalanceDisabled(): this {
