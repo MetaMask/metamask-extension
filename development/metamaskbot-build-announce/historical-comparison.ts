@@ -61,23 +61,30 @@ async function fetchPerformanceFile(
   }
 }
 
-// TODO: When release branch 13.23.0 is out, we can switch to target release branch,
-// replace the hardcoded 'main' in fetchHistoricalPerformanceData with:
-//   sanitizeBranch(process.env.GITHUB_BASE_REF ?? 'main')
-// and uncomment sanitizeBranch below.
-//
-// function sanitizeBranch(branch: string): string {
-//   return branch.replace(/\//gu, '-');
-// }
+/**
+ * Converts a git branch name to the slug used in the stats repo
+ * by replacing all forward slashes with hyphens.
+ * e.g. "release/13.23.0" → "release-13.23.0"
+ *
+ * @param branch - The raw git branch name.
+ * @returns The sanitized slug.
+ */
+function sanitizeBranch(branch: string): string {
+  return branch.replace(/\//gu, '-');
+}
 
 /**
  * Fetches historical performance data from extension_benchmark_stats,
- * using `main` as the baseline branch.
+ * using the PR target branch (GITHUB_BASE_REF) as the baseline, falling
+ * back to `main` if the env var is not set or the branch has no data.
  *
  * @returns Reference map (benchmarkName → metric → mean), or null if unavailable.
  */
 export async function fetchHistoricalPerformanceData(): Promise<HistoricalBaselineReference | null> {
-  const data = await fetchPerformanceFile('main');
+  const branch = sanitizeBranch(process.env.GITHUB_BASE_REF ?? 'main');
+  const data =
+    (await fetchPerformanceFile(branch)) ??
+    (await fetchPerformanceFile('main'));
   if (!data || Object.keys(data).length === 0) {
     return null;
   }

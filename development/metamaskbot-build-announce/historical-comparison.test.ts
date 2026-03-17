@@ -231,16 +231,19 @@ describe('aggregateHistoricalData', () => {
 
 describe('fetchHistoricalPerformanceData', () => {
   const mockFetch = jest.fn();
+  const originalEnv = process.env;
 
   beforeEach(() => {
     global.fetch = mockFetch;
     jest.spyOn(console, 'log').mockImplementation();
     jest.spyOn(console, 'warn').mockImplementation();
+    process.env = { ...originalEnv };
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
     mockFetch.mockReset();
+    process.env = originalEnv;
   });
 
   const makeOkResponse = (body: unknown) =>
@@ -251,7 +254,40 @@ describe('fetchHistoricalPerformanceData', () => {
 
   const makeNotFoundResponse = () => Promise.resolve({ ok: false } as Response);
 
-  it('fetches main/performance_data.json and returns aggregated data', async () => {
+  it('fetches GITHUB_BASE_REF branch when env var is set', async () => {
+    process.env.GITHUB_BASE_REF = 'release/13.23.0';
+    mockFetch.mockReturnValue(makeOkResponse(mockFile));
+
+    const result = await fetchHistoricalPerformanceData();
+
+    expect(result).not.toBeNull();
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('release-13.23.0/performance_data.json'),
+    );
+  });
+
+  it('falls back to main when GITHUB_BASE_REF branch has no data', async () => {
+    process.env.GITHUB_BASE_REF = 'release/13.23.0';
+    mockFetch
+      .mockReturnValueOnce(makeNotFoundResponse()) // release branch: 404
+      .mockReturnValueOnce(makeOkResponse(mockFile)); // main: ok
+
+    const result = await fetchHistoricalPerformanceData();
+
+    expect(result).not.toBeNull();
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      1,
+      expect.stringContaining('release-13.23.0/performance_data.json'),
+    );
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining('main/performance_data.json'),
+    );
+  });
+
+  it('fetches main/performance_data.json when GITHUB_BASE_REF is not set', async () => {
+    delete process.env.GITHUB_BASE_REF;
     mockFetch.mockReturnValue(makeOkResponse(mockFile));
 
     const result = await fetchHistoricalPerformanceData();
@@ -265,16 +301,29 @@ describe('fetchHistoricalPerformanceData', () => {
     );
   });
 
-  it('returns null when main has no data', async () => {
+  it('sanitizes slashes in branch name to hyphens', async () => {
+    process.env.GITHUB_BASE_REF = 'release/13.23.0';
+    mockFetch.mockReturnValue(makeOkResponse(mockFile));
+
+    await fetchHistoricalPerformanceData();
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('release-13.23.0/performance_data.json'),
+    );
+  });
+
+  it('returns null when both branch and main have no data', async () => {
+    process.env.GITHUB_BASE_REF = 'release/13.23.0';
     mockFetch.mockReturnValue(makeNotFoundResponse());
 
     const result = await fetchHistoricalPerformanceData();
 
     expect(result).toBeNull();
-    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
   it('returns null when main returns an empty object', async () => {
+    delete process.env.GITHUB_BASE_REF;
     mockFetch.mockReturnValue(makeOkResponse({}));
 
     const result = await fetchHistoricalPerformanceData();
@@ -283,6 +332,7 @@ describe('fetchHistoricalPerformanceData', () => {
   });
 
   it('returns null when aggregation produces no valid metrics', async () => {
+    delete process.env.GITHUB_BASE_REF;
     const invalidData = asHistoricalFile({
       commit1: {
         timestamp: 0,
@@ -297,6 +347,7 @@ describe('fetchHistoricalPerformanceData', () => {
   });
 
   it('returns null when fetch throws', async () => {
+    delete process.env.GITHUB_BASE_REF;
     mockFetch.mockRejectedValue(new Error('network error'));
 
     const result = await fetchHistoricalPerformanceData();
