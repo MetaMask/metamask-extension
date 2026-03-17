@@ -16,8 +16,10 @@ const { RawSource } = sources;
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 const KiB = 1024;
 const MiB = 1024 * KiB;
-const FAST_MACHINE_ASYNC_COMPRESSION_SIZE = 32 * KiB;
-const MIN_COMPRESSIBLE_ASSET_SIZE = 16 * KiB;
+const FAST_MACHINE_ASYNC_COMPRESSION_SIZE =
+  getThresholdFromEnvironment('METAMASK_ZIP_FAST_MACHINE_ASYNC_KIB', 48) * KiB;
+const MIN_COMPRESSIBLE_ASSET_SIZE =
+  getThresholdFromEnvironment('METAMASK_ZIP_MIN_COMPRESSIBLE_KIB', 24) * KiB;
 const MIN_ASYNC_COMPRESSION_SIZE = 64 * KiB;
 const MAX_ASYNC_COMPRESSION_SIZE = 16 * MiB;
 const RSS_SAMPLE_INTERVAL_MS = 250;
@@ -426,4 +428,19 @@ function updateAverageThroughput(
     ? throughput
     : currentAverage * (1 - THROUGHPUT_SMOOTHING_FACTOR) +
         throughput * THROUGHPUT_SMOOTHING_FACTOR;
+}
+
+function getThresholdFromEnvironment(
+  environmentVariable: string,
+  defaultValue: number,
+): number {
+  const rawValue = process.env[environmentVariable];
+  if (!rawValue) {
+    return defaultValue;
+  }
+
+  const parsedValue = Number.parseInt(rawValue, 10);
+  return Number.isSafeInteger(parsedValue) && parsedValue > 0
+    ? parsedValue
+    : defaultValue;
 }
