@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -22,13 +21,8 @@ import { AVATAR_LABEL_MAP } from './account-identicon-utils';
 
 export const AccountIdenticonItem = () => {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const { avatarType } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-
-  const handlePress = () => {
-    navigate(ACCOUNT_IDENTICON_ROUTE);
-  };
 
   const currentVariant: AvatarAccountVariant =
     avatarType ?? AvatarAccountVariant.Maskicon;
@@ -37,6 +31,7 @@ export const AccountIdenticonItem = () => {
   return (
     <SettingsSelectItem
       label={t('accountIdenticon')}
+      to={ACCOUNT_IDENTICON_ROUTE}
       value={
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -57,7 +52,6 @@ export const AccountIdenticonItem = () => {
           </Text>
         </Box>
       }
-      onPress={handlePress}
     />
   );
 };
