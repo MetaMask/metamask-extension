@@ -4,6 +4,7 @@ import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerGetStateAction,
 } from '@metamask/keyring-controller';
+import { CashAccountServiceMessenger } from '@metamask-previews/cash-account-service';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
@@ -12,10 +13,6 @@ type Actions =
   | KeyringControllerAddNewKeyringAction;
 
 type Events = never;
-
-export type CashAccountServiceMessenger = ReturnType<
-  typeof getCashAccountServiceMessenger
->;
 
 /**
  * Get a restricted messenger for the cash account service. This is scoped to the
@@ -26,7 +23,7 @@ export type CashAccountServiceMessenger = ReturnType<
  */
 export function getCashAccountServiceMessenger(
   messenger: RootMessenger<Actions, Events>,
-) {
+): CashAccountServiceMessenger {
   const serviceMessenger = new Messenger<
     'CashAccountService',
     Actions,

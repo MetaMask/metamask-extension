@@ -2,9 +2,7 @@ export {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
 } from './account-tree-controller-messenger';
-export {
-  getCashAccountServiceMessenger,
-} from './cash-account-service-messenger';
+export { getCashAccountServiceMessenger } from './cash-account-service-messenger';
 export {
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
@@ -15,9 +13,6 @@ export type {
   AccountTreeControllerMessenger,
   AccountTreeControllerInitMessenger,
 } from './account-tree-controller-messenger';
-export type {
-  CashAccountServiceMessenger,
-} from './cash-account-service-messenger';
 export type {
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger,
