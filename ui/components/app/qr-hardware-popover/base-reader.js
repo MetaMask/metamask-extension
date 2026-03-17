@@ -251,30 +251,26 @@ const BaseReader = ({
         <div className="qr-scanner__status">
           {t('qrHardwareCameraPermissionBlockedDescription')}
         </div>
-        <div className="qr-scanner__settings-card">
-          {settingsUrl ? (
-            <span>
-              <button
-                className="qr-scanner__settings-link"
-                onClick={() => WebcamUtils.openCameraSettings()}
-                type="button"
-              >
-                {t('qrHardwareCameraPermissionOpenSettings')}
-              </button>{' '}
-              {t('qrHardwareCameraPermissionAllowCamera')}
-            </span>
-          ) : (
+        {!settingsUrl && (
+          <div className="qr-scanner__settings-card">
             <span>{t('qrHardwareCameraPermissionFirefoxInstruction')}</span>
-          )}
-        </div>
-        <div className="qr-scanner__status">
-          {t('qrHardwareCameraPermissionAutoRecover')}
-        </div>
+          </div>
+        )}
         <PageContainerFooter
-          onSubmit={onContinue}
-          submitText={t('continue')}
+          onSubmit={
+            settingsUrl
+              ? () => WebcamUtils.openCameraSettings()
+              : onContinue
+          }
+          submitText={
+            settingsUrl
+              ? t('qrHardwareCameraPermissionOpenSettingsButton')
+              : t('continue')
+          }
           submitButtonType="confirm"
-          hideCancel
+          onCancel={settingsUrl ? onContinue : undefined}
+          cancelText={settingsUrl ? t('continue') : undefined}
+          hideCancel={!settingsUrl}
         />
       </>
     );

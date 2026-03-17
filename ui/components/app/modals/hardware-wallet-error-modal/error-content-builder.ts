@@ -80,16 +80,15 @@ export function buildErrorContent(
     if (settingsUrl) {
       instructions.push({
         type: 'link',
-        linkText: t('qrHardwareCameraPermissionOpenSettings'),
+        linkText: t('qrHardwareCameraPermissionOpenSettingsButton'),
         linkUrl: settingsUrl,
-        suffix: t('qrHardwareCameraPermissionAllowCamera'),
+        suffix: '',
       });
     } else {
       // Firefox blocks extensions from opening about: URLs, so show
       // text instructions instead of a clickable link.
       instructions.push(t('qrHardwareCameraPermissionFirefoxInstruction'));
     }
-    instructions.push(t('qrHardwareCameraPermissionAutoRecover'));
 
     return {
       variant: 'recovery',
