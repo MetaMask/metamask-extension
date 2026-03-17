@@ -20,7 +20,7 @@ import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 import { buildBrowserZipSource, getZipFilePath } from './zip';
 
-const { RawSource } = sources;
+const { CachedSource, RawSource } = sources;
 
 type Assets = Compilation['assets'];
 
@@ -143,6 +143,16 @@ export class ManifestPlugin<Z extends boolean> {
         contentType: 'application/zip',
         development: true,
       });
+    }
+  }
+
+  private cacheAssets(compilation: Compilation, assets: Assets): void {
+    for (const [assetName, asset] of Object.entries(assets)) {
+      if (asset instanceof CachedSource) {
+        continue;
+      }
+
+      compilation.updateAsset(assetName, (source) => new CachedSource(source));
     }
   }
 
@@ -554,6 +564,7 @@ export class ManifestPlugin<Z extends boolean> {
         tapOptions,
         async (assets: Assets) => {
           this.resolveEntrypoints(compilation);
+          this.cacheAssets(compilation, assets);
           await this.zipAssets(compilation, assets, options);
           this.moveAssets(
             compilation,

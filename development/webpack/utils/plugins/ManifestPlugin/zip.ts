@@ -1,4 +1,4 @@
-import path from 'node:path';
+import { extname } from 'node:path';
 import {
   type DeflateOptions,
   Zip,
@@ -75,6 +75,7 @@ export async function buildBrowserZipSource({
     let errored = false;
     const zipChunks: Uint8Array[] = [];
     let zipSize = 0;
+
     const zip = new Zip((error, data, final) => {
       if (errored) {
         return;
@@ -88,6 +89,7 @@ export async function buildBrowserZipSource({
 
       zipChunks.push(data);
       zipSize += data.byteLength;
+
       if (final) {
         resolve(new RawSource(Buffer.concat(zipChunks, zipSize)));
       }
@@ -108,7 +110,7 @@ export async function buildBrowserZipSource({
         return;
       }
 
-      const extName = path.extname(assetName);
+      const extName = extname(assetName);
       if (excludeExtensions.includes(extName)) {
         continue;
       }
@@ -158,29 +160,28 @@ function addAssetToZip(
   zip: Zip,
 ): void {
   let zipFile: AsyncZipDeflate | ZipDeflate | ZipPassThrough;
+  let zipAsset: Buffer | Uint8Array;
   if (!compress) {
     // ZipPassThrough doesn't use workers
     zipFile = new ZipPassThrough(assetName);
+    zipAsset = Buffer.from(asset);
   } else if (asset.length > 1024 * 64) {
     // 1024 * 64 was fastest on my machine :-)
     // AsyncZipDeflate uses workers
     zipFile = new AsyncZipDeflate(assetName, compressionOptions);
+    zipAsset = new Uint8Array(asset);
   } else {
     // ZipDeflate doesn't use workers, and is faster for small files as we don't
     // incur the overhead of transferring data to/from a worker thread.
     zipFile = new ZipDeflate(assetName, compressionOptions);
+    zipAsset = Buffer.from(asset);
   }
   zipFile.mtime = mtime;
   zip.add(zipFile);
-  // Use a copy of the Buffer via `Buffer.from(asset)`, as Zip will *consume*
-  // it, which breaks things if we are compiling for multiple browsers at once.
-  // `Buffer.from` uses the internal pool, so it's superior to `new Uint8Array`
-  // if we don't need to pass it off to a worker thread.
-  //
-  // Additionally, in Node.js 22+ a Buffer marked as "Untransferable" (like
-  // ours) can't be passed to a worker, which `AsyncZipDeflate` uses.
+  // Zip consumes the input, so the sync paths need a copied Buffer to avoid
+  // breaking subsequent browser builds. The async worker path needs a
+  // transferable Uint8Array because Node.js 22+ marks our Buffer as
+  // untransferable.
   // See: https://github.com/101arrowz/fflate/issues/227#issuecomment-2540024304
-  // this can probably be simplified to `zipFile.push(Buffer.from(asset), true);`
-  // if the above issue is resolved.
-  zipFile.push(compress ? new Uint8Array(asset) : Buffer.from(asset), true);
+  zipFile.push(zipAsset, true);
 }
