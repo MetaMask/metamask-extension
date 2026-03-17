@@ -19,22 +19,11 @@ import {
 } from '../../../shared/constants/metametrics';
 import type { MusdClaimBonusStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
-import { extractTransactionAmount } from './transaction-amount-utils';
+import { resolveClaimAmount } from './merkl-claim-amount-utils';
+import { IN_FLIGHT_STATUSES } from './transaction-status-constants';
 
 export const MERKL_DISTRIBUTOR_ADDRESS =
   '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
-
-/**
- * Transaction statuses that indicate a claim is "in flight":
- * - approved: User confirmed in wallet, waiting for submission
- * - signed: Transaction signed, waiting for broadcast
- * - submitted: Transaction submitted to network, waiting for confirmation
- */
-const IN_FLIGHT_STATUSES: string[] = [
-  TransactionStatus.approved,
-  TransactionStatus.signed,
-  TransactionStatus.submitted,
-];
 
 /**
  * Check if a transaction is a Merkl claim by matching the distributor address.
@@ -83,10 +72,12 @@ export const useMerklClaimStatus = (): {
   const trackedAnalyticsRef = useRef<Map<string, Set<string>>>(new Map());
 
   /**
-   * Track Merkl claim status update analytics
+   * Track Merkl claim status update analytics.
+   * Async because claim amount resolution requires decoding calldata and
+   * potentially reading from the Merkl distributor contract.
    */
   const trackClaimStatusUpdate = useCallback(
-    (
+    async (
       tx: TransactionMeta,
       status: 'approved' | 'confirmed' | 'failed' | 'dropped',
     ) => {
@@ -95,7 +86,16 @@ export const useMerklClaimStatus = (): {
         ? networkConfigurationsByChainId[chainId]
         : null;
       const networkName = networkConfig?.name ?? 'Unknown Network';
-      const claimAmount = extractTransactionAmount(tx);
+
+      // Resolve claim amount asynchronously by decoding the Merkl claim
+      // calldata. For confirmed txs, receipt logs give the exact payout;
+      // otherwise falls back to contract call (total - already claimed).
+      let claimAmount: string | undefined;
+      try {
+        claimAmount = await resolveClaimAmount(tx);
+      } catch {
+        // Analytics should never block the UI; proceed without amount
+      }
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const properties: MusdClaimBonusStatusUpdatedEventProperties = {
@@ -104,11 +104,16 @@ export const useMerklClaimStatus = (): {
         transaction_type: 'merklClaim',
         network_chain_id: chainId ?? '',
         network_name: networkName,
-        ...(status !== 'approved' && claimAmount
-          ? { amount_claimed_decimal: claimAmount }
-          : {}),
+        ...(claimAmount ? { amount_claimed_decimal: claimAmount } : {}),
       };
       /* eslint-enable @typescript-eslint/naming-convention */
+
+      console.log('[useMerklClaimStatus] Firing MusdClaimBonusStatusUpdated', {
+        txId: tx.id,
+        status,
+        claimAmount,
+        properties,
+      });
 
       trackEvent({
         event: MetaMetricsEventName.MusdClaimBonusStatusUpdated,
@@ -163,7 +168,6 @@ export const useMerklClaimStatus = (): {
       const wasPending = pendingClaimIdsRef.current.has(tx.id);
 
       if (tx.status === TransactionStatus.confirmed && wasPending) {
-        // Track confirmed status
         if (!trackedStatuses.has('confirmed')) {
           trackClaimStatusUpdate(tx, 'confirmed');
           trackedStatuses.add('confirmed');
@@ -177,7 +181,6 @@ export const useMerklClaimStatus = (): {
           tx.status === TransactionStatus.dropped) &&
         wasPending
       ) {
-        // Track failed/dropped status
         const statusKey =
           tx.status === TransactionStatus.failed ? 'failed' : 'dropped';
         if (!trackedStatuses.has(statusKey)) {

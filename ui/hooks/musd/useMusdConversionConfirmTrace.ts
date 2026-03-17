@@ -28,18 +28,7 @@ import {
   selectTransactionPayQuotesByTransactionId,
   type TransactionPayState,
 } from '../../selectors/transactionPayController';
-
-/**
- * In-flight statuses that indicate the user approved the transaction.
- * The `approved` status is extremely transient (transitions to `signed`
- * then `submitted` within the same tick), so we match any of these to
- * reliably detect when to start the trace.
- */
-const IN_FLIGHT_STATUSES: string[] = [
-  TransactionStatus.approved,
-  TransactionStatus.signed,
-  TransactionStatus.submitted,
-];
+import { IN_FLIGHT_STATUSES } from './transaction-status-constants';
 
 /**
  * Terminal statuses that end the confirmation trace.
@@ -181,6 +170,22 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
       traceContextRef.current = null;
     }
   }, [tx, transactionId, paymentToken, quotes]);
+
+  // End any active trace on unmount to prevent orphaned entries in tracesByKey
+  useEffect(() => {
+    return () => {
+      if (activeTraceRef.current && tracedTxIdRef.current) {
+        endTrace({
+          name: TraceName.MusdConversionConfirm,
+          id: tracedTxIdRef.current,
+          data: { success: false, status: 'unmounted' },
+        });
+        activeTraceRef.current = false;
+        tracedTxIdRef.current = null;
+        traceContextRef.current = null;
+      }
+    };
+  }, []);
 }
 
 export default useMusdConversionConfirmTrace;

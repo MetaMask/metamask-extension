@@ -5,7 +5,13 @@
  * Shown to users who haven't seen the education content before.
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -82,17 +88,21 @@ const MusdEducationScreen: React.FC = () => {
 
   const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
 
-  // Track education screen display on mount
+  // Track education screen display on mount (fire-once guard)
+  const hasTrackedDisplayRef = useRef(false);
   useEffect(() => {
-    const eventProperties = {
-      location:
-        MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
-    };
+    if (hasTrackedDisplayRef.current) {
+      return;
+    }
+    hasTrackedDisplayRef.current = true;
 
     trackEvent({
       event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
       category: MetaMetricsEventCategory.MusdConversion,
-      properties: eventProperties,
+      properties: {
+        location:
+          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+      },
     });
   }, [trackEvent]);
 

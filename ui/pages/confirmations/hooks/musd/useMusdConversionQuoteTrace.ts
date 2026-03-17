@@ -101,6 +101,20 @@ export function useMusdConversionQuoteTrace(): void {
 
     wasLoadingRef.current = isLoading;
   }, [isLoading, quotes, transactionId, payToken?.address, payToken?.chainId]);
+
+  // End any active trace on unmount to prevent orphaned entries in tracesByKey
+  useEffect(() => {
+    return () => {
+      if (traceIdRef.current) {
+        endTrace({
+          name: TraceName.MusdConversionQuote,
+          id: traceIdRef.current,
+          data: { success: false, reason: 'unmounted' },
+        });
+        traceIdRef.current = null;
+      }
+    };
+  }, []);
 }
 
 export default useMusdConversionQuoteTrace;

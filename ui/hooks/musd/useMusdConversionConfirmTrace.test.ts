@@ -344,6 +344,42 @@ describe('useMusdConversionConfirmTrace', () => {
     expect(mockTrace).not.toHaveBeenCalled();
   });
 
+  it('ends active trace on unmount', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+      [MOCK_QUOTE],
+    );
+
+    const { unmount } = renderHook(() => useMusdConversionConfirmTrace('tx-1'));
+
+    expect(mockTrace).toHaveBeenCalledTimes(1);
+    expect(mockEndTrace).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MusdConversionConfirm',
+        id: 'tx-1',
+        data: expect.objectContaining({
+          success: false,
+          status: 'unmounted',
+        }),
+      }),
+    );
+  });
+
+  it('does not call endTrace on unmount when no trace is active', () => {
+    setupMock([]);
+
+    const { unmount } = renderHook(() => useMusdConversionConfirmTrace('tx-1'));
+
+    unmount();
+
+    expect(mockEndTrace).not.toHaveBeenCalled();
+  });
+
   it('does not start trace for unapproved transaction', () => {
     setupMock(
       [createMusdConversionTx('tx-1', TransactionStatus.unapproved)],

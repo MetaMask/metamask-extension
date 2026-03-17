@@ -5,13 +5,10 @@ import {
   MERKL_DISTRIBUTOR_ADDRESS,
 } from './useMerklClaimStatus';
 
-jest.mock('../../../shared/lib/transaction.utils', () => ({
-  parseStandardTokenTransactionData: jest.fn(),
+const mockResolveClaimAmount = jest.fn();
+jest.mock('./merkl-claim-amount-utils', () => ({
+  resolveClaimAmount: (...args: unknown[]) => mockResolveClaimAmount(...args),
 }));
-
-const { parseStandardTokenTransactionData } = jest.requireMock(
-  '../../../shared/lib/transaction.utils',
-);
 
 jest.mock('../../contexts/metametrics', () => {
   const React = jest.requireActual('react');
@@ -79,7 +76,7 @@ describe('useMerklClaimStatus', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockTrackEvent.mockResolvedValue(undefined);
-    parseStandardTokenTransactionData.mockReturnValue(undefined);
+    mockResolveClaimAmount.mockResolvedValue(undefined);
     selectorCallIndex = 0;
     setupSelectorMock([]);
   });
@@ -328,14 +325,9 @@ describe('useMerklClaimStatus', () => {
     expect(result.current.toastState).toBe('in-progress');
   });
 
-  describe('extractClaimAmount', () => {
-    it('extracts claim amount from parsed ERC-20 transaction data', () => {
-      parseStandardTokenTransactionData.mockReturnValue({
-        args: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          _value: BigInt('1000000'),
-        },
-      });
+  describe('claim amount analytics via resolveClaimAmount', () => {
+    it('includes resolved claim amount for confirmed status', async () => {
+      mockResolveClaimAmount.mockResolvedValue('5000000');
 
       setupSelectorMock([
         createMerklClaimTx('tx-1', TransactionStatus.submitted, {
@@ -363,6 +355,11 @@ describe('useMerklClaimStatus', () => {
 
       rerender();
 
+      // Wait for the async resolveClaimAmount to settle
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
       const confirmedCall = mockTrackEvent.mock.calls.find(
         (call: unknown[]) =>
           (call[0] as Record<string, Record<string, string>>)?.properties
@@ -373,14 +370,11 @@ describe('useMerklClaimStatus', () => {
       const confirmedProps = (
         confirmedCall?.[0] as Record<string, Record<string, string>>
       )?.properties;
-      expect(confirmedProps?.amount_claimed_decimal).toBe('1000000');
+      expect(confirmedProps?.amount_claimed_decimal).toBe('5000000');
     });
 
-    it('falls back to txParams.value when transaction data parsing fails', () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      parseStandardTokenTransactionData.mockImplementation(() => {
-        throw new Error('Not a token transaction');
-      });
+    it('proceeds without amount when resolveClaimAmount throws', async () => {
+      mockResolveClaimAmount.mockRejectedValue(new Error('RPC failure'));
 
       setupSelectorMock([
         createMerklClaimTx('tx-1', TransactionStatus.submitted, {
@@ -388,7 +382,6 @@ describe('useMerklClaimStatus', () => {
           txParams: {
             to: MERKL_DISTRIBUTOR_ADDRESS,
             data: '0xbaddata',
-            value: '0x3e8',
           },
         }),
       ]);
@@ -403,12 +396,15 @@ describe('useMerklClaimStatus', () => {
           txParams: {
             to: MERKL_DISTRIBUTOR_ADDRESS,
             data: '0xbaddata',
-            value: '0x3e8',
           },
         }),
       ]);
 
       rerender();
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       const confirmedCall = mockTrackEvent.mock.calls.find(
         (call: unknown[]) =>
@@ -420,16 +416,11 @@ describe('useMerklClaimStatus', () => {
       const confirmedProps = (
         confirmedCall?.[0] as Record<string, Record<string, string>>
       )?.properties;
-      expect(confirmedProps?.amount_claimed_decimal).toBe('1000');
+      expect(confirmedProps?.amount_claimed_decimal).toBeUndefined();
     });
 
-    it('does not include amount for approved status', () => {
-      parseStandardTokenTransactionData.mockReturnValue({
-        args: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          _value: BigInt('500000'),
-        },
-      });
+    it('includes amount for approved status', async () => {
+      mockResolveClaimAmount.mockResolvedValue('5000000');
 
       setupSelectorMock([
         createMerklClaimTx('tx-1', TransactionStatus.submitted, {
@@ -442,6 +433,10 @@ describe('useMerklClaimStatus', () => {
       ]);
 
       renderHook(() => useMerklClaimStatus());
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       const approvedCall = mockTrackEvent.mock.calls.find(
         (call: unknown[]) =>
@@ -454,10 +449,11 @@ describe('useMerklClaimStatus', () => {
       const approvedProps = (
         approvedCall?.[0] as Record<string, Record<string, string>>
       )?.properties;
-      expect(approvedProps?.amount_claimed_decimal).toBeUndefined();
+      expect(approvedProps?.amount_claimed_decimal).toBe('5000000');
+      expect(mockResolveClaimAmount).toHaveBeenCalled();
     });
 
-    it('fires the approved analytics event when tx is first seen as submitted', () => {
+    it('fires the approved analytics event when tx is first seen as submitted', async () => {
       setupSelectorMock([
         createMerklClaimTx('tx-1', TransactionStatus.submitted, {
           chainId: '0x1',
@@ -468,6 +464,10 @@ describe('useMerklClaimStatus', () => {
       ]);
 
       renderHook(() => useMerklClaimStatus());
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -481,7 +481,7 @@ describe('useMerklClaimStatus', () => {
       );
     });
 
-    it('fires the approved analytics event when tx is first seen as signed', () => {
+    it('fires the approved analytics event when tx is first seen as signed', async () => {
       setupSelectorMock([
         createMerklClaimTx('tx-1', TransactionStatus.signed, {
           chainId: '0x1',
@@ -492,6 +492,10 @@ describe('useMerklClaimStatus', () => {
       ]);
 
       renderHook(() => useMerklClaimStatus());
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({

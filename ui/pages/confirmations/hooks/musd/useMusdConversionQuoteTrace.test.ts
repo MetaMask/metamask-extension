@@ -172,6 +172,42 @@ describe('useMusdConversionQuoteTrace', () => {
     expect(mockTrace).toHaveBeenCalledTimes(1);
   });
 
+  it('ends active trace on unmount', () => {
+    mockUseIsTransactionPayLoading.mockReturnValue(false);
+
+    const { rerender, unmount } = renderHook(() =>
+      useMusdConversionQuoteTrace(),
+    );
+
+    mockUseIsTransactionPayLoading.mockReturnValue(true);
+    rerender();
+
+    expect(mockTrace).toHaveBeenCalledTimes(1);
+    expect(mockEndTrace).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MusdConversionQuote',
+        data: expect.objectContaining({
+          success: false,
+          reason: 'unmounted',
+        }),
+      }),
+    );
+  });
+
+  it('does not call endTrace on unmount when no trace is active', () => {
+    mockUseIsTransactionPayLoading.mockReturnValue(false);
+
+    const { unmount } = renderHook(() => useMusdConversionQuoteTrace());
+
+    unmount();
+
+    expect(mockEndTrace).not.toHaveBeenCalled();
+  });
+
   it('can start a new trace after a previous one completes', () => {
     mockUseIsTransactionPayLoading.mockReturnValue(false);
 

@@ -26,18 +26,7 @@ import {
 import type { MusdConversionStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
 import { extractTransactionAmount } from './transaction-amount-utils';
-
-/**
- * Transaction statuses that indicate a conversion is "in flight":
- * - approved: User confirmed in wallet, waiting for submission
- * - signed: Transaction signed, waiting for broadcast
- * - submitted: Transaction submitted to network, waiting for confirmation
- */
-const IN_FLIGHT_STATUSES: string[] = [
-  TransactionStatus.approved,
-  TransactionStatus.signed,
-  TransactionStatus.submitted,
-];
+import { IN_FLIGHT_STATUSES } from './transaction-status-constants';
 
 /**
  * Check if a transaction is an mUSD conversion.
