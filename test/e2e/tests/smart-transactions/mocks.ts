@@ -1050,10 +1050,6 @@ const MOCK_ACCOUNTS_API_SWAP_TX = {
   readable: 'Swap ETH to DAI',
 };
 
-/**
- * Activity list uses the accounts API; default mock returns empty data.
- * Call this to mock the API so the activity list shows the swap as completed.
- */
 export async function mockAccountsApiSwapTransaction(
   mockServer: MockttpServer,
 ): Promise<void> {

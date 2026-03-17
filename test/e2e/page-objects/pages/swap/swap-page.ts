@@ -167,6 +167,11 @@ class SwapPage {
     stxToggle.sendKeys(amount);
   }
 
+  async waitForQuote(): Promise<void> {
+    console.log('Wait for quote to be displayed');
+    await this.driver.waitForSelector(this.swapButton, { timeout: 30000 });
+  }
+
   async selectSourceToken(sourceToken: string): Promise<void> {
     console.log('Click source token button');
     await this.driver.clickElement(this.bridgeSourceButton);

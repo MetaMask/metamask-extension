@@ -116,6 +116,7 @@ describe('Smart Transactions', function () {
         const activityList = new ActivityListPage(driver);
         await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );
@@ -180,6 +181,7 @@ describe('Smart Transactions', function () {
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('20');
+        await swapPage.waitForQuote();
         await swapPage.checkQuoteIsGasIncluded();
         await swapPage.submitSwap();
 
