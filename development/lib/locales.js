@@ -5,6 +5,8 @@ const { promisify } = require('util');
 const log = require('loglevel');
 
 const readFile = promisify(fs.readFile);
+const INVALID_REPLACEMENT_KEY_REGEX = /\$\d{2,}/gu;
+const REPLACEMENT_KEY_REGEX = /\$\d(?!\d)/gu;
 
 function getLocalePath(code) {
   return path.resolve(
@@ -81,8 +83,34 @@ function compareLocalesForUnexpectedReplacementKeys({
   });
 }
 
+function getMessagesWithInvalidReplacementKeys(locale) {
+  return Object.keys(locale).flatMap((key) => {
+    const invalidReplacementKeys = getInvalidReplacementKeys(
+      locale[key]?.message,
+    );
+
+    if (invalidReplacementKeys.length === 0) {
+      return [];
+    }
+
+    return [
+      {
+        invalidReplacementKeys,
+        key,
+      },
+    ];
+  });
+}
+
 function getReplacementKeys(message = '') {
-  return [...new Set(message.match(/\$\d+/gu) ?? [])].sort(
+  return [...new Set(message.match(REPLACEMENT_KEY_REGEX) ?? [])].sort(
+    (firstKey, secondKey) =>
+      Number(firstKey.slice(1)) - Number(secondKey.slice(1)),
+  );
+}
+
+function getInvalidReplacementKeys(message = '') {
+  return [...new Set(message.match(INVALID_REPLACEMENT_KEY_REGEX) ?? [])].sort(
     (firstKey, secondKey) =>
       Number(firstKey.slice(1)) - Number(secondKey.slice(1)),
   );
@@ -92,6 +120,7 @@ module.exports = {
   compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
   compareLocalesForUnexpectedReplacementKeys,
+  getMessagesWithInvalidReplacementKeys,
   getLocale,
   getLocalePath,
 };

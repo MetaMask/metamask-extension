@@ -1,4 +1,7 @@
-import { compareLocalesForUnexpectedReplacementKeys } from './locales';
+import {
+  compareLocalesForUnexpectedReplacementKeys,
+  getMessagesWithInvalidReplacementKeys,
+} from './locales';
 
 describe('compareLocalesForUnexpectedReplacementKeys', () => {
   it('returns an empty array when translated replacement keys match English', () => {
@@ -59,7 +62,24 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
     ]);
   });
 
-  it('handles repeated and multi-digit replacement keys', () => {
+  it('handles repeated replacement keys', () => {
+    expect(
+      compareLocalesForUnexpectedReplacementKeys({
+        englishLocale: {
+          shieldTxDetails1Title: {
+            message: 'Shield details: $1',
+          },
+        },
+        targetLocale: {
+          shieldTxDetails1Title: {
+            message: 'Shield details: $1 and $1',
+          },
+        },
+      }),
+    ).toStrictEqual([]);
+  });
+
+  it('does not treat invalid multi-digit placeholders as replacement keys', () => {
     expect(
       compareLocalesForUnexpectedReplacementKeys({
         englishLocale: {
@@ -69,16 +89,36 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
         },
         targetLocale: {
           shieldTxDetails1Title: {
-            message: 'Shield details $10 $10',
+            message: 'Shield details $10',
           },
+        },
+      }),
+    ).toStrictEqual([]);
+  });
+});
+
+describe('getMessagesWithInvalidReplacementKeys', () => {
+  it('returns an empty array when locale messages use valid replacement keys', () => {
+    expect(
+      getMessagesWithInvalidReplacementKeys({
+        revealSeedWordsDescription1: {
+          message: 'Your $1 gives full access to your wallet.',
+        },
+      }),
+    ).toStrictEqual([]);
+  });
+
+  it('returns invalid multi-digit replacement keys used by a locale', () => {
+    expect(
+      getMessagesWithInvalidReplacementKeys({
+        shieldTxDetails1Title: {
+          message: 'Shield details $10 $10 $12',
         },
       }),
     ).toStrictEqual([
       {
-        englishReplacementKeys: [],
+        invalidReplacementKeys: ['$10', '$12'],
         key: 'shieldTxDetails1Title',
-        targetReplacementKeys: ['$10'],
-        unexpectedReplacementKeys: ['$10'],
       },
     ]);
   });

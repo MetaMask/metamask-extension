@@ -33,6 +33,7 @@ const {
   compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
   compareLocalesForUnexpectedReplacementKeys,
+  getMessagesWithInvalidReplacementKeys,
   getLocale,
   getLocalePath,
 } = require('./lib/locales');
@@ -174,17 +175,34 @@ async function verifyLocale(code) {
     });
   }
 
-  const unexpectedReplacementKeys = compareLocalesForUnexpectedReplacementKeys({
-    englishLocale,
-    targetLocale,
-  });
+  const invalidReplacementKeys =
+    getMessagesWithInvalidReplacementKeys(targetLocale);
 
-  if (unexpectedReplacementKeys.length) {
+  if (invalidReplacementKeys.length) {
     console.log(
-      `**${code}**: ${unexpectedReplacementKeys.length} messages with unexpected replacement keys`,
+      `**${code}**: ${invalidReplacementKeys.length} messages with invalid replacement keys`,
+    );
+    log.info('Messages with invalid replacement keys:');
+    invalidReplacementKeys.forEach(function ({
+      key,
+      invalidReplacementKeys: invalidKeys,
+    }) {
+      log.info(`  - [ ] ${key} (${invalidKeys.join(', ')})`);
+    });
+  }
+
+  const messagesWithUnexpectedReplacementKeys =
+    compareLocalesForUnexpectedReplacementKeys({
+      englishLocale,
+      targetLocale,
+    });
+
+  if (messagesWithUnexpectedReplacementKeys.length) {
+    console.log(
+      `**${code}**: ${messagesWithUnexpectedReplacementKeys.length} messages with unexpected replacement keys`,
     );
     log.info('Messages with unexpected replacement keys:');
-    unexpectedReplacementKeys.forEach(function ({
+    messagesWithUnexpectedReplacementKeys.forEach(function ({
       key,
       unexpectedReplacementKeys: unexpectedKeys,
     }) {
@@ -195,7 +213,8 @@ async function verifyLocale(code) {
   if (
     extraItems.length > 0 ||
     missingDescriptions.length > 0 ||
-    unexpectedReplacementKeys.length > 0
+    invalidReplacementKeys.length > 0 ||
+    messagesWithUnexpectedReplacementKeys.length > 0
   ) {
     if (fix) {
       const newLocale = { ...targetLocale };
@@ -218,6 +237,8 @@ async function verifyLocale(code) {
 
 async function verifyEnglishLocale() {
   const englishLocale = await getLocale('en');
+  const invalidReplacementKeys =
+    getMessagesWithInvalidReplacementKeys(englishLocale);
   // As time allows we'll switch to only performing the strict search.
   // In the meantime we'll use glob to specify which paths can be strict searched
   // and gradually phase out the key based search
@@ -319,7 +340,24 @@ async function verifyEnglishLocale() {
     });
   }
 
-  if (!unusedMessages.length && !templateUsage.length) {
+  if (invalidReplacementKeys.length) {
+    console.log(
+      `**en**: ${invalidReplacementKeys.length} messages with invalid replacement keys`,
+    );
+    log.info('Messages with invalid replacement keys:');
+    invalidReplacementKeys.forEach(function ({
+      key,
+      invalidReplacementKeys: invalidKeys,
+    }) {
+      log.info(`  - [ ] ${key} (${invalidKeys.join(', ')})`);
+    });
+  }
+
+  if (
+    !unusedMessages.length &&
+    !templateUsage.length &&
+    !invalidReplacementKeys.length
+  ) {
     return false; // failed === false
   }
 
