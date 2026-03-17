@@ -60,8 +60,25 @@ const STATE_MOCK = {
   },
 };
 
-function createWrapper() {
-  const store = mockStore(STATE_MOCK);
+function createWrapper(
+  stateOverrides?: Partial<
+    (typeof STATE_MOCK)['metamask']['transactionData'][typeof TRANSACTION_ID_MOCK]
+  >,
+) {
+  const state = stateOverrides
+    ? {
+        metamask: {
+          transactionData: {
+            [TRANSACTION_ID_MOCK]: {
+              ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
+              ...stateOverrides,
+            },
+          },
+        },
+      }
+    : STATE_MOCK;
+
+  const store = mockStore(state);
 
   const confirmContextValue = {
     currentConfirmation: { id: TRANSACTION_ID_MOCK },
@@ -143,67 +160,21 @@ describe('useTransactionPayData', () => {
     });
 
     it('skips tokens with skipIfBalance', () => {
-      const store = mockStore({
-        metamask: {
-          transactionData: {
-            [TRANSACTION_ID_MOCK]: {
-              ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
-              tokens: [GAS_TOKEN_MOCK, REQUIRED_TOKEN_MOCK],
-            },
-          },
-        },
-      });
-
-      const confirmContextValue = {
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: jest.fn(),
-      };
-
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <Provider store={store}>
-          <ConfirmContext.Provider value={confirmContextValue as never}>
-            {children}
-          </ConfirmContext.Provider>
-        </Provider>
-      );
-
       const { result } = renderHook(
         () => useTransactionPayPrimaryRequiredToken(),
-        { wrapper },
+        {
+          wrapper: createWrapper({
+            tokens: [GAS_TOKEN_MOCK, REQUIRED_TOKEN_MOCK],
+          }),
+        },
       );
       expect(result.current).toStrictEqual(REQUIRED_TOKEN_MOCK);
     });
 
     it('returns undefined when all tokens have skipIfBalance', () => {
-      const store = mockStore({
-        metamask: {
-          transactionData: {
-            [TRANSACTION_ID_MOCK]: {
-              ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
-              tokens: [GAS_TOKEN_MOCK],
-            },
-          },
-        },
-      });
-
-      const confirmContextValue = {
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: jest.fn(),
-      };
-
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <Provider store={store}>
-          <ConfirmContext.Provider value={confirmContextValue as never}>
-            {children}
-          </ConfirmContext.Provider>
-        </Provider>
-      );
-
       const { result } = renderHook(
         () => useTransactionPayPrimaryRequiredToken(),
-        { wrapper },
+        { wrapper: createWrapper({ tokens: [GAS_TOKEN_MOCK] }) },
       );
       expect(result.current).toBeUndefined();
     });
