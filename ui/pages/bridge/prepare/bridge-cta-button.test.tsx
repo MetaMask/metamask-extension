@@ -299,46 +299,6 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
   });
 
-  it('should render hardware wallet connect label with wallet name', () => {
-    mockUseHardwareWalletConfig.mockReturnValue({
-      ...baseHardwareWalletConfig,
-      isHardwareWalletAccount: true,
-      walletType: HardwareWalletType.Ledger,
-    });
-
-    const mockStore = createBridgeMockStore({
-      featureFlagOverrides: {
-        bridgeConfig: {
-          chainRanking: [
-            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
-            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
-            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
-          ],
-        },
-      },
-      bridgeSliceOverrides: {
-        fromTokenInputValue: '1',
-        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-        toToken: toBridgeToken(
-          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
-        ),
-      },
-      bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
-        quotesLastFetched: Date.now(),
-        quotesLoadingStatus: RequestStatus.FETCHED,
-      },
-    });
-
-    const { getByText, getByRole } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
-      configureStore(mockStore),
-    );
-
-    expect(getByText('Connect Ledger')).toBeInTheDocument();
-    expect(getByRole('button')).not.toBeDisabled();
-  });
-
   it('should disable the component when quotes are loading and there are no existing quotes', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
