@@ -409,7 +409,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result } = renderHook(
+    const { result, waitForNextUpdate } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -420,7 +420,7 @@ describe('useMerklRewards', () => {
     );
 
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForNextUpdate();
     });
 
     expect(result.current.hasClaimableReward).toBe(true);

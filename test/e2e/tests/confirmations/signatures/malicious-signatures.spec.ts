@@ -39,8 +39,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await alertModal.confirmFromAlertModal();
-
         await testDapp.assertVerifiedSiweMessage(
           '0x24e559452c37827008633f9ae50c68cdb28e33f547f795af687839b520b022e4093c38bf1dfebda875ded715f2754d458ed62a19248e5a9bd2205bd1cb66f9b51b',
         );

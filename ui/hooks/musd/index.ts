@@ -58,3 +58,5 @@ export {
   useMusdConversionConfirmTrace,
   useMusdConversionConfirmTraceWithDetails,
 } from './useMusdConversionConfirmTrace';
+
+export { isMerklClaimTransaction } from './useMerklClaimStatus';

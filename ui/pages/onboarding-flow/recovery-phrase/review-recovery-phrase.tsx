@@ -2,6 +2,25 @@ import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import {
+  Text,
+  Box,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  ButtonIcon,
+  IconName,
+  ButtonIconSize,
+  TextVariant,
+  TextColor,
+  IconColor,
+  TextAlign,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  TextButton,
+  TextButtonSize,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -10,29 +29,6 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  Text,
-  Box,
-  Button,
-  ButtonVariant,
-  ButtonLink,
-  ButtonLinkSize,
-  ButtonSize,
-  ButtonIcon,
-  IconName,
-  ButtonIconSize,
-} from '../../../components/component-library';
-import {
-  TextVariant,
-  JustifyContent,
-  BlockSize,
-  TextColor,
-  IconColor,
-  Display,
-  FlexDirection,
-  AlignItems,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -180,13 +176,11 @@ export default function RecoveryPhrase({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
       gap={6}
-      className="recovery-phrase"
+      className="recovery-phrase h-full"
       data-testid="recovery-phrase"
     >
       <Box>
@@ -195,27 +189,25 @@ export default function RecoveryPhrase({
         )}
         {isFromReminder && isFromSettingsSecurity ? (
           <Box
-            className="recovery-phrase__header"
-            display={Display.Grid}
-            alignItems={AlignItems.center}
+            className="recovery-phrase__header grid w-full"
+            alignItems={BoxAlignItems.Center}
             gap={3}
             marginBottom={4}
-            width={BlockSize.Full}
           >
             <ButtonIcon
               iconName={IconName.ArrowLeft}
-              color={IconColor.iconDefault}
+              color={IconColor.IconDefault}
               size={ButtonIconSize.Md}
               data-testid="reveal-recovery-phrase-review-back-button"
               onClick={handleBack}
               ariaLabel={t('back')}
             />
-            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+            <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
               {t('seedPhraseReviewTitleSettings')}
             </Text>
             <ButtonIcon
               iconName={IconName.Close}
-              color={IconColor.iconDefault}
+              color={IconColor.IconDefault}
               size={ButtonIconSize.Md}
               data-testid="reveal-recovery-phrase-review-close-button"
               onClick={onClose}
@@ -224,25 +216,25 @@ export default function RecoveryPhrase({
           </Box>
         ) : (
           <Box
-            justifyContent={JustifyContent.flexStart}
+            justifyContent={BoxJustifyContent.Start}
             marginBottom={4}
-            width={BlockSize.Full}
+            className="w-full"
           >
-            <Text variant={TextVariant.headingLg} as="h2">
+            <Text variant={TextVariant.HeadingLg}>
               {t('seedPhraseReviewTitle')}
             </Text>
           </Box>
         )}
         <Box>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('seedPhraseReviewDetails', [
-              <ButtonLink
+              <TextButton
                 key="seedPhraseReviewDetails"
-                size={ButtonLinkSize.Inherit}
                 onClick={handleOnShowSrpDetailsModal}
+                className="hover:bg-transparent active:bg-transparent w-fit"
               >
                 {t('secretRecoveryPhrase')}
-              </ButtonLink>,
+              </TextButton>,
             ])}
           </Text>
         </Box>
@@ -263,34 +255,26 @@ export default function RecoveryPhrase({
           }}
         />
       </Box>
-      <Box
-        width={BlockSize.Full}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={2}
-      >
+      <Box className="w-full" flexDirection={BoxFlexDirection.Column} gap={4}>
         <Button
-          width={BlockSize.Full}
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           data-testid="recovery-phrase-continue"
-          className="recovery-phrase__footer--button"
+          className="recovery-phrase__footer--button w-full"
           disabled={!phraseRevealed}
           onClick={handleContinue}
         >
           {t('continue')}
         </Button>
         {!isFromReminder && (
-          <Button
-            width={BlockSize.Full}
-            variant={ButtonVariant.Link}
-            size={ButtonSize.Lg}
+          <TextButton
+            size={TextButtonSize.BodyMd}
             onClick={handleRemindLater}
-            type="button"
+            className="w-full hover:bg-transparent active:bg-transparent"
             data-testid="recovery-phrase-remind-later"
           >
             {t('secureWalletRemindLaterButton')}
-          </Button>
+          </TextButton>
         )}
       </Box>
     </Box>
