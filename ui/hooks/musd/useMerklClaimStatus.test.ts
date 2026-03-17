@@ -27,9 +27,7 @@ jest.mock('../../contexts/metametrics', () => {
   };
 });
 
-const { mockTrackEvent } = jest.requireMock(
-  '../../contexts/metametrics',
-);
+const { mockTrackEvent } = jest.requireMock('../../contexts/metametrics');
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -155,9 +153,7 @@ describe('useMerklClaimStatus', () => {
 
     expect(result.current.toastState).toBe('in-progress');
 
-    setupSelectorMock([
-      createMerklClaimTx('tx-1', TransactionStatus.failed),
-    ]);
+    setupSelectorMock([createMerklClaimTx('tx-1', TransactionStatus.failed)]);
 
     rerender();
 

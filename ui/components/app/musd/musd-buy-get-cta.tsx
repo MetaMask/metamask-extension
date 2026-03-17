@@ -11,10 +11,6 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -26,6 +22,13 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+} from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import type { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
@@ -222,11 +225,13 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
               size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkIcon}
-              className="musd-buy-get-cta__avatar-network"
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
             />
           ) : undefined
         }
-        className="musd-buy-get-cta__badge"
+        marginRight={4}
+        style={{ alignSelf: 'center' }}
         data-testid="musd-buy-get-cta-icon"
       >
         <AvatarToken name="mUSD" src={musdIconUrl} />

@@ -1,5 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMusdConversionConfirmTrace } from './useMusdConversionConfirmTrace';
 
@@ -283,9 +286,7 @@ describe('useMusdConversionConfirmTrace', () => {
   });
 
   it('uses "unknown" defaults when payment token and quotes are missing', () => {
-    setupMock(
-      [createMusdConversionTx('tx-1', TransactionStatus.approved)],
-    );
+    setupMock([createMusdConversionTx('tx-1', TransactionStatus.approved)]);
 
     renderHook(() => useMusdConversionConfirmTrace('tx-1'));
 
