@@ -55,6 +55,14 @@ import {
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
+// LRU cache sizes for parameterized selectors.
+// Values reflect the maximum number of unique parameter values
+// expected to be live in a single render pass.
+const ACCOUNT_LRU_CACHE_SIZE = 20; // one entry per address (worst case: simulation details with ~20 balance-change addresses)
+const GROUP_LRU_CACHE_SIZE = 20; // one entry per visible account group (multichain-account-list renders all groups simultaneously)
+const CHAIN_LRU_CACHE_SIZE = 10; // one entry per unique chain/scope (max ~8 chains active simultaneously across all consumers)
+const SINGLE_LOOKUP_LRU_CACHE_SIZE = 5; // selectors used for individual lookups, never rendered in a list
+
 /**
  * Retrieve account tree state.
  *
@@ -191,7 +199,7 @@ export const getNormalizedGroupsMetadata = createSelector(
  * @returns The wallet ID and name for the account, or null if not found.
  */
 export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(
-  50,
+  ACCOUNT_LRU_CACHE_SIZE,
 )(
   getWalletsWithAccounts,
   (_, address: string) => address,
@@ -221,7 +229,7 @@ export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(
  * @param accountId - The account group ID to find.
  * @returns The multichain account group object, or undefined if not found.
  */
-export const getMultichainAccountGroupById = createParameterizedSelector(20)(
+export const getMultichainAccountGroupById = createParameterizedSelector(SINGLE_LOOKUP_LRU_CACHE_SIZE)(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
@@ -379,7 +387,7 @@ export const getMultichainAccountsToScopesMap = createSelector(
  * @returns The CAIP-25 account ID, or undefined if not found.
  */
 export const getCaip25IdByAccountGroupAndScope = createParameterizedSelector(
-  30,
+  SINGLE_LOOKUP_LRU_CACHE_SIZE,
 )(
   getMultichainAccountsToScopesMap,
   (_state, accountGroup: AccountGroupObject, _scope: CaipChainId) =>
@@ -505,7 +513,7 @@ const getInternalAccountFromGroup = (
  * @param caipChainId - The CAIP chain ID to search for.
  * @returns The internal account object, or null if not found.
  */
-export const getInternalAccountByGroupAndCaip = createParameterizedSelector(50)(
+export const getInternalAccountByGroupAndCaip = createParameterizedSelector(CHAIN_LRU_CACHE_SIZE)(
   getAccountTree,
   getInternalAccountsObject,
   (_state, groupId: AccountGroupId) => groupId,
@@ -541,7 +549,7 @@ export const getSelectedAccountGroup = createSelector(
  * @returns The internal account object, or null if not found.
  */
 export const getInternalAccountBySelectedAccountGroupAndCaip =
-  createParameterizedSelector(20)(
+  createParameterizedSelector(CHAIN_LRU_CACHE_SIZE)(
     getAccountTree,
     getInternalAccountsObject,
     getSelectedAccountGroup,
@@ -607,7 +615,7 @@ export const getMultichainAccountsByWalletId = createSelector(
  * @param groupId - The ID of the account group.
  * @returns Array of internal accounts in the specified group, or empty array if not found.
  */
-export const getInternalAccountsFromGroupById = createParameterizedSelector(20)(
+export const getInternalAccountsFromGroupById = createParameterizedSelector(GROUP_LRU_CACHE_SIZE)(
   getAccountTree,
   getInternalAccountsObject,
   (_, groupId: AccountGroupId) => groupId,
@@ -676,7 +684,7 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
  * @returns An array of internal accounts spread across different network scopes.
  */
 export const getInternalAccountListSpreadByScopesByGroupId =
-  createParameterizedShallowEqualSelector(20)(
+  createParameterizedShallowEqualSelector(GROUP_LRU_CACHE_SIZE)(
     [
       getInternalAccountsFromGroupById,
       getMultichainNetworkConfigurationsByChainId,
@@ -740,7 +748,7 @@ export const getInternalAccountListSpreadByScopesByGroupId =
  * @param groupId - The account group ID.
  * @returns The number of accounts in the group, or 0 if the group is not found.
  */
-export const getNetworkAddressCount = createParameterizedSelector(20)(
+export const getNetworkAddressCount = createParameterizedSelector(SINGLE_LOOKUP_LRU_CACHE_SIZE)(
   [getInternalAccountListSpreadByScopesByGroupId],
   (
     accounts: {
@@ -766,7 +774,7 @@ export const getNetworkAddressCount = createParameterizedSelector(20)(
  * @throws If no accounts are found in the specified group.
  */
 export const getIconSeedAddressByAccountGroupId =
-  createParameterizedShallowEqualSelector(20)(
+  createParameterizedShallowEqualSelector(GROUP_LRU_CACHE_SIZE)(
     [getInternalAccountsFromGroupById],
     (accounts: InternalAccount[]): string => {
       if (!accounts || accounts.length === 0) {
@@ -793,7 +801,7 @@ export const getIconSeedAddressByAccountGroupId =
  * @returns Object with address (or null if none) and scopes (list of matching scope IDs).
  */
 export const getDefaultScopeAndAddressByAccountGroupId =
-  createParameterizedSelector(20)(
+  createParameterizedSelector(GROUP_LRU_CACHE_SIZE)(
     [
       getInternalAccountListSpreadByScopesByGroupId,
       (state: MetaMaskReduxState) => getPreferences(state).defaultAddressScope,
