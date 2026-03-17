@@ -3564,7 +3564,7 @@ export const getAllPermittedAccounts = createParameterizedSelector(20)(
   (_state, origin) => origin,
   (subjects, origin) => {
     const caip25Permission = getCaip25PermissionFromSubject(
-      origin ? subjects?.[origin] : undefined,
+      origin && subjects?.[origin],
     );
     const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
     return caip25Caveat
