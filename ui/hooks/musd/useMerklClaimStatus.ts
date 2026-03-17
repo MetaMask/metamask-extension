@@ -11,6 +11,7 @@ import {
   TransactionStatus,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { getTransactions } from '../../selectors/transactions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -19,6 +20,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import type { MusdClaimBonusStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
+import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 
 export const MERKL_DISTRIBUTOR_ADDRESS =
   '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
@@ -82,6 +84,48 @@ export const useMerklClaimStatus = (): {
   const trackedAnalyticsRef = useRef<Map<string, Set<string>>>(new Map());
 
   /**
+   * Extract claim amount from Merkl distributor transaction data.
+   * For Merkl claims, the amount may be encoded in the transaction data
+   * or available in txParams.value.
+   */
+  const extractClaimAmount = useCallback(
+    (tx: TransactionMeta): string | undefined => {
+      // First try to extract from transaction data (for token transfers)
+      const txData = tx.txParams?.data;
+      if (txData) {
+        try {
+          const parsedData = parseStandardTokenTransactionData(txData);
+          // For ERC-20 transfer/transferFrom, amount is in args._value
+          const amountValue = parsedData?.args?._value;
+          if (amountValue) {
+            const bn = new BigNumber(amountValue.toString());
+            return bn.toString(10);
+          }
+        } catch (e) {
+          // Not a standard token transaction, continue to fallback
+          console.error(
+            'Failed to parse claim amount from transaction data:',
+            e,
+          );
+        }
+      }
+
+      // Fallback to txParams.value for native token transfers
+      if (tx.txParams?.value) {
+        try {
+          const bn = new BigNumber(tx.txParams.value);
+          return bn.toString(10);
+        } catch (e) {
+          console.error('Failed to parse claim amount from txParams.value:', e);
+        }
+      }
+
+      return undefined;
+    },
+    [],
+  );
+
+  /**
    * Track Merkl claim status update analytics
    */
   const trackClaimStatusUpdate = useCallback(
@@ -94,6 +138,7 @@ export const useMerklClaimStatus = (): {
         ? networkConfigurationsByChainId[chainId]
         : null;
       const networkName = networkConfig?.name ?? 'Unknown Network';
+      const claimAmount = extractClaimAmount(tx);
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const properties: MusdClaimBonusStatusUpdatedEventProperties = {
@@ -103,8 +148,8 @@ export const useMerklClaimStatus = (): {
         network_chain_id: chainId ?? '',
         network_name: networkName,
         // Only include amount for terminal statuses
-        ...(status !== 'approved' && tx.txParams?.value
-          ? { amount_claimed_decimal: tx.txParams.value }
+        ...(status !== 'approved' && claimAmount
+          ? { amount_claimed_decimal: claimAmount }
           : {}),
       };
       /* eslint-enable @typescript-eslint/naming-convention */
@@ -115,7 +160,7 @@ export const useMerklClaimStatus = (): {
         properties,
       });
     },
-    [trackEvent, networkConfigurationsByChainId],
+    [trackEvent, networkConfigurationsByChainId, extractClaimAmount],
   );
 
   const merklClaims = useMemo(

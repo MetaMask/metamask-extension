@@ -78,19 +78,21 @@ const MusdEducationScreen: React.FC = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [searchParams] = useSearchParams();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
 
   // Track education screen display on mount
   useEffect(() => {
+    const eventProperties = {
+      location:
+        MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+    };
+
     trackEvent({
       event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
       category: MetaMetricsEventCategory.MusdConversion,
-      properties: {
-        location:
-          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
-      },
+      properties: eventProperties,
     });
   }, [trackEvent]);
 
@@ -152,19 +154,21 @@ const MusdEducationScreen: React.FC = () => {
    * - Otherwise (including deeplink + has tokens): start conversion flow ("Get started").
    */
   const handleContinue = useCallback(async () => {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const eventProperties: MusdEducationButtonClickedEventProperties = {
+      location:
+        MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+      button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.PRIMARY,
+      button_text: primaryButtonLabel,
+      redirects_to: getRedirectDestination(),
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
     // Track primary button click
     trackEvent({
       event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
       category: MetaMetricsEventCategory.MusdConversion,
-      properties: {
-        location:
-          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
-        /* eslint-disable @typescript-eslint/naming-convention */
-        button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.PRIMARY,
-        button_text: primaryButtonLabel,
-        redirects_to: getRedirectDestination(),
-        /* eslint-enable @typescript-eslint/naming-convention */
-      } as MusdEducationButtonClickedEventProperties,
+      properties: eventProperties,
     });
 
     dispatch(setMusdConversionEducationSeen(true));
@@ -225,19 +229,21 @@ const MusdEducationScreen: React.FC = () => {
    * Marks education as seen and navigates home.
    */
   const handleSkip = useCallback(() => {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const eventProperties: MusdEducationButtonClickedEventProperties = {
+      location:
+        MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+      button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.SECONDARY,
+      button_text: secondaryButtonLabel,
+      redirects_to: MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.HOME_SCREEN,
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
     // Track secondary button click
     trackEvent({
       event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
       category: MetaMetricsEventCategory.MusdConversion,
-      properties: {
-        location:
-          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
-        /* eslint-disable @typescript-eslint/naming-convention */
-        button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.SECONDARY,
-        button_text: secondaryButtonLabel,
-        redirects_to: MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.HOME_SCREEN,
-        /* eslint-enable @typescript-eslint/naming-convention */
-      } as MusdEducationButtonClickedEventProperties,
+      properties: eventProperties,
     });
 
     dispatch(setMusdConversionEducationSeen(true));
@@ -304,6 +310,18 @@ const MusdEducationScreen: React.FC = () => {
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => {
+                    const properties = {
+                      location: 'conversion_education_screen',
+                      url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+                    };
+
+                    trackEvent({
+                      event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                      category: MetaMetricsEventCategory.MusdConversion,
+                      properties,
+                    });
+                  }}
                 >
                   {t('musdTermsApply')}
                 </a>

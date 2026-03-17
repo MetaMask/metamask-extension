@@ -149,18 +149,20 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
       redirectsTo = REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN;
     }
 
+    const eventProperties = createMusdCtaClickedEventProperties({
+      location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
+      redirectsTo,
+      ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
+      ctaText,
+      chainId: selectedChainId,
+      chainName: networkName,
+      clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
+    });
+
     trackEvent({
       event: MetaMetricsEventName.MusdConversionCtaClicked,
       category: MetaMetricsEventCategory.Tokens,
-      properties: createMusdCtaClickedEventProperties({
-        location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
-        redirectsTo,
-        ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
-        ctaText,
-        chainId: selectedChainId,
-        chainName: networkName,
-        clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
-      }),
+      properties: eventProperties,
     });
 
     if (variant === BuyGetMusdCtaVariant.BUY) {

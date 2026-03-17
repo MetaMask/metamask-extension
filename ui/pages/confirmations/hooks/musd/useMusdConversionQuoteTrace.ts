@@ -43,6 +43,13 @@ export function useMusdConversionQuoteTrace(): void {
   // Track current trace state
   const traceIdRef = useRef<string | null>(null);
   const wasLoadingRef = useRef(false);
+  const startTimeRef = useRef<number | null>(null);
+  const mountedRef = useRef(false);
+
+  // Log on first mount
+  if (!mountedRef.current) {
+    mountedRef.current = true;
+  }
 
   // Start trace when loading begins, end when loading completes
   useEffect(() => {
@@ -51,8 +58,9 @@ export function useMusdConversionQuoteTrace(): void {
       // Generate unique trace ID for this quote fetch
       const newTraceId = `quote_${transactionId}_${Date.now()}`;
       traceIdRef.current = newTraceId;
+      startTimeRef.current = Date.now();
 
-      trace({
+      const traceData = {
         name: TraceName.MusdConversionQuote,
         op: TraceOperation.MusdConversionDataFetch,
         id: newTraceId,
@@ -61,7 +69,9 @@ export function useMusdConversionQuoteTrace(): void {
           payTokenAddress: payToken?.address ?? 'unknown',
           payTokenChainId: payToken?.chainId ?? 'unknown',
         },
-      });
+      };
+
+      trace(traceData);
     }
 
     // Detect transition from loading to not-loading (end trace)
@@ -69,28 +79,33 @@ export function useMusdConversionQuoteTrace(): void {
       const hasQuotes = Boolean(quotes?.length);
 
       if (hasQuotes) {
+        const endData = {
+          success: true,
+          quoteCount: quotes?.length ?? 0,
+          strategy:
+            (quotes?.[0] as { strategy?: string })?.strategy ?? 'unknown',
+        };
+
         endTrace({
           name: TraceName.MusdConversionQuote,
           id: traceIdRef.current,
-          data: {
-            success: true,
-            quoteCount: quotes?.length ?? 0,
-            strategy:
-              (quotes?.[0] as { strategy?: string })?.strategy ?? 'unknown',
-          },
+          data: endData,
         });
       } else {
+        const endData = {
+          success: false,
+          reason: 'no_quotes',
+        };
+
         endTrace({
           name: TraceName.MusdConversionQuote,
           id: traceIdRef.current,
-          data: {
-            success: false,
-            reason: 'no_quotes',
-          },
+          data: endData,
         });
       }
 
       traceIdRef.current = null;
+      startTimeRef.current = null;
     }
 
     wasLoadingRef.current = isLoading;

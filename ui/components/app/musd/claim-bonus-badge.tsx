@@ -58,19 +58,21 @@ export const ClaimBonusBadge = ({
     (e: React.MouseEvent) => {
       e.stopPropagation();
 
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const eventProperties: MusdClaimBonusButtonClickedEventProperties = {
+        location:
+          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CLAIM_BONUS_BOTTOM_SHEET,
+        claim_amount: label,
+        network_chain_id: chainId,
+        network_name: networkName,
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
+
       // Track claim bonus button click
       trackEvent({
         event: MetaMetricsEventName.MusdClaimBonusButtonClicked,
         category: MetaMetricsEventCategory.MusdConversion,
-        properties: {
-          location:
-            MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CLAIM_BONUS_BOTTOM_SHEET,
-          /* eslint-disable @typescript-eslint/naming-convention */
-          claim_amount: label,
-          network_chain_id: chainId,
-          network_name: networkName,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        } as MusdClaimBonusButtonClickedEventProperties,
+        properties: eventProperties,
       });
 
       claimRewards();

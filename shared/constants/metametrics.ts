@@ -830,6 +830,7 @@ export enum MetaMetricsEventName {
   MusdConversionStarted = 'MUSD Conversion Started',
   MusdConversionStatusUpdated = 'MUSD Conversion Status Updated',
   MusdFullscreenAnnouncementButtonClicked = 'MUSD Fullscreen Announcement Button Clicked',
+  MusdBonusTermsOfUsePressed = 'MUSD Bonus Terms of Use Pressed',
   MusdFullscreenAnnouncementDisplayed = 'MUSD Fullscreen Announcement Displayed',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',

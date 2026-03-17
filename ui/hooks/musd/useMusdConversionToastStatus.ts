@@ -12,6 +12,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { getTransactions } from '../../selectors/transactions';
 import {
   selectTransactionPaymentTokenByTransactionId,
@@ -24,6 +25,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import type { MusdConversionStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
+import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 
 /**
  * Transaction statuses that indicate a conversion is "in flight":
@@ -65,11 +67,13 @@ export type MusdConversionToastState =
  *
  * @returns An object containing `toastState` (current toast to display),
  * `sourceTokenSymbol` (the payment token symbol for the active conversion),
+ * `activeTransactionId` (the ID of the active mUSD conversion for tracing),
  * and `dismissToast` (function to dismiss the current toast).
  */
 export const useMusdConversionToastStatus = (): {
   toastState: MusdConversionToastState;
   sourceTokenSymbol: string | undefined;
+  activeTransactionId: string | undefined;
   dismissToast: () => void;
 } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
@@ -88,6 +92,12 @@ export const useMusdConversionToastStatus = (): {
   const shownCompletionIdsRef = useRef<Set<string>>(new Set());
   // Track IDs of conversions we've already tracked analytics for (by status)
   const trackedAnalyticsRef = useRef<Map<string, Set<string>>>(new Map());
+  const mountedRef = useRef(false);
+
+  // Log on first mount
+  if (!mountedRef.current) {
+    mountedRef.current = true;
+  }
 
   const musdConversions = useMemo(
     () => transactions.filter(isMusdConversionTx),
@@ -140,6 +150,40 @@ export const useMusdConversionToastStatus = (): {
   const sourceTokenSymbol = paymentToken?.symbol ?? cachedSymbol;
 
   /**
+   * Extract transfer amount from ERC-20 transaction data.
+   * For ERC-20 transfers, the amount is encoded in txParams.data, not txParams.value.
+   */
+  const extractTransferAmount = useCallback(
+    (tx: TransactionMeta): { amountHex: string; amountDecimal: string } => {
+      const txData = tx.txParams?.data;
+      if (!txData) {
+        return { amountHex: '0x0', amountDecimal: '0' };
+      }
+
+      try {
+        const parsedData = parseStandardTokenTransactionData(txData);
+        // For ERC-20 transfer/transferFrom, amount is in args._value
+        const amountValue = parsedData?.args?._value;
+        if (amountValue) {
+          const bn = new BigNumber(amountValue.toString());
+          return {
+            amountHex: `0x${bn.toString(16)}`,
+            amountDecimal: bn.toString(10),
+          };
+        }
+      } catch (e) {
+        console.error(
+          'Failed to parse conversion amount from transaction data:',
+          e,
+        );
+      }
+
+      return { amountHex: '0x0', amountDecimal: '0' };
+    },
+    [],
+  );
+
+  /**
    * Track mUSD conversion status update analytics
    */
   const trackConversionStatusUpdate = useCallback(
@@ -153,6 +197,7 @@ export const useMusdConversionToastStatus = (): {
         ? networkConfigurationsByChainId[chainId]
         : null;
       const networkName = networkConfig?.name ?? 'Unknown Network';
+      const { amountHex, amountDecimal } = extractTransferAmount(tx);
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const properties: MusdConversionStatusUpdatedEventProperties = {
@@ -162,8 +207,8 @@ export const useMusdConversionToastStatus = (): {
         asset_symbol: tokenSymbol ?? 'Unknown',
         network_chain_id: chainId ?? '',
         network_name: networkName,
-        amount_decimal: tx.txParams?.value ?? '0',
-        amount_hex: tx.txParams?.value ?? '0x0',
+        amount_decimal: amountDecimal,
+        amount_hex: amountHex,
       };
       /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -173,7 +218,7 @@ export const useMusdConversionToastStatus = (): {
         properties,
       });
     },
-    [trackEvent, networkConfigurationsByChainId],
+    [trackEvent, networkConfigurationsByChainId, extractTransferAmount],
   );
 
   // Detect transitions from pending → confirmed/failed and track analytics
@@ -186,9 +231,13 @@ export const useMusdConversionToastStatus = (): {
       const trackedStatuses =
         trackedAnalyticsRef.current.get(tx.id) ?? new Set();
 
-      // Track approved status when transaction first enters pending
+      // Track approved status when the transaction first appears in any
+      // in-flight state. The `approved` status is extremely transient
+      // (approved → signed → submitted within the same tick), so React
+      // almost never observes it directly. Matching any in-flight status
+      // ensures the event fires reliably.
       if (
-        tx.status === TransactionStatus.approved &&
+        IN_FLIGHT_STATUSES.includes(tx.status) &&
         !trackedStatuses.has('approved')
       ) {
         trackConversionStatusUpdate(tx, 'approved', sourceTokenSymbol);
@@ -268,5 +317,10 @@ export const useMusdConversionToastStatus = (): {
       completionState ?? (hasPendingConversion ? 'in-progress' : null);
   }
 
-  return { toastState, sourceTokenSymbol, dismissToast };
+  return {
+    toastState,
+    sourceTokenSymbol,
+    activeTransactionId: activePendingTxId,
+    dismissToast,
+  };
 };

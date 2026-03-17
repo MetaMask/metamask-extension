@@ -73,14 +73,18 @@ export const MusdConversionInfo = () => {
   useEffect(() => {
     if (!hasEndedNavigationTraceRef.current) {
       hasEndedNavigationTraceRef.current = true;
+
+      const traceData = {
+        paymentTokenChainId: existingPayToken?.chainId ?? 'unknown',
+        paymentTokenAddress: existingPayToken?.address ?? 'unknown',
+      };
+
       endTrace({
         name: TraceName.MusdConversionNavigation,
-        data: {
-          chainId: existingPayToken?.chainId ?? 'unknown',
-        },
+        data: traceData,
       });
     }
-  }, [existingPayToken?.chainId]);
+  }, [existingPayToken?.chainId, existingPayToken?.address, transactionId]);
 
   const preferredToken = existingPayToken
     ? { address: existingPayToken.address, chainId: existingPayToken.chainId }

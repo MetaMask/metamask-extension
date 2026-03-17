@@ -142,13 +142,6 @@ describe('useMerklRewards', () => {
       userCountry: 'US',
       isLoading: false,
     });
-
-    // Initialize query client
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-    });
   });
 
   it('returns isEligible false and hasClaimableReward false for ineligible token', () => {

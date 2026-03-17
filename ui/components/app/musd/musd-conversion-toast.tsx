@@ -19,11 +19,11 @@ import { Toast } from '../../multichain/toast';
 
 export function MusdConversionToast() {
   const t = useI18nContext();
-  const { toastState, sourceTokenSymbol, dismissToast } =
+  const { toastState, sourceTokenSymbol, activeTransactionId, dismissToast } =
     useMusdConversionToastStatus();
 
-  // Track conversion confirmation time via Sentry trace
-  useMusdConversionConfirmTrace();
+  // Track conversion confirmation time via Sentry trace (with quote details)
+  useMusdConversionConfirmTrace(activeTransactionId ?? '');
 
   const autoHideDelay = 5 * SECOND;
 

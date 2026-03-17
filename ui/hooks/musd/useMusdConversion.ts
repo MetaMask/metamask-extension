@@ -198,17 +198,6 @@ export function useMusdConversion(): UseMusdConversionResult {
       const chainId =
         preferredToken?.chainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
 
-      // Start navigation trace - measures time from CTA click to conversion screen render
-      trace({
-        name: TraceName.MusdConversionNavigation,
-        op: TraceOperation.MusdConversionOperation,
-        tags: {
-          paymentTokenChainId: chainId,
-          paymentTokenAddress: preferredToken?.address ?? 'unknown',
-          hasPreferredToken: Boolean(preferredToken),
-        },
-      });
-
       try {
         setError(null);
 
@@ -265,6 +254,19 @@ export function useMusdConversion(): UseMusdConversionResult {
             }
           }
         }
+
+        // Start navigation trace - measures time from CTA click to conversion screen render
+        const navTraceTags = {
+          paymentTokenChainId: chainId,
+          paymentTokenAddress: preferredToken?.address ?? 'unknown',
+          hasPreferredToken: Boolean(preferredToken),
+        };
+
+        trace({
+          name: TraceName.MusdConversionNavigation,
+          op: TraceOperation.MusdConversionOperation,
+          tags: navTraceTags,
+        });
 
         navigate({
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,

@@ -1,8 +1,8 @@
 /**
  * useMusdConversionConfirmTrace Hook
  *
- * Traces the mUSD conversion confirmation time.
- * Start: Transaction status becomes 'approved'
+ * Traces the mUSD conversion confirmation time with quote details.
+ * Start: Transaction first appears in an in-flight status (approved/signed/submitted)
  * End: Transaction reaches terminal status (confirmed, failed, dropped, rejected)
  *
  * Adapted from metamask-mobile:
@@ -30,6 +30,18 @@ import {
 } from '../../selectors/transactionPayController';
 
 /**
+ * In-flight statuses that indicate the user approved the transaction.
+ * The `approved` status is extremely transient (transitions to `signed`
+ * then `submitted` within the same tick), so we match any of these to
+ * reliably detect when to start the trace.
+ */
+const IN_FLIGHT_STATUSES: string[] = [
+  TransactionStatus.approved,
+  TransactionStatus.signed,
+  TransactionStatus.submitted,
+];
+
+/**
  * Terminal statuses that end the confirmation trace.
  */
 const TERMINAL_STATUSES = [
@@ -46,117 +58,68 @@ function isTerminalStatus(status: string): status is TerminalStatus {
 }
 
 /**
- * Hook for tracing mUSD conversion confirmation time.
- * Monitors mUSD conversion transactions and tracks:
- * - Start: When transaction status becomes 'approved'
+ * Hook for tracing mUSD conversion confirmation time with quote details.
+ * Monitors a specific mUSD conversion transaction and tracks:
+ * - Start: When transaction first appears in an in-flight status
  * - End: When transaction reaches terminal status
- */
-export function useMusdConversionConfirmTrace(): void {
-  const transactions = useSelector(getTransactions) as TransactionMeta[];
-
-  // Track which transactions we've started/ended traces for
-  const activeTracesRef = useRef<Map<string, boolean>>(new Map());
-
-  // Filter to mUSD conversion transactions
-  const musdConversions = transactions.filter(
-    (tx) => tx.type === TransactionType.musdConversion,
-  );
-
-  // Monitor transaction status changes
-  useEffect(() => {
-    for (const tx of musdConversions) {
-      const txId = tx.id;
-      const hasActiveTrace = activeTracesRef.current.get(txId);
-
-      // Start trace when transaction becomes approved
-      if (tx.status === TransactionStatus.approved && !hasActiveTrace) {
-        activeTracesRef.current.set(txId, true);
-
-        trace({
-          name: TraceName.MusdConversionConfirm,
-          op: TraceOperation.MusdConversionOperation,
-          id: txId,
-          tags: {
-            transactionId: txId,
-          },
-        });
-      }
-
-      // End trace when transaction reaches terminal status
-      if (hasActiveTrace && isTerminalStatus(tx.status)) {
-        activeTracesRef.current.set(txId, false);
-
-        if (tx.status === TransactionStatus.confirmed) {
-          endTrace({
-            name: TraceName.MusdConversionConfirm,
-            id: txId,
-            data: {
-              success: true,
-            },
-          });
-        } else {
-          endTrace({
-            name: TraceName.MusdConversionConfirm,
-            id: txId,
-            data: {
-              success: false,
-              reason: tx.status,
-            },
-          });
-        }
-      }
-    }
-  }, [musdConversions]);
-
-  // Cleanup: remove stale transaction IDs from tracking
-  useEffect(() => {
-    const currentTxIds = new Set(musdConversions.map((tx) => tx.id));
-
-    for (const trackedId of activeTracesRef.current.keys()) {
-      if (!currentTxIds.has(trackedId)) {
-        activeTracesRef.current.delete(trackedId);
-      }
-    }
-  }, [musdConversions]);
-}
-
-/**
- * Enhanced version with additional data from TransactionPayController.
- * Use this when you need detailed quote/token information in the trace.
+ *
+ * Includes detailed quote/token information in the trace data.
  *
  * @param transactionId - The ID of the transaction to trace
  */
-export function useMusdConversionConfirmTraceWithDetails(
-  transactionId: string,
-): void {
+export function useMusdConversionConfirmTrace(transactionId: string): void {
+  const activeTraceRef = useRef<boolean>(false);
+  const startTimeRef = useRef<number | null>(null);
+  const tracedTxIdRef = useRef<string | null>(null);
+  // Cache payment token, quote, and chain data at trace start so it survives
+  // the TransactionPayController clearing the data on completion.
+  const traceContextRef = useRef<{
+    paymentTokenAddress: string;
+    paymentTokenChainId: string;
+    transactionChainId: string;
+    strategy: string;
+  } | null>(null);
+  const mountedRef = useRef(false);
+
+  // Once a trace starts, keep tracking the original transaction ID even if
+  // the prop becomes empty (the tx leaves the pending pool on confirmation).
+  const effectiveTxId = activeTraceRef.current
+    ? (tracedTxIdRef.current ?? transactionId)
+    : transactionId;
+
   const transactions = useSelector(getTransactions) as TransactionMeta[];
 
   const paymentToken = useSelector((state: TransactionPayState) =>
-    transactionId
-      ? selectTransactionPaymentTokenByTransactionId(state, transactionId)
+    effectiveTxId
+      ? selectTransactionPaymentTokenByTransactionId(state, effectiveTxId)
       : undefined,
   );
 
   const quotes = useSelector((state: TransactionPayState) =>
-    transactionId
-      ? selectTransactionPayQuotesByTransactionId(state, transactionId)
+    effectiveTxId
+      ? selectTransactionPayQuotesByTransactionId(state, effectiveTxId)
       : undefined,
   );
 
-  const activeTraceRef = useRef<boolean>(false);
-
   const tx = transactions.find(
-    (t) => t.id === transactionId && t.type === TransactionType.musdConversion,
+    (t) => t.id === effectiveTxId && t.type === TransactionType.musdConversion,
   );
+
+  // Log on first mount
+  if (!mountedRef.current) {
+    mountedRef.current = true;
+  }
 
   useEffect(() => {
     if (!tx) {
       return;
     }
 
-    // Start trace when transaction becomes approved
-    if (tx.status === TransactionStatus.approved && !activeTraceRef.current) {
+    // Start trace when the transaction first appears in any in-flight state
+    if (IN_FLIGHT_STATUSES.includes(tx.status) && !activeTraceRef.current) {
       activeTraceRef.current = true;
+      startTimeRef.current = Date.now();
+      tracedTxIdRef.current = tx.id;
 
       const selectedQuote = quotes?.[0] as
         | {
@@ -166,50 +129,66 @@ export function useMusdConversionConfirmTraceWithDetails(
           }
         | undefined;
 
+      const ctx = {
+        paymentTokenAddress: paymentToken?.address ?? 'unknown',
+        paymentTokenChainId: paymentToken?.chainId ?? 'unknown',
+        transactionChainId: tx.chainId ?? 'unknown',
+        strategy: selectedQuote?.strategy ?? 'unknown',
+      };
+      traceContextRef.current = ctx;
+
       trace({
         name: TraceName.MusdConversionConfirm,
         op: TraceOperation.MusdConversionOperation,
-        id: transactionId,
-        tags: {
-          transactionId,
-          strategy: selectedQuote?.strategy ?? 'unknown',
-        },
+        id: tx.id,
+        tags: { transactionId: tx.id, ...ctx },
       });
+    }
+
+    // Keep the cached context up-to-date while data is still available,
+    // in case selectors populated after the initial trace start.
+    if (activeTraceRef.current && traceContextRef.current) {
+      const selectedQuote = quotes?.[0] as { strategy?: string } | undefined;
+      if (paymentToken?.address) {
+        traceContextRef.current.paymentTokenAddress = paymentToken.address;
+      }
+      if (paymentToken?.chainId) {
+        traceContextRef.current.paymentTokenChainId = paymentToken.chainId;
+      }
+      if (tx.chainId) {
+        traceContextRef.current.transactionChainId = tx.chainId;
+      }
+      if (selectedQuote?.strategy) {
+        traceContextRef.current.strategy = selectedQuote.strategy;
+      }
     }
 
     // End trace when transaction reaches terminal status
     if (activeTraceRef.current && isTerminalStatus(tx.status)) {
       activeTraceRef.current = false;
 
-      const selectedQuote = quotes?.[0] as
-        | {
-            strategy?: string;
-            sourceChainId?: string;
-            destinationChainId?: string;
-          }
-        | undefined;
+      const ctx = traceContextRef.current;
 
-      if (tx.status === TransactionStatus.confirmed) {
-        endTrace({
-          name: TraceName.MusdConversionConfirm,
-          id: transactionId,
-          data: {
-            success: true,
-            strategy: selectedQuote?.strategy ?? 'unknown',
-            paymentTokenAddress: paymentToken?.address ?? 'unknown',
-            paymentTokenChainId: paymentToken?.chainId ?? 'unknown',
-          },
-        });
-      } else {
-        endTrace({
-          name: TraceName.MusdConversionConfirm,
-          id: transactionId,
-          data: {
-            success: false,
-            reason: tx.status,
-          },
-        });
-      }
+      const endData = {
+        success: tx.status === TransactionStatus.confirmed,
+        status: tx.status,
+        transactionChainId: ctx?.transactionChainId ?? tx.chainId ?? 'unknown',
+        paymentTokenAddress: ctx?.paymentTokenAddress ?? 'unknown',
+        paymentTokenChainId: ctx?.paymentTokenChainId ?? 'unknown',
+        ...(tx.status === TransactionStatus.confirmed && {
+          strategy: ctx?.strategy ?? 'unknown',
+        }),
+      };
+
+      endTrace({
+        name: TraceName.MusdConversionConfirm,
+        id: tx.id,
+        data: endData,
+      });
+
+      startTimeRef.current = null;
+      tracedTxIdRef.current = null;
+      traceContextRef.current = null;
     }
   }, [tx, transactionId, paymentToken, quotes]);
 }

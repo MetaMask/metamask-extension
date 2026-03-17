@@ -112,6 +112,19 @@ export type MusdCtaClickedEventProperties = {
 };
 
 /**
+ * Properties for MUSD_BONUS_TERMS_OF_USE_PRESSED event
+ */
+export type MusdBonusTermsOfUsePressedEventProperties = {
+  /** Screen or component where the terms of use link was pressed */
+  location:
+    | 'conversion_education_screen'
+    | 'custom_amount_navbar'
+    | 'percentage_row';
+  /** The URL opened when the terms of use link is pressed */
+  url: string;
+};
+
+/**
  * Properties for MUSD_FULLSCREEN_ANNOUNCEMENT_BUTTON_CLICKED event
  */
 export type MusdEducationButtonClickedEventProperties = {
