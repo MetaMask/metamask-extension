@@ -20,7 +20,10 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { type NetworkConfiguration } from '@metamask/network-controller';
 
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
-import { createParameterizedSelector } from '../../../shared/lib/selectors/selector-creators';
+import {
+  createParameterizedSelector,
+  createParameterizedShallowEqualSelector,
+} from '../../../shared/lib/selectors/selector-creators';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
@@ -673,7 +676,7 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
  * @returns An array of internal accounts spread across different network scopes.
  */
 export const getInternalAccountListSpreadByScopesByGroupId =
-  createParameterizedSelector(20)(
+  createParameterizedShallowEqualSelector(20)(
     [
       getInternalAccountsFromGroupById,
       getMultichainNetworkConfigurationsByChainId,
@@ -762,23 +765,25 @@ export const getNetworkAddressCount = createParameterizedSelector(20)(
  * @returns The address to be used as seed for the icon generation.
  * @throws If no accounts are found in the specified group.
  */
-export const getIconSeedAddressByAccountGroupId = createParameterizedSelector(
-  20,
-)([getInternalAccountsFromGroupById], (accounts: InternalAccount[]): string => {
-  if (!accounts || accounts.length === 0) {
-    return '';
-  }
+export const getIconSeedAddressByAccountGroupId =
+  createParameterizedShallowEqualSelector(20)(
+    [getInternalAccountsFromGroupById],
+    (accounts: InternalAccount[]): string => {
+      if (!accounts || accounts.length === 0) {
+        return '';
+      }
 
-  for (const account of accounts) {
-    if (isEvmAccountType(account.type)) {
-      // Prefer an EVM account if available
-      return account.address;
-    }
-  }
+      for (const account of accounts) {
+        if (isEvmAccountType(account.type)) {
+          // Prefer an EVM account if available
+          return account.address;
+        }
+      }
 
-  // In case there are no EVM accounts in the group. We return the first account's address.
-  return accounts[0].address;
-});
+      // In case there are no EVM accounts in the group. We return the first account's address.
+      return accounts[0].address;
+    },
+  );
 
 /**
  * Get the address and scopes for the account group that matches the user's default address scope
