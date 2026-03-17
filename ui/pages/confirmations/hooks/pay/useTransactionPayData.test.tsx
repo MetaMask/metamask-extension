@@ -14,6 +14,7 @@ import { ConfirmContext } from '../../context/confirm';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -28,6 +29,12 @@ const QUOTE_MOCK = {
 
 const REQUIRED_TOKEN_MOCK = {
   address: '0x123',
+  skipIfBalance: false,
+} as unknown as TransactionPayRequiredToken;
+
+const GAS_TOKEN_MOCK = {
+  address: '0x456',
+  skipIfBalance: true,
 } as unknown as TransactionPayRequiredToken;
 
 const SOURCE_AMOUNT_MOCK = {} as TransactionPaySourceAmount;
@@ -123,6 +130,82 @@ describe('useTransactionPayData', () => {
         wrapper: createWrapper(),
       });
       expect(result.current).toBe(true);
+    });
+  });
+
+  describe('useTransactionPayPrimaryRequiredToken', () => {
+    it('returns the first required token without skipIfBalance', () => {
+      const { result } = renderHook(
+        () => useTransactionPayPrimaryRequiredToken(),
+        { wrapper: createWrapper() },
+      );
+      expect(result.current).toStrictEqual(REQUIRED_TOKEN_MOCK);
+    });
+
+    it('skips tokens with skipIfBalance', () => {
+      const store = mockStore({
+        metamask: {
+          transactionData: {
+            [TRANSACTION_ID_MOCK]: {
+              ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
+              tokens: [GAS_TOKEN_MOCK, REQUIRED_TOKEN_MOCK],
+            },
+          },
+        },
+      });
+
+      const confirmContextValue = {
+        currentConfirmation: { id: TRANSACTION_ID_MOCK },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      };
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <Provider store={store}>
+          <ConfirmContext.Provider value={confirmContextValue as never}>
+            {children}
+          </ConfirmContext.Provider>
+        </Provider>
+      );
+
+      const { result } = renderHook(
+        () => useTransactionPayPrimaryRequiredToken(),
+        { wrapper },
+      );
+      expect(result.current).toStrictEqual(REQUIRED_TOKEN_MOCK);
+    });
+
+    it('returns undefined when all tokens have skipIfBalance', () => {
+      const store = mockStore({
+        metamask: {
+          transactionData: {
+            [TRANSACTION_ID_MOCK]: {
+              ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
+              tokens: [GAS_TOKEN_MOCK],
+            },
+          },
+        },
+      });
+
+      const confirmContextValue = {
+        currentConfirmation: { id: TRANSACTION_ID_MOCK },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      };
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <Provider store={store}>
+          <ConfirmContext.Provider value={confirmContextValue as never}>
+            {children}
+          </ConfirmContext.Provider>
+        </Provider>
+      );
+
+      const { result } = renderHook(
+        () => useTransactionPayPrimaryRequiredToken(),
+        { wrapper },
+      );
+      expect(result.current).toBeUndefined();
     });
   });
 });

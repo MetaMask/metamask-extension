@@ -10,7 +10,10 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
-import { useTransactionPayRequiredTokens } from '../../pay/useTransactionPayData';
+import {
+  useTransactionPayPrimaryRequiredToken,
+  useTransactionPayRequiredTokens,
+} from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
@@ -22,6 +25,9 @@ jest.mock('../../pay/useTransactionPayToken');
 const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 const useTransactionPayHasSourceAmountMock = jest.mocked(
   useTransactionPayHasSourceAmount,
+);
+const useTransactionPayPrimaryRequiredTokenMock = jest.mocked(
+  useTransactionPayPrimaryRequiredToken,
 );
 const useTransactionPayRequiredTokensMock = jest.mocked(
   useTransactionPayRequiredTokens,
@@ -200,12 +206,14 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
-  it('returns no alerts when pay is active but no required tokens yet', () => {
+  it('returns no alerts when pay is active but required token amount is zero', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: { address: '0xabc', chainId: '0x1' } as never,
       setPayToken: jest.fn(),
     });
-    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue({
+      amountRaw: '0',
+    } as never);
 
     const alerts = runHook({
       balance: 7,
