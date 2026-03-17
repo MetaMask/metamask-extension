@@ -507,6 +507,29 @@ describe('useTransactionConfirm', () => {
     );
   });
 
+  it('does not call handleGasless7702 when gasless not supported but selectedGasFeeToken is set (e.g. hardware wallet)', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).not.toBe(true);
+  });
+
   it('does not call handleSmartTransaction if no selected gas fee token', async () => {
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
