@@ -5469,6 +5469,13 @@ describe('MetaMaskController', () => {
     });
 
     it('calls _importAccountsWithBalances when firstTimeFlowType is socialImport', async () => {
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+
       // prev=false
       await publishOnboardingState({
         completedOnboarding: false,
