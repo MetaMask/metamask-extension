@@ -310,9 +310,10 @@ describe('Transaction Controller Init', () => {
           {
             type: 'Ledger Hardware',
             accounts: ['0x0000000000000000000000000000000000000000'],
+            metadata: { id: '', name: '' },
           },
         ],
-      });
+      } as unknown as ReturnType<typeof requestMock.getFlatState>);
 
       TransactionControllerInit(requestMock);
 
@@ -330,9 +331,10 @@ describe('Transaction Controller Init', () => {
           {
             type: 'HD Key Tree',
             accounts: ['0x0000000000000000000000000000000000000000'],
+            metadata: { id: '', name: '' },
           },
         ],
-      });
+      } as unknown as ReturnType<typeof requestMock.getFlatState>);
 
       TransactionControllerInit(requestMock);
 
