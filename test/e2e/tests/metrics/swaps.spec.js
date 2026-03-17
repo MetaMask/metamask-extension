@@ -1,7 +1,7 @@
 /* eslint-disable mocha/no-skipped-tests */
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
+const FixtureBuilderV2 = require('../../fixtures/fixture-builder-v2').default;
 const {
   withFixtures,
   getEventPayloads,
@@ -98,7 +98,7 @@ describe.skip('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
