@@ -35,9 +35,7 @@ export function useHasInsufficientBalance(): {
 
   const totalValue = sumHexes(value, ...batchTransactionValues);
 
-  const { maxFeeHex } = useFeeCalculations(
-    currentConfirmation as TransactionMeta,
-  );
+  const { maxFeeHex } = useFeeCalculations(currentConfirmation);
 
   const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
