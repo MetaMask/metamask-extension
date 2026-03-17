@@ -18,6 +18,9 @@ package
 .idea
 .sublime-project
 
+# Cursor IDE ephemeral state (session-specific, not for the repo)
+.cursor/hooks/state/
+
 # LLMs
 .claude/*.local.*
 
