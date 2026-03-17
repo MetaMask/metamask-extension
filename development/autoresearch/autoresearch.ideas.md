@@ -12,7 +12,7 @@ This file is maintained by the autoresearch agent. It tracks ideas to try, what 
 - [x] Terser `compress.unsafe_math: true` — allows math optimizations (experiment 4)
 - [ ] Explore if terser can be run in parallel using worker_threads (currently runs sequentially through through2 stream per bundle file, but multiple files could be minified concurrently)
 - [ ] Try `compress: false` with only `mangle: true` — skip compression entirely and only mangle variable names. Compression is the expensive part; mangling alone might give 80% of size reduction at 20% of the time (experiment 6)
-- [ ] Adjust terser `sourceMap` handling — generating source maps during minification is expensive
+- [x] Adjust terser `sourceMap` handling — generating source maps during minification is expensive (experiment 8)
 
 ### Babel Configuration (20-30% of build time)
 
@@ -60,6 +60,7 @@ This file is maintained by the autoresearch agent. It tracks ideas to try, what 
 ## Tried — Failed / No Improvement
 
 - Terser `compress: false` with only `mangle: true` — Set `compress: false` to skip compression entirely and only mangle variable names. Hypothesis: compression is the expensive part; mangling alone might give 80% of size reduction at 20% of the time (experiment 6)
+- Terser `sourceMap: false` — Disabled source map generation in Terser since gulp-sourcemaps handles it separately. Hypothesis: avoiding duplicate source map generation will reduce minification time (experiment 8)
 
 ## Tried — Crashed / Invalid
 

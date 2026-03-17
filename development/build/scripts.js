@@ -1062,15 +1062,11 @@ function setupMinification(buildConfiguration) {
             [file.sourceMap.file]: file.contents.toString(),
           };
           const opts = {
-            sourceMap: {
-              filename: file.sourceMap.file,
-              content: file.sourceMap,
-            },
+            sourceMap: false,
             ...minifyOpts,
           };
           const res = await terser.minify(input, opts);
           file.contents = Buffer.from(res.code);
-          applySourceMap(file, res.map);
           return file;
         }),
       ),
