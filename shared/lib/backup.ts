@@ -1,22 +1,5 @@
 import { hasProperty, isObject } from '@metamask/utils';
 
-/**
- * Shape of the backup object read from the IndexedDB backup database.
- * Used for vault recovery and critical error restore.
- */
-export type Backup = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  KeyringController?: unknown;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  AppMetadataController?: unknown;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  MetaMetricsController?: unknown;
-  meta?: unknown;
-};
-
 export const BACKUP_DB_NAME = 'metamask-backup';
 export const BACKUP_DB_VERSION = 1;
 
@@ -27,6 +10,17 @@ export const backedUpStateKeys = [
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
+
+/**
+ * Shape of the backup object read from the IndexedDB backup database.
+ * Used for vault recovery and critical error restore.
+ * Keys are derived from backedUpStateKeys (single source of truth).
+ */
+export type Backup = {
+  [K in BackedUpStateKey]?: unknown;
+} & {
+  meta?: unknown;
+};
 
 /** Default timeout for safeGetVaultBackup so the caller is never blocked by a hanging IndexedDB. */
 export const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
