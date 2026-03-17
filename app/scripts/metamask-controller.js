@@ -357,7 +357,7 @@ import { DelegationControllerInit } from './controller-init/delegation/delegatio
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
-import { CashAccountServiceInit } from './controller-init/multichain/cash-account-service-init';
+import { CashAccountServiceInit } from './controller-init/accounts/cash-account-service-init';
 import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
 import {
   OAuthServiceInit,
@@ -2886,15 +2886,7 @@ export default class MetamaskController extends EventEmitter {
 
       // CashAccountService
       createCashAccount: async (entropySource) => {
-        console.log('[CashAccountService] createCashAccount called with entropySource:', entropySource);
-        try {
-          const result = await this.cashAccountService.createCashAccount(entropySource);
-          console.log('[CashAccountService] createCashAccount result:', result);
-          return result;
-        } catch (error) {
-          console.error('[CashAccountService] createCashAccount failed:', error);
-          throw error;
-        }
+        return await this.cashAccountService.createCashAccount(entropySource);
       },
 
       // AssetsContractController

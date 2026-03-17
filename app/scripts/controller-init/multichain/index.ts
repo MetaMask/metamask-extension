@@ -1,4 +1,3 @@
-export { CashAccountServiceInit } from './cash-account-service-init';
 export { MultichainAccountServiceInit } from './multichain-account-service-init';
 export { MultichainAssetsControllerInit } from './multichain-assets-controller-init';
 export { MultichainBalancesControllerInit } from './multichain-balances-controller-init';
