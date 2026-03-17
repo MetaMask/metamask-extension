@@ -3,6 +3,7 @@ export {
   getAccountTreeControllerInitMessenger,
 } from './account-tree-controller-messenger';
 export { getCashAccountServiceMessenger } from './cash-account-service-messenger';
+export type { CashAccountServiceMessenger } from '@metamask-previews/cash-account-service';
 export {
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,

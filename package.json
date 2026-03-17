@@ -151,7 +151,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@25.1.0-preview-4183330c3",
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@25.1.0-preview-a12b37cc3",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "chokidar": "^3.6.0",
     "@types/react": "^17.0.11",
@@ -289,10 +289,10 @@
     "@ledgerhq/hw-transport-webhid": "^6.31.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/pickers": "^3.3.11",
-    "@metamask-previews/cash-account-service": "0.0.0-preview-4183330c3",
+    "@metamask-previews/cash-account-service": "0.0.0-preview-a12b37cc3",
     "@metamask-previews/eth-cash-keyring": "0.0.0-25e4b24",
     "@metamask-previews/keyring-api": "21.5.0-25e4b24",
-    "@metamask-previews/keyring-controller": "25.1.0-preview-4183330c3",
+    "@metamask-previews/keyring-controller": "25.1.0-preview-a12b37cc3",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^1.0.0",
     "@metamask/account-tree-controller": "^5.0.0",

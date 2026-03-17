@@ -5553,15 +5553,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/cash-account-service@npm:0.0.0-preview-4183330c3":
-  version: 0.0.0-preview-4183330c3
-  resolution: "@metamask-previews/cash-account-service@npm:0.0.0-preview-4183330c3"
+"@metamask-previews/cash-account-service@npm:0.0.0-preview-a12b37cc3":
+  version: 0.0.0-preview-a12b37cc3
+  resolution: "@metamask-previews/cash-account-service@npm:0.0.0-preview-a12b37cc3"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/ef31f8e657b56e5b925e70c658d3b741ca1d8350850c2fc1e55bdcdf0e79e46a91b1af66b5d2d054d29a4600f0cc7181a7684a5dbca8654dec5478c4b3855357
+  checksum: 10/eebe71425e2ae82b366a57dc4fa40a0e0325e385fdd5637b8aa3d25ded6c054f6ac167dbcde1ca6b50c09d84306627216e19c104f16323f80beda9c24030d7a0
   languageName: node
   linkType: hard
 
@@ -5591,9 +5591,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/keyring-controller@npm:25.1.0-preview-4183330c3, @metamask/keyring-controller@npm:@metamask-previews/keyring-controller@25.1.0-preview-4183330c3":
-  version: 25.1.0-preview-4183330c3
-  resolution: "@metamask-previews/keyring-controller@npm:25.1.0-preview-4183330c3"
+"@metamask-previews/keyring-controller@npm:25.1.0-preview-a12b37cc3, @metamask/keyring-controller@npm:@metamask-previews/keyring-controller@25.1.0-preview-a12b37cc3":
+  version: 25.1.0-preview-a12b37cc3
+  resolution: "@metamask-previews/keyring-controller@npm:25.1.0-preview-a12b37cc3"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask-previews/eth-cash-keyring": "npm:0.0.0-25e4b24"
@@ -5611,7 +5611,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/cd10bc9e007ae2ea7861b85b855edb6273356b9fb556131460a505f9ebbcc3c5ad06234c8d4e594fa3753f41c7f7d4548795b7d3ea6f7c03bfac6f37674edc94
+  checksum: 10/877e93d00f7b0b95f8d884332b963d388f4ae0f66c5f78a34e1fa869d4d94159602a9442fb415c07d057ca500c9bd772cd2deed1e7f0270465c76fc397f85b9f
   languageName: node
   linkType: hard
 
@@ -33878,10 +33878,10 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/pickers": "npm:^3.3.11"
-    "@metamask-previews/cash-account-service": "npm:0.0.0-preview-4183330c3"
+    "@metamask-previews/cash-account-service": "npm:0.0.0-preview-a12b37cc3"
     "@metamask-previews/eth-cash-keyring": "npm:0.0.0-25e4b24"
     "@metamask-previews/keyring-api": "npm:21.5.0-25e4b24"
-    "@metamask-previews/keyring-controller": "npm:25.1.0-preview-4183330c3"
+    "@metamask-previews/keyring-controller": "npm:25.1.0-preview-a12b37cc3"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.0"
     "@metamask/account-tree-controller": "npm:^5.0.0"

@@ -1,15 +1,13 @@
 import { Messenger } from '@metamask/messenger';
 import {
   KeyringControllerAddNewKeyringAction,
-  KeyringControllerGetKeyringsByTypeAction,
-  KeyringControllerGetStateAction,
+  KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import { CashAccountServiceMessenger } from '@metamask-previews/cash-account-service';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
-  | KeyringControllerGetStateAction
-  | KeyringControllerGetKeyringsByTypeAction
+  | KeyringControllerWithKeyringAction
   | KeyringControllerAddNewKeyringAction;
 
 type Events = never;
@@ -37,8 +35,7 @@ export function getCashAccountServiceMessenger(
     messenger: serviceMessenger,
     events: [],
     actions: [
-      'KeyringController:getState',
-      'KeyringController:getKeyringsByType',
+      'KeyringController:withKeyring',
       'KeyringController:addNewKeyring',
     ],
   });
