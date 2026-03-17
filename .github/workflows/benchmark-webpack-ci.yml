@@ -22,36 +22,54 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: adaptive-current
-            min_compress_kib: 24
-            low_parallelism_async_kib: 128
-            max_async_jobs: 3
-            disable_adaptive_retuning: false
-          - name: adaptive-lower-threshold
+          - name: static-fast-32-r1
+            fast_machine_async_kib: 32
             min_compress_kib: 24
             low_parallelism_async_kib: 96
-            max_async_jobs: 3
-            disable_adaptive_retuning: false
-          - name: adaptive-lower-threshold-more-jobs
-            min_compress_kib: 24
-            low_parallelism_async_kib: 96
-            max_async_jobs: 4
-            disable_adaptive_retuning: false
-          - name: adaptive-aggressive
-            min_compress_kib: 24
-            low_parallelism_async_kib: 64
-            max_async_jobs: 4
-            disable_adaptive_retuning: false
-          - name: static-current
-            min_compress_kib: 24
-            low_parallelism_async_kib: 128
             max_async_jobs: 3
             disable_adaptive_retuning: true
-          - name: static-lower-threshold
+          - name: static-fast-32-r2
+            fast_machine_async_kib: 32
             min_compress_kib: 24
             low_parallelism_async_kib: 96
-            max_async_jobs: 4
+            max_async_jobs: 3
             disable_adaptive_retuning: true
+          - name: static-fast-48-r1
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 3
+            disable_adaptive_retuning: true
+          - name: static-fast-48-r2
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 3
+            disable_adaptive_retuning: true
+          - name: static-fast-64-r1
+            fast_machine_async_kib: 64
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 3
+            disable_adaptive_retuning: true
+          - name: static-fast-64-r2
+            fast_machine_async_kib: 64
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 3
+            disable_adaptive_retuning: true
+          - name: adaptive-low-96-r1
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
+          - name: adaptive-low-96-r2
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
     env:
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
@@ -83,6 +101,7 @@ jobs:
       INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       METAMASK_ZIP_DISABLE_ADAPTIVE_RETUNING: ${{ matrix.disable_adaptive_retuning && 'true' || 'false' }}
+      METAMASK_ZIP_FAST_MACHINE_ASYNC_KIB: ${{ matrix.fast_machine_async_kib }}
       METAMASK_ZIP_LOW_PARALLELISM_ASYNC_KIB: ${{ matrix.low_parallelism_async_kib }}
       METAMASK_ZIP_MAX_ASYNC_JOBS: ${{ matrix.max_async_jobs }}
       METAMASK_ZIP_MIN_COMPRESSIBLE_KIB: ${{ matrix.min_compress_kib }}
@@ -136,6 +155,7 @@ jobs:
             --arg name "${{ matrix.name }}" \
             --arg elapsed_seconds "$elapsed_seconds" \
             --arg compile_ms "${compile_ms:-}" \
+            --argjson fast_machine_async_kib ${{ matrix.fast_machine_async_kib }} \
             --argjson min_compress_kib ${{ matrix.min_compress_kib }} \
             --argjson low_parallelism_async_kib ${{ matrix.low_parallelism_async_kib }} \
             --argjson max_async_jobs ${{ matrix.max_async_jobs }} \
@@ -145,6 +165,7 @@ jobs:
               name: $name,
               elapsed_seconds: ($elapsed_seconds | tonumber),
               compile_ms: (if $compile_ms == "" then null else ($compile_ms | tonumber) end),
+              fast_machine_async_kib: $fast_machine_async_kib,
               min_compress_kib: $min_compress_kib,
               low_parallelism_async_kib: $low_parallelism_async_kib,
               max_async_jobs: $max_async_jobs,
@@ -159,6 +180,7 @@ jobs:
             echo ""
             echo "- elapsed_seconds: $elapsed_seconds"
             echo "- compile_ms: ${compile_ms:-missing}"
+            echo "- fast_machine_async_kib: ${{ matrix.fast_machine_async_kib }}"
             echo "- min_compress_kib: ${{ matrix.min_compress_kib }}"
             echo "- low_parallelism_async_kib: ${{ matrix.low_parallelism_async_kib }}"
             echo "- max_async_jobs: ${{ matrix.max_async_jobs }}"
