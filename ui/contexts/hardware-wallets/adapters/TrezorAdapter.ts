@@ -1,9 +1,5 @@
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import {
-  getHdPathForHardwareKeyring,
-  getTrezorDeviceStatus,
-} from '../../../store/actions';
+import { getTrezorFeatures } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
@@ -21,6 +17,12 @@ import {
 
 const LOG_TAG = '[TrezorAdapter]';
 const TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES = 1024;
+const REQUIRED_TREZOR_CAPABILITIES = [
+  'Capability_Bitcoin',
+  'Capability_Solana',
+  'Capability_Ethereum',
+] as const;
+type RequiredTrezorCapability = (typeof REQUIRED_TREZOR_CAPABILITIES)[number];
 
 /**
  * Trezor adapter implementation
@@ -73,12 +75,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   private async checkDeviceConnected(): Promise<boolean> {
     const devices = await getConnectedTrezorDevices();
     return devices.length > 0;
-  }
-
-  private async getHdPath(): Promise<string> {
-    const path = await getHdPathForHardwareKeyring(HardwareDeviceNames.trezor);
-    console.log(LOG_TAG, 'Hd path:', path);
-    return path;
   }
 
   /**
@@ -185,9 +181,12 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Note: Unlike Ledger, Trezor doesn't require checking for a specific app being open.
    * The device just needs to be connected and unlocked, which is verified during signing operations.
    *
+   * @param options
    * @returns true if device is ready
    */
-  async ensureDeviceReady(options?: EnsureDeviceReadyOptions): Promise<boolean> {
+  async ensureDeviceReady(
+    options?: EnsureDeviceReadyOptions,
+  ): Promise<boolean> {
     if (!this.isConnected()) {
       await this.connect();
     }
@@ -198,12 +197,23 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       // Check if the Trezor Connect session has been established.
       // This doesn't open a popup - it just checks internal session state.
       // The actual PIN/passphrase prompts happen during signing operations.
-      const deviceStatus = await getTrezorDeviceStatus();
+      const features = await getTrezorFeatures();
+      const {
+        payload: { session_id: sessionId, model, initialized, capabilities },
+      } = features;
 
-      console.log(LOG_TAG, 'Trezor device status:', deviceStatus);
+      if (!initialized) {
+        throw createHardwareWalletError(
+          ErrorCode.DeviceNotReady,
+          HardwareWalletType.Trezor,
+          'Trezor is not initialized.',
+        );
+      }
+
+      console.log(LOG_TAG, 'Trezor device status:', features);
 
       // Check if session exists (indicates Trezor Connect is initialized)
-      if (!deviceStatus?._state?.sessionId) {
+      if (!sessionId) {
         throw createHardwareWalletError(
           ErrorCode.ConnectionClosed,
           HardwareWalletType.Trezor,
@@ -211,9 +221,29 @@ export class TrezorAdapter implements HardwareWalletAdapter {
         );
       }
 
+      const missingCapabilities = getMissingCapabilities(
+        capabilities,
+        REQUIRED_TREZOR_CAPABILITIES,
+      );
+      if (missingCapabilities.length > 0) {
+        throw createHardwareWalletError(
+          ErrorCode.DeviceMissingCapability,
+          HardwareWalletType.Trezor,
+          `Trezor device is missing required capabilities: ${missingCapabilities.join(
+            ', ',
+          )}.`,
+          {
+            metadata: {
+              capabilities,
+              missingCapabilities,
+            },
+          },
+        );
+      }
+
       if (
         options?.preflightMessageBytes &&
-        isTrezorModelOne(deviceStatus) &&
+        isTrezorModelOne(model) &&
         options.preflightMessageBytes > TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES
       ) {
         throw createHardwareWalletError(
@@ -278,17 +308,25 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   }
 }
 
-function isTrezorModelOne(deviceStatus: unknown): boolean {
-  const status = deviceStatus as {
-    _state?: { features?: { model?: unknown } };
-    features?: { model?: unknown };
-    payload?: { features?: { model?: unknown } };
-  };
-  const model =
-    status?._state?.features?.model ??
-    status?.features?.model ??
-    status?.payload?.features?.model;
+function getMissingCapabilities(
+  capabilities: unknown,
+  requiredCapabilities: readonly RequiredTrezorCapability[],
+): RequiredTrezorCapability[] {
+  const capabilitiesSet = new Set(
+    Array.isArray(capabilities)
+      ? capabilities.filter(
+          (capability): capability is RequiredTrezorCapability =>
+            typeof capability === 'string',
+        )
+      : [],
+  );
 
+  return requiredCapabilities.filter(
+    (requiredCapability) => !capabilitiesSet.has(requiredCapability),
+  );
+}
+
+function isTrezorModelOne(model: unknown): boolean {
   if (typeof model !== 'string') {
     return false;
   }

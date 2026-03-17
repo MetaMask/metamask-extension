@@ -38,6 +38,14 @@ export type ErrorContent =
   | ErrorContentWithoutIcon
   | ErrorContentWithDescription;
 
+function addRecoveryInstruction(
+  instructions: string[],
+  shouldAdd: boolean,
+  instruction: string,
+): string[] {
+  return shouldAdd ? [...instructions, instruction] : instructions;
+}
+
 /**
  * Build error content based on error code
  *
@@ -62,7 +70,7 @@ export function buildErrorContent(
         iconColor: IconColor.iconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
         recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryUnlock1'),
+          t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)]),
           t('hardwareWalletErrorRecoveryUnlock2'),
         ],
       };
@@ -90,11 +98,15 @@ export function buildErrorContent(
       return {
         variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryConnection1'),
-          t('hardwareWalletErrorRecoveryConnection2'),
-          t('hardwareWalletErrorRecoveryConnection3'),
-        ],
+        recoveryInstructions: addRecoveryInstruction(
+          [
+            t('hardwareWalletErrorRecoveryConnection1'),
+            t('hardwareWalletErrorRecoveryConnection2'),
+            t('hardwareWalletErrorRecoveryConnection3'),
+          ],
+          walletType === HardwareWalletType.Trezor,
+          t('hardwareWalletErrorRecoveryConnection4', [t(walletType)]),
+        ),
       };
 
     // Usually bolos will yield this result
@@ -102,10 +114,11 @@ export function buildErrorContent(
       return {
         variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryUnlock1'),
+        recoveryInstructions: addRecoveryInstruction(
+          [t('hardwareWalletErrorRecoveryUnlock1')],
+          walletType === HardwareWalletType.Ledger,
           t('hardwareWalletErrorRecoveryUnlock2'),
-        ],
+        ),
       };
 
     // Unknown/default
