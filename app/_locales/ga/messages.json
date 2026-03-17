@@ -3770,9 +3770,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ní oibreoidh Snaps, ná an chuid is mó de sparán crua-earraí, le do leagan brabhsálaí reatha."
   },
-  "noMMFeeSwapping": {
-    "message": "Gan aon táille MM ar mhalartú go $1."
-  },
   "noNetworksAvailable": {
     "message": "Níl aon líonraí ar fáil"
   },
@@ -4924,10 +4921,6 @@
   "revealSeedWords": {
     "message": "Nochtadh Frása Rúnda Aisghabhála"
   },
-  "revealSeedWordsDescription1": {
-    "message": "Tugann an $1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
@@ -4936,10 +4929,6 @@
   },
   "revealSeedWordsText": {
     "message": "Téacs"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Cinntigh nach bhfuil aon duine ag féachaint ar do scáileán. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Nocht ábhar íogair"
@@ -5117,10 +5106,6 @@
   },
   "seedPhraseReq": {
     "message": "Tá 12, 15, 18, 21, nó 24 focal i bhFrásaí Rúnda Aisghabhála"
-  },
-  "seedPhraseReviewDetails": {
-    "message": "Seo do $1. Scríobh síos é san ord ceart agus coinnigh slán é. Má tá do Rúndacht Aisghabhála ag duine éigin, is féidir leo rochtain a fháil ar do sparán. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Sábháil do Frása Rúnda Aisghabhála"
@@ -5374,9 +5359,6 @@
   "shieldTxCancelDetails": {
     "message": "Mura gcealaíonn tú, ní bheidh do sparán ná d’idirbhearta clúdaithe ag tosú le $1.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxDetails1Title": {
-    "message": "Clúdaíonn sé $10,000 i gcosaint idirbhirt"
   },
   "shieldTxMembershipActive": {
     "message": "Ballraíocht ghníomhach"

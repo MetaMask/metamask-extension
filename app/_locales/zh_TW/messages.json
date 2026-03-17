@@ -961,10 +961,6 @@
   "step1TrezorWallet": {
     "message": "插入 Trezor 錢包"
   },
-  "step1TrezorWalletMsg": {
-    "message": "直接將錢包連接到電腦上。關於更多使用您的硬體錢包的詳細資訊，$1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step2LedgerWallet": {
     "message": "插入 Ledger 錢包"
   },
@@ -1067,10 +1063,6 @@
   },
   "unlock": {
     "message": "解鎖"
-  },
-  "unrecognizedChain": {
-    "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"
