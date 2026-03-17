@@ -1047,10 +1047,7 @@ function setupReloadOnChange({ bundlerOpts, events }) {
 
 function setupMinification(buildConfiguration) {
   const minifyOpts = {
-    compress: {
-      pure_getters: true,
-      unsafe_math: true,
-    },
+    compress: false,
     mangle: {
       reserved: ['MetamaskInpageProvider'],
     },
