@@ -6465,9 +6465,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Совпадений не найдено."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Запросы на подпись или транзакции"
-  },
   "shieldClaim": {
     "message": "Отправить претензию"
   },

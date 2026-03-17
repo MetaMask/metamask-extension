@@ -6465,9 +6465,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Không tìm thấy kết quả trùng khớp."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Yêu cầu chữ ký và giao dịch"
-  },
   "shieldClaim": {
     "message": "Gửi yêu cầu bồi thường"
   },

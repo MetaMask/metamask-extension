@@ -6465,9 +6465,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Eşleşen sonuç bulunamadı."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "İmza ve işlem talepleri"
-  },
   "shieldClaim": {
     "message": "Bir talep gönder"
   },

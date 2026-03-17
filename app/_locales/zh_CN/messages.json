@@ -6459,9 +6459,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "未找到匹配结果。"
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "签名和交易请求"
-  },
   "shieldClaim": {
     "message": "提交索赔"
   },

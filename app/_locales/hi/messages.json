@@ -6459,9 +6459,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "कोई मिलान परिणाम नहीं मिला"
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "सिग्नेचर्स और ट्रांसेक्शन रिक्वेस्ट्स"
-  },
   "shieldClaim": {
     "message": "क्लेम सबमिट करें"
   },

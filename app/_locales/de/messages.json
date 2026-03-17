@@ -6465,9 +6465,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Keine passenden Ergebnisse gefunden."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Signatur- und Transaktionsanfragen"
-  },
   "shieldClaim": {
     "message": "Anspruch einreichen"
   },

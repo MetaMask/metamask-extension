@@ -6459,9 +6459,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "署名およびトランザクション要求"
-  },
   "shieldClaim": {
     "message": "請求を送信"
   },

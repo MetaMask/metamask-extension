@@ -6465,9 +6465,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Δε βρέθηκαν αποτελέσματα που να ταιριάζουν."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Αιτήματα υπογραφών και συναλλαγών"
-  },
   "shieldClaim": {
     "message": "Υποβολή αξίωσης"
   },

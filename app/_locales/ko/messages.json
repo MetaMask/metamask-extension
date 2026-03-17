@@ -6465,9 +6465,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "검색 결과가 없습니다."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "서명 및 트랜잭션 요청"
-  },
   "shieldClaim": {
     "message": "청구하기"
   },
