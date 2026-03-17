@@ -7,9 +7,8 @@ This file is maintained by the autoresearch agent. It tracks ideas to try, what 
 ### Terser Optimization (highest priority — 40-50% of build time)
 
 - [ ] Enable Terser `compress.passes: 2` or `3` — more compression passes might produce smaller output but take longer, OR fewer passes (default is 1) might be faster with negligible size impact
-- [ ] Terser `compress.drop_console: true` in production — removes console.log statements, less code to minify
 - [ ] Terser `mangle.properties` with reserved list — more aggressive mangling
-- [ ] Terser `compress.pure_getters: true` — allows more aggressive dead code elimination
+- [x] Terser `compress.pure_getters: true` — allows more aggressive dead code elimination (experiment 2)
 - [ ] Terser `compress.unsafe_math: true` — allows math optimizations
 - [ ] Explore if terser can be run in parallel using worker_threads (currently runs sequentially through through2 stream per bundle file, but multiple files could be minified concurrently)
 - [ ] Try `compress: false` with only `mangle: true` — skip compression entirely and only mangle variable names. Compression is the expensive part; mangling alone might give 80% of size reduction at 20% of the time
@@ -54,7 +53,7 @@ This file is maintained by the autoresearch agent. It tracks ideas to try, what 
 
 ## Tried — Successful
 
-_No experiments completed yet._
+- Terser `compress.drop_console: true` — Added `drop_console: true` to Terser compress options to remove console.log statements in production, reducing code to minify (experiment 1)
 
 ## Tried — Failed / No Improvement
 
