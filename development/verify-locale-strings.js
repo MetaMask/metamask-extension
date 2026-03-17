@@ -32,6 +32,7 @@ const localeIndex = require('../app/_locales/index.json');
 const {
   compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
+  compareLocalesForUnexpectedReplacementKeys,
   getLocale,
   getLocalePath,
 } = require('./lib/locales');
@@ -173,7 +174,29 @@ async function verifyLocale(code) {
     });
   }
 
-  if (extraItems.length > 0 || missingDescriptions.length > 0) {
+  const unexpectedReplacementKeys = compareLocalesForUnexpectedReplacementKeys({
+    englishLocale,
+    targetLocale,
+  });
+
+  if (unexpectedReplacementKeys.length) {
+    console.log(
+      `**${code}**: ${unexpectedReplacementKeys.length} messages with unexpected replacement keys`,
+    );
+    log.info('Messages with unexpected replacement keys:');
+    unexpectedReplacementKeys.forEach(function ({
+      key,
+      unexpectedReplacementKeys: unexpectedKeys,
+    }) {
+      log.info(`  - [ ] ${key} (${unexpectedKeys.join(', ')})`);
+    });
+  }
+
+  if (
+    extraItems.length > 0 ||
+    missingDescriptions.length > 0 ||
+    unexpectedReplacementKeys.length > 0
+  ) {
     if (fix) {
       const newLocale = { ...targetLocale };
       for (const item of extraItems) {

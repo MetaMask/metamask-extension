@@ -47,9 +47,51 @@ function compareLocalesForMissingDescriptions({ englishLocale, targetLocale }) {
   );
 }
 
+function compareLocalesForUnexpectedReplacementKeys({
+  englishLocale,
+  targetLocale,
+}) {
+  return Object.keys(englishLocale).flatMap((key) => {
+    if (targetLocale[key] === undefined) {
+      return [];
+    }
+
+    const englishReplacementKeys = getReplacementKeys(
+      englishLocale[key]?.message,
+    );
+    const targetReplacementKeys = getReplacementKeys(
+      targetLocale[key]?.message,
+    );
+    const unexpectedReplacementKeys = targetReplacementKeys.filter(
+      (replacementKey) => !englishReplacementKeys.includes(replacementKey),
+    );
+
+    if (unexpectedReplacementKeys.length === 0) {
+      return [];
+    }
+
+    return [
+      {
+        englishReplacementKeys,
+        key,
+        targetReplacementKeys,
+        unexpectedReplacementKeys,
+      },
+    ];
+  });
+}
+
+function getReplacementKeys(message = '') {
+  return [...new Set(message.match(/\$\d+/gu) ?? [])].sort(
+    (firstKey, secondKey) =>
+      Number(firstKey.slice(1)) - Number(secondKey.slice(1)),
+  );
+}
+
 module.exports = {
   compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
+  compareLocalesForUnexpectedReplacementKeys,
   getLocale,
   getLocalePath,
 };
