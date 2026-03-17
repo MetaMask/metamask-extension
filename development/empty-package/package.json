@@ -1,0 +1,5 @@
+{
+  "name": "empty-package",
+  "description": "This is an empty package, used to remove an optional transitive dependency with a resolution",
+  "packageManager": "yarn@4.12.0"
+}
