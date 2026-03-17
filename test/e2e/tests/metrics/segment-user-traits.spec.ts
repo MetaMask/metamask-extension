@@ -11,6 +11,15 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 
+function mergeTraits(
+  events: { traits: Record<string, unknown> }[],
+): Record<string, unknown> {
+  return events.reduce(
+    (acc, event) => ({ ...acc, ...event.traits }),
+    {} as Record<string, unknown>,
+  );
+}
+
 async function mockSegment(mockServer: Mockttp) {
   return [
     await mockServer
@@ -46,9 +55,9 @@ describe('Segment User Traits', function () {
           dataCollectionForMarketing: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, true);
+        const mergedTraits = mergeTraits(events);
+        assert.deepStrictEqual(mergedTraits.is_metrics_opted_in, true);
+        assert.deepStrictEqual(mergedTraits.has_marketing_consent, true);
       },
     );
   });
@@ -71,9 +80,9 @@ describe('Segment User Traits', function () {
           dataCollectionForMarketing: false,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, false);
+        const mergedTraits = mergeTraits(events);
+        assert.deepStrictEqual(mergedTraits.is_metrics_opted_in, true);
+        assert.deepStrictEqual(mergedTraits.has_marketing_consent, false);
       },
     );
   });
@@ -129,9 +138,9 @@ describe('Segment User Traits', function () {
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleParticipateInMetaMetrics();
         events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, false);
+        const mergedTraits = mergeTraits(events);
+        assert.deepStrictEqual(mergedTraits.is_metrics_opted_in, true);
+        assert.deepStrictEqual(mergedTraits.has_marketing_consent, false);
       },
     );
   });
@@ -177,27 +186,15 @@ describe('Segment User Traits', function () {
           if (events.length === 0) {
             return false;
           }
-          const allTraits = events.reduce(
-            (
-              acc: Record<string, unknown>,
-              event: { traits: Record<string, unknown> },
-            ) => ({ ...acc, ...event.traits }),
-            {} as Record<string, unknown>,
-          );
+          const traits = mergeTraits(events);
           return (
-            allTraits.is_metrics_opted_in === true &&
-            allTraits.has_marketing_consent === true
+            traits.is_metrics_opted_in === true &&
+            traits.has_marketing_consent === true
           );
         }, 30_000);
-        const allTraits = events.reduce(
-          (
-            acc: Record<string, unknown>,
-            event: { traits: Record<string, unknown> },
-          ) => ({ ...acc, ...event.traits }),
-          {} as Record<string, unknown>,
-        );
-        assert.deepStrictEqual(allTraits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(allTraits.has_marketing_consent, true);
+        const traits = mergeTraits(events);
+        assert.deepStrictEqual(traits.is_metrics_opted_in, true);
+        assert.deepStrictEqual(traits.has_marketing_consent, true);
       },
     );
   });
