@@ -1,0 +1,181 @@
+name: Benchmark Webpack CI Build Speed
+
+on:
+  push:
+    branches:
+      - refactor/manifest-plugin-zip
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark-webpack-build:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: adaptive-current
+            min_compress_kib: 24
+            low_parallelism_async_kib: 128
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
+          - name: adaptive-lower-threshold
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
+          - name: adaptive-lower-threshold-more-jobs
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 4
+            disable_adaptive_retuning: false
+          - name: adaptive-aggressive
+            min_compress_kib: 24
+            low_parallelism_async_kib: 64
+            max_async_jobs: 4
+            disable_adaptive_retuning: false
+          - name: static-current
+            min_compress_kib: 24
+            low_parallelism_async_kib: 128
+            max_async_jobs: 3
+            disable_adaptive_retuning: true
+          - name: static-lower-threshold
+            min_compress_kib: 24
+            low_parallelism_async_kib: 96
+            max_async_jobs: 4
+            disable_adaptive_retuning: true
+    env:
+      APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
+      APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
+      APPLE_BETA_CLIENT_ID: ${{ secrets.APPLE_BETA_CLIENT_ID }}
+      APPLE_EXPERIMENTAL_CLIENT_ID: ${{ secrets.APPLE_EXPERIMENTAL_CLIENT_ID }}
+      APPLE_FLASK_CLIENT_ID: ${{ secrets.APPLE_FLASK_CLIENT_ID }}
+      APPLE_PROD_CLIENT_ID: ${{ secrets.APPLE_PROD_CLIENT_ID }}
+      ANALYTICS_DATA_DELETION_ENDPOINT: ${{ secrets.ANALYTICS_DATA_DELETION_ENDPOINT }}
+      ANALYTICS_DATA_DELETION_SOURCE_ID: ${{ secrets.ANALYTICS_DATA_DELETION_SOURCE_ID }}
+      CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
+      CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+      GOOGLE_BETA_CLIENT_ID: ${{ secrets.GOOGLE_BETA_CLIENT_ID }}
+      GOOGLE_CLIENT_ID_FLASK_UAT: ${{ secrets.GOOGLE_CLIENT_ID_FLASK_UAT }}
+      GOOGLE_CLIENT_ID_UAT: ${{ secrets.GOOGLE_CLIENT_ID_UAT }}
+      GOOGLE_EXPERIMENTAL_CLIENT_ID: ${{ secrets.GOOGLE_EXPERIMENTAL_CLIENT_ID }}
+      GOOGLE_FLASK_CLIENT_ID: ${{ secrets.GOOGLE_FLASK_CLIENT_ID }}
+      GOOGLE_PROD_CLIENT_ID: ${{ secrets.GOOGLE_PROD_CLIENT_ID }}
+      INFURA_BETA_PROJECT_ID: ${{ secrets.INFURA_BETA_PROJECT_ID }}
+      INFURA_EXPERIMENTAL_PROJECT_ID: ${{ secrets.INFURA_EXPERIMENTAL_PROJECT_ID }}
+      INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
+      INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      METAMASK_ZIP_DISABLE_ADAPTIVE_RETUNING: ${{ matrix.disable_adaptive_retuning && 'true' || 'false' }}
+      METAMASK_ZIP_LOW_PARALLELISM_ASYNC_KIB: ${{ matrix.low_parallelism_async_kib }}
+      METAMASK_ZIP_MAX_ASYNC_JOBS: ${{ matrix.max_async_jobs }}
+      METAMASK_ZIP_MIN_COMPRESSIBLE_KIB: ${{ matrix.min_compress_kib }}
+      QUICKNODE_ARBITRUM_URL: ${{ secrets.QUICKNODE_ARBITRUM_URL }}
+      QUICKNODE_AVALANCHE_URL: ${{ secrets.QUICKNODE_AVALANCHE_URL }}
+      QUICKNODE_BASE_URL: ${{ secrets.QUICKNODE_BASE_URL }}
+      QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
+      QUICKNODE_LINEA_MAINNET_URL: ${{ secrets.QUICKNODE_LINEA_MAINNET_URL }}
+      QUICKNODE_MAINNET_URL: ${{ secrets.QUICKNODE_MAINNET_URL }}
+      QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
+      QUICKNODE_OPTIMISM_URL: ${{ secrets.QUICKNODE_OPTIMISM_URL }}
+      QUICKNODE_POLYGON_URL: ${{ secrets.QUICKNODE_POLYGON_URL }}
+      QUICKNODE_SEI_URL: ${{ secrets.QUICKNODE_SEI_URL }}
+      SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
+      SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
+      SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
+      SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
+      SEGMENT_WRITE_KEY: ${{ secrets.SEGMENT_WRITE_KEY }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      TZ: UTC
+      VAPID_KEY: ${{ secrets.VAPID_KEY }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          cache-node-modules: true
+          is-high-risk-environment: true
+          skip-allow-scripts: true
+
+      - name: Run benchmark
+        id: benchmark
+        shell: bash
+        run: |
+          set +e
+
+          mkdir -p benchmark-results
+          log_file="benchmark-results/${{ matrix.name }}.log"
+          time_file="benchmark-results/${{ matrix.name }}.time"
+          result_file="benchmark-results/${{ matrix.name }}.json"
+          build_command="BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --mode production --test --browser=chrome --browser=firefox --no-cache --zip --no-progress"
+
+          /usr/bin/time -f '%e' -o "$time_file" bash -lc "$build_command" > "$log_file" 2>&1
+          exit_code=$?
+
+          compile_ms=$(sed -n 's/.*compiled successfully in \([0-9][0-9]*\) ms.*/\1/p' "$log_file" | tail -n 1)
+          elapsed_seconds=$(cat "$time_file")
+
+          jq -n \
+            --arg name "${{ matrix.name }}" \
+            --arg elapsed_seconds "$elapsed_seconds" \
+            --arg compile_ms "${compile_ms:-}" \
+            --argjson min_compress_kib ${{ matrix.min_compress_kib }} \
+            --argjson low_parallelism_async_kib ${{ matrix.low_parallelism_async_kib }} \
+            --argjson max_async_jobs ${{ matrix.max_async_jobs }} \
+            --argjson disable_adaptive_retuning ${{ matrix.disable_adaptive_retuning && 'true' || 'false' }} \
+            --argjson exit_code "$exit_code" \
+            '{
+              name: $name,
+              elapsed_seconds: ($elapsed_seconds | tonumber),
+              compile_ms: (if $compile_ms == "" then null else ($compile_ms | tonumber) end),
+              min_compress_kib: $min_compress_kib,
+              low_parallelism_async_kib: $low_parallelism_async_kib,
+              max_async_jobs: $max_async_jobs,
+              disable_adaptive_retuning: $disable_adaptive_retuning,
+              exit_code: $exit_code
+            }' > "$result_file"
+
+          cat "$result_file"
+
+          {
+            echo "## ${{ matrix.name }}"
+            echo ""
+            echo "- elapsed_seconds: $elapsed_seconds"
+            echo "- compile_ms: ${compile_ms:-missing}"
+            echo "- min_compress_kib: ${{ matrix.min_compress_kib }}"
+            echo "- low_parallelism_async_kib: ${{ matrix.low_parallelism_async_kib }}"
+            echo "- max_async_jobs: ${{ matrix.max_async_jobs }}"
+            echo "- disable_adaptive_retuning: ${{ matrix.disable_adaptive_retuning }}"
+            echo "- exit_code: $exit_code"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+
+      - name: Upload benchmark logs and results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: benchmark-${{ matrix.name }}
+          path: benchmark-results
+          retention-days: 7
+
+      - name: Fail if build failed
+        if: ${{ steps.benchmark.outputs.exit_code != '0' }}
+        run: exit 1

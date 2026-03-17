@@ -20,10 +20,21 @@ const FAST_MACHINE_ASYNC_COMPRESSION_SIZE =
   getThresholdFromEnvironment('METAMASK_ZIP_FAST_MACHINE_ASYNC_KIB', 48) * KiB;
 const MIN_COMPRESSIBLE_ASSET_SIZE =
   getThresholdFromEnvironment('METAMASK_ZIP_MIN_COMPRESSIBLE_KIB', 24) * KiB;
-const MIN_ASYNC_COMPRESSION_SIZE = 64 * KiB;
+const MIN_ASYNC_COMPRESSION_SIZE =
+  getThresholdFromEnvironment('METAMASK_ZIP_MIN_ASYNC_KIB', 64) * KiB;
+const LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE =
+  getThresholdFromEnvironment('METAMASK_ZIP_LOW_PARALLELISM_ASYNC_KIB', 128) *
+  KiB;
+const MAX_ASYNC_JOBS_OVERRIDE = getThresholdFromEnvironment(
+  'METAMASK_ZIP_MAX_ASYNC_JOBS',
+  0,
+);
 const MAX_ASYNC_COMPRESSION_SIZE = 16 * MiB;
 const RSS_SAMPLE_INTERVAL_MS = 250;
 const THROUGHPUT_SMOOTHING_FACTOR = 0.25;
+const DISABLE_ADAPTIVE_RETUNING = getBooleanFromEnvironment(
+  'METAMASK_ZIP_DISABLE_ADAPTIVE_RETUNING',
+);
 
 /**
  * File types that can be compressed well using DEFLATE compression.
@@ -94,7 +105,8 @@ export function createZipCompressionController(): ZipCompressionController {
   const parallelism = availableParallelism();
   const totalMemory = totalmem();
   const useAdaptiveRetuning =
-    parallelism <= 8 || totalMemory <= 16 * 1024 * MiB;
+    !DISABLE_ADAPTIVE_RETUNING &&
+    (parallelism <= 8 || totalMemory <= 16 * 1024 * MiB);
 
   if (!useAdaptiveRetuning) {
     return {
@@ -106,9 +118,7 @@ export function createZipCompressionController(): ZipCompressionController {
     };
   }
 
-  const maxAsyncJobs = useAdaptiveRetuning
-    ? clamp(parallelism - 1, 1, 4)
-    : Math.max(parallelism - 1, 1);
+  const maxAsyncJobs = MAX_ASYNC_JOBS_OVERRIDE || clamp(parallelism - 1, 1, 4);
   const maxAsyncBytes = clamp(
     Math.floor(totalMemory / (useAdaptiveRetuning ? 64 : 16)),
     useAdaptiveRetuning ? 32 * MiB : 64 * MiB,
@@ -118,7 +128,9 @@ export function createZipCompressionController(): ZipCompressionController {
     ? clamp(Math.floor(totalMemory / 4), 512 * MiB, 2 * 1024 * MiB)
     : Number.POSITIVE_INFINITY;
   let asyncSizeThreshold =
-    parallelism <= 4 ? 128 * KiB : MIN_ASYNC_COMPRESSION_SIZE;
+    parallelism <= 4
+      ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
+      : MIN_ASYNC_COMPRESSION_SIZE;
   let inflightAsyncJobs = 0;
   let inflightAsyncBytes = 0;
   let syncSamples = 0;
@@ -443,4 +455,9 @@ function getThresholdFromEnvironment(
   return Number.isSafeInteger(parsedValue) && parsedValue > 0
     ? parsedValue
     : defaultValue;
+}
+
+function getBooleanFromEnvironment(environmentVariable: string): boolean {
+  const rawValue = process.env[environmentVariable];
+  return rawValue === '1' || rawValue === 'true';
 }
