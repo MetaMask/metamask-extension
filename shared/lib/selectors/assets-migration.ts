@@ -739,8 +739,10 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
       // assetsPrice may use a chain-specific slip44 (e.g., slip44:9005 for AVAX)
       // while assetsInfo uses slip44:60 (EVM standard). Fall back to any slip44
       // key for the same chain when the direct lookup misses.
+      // Guard: only attempt fallback for slip44 (native) assets to avoid
+      // misattributing an ERC-20 price entry to the native token address.
       let metadata = assetsInfo[assetId];
-      if (!metadata) {
+      if (!metadata && assetType.assetNamespace === 'slip44') {
         const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
         const fallbackKey = Object.keys(assetsInfo).find((key) =>
           key.startsWith(chainNativePrefix),
