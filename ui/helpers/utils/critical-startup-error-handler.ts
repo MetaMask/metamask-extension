@@ -74,6 +74,11 @@ export class CriticalStartupErrorHandler {
   // ensures those transitions are suppressed once the handler is uninstalled.
   #uninstalled = false;
 
+  // When true, a critical error has already been shown (e.g. via DISPLAY_GENERAL_STARTUP_ERROR
+  // or a phase timeout). Prevents phase timeouts that fire later from calling
+  // displayCriticalErrorMessage again (duplicate analytics, unhandled rejection).
+  #criticalErrorAlreadyDisplayed = false;
+
   /**
    * Creates an instance of CriticalStartupErrorHandler.
    * This class listens for critical startup errors from the background script
@@ -156,6 +161,10 @@ export class CriticalStartupErrorHandler {
     clearTimeout(this.#livenessCheckTimeoutId);
     this.#livenessCheckTimeoutId = undefined;
     if (livenessError !== null) {
+      if (this.#criticalErrorAlreadyDisplayed) {
+        return;
+      }
+      this.#criticalErrorAlreadyDisplayed = true;
       // add sentryTags to the error for better debugging in Sentry.
       this.#attachAppInitPingSentryTag(livenessError as ErrorLike);
 
@@ -203,6 +212,10 @@ export class CriticalStartupErrorHandler {
     clearTimeout(this.#initializationCheckTimeoutId);
     this.#initializationCheckTimeoutId = undefined;
     if (initError !== null) {
+      if (this.#criticalErrorAlreadyDisplayed) {
+        return;
+      }
+      this.#criticalErrorAlreadyDisplayed = true;
       // add sentryTags to the error for better debugging in Sentry.
       this.#attachAppInitPingSentryTag(initError as ErrorLike);
 
@@ -241,6 +254,10 @@ export class CriticalStartupErrorHandler {
     clearTimeout(this.#startUiSyncTimeoutId);
     this.#startUiSyncTimeoutId = undefined;
     if (stateSyncError !== null) {
+      if (this.#criticalErrorAlreadyDisplayed) {
+        return;
+      }
+      this.#criticalErrorAlreadyDisplayed = true;
       // add sentryTags to the error for better debugging in Sentry.
       this.#attachAppInitPingSentryTag(stateSyncError as ErrorLike);
 
@@ -281,8 +298,9 @@ export class CriticalStartupErrorHandler {
     } else if (method === BACKGROUND_LIVENESS_METHOD) {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
-      } else {
+      } else if (!this.#criticalErrorAlreadyDisplayed) {
         // Unreachable in normal flow (ALIVE received but liveness check not initialized).
+        this.#criticalErrorAlreadyDisplayed = true;
         await displayCriticalErrorMessage(
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
@@ -296,8 +314,9 @@ export class CriticalStartupErrorHandler {
       this.#initializationCompleted = true;
       if (this.#onInitializationCheckCompleted) {
         this.#onInitializationCheckCompleted();
-      } else {
+      } else if (!this.#criticalErrorAlreadyDisplayed) {
         // Unreachable in normal flow (BACKGROUND_INITIALIZED received but init check not initialized).
+        this.#criticalErrorAlreadyDisplayed = true;
         await displayCriticalErrorMessage(
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
@@ -324,13 +343,16 @@ export class CriticalStartupErrorHandler {
         hasBackup: boolean;
         currentLocale?: string;
       };
-      displayStateCorruptionError(
-        this.#container,
-        this.#port,
-        error,
-        hasBackup,
-        currentLocale,
-      );
+      if (!this.#criticalErrorAlreadyDisplayed) {
+        this.#criticalErrorAlreadyDisplayed = true;
+        displayStateCorruptionError(
+          this.#container,
+          this.#port,
+          error,
+          hasBackup,
+          currentLocale,
+        );
+      }
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {
       if (!hasProperty(data, 'params') || !isObject(data.params)) {
         log.error(
@@ -344,14 +366,17 @@ export class CriticalStartupErrorHandler {
         error: ErrorLike;
         currentLocale?: string;
       };
-      await displayCriticalErrorMessage(
-        this.#container,
-        CriticalErrorTranslationKey.TroubleStarting,
-        error as ErrorLike,
-        currentLocale,
-        this.#port,
-        CriticalErrorType.GeneralStartupError,
-      );
+      if (!this.#criticalErrorAlreadyDisplayed) {
+        this.#criticalErrorAlreadyDisplayed = true;
+        await displayCriticalErrorMessage(
+          this.#container,
+          CriticalErrorTranslationKey.TroubleStarting,
+          error as ErrorLike,
+          currentLocale,
+          this.#port,
+          CriticalErrorType.GeneralStartupError,
+        );
+      }
     }
   };
 
