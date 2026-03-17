@@ -127,9 +127,7 @@ const connectedMockState = {
     },
     subjects: {
       [DAPP_ORIGIN]: {
-        permissions: makeCaip25Permission([
-          `eip155:0:${ACCOUNT_1_ADDRESS}`,
-        ]),
+        permissions: makeCaip25Permission([`eip155:0:${ACCOUNT_1_ADDRESS}`]),
       },
     },
   },
@@ -240,9 +238,7 @@ describe('DappConnectionControlBar', () => {
           [DAPP_ORIGIN]: ['endowment:caip25'],
         });
         expect(mockHidePermittedNetworkToast).toHaveBeenCalled();
-        expect(
-          queryByTestId('disconnect-all-modal'),
-        ).not.toBeInTheDocument();
+        expect(queryByTestId('disconnect-all-modal')).not.toBeInTheDocument();
       });
     });
   });
