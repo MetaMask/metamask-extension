@@ -162,7 +162,7 @@
     "delegations": "object",
     "depositInProgress": "boolean",
     "depositRequests": "object",
-    "dismissSeedBackUpReminder": true,
+    "dismissSeedBackUpReminder": false,
     "domains": "object",
     "drafts": "object",
     "enableMV3TimestampSave": true,
