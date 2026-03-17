@@ -57,6 +57,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withSnapControllerOnStartLifecycleSnap()
+          .withMetaVersion(192)
           .build(),
         title: this.test?.fullTitle(),
       },

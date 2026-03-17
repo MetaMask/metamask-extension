@@ -13,8 +13,6 @@ const fixtureSubstitutionCommands = {
   currentDateInMilliseconds: 'currentDateInMilliseconds',
 };
 
-const STORAGE_SERVICE_PATH = '/storage-service.json';
-
 /**
  * Perform substitutions on a single piece of state.
  *
@@ -70,15 +68,12 @@ class FixtureServer {
     this._port = port;
     this._app = new Koa();
     this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]]);
-    this._storageServiceMap = null;
 
     this._app.use(async (ctx) => {
       // Firefox is _super_ strict about needing CORS headers
       ctx.set('Access-Control-Allow-Origin', '*');
       if (this._isStateRequest(ctx)) {
         ctx.body = this._stateMap.get(CURRENT_STATE_KEY);
-      } else if (this._isStorageServiceRequest(ctx)) {
-        ctx.body = this._storageServiceMap ?? {};
       }
     });
   }
@@ -115,18 +110,11 @@ class FixtureServer {
 
   loadJsonState(rawState, contractRegistry) {
     const state = performStateSubstitutions(rawState, contractRegistry);
-    const { _storageService, ...stateWithoutStorageService } = state;
-    this._stateMap.set(CURRENT_STATE_KEY, stateWithoutStorageService);
-    this._storageServiceMap =
-      _storageService && isObject(_storageService) ? _storageService : null;
+    this._stateMap.set(CURRENT_STATE_KEY, state);
   }
 
   _isStateRequest(ctx) {
     return ctx.method === 'GET' && ctx.path === '/state.json';
-  }
-
-  _isStorageServiceRequest(ctx) {
-    return ctx.method === 'GET' && ctx.path === STORAGE_SERVICE_PATH;
   }
 }
 
