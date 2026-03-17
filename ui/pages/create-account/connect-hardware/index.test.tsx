@@ -456,7 +456,7 @@ describe('ConnectHardwareForm', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('appends localized ledger error code message when code is found', async () => {
+    it('displays mapped message when ledger error code is found', async () => {
       mockConnectHardware.mockRejectedValue(
         new Error('Error with code 0x6501'),
       );
@@ -466,7 +466,11 @@ describe('ConnectHardwareForm', () => {
       connectToDevice(tEn('ledger'));
 
       await waitFor(() => {
-        expect(screen.getByText(/Error with code 0x6501/u)).toBeInTheDocument();
+        expect(
+          screen.getByText(
+            'Ethereum app is out of date. Please update it to continue.',
+          ),
+        ).toBeInTheDocument();
       });
     });
   });
@@ -674,7 +678,7 @@ describe('ConnectHardwareForm', () => {
     });
 
     describe('Ledger error handling (toHardwareWalletError)', () => {
-      it('displays the original SDK message when Ledger status code is not mapped', async () => {
+      it('displays SDK userMessage when Ledger error has a mapped status code (e.g. 0x6a83 wrong app)', async () => {
         mockConnectHardware.mockRejectedValue(
           new Error('Ledger device: UNKNOWN_ERROR (0x6a83)'),
         );
@@ -687,7 +691,9 @@ describe('ConnectHardwareForm', () => {
 
         await waitFor(() => {
           expect(
-            screen.getByText('Ledger device: UNKNOWN_ERROR (0x6a83)'),
+            screen.getByText(
+              'Ethereum app is closed. Please open it to continue.',
+            ),
           ).toBeInTheDocument();
         });
       });

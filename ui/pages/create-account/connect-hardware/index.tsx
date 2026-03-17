@@ -11,6 +11,7 @@ import { upperFirst } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   Box,
   Text,
@@ -51,6 +52,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  toHardwareWalletError,
+  HardwareWalletType,
+} from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import AccountList from './account-list';
@@ -233,6 +238,20 @@ const ConnectHardwareForm = () => {
         }
       } catch (e: unknown) {
         const errorMessage = toErrorMessage(e);
+
+        // Use shared Ledger error mapping (hw-wallet-sdk) when connecting to Ledger.
+        if (deviceName === HardwareDeviceNames.ledger) {
+          const hwError = toHardwareWalletError(e, HardwareWalletType.Ledger);
+
+          if (
+            hwError.code !== ErrorCode.Unknown &&
+            hwError.code !== ErrorCode.ConnectionClosed
+          ) {
+            setError(hwError.userMessage);
+            return;
+          }
+        }
+
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
           (errorCode) => errorMessage.includes(errorCode),
         );
