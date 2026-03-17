@@ -299,7 +299,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     l2FeeNative: feesL2.nativeCurrencyFee,
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
-    maxFeeHex,
+    maxFeeHex: add0x(maxFeeHex),
     maxFeeNative,
   };
 }
