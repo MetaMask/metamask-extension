@@ -1,11 +1,12 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { render } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   TransactionGroupCategory,
   TransactionGroupStatus,
 } from '../../../../shared/constants/transaction';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import TransactionIcon from '.';
 
 const mockCaptureSingleException = jest.fn();
@@ -20,7 +21,11 @@ const mockStore = configureStore();
 const store = mockStore({});
 
 function renderIcon(props) {
-  return renderWithProvider(<TransactionIcon {...props} />, store);
+  return render(
+    <Provider store={store}>
+      <TransactionIcon {...props} />
+    </Provider>,
+  );
 }
 
 describe('TransactionIcon', () => {
@@ -41,6 +46,8 @@ describe('TransactionIcon', () => {
   });
 
   it('renders a fallback icon and logs when category is undefined', () => {
+    jest.spyOn(console, 'error').mockImplementation();
+
     const { container } = renderIcon({
       status: TransactionGroupStatus.pending,
       category: undefined,
@@ -55,6 +62,8 @@ describe('TransactionIcon', () => {
   });
 
   it('renders a fallback icon and logs when category is unsupported', () => {
+    jest.spyOn(console, 'error').mockImplementation();
+
     const { container } = renderIcon({
       status: TransactionStatus.confirmed,
       category: 'some-unknown-category',
