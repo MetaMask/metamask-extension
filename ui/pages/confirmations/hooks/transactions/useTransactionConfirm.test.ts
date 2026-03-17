@@ -13,11 +13,7 @@ import {
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../../shared/constants/app';
 import {
   attemptCloseNotificationPopup,
   updateAndApproveTx,
