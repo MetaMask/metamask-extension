@@ -10,7 +10,7 @@ import { IconSize, IconProps, IconComponent } from './icon.types';
 
 /**
  * @deprecated Please update your code to use `Icon` from `@metamask/design-system-react`.
- * Migration guide: https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library | Migration guide}
  */
 export const Icon: IconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
