@@ -552,7 +552,7 @@ class HomePage {
     // Race condition: the toast initially renders with the stale keyring count (e.g. "Wallet 1 imported")
     // and only updates to the correct number once the background state propagates.
     // If the 5s auto-hide fires before the state update, the toast disappears while still showing the wrong value
-    // the text-based selector never matches, causing the test to fail.See issue #40944
+    // the text-based selector never matches, causing the test to fail. See issue #40944
     // TODO: Uncomment this selector once the issue above is fixed.
     // await this.driver.waitForSelector({
     //   text: `Wallet ${srpNumber} imported`,
