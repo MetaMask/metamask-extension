@@ -4,6 +4,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { ApprovalType, toHex } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmState } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
@@ -29,14 +33,17 @@ function buildState({
   transaction = TRANSACTION_MOCK,
   selectedNetworkClientId,
   chainId,
+  metamaskOverrides = {},
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
   selectedNetworkClientId?: string;
   chainId?: string;
+  metamaskOverrides?: Record<string, unknown>;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
+  const txChainId = chainId ?? transaction?.chainId ?? '0x5';
 
   let pendingApprovals = {};
   if (currentConfirmation) {
@@ -53,11 +60,12 @@ function buildState({
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       accountsByChainId: {
-        [chainId ?? '0x5']: {
+        [txChainId]: {
           [accountAddress]: { balance: toHex(balance ?? 0) },
         },
       },
       transactions: transaction ? [transaction] : [],
+      ...metamaskOverrides,
     },
   });
 }
@@ -116,5 +124,75 @@ describe('useHasInsufficientBalance', () => {
   it('returns 0x0 if balance missing', () => {
     const result = runHook({ balance: undefined });
     expect(result.hasInsufficientBalance).toBe(true);
+  });
+
+  it('returns false when transaction chain differs from selected chain but balance is sufficient for transaction chain fee', () => {
+    const networkState = mockNetworkState(
+      {
+        chainId: CHAIN_IDS.MAINNET,
+        metadata: {
+          EIPS: { 1559: true },
+          status: NetworkStatus.Available,
+        },
+      },
+      {
+        chainId: CHAIN_IDS.BASE,
+        metadata: {
+          EIPS: { 1559: true },
+          status: NetworkStatus.Available,
+        },
+      },
+    );
+    const transactionOnBase = {
+      ...TRANSACTION_MOCK,
+      chainId: CHAIN_IDS.BASE,
+      txParams: {
+        ...TRANSACTION_MOCK.txParams,
+        value: '0x0',
+        gas: '0x5208',
+      },
+    };
+    const baseChainGasLow = {
+      estimatedBaseFee: '1',
+      high: {
+        suggestedMaxFeePerGas: '2',
+        suggestedMaxPriorityFeePerGas: '1',
+      },
+      medium: {
+        suggestedMaxFeePerGas: '2',
+        suggestedMaxPriorityFeePerGas: '1',
+      },
+      low: {
+        suggestedMaxFeePerGas: '1',
+        suggestedMaxPriorityFeePerGas: '1',
+      },
+    };
+    const result = runHook({
+      transaction: transactionOnBase as Partial<TransactionMeta>,
+      currentConfirmation: transactionOnBase as Partial<TransactionMeta>,
+      chainId: CHAIN_IDS.BASE,
+      balance: 1e18,
+      selectedNetworkClientId: networkState.selectedNetworkClientId,
+      metamaskOverrides: {
+        ...networkState,
+        gasFeeEstimates: {
+          estimatedBaseFee: '100',
+          medium: {
+            suggestedMaxFeePerGas: '150',
+            suggestedMaxPriorityFeePerGas: '8',
+          },
+        },
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        gasFeeEstimatesByChainId: {
+          [CHAIN_IDS.BASE]: {
+            gasFeeEstimates: baseChainGasLow,
+            gasEstimateType: GasEstimateTypes.feeMarket,
+          },
+        },
+        currencyRates: { ETH: { conversionRate: 1 } },
+        currentCurrency: 'usd',
+      },
+    });
+    expect(result.hasInsufficientBalance).toBe(false);
   });
 });
