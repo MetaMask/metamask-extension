@@ -6,7 +6,8 @@
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-import './lib/setup-initial-state-hooks';
+// eslint-disable-next-line import/order -- intentional first import for Sentry
+import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
@@ -59,9 +60,6 @@ import { backedUpStateKeys, hasVault } from '../../shared/lib/backup';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
-import { PersistenceManager } from './lib/stores/persistence-manager';
-import ExtensionStore from './lib/stores/extension-store';
-import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -123,13 +121,6 @@ const inTest = process.env.IN_TEST;
 let inTestRestoreFlow = false;
 /** Session storage key to persist inTestRestoreFlow across service worker restart (e.g. after RELOAD_WINDOW). */
 const IN_TEST_RESTORE_FLOW = 'IN_TEST_RESTORE_FLOW';
-
-const useFixtureStore =
-  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useFixtureStore
-  ? new FixtureExtensionStore({ initialize: true })
-  : new ExtensionStore();
-const persistenceManager = new PersistenceManager({ localStore });
 
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
