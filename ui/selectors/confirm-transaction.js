@@ -116,19 +116,45 @@ export const transactionFeeSelector = function (state, txData) {
     ? networkClientIdsByChainId?.[transactionChainId]
     : undefined;
 
-  const gasFeeEstimates = (
+  let gasFeeEstimates = (
     transactionChainId && transactionNetworkClientId
       ? getGasFeeEstimatesByChainId(state, transactionChainId)
       : getGasFeeEstimates(state)
   ) || {};
-  const gasEstimateType =
+  let gasEstimateType =
     transactionChainId && transactionNetworkClientId
       ? getGasEstimateTypeByChainId(state, transactionChainId)
       : getGasEstimateType(state);
-  const networkAndAccountSupportsEIP1559 =
+  let networkAndAccountSupportsEIP1559 =
     transactionNetworkClientId !== undefined
       ? checkNetworkAndAccountSupports1559(state, transactionNetworkClientId)
       : checkNetworkAndAccountSupports1559(state);
+
+  // When using transaction chain, fall back to selected chain if estimates are missing
+  // (e.g. gasFeeEstimatesByChainId has no entry for the transaction's chain)
+  let useTransactionChainGas = Boolean(
+    transactionChainId && transactionNetworkClientId,
+  );
+  if (useTransactionChainGas) {
+    const hasEIP1559Estimates =
+      !networkAndAccountSupportsEIP1559 ||
+      (gasFeeEstimates.estimatedBaseFee != null &&
+        (gasFeeEstimates[txData.userFeeLevel]?.suggestedMaxFeePerGas != null ||
+          gasFeeEstimates.gasPrice != null));
+    const hasLegacyEstimates =
+      networkAndAccountSupportsEIP1559 ||
+      gasEstimateType === GasEstimateTypes.feeMarket ||
+      gasEstimateType === GasEstimateTypes.none ||
+      gasFeeEstimates.gasPrice != null;
+    if (!hasEIP1559Estimates || !hasLegacyEstimates) {
+      gasFeeEstimates = getGasFeeEstimates(state) || {};
+      gasEstimateType = getGasEstimateType(state);
+      networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
+        state,
+      );
+      useTransactionChainGas = false;
+    }
+  }
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
@@ -175,7 +201,7 @@ export const transactionFeeSelector = function (state, txData) {
       case GasEstimateTypes.legacy:
         gasEstimationObject.gasPrice =
           txData.txParams?.gasPrice ??
-          (transactionChainId
+          (useTransactionChainGas && transactionChainId
             ? getAveragePriceEstimateInHexWEIByChainId(
                 state,
                 transactionChainId,
