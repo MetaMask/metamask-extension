@@ -57,7 +57,7 @@ jobs:
 
       - name: Checkout and setup environment
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           cache-node-modules: true
@@ -86,7 +86,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -119,7 +119,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -158,7 +158,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -191,7 +191,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -231,7 +231,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true

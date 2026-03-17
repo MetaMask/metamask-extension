@@ -102,7 +102,7 @@ jobs:
       BUILD_STATUS: ${{ needs.build-dist-browserify.result == 'success' && needs.build-dist-mv2-browserify.result == 'success' && needs.build-experimental-browserify.result == 'success' && needs.build-experimental-mv2-browserify.result == 'success' && needs.build-dist-webpack.result == 'success' && needs.build-dist-mv2-webpack.result == 'success' && needs.build-experimental-webpack.result == 'success' && needs.build-experimental-mv2-webpack.result == 'success' && 'success' || 'failure' }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true

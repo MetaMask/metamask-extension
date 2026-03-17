@@ -88,7 +88,7 @@ jobs:
     steps:
       - name: Checkout and setup environment
         if: ${{ env.BENCHMARK_GATED == 'true' }}
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -190,7 +190,7 @@ jobs:
       DAPP_BENCHMARK_JSON: benchmark-chrome-browserify-pageLoadBenchmark.json
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
