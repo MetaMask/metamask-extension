@@ -143,13 +143,13 @@ yarn ocap daemon start
 ### Step 2: Initialize Remote Comms
 
 ```bash
-yarn ocap daemon exec initRemoteComms '{"relay": "<relay_multiaddr>"}'
+yarn ocap daemon exec initRemoteComms '{"relays": ["<relay_multiaddr>"]}'
 ```
 
 Use the same relay multiaddr that the home kernel is using. Example:
 
 ```bash
-yarn ocap daemon exec initRemoteComms '{"relay": "/ip4/<VPS_IP>/tcp/9001/ws/p2p/<relay_peer_id>"}'
+yarn ocap daemon exec initRemoteComms '{"relays": ["/ip4/<VPS_IP>/tcp/9001/ws/p2p/<relay_peer_id>"]}'
 ```
 
 ### Step 3: Parse the OCAP URL
@@ -314,7 +314,7 @@ Here `ko42` is the kref you use in subsequent `queueMessage` calls.
 3. **Home**: Confirm the OCAP URL in the offscreen console contains relay hints
    (comma-separated multiaddrs after the peer ID).
 4. **Copy** the OCAP URL to the VPS SSH session.
-5. **Away**: `daemon start` + `initRemoteComms` with `{"relay": "..."}`.
+5. **Away**: `daemon start` + `initRemoteComms` with `{"relays": ["..."]}`.
 6. **Away**: `registerLocationHints` with the peer ID and relay hints from the
    URL.
 7. **Away**: `redeemOcapURL`. Confirm a kref is returned (e.g., `"ko42"`).
