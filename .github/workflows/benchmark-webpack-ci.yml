@@ -22,30 +22,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: adaptive-low-80-j2-r1
-            fast_machine_async_kib: 48
-            min_compress_kib: 24
-            low_parallelism_async_kib: 80
-            max_async_jobs: 2
-            disable_adaptive_retuning: false
-          - name: adaptive-low-80-j2-r2
-            fast_machine_async_kib: 48
-            min_compress_kib: 24
-            low_parallelism_async_kib: 80
-            max_async_jobs: 2
-            disable_adaptive_retuning: false
-          - name: adaptive-low-96-j2-r1
-            fast_machine_async_kib: 48
-            min_compress_kib: 24
-            low_parallelism_async_kib: 96
-            max_async_jobs: 2
-            disable_adaptive_retuning: false
-          - name: adaptive-low-96-j2-r2
-            fast_machine_async_kib: 48
-            min_compress_kib: 24
-            low_parallelism_async_kib: 96
-            max_async_jobs: 2
-            disable_adaptive_retuning: false
           - name: adaptive-low-96-j3-r1
             fast_machine_async_kib: 48
             min_compress_kib: 24
@@ -58,17 +34,41 @@ jobs:
             low_parallelism_async_kib: 96
             max_async_jobs: 3
             disable_adaptive_retuning: false
-          - name: adaptive-low-112-j2-r1
+          - name: adaptive-low-104-j3-r1
             fast_machine_async_kib: 48
             min_compress_kib: 24
-            low_parallelism_async_kib: 112
-            max_async_jobs: 2
+            low_parallelism_async_kib: 104
+            max_async_jobs: 3
             disable_adaptive_retuning: false
-          - name: adaptive-low-112-j2-r2
+          - name: adaptive-low-104-j3-r2
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 104
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
+          - name: adaptive-low-112-j3-r1
             fast_machine_async_kib: 48
             min_compress_kib: 24
             low_parallelism_async_kib: 112
-            max_async_jobs: 2
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
+          - name: adaptive-low-112-j3-r2
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 112
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
+          - name: adaptive-low-128-j3-r1
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 128
+            max_async_jobs: 3
+            disable_adaptive_retuning: false
+          - name: adaptive-low-128-j3-r2
+            fast_machine_async_kib: 48
+            min_compress_kib: 24
+            low_parallelism_async_kib: 128
+            max_async_jobs: 3
             disable_adaptive_retuning: false
     env:
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
