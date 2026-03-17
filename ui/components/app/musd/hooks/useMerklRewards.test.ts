@@ -130,7 +130,6 @@ describe('useMerklRewards', () => {
     jest.clearAllMocks();
     setupSelectorMock();
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
-
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
