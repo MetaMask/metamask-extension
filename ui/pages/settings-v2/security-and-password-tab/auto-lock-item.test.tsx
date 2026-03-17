@@ -23,9 +23,7 @@ describe('AutoLockItem', () => {
   it('renders the label', () => {
     renderWithProvider(<AutoLockItem />, createMockStore());
 
-    expect(
-      screen.getByText(messages.autoLock.message),
-    ).toBeInTheDocument();
+    expect(screen.getByText(messages.autoLock.message)).toBeInTheDocument();
   });
 
   it('displays "Never" when autoLockTimeLimit is 0', () => {

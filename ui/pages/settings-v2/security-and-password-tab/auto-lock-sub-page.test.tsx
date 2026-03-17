@@ -50,12 +50,24 @@ describe('AutoLockSubPage', () => {
   it('renders all auto-lock options', () => {
     renderWithProvider(<AutoLockSubPage />, createMockStore());
 
-    expect(screen.getByText(messages.autoLockImmediately.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.autoLockAfter15Seconds.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.autoLockAfter30Seconds.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.autoLockAfter1Minute.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.autoLockAfter5Minutes.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.autoLockNever.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.autoLockImmediately.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.autoLockAfter15Seconds.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.autoLockAfter30Seconds.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.autoLockAfter1Minute.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.autoLockAfter5Minutes.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.autoLockNever.message),
+    ).toBeInTheDocument();
   });
 
   it('highlights the currently selected option', () => {
