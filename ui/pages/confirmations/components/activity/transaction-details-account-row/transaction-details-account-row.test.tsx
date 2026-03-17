@@ -61,4 +61,34 @@ describe('TransactionDetailsAccountRow', () => {
     const { getByText } = render();
     expect(getByText(messages.account.message)).toBeInTheDocument();
   });
+
+  it('renders nothing when account name and from address are both unavailable', () => {
+    const transactionMetaWithoutFrom = {
+      ...mockTransactionMeta,
+      txParams: {
+        ...mockTransactionMeta.txParams,
+        from: undefined,
+      },
+    };
+
+    const stateWithNoMatchingAccount = {
+      metamask: {
+        internalAccounts: {
+          accounts: {},
+          selectedAccount: 'account-1',
+        },
+      },
+    };
+
+    const { container } = renderWithProvider(
+      <TransactionDetailsProvider
+        transactionMeta={transactionMetaWithoutFrom as never}
+      >
+        <TransactionDetailsAccountRow />
+      </TransactionDetailsProvider>,
+      mockStore(stateWithNoMatchingAccount),
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
 });
