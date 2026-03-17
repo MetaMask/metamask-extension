@@ -10,13 +10,14 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../test/d
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 const TRANSACTION_ID_MOCK = '123-456';
+const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_MOCK = {
   ...genUnapprovedContractInteractionConfirmation({
     chainId: '0x5',
   }),
   id: TRANSACTION_ID_MOCK,
   txParams: {
-    from: '0x123',
+    from: ACCOUNT_ADDRESS,
     value: '0x2',
     maxFeePerGas: '0x2',
     gas: '0x3',

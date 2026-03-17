@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 import { sumHexes } from '../../../../shared/lib/conversion.utils';
 import {
   getMultichainNetworkConfigurationsByChainId,
-  getNativeTokenCachedBalanceByChainIdSelector,
-  selectTransactionFeeById,
+  selectTransactionAvailableBalance,
 } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-utils/send.utils';
+import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
 
 const ZERO_HEX_FALLBACK = '0x0';
 
@@ -21,7 +21,7 @@ export function useHasInsufficientBalance(): {
   const {
     id: transactionId,
     chainId,
-    txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
+    txParams: { value = ZERO_HEX_FALLBACK } = {},
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
@@ -29,16 +29,16 @@ export function useHasInsufficientBalance(): {
       (trxn) => (trxn.value as Hex) ?? ZERO_HEX_FALLBACK,
     ) ?? [];
 
-  const chainBalances = useSelector((state) =>
-    getNativeTokenCachedBalanceByChainIdSelector(state, fromAddress ?? ''),
-  ) as Record<Hex, Hex>;
-
-  const balance = chainBalances?.[chainId as Hex] ?? ZERO_HEX_FALLBACK;
+  const balance = (useSelector((state) =>
+    selectTransactionAvailableBalance(state, transactionId, chainId),
+  ) ?? ZERO_HEX_FALLBACK) as Hex;
 
   const totalValue = sumHexes(value, ...batchTransactionValues);
 
-  const { hexMaximumTransactionFee } = useSelector((state) =>
-    selectTransactionFeeById(state, transactionId),
+  const { maxFeeHex } = useFeeCalculations(
+    currentConfirmation?.txParams
+      ? currentConfirmation
+      : ({ txParams: {} } as TransactionMeta),
   );
 
   const [multichainNetworks, evmNetworks] = useSelector(
@@ -51,7 +51,7 @@ export function useHasInsufficientBalance(): {
 
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,
-    gasTotal: hexMaximumTransactionFee,
+    gasTotal: maxFeeHex,
     balance,
   });
 
