@@ -20,6 +20,7 @@ import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { useRewards } from '../../../hooks/bridge/useRewards';
+import { getToAccounts } from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
 import {
@@ -79,7 +80,9 @@ describe('MultichainBridgeQuoteCard', () => {
         toToken: {
           address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
           chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
-          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
+          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress(
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          )}`,
         },
         fromTokenInputValue: '1',
       },
@@ -243,6 +246,96 @@ describe('MultichainBridgeQuoteCard', () => {
       ),
     ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders the recipient row for EVM to EVM bridges', () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        toToken: {
+          address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
+        },
+        fromTokenInputValue: '1',
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+      },
+    });
+    const configuredStore = configureStore(mockStore);
+    const selectedDestinationAccount = getToAccounts(
+      configuredStore.getState(),
+    )[1]!;
+    const recipientLabel = `${
+      selectedDestinationAccount.walletName
+        ? `${selectedDestinationAccount.walletName} / `
+        : ''
+    }${selectedDestinationAccount.displayName}`;
+
+    const { getByText, getByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={selectedDestinationAccount}
+      />,
+      configuredStore,
+    );
+
+    expect(getByText(messages.recipient.message)).toBeInTheDocument();
+    expect(getByText(recipientLabel)).toBeInTheDocument();
+    expect(getByTestId('recipient-edit-button')).toBeInTheDocument();
   });
 
   it('should render the recommended quote while loading new quotes', async () => {
