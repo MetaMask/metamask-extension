@@ -1,3 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import '@metamask/design-tokens/tailwind/theme.css';
+
+/* Scan UI source and design-system-react for tailwind class names */
+@source "..";
+@source "../../node_modules/@metamask/design-system-react";

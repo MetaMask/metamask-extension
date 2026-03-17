@@ -6,11 +6,11 @@ const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
 const discardFonts = require('postcss-discard-font-face');
 const postcss = require('gulp-postcss');
-const tailwindcss = require('tailwindcss');
+// eslint-disable-next-line import/no-unresolved -- @tailwindcss/postcss uses package exports (no `main` field), which the ESLint import resolver does not support
+const tailwindcss = require('@tailwindcss/postcss');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
-const tailwindConfig = require('../../tailwind.config');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
@@ -77,7 +77,7 @@ async function buildScssPipeline(src, dest, devMode) {
         },
       }).on('error', gulpSass.logError),
       postcss([
-        tailwindcss(tailwindConfig),
+        tailwindcss(),
         autoprefixer(),
         rtlcss(),
         discardFonts(['woff2']),

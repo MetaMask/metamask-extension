@@ -430,23 +430,16 @@ module.exports = {
         // for example:
         // 'ui/pages/your-page/**/*.{ts,tsx}',
       ],
-      plugins: ['tailwindcss'],
-      rules: {
-        // Tailwind CSS rules - same as design system
-        'tailwindcss/classnames-order': 'error',
-        'tailwindcss/enforces-negative-arbitrary-values': 'error',
-        'tailwindcss/enforces-shorthand': 'error',
-        'tailwindcss/no-arbitrary-value': 'off', // There are legitimate reasons to use arbitrary values but we should specifically error on static colors
-        'tailwindcss/no-custom-classname': 'error',
-        'tailwindcss/no-contradicting-classname': 'error',
-        'tailwindcss/no-unnecessary-arbitrary-value': 'error',
-      },
+      plugins: ['better-tailwindcss'],
       settings: {
-        tailwindcss: {
-          callees: ['twMerge'],
-          config: 'tailwind.config.js',
-          classRegex: ['^(class(Name)?)$'],
+        'better-tailwindcss': {
+          entryPoint: 'ui/css/tailwind.css',
         },
+      },
+      rules: {
+        'better-tailwindcss/sort-classes': 'error',
+        'better-tailwindcss/no-conflicting-classes': 'error',
+        'better-tailwindcss/no-unregistered-classes': 'error',
       },
     },
     /**
