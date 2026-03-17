@@ -32,7 +32,7 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   buildDuplicateContactMap,
   hasDuplicateContacts,
-} from '../../components/app/contact-list/utils';
+} from './utils';
 import {
   BannerAlert,
   BannerAlertSeverity,

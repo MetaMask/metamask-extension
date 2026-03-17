@@ -244,7 +244,32 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/components/app/confirm/info/row/address.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/confirm/info/row/alert-row/alert-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/confirm/info/row/currency.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/connected-status-indicator/connected-status-indicator.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/create-new-vault/create-new-vault.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/currency-input/currency-input.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/data-deletion-error-modal/data-deletion-error-modal.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/detected-token/detected-token-address/detected-token-address.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/detected-token/detected-token-aggregators/detected-token-aggregators.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/detected-token/detected-token-details/detected-token-details.test.js": {
       "MetaMask: Background connection not initialized": 4
