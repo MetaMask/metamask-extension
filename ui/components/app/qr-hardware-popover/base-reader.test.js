@@ -17,7 +17,7 @@ describe('Base Reader', () => {
     setErrorTitle: jest.fn(),
   };
 
-  it('renders progress bar', () => {
+  it('renders progress bar', async () => {
     EnhancedReader.mockImplementation(({ handleScan }) => {
       handleScan(
         'UR:CRYPTO-HDKEY/24-2/LPCSCSAOCSNYCYNLAMSKJPHDGTEHOEADCSFNAOAEAMTAADDYOTADLNCSDWYKCSFNYKAEYKAOCYJKSKTNBKAXAXATTAADDYOEADLRAEWKLAWKAXAEAYCYTEDMFEAYASISGRIHKKJKJYJLJTIHBKJOHSIAIAJLKPJTJYDMJKJYHSJTIEHSJPIEHTSTGSAO',
@@ -27,14 +27,22 @@ describe('Base Reader', () => {
     WebcamUtils.checkStatus.mockImplementation(() =>
       Promise.resolve({ permissions: true, environmentReady: true }),
     );
+    WebcamUtils.getPermissionState.mockImplementation(() =>
+      Promise.resolve({ state: 'granted', onchange: null }),
+    );
     renderWithProvider(<BaseReader {...mockBaseReaderData} />);
-    expect(screen.getByTestId('qr-reader-progress-bar')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('qr-reader-progress-bar'),
+    ).toBeInTheDocument();
   });
 
   it('not renders progress bar when error', async () => {
     EnhancedReader.mockImplementation(() => null);
     WebcamUtils.checkStatus.mockImplementation(() =>
       Promise.resolve({ permissions: false, environmentReady: false }),
+    );
+    WebcamUtils.getPermissionState.mockImplementation(() =>
+      Promise.resolve({ state: 'granted', onchange: null }),
     );
     renderWithProvider(<BaseReader {...mockBaseReaderData} />);
     await screen.findByTestId('qr-scanner__error');
@@ -45,6 +53,9 @@ describe('Base Reader', () => {
     EnhancedReader.mockImplementation(() => null);
     WebcamUtils.checkStatus.mockImplementation(() =>
       Promise.resolve({ permissions: true, environmentReady: true }),
+    );
+    WebcamUtils.getPermissionState.mockImplementation(() =>
+      Promise.resolve({ state: 'granted', onchange: null }),
     );
     renderWithProvider(<BaseReader {...mockBaseReaderData} />);
     await screen.findByText(

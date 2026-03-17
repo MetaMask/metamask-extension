@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
@@ -9,12 +9,12 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SECOND } from '../../../../shared/constants/time';
 import EnhancedReader from './enhanced-reader';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',
-  NEED_TO_ALLOW_ACCESS: 'NEED_TO_ALLOW_ACCESS',
+  PERMISSION_DISMISSED: 'PERMISSION_DISMISSED',
+  PERMISSION_DENIED: 'PERMISSION_DENIED',
   READY: 'READY',
 };
 
@@ -30,8 +30,8 @@ const BaseReader = ({
   const [urDecoder, setURDecoder] = useState(new URDecoder());
   const [progress, setProgress] = useState(0);
 
-  const permissionCheckerRef = useRef(null);
   const mounted = useRef(false);
+  const permissionStatusRef = useRef(null);
 
   const reset = () => {
     setReady(READY_STATE.ACCESSING_CAMERA);
@@ -40,43 +40,69 @@ const BaseReader = ({
     setProgress(0);
   };
 
-  const checkPermissions = useCallback(async () => {
-    try {
-      const { permissions } = await WebcamUtils.checkStatus();
-      if (permissions) {
-        // Let the video stream load first...
-        await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
-        if (!mounted.current) {
-          return;
-        }
+  const settingsUrl = useMemo(() => WebcamUtils.getCameraSettingsUrl(), []);
+
+  const attachPermissionChangeListener = useCallback((permissionStatus) => {
+    permissionStatus.onchange = () => {
+      if (permissionStatus.state === 'granted' && mounted.current) {
         setReady(READY_STATE.READY);
-      } else if (mounted.current) {
-        // Keep checking for permissions
-        permissionCheckerRef.current = setTimeout(checkPermissions, SECOND);
-        setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
+      }
+    };
+  }, []);
+
+  const initCamera = useCallback(async () => {
+    try {
+      const permissionStatus = await WebcamUtils.getPermissionState();
+      permissionStatusRef.current = permissionStatus;
+
+      if (permissionStatus?.state === 'denied') {
+        if (mounted.current) {
+          setReady(READY_STATE.PERMISSION_DENIED);
+        }
+        attachPermissionChangeListener(permissionStatus);
+        return;
+      }
+
+      // state is 'prompt' or 'granted' (or null on unsupported browsers) —
+      // render EnhancedReader which will call getUserMedia internally.
+      if (mounted.current) {
+        setReady(READY_STATE.READY);
       }
     } catch (e) {
       if (mounted.current) {
         setError(e);
       }
     }
-  }, []);
+  }, [attachPermissionChangeListener]);
 
-  const initCamera = useCallback(() => {
-    try {
-      checkPermissions();
-    } catch (e) {
+  // Called by EnhancedReader when getUserMedia throws (e.g. user dismissed
+  // or denied the browser permission dialog).
+  const handleCameraError = useCallback(
+    async (e) => {
       if (!mounted.current) {
         return;
       }
-      if (e.name === 'NotAllowedError') {
-        log.info(`Permission denied: '${e}'`);
-        setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
-      } else {
+      if (e.name !== 'NotAllowedError') {
         setError(e);
+        return;
       }
-    }
-  }, [checkPermissions]);
+      log.info(`Camera permission error: '${e}'`);
+
+      // Re-query to distinguish a browser-level persistent block ('denied')
+      // from a one-time dismissal (state still 'prompt').
+      const permissionStatus = await WebcamUtils.getPermissionState();
+      permissionStatusRef.current = permissionStatus;
+
+      if (permissionStatus?.state === 'denied') {
+        setReady(READY_STATE.PERMISSION_DENIED);
+        attachPermissionChangeListener(permissionStatus);
+      } else {
+        // state is 'prompt' — dialog was dismissed, can be re-triggered
+        setReady(READY_STATE.PERMISSION_DISMISSED);
+      }
+    },
+    [attachPermissionChangeListener],
+  );
 
   const checkEnvironment = useCallback(async () => {
     try {
@@ -95,9 +121,25 @@ const BaseReader = ({
         setError(e);
       }
     }
-    // initial attempt is required to trigger permission prompt
     return initCamera();
   }, [initCamera]);
+
+  const onContinue = useCallback(async () => {
+    if (ready === READY_STATE.PERMISSION_DISMISSED) {
+      // Re-trigger getUserMedia by cycling back through initCamera.
+      // Since permissions.state is still 'prompt', EnhancedReader will
+      // re-render and the browser dialog will appear again.
+      reset();
+      await checkEnvironment();
+    } else if (ready === READY_STATE.PERMISSION_DENIED) {
+      // Manual re-check — handles the case where onchange didn't fire
+      // (e.g. some browsers) after the user fixed it in settings.
+      const permissionStatus = await WebcamUtils.getPermissionState();
+      if (permissionStatus?.state === 'granted') {
+        setReady(READY_STATE.READY);
+      }
+    }
+  }, [ready, checkEnvironment]);
 
   const handleScan = (data) => {
     try {
@@ -125,21 +167,14 @@ const BaseReader = ({
     checkEnvironment();
     return () => {
       mounted.current = false;
-      clearTimeout(permissionCheckerRef.current);
-      permissionCheckerRef.current = null;
+      // Remove the onchange listener so it doesn't fire after unmount
+      if (permissionStatusRef.current) {
+        permissionStatusRef.current.onchange = null;
+      }
     };
   }, []);
 
-  useEffect(() => {
-    if (ready === READY_STATE.READY) {
-      initCamera();
-    } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
-      checkPermissions();
-    }
-  }, [ready, checkPermissions, initCamera]);
-
   const tryAgain = () => {
-    clearTimeout(permissionCheckerRef.current);
     reset();
     checkEnvironment();
   };
@@ -188,19 +223,85 @@ const BaseReader = ({
     );
   };
 
+  const renderPermissionDismissed = () => {
+    return (
+      <>
+        <div className="qr-scanner__title">
+          {t('qrHardwareCameraPermissionDismissedTitle')}
+        </div>
+        <div className="qr-scanner__status">
+          {t('qrHardwareCameraPermissionDismissedDescription')}
+        </div>
+        <PageContainerFooter
+          onSubmit={onContinue}
+          submitText={t('continue')}
+          submitButtonType="confirm"
+          hideCancel
+        />
+      </>
+    );
+  };
+
+  const renderPermissionDenied = () => {
+    return (
+      <>
+        <div className="qr-scanner__title">
+          {t('qrHardwareCameraPermissionBlockedTitle')}
+        </div>
+        <div className="qr-scanner__status">
+          {t('qrHardwareCameraPermissionBlockedDescription')}
+        </div>
+        <div className="qr-scanner__settings-card">
+          {settingsUrl ? (
+            <span>
+              <button
+                className="qr-scanner__settings-link"
+                onClick={() => WebcamUtils.openCameraSettings()}
+                type="button"
+              >
+                {t('qrHardwareCameraPermissionOpenSettings')}
+              </button>{' '}
+              {t('qrHardwareCameraPermissionAllowCamera')}
+            </span>
+          ) : (
+            <span>{t('qrHardwareCameraPermissionFirefoxInstruction')}</span>
+          )}
+        </div>
+        <div className="qr-scanner__status">
+          {t('qrHardwareCameraPermissionAutoRecover')}
+        </div>
+        <PageContainerFooter
+          onSubmit={onContinue}
+          submitText={t('continue')}
+          submitButtonType="confirm"
+          hideCancel
+        />
+      </>
+    );
+  };
+
   const renderVideo = () => {
-    let message;
-    if (ready === READY_STATE.ACCESSING_CAMERA) {
-      message = t('accessingYourCamera');
-    } else if (ready === READY_STATE.READY) {
-      message = t('QRHardwareScanInstructions');
-    } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
-      message = t('youNeedToAllowCameraAccess');
+    if (ready === READY_STATE.PERMISSION_DISMISSED) {
+      return renderPermissionDismissed();
     }
+    if (ready === READY_STATE.PERMISSION_DENIED) {
+      return renderPermissionDenied();
+    }
+
+    const message =
+      ready === READY_STATE.READY
+        ? t('QRHardwareScanInstructions')
+        : t('accessingYourCamera');
+
     return (
       <>
         <div className="qr-scanner__content">
-          <EnhancedReader handleScan={handleScan} />
+          {ready === READY_STATE.READY && (
+            <EnhancedReader
+              handleScan={handleScan}
+              onError={handleCameraError}
+            />
+          )}
         </div>
         {progress > 0 && (
           <div
@@ -209,7 +310,7 @@ const BaseReader = ({
             style={{ '--progress': `${Math.floor(progress * 100)}%` }}
           ></div>
         )}
-        {message && <div className="qr-scanner__status">{message}</div>}
+        <div className="qr-scanner__status">{message}</div>
       </>
     );
   };

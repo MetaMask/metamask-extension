@@ -3,6 +3,19 @@ import { IconName } from '../../../component-library';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { IconColor } from '../../../../helpers/constants/design-system';
 import { getHardwareWalletErrorCode } from '../../../../contexts/hardware-wallets';
+import WebcamUtils from '../../../../helpers/utils/webcam-utils';
+
+/**
+ * A recovery instruction that includes a clickable link.
+ */
+export type RecoveryLinkInstruction = {
+  type: 'link';
+  linkText: string;
+  linkUrl: string;
+  suffix: string;
+};
+
+export type RecoveryInstruction = string | RecoveryLinkInstruction;
 
 /**
  * Error content structure
@@ -13,7 +26,7 @@ type ErrorContentBase = {
 
 type ErrorContentWithRecovery = ErrorContentBase & {
   variant: 'recovery';
-  recoveryInstructions: string[];
+  recoveryInstructions: RecoveryInstruction[];
 };
 
 type ErrorContentWithIcon = ErrorContentWithRecovery & {
@@ -52,6 +65,40 @@ export function buildErrorContent(
   t: (key: string, substitutions?: string[]) => string,
 ): ErrorContent {
   const errorCode = getHardwareWalletErrorCode(error);
+
+  // QR wallet: camera permission denied (camera = transport for QR wallets).
+  // Handled before the switch so non-QR ConnectionTransportMissing falls
+  // through to the default case.
+  if (
+    errorCode === ErrorCode.ConnectionTransportMissing &&
+    walletType === HardwareWalletType.Qr
+  ) {
+    const settingsUrl = WebcamUtils.getCameraSettingsUrl();
+    const instructions: RecoveryInstruction[] = [
+      t('qrHardwareCameraPermissionBlockedDescription'),
+    ];
+    if (settingsUrl) {
+      instructions.push({
+        type: 'link',
+        linkText: t('qrHardwareCameraPermissionOpenSettings'),
+        linkUrl: settingsUrl,
+        suffix: t('qrHardwareCameraPermissionAllowCamera'),
+      });
+    } else {
+      // Firefox blocks extensions from opening about: URLs, so show
+      // text instructions instead of a clickable link.
+      instructions.push(t('qrHardwareCameraPermissionFirefoxInstruction'));
+    }
+    instructions.push(t('qrHardwareCameraPermissionAutoRecover'));
+
+    return {
+      variant: 'recovery',
+      icon: IconName.Camera,
+      iconColor: IconColor.iconDefault,
+      title: t('qrHardwareCameraPermissionBlockedTitle'),
+      recoveryInstructions: instructions,
+    };
+  }
 
   switch (errorCode) {
     // Locked device errors
