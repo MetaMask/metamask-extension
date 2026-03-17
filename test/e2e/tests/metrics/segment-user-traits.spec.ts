@@ -28,7 +28,7 @@ function mergeTraits(events: IdentifyEvent[]): Record<string, unknown> {
  * @param driver.wait - Polls a condition function until it returns true or the timeout expires.
  * @param mockedEndpoints - The mockttp mocked endpoints to retrieve seen requests from.
  * @param expected - Key/value pairs that the merged traits must satisfy.
- * @param timeout - Maximum time in ms to wait for the traits to converge (default 30 000).
+ * @param timeout - Maximum time in ms to wait for the traits to converge.
  */
 async function waitForExpectedTraits(
   driver: {
