@@ -705,6 +705,13 @@ describe('MetaMaskController', () => {
 
     describe('#getAddTransactionRequest', () => {
       it('formats the transaction for submission', () => {
+        const mockAccount = createMockInternalAccount({
+          address: '0xa',
+        });
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockReturnValue(mockAccount);
+
         const transactionParams = { from: '0xa', to: '0xb' };
         const transactionOptions = {
           foo: true,
@@ -720,10 +727,7 @@ describe('MetaMaskController', () => {
           dappRequest: undefined,
           requestContext: undefined,
           networkClientId: NETWORK_CONFIGURATION_ID_1,
-          selectedAccount:
-            metamaskController.accountsController.getAccountByAddress(
-              transactionParams.from,
-            ),
+          selectedAccount: mockAccount,
           transactionController: expect.any(Object),
           transactionOptions,
           transactionParams,
@@ -738,6 +742,13 @@ describe('MetaMaskController', () => {
         });
       });
       it('passes through any additional params to the object', () => {
+        const mockAccount = createMockInternalAccount({
+          address: '0xa',
+        });
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockReturnValue(mockAccount);
+
         const transactionParams = { from: '0xa', to: '0xb' };
         const transactionOptions = {
           foo: true,
@@ -754,6 +765,23 @@ describe('MetaMaskController', () => {
           transactionOptions,
           test: '123',
         });
+      });
+
+      it('throws an error when from address is not associated with any account', () => {
+        const unknownAddress = '0xunknown123';
+        const transactionParams = { from: unknownAddress, to: '0xb' };
+        const transactionOptions = {
+          networkClientId: NETWORK_CONFIGURATION_ID_1,
+        };
+
+        expect(() =>
+          metamaskController.getAddTransactionRequest({
+            transactionParams,
+            transactionOptions,
+          }),
+        ).toThrow(
+          `Invalid "from" address: ${unknownAddress}. This address is not associated with any account in your wallet.`,
+        );
       });
     });
 

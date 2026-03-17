@@ -6158,14 +6158,23 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getNetworkConfigurationByNetworkClientId(
         networkClientId,
       );
+
+    const selectedAccount = this.accountsController.getAccountByAddress(
+      transactionParams.from,
+    );
+
+    if (!selectedAccount) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid "from" address: ${transactionParams.from}. This address is not associated with any account in your wallet.`,
+      });
+    }
+
     return {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       requestContext,
       networkClientId,
-      selectedAccount: this.accountsController.getAccountByAddress(
-        transactionParams.from,
-      ),
+      selectedAccount,
       transactionController: this.txController,
       transactionOptions,
       transactionParams,
