@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
@@ -49,12 +50,12 @@ describe('AutoLockSubPage', () => {
   it('renders all auto-lock options', () => {
     renderWithProvider(<AutoLockSubPage />, createMockStore());
 
-    expect(screen.getByText('Immediately')).toBeInTheDocument();
-    expect(screen.getByText('After 15 seconds')).toBeInTheDocument();
-    expect(screen.getByText('After 30 seconds')).toBeInTheDocument();
-    expect(screen.getByText('After 1 minute')).toBeInTheDocument();
-    expect(screen.getByText('After 5 minutes')).toBeInTheDocument();
-    expect(screen.getByText('Never')).toBeInTheDocument();
+    expect(screen.getByText(messages.autoLockImmediately.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.autoLockAfter15Seconds.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.autoLockAfter30Seconds.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.autoLockAfter1Minute.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.autoLockAfter5Minutes.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.autoLockNever.message)).toBeInTheDocument();
   });
 
   it('highlights the currently selected option', () => {
@@ -66,7 +67,7 @@ describe('AutoLockSubPage', () => {
   it('dispatches setAutoLockTimeLimit and navigates on click', () => {
     renderWithProvider(<AutoLockSubPage />, createMockStore());
 
-    fireEvent.click(screen.getByText('After 1 minute'));
+    fireEvent.click(screen.getByText(messages.autoLockAfter1Minute.message));
 
     expect(mockSetAutoLockTimeLimit).toHaveBeenCalledWith(1);
     expect(mockNavigate).toHaveBeenCalledWith(SECURITY_AND_PASSWORD_ROUTE);
