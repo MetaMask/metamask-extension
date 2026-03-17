@@ -119,14 +119,19 @@ const MusdEducationScreen: React.FC = () => {
     }
 
     setIsLoading(true);
+
+    if (!defaultPaymentToken) {
+      console.error('[MUSD] No default payment token was found for conversion');
+      navigate(DEFAULT_ROUTE);
+      return;
+    }
+
     try {
       await startConversionFlow({
-        preferredToken: defaultPaymentToken
-          ? {
-              address: defaultPaymentToken.address,
-              chainId: defaultPaymentToken.chainId,
-            }
-          : undefined,
+        preferredToken: {
+          address: defaultPaymentToken.address,
+          chainId: defaultPaymentToken.chainId,
+        },
         skipEducation: true,
         entryPoint: isDeeplink ? 'deeplink' : undefined,
       });
