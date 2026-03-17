@@ -1,166 +1,81 @@
-import { Driver } from '../../../webdriver/driver';
-import { PERPS_TAB_HASH } from '../../../tests/perps/helpers';
+import { PerpsPositionsBase } from './perps-positions-base';
 
 /**
- * Page object for the Perps tab (wallet home with perps tab selected).
- * Content merged from former PerpsHomePage into PerpsTabView.
+ * Page object for the Perps Home view (balance, positions, explore markets, tutorial).
+ * Use this when the user is already on the Perps tab and you interact with the tab content.
+ * For opening the Perps tab from account overview, use PerpsTabPage first (e.g. openPerpsTab), then use this page.
  *
  * @see ui/components/app/perps/perps-tab-view.tsx
  */
-export class PerpsHomePage {
-  private readonly driver: Driver;
-
-  private readonly perpsHomeBackButton = {
-    testId: 'perps-home-back-button',
+export class PerpsHomePage extends PerpsPositionsBase {
+  private readonly addFundsButton = {
+    testId: 'perps-balance-dropdown-add-funds',
   };
 
-  private readonly perpsTabView = {
-    testId: 'perps-tab-view',
+  private readonly balanceDropdownBalanceRow = {
+    testId: 'perps-balance-dropdown-balance',
+  };
+
+  private readonly balanceDropdownWithdraw = {
+    testId: 'perps-balance-dropdown-withdraw',
+  };
+
+  private readonly perpsBalanceDropdown = {
+    testId: 'perps-balance-dropdown',
   };
 
   private readonly perpsExploreMarketsRow = {
     testId: 'perps-explore-markets-row',
   };
 
-  private readonly perpsPositionsSection = {
-    testId: 'perps-positions-section',
+  private readonly perpsLearnBasics = { testId: 'perps-learn-basics' };
+
+  private readonly perpsRecentActivity = { testId: 'perps-recent-activity' };
+
+  private readonly perpsRecentActivitySeeAll = {
+    testId: 'perps-recent-activity-see-all',
   };
+
+  private readonly perpsTabView = {
+    testId: 'perps-tab-view',
+  };
+
+  private readonly perpsTutorialContinueButton = {
+    testId: 'perps-tutorial-continue-button',
+  };
+
+  private readonly perpsTutorialLetsGoButton = {
+    testId: 'perps-tutorial-lets-go-button',
+  };
+
+  private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
-
   /**
-   * Waits for the Perps tab view to be loaded and visible.
+   * Waits for the Perps Home view to be loaded and visible.
+   * The main Perps tab shows PerpsTabView (balance dropdown, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsTabView);
+    await this.driver.waitForMultipleSelectors([
+      this.perpsTabView,
+      this.perpsBalanceDropdown,
+    ]);
   }
 
   /**
-   * Navigates to the wallet home with Perps tab selected and waits for the tab view to load.
-   */
-  async navigateToPerpsHome(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = '${PERPS_TAB_HASH}';`,
-    );
-    await this.checkPageIsLoaded();
-  }
-
-  /**
-   * Checks that the Perps Home page back button is visible.
-   */
-  async checkBackButtonIsVisible(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsHomeBackButton);
-  }
-
-  /**
-   * Checks that the Explore markets row is visible (entry point to market list).
-   */
-  async checkSearchButtonIsVisible(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsExploreMarketsRow);
-  }
-
-  /**
-   * Waits for the positions section to be visible (mock positions loaded).
-   */
-  async waitForPositionsSection(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsPositionsSection);
-  }
-
-  /**
-   * Waits up to `timeout` ms for the number of position cards to equal `expectedCount`,
-   * to avoid flakiness when the UI is still updating.
-   * @param expectedCount - Expected number of position cards.
-   * @param timeout - Max wait time in ms (default 10000).
-   */
-  async waitForPositionCardsCount(
-    expectedCount: number,
-    timeout = 10000,
-  ): Promise<void> {
-    await this.driver.wait(async () => {
-      const elements = await this.driver.findElements(
-        this.positionCardsSelector,
-      );
-      return elements.length === expectedCount;
-    }, timeout);
-  }
-
-  /**
-   * Returns the number of position cards currently displayed.
-   */
-  async getPositionCardsCount(): Promise<number> {
-    const elements = await this.driver.findElements(this.positionCardsSelector);
-    return elements.length;
-  }
-
-  /**
-   * Waits for a position card for the given symbol to be visible.
-   * @param symbol
-   */
-  async waitForPositionCard(symbol: string): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: `position-card-${symbol}`,
-    });
-  }
-
-  /**
-   * Waits for the balance dropdown to be visible.
-   * @param timeout - Optional timeout in ms for the selector wait.
-   */
-  async waitForBalanceSection(timeout?: number): Promise<void> {
-    await this.driver.waitForSelector(
-      '[data-testid="perps-balance-dropdown"]',
-      { timeout },
-    );
-  }
-
-  /**
-   * Clicks the Add funds button (opens balance dropdown first, then clicks Add funds).
+   * Clicks the Add funds button. On Perps Home the balance is in a dropdown:
+   * opens the dropdown first, then clicks Add funds.
    */
   async clickAddFunds(): Promise<void> {
-    await this.driver.waitForSelector(
-      '[data-testid="perps-balance-dropdown-balance"]',
-    );
-    await this.driver.clickElement({
-      testId: 'perps-balance-dropdown-balance',
-    });
-    await this.driver.clickElement({
-      testId: 'perps-balance-dropdown-add-funds',
-    });
+    await this.driver.clickElement(this.balanceDropdownBalanceRow);
+    await this.driver.clickElement(this.addFundsButton);
   }
 
   /**
-   * Clicks the Withdraw button (opens balance dropdown first, then clicks Withdraw).
+   * Clicks the "Explore markets" row (navigates to Perps Market List).
    */
-  async clickWithdraw(): Promise<void> {
-    await this.driver.waitForSelector(
-      '[data-testid="perps-balance-dropdown-balance"]',
-    );
-    await this.driver.clickElement({
-      testId: 'perps-balance-dropdown-balance',
-    });
-    await this.driver.clickElement({
-      testId: 'perps-balance-dropdown-withdraw',
-    });
-  }
-
-  /**
-   * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Requires positions so Recent Activity section is visible.
-   */
-  async clickRecentActivitySeeAll(): Promise<void> {
-    await this.driver.clickElement({
-      testId: 'perps-recent-activity-see-all',
-    });
-  }
-
-  /**
-   * Clicks the Explore markets row (navigates to Market List).
-   */
-  async clickSearchButton(): Promise<void> {
+  async clickExploreMarketsRow(): Promise<void> {
     await this.driver.clickElement(this.perpsExploreMarketsRow);
   }
 
@@ -168,7 +83,24 @@ export class PerpsHomePage {
    * Clicks the "Learn the basics of perps" row (opens the tutorial modal).
    */
   async clickLearnBasics(): Promise<void> {
-    await this.driver.clickElement({ testId: 'perps-learn-basics' });
+    await this.driver.clickElement(this.perpsLearnBasics);
+  }
+
+  /**
+   * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
+   * Requires positions so Recent Activity section is visible.
+   */
+  async clickRecentActivitySeeAll(): Promise<void> {
+    await this.driver.clickElement(this.perpsRecentActivitySeeAll);
+  }
+
+  /**
+   * Clicks the Withdraw button. On Perps Home the balance is in a dropdown:
+   * opens the dropdown first, then clicks Withdraw.
+   */
+  async clickWithdraw(): Promise<void> {
+    await this.driver.clickElement(this.balanceDropdownBalanceRow);
+    await this.driver.clickElement(this.balanceDropdownWithdraw);
   }
 
   /**
@@ -176,23 +108,58 @@ export class PerpsHomePage {
    * clickElement uses findClickableElement and waits for the button to be visible and enabled.
    */
   async goThroughTutorialModal(): Promise<void> {
-    await this.driver.waitForSelector({ testId: 'perps-tutorial-modal' });
+    await this.driver.waitForSelector(this.perpsTutorialModal);
     for (let i = 0; i < 5; i++) {
-      await this.driver.clickElement({
-        testId: 'perps-tutorial-continue-button',
-      });
+      await this.driver.clickElement(this.perpsTutorialContinueButton);
     }
-    await this.driver.clickElement({
-      testId: 'perps-tutorial-lets-go-button',
-    });
+    await this.driver.clickElementAndWaitToDisappear(
+      this.perpsTutorialLetsGoButton,
+    );
+  }
+
+  /**
+   * Navigates to Perps Home by clicking the Perps tab on the account overview.
+   * Requires the account overview to be visible (e.g. after login or driver.navigate()).
+   * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
+   */
+  async navigateToPerpsHome(): Promise<void> {
+    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
+    await this.driver.clickElement(this.accountOverviewPerpsTab);
+    await this.checkPageIsLoaded();
+  }
+
+  /**
+   * Waits for the balance section to be visible (empty or with balance).
+   */
+  async waitForBalanceSection(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsBalanceDropdown);
+  }
+
+  /**
+   * Waits until the number of position cards equals `expectedCount` (uses waitUntil to avoid race conditions).
+   *
+   * @param expectedCount - Expected number of position cards.
+   * @param timeout - Max wait time in ms (default 10 000).
+   */
+  async waitForPositionCardsCount(
+    expectedCount: number,
+    timeout = 10000,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const elements = await this.driver.findElements(
+          this.positionCardsSelector,
+        );
+        return elements.length === expectedCount;
+      },
+      { timeout, interval: 500 },
+    );
   }
 
   /**
    * Waits for the Recent Activity section to be visible (when user has positions).
    */
   async waitForRecentActivitySection(): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: 'perps-recent-activity',
-    });
+    await this.driver.waitForSelector(this.perpsRecentActivity);
   }
 }

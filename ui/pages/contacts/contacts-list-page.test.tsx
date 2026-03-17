@@ -88,6 +88,32 @@ describe('ContactsListPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
+  it('renders without crashing when an account has missing metadata', () => {
+    const stateWithBrokenAccount = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee': {
+              id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+              address: '0x1234567890abcdef1234567890abcdef12345678',
+              options: {},
+              methods: [],
+              scopes: ['eip155:0'],
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    };
+    const { getByTestId } = renderPage(stateWithBrokenAccount);
+    expect(getByTestId('contacts-page')).toBeInTheDocument();
+    expect(getByTestId('contact-list-item')).toBeInTheDocument();
+  });
+
   describe('chain-aware navigation', () => {
     it('includes the correct chainId for contacts on different chains', () => {
       const multiChainState = {

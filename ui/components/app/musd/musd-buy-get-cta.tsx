@@ -33,7 +33,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useMusdConversion } from '../../../hooks/musd';
+import {
+  useMusdConversion,
+  useMusdConversionTokens,
+} from '../../../hooks/musd';
 import { BuyGetMusdCtaVariant } from '../../../hooks/musd/useMusdCtaVisibility';
 import {
   getMultichainNetworkConfigurationsByChainId,
@@ -86,6 +89,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow, educationSeen } = useMusdConversion();
+  const { defaultPaymentToken } = useMusdConversionTokens();
   const { openBuyCryptoInPdapp } = useRamps();
 
   // Get network configuration for icon
@@ -162,8 +166,18 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
     if (variant === BuyGetMusdCtaVariant.BUY) {
       openBuyCryptoInPdapp((selectedChainId as ChainId) ?? undefined);
     } else if (variant === BuyGetMusdCtaVariant.GET) {
+      if (!defaultPaymentToken) {
+        console.error(
+          '[MUSD] No default payment token was found for conversion',
+        );
+        return;
+      }
       startConversionFlow({
         entryPoint: 'home',
+        preferredToken: {
+          address: defaultPaymentToken.address,
+          chainId: defaultPaymentToken.chainId,
+        },
       });
     }
   }, [
@@ -175,6 +189,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
     trackEvent,
     openBuyCryptoInPdapp,
     startConversionFlow,
+    defaultPaymentToken,
   ]);
 
   // Don't render if no variant
