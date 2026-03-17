@@ -109,6 +109,11 @@ describe('NativeTokenStreamDetails', () => {
   });
 
   describe('data display', () => {
+    it('displays total exposure in stream rate section', () => {
+      const { streamRateSection } = renderAndGetSections(defaultProps);
+      expect(streamRateSection?.textContent).toContain('Total exposure');
+    });
+
     it('displays correct test IDs', () => {
       const { detailsSection, streamRateSection } =
         renderAndGetSections(defaultProps);

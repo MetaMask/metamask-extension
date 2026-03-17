@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -8,25 +9,24 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   IconName,
-  ButtonIcon,
-  ButtonIconSize,
+  Icon,
+  IconSize,
   TextColor,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type SettingsSelectItemProps = {
   label: string;
   /** Text value to display, or a ReactNode for custom content (e.g., icon + text) */
   value: string | ReactNode;
-  onPress: () => void;
+  /** Route to navigate to when the item is selected */
+  to: string;
 };
 
 export const SettingsSelectItem = ({
   label,
   value,
-  onPress,
+  to,
 }: SettingsSelectItemProps) => {
-  const t = useI18nContext();
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -53,13 +53,13 @@ export const SettingsSelectItem = ({
         ) : (
           value
         )}
-        <ButtonIcon
-          iconName={IconName.ArrowRight}
-          size={ButtonIconSize.Sm}
-          className="text-icon-alternative"
-          onClick={onPress}
-          ariaLabel={`${t('select')} ${label}`}
-        />
+        <Link to={to} className="flex ml-1">
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            className="text-icon-alternative"
+          />
+        </Link>
       </Box>
     </Box>
   );
