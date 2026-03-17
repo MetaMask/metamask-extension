@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Mockttp } from 'mockttp';
+import { Mockttp, MockedEndpoint } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
@@ -11,13 +11,49 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 
-function mergeTraits(
-  events: { traits: Record<string, unknown> }[],
-): Record<string, unknown> {
+type IdentifyEvent = { traits: Record<string, unknown> };
+
+function mergeTraits(events: IdentifyEvent[]): Record<string, unknown> {
   return events.reduce(
     (acc, event) => ({ ...acc, ...event.traits }),
     {} as Record<string, unknown>,
   );
+}
+
+/**
+ * Poll getEventPayloads until the merged traits satisfy every key/value in `expected`.
+ * Throws TimeoutError if the traits don't converge within the timeout window.
+ *
+ * @param driver - The WebDriver instance.
+ * @param driver.wait - Polls a condition function until it returns true or the timeout expires.
+ * @param mockedEndpoints - The mockttp mocked endpoints to retrieve seen requests from.
+ * @param expected - Key/value pairs that the merged traits must satisfy.
+ * @param timeout - Maximum time in ms to wait for the traits to converge (default 30 000).
+ */
+async function waitForExpectedTraits(
+  driver: {
+    wait: (condition: () => Promise<boolean>, timeout: number) => Promise<void>;
+  },
+  mockedEndpoints: MockedEndpoint[],
+  expected: Record<string, unknown>,
+  timeout = 30_000,
+): Promise<Record<string, unknown>> {
+  let events: IdentifyEvent[] = [];
+  await driver.wait(async () => {
+    try {
+      events = await getEventPayloads(driver, mockedEndpoints, false);
+    } catch {
+      return false;
+    }
+    if (events.length === 0) {
+      return false;
+    }
+    const traits = mergeTraits(events);
+    return Object.entries(expected).every(
+      ([key, value]) => traits[key] === value,
+    );
+  }, timeout);
+  return mergeTraits(events);
 }
 
 async function mockSegment(mockServer: Mockttp) {
@@ -54,10 +90,12 @@ describe('Segment User Traits', function () {
           participateInMetaMetrics: true,
           dataCollectionForMarketing: true,
         });
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        const mergedTraits = mergeTraits(events);
-        assert.deepStrictEqual(mergedTraits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(mergedTraits.has_marketing_consent, true);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: true,
+        });
       },
     );
   });
@@ -79,10 +117,12 @@ describe('Segment User Traits', function () {
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
         });
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        const mergedTraits = mergeTraits(events);
-        assert.deepStrictEqual(mergedTraits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(mergedTraits.has_marketing_consent, false);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: false,
+        });
       },
     );
   });
@@ -122,12 +162,11 @@ describe('Segment User Traits', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        let events = [];
         await completeCreateNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: false,
         });
-        events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -137,10 +176,12 @@ describe('Segment User Traits', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleParticipateInMetaMetrics();
-        events = await getEventPayloads(driver, mockedEndpoints);
-        const mergedTraits = mergeTraits(events);
-        assert.deepStrictEqual(mergedTraits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(mergedTraits.has_marketing_consent, false);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: false,
+        });
       },
     );
   });
@@ -157,12 +198,11 @@ describe('Segment User Traits', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        let events = [];
         await completeCreateNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: false,
         });
-        events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -171,30 +211,14 @@ describe('Segment User Traits', function () {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        // Toggle participate in meta metrics first, then toggle data collection for marketing
-        // Data Collection toggle is disabled if participate in meta metrics is off
         await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
-        // maxWait on sendUpdate debounce may split the two toggles into
-        // separate identify events. Poll until the expected traits arrive.
-        await driver.wait(async () => {
-          try {
-            events = await getEventPayloads(driver, mockedEndpoints, false);
-          } catch {
-            return false;
-          }
-          if (events.length === 0) {
-            return false;
-          }
-          const traits = mergeTraits(events);
-          return (
-            traits.is_metrics_opted_in === true &&
-            traits.has_marketing_consent === true
-          );
-        }, 30_000);
-        const traits = mergeTraits(events);
-        assert.deepStrictEqual(traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(traits.has_marketing_consent, true);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: true,
+        });
       },
     );
   });
