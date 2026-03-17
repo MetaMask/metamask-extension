@@ -45,7 +45,7 @@ type BuildBrowserZipSourceOptions = {
   excludeExtensions: string[];
   manifest: sources.RawSource;
   mtime: number;
-  onAssetAdded?: (assetName: string) => void;
+  onAssetAdded: (assetName: string) => void;
 };
 
 /**
@@ -99,7 +99,7 @@ export async function buildBrowserZipSource({
       mtime,
       zip,
     );
-    onAssetAdded?.('manifest.json');
+    onAssetAdded('manifest.json');
 
     for (const [assetName, asset] of assetEntries) {
       if (errored) {
@@ -119,7 +119,7 @@ export async function buildBrowserZipSource({
         mtime,
         zip,
       );
-      onAssetAdded?.(assetName);
+      onAssetAdded(assetName);
     }
 
     zip.end();

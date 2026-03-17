@@ -106,10 +106,10 @@ export class ManifestPlugin<Z extends boolean> {
     const { browsers, zipOptions } = options;
     const { excludeExtensions, level, outFilePath, mtime } = zipOptions;
     const compressionOptions: DeflateOptions = { level };
-    const assetsArray = Object.entries(assets);
+    const assetEntries = Object.entries(assets);
 
     let filesProcessed = 0;
-    const numAssetsPerBrowser = assetsArray.length + 1;
+    const numAssetsPerBrowser = assetEntries.length + 1;
     const totalWork = numAssetsPerBrowser * browsers.length; // +1 for each browser's manifest.json
     const reportProgress =
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -119,19 +119,20 @@ export class ManifestPlugin<Z extends boolean> {
     // process will run out of memory pretty quickly, and crash. Fun!
     for (const browser of browsers) {
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
+      const onAssetAdded = (assetName: string) => {
+        reportProgress(
+          0,
+          `${++filesProcessed}/${totalWork} assets zipped for ${browser}`,
+          assetName,
+        );
+      };
       const source = await buildBrowserZipSource({
-        assetEntries: assetsArray,
+        assetEntries,
         compressionOptions,
         excludeExtensions,
         manifest,
         mtime,
-        onAssetAdded: (assetName) => {
-          reportProgress(
-            0,
-            `${++filesProcessed}/${totalWork} assets zipped for ${browser}`,
-            assetName,
-          );
-        },
+        onAssetAdded,
       });
 
       // add the zip file to webpack's assets.
