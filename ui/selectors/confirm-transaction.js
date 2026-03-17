@@ -116,19 +116,18 @@ export const transactionFeeSelector = function (state, txData) {
     ? networkClientIdsByChainId?.[transactionChainId]
     : undefined;
 
-  let gasFeeEstimates = (
-    transactionChainId && transactionNetworkClientId
+  let gasFeeEstimates =
+    (transactionChainId && transactionNetworkClientId
       ? getGasFeeEstimatesByChainId(state, transactionChainId)
-      : getGasFeeEstimates(state)
-  ) || {};
+      : getGasFeeEstimates(state)) || {};
   let gasEstimateType =
     transactionChainId && transactionNetworkClientId
       ? getGasEstimateTypeByChainId(state, transactionChainId)
       : getGasEstimateType(state);
   let networkAndAccountSupportsEIP1559 =
-    transactionNetworkClientId !== undefined
-      ? checkNetworkAndAccountSupports1559(state, transactionNetworkClientId)
-      : checkNetworkAndAccountSupports1559(state);
+    transactionNetworkClientId === undefined
+      ? checkNetworkAndAccountSupports1559(state)
+      : checkNetworkAndAccountSupports1559(state, transactionNetworkClientId);
 
   // When using transaction chain, fall back to selected chain if estimates are missing
   // (e.g. gasFeeEstimatesByChainId has no entry for the transaction's chain)
@@ -136,22 +135,26 @@ export const transactionFeeSelector = function (state, txData) {
     transactionChainId && transactionNetworkClientId,
   );
   if (useTransactionChainGas) {
+    const suggestedMaxFee =
+      gasFeeEstimates[txData.userFeeLevel]?.suggestedMaxFeePerGas;
     const hasEIP1559Estimates =
       !networkAndAccountSupportsEIP1559 ||
-      (gasFeeEstimates.estimatedBaseFee != null &&
-        (gasFeeEstimates[txData.userFeeLevel]?.suggestedMaxFeePerGas != null ||
-          gasFeeEstimates.gasPrice != null));
+      (gasFeeEstimates.estimatedBaseFee !== undefined &&
+        gasFeeEstimates.estimatedBaseFee !== null &&
+        ((suggestedMaxFee !== undefined && suggestedMaxFee !== null) ||
+          (gasFeeEstimates.gasPrice !== undefined &&
+            gasFeeEstimates.gasPrice !== null)));
     const hasLegacyEstimates =
       networkAndAccountSupportsEIP1559 ||
       gasEstimateType === GasEstimateTypes.feeMarket ||
       gasEstimateType === GasEstimateTypes.none ||
-      gasFeeEstimates.gasPrice != null;
+      (gasFeeEstimates.gasPrice !== undefined &&
+        gasFeeEstimates.gasPrice !== null);
     if (!hasEIP1559Estimates || !hasLegacyEstimates) {
       gasFeeEstimates = getGasFeeEstimates(state) || {};
       gasEstimateType = getGasEstimateType(state);
-      networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
-        state,
-      );
+      networkAndAccountSupportsEIP1559 =
+        checkNetworkAndAccountSupports1559(state);
       useTransactionChainGas = false;
     }
   }
