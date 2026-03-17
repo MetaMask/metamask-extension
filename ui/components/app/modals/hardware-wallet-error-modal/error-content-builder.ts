@@ -69,10 +69,11 @@ export function buildErrorContent(
         icon: IconName.Lock,
         iconColor: IconColor.iconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)]),
+        recoveryInstructions: addRecoveryInstruction(
+          [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
+          walletType === HardwareWalletType.Ledger,
           t('hardwareWalletErrorRecoveryUnlock2'),
-        ],
+        ),
       };
 
     // Device state - Wrong app

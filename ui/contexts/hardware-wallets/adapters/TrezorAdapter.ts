@@ -24,6 +24,13 @@ const REQUIRED_TREZOR_CAPABILITIES = [
 ] as const;
 type RequiredTrezorCapability = (typeof REQUIRED_TREZOR_CAPABILITIES)[number];
 
+const TREZOR_MODELS_USING_TREZOR_SUITE = ['safe 7'];
+
+const isTrezorModelUsingTrezorSuite = (model: string): boolean => {
+  const normalizedModel = model.toLowerCase();
+  return TREZOR_MODELS_USING_TREZOR_SUITE.includes(normalizedModel);
+};
+
 /**
  * Trezor adapter implementation
  * Verifies WebUSB device presence for Trezor hardware wallets.
@@ -199,8 +206,25 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       // The actual PIN/passphrase prompts happen during signing operations.
       const features = await getTrezorFeatures();
       const {
-        payload: { session_id: sessionId, model, initialized, capabilities },
+        payload: {
+          session_id: sessionId,
+          model,
+          initialized,
+          capabilities,
+          unlocked,
+        },
       } = features;
+
+      console.log(LOG_TAG, 'Trezor device status:', features);
+
+      // For Trezor 5 and below, the usb will not be active until it is unlocked.
+      if (!unlocked) {
+        throw createHardwareWalletError(
+          ErrorCode.AuthenticationDeviceLocked,
+          HardwareWalletType.Trezor,
+          'Trezor is not unlocked. Please unlock your device.',
+        );
+      }
 
       if (!initialized) {
         throw createHardwareWalletError(
@@ -210,10 +234,9 @@ export class TrezorAdapter implements HardwareWalletAdapter {
         );
       }
 
-      console.log(LOG_TAG, 'Trezor device status:', features);
-
+      // For model 7 and above popups are not used, therefore session is null
       // Check if session exists (indicates Trezor Connect is initialized)
-      if (!sessionId) {
+      if (!sessionId && !isTrezorModelUsingTrezorSuite(model)) {
         throw createHardwareWalletError(
           ErrorCode.ConnectionClosed,
           HardwareWalletType.Trezor,
@@ -257,6 +280,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
           },
         );
       }
+
+      console.log(LOG_TAG, 'Device is ready');
 
       return true;
     } catch (error) {
