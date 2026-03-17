@@ -8,11 +8,15 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveMarketData } from '../../../../hooks/perps/stream';
-import { mockWatchlist } from '../mocks';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsMarketCard } from '../perps-market-card';
+import {
+  selectPerpsIsTestnet,
+  selectPerpsWatchlistMarkets,
+} from '../../../../selectors/perps-controller';
 
 /**
  * PerpsWatchlist displays a list of watched markets (stubbed with mock symbols).
@@ -22,15 +26,20 @@ export const PerpsWatchlist: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { cryptoMarkets, hip3Markets } = usePerpsLiveMarketData();
+  const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+  const watchlistSymbols = isTestnet
+    ? watchlistMarketsState.testnet
+    : watchlistMarketsState.mainnet;
 
   const watchlistMarkets = useMemo(() => {
     const allMarkets = [...cryptoMarkets, ...hip3Markets];
-    return mockWatchlist
+    return watchlistSymbols
       .map((symbol) =>
         allMarkets.find((m) => m.symbol.toUpperCase() === symbol.toUpperCase()),
       )
       .filter(Boolean) as typeof allMarkets;
-  }, [cryptoMarkets, hip3Markets]);
+  }, [cryptoMarkets, hip3Markets, watchlistSymbols]);
 
   const handleMarketClick = useCallback(
     (symbol: string) => {
