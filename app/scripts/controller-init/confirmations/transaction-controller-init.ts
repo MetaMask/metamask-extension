@@ -130,7 +130,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       if (
         !(await accountSupports7702(
           transactionMeta.txParams?.from,
-          keyringController,
+          keyringController as Parameters<typeof accountSupports7702>[1],
         ))
       ) {
         return false;

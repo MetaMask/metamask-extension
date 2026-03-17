@@ -38,7 +38,7 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
     addTransactionBatchFn: async (request, ...rest) => {
       const supports7702 = await accountSupports7702(
         request.from,
-        keyringController,
+        keyringController as Parameters<typeof accountSupports7702>[1],
       );
 
       if (!supports7702) {

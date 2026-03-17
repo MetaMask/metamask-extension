@@ -2,7 +2,7 @@ import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { ControllerInitRequest, ControllerName } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getBridgeStatusControllerMessenger,
@@ -68,7 +68,7 @@ describe('BridgeStatusControllerInit', () => {
               : undefined,
           ),
         );
-      requestMock.getController.mockImplementation((name: string) => {
+      requestMock.getController.mockImplementation(((name: ControllerName) => {
         if (name === 'TransactionController') {
           return {
             addTransaction: jest.fn(),
@@ -81,7 +81,7 @@ describe('BridgeStatusControllerInit', () => {
           return { getKeyringForAccount: mockGetKeyringForAccount };
         }
         return undefined;
-      });
+      }) as unknown as ControllerInitRequest<BridgeStatusControllerMessenger>['getController']);
 
       BridgeStatusControllerInit(requestMock);
 
