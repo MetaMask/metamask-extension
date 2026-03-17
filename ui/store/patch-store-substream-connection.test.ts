@@ -247,20 +247,25 @@ describe('patch-store substream connection', () => {
   });
 
   describe('getStatePatches', () => {
-    it('throws before registering a pending request when the patch-store substream has not been initialized', async () => {
+    it('logs an error and returns an empty array when the patch-store substream has not been initialized', async () => {
       const originalInTest = process.env.IN_TEST;
       delete process.env.IN_TEST;
       try {
         // We have to isolate the module here because there's no way to reset
         // `patchStoreSubstreamSingleton` once it's set.
         await jest.isolateModulesAsync(async () => {
+          const consoleSpy = jest
+            .spyOn(console, 'error')
+            .mockImplementation(() => undefined);
           // We have to use `require` rather than `import`: TypeScript requires
           // that we specify `.ts` as an extension, but Jest doesn't know how to
           // resolve it. Finally we have to prevent the line from getting broken
           // up so that we can apply these ignores.
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
           const { getStatePatches: isolatedGetStatePatches } = require('./patch-store-substream-connection'); // prettier-ignore
-          await expect(isolatedGetStatePatches()).rejects.toThrow(
+          const patches = await isolatedGetStatePatches();
+          expect(patches).toStrictEqual([]);
+          expect(consoleSpy).toHaveBeenCalledWith(
             'Patch-store substream has not been initialized, not sending message',
           );
         });

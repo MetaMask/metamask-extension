@@ -1,10 +1,6 @@
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
 import type { Patch } from 'immer';
-import type {
-  JsonRpcNotification,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcNotification, JsonRpcResponse } from '@metamask/utils';
 import {
   createDeferredPromise,
   isJsonRpcNotification,
@@ -68,30 +64,6 @@ function isValidJsonRpcResponse(
   response: unknown,
 ): response is JsonRpcResponse & { id: number } {
   return isJsonRpcResponse(response) && typeof response.id === 'number';
-}
-
-/**
- * Sends a request through the connection stream to the background.
- *
- * @param message - The message to send.
- * @returns The response from the request.
- */
-async function sendMessage(message: JsonRpcRequest & { id: number }) {
-  if (!patchStoreSubstreamSingleton) {
-    if (process.env.IN_TEST) {
-      // The background side isn't always set up in tests, so just do nothing
-      return;
-    }
-    throw new Error(
-      'Patch-store substream has not been initialized, not sending message',
-    );
-  }
-
-  const { promise, resolve, reject } = createDeferredPromise<Patch[]>();
-  pendingGetStatePatchesRequests.set(message.id, { resolve, reject });
-  patchStoreSubstreamSingleton.write(message);
-
-  return await promise;
 }
 
 /**
@@ -260,10 +232,23 @@ export function setupPatchStoreSubstreamConnection(
  * is used to force the UI to rerender.
  */
 export async function getStatePatches(): Promise<Patch[]> {
-  const patches = await sendMessage({
-    id: getNextId(),
+  if (!patchStoreSubstreamSingleton) {
+    if (!process.env.IN_TEST) {
+      console.error(
+        'Patch-store substream has not been initialized, not sending message',
+      );
+    }
+    return [];
+  }
+
+  const id = getNextId();
+  const { promise, resolve, reject } = createDeferredPromise<Patch[]>();
+  pendingGetStatePatchesRequests.set(id, { resolve, reject });
+  patchStoreSubstreamSingleton.write({
+    id,
     jsonrpc: '2.0' as const,
     method: GET_STATE_PATCHES,
   });
-  return patches ?? [];
+
+  return await promise;
 }
