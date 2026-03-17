@@ -4924,10 +4924,6 @@
   "revealSeedWords": {
     "message": "Nochtadh Frása Rúnda Aisghabhála"
   },
-  "revealSeedWordsDescription1": {
-    "message": "Tugann an $1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },

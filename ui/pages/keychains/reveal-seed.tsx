@@ -340,7 +340,7 @@ function RevealSeedPage() {
       />
       {screen === PASSWORD_PROMPT_SCREEN && (
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('revealSeedWordsDescription1', [
+          {t('revealSeedWordsDescriptionPassword', [
             <TextButton
               key="srp-learn-srp"
               onClick={handleSrpClick}

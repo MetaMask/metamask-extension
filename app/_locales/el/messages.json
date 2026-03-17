@@ -6005,10 +6005,6 @@
   "revealSeedWords": {
     "message": "Αποκάλυψη της Μυστικής Φράσης Ανάκτησης"
   },
-  "revealSeedWordsDescription1": {
-    "message": "Το $1 παρέχει $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },

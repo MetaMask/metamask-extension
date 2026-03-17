@@ -6005,10 +6005,6 @@
   "revealSeedWords": {
     "message": "비밀복구구문 공개"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 활용으로 $2 기능을 사용할 수 있습니다",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },

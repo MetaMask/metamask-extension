@@ -5999,10 +5999,6 @@
   "revealSeedWords": {
     "message": "シークレットリカバリーフレーズを確認"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1は$2を提供します。",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },

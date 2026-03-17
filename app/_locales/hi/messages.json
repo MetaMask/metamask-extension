@@ -5999,10 +5999,6 @@
   "revealSeedWords": {
     "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
   },
-  "revealSeedWordsDescription1": {
-    "message": "$1 प्रदान करता है $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },

@@ -6005,10 +6005,6 @@
   "revealSeedWords": {
     "message": "Ihayag ang Lihim na Parirala sa Pagbawi"
   },
-  "revealSeedWordsDescription1": {
-    "message": "Ang $1 ay nagbibigay ng $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsQR": {
     "message": "QR"
   },
