@@ -54,6 +54,8 @@ import {
  * Layout (single row):
  * [Favicon+dot] [Origin / Account] ... [Network ↓] [Settings | Disconnect]
  */
+const EMPTY_ACCOUNT_GROUPS: never[] = [];
+
 export const DappConnectionControlBar: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -94,7 +96,7 @@ export const DappConnectionControlBar: React.FC = () => {
           state as Parameters<typeof getAccountGroupsByAddress>[0],
           allPermittedAddresses,
         )
-      : [],
+      : EMPTY_ACCOUNT_GROUPS,
   );
 
   const activePermittedAddress = useMemo(() => {
