@@ -33,7 +33,10 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
-import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
+import {
+  useConfirmationNavigation,
+  useConfirmationNavigationOptions,
+} from '../../../hooks/useConfirmationNavigation';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
 
@@ -626,5 +629,75 @@ describe('ConfirmFooter', () => {
 
     expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  describe('returnTo navigation', () => {
+    const useConfirmationNavigationOptionsMock = jest.mocked(
+      useConfirmationNavigationOptions,
+    );
+
+    it('does not call navigateNext when cancel is clicked and returnTo is defined', async () => {
+      const navigateNextMock = jest.fn();
+      useConfirmationNavigationMock.mockReturnValue({
+        navigateNext: navigateNextMock,
+        navigateToId: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmationNavigation>);
+
+      useConfirmationNavigationOptionsMock.mockReturnValue({
+        loader: undefined,
+        returnTo: '/asset/0x123',
+      });
+
+      const { getAllByRole } = render();
+      const cancelButton = getAllByRole('button')[0];
+
+      const rejectSpy = jest
+        .spyOn(Actions, 'rejectPendingApproval')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => Promise.resolve() as any);
+
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(rejectSpy).toHaveBeenCalled();
+      });
+
+      // Should NOT call navigateNext when returnTo is defined (early return)
+      expect(navigateNextMock).not.toHaveBeenCalled();
+    });
+
+    it('calls navigateNext when cancel is clicked and returnTo is undefined', async () => {
+      const navigateNextMock = jest.fn();
+      useConfirmationNavigationMock.mockReturnValue({
+        navigateNext: navigateNextMock,
+        navigateToId: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmationNavigation>);
+
+      useConfirmationNavigationOptionsMock.mockReturnValue({
+        loader: undefined,
+        returnTo: undefined,
+      });
+
+      const { getAllByRole } = render();
+      const cancelButton = getAllByRole('button')[0];
+
+      const rejectSpy = jest
+        .spyOn(Actions, 'rejectPendingApproval')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => Promise.resolve() as any);
+
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(rejectSpy).toHaveBeenCalled();
+      });
+
+      // Should call navigateNext when returnTo is undefined
+      await waitFor(() => {
+        expect(navigateNextMock).toHaveBeenCalled();
+      });
+    });
   });
 });
