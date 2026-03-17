@@ -10,11 +10,13 @@ import { PersistenceManager } from './stores/persistence-manager';
 
 const platform = new ExtensionPlatform();
 
-const useFixtureStore =
-  process.env.IN_TEST &&
-  getManifestFlags().testing?.forceExtensionStore !== true;
-let isBackground = false;
-if (useFixtureStore) {
+function createLocalStore() {
+  const useFixtureStore =
+    process.env.IN_TEST &&
+    getManifestFlags().testing?.forceExtensionStore !== true;
+  if (!useFixtureStore) {
+    return new ExtensionStore();
+  }
   // Use globalThis.self (not window) so this works in both the UI and the background/service worker, where window is undefined.
   const locationHref = globalThis.self?.location?.href;
   if (!locationHref) {
@@ -22,12 +24,12 @@ if (useFixtureStore) {
       'setup-initial-state-hooks: globalThis.self?.location?.href is not defined; expected to run in a document or service worker context.',
     );
   }
-  isBackground =
+  const isBackground =
     getEnvironmentType(locationHref) === ENVIRONMENT_TYPE_BACKGROUND;
+  return new FixtureExtensionStore({ initialize: isBackground });
 }
-const localStore = useFixtureStore
-  ? new FixtureExtensionStore({ initialize: isBackground })
-  : new ExtensionStore();
+
+const localStore = createLocalStore();
 
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({ localStore });
