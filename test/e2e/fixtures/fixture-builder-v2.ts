@@ -217,6 +217,11 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  withBadPreferencesControllerState(): this {
+    (this.fixture.data as Record<string, unknown>).PreferencesController = 5;
+    return this;
+  }
+
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
@@ -667,6 +672,12 @@ class FixtureBuilderV2 {
       type: TransactionType.incoming,
     };
     return this.withTransactionController({ transactions: [incomingTx] });
+  }
+
+  withUseBasicFunctionalityDisabled(): this {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
   }
 
   build() {
