@@ -18,20 +18,32 @@
  * Renaming a key in the JSON creates a new series in the DB while the old name stops getting new data,
  * which breaks the Grafana time series continuity. Adding and removing keys is fine.
  *
+ * Naming convention:
+ *   - CI-executed (from JUnit XML artifacts): _run suffix     → tests actually ran in CI
+ *   - Static source analysis (from code):     _defined suffix → tests defined in the codebase
+ *
  * Example output:
  *   {
  *     "unit": {
- *       "tests_count": 41957,
- *       "controllers_tests_count": 3200,
- *       "ui_app_tests_count": 5100,
- *       "ducks_tests_count": 1500,
- *       "selectors_tests_count": 900,
- *       "other_tests_count": 26357
+ *       "total_tests_run": 41957,
+ *       "total_tests_skipped": 120,
+ *       "total_tests_defined": 39500,
+ *       "controllers_tests_run": 3200,
+ *       "ui_app_tests_run": 5100,
+ *       "ducks_tests_run": 1500,
+ *       "selectors_tests_run": 900,
+ *       "other_tests_run": 26357
+ *     },
+ *     "benchmark": {
+ *       "total_tests_defined": 8,
+ *       "startup_tests_defined": 2,
+ *       "interaction_tests_defined": 1,
+ *       "user_journey_tests_defined": 5
  *     }
  *   }
  */
 
-import { writeFile, mkdir, readFile } from 'fs/promises';
+import { writeFile, mkdir, readFile, readdir } from 'fs/promises';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
@@ -202,13 +214,16 @@ function parseJUnitXml(rawXml) {
   const testcasePattern = /<testcase\b([^>]*)(?:\/>|>([\s\S]*?)<\/testcase>)/g;
   const perFile = {};
   let total = 0;
+  let skipped = 0;
 
   for (const match of rawXml.matchAll(testcasePattern)) {
     const attrs = match[1];
     const body = match[2] ?? '';
 
-    // Exclude skipped tests (<skipped/> or <skipped ...> child element)
-    if (body.includes('<skipped')) continue;
+    if (body.includes('<skipped')) {
+      skipped++;
+      continue;
+    }
 
     const filePath = getStringAttribute(attrs, 'file');
     if (!filePath) continue;
@@ -217,7 +232,7 @@ function parseJUnitXml(rawXml) {
     perFile[filePath] = (perFile[filePath] ?? 0) + 1;
   }
 
-  return { total, perFile };
+  return { total, skipped, perFile };
 }
 
 // ---------------------------------------------------------------------------
@@ -266,12 +281,73 @@ function getFeatureFolder(testFilePath) {
 }
 
 // ---------------------------------------------------------------------------
+// Static test definition counter
+// ---------------------------------------------------------------------------
+
+/**
+ * Recursively walks a directory tree, yielding file paths.
+ *
+ * @param {string} dir
+ * @param {string[]} [exclude] - Path substrings to skip
+ * @returns {AsyncGenerator<string>}
+ */
+async function* walkDir(dir, exclude = []) {
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return; // directory does not exist — skip silently
+  }
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (exclude.some((ex) => fullPath.replace(/\\/g, '/').includes(ex))) continue;
+    if (entry.isDirectory()) {
+      yield* walkDir(fullPath, exclude);
+    } else {
+      yield fullPath;
+    }
+  }
+}
+
+/**
+ * Counts test definitions (it/test call sites) across source directories.
+ *
+ * Scans *.test.{ts,tsx,js,jsx} files and counts occurrences of:
+ *   it(, test(, it.each(, test.each(, it.skip(, test.skip(, it.only(, test.only(
+ *
+ * Parameterized tests (it.each) are counted as one definition each, even
+ * though they expand into multiple cases at runtime — so total_tests_defined
+ * may be lower than total_tests_run.
+ *
+ * @param {string[]} rootDirs - Directories to scan
+ * @param {string[]} [excludePaths] - Path substrings to exclude
+ * @returns {Promise<number>}
+ */
+async function countDefinedTests(rootDirs, excludePaths = []) {
+  const testFileRe = /\.test\.(ts|tsx|js|jsx)$/;
+  // Matches: it(  test(  it.each(  test.skip(  it.only(  etc.
+  const testCallRe = /\b(?:it|test)(?:\.(?:each|skip|only|concurrent))?\s*\(/g;
+  let count = 0;
+  for (const dir of rootDirs) {
+    for await (const filePath of walkDir(dir, excludePaths)) {
+      if (!testFileRe.test(filePath)) continue;
+      const content = await readFile(filePath, 'utf8');
+      const matches = content.match(testCallRe);
+      if (matches) count += matches.length;
+    }
+  }
+  return count;
+}
+
+// ---------------------------------------------------------------------------
 // Collectors
 // ---------------------------------------------------------------------------
 
 /**
  * Downloads all unit-test-results-* shard artifacts (JUnit XML), parses them,
  * and returns test counts grouped by feature folder.
+ *
+ * Also counts test definitions via static source analysis.
  *
  * Folders whose total count is below minFolderCount are merged into `other`
  * to reduce noise.
@@ -290,12 +366,14 @@ async function collectUnitTestCount(minFolderCount = 200) {
 
   const folderCounts = {};
   let total = 0;
+  let skipped = 0;
 
   for (const artifact of shardArtifacts) {
     const destDir = await downloadArtifact(artifact.name);
     const raw = await readFile(join(destDir, 'junit.xml'), 'utf8');
-    const { total: shardTotal, perFile } = parseJUnitXml(raw);
+    const { total: shardTotal, skipped: shardSkipped, perFile } = parseJUnitXml(raw);
     total += shardTotal;
+    skipped += shardSkipped;
 
     for (const [filePath, count] of Object.entries(perFile)) {
       const folder = getFeatureFolder(filePath);
@@ -303,14 +381,21 @@ async function collectUnitTestCount(minFolderCount = 200) {
     }
   }
 
-  console.log(`[unit] total: ${total}`);
+  console.log(`[unit] total: ${total}, skipped: ${skipped}`);
 
-  const result = { tests_count: total };
+  // Static count: scan unit test source files (excludes e2e and integration)
+  const defined = await countDefinedTests(
+    ['ui', 'app', 'shared'],
+    ['node_modules'],
+  );
+  console.log(`[unit] defined: ${defined}`);
+
+  const result = { total_tests_run: total, total_tests_skipped: skipped, total_tests_defined: defined };
   for (const [folder, count] of Object.entries(folderCounts)) {
     if (minFolderCount > 0 && count < minFolderCount) {
-      result.other_tests_count = (result.other_tests_count ?? 0) + count;
+      result.other_tests_run = (result.other_tests_run ?? 0) + count;
     } else {
-      result[`${folder}_tests_count`] = count;
+      result[`${folder}_tests_run`] = count;
     }
   }
 
@@ -344,6 +429,8 @@ function getIntegrationFeatureFolder(testFilePath) {
  * Downloads the integration-test-results artifact (single, no sharding),
  * parses the JUnit XML, and returns test counts grouped by feature folder.
  *
+ * Also counts test definitions via static source analysis.
+ *
  * @returns {Promise<Record<string, number>>}
  */
 async function collectIntegrationTestCount() {
@@ -359,9 +446,9 @@ async function collectIntegrationTestCount() {
 
   const destDir = await downloadArtifact(artifact.name);
   const raw = await readFile(join(destDir, 'junit.xml'), 'utf8');
-  const { total, perFile } = parseJUnitXml(raw);
+  const { total, skipped, perFile } = parseJUnitXml(raw);
 
-  console.log(`[integration] total: ${total}`);
+  console.log(`[integration] total: ${total}, skipped: ${skipped}`);
 
   const folderCounts = {};
   for (const [filePath, count] of Object.entries(perFile)) {
@@ -369,9 +456,67 @@ async function collectIntegrationTestCount() {
     folderCounts[folder] = (folderCounts[folder] ?? 0) + count;
   }
 
-  const result = { tests_count: total };
+  // Static count: scan integration test source files
+  const defined = await countDefinedTests(['test/integration'], ['node_modules']);
+  console.log(`[integration] defined: ${defined}`);
+
+  const result = { total_tests_run: total, total_tests_skipped: skipped, total_tests_defined: defined };
   for (const [folder, count] of Object.entries(folderCounts)) {
-    result[`${folder}_tests_count`] = count;
+    result[`${folder}_tests_run`] = count;
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Benchmark scenario counter
+// ---------------------------------------------------------------------------
+
+/**
+ * Counts benchmark presets defined in test/e2e/benchmarks/utils/constants.ts.
+ *
+ * Each preset (e.g. startupStandardHome, userJourneyAssets) is one benchmark
+ * test. Presets are categorized by their camelCase prefix and reported as
+ * {category}_tests_defined keys (static source analysis, no artifact downloads).
+ *
+ * @returns {Promise<Record<string, number>>}
+ */
+async function collectBenchmarkScenarioCount() {
+  const constantsFile = 'test/e2e/benchmarks/utils/constants.ts';
+  console.log(`[benchmark] reading preset definitions from ${constantsFile}...`);
+
+  const raw = await readFile(constantsFile, 'utf8');
+
+  // Extract all preset string values by their camelCase naming convention.
+  // Presets are defined as string literals under STARTUP_PRESETS, INTERACTION_PRESETS,
+  // and USER_JOURNEY_PRESETS and follow the pattern: startup*, interaction*, userJourney*.
+  const presets = new Set();
+  for (const m of raw.matchAll(/'((?:startup|interaction|userJourney)[A-Z][a-zA-Z]*)'/g)) {
+    presets.add(m[1]);
+  }
+
+  const categoryCounts = {};
+  for (const preset of presets) {
+    let category;
+    if (preset.startsWith('startup')) {
+      category = 'startup';
+    } else if (preset.startsWith('interaction')) {
+      category = 'interaction';
+    } else if (preset.startsWith('userJourney')) {
+      category = 'user_journey';
+    } else {
+      category = 'other';
+    }
+    categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
+    console.log(`[benchmark] ${preset} → ${category}`);
+  }
+
+  const total = presets.size;
+  console.log(`[benchmark] total: ${total} unique presets`);
+
+  const result = { total_tests_defined: total };
+  for (const [category, count] of Object.entries(categoryCounts)) {
+    result[`${category}_tests_defined`] = count;
   }
 
   return result;
@@ -387,6 +532,7 @@ async function main() {
   const collectors = [
     { namespace: 'unit', collect: collectUnitTestCount },
     { namespace: 'integration', collect: collectIntegrationTestCount },
+    { namespace: 'benchmark', collect: collectBenchmarkScenarioCount },
   ];
 
   for (const { namespace, collect } of collectors) {
