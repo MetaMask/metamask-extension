@@ -85,6 +85,11 @@ jobs:
           name: coverage-integration
           path: coverage/integration/coverage-integration.json
 
+      - uses: actions/upload-artifact@v6
+        with:
+          name: integration-test-results
+          path: test/test-results/integration/junit.xml
+
   report-coverage:
     name: Report coverage
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue

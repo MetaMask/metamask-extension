@@ -37,7 +37,7 @@ import { join } from 'path';
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
-const WORKFLOW_RUN_ID = "23010648370";
+const WORKFLOW_RUN_ID = "23014510046";
 
 
 if (!GITHUB_TOKEN) throw new Error('Missing required GITHUB_TOKEN env var');
@@ -318,6 +318,66 @@ async function collectUnitTestCount(minFolderCount = 200) {
 }
 
 // ---------------------------------------------------------------------------
+// Integration test helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Maps an integration test file path to a feature category.
+ *
+ * Extracts the top-level subdirectory under test/integration/:
+ *   test/integration/confirmations/... → confirmations
+ *   test/integration/swaps/...         → swaps
+ *   Anything else                      → other
+ *
+ * @param {string} testFilePath
+ * @returns {string}
+ */
+function getIntegrationFeatureFolder(testFilePath) {
+  const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+  const p = testFilePath.replace(/\\/g, '/');
+
+  const match = p.match(/\btest\/integration\/([^/]+)/);
+  return match ? normalize(match[1]) : 'other';
+}
+
+/**
+ * Downloads the integration-test-results artifact (single, no sharding),
+ * parses the JUnit XML, and returns test counts grouped by feature folder.
+ *
+ * @returns {Promise<Record<string, number>>}
+ */
+async function collectIntegrationTestCount() {
+  console.log('[integration] collecting per-suite counts from artifact...');
+
+  const artifacts = await getArtifactList();
+  const artifact = artifacts.find((a) => a.name === 'integration-test-results');
+
+  if (!artifact) {
+    console.log('[integration] artifact not found — integration tests did not run, skipping');
+    return {};
+  }
+
+  const destDir = await downloadArtifact(artifact.name);
+  const raw = await readFile(join(destDir, 'junit.xml'), 'utf8');
+  const { total, perFile } = parseJUnitXml(raw);
+
+  console.log(`[integration] total: ${total}`);
+
+  const folderCounts = {};
+  for (const [filePath, count] of Object.entries(perFile)) {
+    const folder = getIntegrationFeatureFolder(filePath);
+    folderCounts[folder] = (folderCounts[folder] ?? 0) + count;
+  }
+
+  const result = { tests_count: total };
+  for (const [folder, count] of Object.entries(folderCounts)) {
+    result[`${folder}_tests_count`] = count;
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -326,6 +386,7 @@ async function main() {
 
   const collectors = [
     { namespace: 'unit', collect: collectUnitTestCount },
+    { namespace: 'integration', collect: collectIntegrationTestCount },
   ];
 
   for (const { namespace, collect } of collectors) {
