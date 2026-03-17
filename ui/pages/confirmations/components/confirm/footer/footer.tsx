@@ -26,7 +26,10 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
+import {
+  useConfirmationNavigation,
+  useConfirmationNavigationOptions,
+} from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
@@ -246,6 +249,7 @@ const Footer = () => {
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
+  const { returnTo } = useConfirmationNavigationOptions();
   const { hasUnconfirmedDangerAlerts } = useAlerts(
     currentConfirmation?.id ?? '',
   );
@@ -385,10 +389,18 @@ const Footer = () => {
       return;
     }
 
-    await onCancel({ location: MetaMetricsEventLocation.Confirmation });
+    await onCancel({
+      location: MetaMetricsEventLocation.Confirmation,
+      navigateBackToPreviousPage: Boolean(returnTo),
+    });
 
     onDappSwapCompleted();
     dismissErrorModal();
+
+    if (returnTo) {
+      return;
+    }
+
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
       return;
@@ -400,6 +412,7 @@ const Footer = () => {
   }, [
     navigateNext,
     onCancel,
+    returnTo,
     shouldThrottleOrigin,
     currentConfirmationId,
     isAddEthereumChain,
