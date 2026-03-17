@@ -9,7 +9,7 @@ import { createInternalTransaction } from '../../page-objects/flows/transaction'
 import SendPage from '../../page-objects/pages/send/send-page';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -28,9 +28,7 @@ describe('Send - Hex Address Normalization', function () {
     it('normalizes address without 0x prefix and sends ETH', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
-            .withPreferencesControllerPetnamesDisabled()
-            .build(),
+          fixtures: new FixtureBuilderV2().withPetnamesDisabled().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
@@ -67,8 +65,8 @@ describe('Send - Hex Address Normalization', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPreferencesControllerPetnamesDisabled()
+          fixtures: new FixtureBuilderV2()
+            .withPetnamesDisabled()
             .withTokensControllerERC20()
             .withEnabledNetworks({ eip155: { '0x539': true } })
             .build(),
@@ -101,8 +99,8 @@ describe('Send - Hex Address Normalization', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPreferencesControllerPetnamesDisabled()
+          fixtures: new FixtureBuilderV2()
+            .withPetnamesDisabled()
             .withEnabledNetworks({ eip155: { '0x539': true } })
             .withTokensControllerERC20()
             .build(),
