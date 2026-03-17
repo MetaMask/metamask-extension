@@ -412,6 +412,36 @@ class ActivityListPage {
     return amounts;
   }
 
+  /**
+   * Waits for exactly one transaction amount in the activity list that contains the expected substring.
+   * Uses waitForSelector and elementCountBecomesN only (no getText) to avoid flaky reads before DOM is ready.
+   *
+   * @param expectedSubstring - The substring the amount text must contain (e.g. '-2.2' for '-2.2 ETH').
+   */
+  async checkFirstTransactionAmountContains(
+    expectedSubstring: string,
+  ): Promise<void> {
+    console.log(
+      `Waiting for transaction amount containing "${expectedSubstring}"`,
+    );
+    await this.driver.waitForSelector(this.transactionAmountsInActivity, {
+      timeout: 10000,
+    });
+    await this.driver.elementCountBecomesN(
+      this.transactionAmountsInActivity,
+      1,
+      10000,
+    );
+    await this.driver.waitForSelector(
+      {
+        css: this.transactionAmountsInActivity,
+        text: expectedSubstring,
+      },
+      { timeout: 10000 },
+    );
+    console.log('Transaction amount displayed as expected');
+  }
+
   async checkTransactionAmount(transactionAmount: string): Promise<void> {
     console.log('Validate transaction amount');
     await this.driver.waitForSelector({
