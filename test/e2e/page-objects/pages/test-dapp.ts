@@ -135,7 +135,7 @@ class TestDapp {
 
   private readonly maliciousEthTransferButton = '#maliciousRawEthButton';
 
-  private readonly maliciousPermitButton = '#maliciousPermit'; // NEW: Refactored to PO
+  private readonly maliciousPermitButton = '#maliciousPermit';
 
   private readonly maliciousTradeOrderButton = '#maliciousTradeOrder';
 
@@ -1029,7 +1029,6 @@ class TestDapp {
     await this.driver.clickElement(this.maliciousEthTransferButton);
   }
 
-  // NEW: Refactored to PO
   async clickMaliciousPermitButton() {
     console.log('Click malicious permit button');
     await this.driver.clickElement(this.maliciousPermitButton);

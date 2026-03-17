@@ -80,6 +80,10 @@ class Confirmation {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
 
+  async checkSecurityProviderBannerAlertIsNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.securityProviderBannerAlert);
+  }
+
   async checkSecurityProviderBannerAlertIsPresent(): Promise<void> {
     await this.driver.waitForSelector(this.securityProviderBannerAlert);
   }
