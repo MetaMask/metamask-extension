@@ -397,10 +397,10 @@ module.exports = {
         'react/default-props-match-prop-types': 'warn',
         'react/jsx-no-duplicate-props': 'warn',
         'react/display-name': 'off',
-        'react/no-unescaped-entities': 'warn',
+        'react/no-unescaped-entities': 'error',
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
-        'react/jsx-key': 'warn', // TODO - increase this into 'error' level
+        'react/jsx-key': 'error',
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': [
           'warn',

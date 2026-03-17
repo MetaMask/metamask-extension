@@ -6,6 +6,7 @@
  */
 
 import type { Hex } from '@metamask/utils';
+import type { VersionGatedFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 
 // ============================================================================
 // Token Types
@@ -55,19 +56,32 @@ export type WildcardTokenList = Record<string, string[]>;
 // ============================================================================
 
 /**
- * mUSD feature flags from remote configuration
+ * Boolean feature flag value that supports version gating.
+ * Can be:
+ * - Simple boolean: true/false
+ * - Version-gated: { enabled: boolean, minimumVersion: string }
+ * - Progressive rollout: { name?: string, value: { enabled: boolean, minimumVersion: string } }
+ */
+export type BooleanFeatureFlagValue =
+  | boolean
+  | VersionGatedFeatureFlag
+  | { name?: string; value: VersionGatedFeatureFlag };
+
+/**
+ * mUSD feature flags from remote configuration.
+ * Boolean flags support version gating via LaunchDarkly progressive rollouts.
  */
 export type MusdFeatureFlags = {
-  /** Master toggle for mUSD conversion */
-  earnMusdConversionFlowEnabled: boolean;
-  /** Enable Buy/Get mUSD CTA */
-  earnMusdCtaEnabled: boolean;
-  /** Enable secondary CTA on token list */
-  earnMusdConversionTokenListItemCtaEnabled: boolean;
-  /** Enable tertiary CTA on asset overview */
-  earnMusdConversionAssetOverviewCtaEnabled: boolean;
-  /** Enable rewards UI elements */
-  earnMusdConversionRewardsUiEnabled: boolean;
+  /** Master toggle for mUSD conversion (supports version gating) */
+  earnMusdConversionFlowEnabled: BooleanFeatureFlagValue;
+  /** Enable Buy/Get mUSD CTA (supports version gating) */
+  earnMusdCtaEnabled: BooleanFeatureFlagValue;
+  /** Enable secondary CTA on token list (supports version gating) */
+  earnMusdConversionTokenListItemCtaEnabled: BooleanFeatureFlagValue;
+  /** Enable tertiary CTA on asset overview (supports version gating) */
+  earnMusdConversionAssetOverviewCtaEnabled: BooleanFeatureFlagValue;
+  /** Enable rewards UI elements (supports version gating) */
+  earnMusdConversionRewardsUiEnabled: BooleanFeatureFlagValue;
   /** Wildcard list for CTA-enabled tokens */
   earnMusdConversionCtaTokens: WildcardTokenList;
   /** Wildcard list for allowed payment tokens */
@@ -78,8 +92,8 @@ export type MusdFeatureFlags = {
   earnMusdConversionGeoBlockedCountries: GeoBlockingConfig;
   /** Minimum token balance in USD for conversion eligibility */
   earnMusdConversionMinAssetBalanceRequired: number;
-  /** Enable Merkl rewards claiming */
-  earnMerklCampaignClaiming: boolean;
+  /** Enable Merkl rewards claiming (supports version gating) */
+  earnMerklCampaignClaiming: BooleanFeatureFlagValue;
 };
 
 /**
