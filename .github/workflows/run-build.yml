@@ -22,7 +22,7 @@ on:
       zip:
         type: boolean
         default: false
-        description: Whether to zip the build output
+        description: Whether to zip the build output. Only compatible with webpack builds. This bash-based zipping is more performant than the built-in zip option of webpack.
 
 jobs:
   run-build:
