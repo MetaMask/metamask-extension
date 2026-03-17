@@ -1061,16 +1061,8 @@ function setupMinification(buildConfiguration) {
           const input = {
             [file.sourceMap.file]: file.contents.toString(),
           };
-          const opts = {
-            sourceMap: {
-              filename: file.sourceMap.file,
-              content: file.sourceMap,
-            },
-            ...minifyOpts,
-          };
-          const res = await terser.minify(input, opts);
+          const res = await terser.minify(input, minifyOpts);
           file.contents = Buffer.from(res.code);
-          applySourceMap(file, res.map);
           return file;
         }),
       ),
