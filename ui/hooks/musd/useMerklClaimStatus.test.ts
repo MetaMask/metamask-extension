@@ -349,6 +349,8 @@ describe('useMerklClaimStatus', () => {
 
       const { rerender } = renderHook(() => useMerklClaimStatus());
 
+      mockTrackEvent.mockClear();
+
       setupSelectorMock([
         createMerklClaimTx('tx-1', TransactionStatus.confirmed, {
           chainId: '0x1',
@@ -361,14 +363,17 @@ describe('useMerklClaimStatus', () => {
 
       rerender();
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            amount_claimed_decimal: '1000000',
-          }),
-        }),
+      const confirmedCall = mockTrackEvent.mock.calls.find(
+        (call: unknown[]) =>
+          (call[0] as Record<string, Record<string, string>>)?.properties
+            ?.transaction_status === 'confirmed',
       );
+
+      expect(confirmedCall).toBeDefined();
+      const confirmedProps = (
+        confirmedCall?.[0] as Record<string, Record<string, string>>
+      )?.properties;
+      expect(confirmedProps?.amount_claimed_decimal).toBe('1000000');
     });
 
     it('falls back to txParams.value when transaction data parsing fails', () => {
@@ -390,6 +395,8 @@ describe('useMerklClaimStatus', () => {
 
       const { rerender } = renderHook(() => useMerklClaimStatus());
 
+      mockTrackEvent.mockClear();
+
       setupSelectorMock([
         createMerklClaimTx('tx-1', TransactionStatus.confirmed, {
           chainId: '0x1',
@@ -403,14 +410,17 @@ describe('useMerklClaimStatus', () => {
 
       rerender();
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            amount_claimed_decimal: '1000',
-          }),
-        }),
+      const confirmedCall = mockTrackEvent.mock.calls.find(
+        (call: unknown[]) =>
+          (call[0] as Record<string, Record<string, string>>)?.properties
+            ?.transaction_status === 'confirmed',
       );
+
+      expect(confirmedCall).toBeDefined();
+      const confirmedProps = (
+        confirmedCall?.[0] as Record<string, Record<string, string>>
+      )?.properties;
+      expect(confirmedProps?.amount_claimed_decimal).toBe('1000');
     });
 
     it('does not include amount for approved status', () => {
@@ -422,7 +432,7 @@ describe('useMerklClaimStatus', () => {
       });
 
       setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.approved, {
+        createMerklClaimTx('tx-1', TransactionStatus.submitted, {
           chainId: '0x1',
           txParams: {
             to: MERKL_DISTRIBUTOR_ADDRESS,
@@ -440,12 +450,59 @@ describe('useMerklClaimStatus', () => {
             .transaction_status === 'approved',
       );
 
-      if (approvedCall) {
-        expect(
-          (approvedCall[0] as Record<string, Record<string, string>>).properties
-            .amount_claimed_decimal,
-        ).toBeUndefined();
-      }
+      expect(approvedCall).toBeDefined();
+      const approvedProps = (
+        approvedCall?.[0] as Record<string, Record<string, string>>
+      )?.properties;
+      expect(approvedProps?.amount_claimed_decimal).toBeUndefined();
+    });
+
+    it('fires the approved analytics event when tx is first seen as submitted', () => {
+      setupSelectorMock([
+        createMerklClaimTx('tx-1', TransactionStatus.submitted, {
+          chainId: '0x1',
+          txParams: {
+            to: MERKL_DISTRIBUTOR_ADDRESS,
+          },
+        }),
+      ]);
+
+      renderHook(() => useMerklClaimStatus());
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            transaction_status: 'approved',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            transaction_id: 'tx-1',
+          }),
+        }),
+      );
+    });
+
+    it('fires the approved analytics event when tx is first seen as signed', () => {
+      setupSelectorMock([
+        createMerklClaimTx('tx-1', TransactionStatus.signed, {
+          chainId: '0x1',
+          txParams: {
+            to: MERKL_DISTRIBUTOR_ADDRESS,
+          },
+        }),
+      ]);
+
+      renderHook(() => useMerklClaimStatus());
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            transaction_status: 'approved',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            transaction_id: 'tx-1',
+          }),
+        }),
+      );
     });
   });
 });

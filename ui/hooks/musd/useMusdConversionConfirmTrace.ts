@@ -69,7 +69,6 @@ function isTerminalStatus(status: string): status is TerminalStatus {
  */
 export function useMusdConversionConfirmTrace(transactionId: string): void {
   const activeTraceRef = useRef<boolean>(false);
-  const startTimeRef = useRef<number | null>(null);
   const tracedTxIdRef = useRef<string | null>(null);
   // Cache payment token, quote, and chain data at trace start so it survives
   // the TransactionPayController clearing the data on completion.
@@ -79,8 +78,6 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     transactionChainId: string;
     strategy: string;
   } | null>(null);
-  const mountedRef = useRef(false);
-
   // Once a trace starts, keep tracking the original transaction ID even if
   // the prop becomes empty (the tx leaves the pending pool on confirmation).
   const effectiveTxId = activeTraceRef.current
@@ -105,11 +102,6 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     (t) => t.id === effectiveTxId && t.type === TransactionType.musdConversion,
   );
 
-  // Log on first mount
-  if (!mountedRef.current) {
-    mountedRef.current = true;
-  }
-
   useEffect(() => {
     if (!tx) {
       return;
@@ -118,7 +110,6 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     // Start trace when the transaction first appears in any in-flight state
     if (IN_FLIGHT_STATUSES.includes(tx.status) && !activeTraceRef.current) {
       activeTraceRef.current = true;
-      startTimeRef.current = Date.now();
       tracedTxIdRef.current = tx.id;
 
       const selectedQuote = quotes?.[0] as
@@ -186,7 +177,6 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
         data: endData,
       });
 
-      startTimeRef.current = null;
       tracedTxIdRef.current = null;
       traceContextRef.current = null;
     }

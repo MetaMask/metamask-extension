@@ -43,13 +43,6 @@ export function useMusdConversionQuoteTrace(): void {
   // Track current trace state
   const traceIdRef = useRef<string | null>(null);
   const wasLoadingRef = useRef(false);
-  const startTimeRef = useRef<number | null>(null);
-  const mountedRef = useRef(false);
-
-  // Log on first mount
-  if (!mountedRef.current) {
-    mountedRef.current = true;
-  }
 
   // Start trace when loading begins, end when loading completes
   useEffect(() => {
@@ -58,7 +51,6 @@ export function useMusdConversionQuoteTrace(): void {
       // Generate unique trace ID for this quote fetch
       const newTraceId = `quote_${transactionId}_${Date.now()}`;
       traceIdRef.current = newTraceId;
-      startTimeRef.current = Date.now();
 
       const traceData = {
         name: TraceName.MusdConversionQuote,
@@ -105,7 +97,6 @@ export function useMusdConversionQuoteTrace(): void {
       }
 
       traceIdRef.current = null;
-      startTimeRef.current = null;
     }
 
     wasLoadingRef.current = isLoading;

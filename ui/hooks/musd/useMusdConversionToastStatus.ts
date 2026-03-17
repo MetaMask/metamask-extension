@@ -25,7 +25,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import type { MusdConversionStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
-import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
+import { extractTransactionAmount } from './transaction-amount-utils';
 
 /**
  * Transaction statuses that indicate a conversion is "in flight":
@@ -92,12 +92,6 @@ export const useMusdConversionToastStatus = (): {
   const shownCompletionIdsRef = useRef<Set<string>>(new Set());
   // Track IDs of conversions we've already tracked analytics for (by status)
   const trackedAnalyticsRef = useRef<Map<string, Set<string>>>(new Map());
-  const mountedRef = useRef(false);
-
-  // Log on first mount
-  if (!mountedRef.current) {
-    mountedRef.current = true;
-  }
 
   const musdConversions = useMemo(
     () => transactions.filter(isMusdConversionTx),
@@ -149,35 +143,15 @@ export const useMusdConversionToastStatus = (): {
 
   const sourceTokenSymbol = paymentToken?.symbol ?? cachedSymbol;
 
-  /**
-   * Extract transfer amount from ERC-20 transaction data.
-   * For ERC-20 transfers, the amount is encoded in txParams.data, not txParams.value.
-   */
   const extractTransferAmount = useCallback(
     (tx: TransactionMeta): { amountHex: string; amountDecimal: string } => {
-      const txData = tx.txParams?.data;
-      if (!txData) {
-        return { amountHex: '0x0', amountDecimal: '0' };
+      const decimal = extractTransactionAmount(tx);
+      if (decimal) {
+        return {
+          amountHex: `0x${new BigNumber(decimal).toString(16)}`,
+          amountDecimal: decimal,
+        };
       }
-
-      try {
-        const parsedData = parseStandardTokenTransactionData(txData);
-        // For ERC-20 transfer/transferFrom, amount is in args._value
-        const amountValue = parsedData?.args?._value;
-        if (amountValue) {
-          const bn = new BigNumber(amountValue.toString());
-          return {
-            amountHex: `0x${bn.toString(16)}`,
-            amountDecimal: bn.toString(10),
-          };
-        }
-      } catch (e) {
-        console.error(
-          'Failed to parse conversion amount from transaction data:',
-          e,
-        );
-      }
-
       return { amountHex: '0x0', amountDecimal: '0' };
     },
     [],
