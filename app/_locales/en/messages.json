@@ -1544,6 +1544,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
+  "confirmFieldTotalExposure": {
+    "message": "Total exposure"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "Bal:"
   },
@@ -2263,11 +2266,18 @@
     "message": "This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our $1.",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain the same. This process may take up to 30 days. View our $1.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "This request can't be completed right now due to an analytics system server issue, please try again later"
+    "message": "This request can't be completed right now due to an analytics system server issue, please try again later."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "We are unable to delete this data right now"
+  },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "Unable to delete"
   },
   "deleteMetaMetricsDataModalDesc": {
     "message": "We are about to remove all your MetaMetrics data. Are you sure?"
@@ -2276,8 +2286,11 @@
     "message": "Delete MetaMetrics data?"
   },
   "deleteMetaMetricsDataRequestedDescription": {
-    "message": "You initiated this action on $1. This process can take up to 30 days. View the $2",
+    "message": "You initiated deletion on $1. This process can take up to 30 days. View the $2.",
     "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "Data will be deleted within 30 days"
   },
   "deleteNetworkIntro": {
     "message": "If you delete this network, you will need to add it again to view your assets in this network"
@@ -3196,6 +3209,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Enable blind signing"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "The Ethereum app is open on your Ledger"
   },
@@ -3235,6 +3251,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Open Ethereum app"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 connected",
@@ -4177,8 +4196,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $1",
-    "description": "$1 is the 'Terms apply' link"
+    "message": "$1% annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",
@@ -6661,6 +6680,9 @@
     "message": "This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. $1",
     "description": "Link to learn more about security alerts"
   },
+  "securityAlertsDescriptionV2": {
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1"
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -7612,6 +7634,9 @@
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Estimates balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
@@ -7668,6 +7693,12 @@
   },
   "smartAccountLabel": {
     "message": "Smart Account"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Smart account requests from dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -8146,7 +8177,7 @@
     "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
-    "message": "Error in retrieving state logs."
+    "message": "Error in retrieving state logs, please try again later."
   },
   "stateLogFileName": {
     "message": "MetaMask state logs"
@@ -8231,6 +8262,9 @@
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "Turn on Smart Transactions for more reliable and secure transactions on supported networks. $1"
@@ -8990,6 +9024,9 @@
   "unableToConnectTo": {
     "message": "Unable to connect to $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
+  },
+  "unableToDownload": {
+    "message": "Unable to download"
   },
   "unapproved": {
     "message": "Unapproved"
