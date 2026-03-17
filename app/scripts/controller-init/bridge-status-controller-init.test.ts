@@ -58,24 +58,28 @@ describe('BridgeStatusControllerInit', () => {
       const mockAddTransactionBatch = jest.fn().mockResolvedValue({
         batchId: '0x1',
       });
-      requestMock.getController.mockReturnValue({
-        addTransaction: jest.fn(),
-        addTransactionBatch: mockAddTransactionBatch,
-        estimateGasFee: jest.fn(),
-        updateTransaction: jest.fn(),
-      } as unknown as TransactionController);
-      requestMock.getFlatState.mockReturnValue({
-        keyrings: [
-          {
-            type: keyringType,
-            accounts,
-            metadata: {
-              id: '',
-              name: '',
-            },
-          },
-        ],
-      } as unknown as ReturnType<typeof requestMock.getFlatState>);
+      const accountsLower = accounts.map((a) => a.toLowerCase());
+      const mockGetKeyringForAccount = jest.fn().mockImplementation((addr: string) =>
+        Promise.resolve(
+          accountsLower.includes(addr?.toLowerCase())
+            ? ({ type: keyringType } as { type: string })
+            : undefined,
+        ),
+      );
+      requestMock.getController.mockImplementation((name: string) => {
+        if (name === 'TransactionController') {
+          return {
+            addTransaction: jest.fn(),
+            addTransactionBatch: mockAddTransactionBatch,
+            estimateGasFee: jest.fn(),
+            updateTransaction: jest.fn(),
+          } as unknown as TransactionController;
+        }
+        if (name === 'KeyringController') {
+          return { getKeyringForAccount: mockGetKeyringForAccount };
+        }
+        return undefined;
+      });
 
       BridgeStatusControllerInit(requestMock);
 
@@ -86,11 +90,11 @@ describe('BridgeStatusControllerInit', () => {
       return { addTransactionBatchFn, mockAddTransactionBatch };
     }
 
-    it('clears gas sponsorship flags for hardware wallet accounts', () => {
+    it('clears gas sponsorship flags for hardware wallet accounts', async () => {
       const { addTransactionBatchFn, mockAddTransactionBatch } =
         setupWithKeyring('Ledger Hardware', ['0xhardwareaccount']);
 
-      addTransactionBatchFn({
+      await addTransactionBatchFn({
         from: '0xHardwareAccount',
         isGasFeeSponsored: true,
         isGasFeeIncluded: true,
@@ -108,11 +112,11 @@ describe('BridgeStatusControllerInit', () => {
       );
     });
 
-    it('preserves gas sponsorship flags for HD wallet accounts', () => {
+    it('preserves gas sponsorship flags for HD wallet accounts', async () => {
       const { addTransactionBatchFn, mockAddTransactionBatch } =
         setupWithKeyring('HD Key Tree', ['0xhdaccount']);
 
-      addTransactionBatchFn({
+      await addTransactionBatchFn({
         from: '0xHDAccount',
         isGasFeeSponsored: true,
         isGasFeeIncluded: true,

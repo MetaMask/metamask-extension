@@ -115,7 +115,7 @@ export function useGasIncluded7702({
   ]);
 
   // Hardware wallets cannot use EIP-7702 gasless; do not request 7702 quotes.
-  if (isUsingHardwareWallet) {
+  if (isHardwareWalletAccount) {
     return false;
   }
   return isGasIncluded7702Supported;

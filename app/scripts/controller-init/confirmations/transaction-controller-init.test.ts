@@ -305,15 +305,16 @@ describe('Transaction Controller Init', () => {
 
     it('skips Delegation7702PublishHook for hardware wallet accounts', async () => {
       const requestMock = buildInitRequestMock();
-      requestMock.getFlatState.mockReturnValue({
-        keyrings: [
-          {
-            type: 'Ledger Hardware',
-            accounts: ['0x0000000000000000000000000000000000000000'],
-            metadata: { id: '', name: '' },
-          },
-        ],
-      } as unknown as ReturnType<typeof requestMock.getFlatState>);
+      requestMock.getController.mockImplementation((name: string) => {
+        if (name === 'KeyringController') {
+          return {
+            getKeyringForAccount: jest.fn().mockResolvedValue({
+              type: 'Ledger Hardware',
+            }),
+          };
+        }
+        return buildControllerMock();
+      });
 
       TransactionControllerInit(requestMock);
 
@@ -326,15 +327,16 @@ describe('Transaction Controller Init', () => {
 
     it('calls Delegation7702PublishHook for HD keyring accounts', async () => {
       const requestMock = buildInitRequestMock();
-      requestMock.getFlatState.mockReturnValue({
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: ['0x0000000000000000000000000000000000000000'],
-            metadata: { id: '', name: '' },
-          },
-        ],
-      } as unknown as ReturnType<typeof requestMock.getFlatState>);
+      requestMock.getController.mockImplementation((name: string) => {
+        if (name === 'KeyringController') {
+          return {
+            getKeyringForAccount: jest.fn().mockResolvedValue({
+              type: 'HD Key Tree',
+            }),
+          };
+        }
+        return buildControllerMock();
+      });
 
       TransactionControllerInit(requestMock);
 

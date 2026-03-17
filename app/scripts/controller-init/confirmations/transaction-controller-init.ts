@@ -41,7 +41,7 @@ import {
 } from '../../lib/transaction/metrics';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getTransactionById } from '../../lib/transaction/util';
-import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
+import { accountSupports7702 } from '../../lib/account-supports-7702';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
@@ -127,22 +127,11 @@ export const TransactionControllerInit: ControllerInitFunction<
       return !type || !disabledTypes.includes(type);
     },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
-      const { chainId, txParams } = transactionMeta;
-      const from = txParams?.from;
-
-      // Hardware wallets cannot use EIP-7702 gasless; do not request 7702/suggestFees.with7702 from sentinel.
-      if (from) {
-        try {
-          const keyring = await keyringController().getKeyringForAccount(from);
-          const keyringType = (keyring as { type?: string } | undefined)?.type ?? '';
-          if (keyringType.includes('Hardware')) {
-            return false;
-          }
-        } catch {
-          // Account not found or keyring error: continue with normal 7702 eligibility.
-        }
+      if (!(await accountSupports7702(transactionMeta.txParams?.from, keyringController))) {
+        return false;
       }
 
+      const { chainId } = transactionMeta;
       const uiState = getUIState(getFlatState());
 
       // @ts-expect-error Smart transaction selector types does not match controller state
@@ -206,6 +195,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         publishHook({
           flatState: getFlatState(),
           initMessenger,
+          keyringController,
           signedTx,
           smartTransactionsController: smartTransactionsController(),
           transactionController: controller,
@@ -363,6 +353,7 @@ function getUIState(flatState: ControllerFlatState) {
 export async function publishHook({
   flatState,
   initMessenger,
+  keyringController,
   signedTx,
   smartTransactionsController,
   transactionController,
@@ -370,6 +361,9 @@ export async function publishHook({
 }: {
   flatState: ControllerFlatState;
   initMessenger: TransactionControllerInitMessenger;
+  keyringController: () => {
+    getKeyringForAccount: (address: string) => Promise<{ type?: string } | undefined>;
+  };
   signedTx: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
@@ -394,13 +388,10 @@ export async function publishHook({
 
   const { isExternalSign } = transactionMeta;
 
-  const fromAddress = (transactionMeta.txParams.from as string)?.toLowerCase();
-  const fromKeyring = flatState?.keyrings?.find((kr: { accounts: string[] }) =>
-    kr.accounts.some((a: string) => a.toLowerCase() === fromAddress),
+  const keyringSupports7702 = await accountSupports7702(
+    transactionMeta.txParams?.from,
+    keyringController,
   );
-  const keyringSupports7702 = fromKeyring
-    ? KEYRING_TYPES_SUPPORTING_7702.includes(fromKeyring.type as never)
-    : false;
 
   if (
     keyringSupports7702 &&
