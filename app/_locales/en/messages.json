@@ -5458,9 +5458,6 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
-  "perpsRemoveFromFavorites": {
-    "message": "Remove from favorites"
-  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5711,6 +5708,9 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Decrease the size of your short position"
+  },
+  "perpsRemoveFromFavorites": {
+    "message": "Remove from favorites"
   },
   "perpsRemoveMargin": {
     "message": "Remove margin"
