@@ -548,19 +548,8 @@ export async function mockGasIncludedTransactionRequests(
 
   await mockEthUsdcGasIncludedTrade(mockServer);
 
-  // Sentinel /networks with sendBundle: true so useIsSendBundleSupported returns true
-  // and the quote request includes gasIncluded: true (required for gas-included quotes).
-  await mockServer.forGet(`${TX_SENTINEL_URL}/networks`).thenCallback(() => ({
-    statusCode: 200,
-    json: {
-      '1': {
-        network: 'ethereum-mainnet',
-        confirmations: true,
-        relayTransactions: true,
-        sendBundle: true,
-      },
-    },
-  }));
+  // Sentinel /networks (sendBundle: true so quote request includes gasIncluded: true).
+  await mockSentinelNetworks(mockServer);
 
   // Mock getQuoteStream (SSE) so the swap page receives a quote (ETH -> MUSD).
   await mockServer
