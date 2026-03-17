@@ -3564,7 +3564,7 @@ export const getAllPermittedAccounts = createParameterizedSelector(20)(
   (_state, origin) => origin,
   (subjects, origin) => {
     const caip25Permission = getCaip25PermissionFromSubject(
-      origin && subjects?.[origin],
+      subjectSelectorOf(subjects, origin),
     );
     const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
     return caip25Caveat
@@ -3741,8 +3741,12 @@ function getEVMChainsFromPermission(caip25Permission) {
   return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }
 
+function subjectSelectorOf(subjects, origin) {
+  return origin && subjects?.[origin];
+}
+
 function subjectSelector(state, origin) {
-  return origin && state.metamask.subjects?.[origin];
+  return subjectSelectorOf(state.metamask.subjects, origin);
 }
 
 export function getAccountToConnectToActiveTab(state) {
