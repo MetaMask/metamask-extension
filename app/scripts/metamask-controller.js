@@ -2885,7 +2885,10 @@ export default class MetamaskController extends EventEmitter {
       },
 
       // CashAccountService
-      createCashAccount: async (entropySource) => {
+      createCashAccount: async () => {
+        // We always use the first listed keyring as the entropy source for the cash account.
+        const entropySource =
+          this.keyringController.state.keyrings[0]?.metadata.id;
         return await this.cashAccountService.createCashAccount(entropySource);
       },
 

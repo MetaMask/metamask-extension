@@ -54,7 +54,6 @@ import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdat
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { createCashAccount } from '../../../store/actions';
-import { stripWalletTypePrefixFromWalletId } from '../../../hooks/multichain-accounts/utils';
 import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
@@ -125,14 +124,8 @@ export const AccountList = () => {
   }, [setIsAddWalletModalOpen]);
 
   const handleCreateCashAccount = useCallback(() => {
-    const firstWalletId = Object.keys(wallets)[0] as
-      | Parameters<typeof stripWalletTypePrefixFromWalletId>[0]
-      | undefined;
-    if (firstWalletId) {
-      const entropySource = stripWalletTypePrefixFromWalletId(firstWalletId);
-      dispatch(createCashAccount(entropySource));
-    }
-  }, [wallets, dispatch]);
+    dispatch(createCashAccount());
+  }, [dispatch]);
 
   const handleBack = useCallback(() => {
     transitionBack(() => navigate(PREVIOUS_ROUTE));
