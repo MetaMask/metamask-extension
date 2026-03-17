@@ -1,11 +1,12 @@
 import type { PerpsControllerState } from '@metamask/perps-controller';
+import { createSelector } from 'reselect';
 
 /**
  * The PerpsController state is flattened into state.metamask by
  * ComposableObservableStore.getFlatState(). All properties live directly
  * on state.metamask, NOT nested under state.metamask.PerpsController.
  */
-type PerpsState = {
+export type PerpsState = {
   metamask: Partial<PerpsControllerState>;
 };
 
@@ -91,3 +92,15 @@ export const selectPerpsPerpsBalances = (state: PerpsState) =>
 
 export const selectPerpsMarketFilterPreferences = (state: PerpsState) =>
   state.metamask.marketFilterPreferences ?? null;
+
+export const selectPerpsIsWatchlistMarket = createSelector(
+  [
+    selectPerpsWatchlistMarkets,
+    selectPerpsIsTestnet,
+    (_: PerpsState, symbol: string) => symbol,
+  ],
+  (watchlist, isTestnet, symbol) =>
+    (isTestnet ? watchlist.testnet : watchlist.mainnet).some(
+      (s) => s.toUpperCase() === (symbol ?? '').toUpperCase(),
+    ),
+);

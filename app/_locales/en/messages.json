@@ -5458,6 +5458,9 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsRemoveFromFavorites": {
+    "message": "Remove from favorites"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
