@@ -17,26 +17,17 @@ jest.mock('react-router-dom', () => {
 jest.mock('react-redux', () => {
   const original = jest.requireActual('react-redux');
 
-  type StoreWithGetState = {
-    getState?: () => unknown;
-  };
-
-  type OriginalWithUseStore = {
-    useStore?: () => StoreWithGetState;
-  };
-
   return {
     ...original,
-    useSelector: (selector: (state: unknown) => unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useSelector: (selector: any) => {
       // If mock value is set, return it; otherwise use real selector
       if (mockUseSelectorReturnValue !== undefined) {
         return mockUseSelectorReturnValue;
       }
 
-      const typedOriginal = original as OriginalWithUseStore;
-      const store = typedOriginal.useStore?.();
-      const state = store?.getState?.() ?? {};
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const state = (original.useStore as any)?.()?.getState?.() || {};
       return selector(state);
     },
   };
