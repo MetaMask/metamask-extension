@@ -1200,9 +1200,6 @@
   "passwordNotLongEnough": {
     "message": "A senha não é longa o suficiente"
   },
-  "passwordTermsWarning": {
-    "message": "Compreendo que a MetaMask não é capaz de recuperar essa senha para mim. $1"
-  },
   "passwordsDontMatch": {
     "message": "As senhas são diferentes"
   },
@@ -1467,10 +1464,6 @@
   "step1LatticeWallet": {
     "message": "Confirme que seu Lattice1 está pronto para se conectar"
   },
-  "step1LatticeWalletMsg": {
-    "message": "Você pode conectar a MetaMask ao seu dispositivo Lattice1 quando ele estiver configurado e online. Desbloqueie seu dispositivo e tenha o ID do seu dispositivo em mãos. Para saber mais sobre como usar carteiras de hardware, $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1LedgerWallet": {
     "message": "Baixar o aplicativo do Ledger"
   },
@@ -1481,16 +1474,8 @@
   "step1TrezorWallet": {
     "message": "Conecte a carteira Trezor"
   },
-  "step1TrezorWalletMsg": {
-    "message": "Conecte sua carteira diretamente ao seu computador. Para obter mais informações sobre como usar seu dispositivo de carteira de hardware, $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step2LedgerWallet": {
     "message": "Conecte a carteira Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Conecte sua carteira diretamente ao seu computador.  Desbloqueie seu Ledger e abra o aplicativo do Ethereum. Para obter mais informações sobre como usar seu dispositivo de carteira de hardware, $1.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "submit": {
     "message": "Enviar"
@@ -1820,10 +1805,6 @@
   },
   "unlock": {
     "message": "Desbloquear"
-  },
-  "unrecognizedChain": {
-    "message": "Essa rede personalizada não foi reconhecida. Recomendamos que você $1 antes de continuar",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
   "unsendableAsset": {
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",
