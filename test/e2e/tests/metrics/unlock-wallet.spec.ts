@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -34,7 +34,7 @@ describe('Unlock wallet', function (this: Suite) {
   it('should send first three Page metric events upon fullscreen page load', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,

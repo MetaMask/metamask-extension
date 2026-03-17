@@ -7,10 +7,11 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenPeriodicDetails } from './erc20-token-periodic-details';
 import { formatPeriodDuration } from './typed-sign-permission-util';
+import { TestErrorBoundary } from './test-error-boundary';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
-  fetchErc20Decimals: jest.fn().mockResolvedValue(2),
+  fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(2),
 }));
 
 // Mock the formatPeriodDuration utility function
@@ -78,7 +79,8 @@ describe('Erc20TokenPeriodicDetails', () => {
 
     await waitFor(() => {
       expect(
-        (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
+        (tokenUtils as jest.Mocked<typeof tokenUtils>)
+          .fetchErc20DecimalsOrThrow,
       ).toHaveBeenCalled();
     });
 
@@ -120,7 +122,7 @@ describe('Erc20TokenPeriodicDetails', () => {
     it('formats the allowance based on the resolved token decimals', async () => {
       (
         tokenUtils as jest.Mocked<typeof tokenUtils>
-      ).fetchErc20Decimals.mockResolvedValue(3);
+      ).fetchErc20DecimalsOrThrow.mockResolvedValue(3);
 
       const detailsSection =
         await renderWithDecimalsAndGetDetailsSection(defaultProps);
@@ -131,8 +133,36 @@ describe('Erc20TokenPeriodicDetails', () => {
         detailsSection?.textContent?.includes('4.66'), // 0x1234 / 10^3
       ).toBe(true);
     });
+
+    it('throws error when decimals cannot be resolved', async () => {
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20DecimalsOrThrow.mockRejectedValue(
+        new Error('Unable to resolve token decimals'),
+      );
+
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TestErrorBoundary>
+          <Erc20TokenPeriodicDetails {...defaultProps} />
+        </TestErrorBoundary>,
+        getMockStore(),
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('error-boundary')).toBeInTheDocument();
+        expect(getByTestId('error-boundary')).toHaveTextContent(
+          'Unable to resolve token decimals',
+        );
+      });
+
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20DecimalsOrThrow.mockResolvedValue(2);
+    });
   });
 
+  // Tests that intentionally throw may still log "Error: Uncaught [Error ...]";
+  // see console baseline "Test errors: Uncaught Errors" for this file.
   describe('error handling', () => {
     it('throws error when start time is missing', () => {
       const permissionWithoutStartTime = {

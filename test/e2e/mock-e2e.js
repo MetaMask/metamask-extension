@@ -80,18 +80,19 @@ const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
   'avalanche-mainnet.infura.io',
   'bsc-dataseed.binance.org',
+  'bsc-mainnet.infura.io',
+  'carrot.megaeth.com',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
-  'testnet-rpc.monad.xyz',
-  'carrot.megaeth.com',
-  'sei-mainnet.infura.io',
   'mainnet.infura.io',
+  'optimism-mainnet.infura.io',
+  'sei-mainnet.infura.io',
   'sepolia.infura.io',
+  'testnet-rpc.monad.xyz',
 ];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
-const { mockNotificationServices } = require('./tests/notifications/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
@@ -1053,13 +1054,12 @@ async function setupMocking(
       };
     });
 
-  // Notification APIs
-  await mockNotificationServices(server);
-
-  // Override notification list with empty response to prevent unread dot
-  // Notification-specific tests re-register this endpoint via testSpecificMock
+  // Override notification list with empty response to prevent unread dot.
+  // .always() ensures every fetch returns [] (not just the first one).
+  // Notification-specific tests re-register this endpoint via testSpecificMock.
   await server
     .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Identity APIs
