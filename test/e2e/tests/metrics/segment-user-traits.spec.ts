@@ -18,6 +18,7 @@ async function mockSegment(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         batch: [{ type: 'identify' }],
       })
+      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -44,39 +45,10 @@ describe('Segment User Traits', function () {
           participateInMetaMetrics: true,
           dataCollectionForMarketing: true,
         });
-        // Enabling metrics and marketing consent may produce separate identify events due to debounce timing.
-        // Poll until both traits are present across the accumulated events.
-        let events: { traits: Record<string, unknown> }[] = [];
-        await driver.wait(async () => {
-          try {
-            events = await getEventPayloads(driver, mockedEndpoints, false);
-          } catch {
-            return false;
-          }
-          if (events.length === 0) {
-            return false;
-          }
-          const allTraits = events.reduce(
-            (
-              acc: Record<string, unknown>,
-              event: { traits: Record<string, unknown> },
-            ) => ({ ...acc, ...event.traits }),
-            {} as Record<string, unknown>,
-          );
-          return (
-            allTraits.is_metrics_opted_in === true &&
-            allTraits.has_marketing_consent === true
-          );
-        }, 15_000);
-        const allTraits = events.reduce(
-          (
-            acc: Record<string, unknown>,
-            event: { traits: Record<string, unknown> },
-          ) => ({ ...acc, ...event.traits }),
-          {} as Record<string, unknown>,
-        );
-        assert.deepStrictEqual(allTraits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(allTraits.has_marketing_consent, true);
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
+        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
+        assert.deepStrictEqual(events[0].traits.has_marketing_consent, true);
       },
     );
   });
@@ -196,31 +168,27 @@ describe('Segment User Traits', function () {
         await privacySettings.toggleDataCollectionForMarketing();
         // maxWait on sendUpdate debounce may split the two toggles into
         // separate identify events. Poll until the expected traits arrive.
-        await driver.waitUntil(
-          async () => {
-            try {
-              events = await getEventPayloads(driver, mockedEndpoints, false);
-            } catch {
-              return false;
-            }
-            console.log('identify events:', JSON.stringify(events));
-            if (events.length === 0) {
-              return false;
-            }
-            const allTraits = events.reduce(
-              (
-                acc: Record<string, unknown>,
-                event: { traits: Record<string, unknown> },
-              ) => ({ ...acc, ...event.traits }),
-              {} as Record<string, unknown>,
-            );
-            return (
-              allTraits.is_metrics_opted_in === true &&
-              allTraits.has_marketing_consent === true
-            );
-          },
-          { timeout: 30_000, interval: 2_000 },
-        );
+        await driver.wait(async () => {
+          try {
+            events = await getEventPayloads(driver, mockedEndpoints, false);
+          } catch {
+            return false;
+          }
+          if (events.length === 0) {
+            return false;
+          }
+          const allTraits = events.reduce(
+            (
+              acc: Record<string, unknown>,
+              event: { traits: Record<string, unknown> },
+            ) => ({ ...acc, ...event.traits }),
+            {} as Record<string, unknown>,
+          );
+          return (
+            allTraits.is_metrics_opted_in === true &&
+            allTraits.has_marketing_consent === true
+          );
+        }, 30_000);
         const allTraits = events.reduce(
           (
             acc: Record<string, unknown>,
