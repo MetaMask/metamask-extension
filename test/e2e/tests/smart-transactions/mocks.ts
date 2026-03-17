@@ -541,6 +541,101 @@ export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
     .thenJson(200, { uuid: STX_UUID });
 }
 
+/**
+ * Single quote payload for getQuoteStream (SSE data: field).
+ * ETH 20 -> MUSD, pancakeswap. Used by "should Swap with gas included fee" test.
+ */
+const MOCK_ETH_MUSD_QUOTE_STREAM = [
+  {
+    quote: {
+      requestId:
+        '0x862b0cc5ecc6cbe511bedd5dfffaffbd68400255965c6594acb893c3df331964',
+      bridgeId: 'pancakeswap',
+      srcChainId: 1,
+      destChainId: 1,
+      aggregator: 'pancakeswap',
+      aggregatorType: 'AGG',
+      srcAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 1,
+        assetId: 'eip155:1/slip44:60',
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ether',
+        coingeckoId: 'ethereum',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+        metadata: {},
+      },
+      srcTokenAmount: '20000000000000000000',
+      destAsset: {
+        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        chainId: 1,
+        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        symbol: 'MUSD',
+        decimals: 6,
+        name: 'MetaMask USD',
+        coingeckoId: 'metamask-usd',
+        aggregators: ['metamask', 'liFi', 'socket', 'rubic', 'rango'],
+        occurrences: 5,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
+        metadata: {},
+      },
+      destTokenAmount: '267044',
+      minDestTokenAmount: '261703',
+      walletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      destWalletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      feeData: {
+        metabridge: {
+          amount: '0',
+          asset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 1,
+            assetId: 'eip155:1/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+            metadata: {},
+          },
+          quoteBpsFee: 0,
+          baseBpsFee: 87.5,
+        },
+      },
+      bridges: ['pancakeswap'],
+      protocols: ['pancakeswap'],
+      steps: [],
+      slippage: 2,
+      gasSponsored: false,
+      gasIncluded: true,
+      gasIncluded7702: false,
+      priceData: {
+        totalFromAmountUsd: '46957',
+        totalToAmountUsd: '0.26697990944',
+        priceImpact: '0.007135438233346954',
+        totalFeeAmountUsd: '0',
+      },
+    },
+    trade: {
+      chainId: 1,
+      to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x1158e460913d00000',
+      data: '0x5f57552900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001158e460913d0000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000001b70616e63616b6553776170526f7574657246656544796e616d6963000000000000000000000000000000000000000000000000000000000000000000000002200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aca92e438df0b2401ff60da7e4337b687a2435da000000000000000000000000000000000000000000000001158e460913d00000000000000000000000000000000000000000000000000000000000000003fe4700000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f326e4de8f66a0bdc0970b79e0924e33c79f1915000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4472b43f3000000000000000000000000000000000000000000000001158e460913d00000000000000000000000000000000000000000000000000000000000003feaf000000000000000000000000000000000000000000000000000000000000008000000000000000000000000074de5d4fcbf63e00296fd95d33236b97940166310000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000aca92e438df0b2401ff60da7e4337b687a2435da0000000000000000000000000000000000000000000000000000000006',
+      gasLimit: 284508,
+      effectiveGas: 204102,
+    },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+];
+
 export async function mockGasIncludedTransactionRequests(
   mockServer: MockttpServer,
 ) {
@@ -650,7 +745,7 @@ async function mockSmartTransactionRequestsBase(mockServer: MockttpServer) {
       const body = (await req.body.getJson()) as { params?: [string] };
       const hash = body?.params?.[0] ?? TRANSACTION_HASH;
       const result = GET_TRANSACTION_RECEIPT_RESPONSE.result as {
-        logs?: Array<{ transactionHash: string }>;
+        logs?: { transactionHash: string }[];
         [key: string]: unknown;
       };
       const resultWithHash = {
@@ -840,101 +935,6 @@ const MOCK_ETH_DAI_QUOTE = [
   },
 ];
 
-/**
- * Single quote payload for getQuoteStream (SSE data: field).
- * ETH 20 -> MUSD, pancakeswap. Used by "should Swap with gas included fee" test.
- */
-const MOCK_ETH_MUSD_QUOTE_STREAM = [
-  {
-    quote: {
-      requestId:
-        '0x862b0cc5ecc6cbe511bedd5dfffaffbd68400255965c6594acb893c3df331964',
-      bridgeId: 'pancakeswap',
-      srcChainId: 1,
-      destChainId: 1,
-      aggregator: 'pancakeswap',
-      aggregatorType: 'AGG',
-      srcAsset: {
-        address: '0x0000000000000000000000000000000000000000',
-        chainId: 1,
-        assetId: 'eip155:1/slip44:60',
-        symbol: 'ETH',
-        decimals: 18,
-        name: 'Ether',
-        coingeckoId: 'ethereum',
-        aggregators: [],
-        occurrences: 100,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-        metadata: {},
-      },
-      srcTokenAmount: '20000000000000000000',
-      destAsset: {
-        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
-        chainId: 1,
-        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
-        symbol: 'MUSD',
-        decimals: 6,
-        name: 'MetaMask USD',
-        coingeckoId: 'metamask-usd',
-        aggregators: ['metamask', 'liFi', 'socket', 'rubic', 'rango'],
-        occurrences: 5,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
-        metadata: {},
-      },
-      destTokenAmount: '267044',
-      minDestTokenAmount: '261703',
-      walletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-      destWalletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-      feeData: {
-        metabridge: {
-          amount: '0',
-          asset: {
-            address: '0x0000000000000000000000000000000000000000',
-            chainId: 1,
-            assetId: 'eip155:1/slip44:60',
-            symbol: 'ETH',
-            decimals: 18,
-            name: 'Ether',
-            coingeckoId: 'ethereum',
-            aggregators: [],
-            occurrences: 100,
-            iconUrl:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-            metadata: {},
-          },
-          quoteBpsFee: 0,
-          baseBpsFee: 87.5,
-        },
-      },
-      bridges: ['pancakeswap'],
-      protocols: ['pancakeswap'],
-      steps: [],
-      slippage: 2,
-      gasSponsored: false,
-      gasIncluded: true,
-      gasIncluded7702: false,
-      priceData: {
-        totalFromAmountUsd: '46957',
-        totalToAmountUsd: '0.26697990944',
-        priceImpact: '0.007135438233346954',
-        totalFeeAmountUsd: '0',
-      },
-    },
-    trade: {
-      chainId: 1,
-      to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
-      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-      value: '0x1158e460913d00000',
-      data: '0x5f57552900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001158e460913d0000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000001b70616e63616b6553776170526f7574657246656544796e616d6963000000000000000000000000000000000000000000000000000000000000000000000002200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aca92e438df0b2401ff60da7e4337b687a2435da000000000000000000000000000000000000000000000001158e460913d00000000000000000000000000000000000000000000000000000000000000003fe4700000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f326e4de8f66a0bdc0970b79e0924e33c79f1915000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4472b43f3000000000000000000000000000000000000000000000001158e460913d00000000000000000000000000000000000000000000000000000000000000003feaf000000000000000000000000000000000000000000000000000000000000008000000000000000000000000074de5d4fcbf63e00296fd95d33236b97940166310000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000aca92e438df0b2401ff60da7e4337b687a2435da0000000000000000000000000000000000000000000000000000000006',
-      gasLimit: 284508,
-      effectiveGas: 204102,
-    },
-    estimatedProcessingTimeInSeconds: 0,
-  },
-];
-
 function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
   let index = 0;
   return Readable.fromWeb(
@@ -999,8 +999,7 @@ export async function mockSwapTokensMockApis(mockServer: MockttpServer) {
     }));
 }
 
-const SWAP_ACCOUNT_ADDRESS =
-  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const SWAP_ACCOUNT_ADDRESS = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 /**
  * One completed "Swap ETH to DAI" transaction in accounts API v4 format.
@@ -1050,3 +1049,22 @@ const MOCK_ACCOUNTS_API_SWAP_TX = {
   transactionCategory: 'SWAP',
   readable: 'Swap ETH to DAI',
 };
+
+/**
+ * Activity list uses the accounts API; default mock returns empty data.
+ * Call this to mock the API so the activity list shows the swap as completed.
+ */
+export async function mockAccountsApiSwapTransaction(
+  mockServer: MockttpServer,
+): Promise<void> {
+  await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [MOCK_ACCOUNTS_API_SWAP_TX],
+        pageInfo: { hasNextPage: false, count: 1 },
+      },
+    }));
+}
