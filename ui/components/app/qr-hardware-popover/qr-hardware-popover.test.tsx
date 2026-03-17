@@ -32,7 +32,7 @@ jest.mock('./qr-hardware-sign-request', () => {
 
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
-function buildStore(activeQrCodeScanRequest = null) {
+function buildStore(activeQrCodeScanRequest: { type: string; request?: object } | null = null) {
   return configureStore({
     ...mockState,
     metamask: {
