@@ -70,7 +70,11 @@ function createProviderWrapper(
 
   const Wrapper = ({ children }) => {
     const container = (
-      <MemoryRouter initialEntries={[pathname]}>
+      <MemoryRouter
+          initialEntries={[pathname]}
+          // TODO: remove post react-router v7 upgrade
+          future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
+        >
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
             <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
