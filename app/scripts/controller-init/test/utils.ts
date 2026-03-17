@@ -17,6 +17,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
 > {
   return {
     currentMigrationVersion: 0,
+    ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     // @ts-expect-error: Partial mock.
     extension: {},
     platform: new ExtensionPlatform(),
