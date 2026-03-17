@@ -43,7 +43,7 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
       );
       const supports7702 = keyring
         ? KEYRING_TYPES_SUPPORTING_7702.includes(keyring.type as never)
-        : true;
+        : false;
 
       if (!supports7702) {
         return transactionController.addTransactionBatch(

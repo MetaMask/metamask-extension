@@ -385,7 +385,7 @@ export async function publishHook({
   );
   const keyringSupports7702 = fromKeyring
     ? KEYRING_TYPES_SUPPORTING_7702.includes(fromKeyring.type as never)
-    : true;
+    : false;
 
   if (
     keyringSupports7702 &&
