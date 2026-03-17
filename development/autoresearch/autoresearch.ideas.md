@@ -22,7 +22,7 @@ This file is maintained by the autoresearch agent. It tracks ideas to try, what 
 - [ ] Test `@babel/preset-env` `modules: false` — might reduce transform work if Browserify handles modules
 - [ ] Reduce the second Babelify pass's `only` list — some of those ~30 packages might no longer need transpilation if their latest versions ship compatible code
 - [ ] Disable `babel-plugin-react-compiler` — it runs on all UI components and may add overhead. Test build time with it disabled.
-- [ ] Set `api.cache(true)` instead of `api.cache(false)` in babel.config.js — currently Babel cache is explicitly DISABLED. Enabling it could save significant time on repeated module transpilation.
+- [x] Set `api.cache(true)` instead of `api.cache(false)` in babel.config.js — currently Babel cache is explicitly DISABLED. Enabling it could save significant time on repeated module transpilation (experiment 5)
 - [ ] Use `@babel/preset-typescript` with `optimizeConstEnums: true`
 
 ### Browserify Pipeline
