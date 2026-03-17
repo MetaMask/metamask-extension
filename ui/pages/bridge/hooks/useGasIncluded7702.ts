@@ -12,6 +12,8 @@ import { isRelaySupported } from '../../../store/actions';
 import { isHardwareWallet } from '../../../selectors';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
+import { getCurrentKeyring } from '../../../selectors';
+import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 
 type Chain = {
   chainId: string;
@@ -112,5 +114,9 @@ export function useGasIncluded7702({
     selectedAccount?.address,
   ]);
 
+  // Hardware wallets cannot use EIP-7702 gasless; do not request 7702 quotes.
+  if (isUsingHardwareWallet) {
+    return false;
+  }
   return isGasIncluded7702Supported;
 }

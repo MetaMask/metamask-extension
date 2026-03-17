@@ -127,7 +127,22 @@ export const TransactionControllerInit: ControllerInitFunction<
       return !type || !disabledTypes.includes(type);
     },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
-      const { chainId } = transactionMeta;
+      const { chainId, txParams } = transactionMeta;
+      const from = txParams?.from;
+
+      // Hardware wallets cannot use EIP-7702 gasless; do not request 7702/suggestFees.with7702 from sentinel.
+      if (from) {
+        try {
+          const keyring = await keyringController().getKeyringForAccount(from);
+          const keyringType = (keyring as { type?: string } | undefined)?.type ?? '';
+          if (keyringType.includes('Hardware')) {
+            return false;
+          }
+        } catch {
+          // Account not found or keyring error: continue with normal 7702 eligibility.
+        }
+      }
+
       const uiState = getUIState(getFlatState());
 
       // @ts-expect-error Smart transaction selector types does not match controller state
