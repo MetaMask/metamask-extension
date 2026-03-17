@@ -3560,12 +3560,10 @@ function getPermittedEVMChains(state, origin) {
 }
 
 export const getAllPermittedAccounts = createParameterizedSelector(20)(
-  (state) => state.metamask.subjects,
+  (state, origin) => origin && state.metamask.subjects?.[origin],
   (_state, origin) => origin,
-  (subjects, origin) => {
-    const caip25Permission = getCaip25PermissionFromSubject(
-      subjectSelectorOf(subjects, origin),
-    );
+  (subject) => {
+    const caip25Permission = getCaip25PermissionFromSubject(subject);
     const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
     return caip25Caveat
       ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
