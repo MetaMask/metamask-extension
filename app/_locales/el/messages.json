@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Το κατανοώ και θέλω να συνεχίσω"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Αυτό σημαίνει ότι δεν θα βελτιστοποιήσετε πλήρως το χρόνο σας στο MetaMask. Βασικές λειτουργίες (όπως λεπτομέρειες των tokens, βέλτιστες ρυθμίσεις τελών συναλλαγών και άλλα) δεν θα είναι διαθέσιμες σε εσάς."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Εάν απενεργοποιήσετε αυτή την επιλογή, δεν θα μπορείτε να χρησιμοποιήσετε επίσης όλες τις λειτουργίες σχετικά με την $1 και τις $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "ασφάλεια και προστασία της ιδιωτικής ζωής, δημιουργία αντιγράφων ασφαλείας και συγχρονισμός"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "ειδοποιήσεις"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Για να βελτιστοποιήσετε το χρόνο σας στο MetaMask, θα πρέπει να ενεργοποιήσετε αυτή τη λειτουργία. Οι βασικές λειτουργίες (όπως οι λεπτομέρειες των tokens, οι βέλτιστες ρυθμίσεις τελών συναλλαγών και άλλα) είναι σημαντικές για την εμπειρία στο web3."

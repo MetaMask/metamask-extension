@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Entendo e quero continuar"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Isso significa que você não otimizará totalmente seu tempo na MetaMask. Os recursos básicos (como detalhes de tokens, configurações ideais de gás e outros) não estarão disponíveis."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Desativar isso também desativa todos os recursos em $1 e as $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "segurança e privacidade, backup e sincronização"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "notificações"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Para otimizar seu tempo na MetaMask, você precisará ativar este recurso. As funções básicas (como detalhes dos tokens, configurações ideais de gás e outras) são importantes para a experiência na web3."

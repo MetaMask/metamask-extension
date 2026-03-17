@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Anlıyorum ve devam etmek istiyorum"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Bu, MetaMask'te zamanınızı tamamen optimize edemeyeceğiniz anlamına gelir. Temel özellikler (token bilgileri, en iyi gaz ayarları vb. gibi) sizin için sunulmayacaktır."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Bunu kapattığınızdaşuradaki tüm özellikler de devre dışı bırakılır: $1 ve $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "güvenlik ve gizlilik, yedekleme ve senkronizasyon"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "bildirimler"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "MetaMask'te zamanınızı tamamen optimize etmek için bu özelliği açmanız gerekecektir. Temel özellikler (token bilgileri, en iyi gaz ayarları vb. gibi) web3 deneyimi için önemlidir."

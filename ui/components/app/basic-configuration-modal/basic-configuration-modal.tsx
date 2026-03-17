@@ -8,7 +8,6 @@ import {
   BoxJustifyContent,
   Text,
   TextVariant,
-  FontWeight,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -112,12 +111,11 @@ export function BasicConfigurationModal() {
     }
 
     if (onboardingFlow) {
-      closeModal();
       dispatch(onboardingToggleBasicFunctionalityOff());
     } else {
-      closeModal();
       dispatch(toggleExternalServices(!isExternalServicesEnabled));
     }
+    closeModal();
   };
 
   return (
@@ -151,7 +149,7 @@ export function BasicConfigurationModal() {
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {isExternalServicesEnabled
-              ? t('basicConfigurationModalDisclaimerOff')
+              ? t('basicConfigurationModalDisclaimerOffPart1')
               : t('basicConfigurationModalDisclaimerOn')}
           </Text>
           {isExternalServicesEnabled && (
@@ -159,32 +157,7 @@ export function BasicConfigurationModal() {
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
             >
-              {t('basicConfigurationModalDisclaimerOffAdditionalText', [
-                <Text
-                  key="basic-functionality-related-features-1"
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Bold}
-                  asChild
-                >
-                  <span>
-                    {t(
-                      'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst',
-                    )}
-                  </span>
-                </Text>,
-                <Text
-                  key="basic-functionality-related-features-2"
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Bold}
-                  asChild
-                >
-                  <span>
-                    {t(
-                      'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast',
-                    )}
-                  </span>
-                </Text>,
-              ])}
+              {t('basicConfigurationModalDisclaimerOffPart2')}
             </Text>
           )}
           {isExternalServicesEnabled && (

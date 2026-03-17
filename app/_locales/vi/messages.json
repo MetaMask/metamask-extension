@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Tôi hiểu rõ và muốn tiếp tục"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Điều này có nghĩa là bạn sẽ không thể tối ưu hoàn toàn thời gian sử dụng MetaMask. Các tính năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các tính năng khác) sẽ không khả dụng."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Tắt tùy chọn này cũng sẽ vô hiệu hóa tất cả các tính năng trong $1 và $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "bảo mật và quyền riêng tư, sao lưu và đồng bộ"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "thông báo"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Để tối ưu thời gian sử dụng MetaMask, bạn cần bật tính năng này. Các chức năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các chức năng khác) rất quan trọng đối với trải nghiệm web3."

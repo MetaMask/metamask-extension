@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Je comprends et je veux continuer"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Cela signifie que vous n’optimiserez pas complètement votre temps sur MetaMask. Vous n’aurez pas accès aux fonctions de base (comme les détails des jetons, les réglages optimaux du gaz, etc.)."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "La désactivation de cette option entraîne également la désactivation de toutes les fonctionnalités liées $1, et $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "à la sécurité et à la confidentialité, à la sauvegarde et à la synchronisation"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "aux notifications"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Pour optimiser votre temps sur MetaMask, vous devez activer cette fonction. Les fonctions de base (comme les détails des jetons, les réglages optimaux du gaz, et autres) améliorent votre expérience Web3."
