@@ -16,7 +16,7 @@ const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 /**
  * File types that can be compressed well using DEFLATE compression.
  */
-export const compressibleFileTypes = new Set([
+const compressibleFileTypes = new Set([
   '.bmp',
   '.cjs',
   '.css',

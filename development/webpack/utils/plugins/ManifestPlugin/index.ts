@@ -18,11 +18,7 @@ import {
 } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
-import {
-  buildBrowserZipSource,
-  compressibleFileTypes,
-  getZipFilePath,
-} from './zip';
+import { buildBrowserZipSource, getZipFilePath } from './zip';
 
 const { RawSource } = sources;
 
@@ -42,12 +38,6 @@ const SOURCEMAPS_DIRECTORY = 'sourcemaps';
  *
  */
 export class ManifestPlugin<Z extends boolean> {
-  /**
-   * File types that can be compressed well using DEFLATE compression, used when
-   * zipping assets.
-   */
-  static compressibleFileTypes = compressibleFileTypes;
-
   options: ManifestPluginOptions<Z>;
 
   manifests: Map<Browser, Manifest> = new Map();
