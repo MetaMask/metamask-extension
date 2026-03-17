@@ -1049,6 +1049,7 @@ function setupMinification(buildConfiguration) {
   const minifyOpts = {
     compress: {
       pure_getters: true,
+      unsafe_math: true,
     },
     mangle: {
       reserved: ['MetamaskInpageProvider'],
