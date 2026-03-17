@@ -9,7 +9,7 @@ import {
 import { sources } from 'webpack';
 import type { Browser } from '../../helpers';
 
-const { RawSource, ConcatSource } = sources;
+const { RawSource } = sources;
 
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 
@@ -73,7 +73,8 @@ export async function buildBrowserZipSource({
     // started processing additional chunks. We'll use this errored flag to
     // short-circuit the rest of the processing if that happens.
     let errored = false;
-    const zipSource = new ConcatSource();
+    const zipChunks: Uint8Array[] = [];
+    let zipSize = 0;
     const zip = new Zip((error, data, final) => {
       if (errored) {
         return;
@@ -85,9 +86,10 @@ export async function buildBrowserZipSource({
         return;
       }
 
-      zipSource.add(new RawSource(Buffer.from(data)));
+      zipChunks.push(data);
+      zipSize += data.byteLength;
       if (final) {
-        resolve(zipSource);
+        resolve(new RawSource(Buffer.concat(zipChunks, zipSize)));
       }
     });
 
@@ -155,14 +157,19 @@ function addAssetToZip(
   mtime: number,
   zip: Zip,
 ): void {
-  const zipFile = compress
-    ? // AsyncZipDeflate uses workers
-      // only use async deflate for "larger" files
-      asset.length > 1024 * 64
-      ? new AsyncZipDeflate(assetName, compressionOptions)
-      : new ZipDeflate(assetName, compressionOptions)
-    : // ZipPassThrough doesn't use workers
-      new ZipPassThrough(assetName);
+  let zipFile: AsyncZipDeflate | ZipDeflate | ZipPassThrough;
+  if (!compress) {
+    // ZipPassThrough doesn't use workers
+    zipFile = new ZipPassThrough(assetName);
+  } else if (asset.length > 1024 * 64) {
+    // 1024 * 64 was fastest on my machine :-)
+    // AsyncZipDeflate uses workers
+    zipFile = new AsyncZipDeflate(assetName, compressionOptions);
+  } else {
+    // ZipDeflate doesn't use workers, and is faster for small files as we don't
+    // incur the overhead of transferring data to/from a worker thread.
+    zipFile = new ZipDeflate(assetName, compressionOptions);
+  }
   zipFile.mtime = mtime;
   zip.add(zipFile);
   // Use a copy of the Buffer via `Buffer.from(asset)`, as Zip will *consume*
