@@ -1,6 +1,5 @@
 const pify = require('pify');
 const gulp = require('gulp');
-const autoprefixer = require('autoprefixer');
 const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
@@ -76,12 +75,7 @@ async function buildScssPipeline(src, dest, devMode) {
           '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
-      postcss([
-        tailwindcss(),
-        autoprefixer(),
-        rtlcss(),
-        discardFonts(['woff2']),
-      ]),
+      postcss([tailwindcss(), rtlcss(), discardFonts(['woff2'])]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),

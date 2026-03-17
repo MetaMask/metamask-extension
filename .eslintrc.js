@@ -434,6 +434,19 @@ module.exports = {
       settings: {
         'better-tailwindcss': {
           entryPoint: 'ui/css/tailwind.css',
+          // Ensure Tailwind classes inside twMerge() are linted
+          selectors: {
+            callee: [
+              {
+                // Named import from @metamask/design-system-react
+                name: '^twMerge$',
+                // Inspect string literal arguments
+                match: ['strings'],
+                // Consider all call sites in curried/variadic usages
+                callTarget: 'all',
+              },
+            ],
+          },
         },
       },
       rules: {
