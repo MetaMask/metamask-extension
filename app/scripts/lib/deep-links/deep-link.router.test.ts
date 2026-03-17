@@ -39,7 +39,7 @@ jest.mock('../../../../shared/lib/deep-links/parse', () => ({
 }));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(true);
-jest.mock('../../../../shared/modules/mv3.utils', () => ({
+jest.mock('../../../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },

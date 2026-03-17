@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import {
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
@@ -49,14 +49,6 @@ export const selectLocalTransactions = createSelector(
     const selectedAddress = selectedAccount.address.toLowerCase();
 
     const filtered = (transactions ?? []).filter((tx) => {
-      const hasNonce = tx.txParams?.nonce !== undefined;
-
-      // Ensure any externally signed transactions are always included.
-      // Such as EIP-7702 gas station and MetaMask Pay.
-      if (!hasNonce) {
-        return true;
-      }
-
       if (!isFromSelectedAccount(tx, selectedAddress)) {
         return false;
       }
@@ -66,7 +58,7 @@ export const selectLocalTransactions = createSelector(
       }
 
       // Include pending transactions
-      // or locally submitted transactions (have actionId or origin=metamask)
+      // or locally submitted transactions (have actionId, origin=metamask, or no origin)
       const isPending = tx.status in PENDING_STATUS_HASH;
       const unsafeTx = tx as TransactionMeta & {
         actionId?: unknown;
@@ -75,7 +67,7 @@ export const selectLocalTransactions = createSelector(
       const hasActionId = unsafeTx.actionId !== undefined;
       const origin =
         typeof unsafeTx.origin === 'string' ? unsafeTx.origin : undefined;
-      const isLocalOrigin = origin === 'metamask';
+      const isLocalOrigin = origin === 'metamask' || origin === undefined;
 
       return isPending || hasActionId || isLocalOrigin;
     });

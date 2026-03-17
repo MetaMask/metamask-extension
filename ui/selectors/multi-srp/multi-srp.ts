@@ -9,10 +9,10 @@ import {
   getMetaMaskHdKeyrings,
   getInternalAccounts,
 } from '..';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 type AccountsByChainId = {

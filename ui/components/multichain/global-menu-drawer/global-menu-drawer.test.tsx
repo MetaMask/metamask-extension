@@ -7,7 +7,7 @@ import {
   GATOR_PERMISSIONS,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 
@@ -20,14 +20,14 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/environment');
+jest.mock('../../../../shared/lib/environment');
 
 jest.mock('../../../hooks/useSidePanelEnabled', () => ({
   useSidePanelEnabled: jest.fn(() => false),
 }));
 
-jest.mock('../../../../shared/modules/browser-runtime.utils', () => ({
-  ...jest.requireActual('../../../../shared/modules/browser-runtime.utils'),
+jest.mock('../../../../shared/lib/browser-runtime.utils', () => ({
+  ...jest.requireActual('../../../../shared/lib/browser-runtime.utils'),
   getBrowserName: jest.fn(() => 'Chrome'),
 }));
 

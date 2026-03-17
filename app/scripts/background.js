@@ -6,7 +6,8 @@
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-import './lib/setup-initial-state-hooks';
+// eslint-disable-next-line import/order -- intentional first import for Sentry
+import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
@@ -36,17 +37,17 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { maskObject } from '../../shared/modules/object.utils';
+import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { createCaipStream } from '../../shared/modules/caip-stream';
-import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import { createCaipStream } from '../../shared/lib/caip-stream';
+import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
@@ -57,12 +58,7 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
-import {
-  backedUpStateKeys,
-  PersistenceManager,
-} from './lib/stores/persistence-manager';
-import ExtensionStore from './lib/stores/extension-store';
-import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
+import { backedUpStateKeys } from './lib/stores/persistence-manager';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -120,12 +116,6 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useFixtureStore =
-  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useFixtureStore
-  ? new FixtureExtensionStore({ initialize: true })
-  : new ExtensionStore();
-const persistenceManager = new PersistenceManager({ localStore });
 
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);

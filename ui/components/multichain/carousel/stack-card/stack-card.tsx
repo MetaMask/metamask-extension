@@ -12,8 +12,8 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { SHIELD_CAROUSEL_ID } from '../../../../../shared/modules/shield/constants';
-import { getShieldInAppNavigationFromExternalLink } from '../../../../../shared/modules/shield';
+import { SHIELD_CAROUSEL_ID } from '../../../../../shared/lib/shield/constants';
+import { getShieldInAppNavigationFromExternalLink } from '../../../../../shared/lib/shield';
 import type { StackCardProps } from './stack-card.types';
 
 export const StackCard: React.FC<StackCardProps> = ({

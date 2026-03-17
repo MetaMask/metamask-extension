@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver, PAGES } from '../webdriver/driver';
 import { WINDOW_TITLES } from '../constants';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -12,7 +12,7 @@ describe('Notification window closing', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.title,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -47,7 +47,7 @@ describe('Notification window closing', function () {
     await withFixtures(
       {
         // Use your regular extension fixtures
-        fixtures: new FixtureBuilder().withMetaMetricsController().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

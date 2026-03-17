@@ -6,7 +6,7 @@ import {
   I18NMessageDict,
   fetchLocale,
   getMessage,
-} from '../modules/i18n';
+} from './i18n';
 
 let currentLocale: string = FALLBACK_LOCALE;
 let translations: I18NMessageDict = enTranslations;

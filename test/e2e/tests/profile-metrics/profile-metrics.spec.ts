@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
@@ -80,7 +80,7 @@ describe('Profile Metrics', function () {
     it('sends existing accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
             })
@@ -123,7 +123,7 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
             })
@@ -197,7 +197,7 @@ describe('Profile Metrics', function () {
         it('does not send existing accounts to the API on wallet unlock', async function () {
           await withFixtures(
             {
-              fixtures: new FixtureBuilder()
+              fixtures: new FixtureBuilderV2()
                 .withMetaMetricsController({
                   participateInMetaMetrics,
                 })

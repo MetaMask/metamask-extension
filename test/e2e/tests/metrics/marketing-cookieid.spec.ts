@@ -7,7 +7,7 @@ import {
   withFixtures,
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -47,7 +47,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -93,7 +93,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -139,7 +139,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
-        fixtures: new FixtureBuilder().withMetaMetricsController().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -178,7 +178,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,

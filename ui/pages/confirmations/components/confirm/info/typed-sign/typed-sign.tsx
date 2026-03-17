@@ -3,7 +3,7 @@ import { isValidAddress } from 'ethereumjs-util';
 
 import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../../../../shared/lib/transaction.utils';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,

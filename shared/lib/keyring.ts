@@ -1,5 +1,5 @@
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
-import { isEqualCaseInsensitive } from '../modules/string-utils';
+import { isEqualCaseInsensitive } from './string-utils';
 
 // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
 

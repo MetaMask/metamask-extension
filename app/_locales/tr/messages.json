@@ -333,10 +333,6 @@
   "addToken": {
     "message": "Token ekle"
   },
-  "addTokenByContractAddress": {
-    "message": "Bir tokeni bulamadınız mı? Adresini yapıştırarak dilediğiniz tokeni manuel olarak ekleyebilirsiniz. Token sözleşme adreslerini $1 alanında bulabilirsiniz",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URL ekle"
   },
@@ -985,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Blok gezgini bağlantısı kopyalandı"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Hesaplanıyor..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Donanım cüzdanınızda 2 işlemi onaylamanız gerekecek:"
   },
@@ -1022,9 +1015,6 @@
   },
   "bridgeGasFeesSplit": {
     "message": "Önceki ekranda teklif verilen tüm ağ ücretlerine her iki işlem de dahil olup bölünmeyecektir."
-  },
-  "bridgeNetCost": {
-    "message": "Net maliyet"
   },
   "bridgeNoMMFee": {
     "message": "MM ücreti yok"
@@ -1128,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 ile $2 swap ediliyor",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 dk",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Köprü yapılan:"
@@ -1798,7 +1784,8 @@
     "message": "Yalnızca bu cihazda MetaMask'i açar."
   },
   "createPasswordDetailsSocial": {
-    "message": "Bu şifrenin kaybedilmesi tüm cihazlarda cüzdan erişiminin kaybedilmesi anlamına gelir, "
+    "message": "Bu şifrenin kaybedilmesi tüm cihazlarda cüzdan erişiminin kaybedilmesi anlamına gelir, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask bunu sıfırlayamaz."
@@ -3988,8 +3975,8 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "$1 mUSD'ye dönüştür",
-    "description": "$1 is the source token symbol (e.g., USDC)"
+    "message": "mUSD'ye dönüştürüldü",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "En az bir token seçilmeli."
@@ -5791,12 +5778,6 @@
   },
   "queued": {
     "message": "Kuyruğa alındı"
-  },
-  "quotedReceiveAmount": {
-    "message": "$1 alınan tutar"
-  },
-  "quotedTotalCost": {
-    "message": "$1 toplam maliyet"
   },
   "rank": {
     "message": "Sıralama"
@@ -8056,10 +8037,6 @@
   "swapNQuotesWithDot": {
     "message": "$1 teklif.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1 ile eşleşen token yok",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Bu işlem gerçekleştikten sonra $1 hesabınıza eklenecek.",
