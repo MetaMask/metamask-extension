@@ -51,7 +51,7 @@ export type UseMusdConversionResult = {
   /** Whether the geolocation check is still in progress */
   isGeoLoading: boolean;
 
-  startConversionFlow: (options?: StartConversionOptions) => Promise<void>;
+  startConversionFlow: (options: StartConversionOptions) => Promise<void>;
   cancelConversion: () => void;
   markEducationSeen: () => void;
 
@@ -60,7 +60,7 @@ export type UseMusdConversionResult = {
 
 export type StartConversionOptions = {
   /** Preferred payment token to pre-select */
-  preferredToken?: { address: string; chainId: Hex };
+  preferredToken: { address: string; chainId: Hex };
   /** Skip education screen even if not seen */
   skipEducation?: boolean;
   /** Entry point for analytics */
@@ -172,7 +172,7 @@ export function useMusdConversion(): UseMusdConversionResult {
    * to the education screen first.
    */
   const startConversionFlow = useCallback(
-    async (options: StartConversionOptions = {}): Promise<void> => {
+    async (options: StartConversionOptions): Promise<void> => {
       const { preferredToken, skipEducation } = options;
 
       if (!isFeatureEnabled) {
@@ -195,7 +195,7 @@ export function useMusdConversion(): UseMusdConversionResult {
       }
 
       const chainId =
-        (preferredToken?.chainId as Hex) ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
+        preferredToken?.chainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
 
       try {
         setError(null);
