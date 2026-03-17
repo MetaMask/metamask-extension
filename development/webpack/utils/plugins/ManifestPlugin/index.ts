@@ -18,7 +18,11 @@ import {
 } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
-import { createBrowserZipBuilder, getZipFilePath } from './zip';
+import {
+  createBrowserZipBuilder,
+  createZipCompressionController,
+  getZipFilePath,
+} from './zip';
 
 const { CachedSource, RawSource } = sources;
 
@@ -150,6 +154,7 @@ export class ManifestPlugin<Z extends boolean> {
     const totalWork = browsers.length * (zipEligibleAssetCount + 1);
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
+    const compressionController = createZipCompressionController();
     const zipBuilders = browsers.map((browser) => {
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
       const onAssetAdded = (assetName: string) => {
@@ -164,6 +169,7 @@ export class ManifestPlugin<Z extends boolean> {
         browser,
         builder: createBrowserZipBuilder({
           compressionOptions,
+          compressionController,
           excludeExtensions,
           manifest,
           mtime,
