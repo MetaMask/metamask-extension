@@ -229,7 +229,9 @@ export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(
  * @param accountId - The account group ID to find.
  * @returns The multichain account group object, or undefined if not found.
  */
-export const getMultichainAccountGroupById = createParameterizedSelector(SINGLE_LOOKUP_LRU_CACHE_SIZE)(
+export const getMultichainAccountGroupById = createParameterizedSelector(
+  SINGLE_LOOKUP_LRU_CACHE_SIZE,
+)(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
@@ -513,7 +515,9 @@ const getInternalAccountFromGroup = (
  * @param caipChainId - The CAIP chain ID to search for.
  * @returns The internal account object, or null if not found.
  */
-export const getInternalAccountByGroupAndCaip = createParameterizedSelector(CHAIN_LRU_CACHE_SIZE)(
+export const getInternalAccountByGroupAndCaip = createParameterizedSelector(
+  CHAIN_LRU_CACHE_SIZE,
+)(
   getAccountTree,
   getInternalAccountsObject,
   (_state, groupId: AccountGroupId) => groupId,
@@ -615,7 +619,9 @@ export const getMultichainAccountsByWalletId = createSelector(
  * @param groupId - The ID of the account group.
  * @returns Array of internal accounts in the specified group, or empty array if not found.
  */
-export const getInternalAccountsFromGroupById = createParameterizedSelector(GROUP_LRU_CACHE_SIZE)(
+export const getInternalAccountsFromGroupById = createParameterizedSelector(
+  GROUP_LRU_CACHE_SIZE,
+)(
   getAccountTree,
   getInternalAccountsObject,
   (_, groupId: AccountGroupId) => groupId,
@@ -748,7 +754,9 @@ export const getInternalAccountListSpreadByScopesByGroupId =
  * @param groupId - The account group ID.
  * @returns The number of accounts in the group, or 0 if the group is not found.
  */
-export const getNetworkAddressCount = createParameterizedSelector(SINGLE_LOOKUP_LRU_CACHE_SIZE)(
+export const getNetworkAddressCount = createParameterizedSelector(
+  SINGLE_LOOKUP_LRU_CACHE_SIZE,
+)(
   [getInternalAccountListSpreadByScopesByGroupId],
   (
     accounts: {
