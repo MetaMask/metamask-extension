@@ -1,6 +1,7 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
@@ -55,9 +56,8 @@ describe('Test Snap Lifecycle Hooks', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder()
           .withSnapControllerOnStartLifecycleSnap()
-          .withMetaVersion(192)
           .build(),
         title: this.test?.fullTitle(),
       },

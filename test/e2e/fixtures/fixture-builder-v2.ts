@@ -128,11 +128,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaVersion(version: number): this {
-    this.fixture.meta.version = version;
-    return this;
-  }
-
   withNameController(data: Partial<NameControllerState>): this {
     merge(this.fixture.data.NameController, data);
     return this;
@@ -721,10 +716,6 @@ class FixtureBuilderV2 {
       type: TransactionType.simpleSend,
     };
     return this.withTransactionController({ transactions: [approvedTx] });
-  }
-
-  withTransactionControllerCompletedAndIncomingTransaction(): this {
-    return this.withTransactionControllerCompletedTransaction().withTransactionControllerIncomingTransaction();
   }
 
   withTransactionControllerCompletedTransaction(): this {
