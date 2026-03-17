@@ -163,6 +163,7 @@ export function BasicConfigurationModal() {
           {isExternalServicesEnabled && (
             <Checkbox
               id="basic-configuration-checkbox"
+              data-testid="basic-configuration-checkbox"
               isSelected={hasAgreed}
               onChange={handleCheckboxClick}
               label={t('basicConfigurationModalCheckbox')}
