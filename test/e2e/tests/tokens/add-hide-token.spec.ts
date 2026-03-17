@@ -1,7 +1,8 @@
 import { toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
@@ -24,7 +25,7 @@ describe('Add hide token', function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensController({
             allTokens: {
@@ -33,22 +34,13 @@ describe('Add hide token', function () {
                   {
                     address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
                     decimals: 4,
-                    image: null,
+                    image: undefined,
                     isERC721: false,
                     symbol: 'TST',
                   },
                 ],
               },
             },
-            tokens: [
-              {
-                address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
           })
           .withAssetsController({
             assetsBalance: {
@@ -81,7 +73,7 @@ describe('Add hide token', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensController({
             allTokens: {
@@ -90,22 +82,13 @@ describe('Add hide token', function () {
                   {
                     address: tokenAddress,
                     decimals: 4,
-                    image: null,
+                    image: undefined,
                     isERC721: false,
                     symbol: 'TST',
                   },
                 ],
               },
             },
-            tokens: [
-              {
-                address: tokenAddress,
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
           })
           .withAssetsController({
             assetsBalance: {

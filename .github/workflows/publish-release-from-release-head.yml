@@ -1,20 +1,148 @@
-name: Publish release
+name: Publish Release from Release HEAD
+
+# Publishes a production release from release/X.Y.Z HEAD.
+# Invariant: Tag SHA == Build SHA == GitHub Release target SHA == branch HEAD.
+# Requires release-branch approval and CI pass on release SHA.
 
 on:
-  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
+  checks: read # Required to verify CI check-runs on the SHA
+  actions: read # Required to download artifacts from build jobs
+  id-token: write # Required for OIDC authentication in S3 uploads
 
 jobs:
+  validate-branch:
+    name: Validate release branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.extract-semver.outputs.semver }}
+      tag: ${{ steps.compute-tag.outputs.tag }}
+      release-sha: ${{ steps.compute-tag.outputs.release_sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Extract and validate semver from branch
+        id: extract-semver
+        run: .github/scripts/extract-semver.sh
+
+      - name: Compute tag and release SHA
+        id: compute-tag
+        env:
+          VERSION: ${{ steps.extract-semver.outputs.semver }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          TAG="v${VERSION}"
+          echo "Validated release branch:"
+          echo "  Version: ${VERSION}"
+          echo "  Tag: ${TAG}"
+          echo "  SHA: ${RELEASE_SHA}"
+
+          {
+            echo "tag=${TAG}"
+            echo "release_sha=${RELEASE_SHA}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Summary
+        env:
+          TAG: ${{ steps.compute-tag.outputs.tag }}
+          RELEASE_SHA: ${{ steps.compute-tag.outputs.release_sha }}
+        run: echo "Release ${TAG} (${RELEASE_SHA})" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Verify required CI checks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_SHA: ${{ steps.compute-tag.outputs.release_sha }}
+        run: .github/scripts/verify-ci-checks.sh
+
+  approve-release:
+    name: Approve release
+    needs:
+      - validate-branch
+    runs-on: ubuntu-latest
+    environment: release-branch
+    steps:
+      - run: echo "Release approval granted."
+
+  # Production builds (4 variants) using yarn build prod.
+  build-dist-browserify:
+    name: Build prod (Chrome MV3)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-browserify
+      build-command: yarn build prod
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-dist-mv2-browserify:
+    name: Build prod (Firefox MV2)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-browserify
+      build-command: yarn build prod
+      mozilla-lint: true
+      enable-mv3: false
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-flask-browserify:
+    name: Build Flask prod (Chrome MV3)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-browserify
+      build-command: yarn build --build-type flask prod
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-flask-mv2-browserify:
+    name: Build Flask prod (Firefox MV2)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-mv2-browserify
+      build-command: yarn build --build-type flask prod
+      mozilla-lint: true
+      enable-mv3: false
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
   publish-release:
     name: Publish release
+    needs:
+      - validate-branch
+      - approve-release
+      - build-dist-browserify
+      - build-dist-mv2-browserify
+      - build-flask-browserify
+      - build-flask-mv2-browserify
     runs-on: ubuntu-latest
-    # Grant access to `stable` branch environment secrets
-    # This will only work on `stable` branch
-    environment: stable
+    environment: release-branch
     timeout-minutes: 30
     env:
-      # Publishing tokens
+      RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
+      RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
+      FLASK_TAG: ${{ needs.validate-branch.outputs.tag }}-flask.0
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.EXTENSION_PUBLISH_TOKEN }}
       FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
       # Environment variables used in Firefox bundle script
       # Keep this list synchronized with:
@@ -69,6 +197,7 @@ jobs:
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
+          ref: ${{ needs.validate-branch.outputs.release-sha }}
           fetch-depth: 0
 
       - name: Download artifact 'build-dist-browserify'
@@ -107,10 +236,27 @@ jobs:
       - name: Publish Flask MV2 release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
 
-      - name: Create GitHub release
+      - name: Create tags and GitHub release
         run: .github/scripts/release-create-gh-release.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.EXTENSION_PUBLISH_TOKEN }}
 
       - name: Push Firefox bundle script
         run: .github/scripts/push-firefox-bundle-script.sh
+
+      - name: Summary
+        env:
+          VERSION: ${{ needs.validate-branch.outputs.version }}
+        run: |
+          {
+            echo "## Release Published"
+            echo ""
+            echo "| Component | Status |"
+            echo "|-----------|--------|"
+            echo "| Sentry (main) | ✅ Published |"
+            echo "| Sentry (main MV2) | ✅ Published |"
+            echo "| Sentry (Flask) | ✅ Published |"
+            echo "| Sentry (Flask MV2) | ✅ Published |"
+            echo "| GitHub Release | ✅ Created |"
+            echo "| Firefox Bundle | ✅ Pushed |"
+            echo ""
+            echo "**Release:** [${RELEASE_TAG}](https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG})"
+          } >> "${GITHUB_STEP_SUMMARY}"

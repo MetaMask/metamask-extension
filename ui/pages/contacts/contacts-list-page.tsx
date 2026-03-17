@@ -231,7 +231,9 @@ export function ContactsListPage() {
                     name={entry.name ?? ''}
                     chainId={entry.chainId}
                     onSelect={() =>
-                      navigate(`${CONTACTS_VIEW_ROUTE}/${entry.address}`)
+                      navigate(
+                        `${CONTACTS_VIEW_ROUTE}/${entry.chainId}/${entry.address}`,
+                      )
                     }
                     isDuplicate={
                       (

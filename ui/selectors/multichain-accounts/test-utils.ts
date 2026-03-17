@@ -23,6 +23,12 @@ export const createMockMultichainAccountsState = (
   metamask: {
     accountTree,
     internalAccounts,
+    accountIdByAddress: Object.fromEntries(
+      Object.values(internalAccounts.accounts).map((account) => [
+        account.address,
+        account.id,
+      ]),
+    ),
     networkConfigurationsByChainId:
       networkConfigurations?.networkConfigurationsByChainId || {},
     multichainNetworkConfigurationsByChainId:

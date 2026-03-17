@@ -177,7 +177,7 @@ export const AppHeaderUnlockedContent = ({
   }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
 
   const handleConnectionsRoute = () => {
-    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
+    navigate(`${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(origin)}`);
   };
 
   const multichainAccountAppContent = useMemo(() => {
