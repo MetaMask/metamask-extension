@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -11,131 +11,138 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const connectedMockState = {
-  metamask: {
-    ...mockState.metamask,
-    completedOnboarding: true,
-    domains: {
-      'https://metamask.github.io': 'sepolia-test-client',
-    },
-    networkConfigurationsByChainId: {
-      ...mockState.metamask.networkConfigurationsByChainId,
-      '0xaa36a7': {
-        chainId: '0xaa36a7',
-        name: 'Sepolia',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            type: 'custom',
-            url: 'https://sepolia.test',
-            networkClientId: 'sepolia-test-client',
-          },
-        ],
-        defaultRpcEndpointIndex: 0,
-      },
-    },
-    selectedMultichainNetworkChainId: 'eip155:11155111',
-    isEvmSelected: true,
-    selectedNetworkClientId: 'sepolia-test-client',
-    multichainNetworkConfigurationsByChainId: {
-      ...mockState.metamask.multichainNetworkConfigurationsByChainId,
-      'eip155:11155111': {
-        chainId: 'eip155:11155111',
-        name: 'Sepolia',
-        nativeCurrency: 'ETH',
-        isEvm: true,
-      },
-    },
-    internalAccounts: {
-      accounts: {
-        'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          id: 'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          type: 'eip155:eoa',
-          metadata: {
-            name: 'Test Account',
-            lastSelected: Date.now(),
-          },
-          scopes: ['eip155:11155111'],
-          methods: [],
-          options: {},
+const mockRemovePermissionsFor = jest.fn(() => () => Promise.resolve());
+const mockHidePermittedNetworkToast = jest.fn(() => ({
+  type: 'SHOW_PERMITTED_NETWORK_TOAST_CLOSE',
+}));
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  removePermissionsFor: (...args: unknown[]) =>
+    mockRemovePermissionsFor(...args),
+  hidePermittedNetworkToast: (...args: unknown[]) =>
+    mockHidePermittedNetworkToast(...args),
+}));
+
+const ACCOUNT_1_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const ACCOUNT_1_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+const ACCOUNT_2_ADDRESS = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
+const ACCOUNT_2_ID = '784225f4-d30b-4e77-a900-c8bbce735b88';
+const GROUP_1_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+const LEDGER_GROUP_ID =
+  'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const DAPP_ORIGIN = 'https://metamask.github.io';
+
+const sharedMetamaskOverrides = {
+  completedOnboarding: true,
+  domains: {
+    [DAPP_ORIGIN]: 'sepolia-test-client',
+  },
+  networkConfigurationsByChainId: {
+    ...mockState.metamask.networkConfigurationsByChainId,
+    '0xaa36a7': {
+      chainId: '0xaa36a7',
+      name: 'Sepolia',
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          type: 'custom',
+          url: 'https://sepolia.test',
+          networkClientId: 'sepolia-test-client',
         },
-      },
-      selectedAccount:
-        'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      ],
+      defaultRpcEndpointIndex: 0,
     },
-    accounts: {
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        balance: '0x0',
-      },
+  },
+  selectedMultichainNetworkChainId: 'eip155:11155111',
+  isEvmSelected: true,
+  selectedNetworkClientId: 'sepolia-test-client',
+  multichainNetworkConfigurationsByChainId: {
+    ...mockState.metamask.multichainNetworkConfigurationsByChainId,
+    'eip155:11155111': {
+      chainId: 'eip155:11155111',
+      name: 'Sepolia',
+      nativeCurrency: 'ETH',
+      isEvm: true,
     },
-    keyrings: [
+  },
+  subjectMetadata: {
+    ...mockState.metamask.subjectMetadata,
+    [DAPP_ORIGIN]: {
+      name: 'E2E Test Dapp',
+      iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+      subjectType: 'website',
+      origin: DAPP_ORIGIN,
+    },
+  },
+};
+
+const activeTab = {
+  id: 113,
+  title: 'E2E Test Dapp',
+  origin: DAPP_ORIGIN,
+  protocol: 'https:',
+  url: 'https://metamask.github.io/test-dapp/',
+};
+
+const makeCaip25Permission = (accounts: string[]) => ({
+  'endowment:caip25': {
+    parentCapability: 'endowment:caip25',
+    caveats: [
       {
-        type: 'HD Key Tree',
-        accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-        metadata: {
-          id: 'test-keyring-id',
+        type: 'authorizedScopes',
+        value: {
+          requiredScopes: {},
+          optionalScopes: {
+            'eip155:0': { accounts },
+          },
+          isMultichainOrigin: false,
         },
       },
     ],
-    subjects: {
-      'https://metamask.github.io': {
-        permissions: {
-          'endowment:caip25': {
-            parentCapability: 'endowment:caip25',
-            caveats: [
-              {
-                type: 'authorizedScopes',
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {
-                    'eip155:11155111': {
-                      accounts: [
-                        'eip155:11155111:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                      ],
-                    },
-                  },
-                  isMultichainOrigin: false,
-                },
-              },
-            ],
+  },
+});
+
+const connectedMockState = {
+  metamask: {
+    ...mockState.metamask,
+    ...sharedMetamaskOverrides,
+    accountTree: {
+      ...mockState.metamask.accountTree,
+      selectedAccountGroup: GROUP_1_ID,
+    },
+    internalAccounts: {
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        [ACCOUNT_1_ID]: {
+          ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+          metadata: {
+            ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
+              .metadata,
+            lastSelected: 1000,
           },
         },
       },
+      selectedAccount: ACCOUNT_1_ID,
     },
-    subjectMetadata: {
-      ...mockState.metamask.subjectMetadata,
-      'https://metamask.github.io': {
-        name: 'E2E Test Dapp',
-        iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-        subjectType: 'website',
-        origin: 'https://metamask.github.io',
+    subjects: {
+      [DAPP_ORIGIN]: {
+        permissions: makeCaip25Permission([
+          `eip155:0:${ACCOUNT_1_ADDRESS}`,
+        ]),
       },
     },
   },
-  activeTab: {
-    id: 113,
-    title: 'E2E Test Dapp',
-    origin: 'https://metamask.github.io',
-    protocol: 'https:',
-    url: 'https://metamask.github.io/test-dapp/',
-  },
+  activeTab,
 };
 
 const disconnectedMockState = {
   metamask: {
     ...mockState.metamask,
-    completedOnboarding: true,
+    ...sharedMetamaskOverrides,
     subjects: {},
   },
-  activeTab: {
-    id: 113,
-    title: 'E2E Test Dapp',
-    origin: 'https://metamask.github.io',
-    protocol: 'https:',
-    url: 'https://metamask.github.io/test-dapp/',
-  },
+  activeTab,
 };
 
 describe('DappConnectionControlBar', () => {
@@ -211,11 +218,120 @@ describe('DappConnectionControlBar', () => {
       );
       expect(getByTestId('disconnect-all-modal')).toBeInTheDocument();
     });
+
+    it('displays the account label with truncated address', () => {
+      const { getByTestId } = renderConnected();
+      const accountEl = getByTestId(
+        'dapp-connection-control-bar__account-name',
+      );
+      expect(accountEl).toBeInTheDocument();
+      const truncated = `${ACCOUNT_1_ADDRESS.slice(0, 6)}...${ACCOUNT_1_ADDRESS.slice(-4)}`;
+      expect(accountEl.textContent).toContain(truncated);
+    });
+
+    it('dispatches removePermissionsFor when disconnect is confirmed', async () => {
+      const { getByTestId, queryByTestId } = renderConnected();
+      fireEvent.click(
+        getByTestId('dapp-connection-control-bar__disconnect-button'),
+      );
+      fireEvent.click(getByTestId('disconnect-all'));
+      await waitFor(() => {
+        expect(mockRemovePermissionsFor).toHaveBeenCalledWith({
+          [DAPP_ORIGIN]: ['endowment:caip25'],
+        });
+        expect(mockHidePermittedNetworkToast).toHaveBeenCalled();
+        expect(
+          queryByTestId('disconnect-all-modal'),
+        ).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('when an unconnected account group is selected', () => {
+    it('falls back to the most recently selected connected account', () => {
+      const state = {
+        metamask: {
+          ...mockState.metamask,
+          ...sharedMetamaskOverrides,
+          accountTree: {
+            ...mockState.metamask.accountTree,
+            selectedAccountGroup: LEDGER_GROUP_ID,
+          },
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [ACCOUNT_1_ID]: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+                metadata: {
+                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
+                    .metadata,
+                  lastSelected: 2000,
+                },
+              },
+              [ACCOUNT_2_ID]: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_2_ID],
+                metadata: {
+                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_2_ID]
+                    .metadata,
+                  lastSelected: 1000,
+                },
+              },
+            },
+            selectedAccount: ACCOUNT_2_ID,
+          },
+          subjects: {
+            [DAPP_ORIGIN]: {
+              permissions: makeCaip25Permission([
+                `eip155:0:${ACCOUNT_1_ADDRESS}`,
+                `eip155:0:${ACCOUNT_2_ADDRESS}`,
+              ]),
+            },
+          },
+        },
+        activeTab,
+      };
+      const store = configureStore(state);
+      const { getByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      const accountEl = getByTestId(
+        'dapp-connection-control-bar__account-name',
+      );
+      const truncated = `${ACCOUNT_1_ADDRESS.slice(0, 6)}...${ACCOUNT_1_ADDRESS.slice(-4)}`;
+      expect(accountEl.textContent).toContain(truncated);
+    });
   });
 
   describe('when not connected to a dapp', () => {
     it('does not render the control bar', () => {
       const store = configureStore(disconnectedMockState);
+      const { queryByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      expect(
+        queryByTestId('dapp-connection-control-bar'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render when activeTabOrigin is empty', () => {
+      const state = {
+        metamask: {
+          ...mockState.metamask,
+          ...sharedMetamaskOverrides,
+          subjects: {
+            [DAPP_ORIGIN]: {
+              permissions: makeCaip25Permission([
+                `eip155:0:${ACCOUNT_1_ADDRESS}`,
+              ]),
+            },
+          },
+        },
+        activeTab: { ...activeTab, origin: '' },
+      };
+      const store = configureStore(state);
       const { queryByTestId } = renderWithProvider(
         <DappConnectionControlBar />,
         store,
