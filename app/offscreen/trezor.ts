@@ -98,6 +98,13 @@ export default function init() {
 
           break;
 
+        case TrezorAction.getFeatures:
+          TrezorConnectSDK.getFeatures().then((result) => {
+            sendResponse(result);
+          });
+
+          break;
+
         default:
           sendResponse({
             success: false,
