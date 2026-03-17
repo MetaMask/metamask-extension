@@ -91,6 +91,19 @@ export function mockWebpack(
             : newSourceOrFunction;
       },
     ),
+    renameAsset: mock.fn((name: string, newFile: string) => {
+      const asset = assets[name];
+      delete assets[name];
+      assets[newFile] = {
+        ...asset,
+        name: newFile,
+      };
+
+      for (const chunk of compilation.chunks) {
+        chunk.files.delete(name);
+        chunk.files.add(newFile);
+      }
+    }),
     deleteAsset: mock.fn((name: string) => {
       delete assets[name];
     }),

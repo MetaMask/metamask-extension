@@ -37,10 +37,7 @@ const compressibleFileTypes = new Set([
   '.xml',
 ]);
 
-type AssetEntries = [string, sources.Source][];
-
-type BuildBrowserZipSourceOptions = {
-  assetEntries: AssetEntries;
+type CreateBrowserZipBuilderOptions = {
   compressionOptions: DeflateOptions | undefined;
   excludeExtensions: string[];
   manifest: sources.RawSource;
@@ -49,85 +46,108 @@ type BuildBrowserZipSourceOptions = {
 };
 
 /**
- * Builds the zip source for a single browser bundle.
+ * Incrementally builds a browser zip asset.
+ */
+export type BrowserZipBuilder = {
+  /**
+   * Adds an emitted webpack asset to the in-progress zip.
+   */
+  addAsset: (assetName: string, asset: sources.Source) => void;
+
+  /**
+   * Finalizes the zip and resolves the emitted webpack source.
+   */
+  finalize: () => Promise<sources.Source>;
+};
+
+/**
+ * Creates a zip builder for a single browser bundle.
  *
  * @param options - Zip generation options.
- * @param options.assetEntries
  * @param options.compressionOptions
  * @param options.excludeExtensions
- * @param options.manifest
- * @param options.mtime
- * @param options.onAssetAdded
- * @returns The generated zip source.
+ * @param options.manifest - The browser-specific manifest source.
+ * @param options.mtime - The zip entry modification time.
+ * @param options.onAssetAdded - Progress callback for each added file.
+ * @returns The zip builder.
  */
-export async function buildBrowserZipSource({
-  assetEntries,
+export function createBrowserZipBuilder({
   compressionOptions,
   excludeExtensions,
   manifest,
   mtime,
   onAssetAdded,
-}: BuildBrowserZipSourceOptions): Promise<sources.Source> {
-  return await new Promise<sources.Source>((resolve, reject) => {
-    // Since zipping is async, a past chunk could cause an error after we've
-    // started processing additional chunks. We'll use this errored flag to
-    // short-circuit the rest of the processing if that happens.
-    let errored = false;
-    const zipChunks: Uint8Array[] = [];
-    let zipSize = 0;
+}: CreateBrowserZipBuilderOptions): BrowserZipBuilder {
+  let errored = false;
+  let finalized = false;
+  let resolveSource!: (source: sources.Source) => void;
+  let rejectSource!: (error: Error) => void;
+  const sourcePromise = new Promise<sources.Source>((resolve, reject) => {
+    resolveSource = resolve;
+    rejectSource = reject;
+  });
+  const zipChunks: Uint8Array[] = [];
+  let zipSize = 0;
+  const zip = new Zip((error, data, final) => {
+    if (errored) {
+      return;
+    }
 
-    const zip = new Zip((error, data, final) => {
-      if (errored) {
-        return;
-      }
+    if (error) {
+      errored = true;
+      rejectSource(error);
+      return;
+    }
 
-      if (error) {
-        errored = true;
-        reject(error);
-        return;
-      }
+    zipChunks.push(data);
+    zipSize += data.byteLength;
 
-      zipChunks.push(data);
-      zipSize += data.byteLength;
+    if (final) {
+      resolveSource(new RawSource(Buffer.concat(zipChunks, zipSize)));
+    }
+  });
 
-      if (final) {
-        resolve(new RawSource(Buffer.concat(zipChunks, zipSize)));
-      }
-    });
+  addAssetToZip(
+    manifest.buffer(),
+    'manifest.json',
+    true,
+    compressionOptions,
+    mtime,
+    zip,
+  );
+  onAssetAdded('manifest.json');
+
+  const addAsset = (assetName: string, asset: sources.Source) => {
+    if (errored || finalized) {
+      return;
+    }
+
+    const extName = extname(assetName);
+    if (excludeExtensions.includes(extName)) {
+      return;
+    }
 
     addAssetToZip(
-      manifest.buffer(),
-      'manifest.json',
-      true,
+      asset.buffer(),
+      assetName,
+      compressibleFileTypes.has(extName),
       compressionOptions,
       mtime,
       zip,
     );
-    onAssetAdded('manifest.json');
+    onAssetAdded(assetName);
+  };
 
-    for (const [assetName, asset] of assetEntries) {
-      if (errored) {
-        return;
-      }
-
-      const extName = extname(assetName);
-      if (excludeExtensions.includes(extName)) {
-        continue;
-      }
-
-      addAssetToZip(
-        asset.buffer(),
-        assetName,
-        compressibleFileTypes.has(extName),
-        compressionOptions,
-        mtime,
-        zip,
-      );
-      onAssetAdded(assetName);
+  const finalize = () => {
+    if (!finalized) {
+      finalized = true;
+      zip.end();
     }
 
-    zip.end();
-  });
+    return sourcePromise;
+  };
+
+  return { addAsset, finalize };
 }
 
 /**
