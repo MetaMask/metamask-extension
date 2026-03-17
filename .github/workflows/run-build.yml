@@ -98,6 +98,8 @@ jobs:
           is-high-risk-environment: ${{ inputs.is-high-risk-environment }}
           skip-allow-scripts: true
 
+      # Running tsc is only needed for webpack builds. Webpack uses typescript, but lavamoat node
+      # can only run javascript, so we need a transpilation step before building.
       - name: Run tsc
         if: ${{ contains(inputs.build-name, 'webpack') }}
         run: yarn webpack:tsc
