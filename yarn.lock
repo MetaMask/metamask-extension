@@ -5725,38 +5725,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/assets-controller@npm:2.1.0"
+"@metamask/assets-controller@file:../core/packages/assets-controller::locator=metamask-crx%40workspace%3A.":
+  version: 2.3.0
+  resolution: "@metamask/assets-controller@file:../core/packages/assets-controller#../core/packages/assets-controller::hash=62c4a7&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/account-tree-controller": "npm:^4.1.1"
-    "@metamask/assets-controllers": "npm:^100.0.3"
+    "@metamask/account-tree-controller": "npm:^5.0.0"
+    "@metamask/assets-controllers": "npm:^100.2.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/core-backend": "npm:^6.0.0"
+    "@metamask/core-backend": "npm:^6.1.0"
     "@metamask/keyring-api": "npm:^21.5.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/keyring-internal-api": "npm:^10.0.0"
     "@metamask/keyring-snap-client": "npm:^8.2.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/network-controller": "npm:^30.0.0"
-    "@metamask/network-enablement-controller": "npm:^4.1.2"
+    "@metamask/network-enablement-controller": "npm:^4.2.0"
     "@metamask/permission-controller": "npm:^12.2.0"
     "@metamask/polling-controller": "npm:^16.0.3"
-    "@metamask/preferences-controller": "npm:^22.1.0"
+    "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/snaps-controllers": "npm:^17.2.0"
     "@metamask/snaps-utils": "npm:^11.7.0"
-    "@metamask/transaction-controller": "npm:^62.19.0"
+    "@metamask/transaction-controller": "npm:^62.21.0"
     "@metamask/utils": "npm:^11.9.0"
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/3ac64ad55bbea344684beca48d69fc2faf1af5a29b35d6d8f87f84535bcaafe11aa3122785761e568cb80a09eb9178a45388fa0f20ecfab5f30b6c6700ae4b69
+  checksum: 10/09d9a1a80464e78f6878e2bb7249ab7370f09d0c82ca7eb6621a7f47a56d279b3eb53cc15ccd88e090ce7859dc369459a5ec63cf09e1e202517268560c3e288d
   languageName: node
   linkType: hard
 
@@ -7482,7 +7482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^4.1.0, @metamask/network-enablement-controller@npm:^4.1.1, @metamask/network-enablement-controller@npm:^4.1.2, @metamask/network-enablement-controller@npm:^4.2.0":
+"@metamask/network-enablement-controller@npm:^4.1.0, @metamask/network-enablement-controller@npm:^4.1.1, @metamask/network-enablement-controller@npm:^4.2.0":
   version: 4.2.0
   resolution: "@metamask/network-enablement-controller@npm:4.2.0"
   dependencies:
