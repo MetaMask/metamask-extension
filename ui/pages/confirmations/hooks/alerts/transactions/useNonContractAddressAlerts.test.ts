@@ -12,7 +12,10 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { selectPendingApprovalsForNavigation } from '../../../../../selectors';
+import {
+  getUnapprovedTransaction,
+  selectPendingApprovalsForNavigation,
+} from '../../../../../selectors';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
 
@@ -43,6 +46,10 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
 const TRANSACTION_ID_MOCK = '123-456';
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const ACCOUNT_ADDRESS_2_MOCK = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
+const ACCOUNT_HARDWARE_INFO_MOCK = {
+  keyringType: 'HD Key Tree',
+  address: ACCOUNT_ADDRESS_MOCK,
+};
 
 const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
@@ -105,6 +112,10 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [confirmation];
+      } else if (selector === getUnapprovedTransaction) {
+        return mockGetUnapprovedTransaction();
+      } else if (selector.name === 'getAccountHardwareInfo') {
+        return ACCOUNT_HARDWARE_INFO_MOCK;
       }
 
       return undefined;
@@ -132,6 +143,10 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithNoData];
+      } else if (selector === getUnapprovedTransaction) {
+        return mockGetUnapprovedTransaction();
+      } else if (selector.name === 'getAccountHardwareInfo') {
+        return ACCOUNT_HARDWARE_INFO_MOCK;
       }
 
       return undefined;
@@ -163,6 +178,10 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
+      } else if (selector === getUnapprovedTransaction) {
+        return mockGetUnapprovedTransaction();
+      } else if (selector.name === 'getAccountHardwareInfo') {
+        return ACCOUNT_HARDWARE_INFO_MOCK;
       }
 
       return undefined;
@@ -202,6 +221,10 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transaction];
+      } else if (selector === getUnapprovedTransaction) {
+        return mockGetUnapprovedTransaction();
+      } else if (selector.name === 'getAccountHardwareInfo') {
+        return ACCOUNT_HARDWARE_INFO_MOCK;
       }
 
       return undefined;
@@ -224,6 +247,9 @@ describe('useNonContractAddressAlerts', () => {
       },
     };
     mockGetUnapprovedTransaction.mockReturnValue(transactionWithData);
+    const transactionState = getMockConfirmStateForTransaction(
+      transactionWithData as TransactionMeta,
+    );
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getNetworkConfigurationsByChainId) {
         return {
@@ -234,13 +260,15 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
+      } else if (selector(transactionState)?.id === transactionWithData.id) {
+        return selector(transactionState);
+      } else if (selector === getUnapprovedTransaction) {
+        return mockGetUnapprovedTransaction();
+      } else if (selector.name === 'getAccountHardwareInfo') {
+        return ACCOUNT_HARDWARE_INFO_MOCK;
       }
 
-      return selector(
-        getMockConfirmStateForTransaction(
-          transactionWithData as TransactionMeta,
-        ),
-      );
+      return undefined;
     });
 
     const { result } = renderHookWithConfirmContextProvider(
@@ -284,6 +312,10 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
+      } else if (selector === getUnapprovedTransaction) {
+        return mockGetUnapprovedTransaction();
+      } else if (selector.name === 'getAccountHardwareInfo') {
+        return ACCOUNT_HARDWARE_INFO_MOCK;
       }
 
       return undefined;
@@ -318,6 +350,10 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
+      } else if (selector === getUnapprovedTransaction) {
+        return mockGetUnapprovedTransaction();
+      } else if (selector.name === 'getAccountHardwareInfo') {
+        return ACCOUNT_HARDWARE_INFO_MOCK;
       }
 
       return undefined;

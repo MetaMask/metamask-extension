@@ -1,5 +1,5 @@
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import {
   expectMockRequest,
@@ -26,7 +26,7 @@ describe('Sessions', function () {
   it('sends session in UI if metrics enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             participateInMetaMetrics: true,
           })
@@ -47,7 +47,7 @@ describe('Sessions', function () {
   it('does not send session in UI if metrics disabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             participateInMetaMetrics: false,
           })
