@@ -19,7 +19,7 @@ import {
 } from '@metamask/design-system-react';
 import * as actions from '../../../store/actions';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
-import { getErrorMessage as toErrorMessage } from '../../../../shared/modules/error';
+import { getErrorMessage as toErrorMessage } from '../../../../shared/lib/error';
 import {
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,
