@@ -12,7 +12,6 @@ import { isRelaySupported } from '../../../store/actions';
 import { isHardwareWallet } from '../../../selectors';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
-import { getCurrentKeyring } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 
 type Chain = {
