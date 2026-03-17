@@ -218,18 +218,18 @@ export default class AdvancedTab extends PureComponent {
         gap={[null, 4]}
       >
         <div className="settings-page__content-item">
-          <span> {t('dismissSmartAccountSuggestionEnabledTitle')}</span>
+          <span> {t('smartAccountDappRequestsTitle')}</span>
           <div className="settings-page__content-description">
-            {t('dismissSmartAccountSuggestionEnabledDescription')}
+            {t('smartAccountDappRequestsDescription')}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={dismissSmartAccountSuggestionEnabled}
+            value={!dismissSmartAccountSuggestionEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setDismissSmartAccountSuggestionEnabled(newValue);
+              setDismissSmartAccountSuggestionEnabled(!newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
