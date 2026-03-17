@@ -7,6 +7,9 @@ jobs:
   repository-health-checks:
     name: Repository health checks
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
@@ -60,6 +63,7 @@ jobs:
         run: yarn allow-scripts auto
 
       - name: Check feature flag registry
+        if: ${{ !cancelled() }}
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
