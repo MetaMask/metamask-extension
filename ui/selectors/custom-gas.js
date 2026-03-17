@@ -8,7 +8,9 @@ import { formatETHFee } from '../helpers/utils/formatters';
 import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getGasEstimateType,
+  getGasEstimateTypeByChainId,
   getGasFeeEstimates,
+  getGasFeeEstimatesByChainId,
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
@@ -32,6 +34,26 @@ export function getAveragePriceEstimateInHexWEI(state) {
   const averagePriceEstimate = getAverageEstimate(state);
 
   return getGasPriceInHexWei(averagePriceEstimate);
+}
+
+/**
+ * Get average gas price estimate in hex wei for a specific chain.
+ * Used when computing transaction fees for a transaction's chain (e.g. confirmation screen).
+ *
+ * @param {object} state - Redux state
+ * @param {string} chainId - Hex chain ID
+ * @returns {string} Average price in hex wei, or '0x0' if no legacy estimate for chain
+ */
+export function getAveragePriceEstimateInHexWEIByChainId(state, chainId) {
+  const gasFeeEstimates = getGasFeeEstimatesByChainId(state, chainId);
+  const gasEstimateType = getGasEstimateTypeByChainId(state, chainId);
+
+  const averagePriceEstimate =
+    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
+      ? gasFeeEstimates?.medium
+      : null;
+
+  return getGasPriceInHexWei(averagePriceEstimate || '0');
 }
 
 export function getFastPriceEstimateInHexWEI(state) {

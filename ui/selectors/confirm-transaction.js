@@ -12,7 +12,9 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import {
   getGasEstimateType,
+  getGasEstimateTypeByChainId,
   getGasFeeEstimates,
+  getGasFeeEstimatesByChainId,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import {
@@ -29,10 +31,14 @@ import {
   sumHexes,
 } from '../../shared/lib/conversion.utils';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
-import { getAveragePriceEstimateInHexWEI } from './custom-gas';
+import {
+  getAveragePriceEstimateInHexWEI,
+  getAveragePriceEstimateInHexWEIByChainId,
+} from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
   getMetaMaskAccounts,
+  getNetworkConfigurationIdByChainId,
 } from './selectors';
 import {
   getUnapprovedTransactions,
@@ -101,10 +107,28 @@ export const transactionFeeSelector = function (state, txData) {
   const currentCurrency = currentCurrencySelector(state);
   const conversionRate = conversionRateSelector(state);
   const nativeCurrency = getNativeCurrency(state);
-  const gasFeeEstimates = getGasFeeEstimates(state) || {};
-  const gasEstimateType = getGasEstimateType(state);
+
+  // Use transaction's chain for gas and 1559 when available (fixes insufficient balance
+  // when a different chain is selected in the UI)
+  const transactionChainId = txData?.chainId;
+  const networkClientIdsByChainId = getNetworkConfigurationIdByChainId(state);
+  const transactionNetworkClientId = transactionChainId
+    ? networkClientIdsByChainId?.[transactionChainId]
+    : undefined;
+
+  const gasFeeEstimates = (
+    transactionChainId && transactionNetworkClientId
+      ? getGasFeeEstimatesByChainId(state, transactionChainId)
+      : getGasFeeEstimates(state)
+  ) || {};
+  const gasEstimateType =
+    transactionChainId && transactionNetworkClientId
+      ? getGasEstimateTypeByChainId(state, transactionChainId)
+      : getGasEstimateType(state);
   const networkAndAccountSupportsEIP1559 =
-    checkNetworkAndAccountSupports1559(state);
+    transactionNetworkClientId !== undefined
+      ? checkNetworkAndAccountSupports1559(state, transactionNetworkClientId)
+      : checkNetworkAndAccountSupports1559(state);
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
@@ -150,7 +174,13 @@ export const transactionFeeSelector = function (state, txData) {
         break;
       case GasEstimateTypes.legacy:
         gasEstimationObject.gasPrice =
-          txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
+          txData.txParams?.gasPrice ??
+          (transactionChainId
+            ? getAveragePriceEstimateInHexWEIByChainId(
+                state,
+                transactionChainId,
+              )
+            : getAveragePriceEstimateInHexWEI(state));
         break;
       default:
         break;
