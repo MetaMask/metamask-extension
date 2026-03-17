@@ -1,7 +1,9 @@
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../shared/constants/keyring';
 
 type KeyringControllerLike = {
-  getKeyringForAccount: (address: string) => Promise<{ type?: string } | undefined>;
+  getKeyringForAccount: (
+    address: string,
+  ) => Promise<{ type?: string } | undefined>;
 };
 
 /**

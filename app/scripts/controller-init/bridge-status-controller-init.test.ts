@@ -59,13 +59,15 @@ describe('BridgeStatusControllerInit', () => {
         batchId: '0x1',
       });
       const accountsLower = accounts.map((a) => a.toLowerCase());
-      const mockGetKeyringForAccount = jest.fn().mockImplementation((addr: string) =>
-        Promise.resolve(
-          accountsLower.includes(addr?.toLowerCase())
-            ? ({ type: keyringType } as { type: string })
-            : undefined,
-        ),
-      );
+      const mockGetKeyringForAccount = jest
+        .fn()
+        .mockImplementation((addr: string) =>
+          Promise.resolve(
+            accountsLower.includes(addr?.toLowerCase())
+              ? ({ type: keyringType } as { type: string })
+              : undefined,
+          ),
+        );
       requestMock.getController.mockImplementation((name: string) => {
         if (name === 'TransactionController') {
           return {

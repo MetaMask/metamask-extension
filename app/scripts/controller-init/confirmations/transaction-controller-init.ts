@@ -127,7 +127,12 @@ export const TransactionControllerInit: ControllerInitFunction<
       return !type || !disabledTypes.includes(type);
     },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
-      if (!(await accountSupports7702(transactionMeta.txParams?.from, keyringController))) {
+      if (
+        !(await accountSupports7702(
+          transactionMeta.txParams?.from,
+          keyringController,
+        ))
+      ) {
         return false;
       }
 
@@ -362,7 +367,9 @@ export async function publishHook({
   flatState: ControllerFlatState;
   initMessenger: TransactionControllerInitMessenger;
   keyringController: () => {
-    getKeyringForAccount: (address: string) => Promise<{ type?: string } | undefined>;
+    getKeyringForAccount: (
+      address: string,
+    ) => Promise<{ type?: string } | undefined>;
   };
   signedTx: string;
   smartTransactionsController: SmartTransactionsController;
