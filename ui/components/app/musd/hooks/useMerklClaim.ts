@@ -5,6 +5,7 @@ import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { getNativeTokenCachedBalanceByChainIdSelector } from '../../../../selectors';
 import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
 import {
   addTransaction,
@@ -47,6 +48,10 @@ export const useMerklClaim = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
 
+  const chainBalances = useSelector((state) =>
+    getNativeTokenCachedBalanceByChainIdSelector(state, selectedAddress ?? ''),
+  ) as Record<Hex, Hex>;
+
   const claimChainId = MERKL_CLAIM_CHAIN_ID;
 
   // Cleanup: abort any pending fetch on unmount
@@ -76,6 +81,17 @@ export const useMerklClaim = ({
 
     setIsClaiming(true);
     setError(null);
+
+    // Validate user has ETH for gas fees on Linea
+    const lineaBalance = chainBalances?.[claimChainId] || '0x0';
+
+    // Check if balance is zero or very low (below typical gas requirement)
+    if (BigInt(lineaBalance) === 0n) {
+      const errorMessage = 'Insufficient ETH balance on Linea for gas fees';
+      setError(errorMessage);
+      setIsClaiming(false);
+      return;
+    }
 
     try {
       // Fetch claim data (includes Merkle proof) from Merkl API
@@ -140,6 +156,7 @@ export const useMerklClaim = ({
   }, [
     isGeoBlocked,
     selectedAddress,
+    chainBalances,
     tokenAddress,
     chainId,
     claimChainId,

@@ -10,6 +10,19 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
+const mockGetNativeTokenCachedBalanceByChainIdSelector = jest.fn();
+
+jest.mock('../../../../selectors/accounts', () => ({
+  getSelectedInternalAccount: jest.fn(() => ({
+    address: '0x1234567890abcdef1234567890abcdef12345678',
+  })),
+}));
+
+jest.mock('../../../../selectors', () => ({
+  getNativeTokenCachedBalanceByChainIdSelector: () =>
+    mockGetNativeTokenCachedBalanceByChainIdSelector(),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
@@ -38,6 +51,9 @@ jest.mock('../../../../hooks/musd/useMusdGeoBlocking', () => ({
 const { useSelector } = jest.requireMock('react-redux');
 const { useMusdGeoBlocking } = jest.requireMock(
   '../../../../hooks/musd/useMusdGeoBlocking',
+);
+const { getSelectedInternalAccount } = jest.requireMock(
+  '../../../../selectors/accounts',
 );
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
@@ -73,7 +89,18 @@ describe('useMerklClaim', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    useSelector.mockImplementation(() => ({ address: MOCK_ADDRESS }));
+    // Default mocks - has account and balance
+    getSelectedInternalAccount.mockReturnValue({ address: MOCK_ADDRESS });
+    mockGetNativeTokenCachedBalanceByChainIdSelector.mockReturnValue({
+      '0xe708': '0x1000000000000000',
+    }); // Default: has balance on Linea
+
+    useSelector.mockImplementation((selector) => {
+      if (typeof selector === 'function') {
+        return selector();
+      }
+      return null;
+    });
 
     mockFindNetworkClientIdByChainId.mockResolvedValue(MOCK_NETWORK_CLIENT_ID);
     mockAddTransaction.mockResolvedValue({ id: MOCK_TX_ID });
@@ -266,5 +293,72 @@ describe('useMerklClaim', () => {
     });
 
     expect(mockFindNetworkClientIdByChainId).toHaveBeenCalled();
+  });
+
+  it('prevents claim when user has zero ETH balance on Linea', async () => {
+    mockGetNativeTokenCachedBalanceByChainIdSelector.mockReturnValue({
+      '0xe708': '0x0',
+    }); // Zero balance on Linea
+
+    const { result } = renderHook(() =>
+      useMerklClaim({
+        tokenAddress: MOCK_TOKEN_ADDRESS,
+        chainId: '0x1' as `0x${string}`,
+      }),
+    );
+
+    await act(async () => {
+      await result.current.claimRewards();
+    });
+
+    expect(result.current.error).toBe(
+      'Insufficient ETH balance on Linea for gas fees',
+    );
+    expect(result.current.isClaiming).toBe(false);
+    expect(merklClient.fetchMerklRewardsForAsset).not.toHaveBeenCalled();
+    expect(mockAddTransaction).not.toHaveBeenCalled();
+  });
+
+  it('allows claim when user has sufficient ETH balance on Linea', async () => {
+    mockGetNativeTokenCachedBalanceByChainIdSelector.mockReturnValue({
+      '0xe708': '0xde0b6b3a7640000',
+    }); // 1 ETH in wei
+
+    const { result } = renderHook(() =>
+      useMerklClaim({
+        tokenAddress: MOCK_TOKEN_ADDRESS,
+        chainId: '0x1' as `0x${string}`,
+      }),
+    );
+
+    await act(async () => {
+      await result.current.claimRewards();
+    });
+
+    expect(result.current.error).toBeNull();
+    expect(merklClient.fetchMerklRewardsForAsset).toHaveBeenCalled();
+    expect(mockAddTransaction).toHaveBeenCalled();
+  });
+
+  it('handles missing balance gracefully', async () => {
+    mockGetNativeTokenCachedBalanceByChainIdSelector.mockReturnValue(null); // No balance data
+
+    const { result } = renderHook(() =>
+      useMerklClaim({
+        tokenAddress: MOCK_TOKEN_ADDRESS,
+        chainId: '0x1' as `0x${string}`,
+      }),
+    );
+
+    await act(async () => {
+      await result.current.claimRewards();
+    });
+
+    expect(result.current.error).toBe(
+      'Insufficient ETH balance on Linea for gas fees',
+    );
+    expect(result.current.isClaiming).toBe(false);
+    expect(merklClient.fetchMerklRewardsForAsset).not.toHaveBeenCalled();
+    expect(mockAddTransaction).not.toHaveBeenCalled();
   });
 });
