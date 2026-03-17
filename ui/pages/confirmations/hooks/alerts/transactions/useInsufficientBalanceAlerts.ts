@@ -15,6 +15,8 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
+import { useTransactionPayRequiredTokens } from '../../pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -34,6 +36,9 @@ export function useInsufficientBalanceAlerts({
   } = useIsGaslessSupported();
 
   const isUsingPay = useTransactionPayHasSourceAmount();
+  const { payToken } = useTransactionPayToken();
+  const requiredTokens = useTransactionPayRequiredTokens();
+  const isPayPendingInput = Boolean(payToken) && requiredTokens.length === 0;
 
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 
@@ -62,6 +67,7 @@ export function useInsufficientBalanceAlerts({
   const showAlert =
     hasInsufficientBalance &&
     !isUsingPay &&
+    !isPayPendingInput &&
     isSimulationComplete &&
     hasNoGasFeeTokenSelected &&
     shouldCheckGaslessConditions &&
