@@ -11,7 +11,7 @@ import TransactionIcon from '.';
 
 const mockCaptureSingleException = jest.fn();
 jest.mock('../../../store/actions', () => ({
-  captureSingleException: (msg) => {
+  captureSingleException: (msg: string) => {
     mockCaptureSingleException(msg);
     return { type: 'CAPTURE_SINGLE_EXCEPTION', payload: msg };
   },
@@ -20,7 +20,7 @@ jest.mock('../../../store/actions', () => ({
 const mockStore = configureStore();
 const store = mockStore({});
 
-function renderIcon(props) {
+function renderIcon(props: React.ComponentProps<typeof TransactionIcon>) {
   return render(
     <Provider store={store}>
       <TransactionIcon {...props} />
