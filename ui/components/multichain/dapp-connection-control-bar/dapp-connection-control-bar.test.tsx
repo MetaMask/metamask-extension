@@ -11,16 +11,17 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockRemovePermissionsFor = jest.fn(() => () => Promise.resolve());
+const mockRemovePermissionsFor = jest.fn(
+  (_subjects: Record<string, string[]>) => () => Promise.resolve(),
+);
 const mockHidePermittedNetworkToast = jest.fn(() => ({
   type: 'SHOW_PERMITTED_NETWORK_TOAST_CLOSE',
 }));
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  removePermissionsFor: (...args: unknown[]) =>
-    mockRemovePermissionsFor(...args),
-  hidePermittedNetworkToast: (...args: unknown[]) =>
-    mockHidePermittedNetworkToast(...args),
+  removePermissionsFor: (subjects: Record<string, string[]>) =>
+    mockRemovePermissionsFor(subjects),
+  hidePermittedNetworkToast: () => mockHidePermittedNetworkToast(),
 }));
 
 const ACCOUNT_1_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
