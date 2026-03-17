@@ -7,19 +7,19 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
 
   private readonly interactingWithParagraph = {
     css: 'p',
-    text: tEn('interactingWith') as string,
+    text: tEn('interactingWith'),
   };
 
   private readonly networkFee = '[data-testid="first-gas-field"]';
 
   private readonly networkFeeParagraph = {
     css: 'p',
-    text: tEn('networkFee') as string,
+    text: tEn('networkFee'),
   };
 
   private readonly networkParagraph = {
     css: 'p',
-    text: tEn('transactionFlowNetwork') as string,
+    text: tEn('transactionFlowNetwork'),
   };
 
   private readonly networkTextElement = (networkText: string) => ({

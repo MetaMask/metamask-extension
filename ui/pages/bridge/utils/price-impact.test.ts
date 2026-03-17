@@ -16,10 +16,10 @@ describe('formatPriceImpact', () => {
     expect(formatPriceImpact('0.00009')).toBe('<0.01%');
   });
 
-  it('should return <-0.01% for very small negative values', () => {
-    expect(formatPriceImpact(-0.00007)).toBe('<-0.01%');
-    expect(formatPriceImpact(-0.00009)).toBe('<-0.01%');
-    expect(formatPriceImpact('-0.00009')).toBe('<-0.01%');
+  it('should return 0% for very small negative values', () => {
+    expect(formatPriceImpact(-0.00007)).toBe('0%');
+    expect(formatPriceImpact(-0.00009)).toBe('0%');
+    expect(formatPriceImpact('-0.00009')).toBe('0%');
   });
 
   it('should format with expected precision for typical ranges', () => {
@@ -35,14 +35,14 @@ describe('formatPriceImpact', () => {
   });
 
   it('should handle negative values correctly', () => {
-    expect(formatPriceImpact(-0.001)).toBe('-0.10%');
-    expect(formatPriceImpact(-0.015)).toBe('-1.5%');
-    expect(formatPriceImpact(-0.1)).toBe('-10%');
+    expect(formatPriceImpact(-0.001)).toBe('0%');
+    expect(formatPriceImpact(-0.015)).toBe('0%');
+    expect(formatPriceImpact(-0.1)).toBe('0%');
   });
 
   it('should handle string inputs', () => {
     expect(formatPriceImpact('0.015')).toBe('1.5%');
     expect(formatPriceImpact('0.00007')).toBe('<0.01%');
-    expect(formatPriceImpact('-0.02567')).toBe('-2.6%');
+    expect(formatPriceImpact('-0.02567')).toBe('0%');
   });
 });

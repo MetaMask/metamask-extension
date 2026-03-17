@@ -16,16 +16,6 @@ $spacer-break-small: 16px;
   }
 }
 
-.buttonDescriptionContainer {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
-
-  @include design-system.screen-md-min {
-    bottom: 3px;
-  }
-}
 
 .fade-in {
   opacity: 0;
@@ -76,26 +66,6 @@ $spacer-break-small: 16px;
     padding-right: 0;
   }
 
-
-  &__show-more {
-    max-height: 2.5rem;
-
-    &__buttonContainer {
-      position: 'absolute';
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
-    }
-
-    @include design-system.screen-md-min {
-      max-height: 3rem;
-    }
-
-    &__button {
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
-      vertical-align: baseline;
-    }
-  }
 
   &__nft-frame {
     flex: 1 0 33%;

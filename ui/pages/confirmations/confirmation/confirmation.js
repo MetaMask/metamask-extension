@@ -42,16 +42,15 @@ import {
   getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
+  getIsHardwareWalletErrorModalVisible,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import Callout from '../../../components/ui/callout';
 import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
@@ -232,7 +231,7 @@ export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const pendingConfirmations = useSelector(
@@ -241,6 +240,9 @@ export default function ConfirmationPage({
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
@@ -289,11 +291,9 @@ export default function ConfirmationPage({
 
   const SNAP_DIALOG_TYPE = Object.values(DIALOG_APPROVAL_TYPES);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_DIALOG_TYPE.push(
     ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
@@ -360,17 +360,35 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
+  const [lastConfirmationType, setLastConfirmationType] = useState(null);
+
+  useEffect(() => {
+    if (pendingConfirmation?.type) {
+      setLastConfirmationType(pendingConfirmation.type);
+    }
+  }, [pendingConfirmation?.type]);
+
+  // send-tron.spec expects Activity tab
+  const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
+
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
-    if (
+    // Don't navigate away if:
+    // - Hardware wallet error modal is visible (for retry functionality)
+    const wouldNavigate =
       pendingConfirmations.length === 0 &&
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
-      redirectToHomeOnZeroConfirmations
-    ) {
-      navigate(DEFAULT_ROUTE);
+      redirectToHomeOnZeroConfirmations;
+
+    if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
+      const to = shouldShowActivity
+        ? `${DEFAULT_ROUTE}?tab=activity`
+        : DEFAULT_ROUTE;
+
+      navigate(to);
     }
   }, [
     pendingConfirmations,
@@ -378,6 +396,8 @@ export default function ConfirmationPage({
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
+    shouldShowActivity,
+    isHardwareWalletErrorModalVisible,
   ]);
 
   useEffect(() => {

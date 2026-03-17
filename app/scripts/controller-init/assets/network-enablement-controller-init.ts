@@ -5,14 +5,10 @@ import {
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
-  ///: END:ONLY_INCLUDE_IF
   SolAccountType,
   SolScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxScope,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   CaipChainId,
@@ -98,6 +94,7 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   } else if (
     process.env.METAMASK_DEBUG ||
@@ -113,18 +110,13 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   }
 
   const enabledMultichainNetworks: string[] = [SolScope.Mainnet];
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   enabledMultichainNetworks.push(BtcScope.Mainnet);
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   enabledMultichainNetworks.push(TrxScope.Mainnet);
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     enabledNetworkMap: {
@@ -137,6 +129,7 @@ const generateDefaultNetworkEnablementControllerState = (
         enabledMultichainNetworks,
       ),
     },
+    nativeAssetIdentifiers: {},
   };
 };
 
@@ -162,6 +155,12 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
     },
   });
 
+  // Initialize native asset identifiers from network configurations.
+  // This reads from NetworkController and MultichainNetworkController to populate
+  // the nativeAssetIdentifiers state with CAIP-19-like identifiers for each network.
+  // We intentionally don't await this - it will complete in the background.
+  controller.init();
+
   // TODO: Remove this after BIP-44 rollout.
   initMessenger.subscribe(
     'AccountsController:selectedAccountChange',
@@ -184,24 +183,18 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
           scopes: [SolScope.Mainnet],
         },
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcAccounts = initMessenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
         {
           scopes: [BtcScope.Mainnet],
         },
       );
-      ///: END:ONLY_INCLUDE_IF
-
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       const trxAccounts = initMessenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
         {
           scopes: [TrxScope.Mainnet],
         },
       );
-      ///: END:ONLY_INCLUDE_IF
 
       const allEnabledNetworks = {};
 
@@ -216,19 +209,12 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
         if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
         if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-        ///: END:ONLY_INCLUDE_IF
-
-        ///: BEGIN:ONLY_INCLUDE_IF(tron)
         if (chainId === TrxScope.Mainnet && trxAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-        ///: END:ONLY_INCLUDE_IF
-
         if (shouldEnableMainnetNetworks) {
           controller.enableNetwork('0x1');
         }

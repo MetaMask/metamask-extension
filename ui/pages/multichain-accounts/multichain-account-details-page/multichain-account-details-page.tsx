@@ -1,11 +1,20 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
-import classnames from 'classnames';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
+import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import {
   Box,
   ButtonIcon,
@@ -58,21 +67,22 @@ export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const { id } = useParams();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const [searchParams] = useSearchParams();
 
-  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
+  const accountGroupId = (searchParams.get('accountGroupId') ??
+    '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
 
-  const walletId = extractWalletIdFromGroupId(accountGroupId);
+  const walletId = accountGroupId
+    ? extractWalletIdFromGroupId(accountGroupId)
+    : ('' as AccountWalletId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
-  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
-  const isRemovable =
-    wallet?.type !== AccountWalletType.Entropy &&
-    wallet?.type !== AccountWalletType.Snap;
+
+  const isRemovable = wallet?.type !== AccountWalletType.Entropy;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
@@ -96,19 +106,24 @@ export const MultichainAccountDetailsPage = () => {
   );
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
+  const evmKeyringType = evmInternalAccount?.metadata?.keyring?.type;
+  const isEip7702SupportedKeyring =
+    evmKeyringType &&
+    KEYRING_TYPES_SUPPORTING_7702.includes(evmKeyringType as KeyringTypes);
+
   const handleAddressesClick = () => {
     trace({
       name: TraceName.ShowAccountAddressList,
       op: TraceOperation.AccountUi,
     });
     navigate(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
     );
   };
 
   const handlePrivateKeysClick = () => {
     navigate(
-      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
     );
   };
 
@@ -145,17 +160,22 @@ export const MultichainAccountDetailsPage = () => {
   }, [dispatch, trackEvent, navigate, wallet?.type, accountsWithAddresses]);
 
   const handleWalletAction = () => {
-    navigate(walletRoute);
+    navigate({
+      pathname: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+      search: createSearchParams({
+        id: walletId,
+      }).toString(),
+    });
   };
 
   useEffect(() => {
     // Redirect if account doesn't exist
-    if (!id || !multichainAccount) {
+    if (!accountGroupId || !multichainAccount) {
       navigate(DEFAULT_ROUTE);
     }
-  }, [id, multichainAccount, navigate]);
+  }, [accountGroupId, multichainAccount, navigate]);
 
-  return id && multichainAccount ? (
+  return accountGroupId && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
@@ -233,21 +253,23 @@ export const MultichainAccountDetailsPage = () => {
               }
             />
           )}
-          <AccountDetailsRow
-            label={t('smartAccountLabel')}
-            value={t('setUp')}
-            onClick={handleSmartAccountClick}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('smartAccountLabel')}
-                marginLeft={2}
-                data-testid="smart-account-action"
-              />
-            }
-          />
+          {isEip7702SupportedKeyring && (
+            <AccountDetailsRow
+              label={t('smartAccountLabel')}
+              value={t('setUp')}
+              onClick={handleSmartAccountClick}
+              endAccessory={
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  color={IconColor.iconAlternative}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('smartAccountLabel')}
+                  marginLeft={2}
+                  data-testid="smart-account-action"
+                />
+              }
+            />
+          )}
         </Box>
         <Box className="multichain-account-details-page__section">
           <AccountDetailsRow

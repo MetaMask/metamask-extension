@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -55,7 +56,10 @@ describe('Settings: Show native token as main balance', function () {
   it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
+        fixtures: new FixtureBuilderV2()
+          .withConversionRateDisabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);

@@ -23,7 +23,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
-  isValidDomainName,
+  isResolvableName,
   shortenAddress,
 } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -93,7 +93,7 @@ export const RecipientInput = ({
       (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
     );
 
-    return to && isValidDomainName(to)
+    return to && isResolvableName(to)
       ? to
       : matchingRecipient?.contactName || matchingRecipient?.accountGroupName;
   }, [recipients, to]);
@@ -163,6 +163,7 @@ export const RecipientInput = ({
           }
           onChange={onToChange}
           placeholder={t('recipientPlaceholderText')}
+          testId="recipient-address-input"
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

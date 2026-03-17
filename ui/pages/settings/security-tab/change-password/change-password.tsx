@@ -21,7 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { isBeta, isFlask } from '../../../../helpers/utils/build-types';
+import { isBeta, isFlask } from '../../../../../shared/lib/build-types';
 import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -53,7 +53,7 @@ const ChangePassword = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const animationEventEmitter = useRef(new EventEmitter());
   const [step, setStep] = useState(ChangePasswordSteps.VerifyCurrentPassword);

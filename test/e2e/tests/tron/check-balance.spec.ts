@@ -22,7 +22,6 @@ describe('Check balance', function (this: Suite) {
         manifestFlags: {
           remoteFeatureFlags: {
             tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
           },
         },
       },
@@ -51,7 +50,6 @@ describe('Check balance', function (this: Suite) {
         manifestFlags: {
           remoteFeatureFlags: {
             tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
           },
         },
       },
@@ -79,7 +77,6 @@ describe('Check balance', function (this: Suite) {
         manifestFlags: {
           remoteFeatureFlags: {
             tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
           },
         },
       },

@@ -9,6 +9,7 @@ import {
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as util from '../../helpers/utils/util';
@@ -127,17 +128,21 @@ describe('ConfirmAddSuggestedNFT Component', () => {
       }),
     );
 
-    expect(screen.getByText('Add suggested NFTs')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addSuggestedNFTs.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('https://www.opensea.io')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'This allows the following asset to be added to your wallet.',
-      ),
+      screen.getByText(messages.wantsToAddThisAsset.message),
     ).toBeInTheDocument();
     expect(screen.getByText('CryptoKitty')).toBeInTheDocument();
     expect(screen.getByText('#15')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Add NFT' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: messages.cancel.message }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: messages.addNft.message }),
+    ).toBeInTheDocument();
   });
 
   it('should match snapshot', async () => {
@@ -183,7 +188,9 @@ describe('ConfirmAddSuggestedNFT Component', () => {
 
   it('should dispatch resolvePendingApproval when clicking the "Add NFTs" button', async () => {
     renderComponent(PENDING_NFT_APPROVALS);
-    const addNftButton = screen.getByRole('button', { name: 'Add NFTs' });
+    const addNftButton = screen.getByRole('button', {
+      name: messages.addNfts.message,
+    });
 
     await act(async () => {
       fireEvent.click(addNftButton);
@@ -200,7 +207,9 @@ describe('ConfirmAddSuggestedNFT Component', () => {
 
   it('should dispatch rejectPendingApproval when clicking the "Cancel" button', async () => {
     renderComponent(PENDING_NFT_APPROVALS);
-    const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
+    const cancelBtn = screen.getByRole('button', {
+      name: messages.cancel.message,
+    });
 
     await act(async () => {
       fireEvent.click(cancelBtn);

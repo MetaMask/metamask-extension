@@ -4,6 +4,7 @@ import {
   CaipChainId,
   CaipNamespace,
   CaipAccountId,
+  toCaipAccountId,
 } from '@metamask/utils';
 import { EthScope } from '@metamask/keyring-api';
 // eslint-disable-next-line import/no-restricted-paths
@@ -185,3 +186,14 @@ export const getCaip25AccountIdsFromAccountGroupAndScope = (
 
   return Array.from(updatedSelectedCaipAccountAddresses);
 };
+
+/**
+ * Converts an Ethereum account address to an EVM wildcard CAIP account ID.
+ * Uses the special chain reference "0" to represent "all EVM chains" for API compatibility.
+ *
+ * @param accountAddress - The Ethereum account address
+ * @returns The EVM wildcard CAIP account ID in format "eip155:0:address"
+ */
+export function toEvmCaipAccountId(accountAddress: string): CaipAccountId {
+  return toCaipAccountId(KnownCaipNamespace.Eip155, '0', accountAddress);
+}

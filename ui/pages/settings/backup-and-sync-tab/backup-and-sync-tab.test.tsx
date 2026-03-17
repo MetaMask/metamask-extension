@@ -5,12 +5,25 @@ import mockState from '../../../../test/data/mock-state.json';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import { backupAndSyncFeaturesTogglesTestIds } from '../../../components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles';
 import { backupAndSyncToggleTestIds } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
-import BackupAndSyncTab from './backup-and-sync-tab.component';
+import BackupAndSyncTab from './backup-and-sync-tab';
 
-const render = () => {
+const defaultState = {
+  metamask: {
+    ...mockState.metamask,
+  },
+};
+
+type StateOverrides = {
+  metamask?: Record<string, unknown>;
+};
+
+const render = (stateOverrides: StateOverrides = {}) => {
   const store = configureStore({
+    ...defaultState,
+    ...stateOverrides,
     metamask: {
-      ...mockState.metamask,
+      ...defaultState.metamask,
+      ...(stateOverrides.metamask ?? {}),
     },
   });
   const comp = <BackupAndSyncTab />;
@@ -21,23 +34,40 @@ const render = () => {
 };
 
 describe('BackupAndSyncTab', () => {
-  it('renders BackupAndSyncTab component without error', () => {
+  it('renders without error', () => {
     expect(() => {
       render();
     }).not.toThrow();
   });
 
-  it('contains the main setting section', () => {
+  it('renders the main backup and sync toggle section', () => {
     const { getByTestId } = render();
     expect(
       getByTestId(backupAndSyncToggleTestIds.container),
     ).toBeInTheDocument();
   });
 
-  it('contains the features toggles section', () => {
-    const { getByTestId } = render();
+  it('renders the features toggles section when backup and sync is enabled', () => {
+    const { getByTestId } = render({
+      metamask: { isBackupAndSyncEnabled: true },
+    });
     expect(
       getByTestId(backupAndSyncFeaturesTogglesTestIds.container),
     ).toBeInTheDocument();
+  });
+
+  it('does not render the features toggles section when backup and sync is disabled', () => {
+    const { queryByTestId } = render({
+      metamask: { isBackupAndSyncEnabled: false },
+    });
+    expect(
+      queryByTestId(backupAndSyncFeaturesTogglesTestIds.container),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders layout with settings-page__body class', () => {
+    const { container } = render();
+    const body = container.querySelector('.settings-page__body');
+    expect(body).toBeInTheDocument();
   });
 });

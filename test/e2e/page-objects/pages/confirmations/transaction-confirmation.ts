@@ -35,8 +35,7 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="custom-nonce-input"]';
 
   private readonly dappInitiatedHeadingTitle: RawLocator = {
-    css: 'h4',
-    text: tEn('transferRequest') as string,
+    text: tEn('confirmTitleSending'),
   };
 
   private readonly editGasFeeIcon: RawLocator =
@@ -90,9 +89,18 @@ class TransactionConfirmation extends Confirmation {
   });
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
-    css: 'h4',
-    text: tEn('review') as string,
+    text: tEn('confirmTitleSending'),
   };
+
+  private readonly tokenGasFeeDropdown =
+    '[data-testid="selected-gas-fee-token-arrow"]';
+
+  private readonly tokenGasFeeSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  private readonly gasFeeField = '[data-testid="first-gas-field"]';
+
+  private readonly fiatFeeField = '[data-testid="native-currency"]';
 
   private readonly shieldFooterCoverageIndicator = (status: string) => ({
     css: '[data-alert-key="shieldFooterCoverageIndicator"]',
@@ -245,7 +253,7 @@ class TransactionConfirmation extends Confirmation {
   async checkPaidByMetaMask() {
     await this.driver.findElement({
       css: this.paidByMetaMaskNotice,
-      text: tEn('paidByMetaMask') as string,
+      text: tEn('paidByMetaMask'),
     });
   }
 
@@ -564,13 +572,33 @@ class TransactionConfirmation extends Confirmation {
     status: 'covered' | 'not_covered' | 'malicious',
   ): Promise<void> {
     const statusText =
-      status === 'covered'
-        ? (tEn('shieldCovered') as string)
-        : (tEn('shieldNotCovered') as string);
+      status === 'covered' ? tEn('shieldCovered') : tEn('shieldNotCovered');
     console.log(`Checking if shield coverage indicator shows "${statusText}"`);
     await this.driver.waitForSelector(
       this.shieldFooterCoverageIndicator(statusText),
     );
+  }
+
+  async selectTokenFee(tokenSymbol: string): Promise<void> {
+    console.log(`Select token ${tokenSymbol} to pay for the fees`);
+    await this.driver.clickElement(this.tokenGasFeeDropdown);
+    await this.driver.clickElement({
+      css: this.tokenGasFeeSymbol,
+      text: tokenSymbol,
+    });
+  }
+
+  async validateSendFees(gasFee: string, fiatFee: string): Promise<void> {
+    // Wait for both fields to be present and have the expected values
+    await this.driver.waitForSelector({
+      css: this.gasFeeField,
+      text: gasFee,
+    });
+    await this.driver.waitForSelector({
+      css: this.fiatFeeField,
+      text: fiatFee,
+    });
+    console.log('Send fees validation successful');
   }
 }
 

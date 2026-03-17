@@ -13,12 +13,24 @@ class SnapTransactionConfirmation {
     text: 'Confirm',
   };
 
+  private getNetworkDisplayLocator(networkName: string) {
+    return {
+      text: networkName,
+      tag: 'p',
+    };
+  }
+
   private header = {
     text: 'Transaction request',
     tag: 'h2',
   };
 
   private addressTestId = 'snap-ui-address';
+
+  private securityAlertsError = {
+    tag: 'p',
+    text: `Because of an error, we couldn't check for security alerts.`,
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -48,12 +60,40 @@ class SnapTransactionConfirmation {
     console.log('Snap transaction confirmation page is loaded');
   }
 
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Checking network ${networkName} is displayed on snap transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(
+      this.getNetworkDisplayLocator(networkName),
+    );
+  }
+
+  async checkSecurityAlertsErrorIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.securityAlertsError);
+  }
+
   async clickFooterCancelButton() {
-    await this.driver.clickElement(this.cancelButton);
+    await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
   }
 
   async clickFooterConfirmButton() {
-    await this.driver.clickElement(this.confirmButton);
+    console.log('Clicking footer confirm button');
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
+  }
+
+  async clickFooterConfirmButtonAndWaitForWindowToClose() {
+    console.log(
+      'Clicking footer confirm button and waiting for window to close',
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  }
+
+  async clickFooterCancelButtonAndWaitForWindowToClose() {
+    console.log(
+      'Clicking footer cancel button and waiting for window to close',
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 }
 export default SnapTransactionConfirmation;

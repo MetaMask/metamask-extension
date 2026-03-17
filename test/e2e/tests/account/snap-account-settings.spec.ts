@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
@@ -12,7 +12,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

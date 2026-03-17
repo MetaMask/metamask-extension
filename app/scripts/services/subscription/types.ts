@@ -10,8 +10,9 @@ import {
   SubscriptionControllerGetStateAction,
   SubscriptionControllerLinkRewardsAction,
   SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
+  SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import {
   TransactionControllerGetTransactionsAction,
   TransactionMeta,
@@ -24,10 +25,11 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
 import {
   AppStateControllerGetStateAction,
   AppStateControllerSetPendingShieldCohortAction,
+  AppStateControllerSetPendingRedirectRouteAction,
+  AppStateControllerSetShieldSubscriptionErrorAction,
 } from '../../controllers/app-state-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import {
@@ -57,16 +59,18 @@ export type SubscriptionServiceAction =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerLinkRewardsAction
   | SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction
+  | SubscriptionControllerClearLastSelectedPaymentMethodAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction
   | SmartTransactionsControllerGetStateAction
-  | SwapsControllerGetStateAction
   | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerToken
+  | AuthenticationControllerGetBearerTokenAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetPendingRedirectRouteAction
+  | AppStateControllerSetShieldSubscriptionErrorAction
   | MetaMetricsControllerTrackEventAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
   // Rewards Integration
@@ -91,6 +95,4 @@ export type SubscriptionServiceOptions = {
   platform: ExtensionPlatform;
 
   webAuthenticator: WebAuthenticator;
-
-  captureException: (error: unknown) => void;
 };

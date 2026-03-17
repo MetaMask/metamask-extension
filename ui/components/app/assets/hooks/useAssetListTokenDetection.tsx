@@ -14,7 +14,7 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
-} from '../../../../../shared/modules/selectors/networks';
+} from '../../../../../shared/lib/selectors/networks';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -28,7 +28,7 @@ import {
 import { addImportedTokens } from '../../../../store/actions';
 
 const useAssetListTokenDetection = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const detectedTokensMultichain: {
     [key: string]: Token[];

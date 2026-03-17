@@ -28,8 +28,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { SmartAccountTab } from '../../../pages/confirmations/components/confirm/smart-account-tab/smart-account-tab';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
@@ -45,11 +45,13 @@ export const AccountDetailsDisplay = ({
   onExportClick,
 }) => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;
-  const [copied, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const handleClick = useCallback(() => {
     handleCopy(formatedAddress);
   }, [formatedAddress, handleCopy]);

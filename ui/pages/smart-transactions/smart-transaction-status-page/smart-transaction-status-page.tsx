@@ -29,7 +29,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFullTxData } from '../../../selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
 import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
 

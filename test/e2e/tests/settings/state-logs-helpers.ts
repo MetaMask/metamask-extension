@@ -1,4 +1,6 @@
+import { join } from 'path';
 import { Driver } from '../../webdriver/driver';
+import { shouldIgnoreKey } from '../../helpers';
 
 export type StateLogsPrimitiveType =
   | 'array'
@@ -50,11 +52,6 @@ const createDifferenceMessage = (
 // Minimal type definition for the specific fields we validate in the State Logs Account spec
 type MinimalStateLogsJson = {
   metamask: {
-    identities: {
-      [key: string]: {
-        address: string;
-      };
-    };
     internalAccounts: {
       selectedAccount: string;
       accounts: {
@@ -145,6 +142,36 @@ export const createTypeMap = (
   return typeMap;
 };
 
+/** Path segment used in type map for wildcard (any key at this level). */
+const WILDCARD_SEGMENT = '*';
+
+const isWildcardKey = (key: string): boolean =>
+  key.split('.').some((segment) => segment === WILDCARD_SEGMENT);
+
+/**
+ * Returns true if a current (actual) key matches an expected key that may contain
+ * wildcard segments ("*" = any single path segment). Supports any number of
+ * wildcards at any level, e.g. metamask.foo.* or metamask.foo.*.bar.*.baz.
+ *
+ * @param currentKey - Flattened path from actual state (e.g. metamask.foo.0x1.bar.0x2.baz)
+ * @param expectedKey - Flattened path from definition (e.g. metamask.foo.*.bar.*.baz)
+ * @returns true when path lengths match and each segment equals or is wildcard
+ */
+const currentKeyMatchesExpectedWildcard = (
+  currentKey: string,
+  expectedKey: string,
+): boolean => {
+  const currentParts = currentKey.split('.');
+  const expectedParts = expectedKey.split('.');
+  if (currentParts.length !== expectedParts.length) {
+    return false;
+  }
+  return expectedParts.every(
+    (expectedPart, i) =>
+      expectedPart === WILDCARD_SEGMENT || expectedPart === currentParts[i],
+  );
+};
+
 const flattenTypeDescriptor = (
   descriptor: StateLogsTypeDescriptor,
   path: string,
@@ -199,46 +226,6 @@ const getIgnoredKeys = (): string[] => [
   'metamask.appActiveTab', // Firefox doesn't support sidepanel and tabs may not be available at startup in E2E tests
 ];
 
-const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
-  const hasNonZeroArrayIndex = key.split('.').some((part) => {
-    const matches = part.match(/\[(\d+)\]/gu);
-    return (
-      matches?.some((match) => {
-        const index = Number(match.slice(1, -1));
-        return Number.isNaN(index) === false && index !== 0;
-      }) ?? false
-    );
-  });
-  if (hasNonZeroArrayIndex) {
-    return true;
-  }
-
-  // Ignore entropy keys in account tree (dynamic entropy IDs)
-  if (key.match(/entropy:[A-Z0-9]+/u)) {
-    return true;
-  }
-
-  // Check if any part of the key path should be ignored
-  const keyParts = key.split('.');
-  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
-    const ignoredParts = ignoredKey.split('.');
-
-    // Ignore if the ignored key is an exact prefix of the current key
-    // OR if the current key exactly matches the ignored key
-    // OR if the current key starts with the ignored key (for nested properties)
-    const isExactPrefix = ignoredParts.every(
-      (part, index) => keyParts[index] === part,
-    );
-    const isExactMatch = key === ignoredKey;
-    const startsWithIgnoredKey =
-      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
-
-    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
-  });
-
-  return shouldIgnore;
-};
-
 const findMissingKeys = (
   current: StateLogsTypeMap,
   expected: StateLogsTypeMap,
@@ -250,6 +237,10 @@ const findMissingKeys = (
     if (Object.prototype.hasOwnProperty.call(expected, key)) {
       // Skip ignored keys and srpSessionData keys (handled separately)
       if (shouldIgnore(key) || key.startsWith('metamask.srpSessionData.')) {
+        continue;
+      }
+      // Wildcard keys (e.g. metamask.thresholdCache.*) define "any key here"; no literal key is required
+      if (isWildcardKey(key)) {
         continue;
       }
 
@@ -276,7 +267,11 @@ const findNewKeys = (
         continue;
       }
 
-      if (!(key in expected)) {
+      const inExpectedLiteral = key in expected;
+      const matchedByWildcard = Object.keys(expected).some((expectedKey) =>
+        currentKeyMatchesExpectedWildcard(key, expectedKey),
+      );
+      if (!inExpectedLiteral && !matchedByWildcard) {
         differences.push(createDifferenceMessage('new', key));
       }
     }
@@ -299,9 +294,22 @@ const findTypeMismatches = (
         continue;
       }
 
-      if (key in current && current[key] !== expected[key]) {
+      let wildcardCurrentKey: string | undefined;
+      if (isWildcardKey(key)) {
+        wildcardCurrentKey = Object.keys(current).find((currentKey) =>
+          currentKeyMatchesExpectedWildcard(currentKey, key),
+        );
+      }
+
+      const currentKey = wildcardCurrentKey ?? key;
+      if (currentKey in current && current[currentKey] !== expected[key]) {
         differences.push(
-          createDifferenceMessage('mismatch', key, expected[key], current[key]),
+          createDifferenceMessage(
+            'mismatch',
+            key,
+            expected[key],
+            current[currentKey],
+          ),
         );
       }
     }
@@ -443,7 +451,7 @@ const readStateLogsFile = async (
   downloadsFolder: string,
 ): Promise<MinimalStateLogsJson | null> => {
   try {
-    const stateLogs = `${downloadsFolder}/MetaMask state logs.json`;
+    const stateLogs = join(downloadsFolder, 'MetaMask state logs.json');
     const { promises: fs } = await import('fs');
     const contents = await fs.readFile(stateLogs);
     const parsedContents = JSON.parse(contents.toString());

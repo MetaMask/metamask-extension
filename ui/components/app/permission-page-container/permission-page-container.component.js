@@ -4,7 +4,12 @@ import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import {
+  Caip25EndowmentPermissionName,
+  generateCaip25Caveat,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+} from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import PermissionsConnectFooter from '../permissions-connect-footer';
@@ -33,6 +38,17 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedAccounts: PropTypes.array,
     requestedChainIds: PropTypes.array,
+    /**
+     * Full CAIP account IDs for chain-agnostic permission approval.
+     * When provided, these are used instead of selectedAccounts for building
+     * the CAIP-25 permission response. This supports non-EVM chains like Solana.
+     */
+    selectedCaipAccountIds: PropTypes.arrayOf(PropTypes.string),
+    /**
+     * Full CAIP chain IDs for chain-agnostic permission approval.
+     * When provided, these are used instead of requestedChainIds.
+     */
+    selectedCaipChainIds: PropTypes.arrayOf(PropTypes.string),
     allAccountsSelected: PropTypes.bool,
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
@@ -54,6 +70,8 @@ export default class PermissionPageContainer extends Component {
     request: {},
     requestMetadata: {},
     selectedAccounts: [],
+    selectedCaipAccountIds: null,
+    selectedCaipChainIds: null,
     allAccountsSelected: false,
     currentPermissions: {},
   };
@@ -143,25 +161,62 @@ export default class PermissionPageContainer extends Component {
       rejectPermissionsRequest,
       selectedAccounts,
       requestedChainIds,
+      selectedCaipAccountIds,
+      selectedCaipChainIds,
     } = this.props;
-
-    const approvedAccounts = selectedAccounts.map(
-      (selectedAccount) => selectedAccount.address,
-    );
 
     const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
       _request.permissions,
     );
 
+    let permissionsResponse;
+
+    if (
+      selectedCaipAccountIds?.length > 0 &&
+      selectedCaipChainIds?.length > 0
+    ) {
+      // Use chain-agnostic approach when CAIP account IDs are provided
+      // This supports non-EVM chains like Solana, Bitcoin, etc.
+      permissionsResponse = generateCaip25Caveat(
+        requestedCaip25CaveatValue,
+        selectedCaipAccountIds,
+        selectedCaipChainIds,
+      );
+    } else if (selectedAccounts?.length > 0) {
+      // Fallback to EVM-only approach when accounts are selected (e.g., snaps flow)
+      permissionsResponse = getCaip25PermissionsResponse(
+        requestedCaip25CaveatValue,
+        selectedAccounts.map((account) => account.address),
+        requestedChainIds,
+      );
+    } else {
+      // No user selection occurred (no selectedCaipAccountIds and no selectedAccounts).
+      // This happens in scenarios like:
+      // - Network-only permission changes (adding a new chain without changing accounts)
+      // - Incremental permission requests that don't involve account selection UI
+      //
+      // Extract the account/chain IDs already embedded in the request's CAIP-25 caveat.
+      // We must preserve these values rather than passing empty arrays, which would
+      // effectively deny the permission or create an invalid state.
+      const originalCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+        requestedCaip25CaveatValue,
+      );
+      const originalCaipChainIds = getAllScopesFromCaip25CaveatValue(
+        requestedCaip25CaveatValue,
+      );
+
+      permissionsResponse = generateCaip25Caveat(
+        requestedCaip25CaveatValue,
+        originalCaipAccountIds,
+        originalCaipChainIds,
+      );
+    }
+
     const request = {
       ..._request,
       permissions: {
         ..._request.permissions,
-        ...getCaip25PermissionsResponse(
-          requestedCaip25CaveatValue,
-          approvedAccounts,
-          requestedChainIds,
-        ),
+        ...permissionsResponse,
       },
     };
 
@@ -189,6 +244,7 @@ export default class PermissionPageContainer extends Component {
       selectedAccounts,
       allAccountsSelected,
       requestedChainIds,
+      selectedCaipChainIds,
     } = this.props;
 
     const requestedPermissions = this.getRequestedPermissions();
@@ -227,6 +283,7 @@ export default class PermissionPageContainer extends Component {
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={requestedPermissions}
           requestedChainIds={requestedChainIds}
+          selectedCaipChainIds={selectedCaipChainIds}
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />

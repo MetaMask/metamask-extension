@@ -75,6 +75,12 @@ class ChromeDriver {
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
+      'profile.content_settings.exceptions.clipboard': {
+        '[*.]': {
+          last_modified: Date.now(),
+          setting: 1, // 1 = allow
+        },
+      },
     });
 
     // Temporarily lock to version 126
@@ -131,21 +137,35 @@ class ChromeDriver {
    */
   async getExtensionIdByName(extensionName) {
     await this._driver.get('chrome://extensions');
-    return await this._driver.executeScript(`
-      const extensions = document.querySelector("extensions-manager").shadowRoot
-        .querySelector("extensions-item-list").shadowRoot
-        .querySelectorAll("extensions-item")
+    const maxAttempts = 5;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const id = await this._driver.executeScript(`
+        try {
+          const extensions = document.querySelector("extensions-manager").shadowRoot
+            .querySelector("extensions-item-list").shadowRoot
+            .querySelectorAll("extensions-item")
 
-      for (let i = 0; i < extensions.length; i++) {
-        const extension = extensions[i].shadowRoot
-        const name = extension.querySelector('#name').textContent
-        if (name.startsWith("${extensionName}")) {
-          return extensions[i].getAttribute("id")
+          for (let i = 0; i < extensions.length; i++) {
+            const extension = extensions[i].shadowRoot
+            const name = extension.querySelector('#name').textContent
+            if (name.startsWith("${extensionName}")) {
+              return extensions[i].getAttribute("id")
+            }
+          }
+        } catch (e) {
+          return undefined
         }
+        return undefined
+      `);
+      if (id) {
+        return id;
       }
-
-      return undefined
-    `);
+      await this._driver.sleep(1000);
+    }
+    console.error(
+      `Failed to find extension "${extensionName}" after ${maxAttempts} attempts`,
+    );
+    return undefined;
   }
 }
 

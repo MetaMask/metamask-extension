@@ -5,8 +5,8 @@ import type { OnChainRawNotificationsWithNetworkFields } from '@metamask/notific
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  getNetworkDetailsFromNotifPayload,
   getNetworkFees,
-  getNetworkDetailsByChainId,
 } from '../../../helpers/utils/notification.util';
 import {
   MetaMetricsEventCategory,
@@ -88,16 +88,14 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
   notification,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
 
-  const getNativeCurrency = (n: OnChainRawNotificationsWithNetworkFields) => {
-    return getNetworkDetailsByChainId(n.payload.chain_id);
-  };
-
-  const nativeCurrency = getNativeCurrency(notification);
+  const { nativeCurrencySymbol } = getNetworkDetailsFromNotifPayload(
+    notification.payload.network,
+  );
 
   useEffect(() => {
     const fetchNetworkFees = async () => {
@@ -218,7 +216,7 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
             color={TextColor.textAlternative}
           >
             {networkFees?.transactionFee.transactionFeeInEther}{' '}
-            {nativeCurrency?.nativeCurrencySymbol} (
+            {nativeCurrencySymbol} (
             {networkFees?.transactionFee.transactionFeeInUsd} USD)
           </Text>
         }

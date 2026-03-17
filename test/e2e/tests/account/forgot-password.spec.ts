@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import { Anvil } from '../../seeder/anvil';
@@ -7,7 +7,10 @@ import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  loginWithBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 
 const newPassword = 'this is the best password ever';
 
@@ -15,7 +18,7 @@ describe('Forgot password', function () {
   it('resets password and then unlock wallet with new password', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         // to avoid a race condition where some authentication requests are triggered once the wallet is locked
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
@@ -38,7 +41,7 @@ describe('Forgot password', function () {
 
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.checkPageIsLoaded();
-        await homePage.headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
 
         // Click forgot password button and reset password
         await new LoginPage(driver).gotoResetPasswordPage();
@@ -51,7 +54,7 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again
-        await homePage.headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
 
         // Check user can log in with new password
         await loginWithBalanceValidation(driver, localNodes[0], newPassword);

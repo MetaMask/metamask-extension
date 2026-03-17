@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import classNames from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -141,7 +141,7 @@ const EditGasItem = ({ priorityLevel }) => {
             <LoadingHeartBeat
               backgroundColor={
                 priorityLevel === estimateUsed
-                  ? 'var(--color-background-alternative)'
+                  ? 'var(--color-primary-muted)'
                   : 'var(--color-background-default)'
               }
               estimateUsed={priorityLevel}

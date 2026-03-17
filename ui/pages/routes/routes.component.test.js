@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
-import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
@@ -33,20 +32,6 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-const mockIsMultichainAccountsFeatureEnabled = jest.fn();
-jest.mock(
-  '../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () =>
-      mockIsMultichainAccountsFeatureEnabled(),
-  }),
-);
-
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -75,12 +60,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../ducks/send', () => ({
-  ...jest.requireActual('../../ducks/send'),
-  resetSendState: () => ({ type: 'XXX' }),
-  getGasPrice: jest.fn(),
-}));
-
 jest.mock('../../ducks/domains', () => ({
   ...jest.requireActual('../../ducks/domains'),
   initializeDomainSlice: () => ({ type: 'XXX' }),
@@ -101,13 +80,70 @@ jest.mock(
   () => () => mockFetchWithCache,
 );
 
+jest.mock('../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+    shouldShowBuyGetMusdCta: jest.fn().mockReturnValue({
+      shouldShowCta: false,
+      selectedChainId: null,
+      isEmptyWallet: false,
+      variant: null,
+    }),
+    isTokenWithCta: jest.fn().mockReturnValue(false),
+    getCtaKey: jest.fn().mockReturnValue(''),
+    isGeoBlocked: false,
+    isGeoBlockingLoading: false,
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+    totalMusdBalance: '0',
+    musdBalancesByChain: {},
+    isLoading: false,
+  }),
+  useMusdNetworkFilter: () => ({
+    isPopularNetworksFilterActive: false,
+    selectedChainId: null,
+    enabledChainIds: [],
+  }),
+  useMusdConversionTokens: () => ({
+    tokens: [],
+    isLoading: false,
+  }),
+  useMusdConversion: () => ({
+    startConversionFlow: jest.fn(),
+    educationSeen: false,
+  }),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+  useMusdConversionToastStatus: () => ({
+    shouldShowToast: false,
+    toastMessage: null,
+    dismissToast: jest.fn(),
+  }),
+  useCanBuyMusd: () => ({
+    canBuyMusd: false,
+  }),
+  useCustomAmount: () => ({
+    customAmount: null,
+    setCustomAmount: jest.fn(),
+  }),
+  BuyGetMusdCtaVariant: { BUY: 'buy', GET: 'get' },
+  isTokenInWildcardList: jest.fn().mockReturnValue(false),
+  checkTokenAllowed: jest.fn().mockReturnValue(false),
+  isMerklClaimTransaction: jest.fn().mockReturnValue(false),
+}));
+
 jest.mock('../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
-}));
-
-jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
-  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
 }));
 
 jest.mock('../../contexts/shield/shield-subscription', () => ({
@@ -138,8 +174,6 @@ describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
   beforeEach(() => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
-
     // Clear previous mock implementations
     useMultiPolling.mockClear();
 
@@ -181,6 +215,7 @@ describe('Routes Component', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
+            defaultAddressScope: 'eip155',
             tokenSortConfig: {
               key: 'token-sort-key',
               order: 'dsc',
@@ -209,10 +244,6 @@ describe('Routes Component', () => {
               },
             },
           },
-        },
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.INACTIVE,
         },
         localeMessages: {
           currentLocale: 'en',
@@ -259,6 +290,7 @@ describe('toast display', () => {
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
+        defaultAddressScope: 'eip155',
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -299,6 +331,7 @@ describe('toast display', () => {
       isRampCardClosed: false,
       newPrivacyPolicyToastClickedOrClosed: true,
       preferences: {
+        defaultAddressScope: 'eip155',
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -474,18 +507,6 @@ describe('toast display', () => {
     const { getByTestId } = render(
       DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockAccount2.id),
-    );
-    const toastContainer = getByTestId('connect-account-toast');
-    expect(toastContainer).toBeInTheDocument();
-  });
-
-  // Probably not applicable anymore since BIP-44 account groups?
-  it('does render toastContainer if the unconnected selected account is Solana', () => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
-
-    const { getByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();

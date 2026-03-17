@@ -1,14 +1,14 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import SendPage from '../../page-objects/pages/send/send-page';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
 
@@ -74,7 +74,11 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          NETWORK_NAME_MAINNET,
+        );
         // Only Ethereum network is selected so only 1 token visible
         await assetListPage.checkTokenItemNumber(1);
         await assetListPage.clickOnAsset('Ether');
@@ -88,8 +92,9 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
-        const sendPage = new SendTokenPage(driver);
+        const sendPage = new SendPage(driver);
         await assetListPage.importCustomTokenByChain(
           '0x89',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
@@ -97,18 +102,11 @@ describe('Multichain Asset List', function (this: Suite) {
         // Currently only polygon is selected, so only see polygon tokens
         // 1 native token (POL), and 1 ERC-20 (TST)
         await assetListPage.checkTokenItemNumber(2);
-        await assetListPage.clickOnAsset('TST');
-        await assetListPage.clickSendButton();
-        await sendPage.checkPageIsLoaded();
+
+        await homePage.startSendFlow();
+        await sendPage.selectToken('0x89', 'TST');
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-        );
-        await sendPage.clickAssetPickerButton();
-        const assetPickerItems = await sendPage.getAssetPickerItems();
-        assert.equal(
-          assetPickerItems.length,
-          2,
-          'Two assets should be shown in the asset picker',
         );
       },
     );

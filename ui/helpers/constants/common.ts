@@ -1,21 +1,17 @@
+import ZENDESK_URLS from './zendesk-url';
+
 export const PRIMARY = 'PRIMARY';
 export const SECONDARY = 'SECONDARY';
 
-const _contractAddressLink =
-  'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/';
+const _contractAddressLink = ZENDESK_URLS.CONTRACT_ADDRESS_WARNING;
 
-export const TRANSACTION_SHIELD_SUPPORT_LINK =
-  'https://support.metamask.io/manage-crypto/transactions/transaction-shield';
+export const TRANSACTION_SHIELD_SUPPORT_LINK = ZENDESK_URLS.TRANSACTION_SHIELD;
 
 export const TRANSACTION_SHIELD_LINK = 'https://metamask.io/transaction-shield';
 
-export const FIND_TRANSACTION_HASH_LINK =
-  'https://support.metamask.io/manage-crypto/transactions/how-to-find-a-transaction-id';
+export const FIND_TRANSACTION_HASH_LINK = ZENDESK_URLS.FIND_TRANSACTION_HASH;
 // eslint-disable-next-line prefer-destructuring
-export const METAMETRICS_SETTINGS_LINK =
-  'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
-// eslint-disable-next-line prefer-destructuring
-export const SUPPORT_REQUEST_LINK = process.env.SUPPORT_REQUEST_LINK;
+export const METAMETRICS_SETTINGS_LINK = ZENDESK_URLS.METAMETRICS_SETTINGS;
 // eslint-disable-next-line prefer-destructuring
 export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
@@ -69,17 +65,4 @@ export const FIXED_PRERENDER_BROWSER_VERSIONS = {
   // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Linux
   chrome: '>=121',
   edge: '>=121',
-};
-
-/**
- * Specifies the Chromium-based browser and their versions where
- * MV3 updates are stable and don't break service workers.
- *
- * @see {@link https://chromium.googlesource.com/chromium/src/+/4ff63e1f75af997e93f53b57aca21fc9cfd1cdb5}
- * @see {@link https://chromium.googlesource.com/chromium/src/+/a5d13d7b91139dfac4721708937f75094d3c24e3}
- */
-export const FIXED_MV3_STABLE_UPDATES_CHROMIUM_BROWSER_VERSIONS = {
-  // https://chromiumdash.appspot.com/commit/4ff63e1f75af997e93f53b57aca21fc9cfd1cdb5
-  chrome: '>=143.0.7465.0',
-  edge: '>=143',
 };

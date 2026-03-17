@@ -9,7 +9,7 @@ import {
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
 import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
-import { FALLBACK_LOCALE } from '../../../../shared/modules/i18n';
+import { FALLBACK_LOCALE } from '../../../../shared/lib/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
@@ -24,6 +24,9 @@ import type {
   SeasonStateDto,
   SeasonMetadataDto,
   DiscoverSeasonsDto,
+  ChallengeDto,
+  SiweLoginDto,
+  SiweJoinDto,
 } from './rewards-controller.types';
 
 /**
@@ -124,6 +127,10 @@ export class RewardsDataService {
       this.login.bind(this),
     );
     this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:siweLogin`,
+      this.siweLogin.bind(this),
+    );
+    this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:estimatePoints`,
       this.estimatePoints.bind(this),
     );
@@ -148,6 +155,10 @@ export class RewardsDataService {
       this.mobileJoin.bind(this),
     );
     this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:siweJoin`,
+      this.siweJoin.bind(this),
+    );
+    this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:getOptInStatus`,
       this.getOptInStatus.bind(this),
     );
@@ -158,6 +169,10 @@ export class RewardsDataService {
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:getDiscoverSeasons`,
       this.getDiscoverSeasons.bind(this),
+    );
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:generateChallenge`,
+      this.generateChallenge.bind(this),
     );
   }
 
@@ -261,6 +276,13 @@ export class RewardsDataService {
       });
 
       clearTimeout(timeoutId);
+
+      if (response.status === 403 && subscriptionToken) {
+        throw new AuthorizationFailedError(
+          `Authorization failed: ${response.status}`,
+        );
+      }
+
       return response;
     } catch (error) {
       clearTimeout(timeoutId);
@@ -331,6 +353,32 @@ export class RewardsDataService {
       this.checkForAccountAlreadyRegisteredError(response, errorData);
 
       throw new Error(`Login failed: ${response.status}`);
+    }
+
+    return (await response.json()) as LoginResponseDto;
+  }
+
+  /**
+   * Perform login via SIWE (Sign-In with Ethereum) signature.
+   *
+   * @param body - The SIWE login request body containing challengeId, signature, and optional referralCode.
+   * @param body.challengeId - The unique identifier of the challenge
+   * @param body.signature - The signature of the SIWE message
+   * @param body.referralCode - Optional referral code provided by referrer
+   * @returns The login response DTO.
+   */
+  async siweLogin(body: SiweLoginDto): Promise<LoginResponseDto> {
+    const response = await this.makeRequest('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      this.checkForAccountAlreadyRegisteredError(response, errorData);
+
+      throw new Error(`SIWE login failed: ${response.status}`);
     }
 
     return (await response.json()) as LoginResponseDto;
@@ -408,9 +456,6 @@ export class RewardsDataService {
 
     if (!response.ok) {
       const errorData = await response.json();
-      if (errorData?.message?.includes('Rewards authorization failed')) {
-        throw new AuthorizationFailedError();
-      }
 
       if (errorData?.message?.includes('Season not found')) {
         throw new SeasonNotFoundError();
@@ -518,6 +563,40 @@ export class RewardsDataService {
   }
 
   /**
+   * Join an account to a subscription via SIWE (Sign-In with Ethereum) signature.
+   *
+   * @param body - The SIWE join request body containing challengeId and signature.
+   * @param subscriptionToken - The subscription token to join the account to.
+   * @returns Promise<SubscriptionDto> - The updated subscription information.
+   */
+  async siweJoin(
+    body: SiweJoinDto,
+    subscriptionToken: string,
+  ): Promise<SubscriptionDto> {
+    const response = await this.makeRequest(
+      '/wr/subscriptions/join',
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+      subscriptionToken,
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      log.error('RewardsDataService: siweJoin errorData', errorData);
+
+      this.checkForAccountAlreadyRegisteredError(response, errorData);
+
+      throw new Error(
+        `SIWE join failed: ${response.status} ${errorData?.message || ''}`,
+      );
+    }
+
+    return (await response.json()) as SubscriptionDto;
+  }
+
+  /**
    * Get opt-in status for multiple addresses.
    *
    * @param body - The request body containing addresses to check.
@@ -612,5 +691,32 @@ export class RewardsDataService {
     }
 
     return data as SeasonMetadataDto;
+  }
+
+  /**
+   * Generate a challenge for SIWE (Sign-In with Ethereum) authentication.
+   *
+   * @param body - The challenge generation request body containing address.
+   * @param body.address
+   * @returns The challenge DTO.
+   */
+  async generateChallenge(body: { address: string }): Promise<ChallengeDto> {
+    const response = await this.makeRequest('/auth/challenge/generate', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Generate challenge failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Convert nonce string to bigint if needed
+    if (typeof data.nonce === 'string') {
+      data.nonce = BigInt(data.nonce);
+    }
+
+    return data as ChallengeDto;
   }
 }

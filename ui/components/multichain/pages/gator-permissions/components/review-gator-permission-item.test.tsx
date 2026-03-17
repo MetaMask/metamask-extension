@@ -1,12 +1,11 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
 import {
-  StoredGatorPermissionSanitized,
-  Signer,
   NativeTokenStreamPermission,
   Erc20TokenStreamPermission,
   NativeTokenPeriodicPermission,
   Erc20TokenPeriodicPermission,
+  PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
 import { fireEvent } from '@testing-library/react';
 import { Settings } from 'luxon';
@@ -41,6 +40,10 @@ const store = configureStore({
           type: 'eip155:eoa',
         },
       },
+    },
+    accountIdByAddress: {
+      ...mockState.metamask.accountIdByAddress,
+      [mockAccountAddress]: 'test-account-id',
     },
   },
 });
@@ -110,78 +113,64 @@ describe('Permission List Item', () => {
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
-      const mockExpiryTimestamp = 1767225600; // January 1, 2026
+      const mockExpiryTimestamp = 1767225600; // January 1, 2026 00:00:00 UTC
 
-      const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
-        Signer,
-        NativeTokenStreamPermission
-      > = {
-        permissionResponse: {
-          chainId: '0x1',
-          address: mockAccountAddress,
-          permission: {
-            type: 'native-token-stream',
-            isAdjustmentAllowed: false,
-            data: {
-              maxAmount: '0x22b1c8c1227a0000', // 2.5 ETH (18 decimals)
-              initialAmount: '0x6f05b59d3b20000', // 0.5 ETH (18 decimals)
-              amountPerSecond: '0x6f05b59d3b20000', // 0.5 ETH/sec (18 decimals)
-              startTime: mockStartTime,
-              justification:
-                'This is a very important request for streaming allowance for some very important thing',
-            },
-          },
-          context: '0x00000000',
-          signerMeta: {
-            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
-          rules: [
-            {
-              type: 'expiry',
+      const mockNativeTokenStreamPermission: PermissionInfoWithMetadata<NativeTokenStreamPermission> =
+        {
+          permissionResponse: {
+            chainId: '0x1',
+            from: mockAccountAddress,
+            permission: {
+              type: 'native-token-stream',
               isAdjustmentAllowed: false,
               data: {
-                timestamp: mockExpiryTimestamp,
+                maxAmount: '0x22b1c8c1227a0000', // 2.5 ETH (18 decimals)
+                initialAmount: '0x6f05b59d3b20000', // 0.5 ETH (18 decimals)
+                amountPerSecond: '0x6f05b59d3b20000', // 0.5 ETH/sec (18 decimals)
+                startTime: mockStartTime,
+                justification:
+                  'This is a very important request for streaming allowance for some very important thing',
               },
             },
-          ],
-        },
-        siteOrigin: 'http://localhost:8000',
-      };
-
-      const mockNativeTokenPeriodicPermission: StoredGatorPermissionSanitized<
-        Signer,
-        NativeTokenPeriodicPermission
-      > = {
-        permissionResponse: {
-          chainId: '0x1',
-          address: mockAccountAddress,
-          permission: {
-            type: 'native-token-periodic',
-            isAdjustmentAllowed: false,
-            data: {
-              periodAmount: '0x6f05b59d3b20000', // 0.5 ETH per week (18 decimals)
-              periodDuration: 604800, // 1 week in seconds
-              startTime: mockStartTime,
-              justification:
-                'This is a very important request for periodic allowance',
-            },
-          },
-          context: '0x00000000',
-          signerMeta: {
+            context: '0x00000000',
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestamp },
+              },
+            ],
           },
-          rules: [
-            {
-              type: 'expiry',
+          siteOrigin: 'http://localhost:8000',
+        };
+
+      const mockNativeTokenPeriodicPermission: PermissionInfoWithMetadata<NativeTokenPeriodicPermission> =
+        {
+          permissionResponse: {
+            chainId: '0x1',
+            from: mockAccountAddress,
+            permission: {
+              type: 'native-token-periodic',
               isAdjustmentAllowed: false,
               data: {
-                timestamp: mockExpiryTimestamp,
+                periodAmount: '0x6f05b59d3b20000', // 0.5 ETH per week (18 decimals)
+                periodDuration: 604800, // 1 week in seconds
+                startTime: mockStartTime,
+                justification:
+                  'This is a very important request for periodic allowance',
               },
             },
-          ],
-        },
-        siteOrigin: 'http://localhost:8000',
-      };
+            context: '0x00000000',
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestamp },
+              },
+            ],
+          },
+          siteOrigin: 'http://localhost:8000',
+        };
 
       it('renders native token stream permission correctly', () => {
         const { container, getByTestId } = renderWithProvider(
@@ -378,81 +367,66 @@ describe('Permission List Item', () => {
        */
       const mockTokenAddress: Hex =
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+      const mockExpiryTimestampErc20 = 1767225600; // January 1, 2026 00:00:00 UTC
 
-      const mockExpiryTimestamp = 1767225600; // January 1, 2026
-
-      const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<
-        Signer,
-        Erc20TokenPeriodicPermission
-      > = {
-        permissionResponse: {
-          chainId: '0x5',
-          address: mockAccountAddress,
-          permission: {
-            type: 'erc20-token-periodic',
-            isAdjustmentAllowed: false,
-            data: {
-              tokenAddress: mockTokenAddress, // WBTC with 8 decimals
-              periodAmount: '0x2faf080', // 0.5 WBTC per week (8 decimals)
-              periodDuration: 604800, // 1 week in seconds
-              startTime: mockStartTime,
-              justification:
-                'This is a very important request for ERC20 periodic allowance',
-            },
-          },
-          context: '0x00000000',
-          signerMeta: {
-            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
-          rules: [
-            {
-              type: 'expiry',
+      const mockErc20TokenPeriodicPermission: PermissionInfoWithMetadata<Erc20TokenPeriodicPermission> =
+        {
+          permissionResponse: {
+            chainId: '0x5',
+            from: mockAccountAddress,
+            permission: {
+              type: 'erc20-token-periodic',
               isAdjustmentAllowed: false,
               data: {
-                timestamp: mockExpiryTimestamp,
+                tokenAddress: mockTokenAddress, // WBTC with 8 decimals
+                periodAmount: '0x2faf080', // 0.5 WBTC per week (8 decimals)
+                periodDuration: 604800, // 1 week in seconds
+                startTime: mockStartTime,
+                justification:
+                  'This is a very important request for ERC20 periodic allowance',
               },
             },
-          ],
-        },
-        siteOrigin: 'http://localhost:8000',
-      };
-
-      const mockErc20TokenStreamPermission: StoredGatorPermissionSanitized<
-        Signer,
-        Erc20TokenStreamPermission
-      > = {
-        permissionResponse: {
-          chainId: '0x5',
-          address: mockAccountAddress,
-          permission: {
-            type: 'erc20-token-stream',
-            isAdjustmentAllowed: false,
-            data: {
-              tokenAddress: mockTokenAddress, // WBTC with 8 decimals
-              maxAmount: '0xee6b280', // 2.5 WBTC (8 decimals)
-              initialAmount: '0x2faf080', // 0.5 WBTC (8 decimals)
-              amountPerSecond: '0x2faf080', // 0.5 WBTC/sec (8 decimals)
-              startTime: mockStartTime,
-              justification:
-                'This is a very important request for ERC20 streaming allowance',
-            },
-          },
-          context: '0x00000000',
-          signerMeta: {
+            context: '0x00000000',
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestampErc20 },
+              },
+            ],
           },
-          rules: [
-            {
-              type: 'expiry',
+          siteOrigin: 'http://localhost:8000',
+        };
+
+      const mockErc20TokenStreamPermission: PermissionInfoWithMetadata<Erc20TokenStreamPermission> =
+        {
+          permissionResponse: {
+            chainId: '0x5',
+            from: mockAccountAddress,
+            permission: {
+              type: 'erc20-token-stream',
               isAdjustmentAllowed: false,
               data: {
-                timestamp: mockExpiryTimestamp,
+                tokenAddress: mockTokenAddress, // WBTC with 8 decimals
+                maxAmount: '0xee6b280', // 2.5 WBTC (8 decimals)
+                initialAmount: '0x2faf080', // 0.5 WBTC (8 decimals)
+                amountPerSecond: '0x2faf080', // 0.5 WBTC/sec (8 decimals)
+                startTime: mockStartTime,
+                justification:
+                  'This is a very important request for ERC20 streaming allowance',
               },
             },
-          ],
-        },
-        siteOrigin: 'http://localhost:8000',
-      };
+            context: '0x00000000',
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestampErc20 },
+              },
+            ],
+          },
+          siteOrigin: 'http://localhost:8000',
+        };
 
       it('renders erc20 token stream permission correctly', () => {
         const { container, getByTestId } = renderWithProvider(
@@ -572,32 +546,28 @@ describe('Permission List Item', () => {
         const unknownTokenAddress: Hex =
           '0x0000000000000000000000000000000000000001';
 
-        const mockUnknownTokenStreamPermission: StoredGatorPermissionSanitized<
-          Signer,
-          Erc20TokenStreamPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x5',
-            address: mockAccountAddress,
-            permission: {
-              type: 'erc20-token-stream',
-              isAdjustmentAllowed: false,
-              data: {
-                tokenAddress: unknownTokenAddress, // Unknown token
-                maxAmount: '0xee6b280',
-                initialAmount: '0x2faf080',
-                amountPerSecond: '0x2faf080',
-                startTime: mockStartTime,
-                justification: 'Test unknown token',
+        const mockUnknownTokenStreamPermission: PermissionInfoWithMetadata<Erc20TokenStreamPermission> =
+          {
+            permissionResponse: {
+              chainId: '0x5',
+              from: mockAccountAddress,
+              permission: {
+                type: 'erc20-token-stream',
+                isAdjustmentAllowed: false,
+                data: {
+                  tokenAddress: unknownTokenAddress, // Unknown token
+                  maxAmount: '0xee6b280',
+                  initialAmount: '0x2faf080',
+                  amountPerSecond: '0x2faf080',
+                  startTime: mockStartTime,
+                  justification: 'Test unknown token',
+                },
               },
-            },
-            context: '0x00000000',
-            signerMeta: {
+              context: '0x00000000',
               delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
+            siteOrigin: 'http://localhost:8000',
+          };
 
         const { container, getByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem
@@ -646,40 +616,29 @@ describe('Permission List Item', () => {
       });
 
       it('renders erc20 token revocation permission correctly without frequency row', () => {
-        const mockErc20TokenRevocationPermission: StoredGatorPermissionSanitized<
-          Signer,
-          {
-            type: 'erc20-token-revocation';
-            isAdjustmentAllowed: boolean;
-            data: Record<string, unknown>;
-            rules?: {
-              type: string;
-              isAdjustmentAllowed: boolean;
-              data: { timestamp: number };
-            }[];
-          }
-        > = {
+        const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<{
+          type: 'erc20-token-revocation';
+          isAdjustmentAllowed: boolean;
+          data: Record<string, unknown>;
+        }> = {
           permissionResponse: {
             chainId: '0x1',
-            address: mockAccountAddress,
+            from: mockAccountAddress,
             permission: {
               type: 'erc20-token-revocation',
               isAdjustmentAllowed: false,
               data: {
                 justification: 'Revoke all token approvals',
               },
-              rules: [
-                {
-                  type: 'expiry',
-                  isAdjustmentAllowed: false,
-                  data: { timestamp: 1736358176 }, // January 8, 2025
-                },
-              ],
             },
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: 1736358176 }, // January 8, 2025
+              },
+            ],
             context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
           siteOrigin: 'http://localhost:8000',
         };
@@ -724,31 +683,27 @@ describe('Permission List Item', () => {
       });
 
       it('renders "No expiration" when permission has no expiry', () => {
-        const mockPermissionWithoutExpiry: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission without expiry',
+        const mockPermissionWithoutExpiry: PermissionInfoWithMetadata<NativeTokenPeriodicPermission> =
+          {
+            permissionResponse: {
+              chainId: '0x1',
+              from: mockAccountAddress,
+              permission: {
+                type: 'native-token-periodic',
+                isAdjustmentAllowed: false,
+                data: {
+                  periodAmount: '0x6f05b59d3b20000',
+                  periodDuration: 604800,
+                  startTime: mockStartTime,
+                  justification: 'Test permission without expiry',
+                },
               },
-            },
-            context: '0x00000000',
-            signerMeta: {
+              context: '0x00000000',
               delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+              // No rules array = no expiry
             },
-            // No rules array = no expiry
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
+            siteOrigin: 'http://localhost:8000',
+          };
 
         const { container, getByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem
@@ -776,39 +731,34 @@ describe('Permission List Item', () => {
       it('renders correct expiration date when permission has expiry', () => {
         const customExpiryTimestamp = 1744588800; // April 14, 2025
 
-        const mockPermissionWithExpiry: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission with expiry',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-            rules: [
-              {
-                type: 'expiry',
+        const mockPermissionWithExpiry: PermissionInfoWithMetadata<NativeTokenPeriodicPermission> =
+          {
+            permissionResponse: {
+              chainId: '0x1',
+              from: mockAccountAddress,
+              permission: {
+                type: 'native-token-periodic',
                 isAdjustmentAllowed: false,
                 data: {
-                  timestamp: customExpiryTimestamp,
+                  periodAmount: '0x6f05b59d3b20000',
+                  periodDuration: 604800,
+                  startTime: mockStartTime,
+                  justification: 'Test permission with expiry',
                 },
               },
-            ],
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
+              context: '0x00000000',
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+              rules: [
+                {
+                  type: 'expiry',
+                  data: {
+                    timestamp: customExpiryTimestamp,
+                  },
+                },
+              ],
+            },
+            siteOrigin: 'http://localhost:8000',
+          };
 
         const { container, getByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem
@@ -834,39 +784,34 @@ describe('Permission List Item', () => {
       });
 
       it('renders "No expiration" when rules exist but no expiry rule is present', () => {
-        const mockPermissionWithNonExpiryRules: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission with non-expiry rules',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-            rules: [
-              {
-                type: 'some-other-rule',
+        const mockPermissionWithNonExpiryRules: PermissionInfoWithMetadata<NativeTokenPeriodicPermission> =
+          {
+            permissionResponse: {
+              chainId: '0x1',
+              from: mockAccountAddress,
+              permission: {
+                type: 'native-token-periodic',
                 isAdjustmentAllowed: false,
                 data: {
-                  someField: 'someValue',
+                  periodAmount: '0x6f05b59d3b20000',
+                  periodDuration: 604800,
+                  startTime: mockStartTime,
+                  justification: 'Test permission with non-expiry rules',
                 },
               },
-            ],
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
+              context: '0x00000000',
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+              rules: [
+                {
+                  type: 'some-other-rule',
+                  data: {
+                    someField: 'someValue',
+                  },
+                },
+              ],
+            },
+            siteOrigin: 'http://localhost:8000',
+          };
 
         const { container, getByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem

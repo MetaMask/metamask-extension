@@ -5,7 +5,8 @@ import {
 } from '@metamask/subscription-controller';
 import { ControllerInitFunction } from '../types';
 import { SubscriptionControllerInitMessenger } from '../messengers/subscription';
-import { loadShieldConfig } from '../../../../shared/modules/shield';
+import { loadShieldConfig } from '../../../../shared/lib/shield';
+import { captureException as captureExceptionWithSentry } from '../../../../shared/lib/sentry';
 
 const shieldConfig = loadShieldConfig();
 
@@ -21,6 +22,8 @@ export const SubscriptionControllerInit: ControllerInitFunction<
       getAccessToken: () =>
         initMessenger.call('AuthenticationController:getBearerToken'),
     },
+    fetchFunction: fetch.bind(globalThis),
+    captureException: captureExceptionWithSentry,
   });
 
   const controller = new SubscriptionController({

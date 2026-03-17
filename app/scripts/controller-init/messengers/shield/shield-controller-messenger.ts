@@ -45,7 +45,7 @@ export function getShieldControllerMessenger(
 }
 
 type InitActions =
-  AuthenticationController.AuthenticationControllerGetBearerToken;
+  AuthenticationController.AuthenticationControllerGetBearerTokenAction;
 type InitEvents = never;
 
 export function getShieldControllerInitMessenger(

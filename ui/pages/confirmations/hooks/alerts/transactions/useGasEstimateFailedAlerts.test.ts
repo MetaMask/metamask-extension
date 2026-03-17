@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  UserFeeLevel,
+} from '@metamask/transaction-controller';
 
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -70,5 +73,17 @@ describe('useGasEstimateFailedAlerts', () => {
         severity: Severity.Warning,
       },
     ]);
+  });
+
+  it('returns no alerts if simulation fails but userFeeLevel is CUSTOM', () => {
+    expect(
+      runHook(
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          simulationFails: { debug: {} },
+          userFeeLevel: UserFeeLevel.CUSTOM,
+        }),
+      ),
+    ).toEqual([]);
   });
 });

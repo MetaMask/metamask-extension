@@ -44,7 +44,7 @@ import {
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
 
-import shouldInjectProvider from '../../shared/modules/provider-injection';
+import shouldInjectProvider from '../../shared/lib/provider-injection';
 import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
 
 // contexts
@@ -111,6 +111,7 @@ if (shouldInjectProvider()) {
     connectionStream: mux.createStream(METAMASK_EIP_1193_PROVIDER),
     logger: log,
     shouldShimWeb3: true,
+    shouldSendMetadata: false,
     providerInfo: {
       uuid: uuid(),
       name: process.env.METAMASK_BUILD_NAME,

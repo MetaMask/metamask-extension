@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Text } from '../text';
 import type { TextProps } from '../text';
 import {

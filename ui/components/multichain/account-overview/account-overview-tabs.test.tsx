@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -8,9 +9,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
+
+jest.mock('../../../store/actions', () => ({
+  setDefaultHomeActiveTabName: jest.fn(),
+}));
 
 jest.mock('../../app/assets/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -18,10 +22,12 @@ jest.mock('../../app/assets/asset-list', () => ({
   default: () => null,
 }));
 
-jest.mock('../../app/transaction-list', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => null,
+jest.mock('../activity-v2/activity-list', () => ({
+  ActivityList: () => null,
+}));
+
+jest.mock('../activity-v2/hooks', () => ({
+  usePrefetchTransactions: () => jest.fn(),
 }));
 
 jest.mock('../../app/assets/nfts/nfts-tab', () => ({
@@ -29,15 +35,6 @@ jest.mock('../../app/assets/nfts/nfts-tab', () => ({
   __esModule: true,
   default: () => null,
 }));
-
-jest.mock(
-  '../../app/transaction-list/unified-transaction-list.component',
-  () => ({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: () => null,
-  }),
-);
 
 jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -47,6 +44,12 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
 
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -69,10 +72,8 @@ describe('AccountOverviewTabs - event metrics', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <AccountOverviewTabs
-          onTabClick={jest.fn()}
-          defaultHomeActiveTabName={AccountOverviewTabKey.Activity}
           showTokens={true}
           showNfts={false}
           showActivity={true}
@@ -81,10 +82,11 @@ describe('AccountOverviewTabs - event metrics', () => {
         />
       </MetaMetricsContext.Provider>,
       store,
+      '/?tab=activity',
     );
 
     // Click a tab to trigger event
-    fireEvent.click(getByText('Tokens'));
+    fireEvent.click(getByText(messages.tokens.message));
 
     // Verify network_filter property is included in correct format
     expect(mockTrackEvent).toHaveBeenCalledWith({

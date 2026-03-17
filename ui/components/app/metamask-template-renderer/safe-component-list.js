@@ -52,7 +52,6 @@ import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
 import { SnapUIDateTimePicker } from '../snaps/snap-ui-date-time-picker';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
@@ -61,11 +60,9 @@ import {
   SnapAccountCard,
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
-import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
-///: END:ONLY_INCLUDE_IF
-import { HyperliquidReferralConsent } from '../../../pages/core/hyperliquid-referral-consent';
+import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 
 export const safeComponentList = {
   a: 'a',
@@ -82,10 +79,10 @@ export const safeComponentList = {
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
   Copyable,
+  DefiReferralConsent,
   DefinitionList,
   div: 'div',
   FormTextField,
-  HyperliquidReferralConsent,
   i: 'i',
   MetaMaskTranslation,
   OriginPill,
@@ -126,8 +123,6 @@ export const safeComponentList = {
   Typography,
   SmartTransactionStatusPage,
   UrlIcon,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  CreateNamedSnapAccount,
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAccountCard,
@@ -135,5 +130,4 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
-  ///: END:ONLY_INCLUDE_IF
 };

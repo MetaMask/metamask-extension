@@ -7,6 +7,7 @@ import {
 } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
@@ -20,7 +21,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -132,7 +133,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Connect Dapp Two
         await dappTwo.clickConnectAccountButton();
-        await dappTwo.confirmConnectAccountModal();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         await dappTwo.checkPageIsLoaded();
         await dappTwo.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
@@ -144,12 +150,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await dappOne.clickConnectAccountButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
+        const connectAccountConfirmationDappOne =
+          new ConnectAccountConfirmation(driver);
+        await connectAccountConfirmationDappOne.checkPageIsLoaded();
+        await connectAccountConfirmationDappOne.goToPermissionsTab();
+        await connectAccountConfirmationDappOne.openEditNetworksModal();
 
         // Disconnect Localhost 8545 and connect to Dapp One
         const networkPermissionSelectModal = new NetworkPermissionSelectModal(
@@ -161,8 +166,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
           shouldBeSelected: false,
         });
         await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
+        await connectAccountConfirmationDappOne.checkPageIsLoaded();
+        await connectAccountConfirmationDappOne.confirmConnect();
 
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -210,7 +215,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfTestDapps: 2 },
@@ -245,7 +250,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Connect Dapp One
         await dappOne.clickConnectAccountButton();
-        await dappOne.confirmConnectAccountModal();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation2 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation2.checkPageIsLoaded();
+        await connectAccountConfirmation2.confirmConnect();
 
         // Switch and connect Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);

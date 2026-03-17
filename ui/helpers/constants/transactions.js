@@ -3,14 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
-/**
- * Constants for transaction kinds used in unified transaction lists
- */
-export const TransactionKind = {
-  EVM: 'evm',
-  NON_EVM: 'non-evm',
-};
-
 export const PENDING_STATUS_HASH = {
   [TransactionStatus.unapproved]: true,
   [TransactionStatus.approved]: true,
@@ -34,4 +26,5 @@ export const TOKEN_CATEGORY_HASH = {
 export const EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.incoming,
   TransactionType.gasPayment,
+  TransactionType.relayDeposit,
 ]);

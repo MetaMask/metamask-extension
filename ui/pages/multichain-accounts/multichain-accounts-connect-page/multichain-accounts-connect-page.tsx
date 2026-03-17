@@ -26,7 +26,7 @@ import { AccountGroupObject } from '@metamask/account-tree-controller';
 import { Tooltip } from 'react-tippy';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -130,10 +130,11 @@ export const MultichainAccountsConnectPage: React.FC<
   targetSubjectMetadata,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
+  const [activeTab, setActiveTab] = useState('accounts');
   const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
@@ -514,7 +515,7 @@ export const MultichainAccountsConnectPage: React.FC<
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
-  const originTrustSignals = useOriginTrustSignals(
+  const { state: trustSignalState } = useOriginTrustSignals(
     targetSubjectMetadata.origin,
   );
 
@@ -556,28 +557,12 @@ export const MultichainAccountsConnectPage: React.FC<
           marginBottom={8}
         >
           {targetSubjectMetadata.iconUrl ? (
-            <>
-              <Box
-                style={{
-                  filter: 'blur(16px) brightness(1.1)',
-                  position: 'absolute',
-                }}
-              >
-                <AvatarFavicon
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                  size={AvatarFaviconSize.Xl}
-                  src={targetSubjectMetadata.iconUrl}
-                  name={title}
-                />
-              </Box>
-              <AvatarFavicon
-                backgroundColor={BackgroundColor.backgroundMuted}
-                size={AvatarFaviconSize.Lg}
-                src={targetSubjectMetadata.iconUrl}
-                name={title}
-                style={{ zIndex: 1, background: 'transparent' }}
-              />
-            </>
+            <AvatarFavicon
+              backgroundColor={BackgroundColor.backgroundMuted}
+              size={AvatarFaviconSize.Lg}
+              src={targetSubjectMetadata.iconUrl}
+              name={title}
+            />
           ) : (
             <AvatarBase
               size={AvatarBaseSize.Lg}
@@ -608,15 +593,28 @@ export const MultichainAccountsConnectPage: React.FC<
           >
             {title}
           </Text>
-          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+          {trustSignalState === TrustSignalDisplayState.Verified && (
             <Tooltip
               title={t('alertReasonOriginTrustSignalVerified')}
               position="bottom"
-              style={{ display: 'flex' }}
+              style={{ display: 'flex', paddingTop: '2px' }}
             >
               <Icon
                 name={IconName.VerifiedFilled}
-                color={IconColor.infoDefault}
+                color={IconColor.successDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+          {trustSignalState === TrustSignalDisplayState.Malicious && (
+            <Tooltip
+              title={t('trustSignalBlockTitle')}
+              position="bottom"
+              style={{ display: 'flex', paddingTop: '2px' }}
+            >
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.errorDefault}
                 size={IconSize.Sm}
               />
             </Tooltip>
@@ -633,7 +631,7 @@ export const MultichainAccountsConnectPage: React.FC<
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
+        <Tabs activeTab={activeTab} onTabClick={setActiveTab}>
           <Tab
             className="multichain-connect-page__tab flex-1"
             name={t('accounts')}
@@ -741,6 +739,12 @@ export const MultichainAccountsConnectPage: React.FC<
               data-testid="confirm-btn"
               size={ButtonSize.Lg}
               onClick={onConfirm}
+              danger={trustSignalState === TrustSignalDisplayState.Malicious}
+              startIconName={
+                trustSignalState === TrustSignalDisplayState.Malicious
+                  ? IconName.Danger
+                  : undefined
+              }
               disabled={
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0

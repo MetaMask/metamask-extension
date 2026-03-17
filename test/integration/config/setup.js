@@ -53,9 +53,13 @@ global.fetch = shimmedFetch;
 
 global.metamask = {};
 
-
-const structuredClone = obj => {
+const structuredClone = (obj) => {
   return v8.deserialize(v8.serialize(obj));
 };
 
 global.structuredClone = structuredClone;
+
+// Mock DOM measurements for virtualizer
+Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+  value: 800,
+});

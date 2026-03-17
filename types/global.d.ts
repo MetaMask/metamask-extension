@@ -284,6 +284,11 @@ type StateHooks = {
    * This is initialized by the service worker in MV3. It is handled in `background.js`.
    */
   lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
+  /**
+   * Reload the extension. This is used to trigger extension reload from a page context by E2E
+   * tests.
+   */
+  reloadExtension?: () => void;
 };
 
 export declare global {
@@ -296,6 +301,8 @@ export declare global {
   var ethereumProvider: Provider;
 
   var stateHooks: StateHooks;
+
+  var logStateString: () => Promise<string>;
 
   var browser: Browser;
 

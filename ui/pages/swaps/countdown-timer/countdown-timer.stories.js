@@ -1,16 +1,10 @@
 import React from 'react';
 import CountdownTimer from './countdown-timer';
-import README from './README.mdx';
 
 export default {
   title: 'Pages/Swaps/CountdownTimer',
 
   component: CountdownTimer,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     timeStarted: {
       type: 'number',

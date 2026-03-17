@@ -15,7 +15,7 @@ const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
 const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
-const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../../shared/lib/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 const {
   getServerMochaToBackground,
@@ -853,6 +853,24 @@ class Driver {
   }
 
   /**
+   * Clicks a nested button element by its text content.
+   * First attempts to click a button with the exact text, then falls back
+   * to finding an element containing the text and clicking its parent button.
+   *
+   * @param {string} buttonText - The text content of the button to click
+   * @returns {Promise<void>}
+   */
+  async clickNestedButton(buttonText) {
+    try {
+      await this.clickElement({ text: buttonText, tag: 'button' });
+    } catch (error) {
+      await this.clickElement({
+        xpath: `//*[contains(text(),"${buttonText}")]/parent::button`,
+      });
+    }
+  }
+
+  /**
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator
@@ -1030,9 +1048,31 @@ class Driver {
   }
 
   /**
+   * Retrieves the content of the clipboard.
+   *
+   * @returns {Promise<string>} promise that resolves to the clipboard content
+   * @throws {Error} throws an error if the clipboard content cannot be read
+   */
+  async getClipboardContent() {
+    try {
+      const clipboardText = await this.driver.executeScript(`
+        return navigator.clipboard.readText();
+      `);
+      console.log('Clipboard:', clipboardText || '(empty)');
+      return clipboardText;
+    } catch (error) {
+      console.log(
+        'Could not read clipboard - permission denied or not supported',
+        error,
+      );
+      return '';
+    }
+  }
+
+  /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator  - Element locator
+   * @param {string | object} rawLocator  - Element locator
    * @param {string} contentToPaste - content to paste
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
@@ -1202,6 +1242,15 @@ class Driver {
       return await this.windowHandles.getAllWindowHandles();
     }
     return await this.driver.getAllWindowHandles();
+  }
+
+  /**
+   * Retrieves the handle of the current active window or tab.
+   *
+   * @returns {Promise<string>} A promise that resolves with the current window handle.
+   */
+  async getCurrentWindowHandle() {
+    return await this.driver.getWindowHandle();
   }
 
   /**
@@ -1690,6 +1739,9 @@ class Driver {
       'Event fragment with id transaction-added-',
       // Sidepanel
       'GL Context was lost',
+      // Null/empty URLs that Chrome blocks before reaching the proxy
+      'net::ERR_BLOCKED_BY_CLIENT',
+      'null is blocked',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

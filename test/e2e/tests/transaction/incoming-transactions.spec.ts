@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import { TransactionType } from '@metamask/transaction-controller';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
@@ -27,7 +26,19 @@ const RESPONSE_STANDARD_MOCK = {
   to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   from: '0x2',
   isError: false,
-  valueTransfers: [],
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '1230000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  logs: [],
+  transactionCategory: 'TRANSFER',
+  transactionType: 'INCOMING',
+  readable: 'Received',
 };
 
 const RESPONSE_STANDARD_2_MOCK = {
@@ -35,6 +46,15 @@ const RESPONSE_STANDARD_2_MOCK = {
   hash: '0x2',
   value: '2340000000000000000',
   timestamp: new Date(TIMESTAMP_MOCK - 1).toISOString(),
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '2340000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
 };
 
 const RESPONSE_TOKEN_TRANSFER_MOCK = {
@@ -56,23 +76,33 @@ const RESPONSE_OUTGOING_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   to: '0x2',
-  methodId: '0x12345678',
   value: '4560000000000000000',
+  valueTransfers: [
+    {
+      from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      to: '0x2',
+      amount: '4560000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  transactionCategory: 'STANDARD',
+  transactionType: 'STANDARD',
+  readable: 'Send',
 };
 
 async function mockAccountsApi(
   mockServer: Mockttp,
   {
-    cursor,
     transactions,
   }: { cursor?: string; transactions?: Record<string, unknown>[] } = {},
 ) {
   return [
     await mockServer
       .forGet(
-        `https://accounts.api.cx.metamask.io/v1/accounts/${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}/transactions`,
+        `https://accounts.api.cx.metamask.io/v4/multiaccount/transactions`,
       )
-      .withQuery(cursor ? { cursor } : {})
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -176,7 +206,7 @@ describe('Incoming Transactions', function () {
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
         await activityList.checkTxAction({
-          action: 'Contract interaction',
+          action: 'Sent ETH',
           txIndex: 2,
           confirmedTx: 2,
         });
@@ -203,34 +233,6 @@ describe('Incoming Transactions', function () {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await driver.delay(2000);
         await activityList.checkNoTxInActivity();
-      },
-    );
-  });
-
-  it('ignores duplicate transactions already in state', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withUseBasicFunctionalityEnabled()
-          .withTransactions([
-            {
-              hash: RESPONSE_STANDARD_MOCK.hash,
-              txParams: { from: RESPONSE_STANDARD_MOCK.from },
-              type: TransactionType.incoming,
-            },
-          ])
-          .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });

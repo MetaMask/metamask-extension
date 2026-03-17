@@ -1,9 +1,10 @@
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing SwitchChain -> SendTx', function () {
   it('switching network should reject pending confirmations from same origin', async function () {
@@ -12,7 +13,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -36,8 +37,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({});
-
+        await connectAccountToTestDapp(driver);
         await testDapp.checkPageIsLoaded();
 
         // Switch Ethereum Chain

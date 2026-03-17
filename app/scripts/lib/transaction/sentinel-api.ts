@@ -1,9 +1,28 @@
 import { Hex } from '@metamask/utils';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 
 const BASE_URL = 'https://tx-sentinel-{0}.api.cx.metamask.io/';
 const ENDPOINT_NETWORKS = 'networks';
+
+const CLIENT_ID = 'extension';
+
+/**
+ * Returns metadata headers for sentinel API requests.
+ *
+ * @returns An object containing the metadata headers.
+ */
+export function getSentinelApiHeaders(): HeadersInit {
+  const headers: HeadersInit = {
+    'X-Client-Id': CLIENT_ID,
+  };
+
+  if (process.env.METAMASK_VERSION) {
+    headers['X-Client-Version'] = process.env.METAMASK_VERSION;
+  }
+
+  return headers;
+}
 
 export type SentinelNetwork = {
   name: string;

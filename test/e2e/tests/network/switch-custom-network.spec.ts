@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
@@ -14,7 +14,7 @@ describe('Switch ethereum chain', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
@@ -56,12 +56,10 @@ describe('Switch ethereum chain', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPopularNetworks()
-          .withPermissionControllerConnectedToTestDappWithChains([
-            '0x1', // Hex Chain ID for Ethereum
-            '0x89', // Hex Chain ID for Polygon
-          ])
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1, 137], // Ethereum and Polygon
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -105,7 +103,7 @@ describe('Switch ethereum chain', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp() // Connected to Localhost
           .build(),
         title: this.test?.fullTitle(),

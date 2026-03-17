@@ -1,45 +1,57 @@
 import { tEn } from '../../../../lib/i18n-helpers';
+import { RawLocator } from '../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
 class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
+  private readonly customSpendingCapInput: RawLocator =
+    '[data-testid="custom-spending-cap-input"]';
+
+  private readonly editSpendingCapIcon: RawLocator =
+    '[data-testid="edit-spending-cap-icon"]';
+
   private readonly estimatedChangesSection = {
     css: 'p',
-    text: tEn('simulationDetailsTitle') as string,
+    text: tEn('simulationDetailsTitle'),
   };
 
   private readonly interactingWithSection = {
     css: 'p',
-    text: tEn('interactingWith') as string,
+    text: tEn('interactingWith'),
   };
 
   private readonly methodSection = {
     css: 'p',
-    text: tEn('methodData') as string,
+    text: tEn('methodData'),
   };
 
   private readonly requestFromSection = {
     css: 'p',
-    text: tEn('requestFrom') as string,
+    text: tEn('requestFrom'),
+  };
+
+  private readonly revokeTitle = {
+    css: 'h2',
+    text: tEn('confirmTitleRevokeApproveTransaction'),
   };
 
   private readonly spenderSection = {
     css: 'p',
-    text: tEn('spender') as string,
+    text: tEn('spender'),
   };
 
   private readonly spendingCapPermissionDescription = {
     css: 'p',
-    text: tEn('confirmTitleDescERC20ApproveTransaction') as string,
+    text: tEn('confirmTitleDescERC20ApproveTransaction'),
   };
 
   private readonly spendingCapRequestTitle = {
     css: 'h2',
-    text: tEn('confirmTitlePermitTokens') as string,
+    text: tEn('confirmTitlePermitTokens'),
   };
 
   private readonly spendingCapSection = {
     css: 'p',
-    text: tEn('spendingCap') as string,
+    text: tEn('spendingCap'),
   };
 
   async checkAdvancedDetailsSections(): Promise<void> {
@@ -70,6 +82,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     await this.driver.waitForSelector(this.requestFromSection);
   }
 
+  async checkRevokeTitle(): Promise<void> {
+    console.log('Verify revoke title "Remove permission" is displayed');
+    await this.driver.waitForSelector(this.revokeTitle);
+  }
+
   async checkSpenderSection(): Promise<void> {
     console.log('Verify spender section is displayed');
     await this.driver.waitForSelector(this.spenderSection);
@@ -96,6 +113,21 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkSpendingCapSection(): Promise<void> {
     console.log('Verify spending cap section is displayed');
     await this.driver.waitForSelector(this.spendingCapSection);
+  }
+
+  /**
+   * Edits the spending cap value on the confirmation dialog.
+   *
+   * @param newSpendingCap - The new spending cap value to set.
+   */
+  async editSpendingCap(newSpendingCap: string): Promise<void> {
+    console.log(`Editing spending cap to ${newSpendingCap}`);
+    await this.driver.clickElement(this.editSpendingCapIcon);
+    await this.driver.fill(this.customSpendingCapInput, newSpendingCap);
+    await this.clickSaveButton();
+    await this.driver.waitForSelector(this.customSpendingCapInput, {
+      state: 'detached',
+    });
   }
 }
 

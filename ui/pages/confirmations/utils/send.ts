@@ -7,7 +7,7 @@ import {
 import { addHexPrefix } from 'ethereumjs-util';
 import { NavigateFunction } from 'react-router-dom';
 
-import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
+import { Numeric, NumericBase } from '../../../../shared/lib/Numeric';
 import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
@@ -18,7 +18,7 @@ import {
   generateERC1155TransferData,
   generateERC20TransferData,
   generateERC721TransferData,
-} from '../send-legacy/send.utils';
+} from '../send-utils/send.utils';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 
 export const trimTrailingZeros = (numStr: string) => {
@@ -66,11 +66,6 @@ export const fromTokenMinimalUnits = (
   addHexPrefix(
     fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString(),
   );
-
-export const fromTokenMinimalUnitsHexNumeric = (
-  value: string,
-  decimals?: number | string,
-) => fromTokenMinUnitsNumeric(value, 16, decimals);
 
 export const toTokenMinimalUnitNumeric = (
   value: string,
@@ -278,32 +273,27 @@ export function convertedCurrency(
 
 export const navigateToSendRoute = (
   navigate: NavigateFunction,
-  isSendRedesignEnabled: boolean,
   params?: {
     address?: string;
     chainId?: string;
     tokenId?: string;
   },
 ) => {
-  if (isSendRedesignEnabled) {
-    if (params) {
-      const queryParams = new URLSearchParams();
-      const { address, chainId, tokenId } = params;
-      if (address) {
-        queryParams.append('asset', address);
-      }
-      if (chainId) {
-        queryParams.append('chainId', chainId);
-      }
-      if (tokenId) {
-        queryParams.append('tokenId', tokenId);
-      }
-      navigate(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
-    } else {
-      navigate(`${SEND_ROUTE}/asset`);
+  if (params) {
+    const queryParams = new URLSearchParams();
+    const { address, chainId, tokenId } = params;
+    if (address) {
+      queryParams.append('asset', address);
     }
+    if (chainId) {
+      queryParams.append('chainId', chainId);
+    }
+    if (tokenId) {
+      queryParams.append('tokenId', tokenId);
+    }
+    navigate(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
   } else {
-    navigate(SEND_ROUTE);
+    navigate(`${SEND_ROUTE}/asset`);
   }
 };
 
@@ -324,4 +314,18 @@ export const addLeadingZeroIfNeeded = (value?: string) => {
     return `0.${fracPart}`;
   }
   return value;
+};
+
+export const normalizeAmount = (value?: string): string => {
+  if (!value) {
+    return '0';
+  }
+  const str = String(value);
+  if (str === '.') {
+    return '0';
+  }
+  if (str.endsWith('.')) {
+    return str.slice(0, -1);
+  }
+  return str;
 };

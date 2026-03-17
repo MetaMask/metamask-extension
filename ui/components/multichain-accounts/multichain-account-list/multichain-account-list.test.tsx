@@ -11,6 +11,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
@@ -234,17 +235,11 @@ describe('MultichainAccountList', () => {
     const checkboxes = screen.queryAllByRole('checkbox');
     expect(checkboxes).toHaveLength(0);
 
-    // Selected icon should be present for the selected account
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
+    // Selected account should have is-selected class
+    const selectedCell = screen.getByTestId(
+      `multichain-account-cell-${walletOneGroupId}`,
+    );
+    expect(selectedCell).toHaveClass('is-selected');
 
     // Find and click the second account cell (wallet two)
     const accountCell = screen.getByTestId(
@@ -266,17 +261,11 @@ describe('MultichainAccountList', () => {
     let checkboxes = screen.queryAllByRole('checkbox');
     expect(checkboxes).toHaveLength(0);
 
-    // Selected icon should be present for the selected account
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
+    // Selected account should have is-selected class
+    let selectedCell = screen.getByTestId(
+      `multichain-account-cell-${walletOneGroupId}`,
+    );
+    expect(selectedCell).toHaveClass('is-selected');
 
     // Change the selected account to wallet two
     rerender(
@@ -290,36 +279,18 @@ describe('MultichainAccountList', () => {
     checkboxes = screen.queryAllByRole('checkbox');
     expect(checkboxes).toHaveLength(0);
 
-    // Now wallet two should have the selected icon
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
+    // Now wallet two should have the is-selected class
+    selectedCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    expect(selectedCell).toHaveClass('is-selected');
   });
 
-  it('shows no checkboxes and no selected icons when selectedAccountGroups is empty', () => {
+  it('shows no checkboxes when selectedAccountGroups is empty', () => {
     renderComponent({ selectedAccountGroups: [] });
 
     // No checkboxes should be present
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
-
-    // No selected icons should be present since no accounts are marked as selected
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
   });
 
   it('handles multiple account groups within a single wallet', () => {
@@ -410,7 +381,9 @@ describe('MultichainAccountList', () => {
 
     // Find the header text inside the modal
     if (modalHeader) {
-      const headerText = within(modalHeader as HTMLElement).getByText('Rename');
+      const headerText = within(modalHeader as HTMLElement).getByText(
+        messages.rename.message,
+      );
       expect(headerText).toBeInTheDocument();
     }
 
@@ -429,7 +402,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find and click the confirmation button
-    const confirmButton = screen.getByText('Confirm');
+    const confirmButton = screen.getByText(messages.confirm.message);
     expect(confirmButton).toBeInTheDocument();
 
     // The button should no longer be disabled after entering text
@@ -490,7 +463,7 @@ describe('MultichainAccountList', () => {
     expect(modalHeader).toBeInTheDocument();
 
     // Find the close button by aria-label
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     expect(closeButton).toBeInTheDocument();
 
     await act(async () => {
@@ -734,19 +707,18 @@ describe('MultichainAccountList', () => {
       expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
     });
 
-    it('checkboxes and selected icons are mutually exclusive', () => {
+    it('shows is-selected class or checkboxes based on showAccountCheckbox prop', () => {
       const { rerender } = renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: false,
       });
 
-      // With checkboxes disabled, selected icon should be visible
+      // With checkboxes disabled, is-selected class should be present
       expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
-      expect(
-        screen.getByTestId(
-          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-        ),
-      ).toBeInTheDocument();
+      const selectedCell = screen.getByTestId(
+        `multichain-account-cell-${walletOneGroupId}`,
+      );
+      expect(selectedCell).toHaveClass('is-selected');
 
       // Enable checkboxes
       rerender(
@@ -757,13 +729,8 @@ describe('MultichainAccountList', () => {
         />,
       );
 
-      // Now checkboxes should be visible and selected icon should be hidden
+      // Now checkboxes should be visible
       expect(screen.getAllByRole('checkbox')).toHaveLength(2);
-      expect(
-        screen.queryByTestId(
-          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-        ),
-      ).not.toBeInTheDocument();
     });
 
     it('hides account menu (3 dots) when showAccountCheckbox is true', () => {
@@ -909,7 +876,7 @@ describe('MultichainAccountList', () => {
       renderComponent({ wallets: walletsWithPinnedAccounts });
 
       // Pinned section header should be present
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
 
       // Pinned accounts should be rendered
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
@@ -936,7 +903,7 @@ describe('MultichainAccountList', () => {
       renderComponent({ wallets: walletsWithOnePinnedAccount });
 
       // Pinned section header should be present even with just 1 pinned account
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
     });
 
@@ -984,7 +951,7 @@ describe('MultichainAccountList', () => {
       );
 
       // Pinned section should exist
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
 
       // Wallet headers should still be present
       const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
@@ -1042,7 +1009,7 @@ describe('MultichainAccountList', () => {
       expect(walletHeader).toBeInTheDocument();
       // Wallet name should be in the header
       expect(within(walletHeader).getByText('Wallet 1')).toBeInTheDocument();
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
     });
   });
 
@@ -1189,6 +1156,132 @@ describe('MultichainAccountList', () => {
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
 
       // Hidden account should not be in wallet section (collapsed by default)
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Collapsible section headers', () => {
+    it('collapses wallet section when wallet header is clicked', async () => {
+      renderComponent();
+
+      // Both wallet accounts should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click the first wallet header to collapse it
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1's account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('collapses pinned section when pinned header is clicked', async () => {
+      const walletsWithPinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: mockWallets[walletTwoId],
+      };
+
+      renderComponent({ wallets: walletsWithPinnedAccount });
+
+      // Pinned account should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click the pinned header to collapse it
+      const pinnedHeader = screen.getByTestId(
+        'multichain-account-tree-pinned-header',
+      );
+      await act(async () => {
+        fireEvent.click(pinnedHeader);
+      });
+
+      // Pinned account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('multiple sections can be collapsed independently', async () => {
+      renderComponent();
+
+      // Both wallet accounts should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+
+      // Collapse Wallet 1
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1 collapsed, Wallet 2 still visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Collapse Wallet 2
+      await act(async () => {
+        fireEvent.click(walletHeaders[1]);
+      });
+
+      // Both wallets now collapsed
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Expand Wallet 1 again
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1 now visible, Wallet 2 still collapsed
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
       expect(
         screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toBeInTheDocument();

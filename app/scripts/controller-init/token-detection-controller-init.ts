@@ -1,4 +1,5 @@
 import { TokenDetectionController } from '@metamask/assets-controllers';
+import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { ControllerInitFunction } from './types';
 import {
   TokenDetectionControllerMessenger,
@@ -10,9 +11,15 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
+  // Extension uses a custom PreferencesController that has custom state
+  const getRetypedPrefState = () =>
+    initMessenger.call(
+      'PreferencesController:getState',
+    ) as unknown as PreferencesControllerState;
+
   const controller = new TokenDetectionController({
-    // @ts-expect-error: TODO: Investigate type mismatch.
     messenger: controllerMessenger,
+    disabled: false,
     getBalancesInSingleCall: (...args) =>
       initMessenger.call(
         'AssetsContractController:getBalancesInSingleCall',
@@ -20,12 +27,9 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
       ),
     trackMetaMetricsEvent: (...args) =>
       initMessenger.call('MetaMetricsController:trackEvent', ...args),
-    useAccountsAPI: true,
-    platform: 'extension',
-    useTokenDetection: () =>
-      initMessenger.call('PreferencesController:getState').useTokenDetection,
+    useTokenDetection: () => Boolean(getRetypedPrefState().useTokenDetection),
     useExternalServices: () =>
-      initMessenger.call('PreferencesController:getState').useExternalServices,
+      Boolean(getRetypedPrefState().useExternalServices),
   });
 
   return {

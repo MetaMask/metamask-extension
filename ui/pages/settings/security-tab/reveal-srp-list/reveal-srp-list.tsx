@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
@@ -10,7 +10,6 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import SRPQuizModal from '../../../../components/app/srp-quiz-modal/SRPQuiz';
 import { SrpList } from '../../../../components/multichain/multi-srp/srp-list/srp-list';
 import {
   TextVariant,
@@ -25,7 +24,10 @@ import {
   BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  REVEAL_SEED_ROUTE,
+} from '../../../../helpers/constants/routes';
 import {
   getIsSocialLoginFlow,
   getSocialLoginEmail,
@@ -37,8 +39,6 @@ import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 export const RevealSrpList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
-  const [selectedKeyringId, setSelectedKeyringId] = useState('');
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const socialLoginEmail = useSelector(getSocialLoginEmail);
@@ -51,8 +51,7 @@ export const RevealSrpList = () => {
       const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true&isFromSettingsSecurity=true`;
       navigate(backUpSRPRoute);
     } else {
-      setSelectedKeyringId(keyringId);
-      setSrpQuizModalVisible(true);
+      navigate(`${REVEAL_SEED_ROUTE}/${keyringId}`);
     }
   };
 
@@ -159,14 +158,6 @@ export const RevealSrpList = () => {
           isSettingsPage={true}
         />
       </Box>
-      {srpQuizModalVisible && selectedKeyringId && (
-        <SRPQuizModal
-          keyringId={selectedKeyringId}
-          isOpen={srpQuizModalVisible}
-          onClose={() => setSrpQuizModalVisible(false)}
-          navigate={navigate}
-        />
-      )}
     </Box>
   );
 };

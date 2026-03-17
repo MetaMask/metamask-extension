@@ -1,11 +1,10 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
-import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
+import { decEthToConvertedCurrency } from '../../shared/lib/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatETHFee } from '../helpers/utils/formatters';
 
-import { getGasPrice } from '../ducks/send';
 import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getGasEstimateType,
@@ -13,7 +12,7 @@ import {
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../shared/modules/Numeric';
+import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { getIsMainnet } from './selectors';
 
@@ -116,26 +115,6 @@ export function isCustomPriceSafeForCustomNetwork(state) {
     .greaterThan(estimatedPrice, 10);
 
   return customPriceSafe;
-}
-
-export function isCustomPriceExcessive(state, checkSend = false) {
-  const customPrice = checkSend ? getGasPrice(state) : getCustomGasPrice(state);
-  const fastPrice = getFastPriceEstimate(state);
-
-  if (!customPrice || !fastPrice) {
-    return false;
-  }
-
-  // Custom gas should be considered excessive when it is 1.5 times greater than the fastest estimate.
-  const customPriceExcessive = new Numeric(
-    customPrice,
-    16,
-    EtherDenomination.WEI,
-  )
-    .toDenomination(EtherDenomination.GWEI)
-    .greaterThan(Math.floor(fastPrice * 1.5), 10);
-
-  return customPriceExcessive;
 }
 
 export function basicPriceEstimateToETHTotal(

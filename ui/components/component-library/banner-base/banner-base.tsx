@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import {
@@ -56,11 +56,15 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
         {/* min-Width: 0 style is used to prevent grid/flex blowout */}
         <Box minWidth={BlockSize.Zero}>
           {title && (
-            <Text variant={TextVariant.bodyLgMedium} {...titleProps}>
+            <Text variant={TextVariant.bodyMdMedium} {...titleProps}>
               {title}
             </Text>
           )}
-          {description && <Text {...descriptionProps}>{description}</Text>}
+          {description && (
+            <Text variant={TextVariant.bodySm} {...descriptionProps}>
+              {description}
+            </Text>
+          )}
           {children && typeof children === 'object' ? (
             children
           ) : (

@@ -22,7 +22,6 @@ export enum TraceName {
   DeveloperTest = 'Developer Test',
   DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',
-  GetState = 'Get State',
   ImportNfts = 'Import Nfts',
   ImportTokens = 'Import Tokens',
   InitialActions = 'Initial Actions',
@@ -428,7 +427,7 @@ function getTraceKey(request: TraceRequest | EndTraceRequest) {
   return [name, id].join(':');
 }
 
-function getPerformanceTimestamp(): number {
+export function getPerformanceTimestamp(): number {
   return performance.timeOrigin + performance.now();
 }
 

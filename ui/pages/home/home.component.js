@@ -4,15 +4,12 @@ import { Navigate } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
-  ///: END:ONLY_INCLUDE_IF
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -20,10 +17,9 @@ import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
-import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/lib/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import { ScrollContainer } from '../../contexts/scroll-container';
-
 import {
   FontWeight,
   Display,
@@ -56,35 +52,33 @@ import {
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  SUPPORT_LINK,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/lib/ui-utils';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
-import { setEditedNetwork } from '../../store/actions';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-beta)
-import BetaHomeFooter from './beta/beta-home-footer.component';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import FlaskHomeFooter from './flask/flask-home-footer.component';
-///: END:ONLY_INCLUDE_IF
+import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
+import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
+import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
+  isHardwareWalletErrorModalVisible,
 }) {
-  const shouldClose =
+  const baseCondition =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
+
+  const isHardwareWalletErrorModalBlockingClose =
+    isHardwareWalletErrorModalVisible;
+
+  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
 
   return shouldClose;
 }
@@ -106,9 +100,6 @@ export default class Home extends PureComponent {
     showTermsOfUsePopup: PropTypes.bool.isRequired,
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
@@ -116,9 +107,7 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
-    onTabClick: PropTypes.func.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     location: PropTypes.object,
@@ -137,6 +126,9 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool,
+    // This prop is used in the `shouldCloseNotificationPopup` function
+    // eslint-disable-next-line react/no-unused-prop-types
+    isHardwareWalletErrorModalVisible: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
@@ -153,6 +145,7 @@ export default class Home extends PureComponent {
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
     redirectAfterDefaultPage: PropTypes.object,
+    setRedirectAfterDefaultPage: PropTypes.func,
     clearRedirectAfterDefaultPage: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
@@ -167,6 +160,9 @@ export default class Home extends PureComponent {
     rewardsOnboardingEnabled: PropTypes.bool,
     rewardsOnboardingModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
+    envType: PropTypes.string,
+    pendingRedirectRoute: PropTypes.object,
+    clearPendingRedirectRoute: PropTypes.func,
   };
 
   state = {
@@ -201,10 +197,32 @@ export default class Home extends PureComponent {
     }
   }
 
+  /**
+   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect).
+   * Must only be called once per arrival of a new pendingRedirectRoute, because
+   * clearPendingRedirectRoute is an async thunk — the prop stays non-null across
+   * several render cycles, so calling this unconditionally in componentDidUpdate
+   * would create a re-render loop.
+   */
+  checkPendingRedirectRoute() {
+    if (this.props.pendingRedirectRoute) {
+      const { path, search, environmentType } = this.props.pendingRedirectRoute;
+      const shouldRedirect =
+        !environmentType || environmentType === this.props.envType;
+
+      if (shouldRedirect) {
+        this.props.setRedirectAfterDefaultPage({
+          path: search ? `${path}${search}` : path,
+        });
+      }
+      this.props.clearPendingRedirectRoute();
+    }
+  }
+
   componentDidMount() {
     this.props.fetchBuyableChains();
 
-    // Check for redirect after default page
+    this.checkPendingRedirectRoute();
     this.checkRedirectAfterDefaultPage();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
@@ -224,7 +242,7 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
       newNetworkAddedConfigurationId,
@@ -232,7 +250,6 @@ export default class Home extends PureComponent {
       clearNewNetworkAdded,
       pendingShieldCohort,
       evaluateCohortEligibility,
-      setPendingShieldCohort,
       isSignedIn,
     } = this.props;
 
@@ -240,7 +257,7 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
+    } = prevProps;
     const { notificationClosing } = this.state;
 
     if (
@@ -262,12 +279,16 @@ export default class Home extends PureComponent {
       evaluateCohortEligibility &&
       isSignedIn
     ) {
-      setPendingShieldCohort(null);
       evaluateCohortEligibility(pendingShieldCohort);
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
-    // Check for redirect after default page on updates
+    // Only process pendingRedirectRoute when the prop first transitions from null to non-null
+    if (this.props.pendingRedirectRoute && !prevProps.pendingRedirectRoute) {
+      this.checkPendingRedirectRoute();
+    }
+
+    // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.
     this.checkRedirectAfterDefaultPage();
   }
 
@@ -292,22 +313,22 @@ export default class Home extends PureComponent {
     });
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   onSupportLinkClick = () => {
-    this.context.trackEvent(
-      {
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_LINK,
+    if (isMain()) {
+      this.context.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Home,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
+            url: SUPPORT_LINK,
+          },
         },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
-    );
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
+      );
+    }
   };
-  ///: END:ONLY_INCLUDE_IF
 
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
@@ -347,7 +368,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      setEditedNetwork();
+      clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -765,8 +786,6 @@ export default class Home extends PureComponent {
 
   render() {
     const {
-      defaultHomeActiveTabName,
-      onTabClick,
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
@@ -776,11 +795,8 @@ export default class Home extends PureComponent {
       isPopup,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
-      announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
@@ -807,23 +823,11 @@ export default class Home extends PureComponent {
         firstTimeFlowType === FirstTimeFlowType.import) &&
       !newNetworkAddedConfigurationId;
 
-    const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !process.env.IN_TEST;
-
     const showMultiRpcEditModal =
-      canSeeModals &&
-      showMultiRpcModal &&
-      !showWhatsNew &&
-      !process.env.IN_TEST;
+      canSeeModals && showMultiRpcModal && !process.env.IN_TEST;
 
     const displayUpdateModal =
-      canSeeModals &&
-      showUpdateModal &&
-      !showWhatsNew &&
-      !showMultiRpcEditModal;
+      canSeeModals && showUpdateModal && !showMultiRpcEditModal;
 
     const showTermsOfUse =
       completedOnboarding &&
@@ -832,16 +836,13 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     const showRecoveryPhrase =
-      !showWhatsNew &&
-      showRecoveryPhraseReminder &&
-      !isPrimarySeedPhraseBackedUp;
+      showRecoveryPhraseReminder && !isPrimarySeedPhraseBackedUp;
 
     const showRewardsModal =
       rewardsEnabled &&
       rewardsOnboardingEnabled &&
       canSeeModals &&
       !showTermsOfUse &&
-      !showWhatsNew &&
       !showMultiRpcEditModal &&
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
@@ -852,7 +853,6 @@ export default class Home extends PureComponent {
       showPna25Modal &&
       canSeeModals &&
       !showTermsOfUse &&
-      !showWhatsNew &&
       !showMultiRpcEditModal &&
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
@@ -890,7 +890,6 @@ export default class Home extends PureComponent {
           {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
-          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
@@ -907,31 +906,21 @@ export default class Home extends PureComponent {
             : null}
           <div className="home__main-view">
             <AccountOverview
-              onTabClick={onTabClick}
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
-              ///: END:ONLY_INCLUDE_IF
-              defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
             />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+            {(isBeta() || isFlask()) && (
               <div className="home__support">
-                <BetaHomeFooter />
+                <BetaAndFlaskHomeFooter />
               </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <div className="home__support">
-                <FlaskHomeFooter />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
+            )}
           </div>
           {this.renderNotifications()}
         </div>
+
+        {/* Ghost component that manages the useHomeDeepLinkEffects */}
+        <HomeDeepLinkActions />
       </ScrollContainer>
     );
   }

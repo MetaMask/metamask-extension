@@ -25,6 +25,8 @@ export function useIsOriginalNativeTokenSymbol(
   const providerConfig = useSelector(getMultichainCurrentNetwork);
 
   useEffect(() => {
+    let isMounted = true;
+
     const isLocalhost = (urlString: string) => {
       const url = getValidUrl(urlString);
 
@@ -53,13 +55,21 @@ export function useIsOriginalNativeTokenSymbol(
           useAPICall: useSafeChainsListValidation,
         });
 
-        setIsOriginalNativeSymbol(isOriginalNativeToken);
+        if (isMounted) {
+          setIsOriginalNativeSymbol(isOriginalNativeToken);
+        }
       } catch (err) {
-        setIsOriginalNativeSymbol(false);
+        if (isMounted) {
+          setIsOriginalNativeSymbol(false);
+        }
       }
     }
 
     getNativeTokenSymbol(chainId);
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     isOriginalNativeSymbol,
     chainId,

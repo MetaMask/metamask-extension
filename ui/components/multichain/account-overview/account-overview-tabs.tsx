@@ -1,41 +1,42 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
+  AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
+  getDefaultHomeActiveTabName,
   getEnabledChainIds,
-  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
-import { detectNfts } from '../../../store/actions';
+import {
+  detectNfts,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
-import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
+import { PerpsControllerProvider } from '../../../providers/perps';
 import { PerpsTabView } from '../../app/perps';
-import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { ActivityList } from '../activity-v2/activity-list';
+import { usePrefetchTransactions } from '../activity-v2/hooks';
+import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -48,28 +49,28 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
 };
 
 export const AccountOverviewTabs = ({
-  onTabClick,
-  defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
   showNfts,
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  const [activeTabKey, setActiveTabKey] = useState<
-    AccountOverviewTabKey | undefined
-  >(defaultHomeActiveTabName ?? undefined);
+  const persistedTab = useSelector(getDefaultHomeActiveTabName);
+  const [urlTab, setActiveTabKey] = useTabState();
+  const activeTabKey = urlTab || persistedTab;
+
   const navigate = useNavigate();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+  const prefetchTransactions = usePrefetchTransactions();
 
   useEffect(() => {
-    if (defaultHomeActiveTabName) {
-      setActiveTabKey(defaultHomeActiveTabName);
+    if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+      setDefaultHomeActiveTabName(activeTabKey);
     }
-  }, [defaultHomeActiveTabName]);
+  }, [activeTabKey]);
 
   // Get all enabled networks (what the user has actually selected)
   const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
@@ -89,9 +90,15 @@ export const AccountOverviewTabs = ({
   });
 
   const handleTabClick = useCallback(
-    (tabName: AccountOverviewTabKey) => {
+    (tabName: AccountOverviewTab) => {
+      if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[activeTabKey],
+        });
+      }
+
       setActiveTabKey(tabName);
-      onTabClick(tabName);
+
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
@@ -108,23 +115,27 @@ export const AccountOverviewTabs = ({
           },
         });
       }
-      if (defaultHomeActiveTabName) {
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
+      if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
         });
       }
-      trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
-      });
     },
-    [networkFilterForMetrics, onTabClick],
+    [
+      activeTabKey,
+      networkFilterForMetrics,
+      setActiveTabKey,
+      dispatch,
+      selectedChainIds,
+      trackEvent,
+    ],
   );
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      transitionForward(() =>
+        navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      ),
     [navigate],
   );
   const onClickDeFi = useCallback(
@@ -135,20 +146,15 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
-
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
   return (
     <>
       <AssetListTokenDetection />
 
-      <Tabs<AccountOverviewTabKey>
-        defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
-        activeTabKey={activeTabKey}
+      <Tabs<AccountOverviewTab>
+        animated
+        activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
           className: 'px-4',
@@ -160,13 +166,13 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Tokens}
             data-testid="account-overview__asset-tab"
           >
-            <Box marginBottom={2}>
+            <ErrorBoundary key="tokens">
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
               />
-            </Box>
+            </ErrorBoundary>
           </Tab>
         )}
 
@@ -176,7 +182,11 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
-            <PerpsTabView />
+            <ErrorBoundary key="perps">
+              <PerpsControllerProvider>
+                <PerpsTabView />
+              </PerpsControllerProvider>
+            </ErrorBoundary>
           </Tab>
         )}
 
@@ -186,13 +196,13 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.DeFi}
             data-testid="account-overview__defi-tab"
           >
-            <Box>
+            <ErrorBoundary key="defi">
               <DeFiTab
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
               />
-            </Box>
+            </ErrorBoundary>
           </Tab>
         )}
 
@@ -202,7 +212,9 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Nfts}
             data-testid="account-overview__nfts-tab"
           >
-            <NftsTab />
+            <ErrorBoundary key="nfts">
+              <NftsTab />
+            </ErrorBoundary>
           </Tab>
         )}
 
@@ -211,12 +223,11 @@ export const AccountOverviewTabs = ({
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
+            onMouseEnter={prefetchTransactions}
           >
-            {showUnifiedTransactionList ? (
-              <UnifiedTransactionList />
-            ) : (
-              <TransactionList />
-            )}
+            <ErrorBoundary key="activity">
+              <ActivityList />
+            </ErrorBoundary>
           </Tab>
         )}
       </Tabs>

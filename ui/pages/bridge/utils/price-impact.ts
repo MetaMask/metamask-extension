@@ -5,7 +5,7 @@
  * @returns Formatted price impact string.
  */
 export function formatPriceImpact(
-  priceImpact: string | number | undefined,
+  priceImpact: string | number | undefined | null,
 ): string {
   if (priceImpact === undefined || priceImpact === null) {
     return '0%';
@@ -13,7 +13,7 @@ export function formatPriceImpact(
 
   const impact = Number(priceImpact);
 
-  if (isNaN(impact) || !impact) {
+  if (isNaN(impact) || !impact || impact < 0) {
     return '0%';
   }
 
@@ -23,11 +23,6 @@ export function formatPriceImpact(
   // If the impact is very small but not zero, show <0.01%
   if (percentageImpact > 0 && percentageImpact < 0.01) {
     return '<0.01%';
-  }
-
-  // If the impact is negative and very small, show <-0.01%
-  if (percentageImpact < 0 && percentageImpact > -0.01) {
-    return '<-0.01%';
   }
 
   // For values less than 1%, show with 2 decimal places

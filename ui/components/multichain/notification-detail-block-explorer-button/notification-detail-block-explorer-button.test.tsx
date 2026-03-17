@@ -1,6 +1,9 @@
 import React from 'react';
 import { createMockNotificationERC20Sent } from '@metamask/notification-services-controller/notification-services/mocks';
-import { processNotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  isOnChainRawNotification,
+  processNotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -13,6 +16,10 @@ const store = mockStore({
 });
 
 const mockNotification = processNotification(createMockNotificationERC20Sent());
+if (!isOnChainRawNotification(mockNotification)) {
+  throw new Error('Mock notification is not an on-chain notification');
+}
+
 if (
   'notification_type' in mockNotification &&
   mockNotification.notification_type === 'on-chain' &&

@@ -11,7 +11,12 @@ import {
 } from './messengers';
 import { BridgeControllerInit } from './bridge-controller-init';
 
-jest.mock('@metamask/bridge-controller');
+jest.mock('@metamask/bridge-controller', () => {
+  return {
+    ...jest.requireActual('@metamask/bridge-controller'),
+    BridgeController: jest.fn(),
+  };
+});
 
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<

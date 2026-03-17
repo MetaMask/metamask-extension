@@ -14,7 +14,7 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   formatGatorAmountLabel,
@@ -56,7 +56,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
       amount: string,
       tokenName: string,
       frequency: string,
-      tokenDecimals: number,
+      tokenDecimals?: number,
     ) =>
       formatGatorAmountLabel({
         amount,
@@ -68,7 +68,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     [locale],
   );
 
-  const signerAddress = permission.permission.permissionResponse.address;
+  const signerAddress = permission.permission.permissionResponse.from;
 
   // Always call useDisplayName hook (hooks must be called unconditionally)
   const displayNameResult = useDisplayName({

@@ -5,9 +5,9 @@ import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
@@ -164,14 +164,14 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
         await homePage.checkExpectedBalanceIsDisplayed('20 ETH');
-        await homePage.startSendFlow();
 
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
-        await sendToPage.fillRecipient(mockBenignAddress);
-        await sendToPage.fillAmount('1');
-        await sendToPage.goToNextScreen();
-
+        await createInternalTransaction({
+          driver,
+          chainId: '0x1',
+          symbol: 'ETH',
+          recipientAddress: mockBenignAddress,
+          amount: '1',
+        });
         const transactionConfirmationPage = new TransactionConfirmation(driver);
         await transactionConfirmationPage.checkPageIsLoaded();
         await transactionConfirmationPage.checkNoAlertMessageIsDisplayed();
@@ -256,16 +256,13 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
         await homePage.checkExpectedBalanceIsDisplayed('20 ETH');
-        await homePage.startSendFlow();
-
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
-        await sendToPage.fillRecipient(
-          '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-        );
-        await sendToPage.fillAmount('1.1');
-        await sendToPage.goToNextScreen();
-
+        await createInternalTransaction({
+          driver,
+          chainId: '0x1',
+          symbol: 'ETH',
+          recipientAddress: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+          amount: '1.1',
+        });
         const transactionConfirmationPage = new TransactionConfirmation(driver);
         await transactionConfirmationPage.checkPageIsLoaded();
 

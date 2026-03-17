@@ -1,5 +1,11 @@
 import { TextColor } from '@metamask/design-system-react';
-import type { Order } from './types';
+import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import type {
+  Order,
+  PerpsMarketData,
+  PerpsTransaction,
+  PerpsTransactionFilter,
+} from './types';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
 
 /**
@@ -92,6 +98,26 @@ export const getStatusColor = (status: Order['status']): TextColor => {
 };
 
 /**
+ * Get the appropriate text color for a percentage change value
+ * Non-negative values (≥ 0) → green, negative → red
+ *
+ * @param percentString - The percentage string (e.g., "+2.84%", "-1.23%", "0.00%", "2.84%")
+ * @returns The appropriate text color
+ * @example
+ * getChangeColor('+2.84%') => TextColor.SuccessDefault
+ * getChangeColor('2.84%') => TextColor.SuccessDefault
+ * getChangeColor('0.00%') => TextColor.SuccessDefault
+ * getChangeColor('-1.23%') => TextColor.ErrorDefault
+ */
+export const getChangeColor = (percentString: string): TextColor => {
+  const value = parseFloat(percentString.replace('%', ''));
+  if (value < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.SuccessDefault;
+};
+
+/**
  * Extract the display symbol from a full symbol string
  * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
  * Includes null/type safety checks
@@ -136,4 +162,227 @@ export const getAssetIconUrl = (symbol: string): string => {
 
   // Regular asset - uppercase the symbol
   return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${symbol.toUpperCase()}.svg`;
+};
+
+/**
+ * Safely decode a URI component, returning undefined if decoding fails
+ * Handles malformed percent-encoding sequences that would throw URIError
+ *
+ * @param value - The URI-encoded string to decode
+ * @returns The decoded string, or undefined if decoding fails
+ * @example
+ * safeDecodeURIComponent('hello%20world') => 'hello world'
+ * safeDecodeURIComponent('%E0%A4%A') => undefined (malformed)
+ */
+export const safeDecodeURIComponent = (value: string): string | undefined => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
+};
+
+// Transaction history utility types
+type GroupedTransactions = {
+  date: string;
+  transactions: PerpsTransaction[];
+};
+
+/**
+ * Groups transactions by date for display in the activity list
+ *
+ * @param transactions - Array of transactions to group
+ * @param t - Translation function for date labels
+ * @returns Array of grouped transactions with date labels
+ * @example
+ * groupTransactionsByDate(transactions, t) => [
+ *   { date: 'Today', transactions: [...] },
+ *   { date: 'Yesterday', transactions: [...] },
+ *   { date: 'Jan 15', transactions: [...] }
+ * ]
+ */
+export const groupTransactionsByDate = (
+  transactions: PerpsTransaction[],
+  t: (key: string) => string,
+): GroupedTransactions[] => {
+  const groups = new Map<string, PerpsTransaction[]>();
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  // Sort transactions by timestamp (newest first)
+  const sortedTransactions = [...transactions].sort(
+    (a, b) => b.timestamp - a.timestamp,
+  );
+
+  for (const transaction of sortedTransactions) {
+    const txDate = new Date(transaction.timestamp);
+    const txDay = new Date(
+      txDate.getFullYear(),
+      txDate.getMonth(),
+      txDate.getDate(),
+    );
+
+    let dateLabel: string;
+    if (txDay.getTime() === today.getTime()) {
+      dateLabel = t('perpsDateToday');
+    } else if (txDay.getTime() === yesterday.getTime()) {
+      dateLabel = t('perpsDateYesterday');
+    } else {
+      dateLabel = formatDateWithYearContext(transaction.timestamp);
+    }
+
+    const existing = groups.get(dateLabel) || [];
+    existing.push(transaction);
+    groups.set(dateLabel, existing);
+  }
+
+  return Array.from(groups.entries()).map(([date, txs]) => ({
+    date,
+    transactions: txs,
+  }));
+};
+
+/**
+ * Filters transactions by type
+ *
+ * @param transactions - Array of transactions to filter
+ * @param filter - The filter type to apply
+ * @returns Filtered array of transactions
+ * @example
+ * filterTransactionsByType(transactions, 'trade') => [... only trade transactions]
+ * filterTransactionsByType(transactions, 'deposit') => [... deposits and withdrawals]
+ */
+export const filterTransactionsByType = (
+  transactions: PerpsTransaction[],
+  filter: PerpsTransactionFilter,
+): PerpsTransaction[] => {
+  if (filter === 'deposit') {
+    // Include both deposits and withdrawals
+    return transactions.filter(
+      (tx) => tx.type === 'deposit' || tx.type === 'withdrawal',
+    );
+  }
+
+  return transactions.filter((tx) => tx.type === filter);
+};
+
+/**
+ * Transaction status type for deposit/withdrawal operations.
+ */
+type TransactionStatus =
+  | 'confirmed'
+  | 'pending'
+  | 'failed'
+  | 'completed'
+  | 'bridging';
+
+/**
+ * Get the appropriate text color for transaction status.
+ *
+ * @param status - The transaction status
+ * @returns The appropriate text color
+ */
+export const getTransactionStatusColor = (
+  status: TransactionStatus,
+): TextColor => {
+  switch (status) {
+    case 'confirmed':
+    case 'completed':
+      return TextColor.SuccessDefault;
+    case 'pending':
+    case 'bridging':
+      return TextColor.WarningDefault;
+    case 'failed':
+      return TextColor.ErrorDefault;
+    default:
+      return TextColor.TextAlternative;
+  }
+};
+
+/**
+ * Get the appropriate text color for transaction amount
+ * Positive amounts (received/profit) → green, negative (paid/loss) → red
+ *
+ * @param amount - The amount string (may include +/- prefix)
+ * @returns The appropriate text color
+ */
+export const getTransactionAmountColor = (amount: string): TextColor => {
+  // Check for explicit negative sign or "paid" in context
+  if (amount.startsWith('-')) {
+    return TextColor.ErrorDefault;
+  }
+  if (amount.startsWith('+')) {
+    return TextColor.SuccessDefault;
+  }
+  // Default to neutral
+  return TextColor.TextDefault;
+};
+
+/**
+ * Filter markets by search query
+ * Searches through both symbol and name fields (case-insensitive)
+ *
+ * @param markets - Array of markets to filter
+ * @param searchQuery - Search query string
+ * @returns Filtered array of markets matching the query
+ * @example
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'btc') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'coin') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], '') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ */
+export const filterMarketsByQuery = (
+  markets: PerpsMarketData[],
+  searchQuery: string,
+): PerpsMarketData[] => {
+  // Return all markets if query is empty
+  if (!searchQuery?.trim()) {
+    return markets;
+  }
+
+  const lowerQuery = searchQuery.toLowerCase().trim();
+
+  return markets.filter(
+    (market) =>
+      market.symbol?.toLowerCase().includes(lowerQuery) ||
+      market.name?.toLowerCase().includes(lowerQuery),
+  );
+};
+
+/**
+ * Check if a market is an allowed HIP-3 market (stocks, commodities, forex)
+ *
+ * HIP-3 markets are identified by having a marketSource that matches one of
+ * the allowed HIP-3 DEX providers from the feature flag.
+ *
+ * @param market - The market data to check
+ * @param allowedSources - Set of allowed HIP-3 source identifiers from the selector
+ * @returns True if the market is from an allowed HIP-3 source
+ * @example
+ * const allowedSources = new Set(['xyz']);
+ * isHip3Market({ symbol: 'xyz:TSLA', marketSource: 'xyz' }, allowedSources) // → true
+ * isHip3Market({ symbol: 'BTC', marketSource: undefined }, allowedSources) // → false
+ * isHip3Market({ symbol: 'abc:AAPL', marketSource: 'abc' }, allowedSources) // → false
+ */
+export const isHip3Market = (
+  market: PerpsMarketData,
+  allowedSources: Set<string>,
+): boolean => {
+  return Boolean(
+    market.marketSource && allowedSources.has(market.marketSource),
+  );
+};
+
+/**
+ * Check if a market is a crypto market (main DEX, no marketSource)
+ *
+ * @param market - The market data to check
+ * @returns True if the market is a crypto market
+ * @example
+ * isCryptoMarket({ symbol: 'BTC', marketSource: undefined }) // → true
+ * isCryptoMarket({ symbol: 'xyz:TSLA', marketSource: 'xyz' }) // → false
+ */
+export const isCryptoMarket = (market: PerpsMarketData): boolean => {
+  return !market.marketSource;
 };

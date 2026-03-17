@@ -3,7 +3,7 @@ const { brandColor } = require('@metamask/design-tokens');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   presets: [
-    // eslint-disable-next-line node/global-require
+    // eslint-disable-next-line n/global-require
     require('@metamask/design-system-tailwind-preset'),
   ],
   content: [

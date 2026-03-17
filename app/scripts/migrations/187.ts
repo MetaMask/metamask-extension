@@ -32,11 +32,6 @@ function transformState(state: Record<string, unknown>): boolean {
   // -- Step 1: Validate TransactionController exists
   //
   if (!hasProperty(state, 'TransactionController')) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: state.TransactionController is not defined`,
-      ),
-    );
     return false;
   }
 

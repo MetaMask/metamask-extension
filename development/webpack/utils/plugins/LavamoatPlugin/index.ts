@@ -20,7 +20,12 @@ const unsafeEntries: Set<string> = new Set([
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
     rootDir,
-    policyLocation: join('lavamoat', 'webpack', `mv${args.manifest_version}`),
+    policyLocation: join(
+      'lavamoat',
+      'webpack',
+      `mv${args.manifest_version}`,
+      args.type,
+    ),
     diagnosticsVerbosity: 0,
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
@@ -38,7 +43,6 @@ export const lavamoatPlugin = (args: Args) =>
       errorTrapping: 'none',
       reporting: 'none',
     },
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
@@ -152,7 +156,6 @@ export const lavamoatUnsafeLayerRule = {
 // Unsafe layer plugin that applies the layer and assigns the unsafeEntries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
-    compiler.options.experiments.layers = true;
     compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
     compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {

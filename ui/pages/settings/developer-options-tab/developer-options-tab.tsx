@@ -36,6 +36,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../selectors';
+import { ConfirmationsDeveloperOptions } from '../../confirmations/components/developer/confirmations-developer-options';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
@@ -165,7 +166,7 @@ const DeveloperOptionsTab = () => {
           <span>Onboarding</span>
           <div className="settings-page__content-description">
             Resets various states related to onboarding and redirects to the
-            "Secure Your Wallet" onboarding page.
+            &quot;Secure Your Wallet&quot; onboarding page.
           </div>
         </div>
 
@@ -280,6 +281,8 @@ const DeveloperOptionsTab = () => {
       <SentryTest />
       <hr />
       <MigrateToSplitStateTest />
+      <hr />
+      <ConfirmationsDeveloperOptions />
     </div>
   );
 };

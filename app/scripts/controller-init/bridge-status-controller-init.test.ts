@@ -37,6 +37,7 @@ describe('BridgeStatusControllerInit', () => {
     const controllerMock = jest.mocked(BridgeStatusController);
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
+      clientId: 'extension',
       state: undefined,
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,

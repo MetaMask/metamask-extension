@@ -5,7 +5,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
   mockGasPricesArbitrum,
   mockSwapTokensArbitrum,
@@ -43,19 +43,23 @@ describe('Switch network - ', function (this: Suite) {
         const homePage = new HomePage(driver);
 
         // Validate the switch network functionality to Ethereum
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality to test network
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8545');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8545',
+        );
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await switchToNetworkFromSendFlow(driver, 'Arbitrum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Arbitrum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
         await homePage.checkPageIsLoaded();
         await homePage.checkLocalNodeBalanceIsDisplayed();
       },

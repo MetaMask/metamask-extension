@@ -3,7 +3,7 @@ import {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 
 /**
  * State backing the add/edit network form

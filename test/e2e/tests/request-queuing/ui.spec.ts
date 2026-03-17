@@ -8,6 +8,7 @@ import {
   DAPP_TWO_URL,
   DAPP_URL,
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import NetworkManager, {
@@ -15,6 +16,7 @@ import NetworkManager, {
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
@@ -135,6 +137,7 @@ async function selectDappClickPersonalSign(
 
   const testDapp = new TestDapp(driver);
   await testDapp.clickPersonalSign();
+  await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 }
 
 async function switchToDialogPopoverValidateDetailsRedesign(
@@ -194,7 +197,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -401,7 +404,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
@@ -470,7 +473,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
@@ -509,7 +512,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
             eip155: {
@@ -559,7 +562,6 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
         // Kill local node servers
@@ -590,9 +592,9 @@ describe('Request-queue UI changes', function () {
         dappOptions: { numberOfTestDapps: 2 },
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withNetworkControllerOnMainnet()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

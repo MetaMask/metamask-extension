@@ -20,13 +20,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
-// We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
-const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
-
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(
@@ -46,6 +39,7 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
 });
 
 jest.mock('../../../ducks/locale/locale', () => ({
+  ...jest.requireActual('../../../ducks/locale/locale'),
   getIntlLocale: jest.fn(),
 }));
 
@@ -80,6 +74,7 @@ describe('EthOverview', () => {
     options: {},
     methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
+    scopes: ['eip155:0'],
   };
 
   const mockEvmAccount2 = {
@@ -94,17 +89,40 @@ describe('EthOverview', () => {
     options: {},
     methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
+    scopes: ['eip155:0'],
   };
 
   const mockStore = {
     appState: {
       confirmationExchangeRates: {},
     },
+    localeMessages: {
+      currentLocale: 'en-US',
+    },
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountTree: {
-        wallets: {},
-        selectedAccountGroup: null,
+        wallets: {
+          'entropy:wallet1': {
+            id: 'entropy:wallet1',
+            groups: {
+              'entropy:wallet1/group1': {
+                id: 'entropy:wallet1/group1',
+                type: 'multichain-account',
+                accounts: [mockEvmAccount1.id],
+                metadata: {
+                  name: 'Account 1',
+                  hidden: false,
+                  pinned: false,
+                },
+              },
+            },
+          },
+        },
+        selectedAccountGroup: 'entropy:wallet1/group1',
+      },
+      tokenBalances: {
+        [CHAIN_IDS.MAINNET]: {},
       },
       remoteFeatureFlags: {
         bridgeConfig: {
@@ -231,7 +249,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('<0.000001ETH');
+      expect(primaryBalance).toHaveTextContent('0 ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -263,7 +281,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('0.0104ETH');
+      expect(primaryBalance).toHaveTextContent('0.0104 ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -424,10 +442,16 @@ describe('EthOverview', () => {
 
   it('sends an event when clicking the Buy button: %s', () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
 
     const mockedStore = configureMockStore([thunk])(mockStore);
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,
@@ -509,6 +533,12 @@ describe('EthOverview', () => {
     CHAIN_IDS.SEPOLIA,
   ])('sends an event when clicking the Send button: %s', (chainId) => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const mockedStoreWithSpecificChainId = {
       ...mockStore,
       metamask: {
@@ -521,7 +551,7 @@ describe('EthOverview', () => {
       mockedStoreWithSpecificChainId,
     );
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,

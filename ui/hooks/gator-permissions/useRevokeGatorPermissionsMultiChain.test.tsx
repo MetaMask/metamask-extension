@@ -11,11 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import {
-  PermissionTypesWithCustom,
-  Signer,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -126,42 +122,36 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
   const mockNetworkClientId1 = 'mock-network-client-id-1';
   const mockNetworkClientId2 = 'mock-network-client-id-2';
 
-  const mockPermission1: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
+  const mockPermission1: PermissionInfoWithMetadata = {
     permissionResponse: {
       permission: {
-        type: 'custom' as const,
-        data: {},
+        type: 'native-token-stream' as const,
+        data: {
+          amountPerSecond: '0x0',
+        },
         isAdjustmentAllowed: false,
       },
       chainId: mockChainId1,
-      address: mockSelectedAccountAddress as Hex,
+      from: mockSelectedAccountAddress as Hex,
       context: mockPermissionContext1,
-      signerMeta: {
-        delegationManager: mockDelegationManagerAddress,
-      },
+      delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'example.com',
   };
 
-  const mockPermission2: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
+  const mockPermission2: PermissionInfoWithMetadata = {
     permissionResponse: {
       permission: {
-        type: 'custom' as const,
-        data: {},
+        type: 'native-token-stream' as const,
+        data: {
+          amountPerSecond: '0x0',
+        },
         isAdjustmentAllowed: false,
       },
       chainId: mockChainId2,
-      address: mockSelectedAccountAddress as Hex,
+      from: mockSelectedAccountAddress as Hex,
       context: mockPermissionContext2,
-      signerMeta: {
-        delegationManager: mockDelegationManagerAddress,
-      },
+      delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'example.com',
   };
@@ -362,7 +352,9 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
     });
 
     it('should skip permissions when internal account is not found', async () => {
-      mockGetMemoizedInternalAccountByAddress.mockReturnValue(undefined);
+      mockGetMemoizedInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () => useRevokeGatorPermissionsMultiChain(),

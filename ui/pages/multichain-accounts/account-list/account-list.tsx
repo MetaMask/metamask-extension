@@ -25,12 +25,17 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import {
   getAccountTree,
   getNormalizedGroupsMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  getShowDefaultAddress,
+} from '../../../selectors';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
@@ -41,14 +46,13 @@ import {
   TextFieldSearchSize,
 } from '../../../components/component-library';
 import {
-  Content,
   Footer,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
-import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import { ScrollContainer } from '../../../contexts/scroll-container';
 import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
@@ -60,6 +64,7 @@ export const AccountList = () => {
   const [searchPattern, setSearchPattern] = useState<string>('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const showDefaultAddress = useSelector(getShowDefaultAddress);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -116,6 +121,10 @@ export const AccountList = () => {
     setIsAddWalletModalOpen(false);
   }, [setIsAddWalletModalOpen]);
 
+  const handleBack = useCallback(() => {
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
+  }, [navigate]);
+
   return (
     <Page className="account-list-page">
       <Header
@@ -127,13 +136,13 @@ export const AccountList = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
+            onClick={handleBack}
           />
         }
       >
         {t('accounts')}
       </Header>
-      <Content className="account-list-page__content" paddingInline={0}>
+      <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
           flexDirection={FlexDirection.Column}
           paddingTop={1}
@@ -154,12 +163,7 @@ export const AccountList = () => {
             data-testid="multichain-account-list-search"
           />
         </Box>
-        <Box
-          display={Display.Flex}
-          height={BlockSize.Full}
-          flexDirection={FlexDirection.Column}
-          className="multichain-account-menu-popover__list"
-        >
+        <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
           {hasFilteredWallets ? (
             <MultichainAccountList
               wallets={filteredWallets}
@@ -167,6 +171,7 @@ export const AccountList = () => {
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
+              showDefaultAddress={showDefaultAddress}
             />
           ) : (
             <Box
@@ -184,8 +189,8 @@ export const AccountList = () => {
               </Text>
             </Box>
           )}
-        </Box>
-      </Content>
+        </ScrollContainer>
+      </div>
       <Footer className="shadow-sm">
         <Button
           variant={ButtonVariant.Secondary}

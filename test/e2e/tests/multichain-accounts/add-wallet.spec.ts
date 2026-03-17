@@ -77,9 +77,10 @@ describe('Add wallet', function () {
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 1',
         });
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          DEFAULT_LOCAL_NODE_USD_BALANCE,
-        );
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          balance: DEFAULT_LOCAL_NODE_USD_BALANCE,
+        });
       },
     );
   });
@@ -113,7 +114,7 @@ describe('Add wallet', function () {
         fixtures: new FixtureBuilder()
           .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
+          .withPreferencesController()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           await mockPriceApi(server);
@@ -154,7 +155,11 @@ describe('Add wallet', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('0');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Imported accounts',
+          account: IMPORTED_ACCOUNT_NAME,
+          balance: '$0.00',
+        });
         await accountListPage.checkNumberOfAvailableAccounts(4);
         await accountListPage.switchToAccount(IMPORTED_ACCOUNT_NAME);
         await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);

@@ -4,8 +4,8 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import HomePage from '../../page-objects/pages/home/homepage';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Request Queuing - Extension and Dapp on different networks.', function () {
   it('should not switch to the dapps network automatically when mm network differs', async function () {
@@ -14,7 +14,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -44,7 +44,11 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         );
 
         // Switch to second network
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

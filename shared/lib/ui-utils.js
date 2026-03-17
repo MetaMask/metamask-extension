@@ -26,7 +26,7 @@ export const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export const SMART_ACCOUNT_INFO_LINK =
-  'https://support.metamask.io/configure/accounts/what-is-a-smart-account';
+  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts';
 
 export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/#step-two-locate-your-vault`;
 

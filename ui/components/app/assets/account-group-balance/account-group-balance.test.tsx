@@ -9,8 +9,12 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getPreferences,
   getEnabledNetworksByNamespace,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
-import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  selectBalanceBySelectedAccountGroup,
+  selectAggregatedBalanceForSelectedAccount,
+} from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import * as multichainSelectors from '../../../../selectors/multichain';
 import {
@@ -41,10 +45,27 @@ describe('AccountGroupBalance', () => {
     selectedGroupBalance: AccountGroupBalanceType | null = null,
     showNativeTokenAsMainBalance: boolean = false,
     isTestnet: boolean = false,
+    aggregatedBalance: {
+      entries: unknown[];
+      totalBalanceInFiat?: number;
+    } | null = null,
+    anyEnabledNetworksAreAvailable: boolean = true,
   ) => {
     const mockSelectBalanceBySelectedAccountGroup = jest
       .mocked(selectBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
+
+    jest
+      .mocked(selectAggregatedBalanceForSelectedAccount)
+      .mockReturnValue(
+        aggregatedBalance as ReturnType<
+          typeof selectAggregatedBalanceForSelectedAccount
+        >,
+      );
+
+    jest
+      .mocked(selectAnyEnabledNetworksAreAvailable)
+      .mockReturnValue(anyEnabledNetworksAreAvailable);
 
     const mockGetPreferences = jest
       .mocked(getPreferences)
@@ -120,8 +141,8 @@ describe('AccountGroupBalance', () => {
     jest.clearAllMocks();
   });
 
-  it('renders a skeleton when no selected group balance', () => {
-    arrange();
+  it('renders a skeleton when no selected group balance and no networks available', () => {
+    arrange(null, false, false, null, false);
     actAssertSkeletonPresent();
   });
 
@@ -159,5 +180,59 @@ describe('AccountGroupBalance', () => {
       balance: '0x0217b4f7389e02',
       chainId: '0xaa36a7',
     });
+  });
+
+  it('renders aggregated balance when selectAggregatedBalanceForSelectedAccount returns totalBalanceInFiat', () => {
+    arrange(null, false, false, {
+      entries: [],
+      totalBalanceInFiat: 99.5,
+    });
+    const { getByText } = renderComponent({
+      balance: '1000000000000000000',
+      chainId: '0x1',
+    });
+    expect(
+      getByText(
+        (content) => content.includes('99.50') || content.includes('99.5'),
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('renders legacy balance when aggregatedBalance is null and selectedGroupBalance is set', () => {
+    arrange(createMockBalance(), false, false, null);
+    actAssertBalanceContent({
+      currency: 'USD',
+      amount: '$123.45',
+      balance: '1000000000000000000',
+      chainId: '0x1',
+    });
+  });
+
+  it('renders skeleton when no networks available and no balance', () => {
+    arrange(null, false, false, null, false);
+    actAssertSkeletonPresent();
+  });
+
+  it('applies cached balance class when balanceIsCached is true', () => {
+    arrange(createMockBalance());
+    const { container } = renderComponent({
+      balanceIsCached: true,
+      balance: '1000000000000000000',
+      chainId: '0x1',
+    });
+    expect(
+      container.querySelector('.coin-overview__cached-balance'),
+    ).toBeTruthy();
+  });
+
+  it('renders masked balance when privacy mode is enabled', () => {
+    arrange(createMockBalance());
+    jest.mocked(getPreferences).mockReturnValue({
+      privacyMode: true,
+      showNativeTokenAsMainBalance: false,
+    });
+    const { getByText } = renderComponent();
+    // SensitiveText shows bullet pattern when isHidden (privacyMode) is true
+    expect(getByText('••••••')).toBeInTheDocument();
   });
 });

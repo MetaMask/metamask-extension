@@ -1,7 +1,8 @@
 import { AuthorizationList } from '@metamask/transaction-controller';
+import { type SentinelMeta } from '@metamask/smart-transactions-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
-import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { buildUrl, getSentinelNetworkFlags } from './sentinel-api';
 
 const log = createProjectLogger('transaction-relay');
@@ -11,6 +12,7 @@ export type RelaySubmitRequest = {
   chainId: Hex;
   data: Hex;
   to: Hex;
+  metadata?: SentinelMeta;
 };
 
 export type RelayWaitRequest = {

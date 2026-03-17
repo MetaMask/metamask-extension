@@ -1,10 +1,11 @@
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
@@ -14,9 +15,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
-          .withSelectedNetworkControllerPerDomain()
           .build(),
         localNodeOptions: [
           {
@@ -46,15 +46,13 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const testDappOne = new TestDapp(driver);
         await testDappOne.openTestDappPage({ url: DAPP_URL });
         await testDappOne.checkPageIsLoaded();
-        await testDappOne.connectAccount({});
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await connectAccountToTestDapp(driver);
 
         // Open and connect to Dapp Two
         const testDappTwo = new TestDapp(driver);
         await testDappTwo.openTestDappPage({ url: DAPP_ONE_URL });
         await testDappTwo.checkPageIsLoaded();
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         // Switch Dapp Two to Localhost 8546
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -94,6 +92,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await testDappOne.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -103,7 +104,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await transactionConfirmation.clickFooterConfirmButton();

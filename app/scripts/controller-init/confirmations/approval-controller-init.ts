@@ -1,5 +1,6 @@
 import { ApprovalController } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { ControllerInitFunction } from '../types';
 import { ApprovalControllerMessenger } from '../messengers';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
@@ -30,6 +31,9 @@ export const ApprovalControllerInit: ControllerInitFunction<
       // Exclude Smart TX Status Page from rate limiting to allow sequential
       // transactions.
       SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+
+      // Allow one flavor of snap_dialog to be queued.
+      DIALOG_APPROVAL_TYPES.default,
     ],
   });
 

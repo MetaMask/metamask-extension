@@ -5,11 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import {
-  PermissionTypesWithCustom,
-  Signer,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -31,10 +27,7 @@ export type RevokeGatorPermissionsMultiChainResults = Record<
   Hex,
   {
     revoked: TransactionMeta[];
-    skipped: StoredGatorPermissionSanitized<
-      Signer,
-      PermissionTypesWithCustom
-    >[];
+    skipped: PermissionInfoWithMetadata[];
     errors: Error[];
   }
 >;
@@ -65,10 +58,7 @@ export function useRevokeGatorPermissionsMultiChain({
    */
   const revokeGatorPermissionsBatchMultiChain = useCallback(
     async (
-      permissionsByChain: Record<
-        Hex,
-        StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[]
-      >,
+      permissionsByChain: Record<Hex, PermissionInfoWithMetadata[]>,
     ): Promise<RevokeGatorPermissionsMultiChainResults> => {
       const results: RevokeGatorPermissionsMultiChainResults = {};
       const allTransactionIds: string[] = [];
@@ -108,7 +98,7 @@ export function useRevokeGatorPermissionsMultiChain({
             const { permissionResponse } = permission;
             const internalAccount = getInternalAccountByAddress(
               store.getState(),
-              permissionResponse.address as Hex,
+              permissionResponse.from as Hex,
             );
 
             if (!internalAccount) {
@@ -125,7 +115,7 @@ export function useRevokeGatorPermissionsMultiChain({
 
             // Check if delegation is already disabled on-chain
             const isDisabled = await checkDelegationDisabled(
-              permissionResponse.signerMeta.delegationManager,
+              permissionResponse.delegationManager,
               delegationHash,
               networkClientId,
             );
@@ -147,7 +137,7 @@ export function useRevokeGatorPermissionsMultiChain({
             const transactionMeta = await addTransaction(
               {
                 from: internalAccount.address as Hex,
-                to: permissionResponse.signerMeta.delegationManager,
+                to: permissionResponse.delegationManager,
                 data: encodedCallData,
                 value: '0x0',
               },

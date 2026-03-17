@@ -5,12 +5,14 @@ import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { createDappTransaction } from '../../page-objects/flows/transaction';
+import {
+  createDappTransaction,
+  createInternalTransaction,
+} from '../../page-objects/flows/transaction';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import { mockSmartTransactionsRemoteFlags } from './remote-flags';
@@ -24,9 +26,11 @@ async function withFixturesForSmartTransactions(
   {
     title,
     testSpecificMock,
+    ignoredConsoleErrors,
   }: {
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
+    ignoredConsoleErrors?: string[];
   },
   runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
@@ -51,6 +55,7 @@ async function withFixturesForSmartTransactions(
         await mockSmartTransactionsRemoteFlags(mockServer);
         await testSpecificMock(mockServer);
       },
+      ignoredConsoleErrors,
     },
     async ({ driver }) => {
       await loginWithBalanceValidation(driver, undefined, undefined, '20 ETH');
@@ -75,31 +80,30 @@ describe('Smart Transactions', function () {
           await mockChooseGasFeeTokenRequests(mockServer);
           await mockSentinelNetworks(mockServer);
         },
+        ignoredConsoleErrors: [
+          // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
+          'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
+        ],
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
         await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
-        await homePage.checkIfSendButtonIsClickable();
-        await homePage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
-        const sendPage = new SendTokenPage(driver);
-        await sendPage.checkPageIsLoaded();
-        await sendPage.selectRecipientAccount('Account 1');
-        await sendPage.fillAmount('.01');
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await createInternalTransaction({
+          driver,
+          chainId: '0x1',
+          symbol: 'ETH',
+          amount: '0.01',
+        });
 
-        await sendPage.clickContinueButton();
-        await sendPage.selectTokenFee('USDC');
+        await transactionConfirmation.selectTokenFee('USDC');
         await driver.delay(1000);
-        await sendPage.clickConfirmButton();
+        await transactionConfirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
-        await activityList.checkTxAction({
-          action: 'Sent',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );

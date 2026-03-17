@@ -16,7 +16,8 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import {
   getAllPermittedAccountsForSelectedTab,
   getAllPermittedChainsForSelectedTab,
@@ -84,7 +85,7 @@ export const ReviewPermissions = () => {
       setShowNetworkToast(showPermittedNetworkToastOpen);
       dispatch(hidePermittedNetworkToast());
     }
-  }, [showPermittedNetworkToastOpen]);
+  }, [showPermittedNetworkToastOpen, dispatch]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
@@ -181,8 +182,7 @@ export const ReviewPermissions = () => {
         chain: { namespace },
       } = parseCaipAccountId(caipAccountId);
       if (namespace === KnownCaipNamespace.Eip155) {
-        // this is very hacky, but it works for now
-        return `eip155:0:${address}` as CaipAccountId;
+        return toEvmCaipAccountId(address);
       }
       return caipAccountId;
     }),

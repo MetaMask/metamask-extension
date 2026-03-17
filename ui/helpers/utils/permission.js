@@ -390,6 +390,19 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     id: 'ethereum-provider-access',
     message: t('ethereumProviderAccess', [getSnapNameComponent(subjectName)]),
   }),
+  [EndowmentPermissions['endowment:multichain-provider']]: ({
+    t,
+    subjectName,
+  }) => ({
+    label: t('permission_multichainProvider'),
+    description: t('permission_multichainProviderDescription', [
+      getSnapNameComponent(subjectName),
+    ]),
+    leftIcon: IconName.Connect,
+    weight: PermissionWeight.endowment_multichainProvider,
+    id: 'multichain-provider-access',
+    message: t('multichainProviderAccess', [getSnapNameComponent(subjectName)]),
+  }),
   [EndowmentPermissions['endowment:rpc']]: ({
     t,
     permissionValue,
@@ -509,7 +522,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Home,
     weight: PermissionWeight.endowment_pageHome,
   }),
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t, subjectName }) => ({
     label: t('permission_manageAccounts'),
     description: t('permission_manageAccountsDescription', [
@@ -528,7 +540,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: PermissionWeight.endowment_keyring,
   }),
-  ///: END:ONLY_INCLUDE_IF
   [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
     label: t('permission_nameLookup'),
     description: t('permission_nameLookupDescription'),

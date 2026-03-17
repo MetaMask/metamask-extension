@@ -42,9 +42,7 @@ describe('NetworkListItem', () => {
       <NetworkListItem {...DEFAULT_PROPS} selected />,
     );
     expect(
-      container.querySelector(
-        '.multichain-network-list-item__selected-indicator',
-      ),
+      container.querySelector('.multichain-network-list-item--selected'),
     ).toBeInTheDocument();
   });
 
@@ -86,6 +84,27 @@ describe('NetworkListItem', () => {
     fireEvent.click(getByTestId('network-list-item-options-delete'));
     expect(onDeleteClick).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledTimes(0);
+  });
+
+  it('toggles menu open and closed when clicking the menu button', () => {
+    const onDeleteClick = jest.fn();
+    const { getByTestId, queryByTestId } = render(
+      <NetworkListItem {...DEFAULT_PROPS} onDeleteClick={onDeleteClick} />,
+    );
+
+    const menuButton = getByTestId('network-list-item-options-button-0x1');
+
+    // First click should open the menu
+    fireEvent.click(menuButton);
+    expect(
+      queryByTestId('network-list-item-options-delete'),
+    ).toBeInTheDocument();
+
+    // Second click should close the menu
+    fireEvent.click(menuButton);
+    expect(
+      queryByTestId('network-list-item-options-delete'),
+    ).not.toBeInTheDocument();
   });
 });
 

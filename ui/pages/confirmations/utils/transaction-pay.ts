@@ -10,15 +10,24 @@ import type {
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import { Asset, AssetStandard } from '../types/send';
-import { TransactionPayAsset } from '../hooks/pay/types';
 
 const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
 
 export function hasTransactionType(
   transactionMeta: TransactionMeta | undefined,
   types: TransactionType[],
-): boolean {
-  return types.includes(transactionMeta?.type as TransactionType);
+) {
+  const { nestedTransactions, type } = transactionMeta ?? {};
+
+  if (types.includes(type as TransactionType)) {
+    return true;
+  }
+
+  return (
+    nestedTransactions?.some((tx) =>
+      types.includes(tx.type as TransactionType),
+    ) ?? false
+  );
 }
 
 export function getTokenTransferData(
@@ -78,11 +87,12 @@ export function getAvailableTokens({
   payToken?: TransactionPaymentToken;
   requiredTokens?: TransactionPayRequiredToken[];
   tokens: Asset[];
-}): TransactionPayAsset[] {
+}): Asset[] {
   return tokens
     .filter((token) => {
       if (
-        token.standard !== AssetStandard.ERC20 ||
+        (token.standard !== AssetStandard.ERC20 &&
+          token.standard !== AssetStandard.Native) ||
         !token.accountType?.includes('eip155')
       ) {
         return false;

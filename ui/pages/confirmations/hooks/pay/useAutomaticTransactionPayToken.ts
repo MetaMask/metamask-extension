@@ -2,10 +2,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../selectors';
+import { Asset } from '../../types/send';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import type { TransactionPayAsset, SetPayTokenRequest } from './types';
+import type { SetPayTokenRequest } from './types';
 
 export function useAutomaticTransactionPayToken({
   disable = false,
@@ -77,7 +78,7 @@ function getBestToken({
   isHardwareWallet: boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
-  tokens: TransactionPayAsset[];
+  tokens: Asset[];
 }): { address: Hex; chainId: Hex } | undefined {
   const targetTokenFallback = targetToken
     ? {

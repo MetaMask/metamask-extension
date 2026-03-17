@@ -1,46 +1,89 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
+  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  ButtonBase,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import {
-  getDisplayName,
-  formatOrderType,
-  formatStatus,
-  getStatusColor,
-} from '../utils';
+import { formatOrderType, getDisplayName } from '../utils';
 import type { Order } from '../types';
+import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type OrderCardProps = {
   order: Order;
+  onClick?: (order: Order) => void;
+  variant?: 'default' | 'muted';
 };
 
 /**
  * OrderCard component displays individual order information
- * Two rows: symbol/type/side + size on left, price + status on right
+ * Two rows: symbol/type/side + size on left, USD value + limit price on right
  *
  * @param options0 - Component props
  * @param options0.order - The order data to display
+ * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
+ * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
  */
-export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+export const OrderCard: React.FC<OrderCardProps> = ({
+  order,
+  onClick,
+  variant = 'default',
+}) => {
+  const navigate = useNavigate();
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
 
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(order);
+    } else {
+      // TODO: Add Metrics tracking
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(order.symbol)}`,
+      );
+    }
+  }, [navigate, order, onClick]);
+
+  // Calculate order value in USD (size * price), formatted like position values
+  const orderValueUsd = useMemo(() => {
+    const size = parseFloat(order.size) || 0;
+    const price = parseFloat(order.price) || 0;
+    if (size > 0 && price > 0) {
+      return formatCurrencyWithMinThreshold(size * price, 'USD');
+    }
+    return null;
+  }, [order.size, order.price, formatCurrencyWithMinThreshold]);
+
+  const baseStyles = 'cursor-pointer pt-2 pb-2 px-4 h-[62px]';
+  const variantStyles =
+    variant === 'muted'
+      ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+      : 'bg-default hover:bg-hover active:bg-pressed';
+
   return (
-    <Box
-      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={3}
+    <ButtonBase
+      className={twMerge(
+        // Reset ButtonBase defaults for card layout
+        'justify-start rounded-none min-w-0',
+        // Card styles (matches tokens tab: 62px height, 8px v-padding, 16px h-padding, 16px gap)
+        'gap-4 text-left',
+        baseStyles,
+        variantStyles,
+      )}
+      isFullWidth
+      onClick={handleClick}
       data-testid={`order-card-${order.orderId}`}
     >
       {/* Token Logo */}
@@ -64,8 +107,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         >
           <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {formatOrderType(order.orderType)}{' '}
-            {isBuy ? t('perpsBuy') : t('perpsSell')}
+            {isBuy ? t('perpsLong') : t('perpsShort')}
           </Text>
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
@@ -73,7 +115,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         </Text>
       </Box>
 
-      {/* Right side: Price and status */}
+      {/* Right side: USD value + limit price */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -81,15 +123,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         gap={1}
       >
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {order.orderType === 'limit' && order.price !== '0'
-            ? `$${order.price}`
-            : t('perpsMarket')}
+          {orderValueUsd ?? t('perpsMarket')}
         </Text>
-        <Text variant={TextVariant.BodySm} color={getStatusColor(order.status)}>
-          {formatStatus(order.status)}
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {formatOrderType(order.orderType)}
         </Text>
       </Box>
-    </Box>
+    </ButtonBase>
   );
 };
 

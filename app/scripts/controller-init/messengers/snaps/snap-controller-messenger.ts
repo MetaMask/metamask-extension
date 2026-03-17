@@ -14,6 +14,8 @@ import {
   OutboundRequest,
   OutboundResponse,
   SetClientActive,
+  SnapsRegistryStateChangeEvent,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
   GetEndowments,
@@ -35,12 +37,18 @@ import {
   UpdateRequestState,
 } from '@metamask/approval-controller';
 import {
-  KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
+  KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+import {
+  StorageServiceClearAction,
+  StorageServiceGetItemAction,
+  StorageServiceRemoveItemAction,
+  StorageServiceSetItemAction,
+} from '@metamask/storage-service';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
@@ -75,14 +83,20 @@ type Actions =
   | ResolveVersion
   | CreateInterface
   | GetInterface
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | SelectedNetworkControllerGetNetworkClientIdForDomainAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | StorageServiceSetItemAction
+  | StorageServiceGetItemAction
+  | StorageServiceRemoveItemAction
+  | StorageServiceClearAction;
 
 type Events =
   | ErrorMessageEvent
   | OutboundRequest
   | OutboundResponse
-  | KeyringControllerLockEvent;
+  | KeyringControllerLockEvent
+  | SnapsRegistryStateChangeEvent;
 
 export type SnapControllerMessenger = ReturnType<
   typeof getSnapControllerMessenger
@@ -114,6 +128,7 @@ export function getSnapControllerMessenger(
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
+      'SnapsRegistry:stateChange',
     ],
     actions: [
       'PermissionController:getEndowments',
@@ -143,13 +158,18 @@ export function getSnapControllerMessenger(
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'SnapInterfaceController:setInterfaceDisplayed',
+      'StorageService:setItem',
+      'StorageService:getItem',
+      'StorageService:removeItem',
+      'StorageService:clear',
     ],
   });
   return controllerMessenger;
 }
 
 type InitActions =
-  | KeyringControllerGetKeyringsByTypeAction
+  | KeyringControllerWithKeyringAction
   | PreferencesControllerGetStateAction
   | MetaMetricsControllerTrackEventAction
   | SetClientActive
@@ -186,7 +206,7 @@ export function getSnapControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'KeyringController:getKeyringsByType',
+      'KeyringController:withKeyring',
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',

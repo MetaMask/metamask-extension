@@ -1,8 +1,7 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AboutPage from '../../page-objects/pages/settings/about-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import ContactsSettings from '../../page-objects/pages/settings/contacts-settings';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -14,7 +13,6 @@ describe('Settings Search', function () {
   const settingsSearch = {
     general: 'Show native token as main balance',
     advanced: 'State logs',
-    contacts: 'Contacts',
     security: 'Reveal Secret',
     experimental: 'Snaps',
     about: 'Terms of Use',
@@ -23,7 +21,7 @@ describe('Settings Search', function () {
   it('should find element inside the General tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -44,7 +42,7 @@ describe('Settings Search', function () {
   it('should find element inside the Advanced tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -62,31 +60,10 @@ describe('Settings Search', function () {
     );
   });
 
-  it('should find element inside the Contacts tab', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.fillSearchSettingsInput(settingsSearch.contacts);
-
-        // Check if element redirects to the correct page
-        await settingsPage.goToSearchResultPage('Contacts');
-        await new ContactsSettings(driver).checkPageIsLoaded();
-      },
-    );
-  });
-
   it('should find element inside the "Security & privacy" tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -107,7 +84,7 @@ describe('Settings Search', function () {
   it('should find element inside the Experimental tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -128,7 +105,7 @@ describe('Settings Search', function () {
   it('should find element inside the About tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -149,7 +126,7 @@ describe('Settings Search', function () {
   it('should display "No matching results found" for a non-existing element', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

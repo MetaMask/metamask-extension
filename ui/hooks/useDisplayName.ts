@@ -6,12 +6,9 @@ import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
-import {
-  getIsMultichainAccountsState2Enabled,
-  selectERC20TokensByChain,
-} from '../selectors';
+import { selectERC20TokensByChain } from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
@@ -21,7 +18,6 @@ import {
   getAccountTree,
 } from '../selectors/multichain-accounts/account-tree';
 import { useNames } from './useName';
-import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
 
 export type UseDisplayNameRequest = {
@@ -54,7 +50,6 @@ export function useDisplayNames(
   );
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
-  const nfts = useNFTs(requests);
   const ens = useDomainResolutions(requests);
   const accountGroupEntries = useAccountGroupNames(requests, nameEntries);
 
@@ -64,7 +59,6 @@ export function useDisplayNames(
     const trustSignal = trustSignals[index];
     const erc20Token = erc20Tokens[index];
     const watchedNftName = watchedNFTNames[index];
-    const nft = nfts[index];
     const ensName = ens[index];
     const { accountGroupName, walletName } = accountGroupEntries[index];
     const subtitle = walletName;
@@ -79,7 +73,6 @@ export function useDisplayNames(
       firstPartyContractName ||
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      nft?.name ||
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       erc20Token?.name ||
@@ -93,7 +86,7 @@ export function useDisplayNames(
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const image = nft?.image || erc20Token?.image;
+    const image = erc20Token?.image;
 
     const trustSignalIcon = getTrustSignalIcon(displayState);
     const trustSignalLabel = trustSignal?.label;
@@ -165,42 +158,6 @@ function useWatchedNFTNames(
 
     return watchedNftNamesByAddress?.[contractAddress]?.name;
   });
-}
-
-function useNFTs(
-  nameRequests: UseDisplayNameRequest[],
-): ({ name?: string; image?: string } | undefined)[] {
-  const requests = nameRequests
-    .filter(({ type }) => type === NameType.ETHEREUM_ADDRESS)
-    .map(({ value, variation }) => ({
-      chainId: variation,
-      contractAddress: value,
-    }));
-
-  const nftCollectionsByAddressByChain = useNftCollectionsMetadata(requests);
-
-  return nameRequests.map(
-    ({ type, value: contractAddress, variation: chainId }) => {
-      if (type !== NameType.ETHEREUM_ADDRESS) {
-        return undefined;
-      }
-
-      const nftCollectionProperties =
-        nftCollectionsByAddressByChain[chainId]?.[
-          contractAddress.toLowerCase()
-        ];
-
-      const isSpam = nftCollectionProperties?.isSpam !== false;
-
-      if (!nftCollectionProperties || isSpam) {
-        return undefined;
-      }
-
-      const { name, image } = nftCollectionProperties;
-
-      return { name, image };
-    },
-  );
 }
 
 function useDomainResolutions(nameRequests: UseDisplayNameRequest[]) {
@@ -299,10 +256,6 @@ function useAccountGroupNames(
   requests: UseAccountGroupNamesRequest[],
   nameEntries: ReturnType<typeof useNames>,
 ): UseAccountGroupNamesResponse[] {
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree ?? {};
   const haveMoreThanOneWallet = useMemo(
@@ -350,7 +303,6 @@ function useAccountGroupNames(
 
       if (
         type !== NameType.ETHEREUM_ADDRESS ||
-        !isMultichainAccountsState2Enabled ||
         nameEntry?.origin === NameOrigin.API
       ) {
         return { accountGroupName: null, walletName: null };
@@ -361,11 +313,5 @@ function useAccountGroupNames(
         walletName: haveMoreThanOneWallet ? names.walletName : null,
       };
     });
-  }, [
-    requests,
-    namesByAddress,
-    isMultichainAccountsState2Enabled,
-    nameEntries,
-    haveMoreThanOneWallet,
-  ]);
+  }, [requests, namesByAddress, nameEntries, haveMoreThanOneWallet]);
 }

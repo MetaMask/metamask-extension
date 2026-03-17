@@ -1,5 +1,5 @@
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import DeFiTab from '../../../page-objects/pages/defi-tab';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -11,7 +11,7 @@ describe('View DeFi error state', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockDefiPositionsFailure,
       },

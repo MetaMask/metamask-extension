@@ -1,6 +1,6 @@
 import { Hex } from '@metamask/utils';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import {
   getSentinelNetworkFlags,
   buildUrl,
@@ -9,8 +9,8 @@ import {
   isSendBundleSupported,
 } from './sentinel-api';
 
-jest.mock('../../../../shared/modules/fetch-with-timeout');
-jest.mock('../../../../shared/modules/conversion.utils');
+jest.mock('../../../../shared/lib/fetch-with-timeout');
+jest.mock('../../../../shared/lib/conversion.utils');
 
 const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
   jest.fn();

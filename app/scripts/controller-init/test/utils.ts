@@ -17,6 +17,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
 > {
   return {
     currentMigrationVersion: 0,
+    ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     // @ts-expect-error: Partial mock.
     extension: {},
     platform: new ExtensionPlatform(),
@@ -29,7 +30,6 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     getUIState: jest.fn(),
     offscreenPromise: Promise.resolve(),
     persistedState: {},
-    removeAllConnections: jest.fn(),
     setupUntrustedCommunicationEip1193: jest.fn(),
     setLocked: jest.fn(),
     showNotification: jest.fn(),

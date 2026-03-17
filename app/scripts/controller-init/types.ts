@@ -86,6 +86,11 @@ export type ControllerInitRequest<
   encryptor: Encryptor;
 
   /**
+   * Returns a promise that resolves when onboarding has been completed.
+   */
+  ensureOnboardingComplete: () => Promise<void>;
+
+  /**
    * The extension browser API.
    */
   extension: Browser;
@@ -171,14 +176,6 @@ export type ControllerInitRequest<
   removeAccount(address: string): Promise<string>;
 
   /**
-   * Close all connections for the given origin, and removes the references
-   * to them. Ignores unknown origins.
-   *
-   * @param origin - The origin for which to remove all connections.
-   */
-  removeAllConnections(origin: string): void;
-
-  /**
    * Create a multiplexed stream for connecting to an untrusted context like a
    * like a website, Snap, or other extension.
    *
@@ -189,6 +186,22 @@ export type ControllerInitRequest<
    * @param options.subjectType - The type of the subject of the stream.
    */
   setupUntrustedCommunicationEip1193(options: {
+    connectionStream: Duplex;
+    sender: Sender;
+    subjectType: SubjectType;
+  }): void;
+
+  /**
+   * Create a multiplexed CAIP-25 stream for connecting to an untrusted context like a
+   * like a website, Snap, or other extension.
+   *
+   * @param options - The options for creating the stream.
+   * @param options.connectionStream - The stream to connect to the untrusted
+   * context.
+   * @param options.sender - The sender of the stream.
+   * @param options.subjectType - The type of the subject of the stream.
+   */
+  setupUntrustedCommunicationCaip(options: {
     connectionStream: Duplex;
     sender: Sender;
     subjectType: SubjectType;

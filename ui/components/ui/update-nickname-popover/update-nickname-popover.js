@@ -1,6 +1,11 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import {
+  AvatarAccountSize,
+  AvatarToken,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 
 import Popover from '../popover';
 import Button from '../button';
@@ -8,8 +13,8 @@ import TextField from '../text-field';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 export default function UpdateNicknamePopover({
   address,
@@ -47,6 +52,7 @@ export default function UpdateNicknamePopover({
   };
 
   const tokenList = useSelector(getTokenList);
+  const iconUrl = tokenList[address.toLowerCase()]?.iconUrl;
 
   return (
     <Popover
@@ -74,12 +80,20 @@ export default function UpdateNicknamePopover({
       }
     >
       <div className="update-nickname__content">
-        <Identicon
-          className="update-nickname__content__indenticon"
-          address={address}
-          diameter={36}
-          image={tokenList[address.toLowerCase()]?.iconUrl}
-        />
+        {iconUrl ? (
+          <AvatarToken
+            className="update-nickname__content__indenticon"
+            src={iconUrl}
+            name={nicknameInput || address}
+            size={AvatarTokenSize.Lg}
+          />
+        ) : (
+          <PreferredAvatar
+            className="update-nickname__content__indenticon"
+            address={address}
+            size={AvatarAccountSize.Lg}
+          />
+        )}
         <label className="update-nickname__content__label--capitalized">
           {t('address')}
         </label>

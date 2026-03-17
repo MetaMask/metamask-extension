@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipAssetType } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
@@ -59,7 +59,9 @@ export const AssetMarketDetails = ({
   const nonEvmExchangeRate =
     nonEvmConversionRates?.[address as CaipAssetType]?.rate || 0;
 
-  const tokenExchangeRate = isEvm ? evmTokenExchangeRate : nonEvmExchangeRate;
+  const tokenExchangeRate = Number(
+    isEvm ? evmTokenExchangeRate : nonEvmExchangeRate,
+  );
 
   const conversionRateForNativeToken = getConversionRatesForNativeAsset({
     conversionRates: nonEvmConversionRates,
@@ -72,17 +74,17 @@ export const AssetMarketDetails = ({
       : nonEvmConversionRates?.[address as CaipAssetType]?.marketData;
 
   const tokenMarketDetails = isEvm
-    ? evmMarketData[chainId]?.[address]
+    ? evmMarketData[chainId]?.[address as Hex]
     : nonEvmMarketData;
 
   const shouldDisplayMarketData =
-    conversionRate > 0 &&
+    Number(conversionRate) > 0 &&
     tokenMarketDetails &&
-    (tokenMarketDetails.marketCap > 0 ||
-      tokenMarketDetails.totalVolume > 0 ||
-      tokenMarketDetails.circulatingSupply > 0 ||
-      tokenMarketDetails.allTimeHigh > 0 ||
-      tokenMarketDetails.allTimeLow > 0);
+    (Number(tokenMarketDetails.marketCap) > 0 ||
+      Number(tokenMarketDetails.totalVolume) > 0 ||
+      Number(tokenMarketDetails.circulatingSupply) > 0 ||
+      Number(tokenMarketDetails.allTimeHigh) > 0 ||
+      Number(tokenMarketDetails.allTimeLow) > 0);
 
   if (!shouldDisplayMarketData) {
     return null;

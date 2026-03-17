@@ -9,7 +9,6 @@ import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
-import { LedgerInfo } from '../components/confirm/ledger-info';
 import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
@@ -17,7 +16,6 @@ import { Title } from '../components/confirm/title';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
 import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
-import { Splash } from '../components/confirm/splash';
 import { DappSwapContextProvider } from '../context/dapp-swap';
 import {
   GasFeeModalContextProvider,
@@ -49,14 +47,12 @@ const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
                   <SmartTransactionsBannerAlert marginType="noTop" />
                   <ScrollToBottom>
                     <BlockaidLoadingIndicator />
-                    <LedgerInfo />
                     <Title />
                     <Info />
                     <PluggableSection />
                   </ScrollToBottom>
                   <GasFeeTokenToast />
                   <Footer />
-                  <Splash />
                 </Page>
                 <GasFeeModalWrapper />
               </>

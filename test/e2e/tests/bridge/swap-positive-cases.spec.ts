@@ -19,7 +19,12 @@ describe('Swap tests', function (this: Suite) {
         ),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$225,730.11',
+        );
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -40,10 +45,15 @@ describe('Swap tests', function (this: Suite) {
           expectedDestAmount: '3,839',
         });
 
-        const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
-          (e) => e?.event?.includes('Unified SwapBridge'),
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        const unifiedSwapBridgeEvents = events.filter((e) =>
+          e?.event?.includes('Unified SwapBridge'),
         );
-        const requestedToCompletedEvents = events.slice(6);
+        const transactionFinalizedEvents = events.filter(
+          (e) => e?.event === 'Transaction Finalized',
+        );
+
+        const requestedToCompletedEvents = unifiedSwapBridgeEvents.slice(6);
         const expectedEvents = [
           'Unified SwapBridge Quotes Requested',
           'Unified SwapBridge Quotes Received',
@@ -70,6 +80,16 @@ describe('Swap tests', function (this: Suite) {
         //   quotesReceivedEvent.properties.usd_quoted_gas === 34.95660437600472,
         //   `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.usd_quoted_gas}`,
         // );
+
+        assert.ok(
+          transactionFinalizedEvents.length === 1,
+          `Transaction Finalized event validation failed. Actual value: ${transactionFinalizedEvents.length}`,
+        );
+        assert.ok(
+          transactionFinalizedEvents[0].properties.transaction_hash !==
+            undefined,
+          `Transaction Finalized transaction_hash validation failed. Actual value: ${transactionFinalizedEvents[0].properties.transaction_hash}`,
+        );
       },
     );
   });
@@ -83,7 +103,12 @@ describe('Swap tests', function (this: Suite) {
         true,
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$225,730.11',
+        );
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

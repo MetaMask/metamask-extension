@@ -6,9 +6,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMultichainRouterMessenger,
-  ///: END:ONLY_INCLUDE_IF
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -56,6 +54,9 @@ import {
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
+  getAssetsControllerMessenger,
+  getAssetsControllerInitMessenger,
+  getClientControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -113,6 +114,10 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
+import {
+  getStaticAssetsControllerInitMessenger,
+  getStaticAssetsControllerMessenger,
+} from './static-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
   getCurrencyRateControllerInitMessenger,
@@ -144,10 +149,6 @@ import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
-import {
-  getSwapsControllerInitMessenger,
-  getSwapsControllerMessenger,
-} from './swaps-controller-messenger';
 import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
@@ -360,14 +361,6 @@ export type {
 } from './rewards-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export type {
-  SwapsControllerMessenger,
-  SwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export {
-  getSwapsControllerMessenger,
-  getSwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
@@ -375,6 +368,14 @@ export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
+export type {
+  StaticAssetsControllerMessenger,
+  StaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
+export {
+  getStaticAssetsControllerMessenger,
+  getStaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
 export type {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
@@ -452,6 +453,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
   },
+  AssetsController: {
+    getMessenger: getAssetsControllerMessenger,
+    getInitMessenger: getAssetsControllerInitMessenger,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
@@ -474,6 +479,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ClaimsService: {
     getMessenger: getClaimsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  ClientController: {
+    getMessenger: getClientControllerMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -572,12 +581,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   MultichainRouter: {
     getMessenger: getMultichainRouterMessenger,
     getInitMessenger: noop,
   },
-  ///: END:ONLY_INCLUDE_IF
   NameController: {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
@@ -666,6 +673,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
   },
+  StaticAssetsController: {
+    getMessenger: getStaticAssetsControllerMessenger,
+    getInitMessenger: getStaticAssetsControllerInitMessenger,
+  },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,
     getInitMessenger: noop,
@@ -685,10 +696,6 @@ export const CONTROLLER_MESSENGERS = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
-  },
-  SwapsController: {
-    getMessenger: getSwapsControllerMessenger,
-    getInitMessenger: getSwapsControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

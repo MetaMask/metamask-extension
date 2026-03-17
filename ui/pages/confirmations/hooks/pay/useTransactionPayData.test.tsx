@@ -13,6 +13,7 @@ import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayIsMaxAmount,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -42,6 +43,7 @@ const STATE_MOCK = {
     transactionData: {
       [TRANSACTION_ID_MOCK]: {
         isLoading: true,
+        isMaxAmount: true,
         quotes: [QUOTE_MOCK],
         sourceAmounts: [SOURCE_AMOUNT_MOCK],
         tokens: [REQUIRED_TOKEN_MOCK],
@@ -112,6 +114,15 @@ describe('useTransactionPayData', () => {
         wrapper: createWrapper(),
       });
       expect(result.current).toStrictEqual(TOTALS_MOCK);
+    });
+  });
+
+  describe('useTransactionPayIsMaxAmount', () => {
+    it('returns isMaxAmount state', () => {
+      const { result } = renderHook(() => useTransactionPayIsMaxAmount(), {
+        wrapper: createWrapper(),
+      });
+      expect(result.current).toBe(true);
     });
   });
 });

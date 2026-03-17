@@ -2,14 +2,14 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { CaipChainId, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
-import { sumHexes } from '../../../../shared/modules/conversion.utils';
+import { sumHexes } from '../../../../shared/lib/conversion.utils';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getNativeTokenCachedBalanceByChainIdSelector,
   selectTransactionFeeById,
 } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
-import { isBalanceSufficient } from '../send-legacy/send.utils';
+import { isBalanceSufficient } from '../send-utils/send.utils';
 
 const ZERO_HEX_FALLBACK = '0x0';
 

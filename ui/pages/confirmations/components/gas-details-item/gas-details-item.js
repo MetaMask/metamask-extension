@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import classNames from 'clsx';
 
 import { useSelector } from 'react-redux';
 import {
@@ -22,11 +22,10 @@ import {
   getTxData,
   transactionFeeSelector,
 } from '../../../../selectors';
-import { getCurrentDraftTransaction } from '../../../../ducks/send';
 import {
   hexWEIToDecGWEI,
   sumHexes,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -48,7 +47,6 @@ const GasDetailsItem = ({
   const txData = useSelector(getTxData);
   const { layer1GasFee } = txData;
 
-  const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionData = useDraftTransactionWithTxParams();
 
   const {
@@ -126,31 +124,29 @@ const GasDetailsItem = ({
       data-testid={dataTestId}
       detailTitle={detailTitle()}
       detailText={
-        Object.keys(draftTransaction).length === 0 && (
-          <div
-            className="gas-details-item__currency-container"
-            style={{ width: '100%' }}
-          >
-            <LoadingHeartBeat estimateUsed={estimateUsed} />
-            <EditGasFeeIcon
-              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        <div
+          className="gas-details-item__currency-container"
+          style={{ width: '100%' }}
+        >
+          <LoadingHeartBeat estimateUsed={estimateUsed} />
+          <EditGasFeeIcon
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          />
+          {shouldShowFiat && (
+            <UserPreferencedCurrencyDisplay
+              paddingInlineStart={1}
+              suffixProps={{
+                variant: TextVariant.bodyMdBold,
+              }}
+              textProps={{
+                variant: TextVariant.bodyMdBold,
+              }}
+              type={SECONDARY}
+              value={getTransactionFeeTotal}
+              hideLabel // Label not required here as it will always display fiat value.
             />
-            {shouldShowFiat && (
-              <UserPreferencedCurrencyDisplay
-                paddingInlineStart={1}
-                suffixProps={{
-                  variant: TextVariant.bodyMdBold,
-                }}
-                textProps={{
-                  variant: TextVariant.bodyMdBold,
-                }}
-                type={SECONDARY}
-                value={getTransactionFeeTotal}
-                hideLabel // Label not required here as it will always display fiat value.
-              />
-            )}
-          </div>
-        )
+          )}
+        </div>
       }
       detailTotal={
         <div className="gas-details-item__currency-container">
@@ -221,6 +217,7 @@ const GasDetailsItem = ({
       }
       subTitle={
         <GasTiming
+          chainId={txData.chainId}
           maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
           maxFeePerGas={maxFeePerGasToRender}
         />

@@ -5,6 +5,8 @@ import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
+import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
+import { StockBadge } from '../../stock-badge/stock-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -15,17 +17,35 @@ export const TokenCellTitle = React.memo(
     const label = token.accountType
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
+    const tokenIsStock = isStockToken(token);
+
     return (
-      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
-        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
-          <AssetCellTitle title={token.title} />
-          {label && <Tag label={label} />}
-        </Box>
+      <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
+        <AssetCellTitle title={token.title} />
+        {label && <Tag label={label} />}
+        {tokenIsStock && (
+          <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
+        )}
         {token.isStakeable && (
           <StakeableLink chainId={token.chainId} symbol={token.symbol} />
         )}
       </Box>
     );
   },
-  (prevProps, nextProps) => prevProps.token.title === nextProps.token.title, // Only rerender if the title changes
+  (prevProps, nextProps) =>
+    prevProps.token.title === nextProps.token.title &&
+    prevProps.token.rwaData?.instrumentType ===
+      nextProps.token.rwaData?.instrumentType &&
+    prevProps.token.rwaData?.market?.nextOpen ===
+      nextProps.token.rwaData?.market?.nextOpen &&
+    prevProps.token.rwaData?.market?.nextClose ===
+      nextProps.token.rwaData?.market?.nextClose &&
+    prevProps.token.rwaData?.nextPause?.start ===
+      nextProps.token.rwaData?.nextPause?.start &&
+    prevProps.token.rwaData?.nextPause?.end ===
+      nextProps.token.rwaData?.nextPause?.end &&
+    prevProps.token.address === nextProps.token.address &&
+    prevProps.token.chainId === nextProps.token.chainId &&
+    prevProps.token.symbol === nextProps.token.symbol,
 );

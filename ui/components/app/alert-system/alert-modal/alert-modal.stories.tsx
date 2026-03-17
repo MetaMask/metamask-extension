@@ -93,7 +93,9 @@ export const DefaultStory: StoryFn<typeof AlertModal> = (args) => {
           onAcknowledgeClick={handleOnClose}
         />
       )}
-      <Button onClick={handleOnClick} danger={true}>Open alert modal</Button>
+      <Button onClick={handleOnClick} danger={true}>
+        Open alert modal
+      </Button>
     </Box>
   );
 };

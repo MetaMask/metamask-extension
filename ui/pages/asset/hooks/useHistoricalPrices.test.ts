@@ -8,9 +8,18 @@ import {
   useHistoricalPrices,
 } from './useHistoricalPrices';
 
-// Mock global fetch since fetchWithCache was replaced with fetch
-const mockFetch = jest.fn();
-global.fetch = mockFetch;
+// Mock the apiClient since fetch is abstracted
+const mockQueryFn = jest.fn();
+jest.mock('../../../helpers/api-client', () => ({
+  apiClient: {
+    prices: {
+      getV1HistoricalPricesQueryOptions: jest.fn(() => ({
+        queryKey: ['prices', 'v1', 'historical'],
+        queryFn: mockQueryFn,
+      })),
+    },
+  },
+}));
 
 /**
  * In these tests, we represent the price data with 1 point per day, to simplify the mocks.
@@ -123,12 +132,9 @@ describe('useHistoricalPrices', () => {
     const timeRange = 'P7D';
 
     it('returns loading true and default data initially', () => {
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ prices: [] }),
-      });
+      mockQueryFn.mockResolvedValue({ prices: [] });
 
-      const { result } = renderHookWithProvider(
+      const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         mockStateIsEvm,
       );
@@ -140,23 +146,21 @@ describe('useHistoricalPrices', () => {
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
         },
       });
+
+      unmount();
     });
 
     it('returns the historical prices when the prices are fetched successfully', async () => {
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            prices: [
-              [1, 100],
-              [2, 102],
-              [3, 102],
-              [4, 105],
-              [5, 99],
-              [6, 102],
-              [7, 100],
-            ],
-          }),
+      mockQueryFn.mockResolvedValue({
+        prices: [
+          [1, 100],
+          [2, 102],
+          [3, 102],
+          [4, 105],
+          [5, 99],
+          [6, 102],
+          [7, 100],
+        ],
       });
 
       const { result } = renderHookWithProvider(
@@ -192,7 +196,11 @@ describe('useHistoricalPrices', () => {
     });
 
     it('returns default data when the prices are not fetched successfully', async () => {
-      mockFetch.mockRejectedValue(new Error('Error'));
+      mockQueryFn.mockRejectedValue(new Error('Error'));
+
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       const { result } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
@@ -209,14 +217,13 @@ describe('useHistoricalPrices', () => {
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
         },
       });
+
+      consoleSpy.mockRestore();
     });
 
     it('returns default data when the chain does not support pricing', async () => {
       const _chainId = '0x9999';
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ prices: [] }),
-      });
+      mockQueryFn.mockResolvedValue({ prices: [] });
       // Replace mainnet with a new chain id that does not support pricing
       const mockState = cloneDeep(mockStateIsEvm) as any;
       mockState.metamask.networkConfigurationsByChainId = {

@@ -5,6 +5,7 @@ import {
   SET_SHOW_PASSWORD_CHANGE_TOAST,
   SET_SHOW_COPY_ADDRESS_TOAST,
   SET_SHOW_CLAIM_SUBMIT_TOAST,
+  SET_SHOW_INFURA_SWITCH_TOAST,
   SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
 } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -102,6 +103,13 @@ export function setShowClaimSubmitToast(
 ) {
   return {
     type: SET_SHOW_CLAIM_SUBMIT_TOAST,
+    payload: value,
+  };
+}
+
+export function setShowInfuraSwitchToast(value: boolean) {
+  return {
+    type: SET_SHOW_INFURA_SWITCH_TOAST,
     payload: value,
   };
 }

@@ -4,6 +4,7 @@ import configureStore from '../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useNestedTransactionLabels } from '../../confirm/info/hooks/useNestedTransactionLabels';
 import { NestedTransactionTag } from './nested-transaction-tag';
 
@@ -60,7 +61,9 @@ describe('NestedTransactionTag', () => {
       ],
     });
 
-    expect(getByText('Includes 2 transactions')).toBeInTheDocument();
+    expect(
+      getByText(messages.includesXTransactions.message.replace('$1', '2')),
+    ).toBeInTheDocument();
   });
 
   it('renders correct tooltip content', () => {
@@ -102,7 +105,9 @@ describe('NestedTransactionTag', () => {
         BATCH_TRANSACTION_PARAMS_MOCK,
       ],
     });
-    expect(getByText('Includes 2 transactions')).toBeInTheDocument();
+    expect(
+      getByText(messages.includesXTransactions.message.replace('$1', '2')),
+    ).toBeInTheDocument();
 
     // Unmount and render with no nested transactions (simulating switching confirmation)
     unmount();
@@ -126,7 +131,9 @@ describe('NestedTransactionTag', () => {
         BATCH_TRANSACTION_PARAMS_MOCK,
       ],
     });
-    expect(getByText('Includes 2 transactions')).toBeInTheDocument();
+    expect(
+      getByText(messages.includesXTransactions.message.replace('$1', '2')),
+    ).toBeInTheDocument();
 
     // Update mock to return 3 labels for next render
     useNestedTransactionLabelsMock.mockReturnValue([

@@ -1,12 +1,12 @@
 import { createSelector } from 'reselect';
 import { DefaultRootState } from 'react-redux';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import {
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,
 } from './transactions';
 
-export const selectUnapprovedMessages = createSelector(
+const selectUnapprovedMessages = createSelector(
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,
   (personalMsgs, typedMessages) => ({

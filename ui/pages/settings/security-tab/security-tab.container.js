@@ -34,7 +34,7 @@ import {
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
@@ -64,6 +64,7 @@ const mapStateToProps = (state) => {
 
   return {
     networkConfigurations,
+    petnamesEnabled: Boolean(metamask.petnamesEnabled),
     participateInMetaMetrics: getParticipateInMetaMetrics(state),
     dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,

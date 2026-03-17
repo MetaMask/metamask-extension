@@ -1,15 +1,14 @@
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
-const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';
+const ADDRESS_MOCK_RENDERED = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
 const CUSTOM_NAME_MOCK = 'Custom Name';
 const PROPOSED_NAME_MOCK = 'test4.lens';
 
@@ -18,7 +17,7 @@ describe('Petnames - Transactions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
@@ -31,14 +30,9 @@ describe('Petnames - Transactions', function () {
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkNameIsDisplayed(
-          ABBREVIATED_ADDRESS_MOCK,
-          false,
-        );
 
         // Test custom name.
         await confirmation.saveName({
-          value: ABBREVIATED_ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -46,11 +40,10 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkNameIsDisplayed(CUSTOM_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(CUSTOM_NAME_MOCK);
 
         // Test proposed name.
         await confirmation.saveName({
-          value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -58,7 +51,7 @@ describe('Petnames - Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkNameIsDisplayed(PROPOSED_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(PROPOSED_NAME_MOCK);
       },
     );
   });
@@ -66,7 +59,7 @@ describe('Petnames - Transactions', function () {
   it('can save petnames for addresses in wallet send transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             featureFlags: {
               sendHexData: true,
@@ -80,14 +73,10 @@ describe('Petnames - Transactions', function () {
         const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkNameIsDisplayed(
-          ABBREVIATED_ADDRESS_MOCK,
-          false,
-        );
+        await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED);
 
         // Test custom name.
         await confirmation.saveName({
-          value: ABBREVIATED_ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
 
@@ -97,11 +86,10 @@ describe('Petnames - Transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkNameIsDisplayed(CUSTOM_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(CUSTOM_NAME_MOCK);
 
         // Test proposed name.
         await confirmation.saveName({
-          value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -110,7 +98,7 @@ describe('Petnames - Transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkNameIsDisplayed(PROPOSED_NAME_MOCK, true);
+        await confirmation.checkAddressIsDisplayed(PROPOSED_NAME_MOCK);
       },
     );
   });
@@ -120,10 +108,11 @@ async function createWalletSendTransaction(
   recipientAddress: string,
   driver: Driver,
 ): Promise<void> {
-  const homePage = new HomePage(driver);
-  await homePage.startSendFlow();
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
-  await sendToPage.fillRecipient(recipientAddress);
-  await sendToPage.goToNextScreen();
+  await createInternalTransaction({
+    driver,
+    chainId: '0x539',
+    symbol: 'ETH',
+    recipientAddress,
+    amount: '1',
+  });
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { memoize } from 'lodash';
 
 import { BREAKPOINTS } from '../../../helpers/constants/design-system';

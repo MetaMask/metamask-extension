@@ -1,0 +1,608 @@
+---
+description: UI Development Guidelines for MetaMask Extension
+globs:
+  - 'ui/**/*.{tsx,jsx,ts,js}'
+alwaysApply: true
+---
+
+# MetaMask Extension React UI Development Guidelines
+
+## Core Principle
+
+Always prioritize `@metamask/design-system-react` components and Tailwind CSS patterns over custom implementations. **Never write SASS** - we are actively reducing CSS file size by eliminating SASS usage.
+
+## Component Hierarchy (STRICT ORDER)
+
+### The Rule: Check Design System First
+
+**Before writing any new component or choosing what to use, ask: "Does `@metamask/design-system-react` have this?"**
+
+1. **FIRST**: Use `@metamask/design-system-react` components
+   - **Always use for**: Box (layout), Text (typography), Button/ButtonIcon, Icon, Checkbox
+   - **Always use for**: Avatar variants (AvatarAccount, AvatarBase, AvatarFavicon, AvatarGroup, AvatarIcon, AvatarNetwork, AvatarToken)
+   - **Always use for**: Badge variants (BadgeCount, BadgeIcon, BadgeNetwork, BadgeStatus, BadgeWrapper)
+   - **ButtonBase**: Only for highly custom button patterns (prefer Button component)
+   - **Rule**: If it exists in the design system, you MUST use it
+
+2. **SECOND**: Use `ui/components/component-library` ONLY if design system lacks it
+   - **Navigation Components** Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody ,ModalFooter, Popover, PopoverHeader
+   - **Form Components**: FormTextField, TextFieldSearch, TextField, TextArea, Label, HelpText, SelectButton, SelectWrapper, SelectOption
+   - **Utility Components**: Skeleton, SensitiveText, Tag, BannerAlert,
+   - **Rule**: These are MetaMask-specific implementations not (yet) in the design system
+   - **Avoid "Base" components**: Components with "Base" in the name generally should not be used unless for custom implementations. We use the base/variant pattern for component development.
+
+3. **THIRD**: Feature-specific components
+   - **Use for**: Complex, domain-specific UI that combines multiple design system/component-library components
+   - **Examples**: `ConnectAccountsModal`, `AssetPickerModal`, `NotificationDetailAsset`
+   - **Rule**: Must be built using Box, Text, and other design system primitives - NO SASS, minimal CSS
+   - **Reuse**: Search for existing feature components before building new ones to avoid duplication
+
+4. **LAST RESORT**: Custom components with minimal CSS
+   - **Only when**: Highly specialized one-off needs with no design system equivalent AND no component-library equivalent
+   - **Requires**: Strong justification why design system primitives can't be composed
+   - **NEVER**: Write SASS files - use Tailwind classes only
+
+### Decision Tree
+
+```
+Need a component?
+  ├─ Is it Box, Text, Button, Icon, Avatar, Badge, or Checkbox?
+  │  └─ YES → Use @metamask/design-system-react [STOP]
+  │
+  ├─ Is it Modal, Banner, Popover, Input, Label, Tag, Textarea, etc?
+  │  └─ YES → Use ui/components/component-library [STOP]
+  │
+  ├─ Is it feature-specific UI (e.g., ConnectAccountsModal, AssetPicker)?
+  │  ├─ Does it already exist? (search codebase for similar components)
+  │  │  ├─ YES → Reuse existing component [STOP]
+  │  │  └─ NO → Build new component using design system primitives [STOP]
+  │  └─
+  │
+  └─ Can I compose it from Box + Text + other primitives?
+     ├─ YES → Compose from design system [STOP]
+     └─ NO → Consider if custom implementation is truly necessary
+```
+
+### Why This Hierarchy Matters
+
+- **Consistency**: Design system ensures consistent look, feel, and behavior
+- **Maintenance**: Centralized updates benefit all consumers
+- **Accessibility**: Design system components built with accessibility in mind
+- **Type Safety**: Full TypeScript support with comprehensive type definitions
+- **Performance**: Optimized components reduce bundle size
+- **No SASS**: Reduces CSS file size and build complexity
+
+## Required Imports for Extension
+
+```tsx
+// ALWAYS prefer these imports
+import {
+  Box,
+  Text,
+  Button,
+  ButtonBase,
+  ButtonIcon,
+  Icon,
+  TextVariant,
+  IconName,
+  IconColor,
+  IconSize,
+  FontWeight,
+  TextColor,
+  ButtonVariant,
+  ButtonSize,
+  // Avatar components
+  AvatarAccount,
+  AvatarBase,
+  AvatarFavicon,
+  AvatarGroup,
+  AvatarIcon,
+  AvatarNetwork,
+  AvatarToken,
+  // Badge components
+  BadgeCount,
+  BadgeIcon,
+  BadgeNetwork,
+  BadgeStatus,
+  BadgeWrapper,
+  // Box enums
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxFlexWrap,
+  BoxBackgroundColor,
+  BoxBorderColor,
+  // ... other design system components
+} from '@metamask/design-system-react';
+```
+
+## Component Documentation Access
+
+### Type Definitions & Documentation
+
+All `@metamask/design-system-react` components have comprehensive TypeScript definitions:
+
+- **Box**: `/node_modules/@metamask/design-system-react/dist/components/Box/*.d.cts`
+- **Text**: `/node_modules/@metamask/design-system-react/dist/components/Text/*.d.cts`
+- **Button**: `/node_modules/@metamask/design-system-react/dist/components/Button/*.d.cts`
+
+When unsure about component APIs:
+
+1. Read the `.d.cts` files for complete prop documentation
+2. Reference `ui/pages/design-system/design-system.stories.tsx` for usage examples
+3. Check GitHub source: https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components
+
+### Box Component Quick Reference
+
+**Box is a special cross-platform primitive component.** It's designed to share UI code between web (renders `div`) and React Native (renders `View`) with the same component API. This is why Box has utility props while other components use `className`.
+
+**Box is the ONLY component with layout and color props:**
+
+- **Spacing**: Use `gap`, `padding`, `margin` props (0-12 for 0px-48px)
+- **Flexbox**: Use `flexDirection`, `alignItems`, `justifyContent` enum props
+- **Colors (Box ONLY)**: Use `backgroundColor` and `borderColor` props with enums
+- **Borders (Box ONLY)**: Use `borderWidth` prop (0, 1, 2, 4, or 8) and `borderColor` enum
+- **Tailwind**: Use `className` prop for utilities not covered by props
+
+All other components (Button, Text, Icon, Checkbox, etc.) have their own component-specific props:
+
+- **Use component props FIRST**: `variant`, `size`, `color`, etc.
+- **Use `className` for additional utilities**: layout, spacing, positioning, etc.
+
+**Note on Base Components**: MetaMask uses a Base/Variant pattern for component development:
+
+- **Variant components** (e.g., Button, BannerAlert, ModalHeader) - Use these FIRST
+- **Base components** (e.g., ButtonBase, BannerBase, HeaderBase) - Only for custom patterns outside existing variants
+
+**When to use Base components**:
+
+- Existing variant components don't fit your design needs
+- Building a new feature-specific variant pattern
+- ⚠️ **Warning**: If you need a Base component, it may indicate a design inconsistency. Consider:
+  1. Can an existing variant component work with minor adjustments?
+  2. Should this pattern become a new variant in the design system?
+  3. Is this a one-off pattern that suggests design debt?
+
+## Styling Rules (ENFORCE STRICTLY)
+
+### ✅ ALWAYS DO:
+
+- Use `Box` component instead of `div` for layout and utility props
+- Use `Text` component with `variant` prop instead of raw text elements
+- Use component-specific props FIRST: `variant`, `size`, `color`, etc.
+- Use `Box` color props (`backgroundColor`, `borderColor`) for Box component
+- Use `className` for additional utilities: layout, spacing, positioning only when not provided by a prop
+- Use design system color tokens: `bg-default`, `text-default`, `border-default` or provided color props
+- Use Tailwind classes in tailwind.config.js from `@metamask/design-system-tailwind-preset`
+
+**Priority Order**: Component Props → Box Utility Props → className for extras
+
+### ❌ NEVER SUGGEST:
+
+- SASS files (`.scss`) - we are eliminating SASS
+- `StyleSheet.create()` or CSS-in-JS
+- Arbitrary color values like `bg-[#3B82F6]` or `text-[#000000]`
+- Inline style objects unless for truly dynamic values
+- Custom CSS files for new components
+- `backgroundColor` prop on components other than Box (use `className` instead) check component API
+- `borderColor` prop on components other than Box (use `className` instead) check component API
+
+**Note**: Using `div` with Tailwind `className` is acceptable when no design system component fits the use case.
+
+## Code Pattern Templates
+
+### Basic Container:
+
+```tsx
+const MyComponent = () => {
+  return (
+    <Box
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      padding={4}
+      className="w-full"
+    >
+      <Text variant={TextVariant.HeadingMd} color={TextColor.TextAlternative}>
+        Title
+      </Text>
+    </Box>
+  );
+};
+```
+
+### Flex Layout:
+
+```tsx
+<Box
+  flexDirection={BoxFlexDirection.Row}
+  alignItems={BoxAlignItems.Center}
+  justifyContent={BoxJustifyContent.Between}
+  gap={3}
+  padding={4}
+>
+  <Text variant={TextVariant.BodyMd}>Content</Text>
+</Box>
+```
+
+### Button Element:
+
+```tsx
+// ✅ PREFER: Use Button component with variants
+<Button // Primary variant by default
+  size={ButtonSize.Lg}
+  onClick={handleClick}
+>
+  Button Text
+</Button>
+
+<Button
+  variant={ButtonVariant.Secondary}
+  startIconName={IconName.Bank}
+  onClick={handleClick}
+>
+  With Icon
+</Button>
+
+// ✅ For highly custom buttons: Use ButtonBase
+<ButtonBase
+  size={ButtonBaseSize.Md}
+  className="h-auto rounded-lg bg-muted py-4 px-4 hover:bg-muted-hover active:bg-muted-pressed"
+  onClick={handleClick}
+>
+  <Icon name={IconName.Bank} />
+  <Text fontWeight={FontWeight.Medium}>Custom Button</Text>
+</ButtonBase>
+```
+
+### Using Avatars and Badges:
+
+```tsx
+<BadgeWrapper
+  badge={
+    <BadgeNetwork name="Ethereum" src="https://example.com/ethereum-logo.png" />
+  }
+>
+  <AvatarToken
+    name="ETH"
+    src="https://example.com/eth-logo.png"
+    size={AvatarTokenSize.Md}
+  />
+</BadgeWrapper>
+```
+
+## Box Component Best Practices
+
+### Prefer Props Over className for Box Layout and Colors
+
+✅ **DO** - Use typed props for Box component:
+
+```tsx
+<Box
+  flexDirection={BoxFlexDirection.Row}
+  alignItems={BoxAlignItems.Center}
+  justifyContent={BoxJustifyContent.Between}
+  gap={3}
+  padding={4}
+  margin={2}
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+  borderColor={BoxBorderColor.BorderMuted}
+  borderWidth={1}
+>
+```
+
+❌ **DON'T** - Use className for Box properties that have dedicated props:
+
+```tsx
+<Box className="flex flex-row items-center justify-between gap-3 p-4 m-2 bg-default border border-muted">
+```
+
+**IMPORTANT**: Only Box has utility props like `backgroundColor`, `borderColor`, and layout props. This is because Box is a special cross-platform primitive (web `div` / React Native `View`).
+
+For other components (Button, Text, Icon, Checkbox, etc.):
+
+1. **Use component props FIRST**: `variant`, `size`, `color`, `startIconName`, etc.
+2. **Use `className` for additional utilities**: layout spacing (`mb-2`), width (`w-full`), positioning, etc.
+
+**Component Base/Variant Pattern**:
+
+MetaMask follows a Base/Variant pattern across many component families:
+
+| Component Family | Variant Components (Use First)                  | Base Component (Use Sparingly) |
+| ---------------- | ----------------------------------------------- | ------------------------------ |
+| **Button**       | Button (Primary/Secondary/Tertiary), ButtonIcon | ButtonBase                     |
+| **Banner**       | BannerAlert, BannerTip                          | BannerBase                     |
+| **Header**       | (feature-specific headers)                      | HeaderBase                     |
+
+**Always prefer variant components.** Only use base components when:
+
+1. No existing variant fits your use case
+2. You're building a new reusable pattern
+3. ⚠️ You've confirmed this isn't a design inconsistency
+
+### When to Use className on Box
+
+Box doesn't have props for everything - use `className` for:
+
+- Width and height: `w-full`, `h-20`, `w-96`
+- Complex positioning: `absolute`, `relative`, `top-0`, `left-0`
+- Border radius: `rounded-lg`, `rounded-full`
+- Shadows and opacity: `shadow-lg`, `opacity-50`
+- **Interactive states**: `hover:bg-hover`, `active:bg-pressed`, `focus:ring`
+- Utilities not covered by props: `overflow-hidden`, `z-10`, `truncate`
+
+**DO NOT** use className on Box for properties that have dedicated props:
+
+- Static background colors (use `backgroundColor` prop with `BoxBackgroundColor` enum)
+- Static border colors (use `borderColor` prop with `BoxBorderColor` enum)
+- Border width (use `borderWidth` prop: 0, 1, 2, 4, or 8)
+- Padding/margin for standard spacing (use `padding`/`margin` props with 0-12)
+- Flexbox layout (use `flexDirection`, `alignItems`, `justifyContent` props)
+
+### When to Use Plain div
+
+Use `div` with `className` when:
+
+- No design system component fits the use case
+- The element is highly specific to a feature
+- You need DOM-specific props that Box doesn't support
+- It's a temporary/experimental pattern not yet in the design system
+
+**Always prefer design system components first**, but don't force Box where it doesn't make sense.
+
+### Color Tokens - Component-Specific Rules
+
+**For Box component only:**
+
+```tsx
+// ✅ Use backgroundColor and borderColor props with enums
+<Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
+<Box backgroundColor={BoxBackgroundColor.BackgroundAlternative}>
+<Box
+  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+  borderColor={BoxBorderColor.BorderMuted}
+  borderWidth={1}
+>
+
+// ✅ Interactive states use className (hover/active/focus states)
+<Box
+  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+  className="hover:bg-muted-hover active:bg-muted-pressed"
+>
+
+// ❌ DON'T use className for static Box background colors
+<Box className="bg-default">  {/* Use backgroundColor prop instead */}
+```
+
+**For Button, Text, Icon, and other components:**
+
+```tsx
+// ✅ Use Button with variant prop (preferred over ButtonBase)
+<Button
+  variant={ButtonVariant.Primary}
+  size={ButtonSize.Lg}
+  startIconName={IconName.Bank}
+>
+  Button Text
+</Button>
+
+// ✅ Use ButtonBase only for highly custom buttons
+<ButtonBase
+  size={ButtonBaseSize.Md}
+  className="bg-muted hover:bg-muted-hover active:bg-muted-pressed"
+>
+  <Icon name={IconName.Custom} />
+  <Text>Custom Button</Text>
+</ButtonBase>
+
+// ✅ Text uses variant and color props, className for layout
+<Text
+  variant={TextVariant.BodyMd}
+  color={TextColor.TextDefault}
+  className="mb-2"
+>
+
+// ✅ Icon uses name, size, and color props, className for positioning
+<Icon
+  name={IconName.Bank}
+  size={IconSize.Md}
+  color={IconColor.IconDefault}
+  className="mr-2"
+>
+
+// ❌ NEVER use arbitrary colors on any component
+<Box className="bg-[#3B82F6]">
+<Button className="bg-[#FF0000]">
+<Box style={{ backgroundColor: '#FF0000' }}>
+```
+
+## Component Conversion Guide
+
+| DON'T Use                            | USE Instead                                              |
+| ------------------------------------ | -------------------------------------------------------- |
+| `<div>` (for layout)                 | `<Box>`                                                  |
+| `<span>`, `<p>`, `<h1>`, etc.        | `<Text variant={TextVariant.BodyMd}>`                    |
+| `<button>` (styled)                  | `<Button variant={ButtonVariant.Primary}>`               |
+| SASS files (`.scss`)                 | Design system props + Tailwind `className`               |
+| `style={{ backgroundColor: 'red' }}` | Box: `backgroundColor={BoxBackgroundColor.ErrorDefault}` |
+| `style={{ display: 'flex' }}`        | Box: `flexDirection={BoxFlexDirection.Row}`              |
+| Manual padding/margin in CSS         | Box: `padding={4}` or `className="p-4"`                  |
+| Custom CSS classes in `.scss`        | Component props + Tailwind utility classes               |
+| `className="text-lg font-bold"`      | `<Text variant={TextVariant.HeadingMd}>`                 |
+
+## Legacy Code Migration Guidelines
+
+### Identifying Legacy Patterns
+
+🚫 **Anti-patterns to refactor when encountered:**
+
+- SASS files (`.scss`) - highest priority to eliminate
+- Separate `.styles.ts` or style objects
+- Raw `div` components instead of `Box`
+- Raw text elements with custom styles instead of design system `Text` with variants
+- Inline style objects for static styles
+- Custom CSS classes that could be Tailwind utilities
+
+### Migration Priority
+
+1. **High Priority**: Active components using SASS - convert to Tailwind
+2. **Medium Priority**: Frequently used shared components with style objects
+3. **Low Priority**: Stable legacy components with no active development
+
+### Migration Steps
+
+1. Replace `div` → `Box` from design system
+2. Replace text elements → `Text` with appropriate `TextVariant`
+3. Convert SASS styles → Tailwind `className` props
+4. Convert arbitrary colors → design system color tokens
+5. Delete `.scss` files after migration
+6. Test thoroughly - layout can shift during migration
+
+### Example Migration
+
+**Before (SASS):**
+
+```tsx
+// component.tsx
+import './component.scss';
+
+<div className="my-container">
+  <h2 className="my-title">Title</h2>
+</div>
+
+// component.scss
+.my-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px;
+  background-color: #ffffff;
+}
+
+.my-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000;
+}
+```
+
+**After (Design System):**
+
+```tsx
+import {
+  Box,
+  Text,
+  TextVariant,
+  FontWeight,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+
+<Box
+  flexDirection={BoxFlexDirection.Row}
+  alignItems={BoxAlignItems.Center}
+  padding={4}
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+>
+  <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Medium}>
+    Title
+  </Text>
+</Box>;
+```
+
+## Error Prevention & Code Review Checklist
+
+### Before Committing Code, Verify:
+
+- [ ] No SASS files (`.scss`) created or modified
+- [ ] Design system components used when appropriate (prefer over raw elements)
+- [ ] Variant components used before base components (Button > ButtonBase, BannerAlert > BannerBase)
+- [ ] If using base component: confirmed no variant component works
+- [ ] If using base component: considered if this indicates design inconsistency
+- [ ] No raw text elements without variants (use `Text` with `TextVariant`)
+- [ ] No custom CSS files (use design system + Tailwind)
+- [ ] No arbitrary color values (use design system tokens)
+- [ ] No separate `.styles.ts` files for new components
+- [ ] Box props used for static layout and colors (not className)
+- [ ] Box static colors use `backgroundColor`/`borderColor` props with enums
+- [ ] Box interactive states (hover/active/focus) use className
+- [ ] Component-specific props used before className (variant, size, color)
+- [ ] All Box spacing uses numeric props when possible (0-12)
+
+### When You See These Patterns, IMMEDIATELY Suggest Alternatives:
+
+- Any `.scss` file → Design system components + Tailwind utilities
+- Any custom CSS → Design system props + Tailwind utilities
+- Any arbitrary color values → Design system semantic tokens
+- Static `className="bg-*"` on **Box** → `backgroundColor` prop with `BoxBackgroundColor` enum
+- Static `className="border-*"` color on **Box** → `borderColor` prop with `BoxBorderColor` enum
+- Manual flex properties in className on Box → Box component props
+- `backgroundColor` prop on ButtonBase/Text/etc → `className` (only Box has this prop)
+
+**However, these are OK:**
+
+- `div` with `className` when no design system component fits
+- `className` on Box for interactive states (`hover:`, `active:`, `focus:`)
+- `className` on Box for utilities without props (width, height, position, etc.)
+
+### AI Agent Guidelines
+
+When suggesting code changes:
+
+1. ALWAYS read component type definitions first for accurate API usage
+2. ALWAYS check `ui/pages/design-system/design-system.stories.tsx` for real-world patterns
+3. ALWAYS prefer variant components over base components (Button > ButtonBase, BannerAlert > BannerBase)
+4. ALWAYS use component-specific props FIRST (variant, size, color, etc.)
+5. ALWAYS use Box utility props for layout before className
+6. ALWAYS search for existing feature-specific components before building new ones
+7. FLAG potential design inconsistencies when base components are needed
+8. REJECT any suggestions that violate the hierarchy
+9. REJECT any SASS file creation or modification
+10. SUGGEST migrations when encountering legacy patterns
+11. EXPLAIN why design system approach is preferred
+
+**Remember**: Variant Components > Base Components > Component props > Box utility props > className for extras
+
+## Design System Priority
+
+Before suggesting any UI solution:
+
+1. Check if `@metamask/design-system-react` has the component
+2. Check if a variant component exists (Button, BannerAlert, ModalHeader)
+3. Use component's built-in props (variant, color, size)
+4. Add layout/spacing with Box props or `className`
+5. Add colors with semantic Tailwind tokens
+6. Only suggest base components (ButtonBase, BannerBase) if no variant fits
+7. FLAG if base component usage suggests design inconsistency
+8. Only suggest custom components if no design system option exists
+9. **NEVER** suggest SASS files
+
+## Tailwind Configuration
+
+The extension uses:
+
+- `@metamask/design-system-tailwind-preset` for design token aligned tailwind classnames
+- Custom `tailwind.config.js` that extends the preset
+
+All Tailwind colors are mapped to design tokens. Use semantic class names:
+
+- `bg-default`, `bg-alternative`, `bg-muted`
+- `text-default`, `text-alternative`, `text-muted`
+- `border-default`, `border-muted`
+- Interactive states: `hover:bg-hover`, `active:bg-pressed`
+
+## Reference Examples
+
+Always reference the patterns from:
+
+- `ui/pages/design-system/design-system.stories.tsx` for design system usage
+- `ui/components/component-library/` for component-library patterns
+- `ui/components/multichain/` for feature component examples
+
+## Enforcement
+
+- REJECT any code suggestions that create SASS files
+- REJECT raw div/span/p usage when Box/Text components exist
+- REJECT arbitrary color values not from design tokens
+- REQUIRE design system components as first choice
+- ENFORCE Tailwind-only styling approach
+- PROHIBIT new CSS/SCSS file creation

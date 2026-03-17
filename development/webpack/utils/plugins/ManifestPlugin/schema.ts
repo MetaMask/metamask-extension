@@ -1,14 +1,19 @@
 import { ExtendedJSONSchema } from 'json-schema-to-ts';
 import { Browsers } from '../../helpers';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 export const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
-  required: ['browsers', 'description', 'manifest_version', 'version', 'zip'],
+  required: [
+    'browsers',
+    'description',
+    'manifest_version',
+    'version',
+    'zip',
+    'buildType',
+  ],
   properties: {
     browsers: {
       description: 'The browsers to build for.',
@@ -36,16 +41,12 @@ export const schema = {
       type: ['string', 'null'],
       maxLength: 132,
     },
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: {
       description:
         'An integer specifying the version of the manifest file format your package requires.',
       type: 'number',
       enum: [2, 3],
     },
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     web_accessible_resources: {
       description:
         'An array of strings specifying the paths of additional web-accessible resources.',
@@ -105,6 +106,10 @@ export const schema = {
         },
       },
       additionalProperties: false,
+    },
+    buildType: {
+      description: 'The build type to create.',
+      type: 'string',
     },
   },
   additionalProperties: false,

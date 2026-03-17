@@ -3,8 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
@@ -37,8 +36,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const TEST_SEED =
+const VALID_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+
+// Uses valid BIP39 words but invalid checksum to test isValidMnemonic validation
+const INVALID_SEED =
+  'broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli';
 
 describe('ImportSrp', () => {
   const store = configureMockStore([thunk])(mockState);
@@ -47,17 +50,19 @@ describe('ImportSrp', () => {
     jest.clearAllMocks();
   });
 
-  it('render matches snapshot', () => {
+  it('renders matches snapshot', () => {
     const { asFragment } = renderWithProvider(<ImportSrp />, store);
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('render header with correct title', () => {
+  it('renders header with correct title', () => {
     const { getByText } = renderWithProvider(<ImportSrp />, store);
-    expect(getByText('Import Secret Recovery Phrase')).toBeInTheDocument();
+    expect(
+      getByText(messages.importSecretRecoveryPhrase.message),
+    ).toBeInTheDocument();
   });
 
-  it('should render import srp and disable confirm srp button', () => {
+  it('renders import srp and disable confirm srp button', () => {
     const mockStore = configureMockStore()(mockState);
     const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
 
@@ -67,7 +72,7 @@ describe('ImportSrp', () => {
     expect(confirmSrpButton).toBeDisabled();
   });
 
-  it('on correct srp is entered, import srp and navigate to default route', async () => {
+  it('imports valid SRP and navigates to default route', async () => {
     const mockStore = configureMockStore([thunk])(mockState);
     const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
 
@@ -77,7 +82,7 @@ describe('ImportSrp', () => {
     srpNote?.focus();
 
     if (srpNote) {
-      await userEvent.type(srpNote, TEST_SEED);
+      await userEvent.type(srpNote, VALID_SEED);
     }
 
     const confirmSrpButton = queryByTestId('import-srp-confirm');
@@ -91,10 +96,45 @@ describe('ImportSrp', () => {
     // Wait for async operations to complete
     await waitFor(() => {
       // Verify that importMnemonicToVault was called with the correct SRP
-      expect(importMnemonicToVault).toHaveBeenCalledWith(TEST_SEED);
+      expect(importMnemonicToVault).toHaveBeenCalledWith(VALID_SEED);
       // Verify that navigation happened after import
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(setShowNewSrpAddedToast).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('mnemonic validation', () => {
+    it('displays error and disables button when mnemonic has invalid checksum', async () => {
+      const mockStore = configureMockStore([thunk])(mockState);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <ImportSrp />,
+        mockStore,
+      );
+
+      const srpNote = queryByTestId('srp-input-import__srp-note');
+      if (srpNote) {
+        // "broccoli" is a valid BIP39 word, so it passes wordlist validation
+        // but repeating it 12 times creates an invalid checksum
+        await userEvent.type(srpNote, INVALID_SEED);
+      }
+
+      // SrpInputImport validates checksum and shows error message
+      await waitFor(() => {
+        expect(
+          getByText(messages.invalidSeedPhraseNotFound.message),
+        ).toBeInTheDocument();
+      });
+
+      const confirmSrpButton = queryByTestId('import-srp-confirm');
+
+      // Button should be disabled because SrpInputImport passes empty string
+      // when checksum is invalid
+      expect(confirmSrpButton).toBeDisabled();
+
+      // importMnemonicToVault should not be called
+      expect(importMnemonicToVault).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(setShowNewSrpAddedToast).not.toHaveBeenCalled();
     });
   });
 
@@ -121,7 +161,7 @@ describe('ImportSrp', () => {
       srpNote?.focus();
 
       if (srpNote) {
-        await userEvent.type(srpNote, TEST_SEED);
+        await userEvent.type(srpNote, VALID_SEED);
       }
 
       const confirmSrpButton = queryByTestId('import-srp-confirm');
@@ -144,14 +184,14 @@ describe('ImportSrp', () => {
       expect(setShowNewSrpAddedToast).not.toHaveBeenCalled();
     };
 
-    it('should display duplicate account error when trying to import a duplicate account', async () => {
+    it('displays duplicate account error when trying to import a duplicate account', async () => {
       await testImportError(
         'KeyringController - The account you are trying to import is a duplicate',
         messages.srpImportDuplicateAccountError.message,
       );
     });
 
-    it('should display already imported error for any other import error', async () => {
+    it('displays already imported error for any other import error', async () => {
       await testImportError(
         'Some other error',
         messages.srpAlreadyImportedError.message,

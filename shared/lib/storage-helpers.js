@@ -21,3 +21,16 @@ export async function setStorageItem(key, value) {
     console.warn(err);
   }
 }
+
+export async function removeStorageItem(key) {
+  try {
+    await localforage.removeItem(key);
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
+export async function getStorageKeysWithPrefix(prefix) {
+  const cacheKeys = await localforage.keys();
+  return cacheKeys.filter(Boolean).filter((key) => key.startsWith(prefix));
+}

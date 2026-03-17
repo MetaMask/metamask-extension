@@ -19,8 +19,8 @@ export const version = 162;
  *
  * Also removed from TokenBalancesController all balances that belong to an EVM account that has been removed.
  *
- * If the Tokens is not found or is not an object, the migration logs an error,
- * but otherwise leaves the state unchanged.
+ * If any of the required controllers (TokensController, AccountsController, TokenBalancesController)
+ * are not found, the migration leaves the state unchanged.
  *
  * @param originalVersionedData - The versioned extension state.
  * @returns The updated versioned extension state without the tokens property.
@@ -39,21 +39,11 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  if (!hasProperty(state, 'TokensController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: TokensController not found.`),
-    );
-    return state;
-  }
-
-  if (!hasProperty(state, 'AccountsController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: AccountsController not found.`),
-    );
-    return state;
-  }
-
-  if (!hasProperty(state, 'TokenBalancesController')) {
+  if (
+    !hasProperty(state, 'TokensController') ||
+    !hasProperty(state, 'AccountsController') ||
+    !hasProperty(state, 'TokenBalancesController')
+  ) {
     return state;
   }
 

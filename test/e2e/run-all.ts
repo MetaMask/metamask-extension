@@ -19,6 +19,32 @@ import {
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS: string[] = [];
 
+// This test should only be run manually or via specific workflow update-onboarding-fixture.yml
+const DIST_EXCLUDED_TESTS: string[] = ['wallet-fixture-export.spec.ts'];
+
+// These tests are excluded on RC branches
+const RC_EXCLUDED_TESTS: string[] = ['wallet-fixture-validation.spec.ts'];
+
+// These tests are excluded on the stable branch
+const STABLE_EXCLUDED_TESTS: string[] = ['wallet-fixture-validation.spec.ts'];
+
+function getBranchName(): string {
+  return (
+    process.env.BRANCH ||
+    process.env.GITHUB_HEAD_REF ||
+    process.env.GITHUB_REF_NAME ||
+    ''
+  );
+}
+
+function isReleaseCandidateBranch(): boolean {
+  return /^release\/(\d+)[.](\d+)[.](\d+)$/u.test(getBranchName());
+}
+
+function isStableBranch(): boolean {
+  return getBranchName() === 'stable';
+}
+
 const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
   const testFilenames = await fs.promises.readdir(testDir, {
     withFileTypes: true,
@@ -155,6 +181,10 @@ async function main(): Promise<void> {
             description: `run multi injected provider e2e tests`,
             type: 'boolean',
           })
+          .option('performance', {
+            description: `run performance e2e tests`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -191,6 +221,7 @@ async function main(): Promise<void> {
     updateSnapshot,
     updatePrivacySnapshot,
     multiProvider,
+    performance: runPerformanceTests,
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
@@ -201,6 +232,7 @@ async function main(): Promise<void> {
     updateSnapshot?: boolean;
     updatePrivacySnapshot?: boolean;
     multiProvider?: boolean;
+    performance?: boolean;
   };
 
   let testPaths: string[];
@@ -221,7 +253,12 @@ async function main(): Promise<void> {
     ];
   } else if (dist) {
     const testDir = path.join(__dirname, 'dist');
-    testPaths = await getTestPathsForTestDir(testDir);
+    const allDistTests = await getTestPathsForTestDir(testDir);
+    testPaths = allDistTests.filter((p) =>
+      DIST_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
+    );
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -240,6 +277,9 @@ async function main(): Promise<void> {
 
     const testDir = path.join(__dirname, 'multi-injected-provider');
     testPaths = await getTestPathsForTestDir(testDir);
+  } else if (runPerformanceTests) {
+    const testDir = path.join(__dirname, '../performance-tests');
+    testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -249,6 +289,27 @@ async function main(): Promise<void> {
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
     ];
+  }
+
+  if (isReleaseCandidateBranch()) {
+    console.log('RC branch detected — excluding tests:', RC_EXCLUDED_TESTS);
+    testPaths = testPaths.filter((p) =>
+      RC_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
+    );
+  }
+
+  if (isStableBranch()) {
+    console.log(
+      'Stable branch detected — excluding tests:',
+      STABLE_EXCLUDED_TESTS,
+    );
+    testPaths = testPaths.filter((p) =>
+      STABLE_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
+    );
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');

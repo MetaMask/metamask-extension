@@ -10,12 +10,18 @@ import configureStore from '../../../store/store';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainSiteCell } from './multichain-site-cell';
 
 jest.mock('../../../contexts/metametrics', () => {
   const { createContext } = jest.requireActual('react');
   return {
-    MetaMetricsContext: createContext(jest.fn()),
+    MetaMetricsContext: createContext({
+      trackEvent: jest.fn(),
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    }),
   };
 });
 
@@ -87,7 +93,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
 
 const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
   {
-    name: 'Ethereum',
+    name: messages.networkNameEthereum.message,
     chainId: '0x1' as Hex,
     caipChainId: 'eip155:1' as CaipChainId,
     blockExplorerUrls: ['https://etherscan.io'],
@@ -103,7 +109,7 @@ const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
     ],
   },
   {
-    name: 'Polygon',
+    name: messages.networkNamePolygon.message,
     chainId: '0x89' as Hex,
     caipChainId: 'eip155:137' as CaipChainId,
     blockExplorerUrls: ['https://polygonscan.com'],

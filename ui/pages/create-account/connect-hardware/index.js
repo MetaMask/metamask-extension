@@ -5,8 +5,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import * as actions from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,
@@ -45,6 +46,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  toHardwareWalletError,
+  HardwareWalletType,
+} from '../../../contexts/hardware-wallets';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 import { capitalizeStr } from './utils';
@@ -246,6 +251,20 @@ class ConnectHardwareForm extends Component {
       })
       .catch((e) => {
         const errorMessage = typeof e === 'string' ? e : e.message;
+
+        // Use shared Ledger error mapping (hw-wallet-sdk) when connecting to Ledger
+        if (device === HardwareDeviceNames.ledger) {
+          const hwError = toHardwareWalletError(e, HardwareWalletType.Ledger);
+
+          if (
+            hwError.code !== ErrorCode.Unknown &&
+            hwError.code !== ErrorCode.ConnectionClosed
+          ) {
+            this.setState({ error: hwError.userMessage });
+            return;
+          }
+        }
+
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
           (errorCode) => errorMessage.includes(errorCode),
         );
@@ -266,7 +285,10 @@ class ConnectHardwareForm extends Component {
           });
         } else if (ledgerErrorCode) {
           this.setState({
-            error: `${errorMessage} - ${getErrorMessage(ledgerErrorCode)}`,
+            error: `${errorMessage} - ${getErrorMessage(
+              ledgerErrorCode,
+              this.context.t,
+            )}`,
           });
         } else if (
           errorMessage

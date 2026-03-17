@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Hex } from '@metamask/utils';
 
-import { getNetworkIcon } from '../../../../../../../shared/modules/network.utils';
+import { getNetworkIcon } from '../../../../../../../shared/lib/network.utils';
 import Preloader from '../../../../../../components/ui/icon/preloader';
 import {
   AvatarNetwork,
