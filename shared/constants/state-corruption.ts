@@ -27,13 +27,16 @@ export enum VaultCorruptionType {
 /**
  * Type of critical startup error (timeout or other).
  */
-export enum CriticalErrorType {
-  BackgroundConnectionTimeout = 'background_connection_timeout',
-  BackgroundInitTimeout = 'background_init_timeout',
-  BackgroundStateSyncTimeout = 'background_state_sync_timeout',
-  GeneralStartupError = 'general_startup_error',
-  TroubleStarting = 'trouble_starting',
-  UnreachableLivenessCheck = 'unreachable_liveness_check',
-  UnreachableInitializationCheck = 'unreachable_initialization_check',
-  Other = 'other',
-}
+export const CriticalErrorType = {
+  BackgroundConnectionTimeout: 'background_connection_timeout',
+  BackgroundInitTimeout: 'background_init_timeout',
+  BackgroundStateSyncTimeout: 'background_state_sync_timeout',
+  GeneralStartupError: 'general_startup_error',
+  TroubleStarting: 'trouble_starting',
+  UnreachableLivenessCheck: 'unreachable_liveness_check',
+  UnreachableInitializationCheck: 'unreachable_initialization_check',
+  Other: 'other',
+} as const;
+
+export type CriticalErrorType =
+  (typeof CriticalErrorType)[keyof typeof CriticalErrorType];
