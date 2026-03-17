@@ -1,13 +1,18 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
 import type { Hex } from '@metamask/utils';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
 import { ELIGIBLE_TOKENS } from '../constants';
 import {
   fetchMerklRewardsForAsset,
   getClaimedAmountFromContract,
 } from '../merkl-client';
 import { getMerklRewardsEnabled } from '../selectors';
+
+const MERKL_REWARDS_STALE_TIME = 2 * 60 * 1000;
+const MERKL_REWARDS_CACHE_TIME = 5 * 60 * 1000;
 
 /**
  * Check if a token is eligible for Merkl rewards.
@@ -41,14 +46,27 @@ type UseMerklRewardsOptions = {
   showMerklBadge: boolean;
 };
 
+type MerklRewardQueryResult = {
+  hasClaimable: boolean;
+  unclaimedFiat: number | null;
+};
+
+const EMPTY_RESULT: MerklRewardQueryResult = {
+  hasClaimable: false,
+  unclaimedFiat: null,
+};
+
 type UseMerklRewardsReturn = {
+  isEligible: boolean;
   hasClaimableReward: boolean;
+  rewardAmountFiat: number | null;
   refetch: () => void;
 };
 
 /**
  * Custom hook to fetch and manage claimable Merkl rewards for an asset.
- * Handles eligibility checking and reward data fetching.
+ * Handles eligibility checking and reward data fetching via TanStack Query,
+ * which caches results across component unmount/remount cycles (e.g. tab switches).
  * Uses on-chain contract read for the claimed amount (instant update after claim),
  * falling back to API-provided claimed value if the on-chain read fails.
  *
@@ -64,8 +82,7 @@ export const useMerklRewards = ({
   showMerklBadge,
 }: UseMerklRewardsOptions): UseMerklRewardsReturn => {
   const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
-
-  const [hasClaimableReward, setHasClaimableReward] = useState(false);
+  const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -74,93 +91,82 @@ export const useMerklRewards = ({
     () =>
       showMerklBadge &&
       merklRewardsEnabled &&
+      !isGeoBlocked &&
       isEligibleForMerklRewards(chainId, tokenAddress),
-    [showMerklBadge, merklRewardsEnabled, chainId, tokenAddress],
+    [showMerklBadge, merklRewardsEnabled, isGeoBlocked, chainId, tokenAddress],
   );
 
-  const fetchClaimableRewards = useCallback(
-    async (abortController: AbortController) => {
-      if (!tokenAddress || !isEligible || !selectedAddress) {
-        setHasClaimableReward(false);
-        return;
+  const { data: queryData = EMPTY_RESULT, refetch: refetchQuery } = useQuery({
+    queryKey: ['merklRewards', selectedAddress, chainId, tokenAddress],
+    queryFn: async ({ signal }): Promise<MerklRewardQueryResult> => {
+      if (!tokenAddress || !selectedAddress) {
+        return EMPTY_RESULT;
       }
 
-      try {
-        const matchingReward = await fetchMerklRewardsForAsset(
-          tokenAddress,
-          chainId,
-          selectedAddress,
-          abortController.signal,
-        );
+      const matchingReward = await fetchMerklRewardsForAsset(
+        tokenAddress,
+        chainId,
+        selectedAddress,
+        signal,
+      );
 
-        if (abortController.signal.aborted) {
-          return;
-        }
-
-        if (!matchingReward) {
-          setHasClaimableReward(false);
-          return;
-        }
-
-        // Get claimed amount from on-chain read for instant update after claims.
-        // The API can lag behind the actual on-chain state.
-        let claimedAmount = matchingReward.claimed;
-
-        const rewardTokenAddress = matchingReward.token.address as Hex;
-        const onChainClaimed = await getClaimedAmountFromContract(
-          selectedAddress,
-          rewardTokenAddress,
-        );
-
-        if (abortController.signal.aborted) {
-          return;
-        }
-
-        if (onChainClaimed !== null) {
-          // Use on-chain value — it's always more up-to-date than the API
-          claimedAmount = onChainClaimed;
-        }
-
-        // Calculate unclaimed: total amount from Merkle tree minus what's been claimed
-        const unclaimedBaseUnits =
-          BigInt(matchingReward.amount) - BigInt(claimedAmount);
-
-        if (!abortController.signal.aborted) {
-          const oneCentInBaseUnits =
-            10n ** BigInt(matchingReward.token.decimals - 2);
-          setHasClaimableReward(unclaimedBaseUnits >= oneCentInBaseUnits);
-        }
-      } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
-          return;
-        }
-        console.error(
-          'useMerklRewards: Error fetching claimable rewards',
-          error,
-        );
+      if (!matchingReward || signal?.aborted) {
+        return EMPTY_RESULT;
       }
+
+      // Get claimed amount from on-chain read for instant update after claims.
+      // The API can lag behind the actual on-chain state.
+      let claimedAmount = matchingReward.claimed;
+
+      const rewardTokenAddress = matchingReward.token.address as Hex;
+      const onChainClaimed = await getClaimedAmountFromContract(
+        selectedAddress,
+        rewardTokenAddress,
+      );
+
+      if (signal?.aborted) {
+        return EMPTY_RESULT;
+      }
+
+      if (onChainClaimed !== null) {
+        claimedAmount = onChainClaimed;
+      }
+
+      const unclaimedBaseUnits =
+        BigInt(matchingReward.amount) - BigInt(claimedAmount);
+      const oneCentInBaseUnits =
+        10n ** BigInt(matchingReward.token.decimals - 2);
+      const hasClaimable = unclaimedBaseUnits >= oneCentInBaseUnits;
+
+      let unclaimedFiat: number | null = null;
+      if (hasClaimable && matchingReward.token.price !== null) {
+        const divisor = 10 ** matchingReward.token.decimals;
+        unclaimedFiat =
+          (Number(unclaimedBaseUnits) / divisor) * matchingReward.token.price;
+      }
+
+      return { hasClaimable, unclaimedFiat };
     },
-    [tokenAddress, chainId, selectedAddress, isEligible],
-  );
+    enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
+    staleTime: MERKL_REWARDS_STALE_TIME,
+    cacheTime: MERKL_REWARDS_CACHE_TIME,
+  });
 
-  // Calling refetch just updates a Fetch Key, which in turn triggers a use effect.
-  // This means that we can easily share request aborting logic between the initial
-  // call and later refetches
-  const [fetchKey, setFetchKey] = useState(0);
+  // When `enabled` is false TanStack Query v4 still returns the last cached
+  // `data` for this queryKey. Gate on `isEligible` so a stale `true` never
+  // leaks to callers that shouldn't show a badge.
+  const hasClaimableRewardData = isEligible ? queryData : undefined;
+
   const refetch = useCallback(() => {
-    setFetchKey((k) => k + 1);
-  }, []);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-    fetchClaimableRewards(abortController);
-    return () => {
-      abortController.abort();
-    };
-  }, [fetchClaimableRewards, fetchKey]);
+    if (isEligible) {
+      refetchQuery();
+    }
+  }, [refetchQuery, isEligible]);
 
   return {
-    hasClaimableReward,
+    isEligible,
+    hasClaimableReward: hasClaimableRewardData?.hasClaimable ?? false,
+    rewardAmountFiat: hasClaimableRewardData?.unclaimedFiat ?? null,
     refetch,
   };
 };

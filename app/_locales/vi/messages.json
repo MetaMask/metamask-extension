@@ -981,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Đã sao chép liên kết trình khám phá khối"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Đang tính toán..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Bạn sẽ cần xác nhận 2 giao dịch trên ví cứng của mình:"
   },

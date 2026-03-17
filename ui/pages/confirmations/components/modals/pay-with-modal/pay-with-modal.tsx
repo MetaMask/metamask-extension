@@ -1,6 +1,9 @@
 import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -14,7 +17,10 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
-import { useMusdConversionTokens } from '../../../../../hooks/musd';
+import {
+  useMusdConversionTokens,
+  useMusdPaymentToken,
+} from '../../../../../hooks/musd';
 import { useConfirmContext } from '../../../context/confirm';
 
 export type PayWithModalProps = {
@@ -32,6 +38,10 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
     transactionType: currentConfirmation?.type,
   });
 
+  // Use the mUSD-specific payment token handler for same-chain enforcement
+  const { onPaymentTokenChange: onMusdPaymentTokenChange } =
+    useMusdPaymentToken();
+
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
@@ -42,14 +52,28 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
-      setPayToken({
+      const tokenSelection = {
         address: token.address as Hex,
         chainId: token.chainId as Hex,
-      });
+      };
 
+      // For mUSD conversions, use the specialized handler that enforces same-chain
+      if (currentConfirmation?.type === TransactionType.musdConversion) {
+        onMusdPaymentTokenChange(tokenSelection);
+        handleClose();
+        return;
+      }
+
+      // Default behavior for other transaction types
+      setPayToken(tokenSelection);
       handleClose();
     },
-    [handleClose, setPayToken],
+    [
+      handleClose,
+      setPayToken,
+      onMusdPaymentTokenChange,
+      currentConfirmation?.type,
+    ],
   );
 
   const tokenFilter = useCallback(

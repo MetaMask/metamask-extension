@@ -168,6 +168,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
               onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
               safeChains={safeChains}
               showMerklBadge
+              showMusdConvertCta
             />
           );
         })}
@@ -195,6 +196,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
             safeChains={safeChains}
             showMerklBadge
+            showMusdConvertCta
           />
         );
       }}
