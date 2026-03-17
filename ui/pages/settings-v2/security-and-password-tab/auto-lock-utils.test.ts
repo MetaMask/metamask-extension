@@ -1,4 +1,8 @@
-import { formatAutoLockLabel, AUTO_LOCK_OPTIONS } from './auto-lock-utils';
+import {
+  formatAutoLockLabel,
+  AUTO_LOCK_OPTIONS,
+  type AutoLockOption,
+} from './auto-lock-utils';
 
 const mockT = (key: string, subs?: string[]) => {
   const map: Record<string, string> = {
@@ -16,18 +20,21 @@ const mockT = (key: string, subs?: string[]) => {
 };
 
 describe('formatAutoLockLabel', () => {
-  it.each(AUTO_LOCK_OPTIONS)(
-    'returns translated label for preset value $value',
-    ({ labelKey, value }) => {
+  AUTO_LOCK_OPTIONS.forEach(({ labelKey, value }: AutoLockOption) => {
+    it(`returns translated label for preset value ${value}`, () => {
       expect(formatAutoLockLabel(value, mockT)).toBe(mockT(labelKey));
-    },
-  );
+    });
+  });
 
   it('returns custom label for non-preset value', () => {
-    expect(formatAutoLockLabel(10, mockT)).toBe('After 10 minutes');
+    expect(formatAutoLockLabel(10, mockT)).toBe(
+      mockT('autoLockAfterMinutes', ['10']),
+    );
   });
 
   it('returns custom label for decimal non-preset value', () => {
-    expect(formatAutoLockLabel(2.5, mockT)).toBe('After 2.5 minutes');
+    expect(formatAutoLockLabel(2.5, mockT)).toBe(
+      mockT('autoLockAfterMinutes', ['2.5']),
+    );
   });
 });

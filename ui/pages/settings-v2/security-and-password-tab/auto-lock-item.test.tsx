@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import AutoLockItem from './auto-lock-item';
 
@@ -55,7 +55,9 @@ describe('AutoLockItem', () => {
   it('displays custom label for non-preset value', () => {
     renderWithProvider(<AutoLockItem />, createMockStore(10));
 
-    expect(screen.getByText('After 10 minutes')).toBeInTheDocument();
+    expect(
+      screen.getByText(tEn('autoLockAfterMinutes', ['10'])),
+    ).toBeInTheDocument();
   });
 
   it('links to the auto-lock sub-page', () => {
