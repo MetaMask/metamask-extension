@@ -4765,7 +4765,10 @@ describe('Actions', () => {
       expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
       expect(
         background.setPna25Acknowledged.getCall(0).args,
-      ).toStrictEqual([true, false]);
+      ).toStrictEqual([
+        true,
+        false,
+      ]);
     });
 
     it('calls setPna25Acknowledged with disableDelay set to true', async () => {
@@ -4779,7 +4782,10 @@ describe('Actions', () => {
       expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
       expect(
         background.setPna25Acknowledged.getCall(0).args,
-      ).toStrictEqual([true, true]);
+      ).toStrictEqual([
+        true,
+        true,
+      ]);
     });
   });
 });
