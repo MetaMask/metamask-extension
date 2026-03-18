@@ -9,7 +9,10 @@ import {
   setIsIpfsGatewayEnabled,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  IPFS_FORBIDDEN_GATEWAY,
+} from '../../../../shared/constants/network';
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 
@@ -28,35 +31,27 @@ export const IpfsGatewayItem = () => {
   const [ipfsGatewayError, setIpfsGatewayError] = useState('');
 
   const handleIpfsGatewayChange = (url: string) => {
-    let error = '';
+    setIpfsGatewayValue(url);
 
-    if (url.length > 0) {
-      try {
-        const validUrl = addUrlProtocolPrefix(url);
-
-        if (validUrl) {
-          const urlObj = new URL(validUrl);
-
-          // don't allow the use of this gateway
-          if (urlObj.host === 'gateway.ipfs.io') {
-            error = t('forbiddenIpfsGateway');
-          }
-
-          if (error.length === 0) {
-            dispatch(setIpfsGateway(urlObj.host));
-          }
-        } else {
-          error = t('invalidIpfsGateway');
-        }
-      } catch {
-        error = t('invalidIpfsGateway');
-      }
-    } else {
-      error = t('invalidIpfsGateway');
+    if (!url.length) {
+      setIpfsGatewayError(t('invalidIpfsGateway'));
+      return;
     }
 
-    setIpfsGatewayValue(url);
-    setIpfsGatewayError(error);
+    const validUrl = addUrlProtocolPrefix(url);
+    if (!validUrl) {
+      setIpfsGatewayError(t('invalidIpfsGateway'));
+      return;
+    }
+
+    const urlObj = new URL(validUrl);
+    if (urlObj.host === IPFS_FORBIDDEN_GATEWAY) {
+      setIpfsGatewayError(t('forbiddenIpfsGateway'));
+      return;
+    }
+
+    dispatch(setIpfsGateway(urlObj.host));
+    setIpfsGatewayError('');
   };
 
   const handleToggle = (currentValue: boolean) => {

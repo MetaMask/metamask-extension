@@ -1943,12 +1943,6 @@
   "dismissReminderField": {
     "message": "Díbhe meabhrúchán cúltaca Frása Aisghabhála Rúnda"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Cas air seo chun nach bhfeicfidh tú an moladh \"Athraigh go Cuntas Cliste\" ar aon chuntas a thuilleadh. Díghlasálann cuntais chliste idirbhearta níos tapúla, táillí líonra níos ísle agus níos mó solúbthachta maidir le híocaíocht dóibh sin."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Diúltaigh an moladh \"Athraigh go Cuntas Cliste\""
-  },
   "displayNftMedia": {
     "message": "Taispeáin meáin NFT"
   },
