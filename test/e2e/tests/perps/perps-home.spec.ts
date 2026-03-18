@@ -49,6 +49,9 @@ describe('Perps', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
 
+        const marketListPage = new PerpsMarketListPage(driver);
+        await marketListPage.navigateToMarketList();
+
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.navigateToMarket('AVAX');
         await marketDetailPage.waitForTradeCtaButtons();
@@ -110,10 +113,9 @@ describe('Perps', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickSearchButton();
 
         const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.waitForPageLoaded();
+        await marketListPage.navigateToMarketList();
         await marketListPage.waitForFilterSortRow();
         await marketListPage.selectFilter('crypto');
         await marketListPage.selectSortByVolumeHigh();
@@ -152,6 +154,9 @@ describe('Perps', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
+
+        const marketListPage = new PerpsMarketListPage(driver);
+        await marketListPage.navigateToMarketList();
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.navigateToMarket('ETH');

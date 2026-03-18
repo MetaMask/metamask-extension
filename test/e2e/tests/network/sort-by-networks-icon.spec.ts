@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -10,8 +11,8 @@ describe('Sort By Networks Icon', function (this: Suite) {
   it('should display the correct network icon when only Ethereum Mainnet is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: { '0x1': true },
           })
@@ -63,8 +64,8 @@ describe('Sort By Networks Icon', function (this: Suite) {
   it('should display the correct network icon when only Linea Mainnet is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnLinea()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.LINEA_MAINNET)
           .withEnabledNetworks({
             eip155: { [CHAIN_IDS.LINEA_MAINNET]: true },
           })
@@ -112,8 +113,8 @@ describe('Sort By Networks Icon', function (this: Suite) {
   it('should display the correct network icon when only Polygon is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnPolygon()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.POLYGON_MAINNET)
           .withEnabledNetworks({
             eip155: { [CHAIN_IDS.POLYGON]: true },
           })
