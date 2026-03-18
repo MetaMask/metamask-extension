@@ -10,6 +10,7 @@
   &__identity {
     min-width: 0;
     flex: 1 1 0;
+    padding-bottom: 2px;
   }
 
   &__favicon-wrapper {
@@ -38,6 +39,7 @@
     justify-content: center;
     padding-left: 9px;
     padding-right: 9px;
+    margin-bottom: 4px;
 
     &:hover {
       background-color: var(--color-background-hover);
@@ -55,6 +57,7 @@
     background-color: var(--color-background-muted);
     height: 36px;
     flex-shrink: 0;
+    margin-bottom: 4px;
   }
 
   &__action-button {

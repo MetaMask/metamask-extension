@@ -228,7 +228,7 @@ export const DappConnectionControlBar: React.FC = () => {
       <Box
         className="dapp-connection-control-bar w-full"
         flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
+        alignItems={BoxAlignItems.End}
         padding={3}
         paddingLeft={4}
         paddingRight={4}
@@ -238,7 +238,7 @@ export const DappConnectionControlBar: React.FC = () => {
         {/* Left side: Favicon with green dot + Identity */}
         <Box
           flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
+          alignItems={BoxAlignItems.End}
           gap={2}
           className="dapp-connection-control-bar__left-group"
         >
@@ -285,7 +285,7 @@ export const DappConnectionControlBar: React.FC = () => {
         {/* Right side: Network selector + Combined action icons */}
         <Box
           flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
+          alignItems={BoxAlignItems.End}
           gap={2}
           className="ml-auto"
         >
@@ -317,7 +317,7 @@ export const DappConnectionControlBar: React.FC = () => {
           {/* Combined settings + disconnect container */}
           <Box
             flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
+            alignItems={BoxAlignItems.End}
             className="dapp-connection-control-bar__combined-actions"
           >
             {/* Permissions button */}
