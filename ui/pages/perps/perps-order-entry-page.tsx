@@ -15,6 +15,7 @@ import {
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
   Icon,
   IconName,
   IconSize,
@@ -41,11 +42,13 @@ import {
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
+import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getDisplayName,
+  getChangeColor,
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -116,6 +119,7 @@ function formStateToOrderParams(
  */
 const PerpsOrderEntryPage: React.FC = () => {
   const t = useI18nContext();
+  const { formatNumber } = useFormatters();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
@@ -212,13 +216,21 @@ const PerpsOrderEntryPage: React.FC = () => {
     const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
       const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
       if (update) {
-        const ts = (update as { timestamp?: number }).timestamp;
-        const mark = (update as { markPrice?: string }).markPrice;
+        const {
+          timestamp: ts,
+          markPrice: mark,
+          percentChange24h,
+        } = update as {
+          timestamp?: number;
+          markPrice?: string;
+          percentChange24h?: string;
+        };
         setLivePrice({
           symbol: update.symbol,
           price: update.price,
           timestamp: ts ?? Date.now(),
           markPrice: mark ?? update.price,
+          percentChange24h,
         });
       }
     });
@@ -317,6 +329,19 @@ const PerpsOrderEntryPage: React.FC = () => {
       stopLossPrice: position.stopLossPrice,
     };
   }, [position]);
+
+  const displayPrice = useMemo(() => {
+    if (currentPrice > 0) {
+      return `$${formatNumber(currentPrice, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`;
+    }
+    return market?.price ?? '$0.00';
+  }, [currentPrice, market?.price, formatNumber]);
+
+  const displayChange =
+    livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
 
   const handleBackClick = useCallback(() => {
     if (!decodedSymbol) {
@@ -515,7 +540,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       className="main-container asset__container"
       data-testid="perps-order-entry-page"
     >
-      {/* Header: Back (left) + Long/Short toggle (centered) + spacer (right) */}
+      {/* Header: Back (left) + Asset symbol, price, % gain (centered) + spacer (right) */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
@@ -537,15 +562,41 @@ const PerpsOrderEntryPage: React.FC = () => {
           />
         </Box>
         <Box
-          flexDirection={BoxFlexDirection.Row}
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
           className="flex-1 min-w-0"
         >
-          <DirectionTabs
-            direction={orderDirection}
-            onDirectionChange={setOrderDirection}
-          />
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Bold}
+            color={TextColor.textDefault}
+            data-testid="perps-order-entry-asset-symbol"
+          >
+            {displayName}
+          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Baseline}
+            gap={1}
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.textAlternative}
+              data-testid="perps-order-entry-price"
+            >
+              {displayPrice}
+            </Text>
+            {displayChange && (
+              <Text
+                variant={TextVariant.BodyXs}
+                color={getChangeColor(displayChange)}
+                data-testid="perps-order-entry-change"
+              >
+                {displayChange}
+              </Text>
+            )}
+          </Box>
         </Box>
         <Box className="w-9 shrink-0" aria-hidden="true" />
       </Box>
@@ -555,11 +606,17 @@ const PerpsOrderEntryPage: React.FC = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
         className={twMerge(
           'flex-1 overflow-y-auto overflow-x-hidden',
           isOrderPending && 'pointer-events-none opacity-50',
         )}
       >
+        <DirectionTabs
+          direction={orderDirection}
+          onDirectionChange={setOrderDirection}
+        />
         <OrderEntry
           asset={decodedSymbol}
           currentPrice={currentPrice}

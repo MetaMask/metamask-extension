@@ -162,7 +162,28 @@ export function usePerpsOrderForm({
   const availableBalanceRef = useRef(availableBalance);
   availableBalanceRef.current = availableBalance;
 
+  // Track which deps trigger a full form reset. orderType changes should NOT
+  // reset amount/leverage—only the effect above updates formState.type.
+  const prevResetDepsRef = useRef({
+    mode,
+    asset,
+    initialDirection,
+    existingPositionKey: existingPosition?.size ?? 'none',
+  });
   useEffect(() => {
+    const prev = prevResetDepsRef.current;
+    const prevKey = `${prev.mode}-${prev.asset}-${prev.initialDirection}-${prev.existingPositionKey}`;
+    const currKey = `${mode}-${asset}-${initialDirection}-${existingPosition?.size ?? 'none'}`;
+    if (prevKey === currKey) {
+      return;
+    }
+    prevResetDepsRef.current = {
+      mode,
+      asset,
+      initialDirection,
+      existingPositionKey: existingPosition?.size ?? 'none',
+    };
+
     setClosePercent(100);
 
     if (mode === 'modify' && existingPosition) {
