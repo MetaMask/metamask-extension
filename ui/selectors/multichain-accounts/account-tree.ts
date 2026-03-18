@@ -393,16 +393,15 @@ export const getCaip25IdByAccountGroupAndScope = createParameterizedSelector(
 )(
   getMultichainAccountsToScopesMap,
   (_state, accountGroup: AccountGroupObject, _scope: CaipChainId) =>
-    accountGroup,
+    accountGroup.id,
   (_state, _accountGroup: AccountGroupObject, scope: CaipChainId) => scope,
   (
     multichainAccountsToScopesMap: MultichainAccountGroupToScopesMap,
-    accountGroup: AccountGroupObject,
+    accountGroupId: AccountGroupId,
     scope: CaipChainId,
   ) => {
-    const multichainAccountGroup = multichainAccountsToScopesMap.get(
-      accountGroup.id,
-    );
+    const multichainAccountGroup =
+      multichainAccountsToScopesMap.get(accountGroupId);
     if (!multichainAccountGroup) {
       return undefined;
     }
