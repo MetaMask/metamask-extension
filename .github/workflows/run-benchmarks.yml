@@ -110,13 +110,16 @@ jobs:
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
+      - name: Install AWS CLI (needed in the container)
+        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
+
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
         # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
         run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], matrix.browser, matrix.buildType) }}
 
       - name: Send benchmark results to Sentry
-        if: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+        if: ${{ vars.SENTRY_DSN_PERFORMANCE && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}
         env:
           GH_HEAD_REF: ${{ github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
@@ -126,6 +129,15 @@ jobs:
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
             --browser ${{ matrix.browser }} \
             --buildType ${{ matrix.buildType }}
+
+      - name: Upload '${{ env.OUTPUT_NAME }}' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
 
       - name: Upload benchmark result as artifact
         if: ${{ always() }}
@@ -198,6 +210,9 @@ jobs:
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
+      - name: Install AWS CLI (needed in the container)
+        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
+
       - name: Run the benchmark
         run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], 'chrome', 'webpack') }}
 
@@ -212,6 +227,24 @@ jobs:
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
             --browser chrome \
             --buildType webpack
+
+      - name: Upload '${{ env.OUTPUT_NAME }}' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+
+      - name: Upload benchmark result as artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+          retention-days: 7
+          if-no-files-found: ignore
 
   dapp-page-load-benchmark:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
