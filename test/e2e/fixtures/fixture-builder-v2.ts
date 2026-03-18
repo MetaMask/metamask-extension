@@ -1,10 +1,12 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type {
   CurrencyRateState,
   TokenBalancesControllerState,
+  TokenListMap,
   TokenListState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
@@ -55,6 +57,11 @@ import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
+const STORAGE_SERVICE_NAMESPACE = Object.freeze({
+  SNAP_CONTROLLER: 'SnapController',
+  TOKEN_LIST_CONTROLLER: 'TokenListController',
+} as const);
+
 function defaultFixture() {
   return cloneDeep(defaultFixtureJson);
 }
@@ -74,8 +81,27 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type StorageServiceNamespaceMap = {
+  [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
+    key: string;
+    value: { sourceCode: string };
+  };
+  [STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER]: {
+    key: `tokensChainsCache:${Hex}`;
+    value: { timestamp: number; data: TokenListMap };
+  };
+};
+
+type StorageServiceNamespace = keyof StorageServiceNamespaceMap;
+
+type FixtureBuildResult = FixtureType & {
+  storageServiceData?: Record<string, unknown>;
+};
+
 class FixtureBuilderV2 {
   fixture: FixtureType;
+
+  #storageServiceData: Record<string, unknown> = {};
 
   /**
    * Constructs a new instance of the FixtureBuilder class.
@@ -669,8 +695,41 @@ class FixtureBuilderV2 {
     return this.withTransactionController({ transactions: [incomingTx] });
   }
 
-  build() {
-    return this.fixture;
+  /* ==================================================================
+                        STORAGE SERVICE DATA
+     ==================================================================
+  */
+
+  withStorageServiceData<Namespace extends StorageServiceNamespace>({
+    namespace,
+    key,
+    value,
+  }: {
+    namespace: Namespace;
+    key: StorageServiceNamespaceMap[Namespace]['key'];
+    value: StorageServiceNamespaceMap[Namespace]['value'];
+  }): this {
+    this.#storageServiceData[`storageService:${namespace}:${key}`] = value;
+    return this;
+  }
+
+  withTokenListControllerStorageServiceData(
+    chainId: Hex,
+    data: TokenListMap,
+  ): this {
+    return this.withStorageServiceData({
+      namespace: STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER,
+      key: `tokensChainsCache:${chainId}`,
+      value: { timestamp: Date.now(), data },
+    });
+  }
+
+  build(): FixtureBuildResult {
+    const result: FixtureBuildResult = { ...this.fixture };
+    if (Object.keys(this.#storageServiceData).length > 0) {
+      result.storageServiceData = { ...this.#storageServiceData };
+    }
+    return result;
   }
 }
 
