@@ -430,10 +430,20 @@ class AccountListPage {
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
     await this.waitUntilSyncingIsCompleted();
-    const createMultichainAccountButtons = await this.driver.findElements(
-      this.addMultichainAccountButton,
-    );
     const buttonIndex = options?.srpIndex ?? 0;
+    const expectedCount = buttonIndex + 1;
+    let createMultichainAccountButtons: Awaited<
+      ReturnType<typeof this.driver.findElements>
+    > = [];
+    await this.driver.waitUntil(
+      async () => {
+        createMultichainAccountButtons = await this.driver.findElements(
+          this.addMultichainAccountButton,
+        );
+        return createMultichainAccountButtons.length >= expectedCount;
+      },
+      { timeout: 10000, interval: 500 },
+    );
     await createMultichainAccountButtons[buttonIndex].click();
 
     // Wait for the account creation to complete by waiting for loading state to finish

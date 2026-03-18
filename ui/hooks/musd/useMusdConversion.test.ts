@@ -87,6 +87,7 @@ const { selectMusdConversionEducationSeen, selectIsMusdConversionFlowEnabled } =
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TX_ID = 'tx-abc-123';
+const MOCK_PREFERRED_TOKEN = { address: '0xusdc', chainId: '0x1' as const };
 
 type SelectorMap = {
   selectedAccount: { address: string } | null;
@@ -162,7 +163,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockNavigate).not.toHaveBeenCalled();
@@ -179,7 +182,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockAddTransaction).toHaveBeenCalled();
@@ -206,7 +211,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockNavigate).not.toHaveBeenCalled();
@@ -225,7 +232,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockNavigate).toHaveBeenCalledWith(
@@ -240,7 +249,10 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow({ skipEducation: true });
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+          skipEducation: true,
+        });
       });
 
       expect(mockNavigate).not.toHaveBeenCalledWith('/musd/education');
@@ -253,7 +265,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockAddTransaction).not.toHaveBeenCalled();
@@ -273,7 +287,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockAddTransaction).not.toHaveBeenCalled();
@@ -288,7 +304,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
@@ -359,7 +377,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(result.current.error).toBe('Failed to start conversion');

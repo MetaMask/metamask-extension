@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures, sentryRegEx } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -27,7 +26,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and provides sentry form to report', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -54,7 +53,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and offer contact support option with consenting to share data', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
