@@ -32,7 +32,6 @@ export const SettingsSelectItem = ({
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
-      gap={2}
       paddingVertical={3}
     >
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
