@@ -2,9 +2,11 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { setPna25Acknowledged } from '../../../../store/actions';
 import Pna25Modal from './pna25-modal';
