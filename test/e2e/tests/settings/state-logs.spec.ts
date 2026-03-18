@@ -8,10 +8,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import {
-  login,
-  login,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
 import referenceStateLogsDefinition from './state-logs.json';
@@ -149,7 +146,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(15000);

@@ -5,10 +5,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockPriceApi } from '../tokens/utils/mocks';
-import {
-  login,
-  login,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Privacy Mode', function () {
   it('should hide fiat balance and token balance when privacy mode is activated', async function () {
@@ -51,7 +48,7 @@ describe('Privacy Mode', function () {
         testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

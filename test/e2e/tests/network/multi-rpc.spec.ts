@@ -13,10 +13,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import {
-  login,
-  login,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
@@ -237,7 +234,7 @@ describe('MultiRpc:', function (this: Suite) {
       },
 
       async ({ driver, mockedEndpoint }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
