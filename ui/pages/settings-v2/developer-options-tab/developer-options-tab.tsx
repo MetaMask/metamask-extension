@@ -8,7 +8,7 @@ import {
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
 import { AutoResetAccountItem } from './auto-reset-account-item';
-import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from 'shared/lib/ui-utils';
+import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from '../../../../shared/lib/ui-utils';
 
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
