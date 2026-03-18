@@ -9,7 +9,6 @@ import {
   type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
-import { type DeflateOptions } from 'fflate';
 import {
   noop,
   extensionToJs,
@@ -20,8 +19,8 @@ import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 import {
   createBrowserZipBuilder,
-  createZipCompressionController,
   getZipFilePath,
+  type ZipCompressionOptions,
 } from './zip';
 
 const { CachedSource, RawSource } = sources;
@@ -141,7 +140,7 @@ export class ManifestPlugin<Z extends boolean> {
   ): Promise<void> {
     const { browsers, zipOptions } = options;
     const { excludeExtensions, level, outFilePath, mtime } = zipOptions;
-    const compressionOptions: DeflateOptions = { level };
+    const compressionOptions: ZipCompressionOptions = { level };
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const [primaryBrowser, ...additionalBrowsers] = browsers;
@@ -154,7 +153,6 @@ export class ManifestPlugin<Z extends boolean> {
     const totalWork = browsers.length * (zipEligibleAssetCount + 1);
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
-    const compressionController = createZipCompressionController();
     const zipBuilders = browsers.map((browser) => {
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
       const onAssetAdded = (assetName: string) => {
@@ -169,7 +167,6 @@ export class ManifestPlugin<Z extends boolean> {
         browser,
         builder: createBrowserZipBuilder({
           compressionOptions,
-          compressionController,
           excludeExtensions,
           manifest,
           mtime,

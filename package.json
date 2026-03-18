@@ -486,7 +486,8 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "yazl": "^3.3.1"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",
@@ -609,6 +610,7 @@
     "@types/xml2js": "^0",
     "@types/yargs": "^17.0.32",
     "@types/yargs-parser": "^21.0.3",
+    "@types/yazl": "^3.3.0",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
     "@viem/anvil": "^0.0.10",
