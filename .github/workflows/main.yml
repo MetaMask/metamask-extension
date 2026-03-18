@@ -482,17 +482,6 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  dapp-page-load-benchmark:
-    needs:
-      - get-requirements
-      - build-test-browserify
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
-    uses: ./.github/workflows/dapp-page-load-benchmark.yml
-    with:
-      browser-loads: 10
-      page-loads: 10
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-
   prep-e2e:
     needs:
       - get-requirements
@@ -728,7 +717,6 @@ jobs:
       - build-test-flask-webpack
       - build-test-flask-mv2-webpack
       - run-benchmarks
-      - dapp-page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
@@ -830,7 +818,6 @@ jobs:
       - run-benchmarks
       - run-tests
       - bundle-size
-      - dapp-page-load-benchmark
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
