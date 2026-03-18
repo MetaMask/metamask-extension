@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -57,7 +58,7 @@ describe('Pna25Modal', () => {
   it('skips delay when Close (X) button is clicked', () => {
     const { getByLabelText } = renderComponent();
 
-    fireEvent.click(getByLabelText('Close'));
+    fireEvent.click(getByLabelText(messages.close.message));
 
     expect(setPna25Acknowledged).toHaveBeenCalledWith(true, true);
   });
