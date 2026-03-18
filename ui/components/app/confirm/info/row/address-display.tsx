@@ -139,7 +139,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         )}
         {name && <TrustIcon displayState={displayState} image={image} />}
         {name && isClickable && (
-          <span className="address-display-no-name">
+          <span className="address-display-clickable">
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
@@ -161,7 +161,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
           </Text>
         )}
         {!name && isClickable && (
-          <span className="address-display-no-name">
+          <span className="address-display-clickable">
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
