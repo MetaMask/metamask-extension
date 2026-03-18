@@ -316,7 +316,14 @@ describe('MultichainBridgeQuoteCard', () => {
     const configuredStore = configureStore(mockStore);
     const selectedDestinationAccount = getToAccounts(
       configuredStore.getState(),
-    )[1]!;
+    )[1];
+
+    expect(selectedDestinationAccount).toBeDefined();
+
+    if (!selectedDestinationAccount) {
+      throw new Error('Expected a second destination account');
+    }
+
     const recipientLabel = `${
       selectedDestinationAccount.walletName
         ? `${selectedDestinationAccount.walletName} / `
