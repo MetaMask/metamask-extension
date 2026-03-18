@@ -161,13 +161,7 @@ function setCITags() {
  */
 function getMetaMetricsStateFromAppState(appState) {
   if (appState.persistedState) {
-    const data = appState.persistedState?.data;
-    const controller = data?.MetaMetricsController;
-    const enabled = Boolean(controller?.participateInMetaMetrics);
-    return {
-      participateInMetaMetrics: enabled,
-      metaMetricsId: enabled ? controller?.metaMetricsId : undefined,
-    };
+    return getMetaMetricsStateFromPersistedState(appState.persistedState);
   }
   if (appState.state) {
     if (appState.state.metamask) {
