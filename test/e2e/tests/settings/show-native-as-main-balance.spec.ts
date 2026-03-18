@@ -84,7 +84,7 @@ describe('Settings: Show native token as main balance', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
