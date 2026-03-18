@@ -44,7 +44,7 @@ export const gatorPermissions = new Route({
 
     const encodedSite = encodeURIComponent(site);
     return {
-      path: `/gator-permissions/token-transfer/${encodedSite}`,
+      path: `/gator-permissions/${type}/${encodedSite}`,
       query,
     };
   },
