@@ -11,7 +11,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 import { I18nProvider } from '../../../../test/lib/render-helpers';
-import * as en from '../../../../app/_locales/en/messages.json';
+import { enLocale as en } from '../../../../test/lib/i18n-helpers';
 import QRHardwarePopover from './qr-hardware-popover';
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
@@ -47,9 +47,7 @@ function buildStore(
   });
 }
 
-function renderPopover(
-  store: ReturnType<typeof buildStore>,
-) {
+function renderPopover(store: ReturnType<typeof buildStore>) {
   return render(
     <Provider store={store}>
       <I18nProvider currentLocale="en" current={en} en={en}>
