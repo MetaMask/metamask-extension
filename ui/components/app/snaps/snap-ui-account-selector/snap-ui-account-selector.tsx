@@ -14,6 +14,7 @@ import { setSelectedInternalAccountWithoutLoading } from '../../../../store/acti
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
 
 export type SnapUIAccountSelectorProps = {
   name: string;
@@ -55,6 +56,7 @@ export const SnapUIAccountSelector: FunctionComponent<
   const internalAccounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
+  const accountGroups = useSelector(getAllAccountGroups);
 
   const accounts = useMemo(() => {
     // Filter out the accounts that are not owned by the snap
@@ -86,14 +88,32 @@ export const SnapUIAccountSelector: FunctionComponent<
     disabled: false,
   }));
 
-  const optionComponents = accounts.map((account, index) => (
-    <AccountListItem
-      account={account}
-      selected={false}
-      key={index}
-      showConnectedStatus={false}
-    />
-  ));
+  const optionComponents = accounts.map((account, index) => {
+    // Get the name from the account group if it exists, otherwise use the account name
+    // This is necessary because the account name is empty now and the group name is used instead,
+    // but we still want to show the account name if the group name is not available.
+    const name =
+      accountGroups.find(({ accounts: accountGroup }) =>
+        accountGroup.includes(account.id),
+      )?.metadata.name ?? account.metadata.name;
+
+    const mergedAccount = {
+      ...account,
+      metadata: {
+        ...account.metadata,
+        name,
+      },
+    };
+
+    return (
+      <AccountListItem
+        account={mergedAccount}
+        selected={false}
+        key={index}
+        showConnectedStatus={false}
+      />
+    );
+  });
 
   const handleSelect = (value: State) => {
     if (switchGlobalAccount) {
