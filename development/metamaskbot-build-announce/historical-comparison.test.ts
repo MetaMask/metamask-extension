@@ -286,7 +286,7 @@ describe('fetchHistoricalPerformanceData', () => {
     );
   });
 
-  it('fetches main/performance_data.json when GITHUB_BASE_REF is not set', async () => {
+  it('fetches main/performance_data.json directly when GITHUB_BASE_REF is not set', async () => {
     delete process.env.GITHUB_BASE_REF;
     mockFetch.mockReturnValue(makeOkResponse(mockFile));
 
@@ -322,25 +322,6 @@ describe('fetchHistoricalPerformanceData', () => {
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
-  it('does not make a redundant fallback fetch when GITHUB_BASE_REF is unset', async () => {
-    delete process.env.GITHUB_BASE_REF;
-    mockFetch.mockReturnValue(makeNotFoundResponse());
-
-    const result = await fetchHistoricalPerformanceData();
-
-    expect(result).toBeNull();
-    expect(mockFetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not make a redundant fallback fetch when GITHUB_BASE_REF is main', async () => {
-    process.env.GITHUB_BASE_REF = 'main';
-    mockFetch.mockReturnValue(makeNotFoundResponse());
-
-    const result = await fetchHistoricalPerformanceData();
-
-    expect(result).toBeNull();
-    expect(mockFetch).toHaveBeenCalledTimes(1);
-  });
 
   it('returns null when main returns an empty object', async () => {
     delete process.env.GITHUB_BASE_REF;

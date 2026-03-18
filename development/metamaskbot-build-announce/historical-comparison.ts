@@ -62,35 +62,29 @@ async function fetchPerformanceFile(
 }
 
 /**
- * Converts a git branch name to the slug used in the stats repo
- * by replacing all forward slashes with hyphens.
- * e.g. "release/13.23.0" → "release-13.23.0"
+ * Fetches historical performance data from extension_benchmark_stats.
+ * Uses GITHUB_BASE_REF (the PR target branch) first, falling back to `main`.
+ * Forward slashes in the branch name are replaced with hyphens to match
+ * the stats repo directory structure (e.g. "release/13.23.0" → "release-13.23.0").
  *
- * @param branch - The raw git branch name.
- * @returns The sanitized slug.
- */
-function sanitizeBranch(branch: string): string {
-  return branch.replace(/\//gu, '-');
-}
-
-/**
- * Fetches historical performance data from extension_benchmark_stats,
- * using the PR target branch (GITHUB_BASE_REF) as the baseline, falling
- * back to `main` if the env var is not set or the branch has no data.
- *
- * @returns Reference map (benchmarkName → metric → mean), or null if unavailable.
+ * @returns Reference map (benchmarkName → metric → baseline), or null if unavailable.
  */
 export async function fetchHistoricalPerformanceData(): Promise<HistoricalBaselineReference | null> {
-  const branch = sanitizeBranch(process.env.GITHUB_BASE_REF ?? 'main');
-  const isFallbackNeeded = branch !== 'main';
-  const data =
-    (await fetchPerformanceFile(branch)) ??
-    (isFallbackNeeded ? await fetchPerformanceFile('main') : null);
-  if (!data || Object.keys(data).length === 0) {
-    return null;
+  const releaseBranch = process.env.GITHUB_BASE_REF?.replace(/\//gu, '-');
+  let data = releaseBranch ? await fetchPerformanceFile(releaseBranch) : null;
+  if (data) {
+    console.log(`[benchmarks] Using historical data from release branch: ${releaseBranch}`);
+  } else {
+    data = await fetchPerformanceFile('main');
+    if (data) {
+      console.log(`[benchmarks] Using historical data from: main`);
+    } else {
+      console.log('[benchmarks] No historical baseline data found');
+    }
   }
-  const result = aggregateHistoricalData(data);
-  return Object.keys(result).length > 0 ? result : null;
+
+  const result = data ? aggregateHistoricalData(data) : null;
+  return result && Object.keys(result).length > 0 ? result : null;
 }
 
 type CollectedMetricValues = {
