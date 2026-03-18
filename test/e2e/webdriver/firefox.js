@@ -132,14 +132,36 @@ class FirefoxDriver {
       .digest('hex')
       .slice(0, 12);
     const xpiPath = path.join(os.tmpdir(), `metamask-e2e-${dirHash}.xpi`);
+    const manifestHashPath = `${xpiPath}.manifest-sha256`;
 
     let needsRebuild = true;
     try {
-      // Rebuild if any file in the source directory is newer than the cached XPI.
       const xpiMtime = fs.statSync(xpiPath).mtimeMs;
-      needsRebuild = FirefoxDriver._hasNewerFile(absDir, xpiMtime);
+
+      // manifest.json is excluded from mtime checks because setManifestFlags()
+      // rewrites it before every test even when content is identical. Instead
+      // we compare its content hash to detect real changes.
+      const manifestContent = fs.readFileSync(
+        path.join(absDir, 'manifest.json'),
+      );
+      const manifestHash = nodeCrypto
+        .createHash('sha256')
+        .update(manifestContent)
+        .digest('hex');
+      const cachedManifestHash = fs
+        .readFileSync(manifestHashPath, 'utf8')
+        .trim();
+
+      const manifestChanged = manifestHash !== cachedManifestHash;
+      const filesChanged = FirefoxDriver._hasNewerFile(
+        absDir,
+        xpiMtime,
+        'manifest.json',
+      );
+
+      needsRebuild = manifestChanged || filesChanged;
     } catch (_) {
-      // XPI doesn't exist yet
+      // XPI or hash file doesn't exist yet
     }
 
     if (needsRebuild) {
@@ -156,6 +178,15 @@ class FirefoxDriver {
             `Ensure the extension has been built (e.g. yarn build:test:mv2): ${e.message}`,
         );
       }
+
+      const manifestContent = fs.readFileSync(
+        path.join(absDir, 'manifest.json'),
+      );
+      const manifestHash = nodeCrypto
+        .createHash('sha256')
+        .update(manifestContent)
+        .digest('hex');
+      fs.writeFileSync(manifestHashPath, manifestHash);
     }
 
     return xpiPath;
@@ -167,10 +198,14 @@ class FirefoxDriver {
    *
    * @param {string} dir - Directory to scan
    * @param {number} thresholdMs - mtime threshold in milliseconds
+   * @param {string} [skipFile] - Filename to skip (checked at top-level only)
    * @returns {boolean} true if at least one file is newer
    */
-  static _hasNewerFile(dir, thresholdMs) {
+  static _hasNewerFile(dir, thresholdMs, skipFile) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (skipFile && entry.name === skipFile) {
+        continue;
+      }
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         if (FirefoxDriver._hasNewerFile(fullPath, thresholdMs)) {
