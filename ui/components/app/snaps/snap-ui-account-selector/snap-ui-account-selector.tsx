@@ -73,8 +73,26 @@ export const SnapUIAccountSelector: FunctionComponent<
       return filteredChainIds.length > 0;
     });
 
-    return filteredAccounts;
-  }, [internalAccounts, chainIds, hideExternalAccounts, snapId]);
+    // Get the name from the account group if it exists, otherwise use the account name
+    // This is necessary because the account name is empty now and the group name is used instead,
+    // but we still want to show the account name if the group name is not available.
+    const updatedAccounts = filteredAccounts.map((account) => {
+      const name =
+        accountGroups.find(({ accounts: accountGroup }) =>
+          accountGroup.includes(account.id),
+        )?.metadata.name ?? account.metadata.name;
+
+      return {
+        ...account,
+        metadata: {
+          ...account.metadata,
+          name,
+        },
+      };
+    });
+
+    return updatedAccounts;
+  }, [internalAccounts, chainIds, hideExternalAccounts, snapId, accountGroups]);
 
   const options = accounts.map((account) => ({
     key: 'accountId',
@@ -88,32 +106,14 @@ export const SnapUIAccountSelector: FunctionComponent<
     disabled: false,
   }));
 
-  const optionComponents = accounts.map((account, index) => {
-    // Get the name from the account group if it exists, otherwise use the account name
-    // This is necessary because the account name is empty now and the group name is used instead,
-    // but we still want to show the account name if the group name is not available.
-    const name =
-      accountGroups.find(({ accounts: accountGroup }) =>
-        accountGroup.includes(account.id),
-      )?.metadata.name ?? account.metadata.name;
-
-    const mergedAccount = {
-      ...account,
-      metadata: {
-        ...account.metadata,
-        name,
-      },
-    };
-
-    return (
-      <AccountListItem
-        account={mergedAccount}
-        selected={false}
-        key={index}
-        showConnectedStatus={false}
-      />
-    );
-  });
+  const optionComponents = accounts.map((account, index) => (
+    <AccountListItem
+      account={account}
+      selected={false}
+      key={index}
+      showConnectedStatus={false}
+    />
+  ));
 
   const handleSelect = (value: State) => {
     if (switchGlobalAccount) {
