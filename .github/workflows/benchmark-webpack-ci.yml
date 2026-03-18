@@ -25,18 +25,21 @@ jobs:
           - name: ci-216k-j3
             ci_async_kib: 216
             ci_max_async_jobs: 3
-          - name: ci-192k-j3
-            ci_async_kib: 192
+          - name: ci-228k-j3
+            ci_async_kib: 228
             ci_max_async_jobs: 3
-          - name: ci-240k-j3
+          - name: ci-240k-j3-a
             ci_async_kib: 240
             ci_max_async_jobs: 3
-          - name: ci-216k-j2
-            ci_async_kib: 216
-            ci_max_async_jobs: 2
-          - name: ci-216k-j4
-            ci_async_kib: 216
-            ci_max_async_jobs: 4
+          - name: ci-240k-j3-b
+            ci_async_kib: 240
+            ci_max_async_jobs: 3
+          - name: ci-252k-j3
+            ci_async_kib: 252
+            ci_max_async_jobs: 3
+          - name: ci-264k-j3
+            ci_async_kib: 264
+            ci_max_async_jobs: 3
     env:
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
