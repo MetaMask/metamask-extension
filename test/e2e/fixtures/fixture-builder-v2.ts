@@ -725,14 +725,16 @@ class FixtureBuilderV2 {
   }
 
   withTokenListControllerStorageServiceData(
-    chainId: Hex,
-    data: TokenListMap,
+    entries: { chainId: Hex; data: TokenListMap }[],
   ): this {
-    return this.withStorageServiceData({
-      namespace: STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER,
-      key: `tokensChainsCache:${chainId}`,
-      value: { timestamp: Date.now(), data },
-    });
+    for (const { chainId, data } of entries) {
+      this.withStorageServiceData({
+        namespace: STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER,
+        key: `tokensChainsCache:${chainId}`,
+        value: { timestamp: Date.now(), data },
+      });
+    }
+    return this;
   }
 
   build(): FixtureBuildResult {

@@ -14,23 +14,27 @@ describe('Token List via StorageService', function () {
   const tokenName = 'Musical Token';
   const tokenSymbol = 'MSCL';
 
+  const tokenListData = {
+    [tokenAddress]: {
+      address: tokenAddress,
+      aggregators: ['CoinGecko', 'Uniswap'],
+      decimals: 18,
+      iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${tokenAddress}.png`,
+      name: tokenName,
+      occurrences: 2,
+      symbol: tokenSymbol,
+    },
+  };
+
   it('displays a token in the asset list injected via StorageService', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { [chainId]: true } })
-          .withTokenListControllerStorageServiceData(chainId, {
-            [tokenAddress]: {
-              address: tokenAddress,
-              aggregators: ['CoinGecko', 'Uniswap'],
-              decimals: 18,
-              iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${tokenAddress}.png`,
-              name: tokenName,
-              occurrences: 2,
-              symbol: tokenSymbol,
-            },
-          })
+          .withTokenListControllerStorageServiceData([
+            { chainId, data: tokenListData },
+          ])
           .build(),
         localNodeOptions: {
           chainId: parseInt(chainId, 16),
