@@ -51,11 +51,24 @@ exports[`DeveloperOptionsTab snapshot matches snapshot 1`] = `
           </label>
         </div>
       </div>
-      <p
+      <div
         class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Select this to show fiat conversion on test networks
-      </p>
+        <span>
+           
+          Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. 
+          <a
+            class="font-medium text-primary-default"
+            href="https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Learn more
+          </a>
+          
+           
+        </span>
+      </div>
     </div>
   </div>
 </div>

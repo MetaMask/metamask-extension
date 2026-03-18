@@ -4,12 +4,15 @@ import { SettingsTab, createToggleItem, createDescriptionWithLearnMore } from '.
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
 
+const SHOW_CONVERSION_IN_TESTNETS_LEARN_MORE_LINK =
+  "https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/";
+
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
   titleKey: 'showFiatConversionInTestnets',
   formatDescription: createDescriptionWithLearnMore(
     'showFiatConversionInTestnetsDescriptionV2',
-    "https://metamask.io/learn-more",
+    SHOW_CONVERSION_IN_TESTNETS_LEARN_MORE_LINK,
   ),
   selector: getShowFiatInTestnets,
   action: setShowFiatConversionOnTestnetsPreference,

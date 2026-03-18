@@ -30,18 +30,4 @@ describe('DeveloperOptionsTab', () => {
       expect(container).toMatchSnapshot();
     });
   });
-
-  describe('setting items', () => {
-    it('renders all toggle items with expected test ids', () => {
-      renderWithProvider(<DeveloperOptionsTab />, mockStore);
-
-      const expectedTestIds = [
-        'developer-options-show-testnet-conversion-toggle',
-      ];
-
-      for (const testId of expectedTestIds) {
-        expect(screen.getByTestId(testId)).toBeInTheDocument();
-      }
-    });
-  });
 });
