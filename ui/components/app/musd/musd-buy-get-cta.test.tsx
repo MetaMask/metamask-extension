@@ -57,10 +57,14 @@ const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
+const mockDefaultPaymentToken = { address: '0xUsdc', chainId: '0x1' };
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
     educationSeen: false,
+  }),
+  useMusdConversionTokens: () => ({
+    defaultPaymentToken: mockDefaultPaymentToken,
   }),
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -155,6 +159,10 @@ describe('MusdBuyGetCta', () => {
 
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         entryPoint: 'home',
+        preferredToken: {
+          address: mockDefaultPaymentToken.address,
+          chainId: mockDefaultPaymentToken.chainId,
+        },
       });
     });
 
