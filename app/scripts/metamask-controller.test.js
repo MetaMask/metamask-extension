@@ -4677,7 +4677,7 @@ describe('MetaMaskController', () => {
           .mockReturnValueOnce(mockPermittedAccounts);
         jest
           .spyOn(metamaskController.approvalController, 'hasRequest')
-          .mockResolvedValueOnce(true); // Pending approval exists
+          .mockReturnValueOnce(true); // Pending approval exists
 
         await metamaskController.handleDefiReferral(
           DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
