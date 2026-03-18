@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "シークレットリカバリーフレーズのバックアップリマインダーを解除"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "すべてのアカウントで「スマートアカウントへの切り替え」の提案が表示されないようにするには、これをオンにします。スマートアカウントでは、より高速なトランザクション、低いネットワーク手数料、柔軟な支払方法が利用できるようになります。"
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "「スマートアカウントへの切り替え」の提案を閉じる"
-  },
   "displayNftMedia": {
     "message": "NFTメディアの表示"
   },

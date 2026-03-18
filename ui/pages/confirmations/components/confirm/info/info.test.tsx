@@ -11,7 +11,10 @@ import {
   getMockTypedSignConfirmState,
   getMockTypedSignPermissionConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
@@ -133,7 +136,7 @@ describe('Info', () => {
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
+    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
@@ -146,7 +149,7 @@ describe('Info', () => {
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
+    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
