@@ -67,7 +67,7 @@ export class FixtureExtensionStore extends ExtensionStore {
 
         // Write StorageService entries directly to browser.storage.local
         // so controllers can read them outside the main extension state.
-        if (state.storageServiceData) {
+        if (Object.keys(state.storageServiceData ?? {}).length > 0) {
           await browser.storage.local.set(state.storageServiceData);
         }
 

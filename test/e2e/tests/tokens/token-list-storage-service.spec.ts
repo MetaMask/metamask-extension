@@ -14,7 +14,7 @@ describe('Token List via StorageService', function () {
   const tokenName = 'Musical Token';
   const tokenSymbol = 'MSCL';
 
-  it('should display a token in the asset list injected via StorageService', async function () {
+  it('displays a token in the asset list injected via StorageService', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
