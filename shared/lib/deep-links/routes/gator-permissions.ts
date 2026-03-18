@@ -39,7 +39,11 @@ export const gatorPermissions = new Route({
     }
 
     if (isValidOrigin(site)) {
-      return { path: `/gator-permissions/token-transfer/${site}`, query };
+      const encodedSite = encodeURIComponent(site);
+      return {
+        path: `/gator-permissions/token-transfer/${encodedSite}`,
+        query,
+      };
     }
     return { path: DEFAULT_ROUTE, query };
   },
