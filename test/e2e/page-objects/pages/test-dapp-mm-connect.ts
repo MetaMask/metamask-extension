@@ -234,9 +234,14 @@ export class TestDappMmConnect {
    *
    * @param scope  - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
    * @param method - JSON-RPC method name, e.g. 'eth_chainId'
+   * @param expandDetails - Expand result <details> before reading.
    * @returns The text content of the result code element (result[0])
    */
-  async getMethodResult(scope: string, method: string): Promise<string> {
+  async getMethodResult(
+    scope: string,
+    method: string,
+    expandDetails?: boolean,
+  ): Promise<string> {
     const resultCodeId = createTestId(
       'scope-card',
       'result-code',
@@ -245,6 +250,12 @@ export class TestDappMmConnect {
       '0',
     );
     await this.driver.waitForSelector(`[data-testid="${resultCodeId}"]`);
+    // Expand the result <details> before reading the text content so it won't return empty
+    if (expandDetails) {
+      const resultId = createTestId('scope-card', 'result', scope, method, '0');
+      await this.driver.clickElement(`[data-testid="${resultId}"] summary`);
+    }
+
     const resultEl = await this.driver.findElement(
       `[data-testid="${resultCodeId}"]`,
     );

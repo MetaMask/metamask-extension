@@ -15,6 +15,7 @@ import { Driver } from '../../webdriver/driver';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 
 // CAIP-2 EVM chain IDs used across tests
@@ -72,7 +73,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
     );
   });
 
-  it('routes personal_sign requests to the correct chain', async function () {
+  it.only('routes personal_sign requests to the correct chain and handles Solana signMessage', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -85,11 +86,12 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
-        // Connect to 3 EVM chains
+        // Connect to 3 EVM chains + Solana
         await testDapp.selectNetworks([
           EVM_CHAINS.ETHEREUM,
           EVM_CHAINS.POLYGON,
           EVM_CHAINS.LINEA,
+          SOLANA_MAINNET_SCOPE,
         ]);
         await testDapp.clickConnect();
 
@@ -100,11 +102,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         await testDapp.switchTo();
 
-        for (const chainId of [
-          EVM_CHAINS.ETHEREUM,
-          EVM_CHAINS.POLYGON,
-          EVM_CHAINS.LINEA,
-        ]) {
+        for (const chainId of Object.values(EVM_CHAINS)) {
           // Fire the request without blocking on the result
           await testDapp.triggerMethod(chainId, 'personal_sign');
 
@@ -126,6 +124,40 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
             `Expected personal_sign result for ${chainId}, got: "${result}"`,
           );
         }
+
+        // Trigger signMessage for Solana
+        await testDapp.triggerMethod(SOLANA_MAINNET_SCOPE, 'signMessage');
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const solanaSigningConfirmation = new SnapSignMessageConfirmation(
+          driver,
+        );
+        await solanaSigningConfirmation.checkPageIsLoaded();
+        await solanaSigningConfirmation.clickFooterConfirmButton();
+
+        await testDapp.switchTo();
+        const solanaSignMessageResult = await testDapp.getMethodResult(
+          SOLANA_MAINNET_SCOPE,
+          'signMessage',
+          true,
+        );
+
+        const parsedSolanaSignMessageResult = JSON.parse(
+          solanaSignMessageResult,
+        ) as Record<string, unknown>;
+
+        assert.ok(
+          typeof parsedSolanaSignMessageResult.signature === 'string',
+          `Expected signMessage result for ${SOLANA_MAINNET_SCOPE} to include string "signature", got: "${solanaSignMessageResult}"`,
+        );
+        assert.ok(
+          typeof parsedSolanaSignMessageResult.signedMessage === 'string',
+          `Expected signMessage result for ${SOLANA_MAINNET_SCOPE} to include string "signedMessage", got: "${solanaSignMessageResult}"`,
+        );
+        assert.ok(
+          typeof parsedSolanaSignMessageResult.signatureType === 'string',
+          `Expected signMessage result for ${SOLANA_MAINNET_SCOPE} to include string "signatureType", got: "${solanaSignMessageResult}"`,
+        );
       },
     );
   });
