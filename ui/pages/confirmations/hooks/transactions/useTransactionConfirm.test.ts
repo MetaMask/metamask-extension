@@ -1,24 +1,24 @@
+import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 import {
   GasFeeToken,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 
 import {
   genUnapprovedContractInteractionConfirmation,
   mockBridgeQuotes,
 } from '../../../../../test/data/confirmations/contract-interaction';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import * as DappSwapContext from '../../context/dapp-swap';
-import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
-import { useTransactionConfirm } from './useTransactionConfirm';
+import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
+import { useTransactionConfirm } from './useTransactionConfirm';
 
 jest.mock('../../../../../shared/lib/selectors');
 
@@ -470,6 +470,26 @@ describe('useTransactionConfirm', () => {
         maxPriorityFeePerGas:
           TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
       }),
+    );
+  });
+
+  it('preserves isGasFeeSponsored when gasless is supported', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(
+      TRANSACTION_META_MOCK.isGasFeeSponsored,
     );
   });
 });
