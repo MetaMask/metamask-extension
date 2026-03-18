@@ -85,6 +85,7 @@ const setupController = ({
       accounts: {},
       selectedAccount: '',
     },
+    accountIdByAddress: {},
   };
   const accountsController = new AccountsController({
     messenger: accountsControllerMessenger,

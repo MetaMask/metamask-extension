@@ -14,6 +14,10 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
+import type {
+  BenchmarkResults,
+  ThresholdViolation,
+} from '../../../shared/constants/benchmarks';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
   THRESHOLD_REGISTRY,
@@ -25,7 +29,6 @@ import {
   validateResultThresholds,
   logThresholdResult,
 } from './utils/statistics';
-import type { BenchmarkResults, ThresholdViolation } from './utils/types';
 
 /**
  * Startup benchmarks handle their own iteration internally (browserLoads x pageLoads).

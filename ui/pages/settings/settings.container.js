@@ -45,7 +45,6 @@ import {
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
-import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
@@ -90,6 +89,7 @@ const mapStateToProps = (state, ownProps) => {
   // param to check and show shield entry modal at start
   const shouldShowShieldEntryModal =
     searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true';
+  const snapIdFromSearch = searchParams.get('snapId');
 
   const pathNameTail = pathname.match(/[^/]+$/u)?.[0] || '';
   const isAddressEntryPage = pathNameTail.includes('0x');
@@ -107,7 +107,7 @@ const mapStateToProps = (state, ownProps) => {
   const isAddPopularCustomNetwork = Boolean(
     pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
   );
-  const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
+  const isSnapSettingsRoute = pathname === SNAP_SETTINGS_ROUTE;
   const isShieldClaimNewPage = Boolean(
     pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
   );
@@ -189,9 +189,10 @@ const mapStateToProps = (state, ownProps) => {
     name: snapNameGetter(snapId),
   }));
 
-  const snapSettingsTitle = isSnapSettingsRoute
-    ? snapNameGetter(decodeSnapIdFromPathname(pathname))
-    : '';
+  const snapSettingsTitle =
+    isSnapSettingsRoute && snapIdFromSearch
+      ? snapNameGetter(snapIdFromSearch)
+      : '';
 
   return {
     addNewNetwork,
@@ -199,6 +200,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute,
     conversionDate,
     currentPath: pathname,
+    currentSnapId: snapIdFromSearch,
     hasSubscribedToShield: getHasSubscribedToShield(state),
     isAddressEntryPage,
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),

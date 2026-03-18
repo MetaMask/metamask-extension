@@ -14,7 +14,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 type RecipientFilterInputProps = {
   searchQuery: string;
   onChange: (value: string) => void;
-  placeholder?: string;
 };
 
 export const RecipientFilterInput = ({

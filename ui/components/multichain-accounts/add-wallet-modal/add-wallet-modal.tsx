@@ -57,6 +57,7 @@ import {
   ACCOUNT_WATCHER_SNAP_ID,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+import { getSnapRoute } from '../../../helpers/utils/util';
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -119,9 +120,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
             id: 'institutional-wallet',
             titleKey: 'manageInstitutionalWallets',
             iconName: IconName.Add,
-            route: `/snaps/view/${encodeURIComponent(
-              INSTITUTIONAL_WALLET_SNAP_ID,
-            )}`,
+            route: getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID),
           },
         ]
       : []),
@@ -208,7 +207,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       },
     });
     onClose();
-    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+    navigate(getSnapRoute(ACCOUNT_WATCHER_SNAP_ID));
   }, [trackEvent, onClose, navigate]);
 
   return (
