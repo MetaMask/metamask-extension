@@ -275,6 +275,40 @@ describe('ImportTokensModal', () => {
       });
     });
 
+    it('does not block import when token exists on a different network', async () => {
+      const tokenAddress = '0xbc0a08a3b560327ec16842b5f3bf46fa029366b1';
+      const selectedAccountAddress =
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const { getByText, getByTestId, queryByText } = render({
+        isEvmSelected: false,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        allTokens: {
+          [CHAIN_IDS.GOERLI]: {
+            [selectedAccountAddress]: [{ address: tokenAddress }],
+          },
+        },
+      });
+
+      await waitFor(() =>
+        expect(getByText('Custom Mainnet RPC')).toBeInTheDocument(),
+      );
+      await act(async () => {
+        fireEvent.click(getByText(messages.customToken.message));
+      });
+
+      await act(async () => {
+        fireEvent.change(getByTestId('import-tokens-modal-custom-address'), {
+          target: { value: tokenAddress },
+        });
+      });
+
+      await waitFor(() => {
+        expect(
+          queryByText(messages.tokenAlreadyAdded.message),
+        ).not.toBeInTheDocument();
+      });
+    });
+
     it('cancels out of import token flow', () => {
       const onClose = jest.fn();
       render({}, onClose);
