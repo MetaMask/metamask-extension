@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "सीक्रेट रिकवरी फ्रेज़ बैकअप रिमाइंडर खारिज करें"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "किसी भी अकाउंट पर \"स्मार्ट अकाउंट पर स्विच करें\" सुझाव न देखने के लिए इसे चालू करें। स्मार्ट अकाउंट से तेज़ ट्रांसेक्शन, कम नेटवर्क शुल्क और उनके भुगतान पर अधिक लचीलापन मिलता है।"
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "\"स्मार्ट अकाउंट पर स्विच करें\" सुझाव को खारिज करें"
-  },
   "displayNftMedia": {
     "message": "NFT मीडिया को दिखाएं"
   },
