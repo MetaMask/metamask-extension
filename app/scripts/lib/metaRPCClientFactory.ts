@@ -20,10 +20,13 @@ const JSON_RPC_VERSION = '2.0' as const;
 /**
  * A JSON-RPC 2.0 request object, types with our request types.
  */
-type JsonRpcApiRequest<Api extends FunctionRegistry<Api>> = {
-  jsonrpc: typeof JSON_RPC_VERSION;
-  id: number;
-  method: Extract<keyof Api, string>;
+type JsonRpcApiRequest<
+  Api extends FunctionRegistry<Api>,
+  MethodName extends keyof Api,
+> = {
+  jsonrpc?: typeof JSON_RPC_VERSION;
+  id?: number;
+  method: MethodName;
   params: Parameters<Api[keyof Api]>;
 };
 
@@ -175,11 +178,21 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
    * @param payload - The payload to send.
    * @returns A promise that resolves to the result of the method call.
    */
-  async send(payload: JsonRpcApiRequest<Api>) {
-    return new Promise<Awaited<ReturnType<Api[typeof payload.method]>>>(
+  async send<MethodName extends keyof Api>(
+    payload: JsonRpcApiRequest<Api, MethodName>,
+  ) {
+    return new Promise<Awaited<ReturnType<Api[MethodName]>>>(
       (resolve, reject) => {
-        this.requests.set(payload.id, { resolve, reject });
-        this.#connectionStream.write(payload);
+        //========
+        // We don't need to care that `id` and `jsonrpc` are specified.
+        //========
+        const completePayload = {
+          id: getNextId(),
+          jsonrpc: JSON_RPC_VERSION,
+          ...payload,
+        };
+        this.requests.set(completePayload.id, { resolve, reject });
+        this.#connectionStream.write(completePayload);
       },
     );
   }
