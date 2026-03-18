@@ -1,8 +1,13 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem, createDescriptionWithLearnMore } from '../shared';
+import {
+  SettingsTab,
+  createToggleItem,
+  createDescriptionWithLearnMore,
+} from '../shared';
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
+import { AutoResetAccountItem } from './auto-reset-account-item';
 
 const SHOW_CONVERSION_IN_TESTNETS_LEARN_MORE_LINK =
   "https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/";
@@ -22,6 +27,7 @@ const ShowConversionInTestnetsItem = createToggleItem({
 /** Registry of setting items for the Developer Options page. Add new items here */
 const DEVELOPER_OPTIONS_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'show-fiat-in-testnets', component: ShowConversionInTestnetsItem },
+  { id: 'auto-reset-account', component: AutoResetAccountItem },
 ];
 
 const DeveloperOptionsTab = () => (

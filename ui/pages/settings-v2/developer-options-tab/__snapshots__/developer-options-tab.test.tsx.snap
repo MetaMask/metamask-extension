@@ -70,6 +70,36 @@ exports[`DeveloperOptionsTab snapshot matches snapshot 1`] = `
         </span>
       </div>
     </div>
+    <div
+      class="flex flex-col gap-1 py-3"
+      data-testid="developer-options-auto-reset-account"
+    >
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Clear activity and nonce data
+      </p>
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change.
+      </p>
+      <div
+        class="pt-2"
+      >
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          data-testid="developer-options-auto-reset-account-button"
+          role="button"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Clear activity tab data
+          </span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 `;
