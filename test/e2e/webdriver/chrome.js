@@ -157,7 +157,7 @@ class ChromeDriver {
         .split('')
         .map((c) => String.fromCharCode('a'.charCodeAt(0) + parseInt(c, 16)))
         .join('');
-    } catch (_) {
+    } catch {
       return null;
     }
   }
