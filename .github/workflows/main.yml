@@ -126,6 +126,10 @@ jobs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:
