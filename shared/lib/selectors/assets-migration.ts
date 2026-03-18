@@ -51,11 +51,11 @@ import { createDeepEqualSelector } from './selector-creators';
 // tokenBalances: DONE
 //
 // CurrencyRateController
-// currencyRates: TODO
-// currentCurrency: TODO
+// currencyRates: DONE
+// currentCurrency: DONE
 //
 // TokenRatesController
-// marketData: TODO
+// marketData: DONE
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -66,7 +66,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // balances: DONE
 //
 // MultichainAssetsRatesController
-// conversionRates: TODO
+// conversionRates: DONE
 // historicalPrices: TODO (This state should be removed)
 //
 // TokenListController

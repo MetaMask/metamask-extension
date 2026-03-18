@@ -69,7 +69,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           accountsByChainId: {},
@@ -148,7 +147,6 @@ describe('getTokensControllerAllTokens', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           allTokens: {},
@@ -234,7 +232,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           allIgnoredTokens: {},
@@ -300,7 +297,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           tokenBalances: {},
@@ -370,7 +366,6 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           accountsAssets: {},
@@ -440,7 +435,6 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           assetsMetadata: {},
@@ -509,7 +503,6 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           allIgnoredAssets: {},
@@ -569,7 +562,6 @@ describe('getMultiChainBalancesControllerBalances', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           balances: {},
@@ -640,7 +632,6 @@ describe('getCurrencyRateControllerCurrentCurrency', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           currentCurrency: 'eur',
@@ -685,7 +676,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           currentCurrency: 'eur',
@@ -792,7 +782,6 @@ describe('getTokenRatesControllerMarketData', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           marketData: {},
@@ -921,7 +910,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           conversionRates: {},

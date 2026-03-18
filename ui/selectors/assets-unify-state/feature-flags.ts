@@ -5,6 +5,7 @@ import {
   nullable,
   string,
   assert,
+  optional,
 } from '@metamask/superstruct';
 import {
   getRemoteFeatureFlags,
@@ -22,7 +23,7 @@ import {
 const AssetsUnifyStateFeatureFlag = object({
   enabled: boolean(),
   featureVersion: nullable(string()),
-  minimumVersion: nullable(string()),
+  minimumVersion: optional(nullable(string())),
 });
 
 /**
