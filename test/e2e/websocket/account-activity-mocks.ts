@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
-import type { WebSocketMessageMock } from '../tests/solana/mocks/websocketDefaultMocks';
+import type { WebSocketMessageMock } from './types';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
 import { WEBSOCKET_SERVICES } from './constants';
@@ -251,7 +251,11 @@ async function setupAccountActivityWebsocketMocks(
 
           const delay = mock.delay ?? 500;
           setTimeout(() => {
-            socket.send(JSON.stringify(mock.response));
+            const payload =
+              typeof mock.response === 'function'
+                ? mock.response()
+                : mock.response;
+            socket.send(JSON.stringify(payload));
             console.log(
               `[AccountActivity Mock] Fallback mock sent for: ${includes.join(' + ')}`,
             );
